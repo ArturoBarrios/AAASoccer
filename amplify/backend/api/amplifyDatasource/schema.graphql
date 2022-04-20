@@ -1,0 +1,165 @@
+type Player @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  nickname: String
+  playerRating: String
+  wagerRating: String
+  events: String
+  competitiveLevel: String
+  ratings: String
+  hasRating: String
+  showRating: String
+  name: String
+  email: String
+  phone: String
+  hasSubscription: String
+}
+
+type Payment @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  amount: String
+}
+
+type Organization @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  images: String
+  rating: String
+  events: String
+  description: String
+  ageRange: AWSJSON
+  inviteOnly: Boolean
+  members: String
+}
+
+type Wager @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  amount: String
+  players: String
+  events: String
+  private: String
+  league: String
+  tournament: String
+}
+
+type Game @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  hometeam: String
+  awayTeam: String
+  score: String
+  wagers: String
+  pickup: Boolean
+}
+
+type Tryout @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  players: String
+  game: String
+  event: String
+}
+
+type League @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  tournament: String
+  teams: String
+  wagers: String
+  images: String
+  events: String
+}
+
+type Tournament @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  groupPlay: Boolean
+  teams: String
+  images: String
+  events: String
+}
+
+type Training @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  players: String
+  event: String
+}
+
+type Event @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  organizer: String
+  game: String
+  tryout: String
+  training: String
+  ratings: String
+  images: String
+  price: String
+  location: String
+}
+
+type Team @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  color: String
+  logo: String
+  event: String
+  images: String
+  players: String
+  events: String
+  leagues: String
+  tournaments: String
+}
+
+type Image @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  url: String
+  players: String
+  tournaments: String
+  leagues: String
+  events: String
+}
+
+type GifContent @model @auth(rules: [{allow: public}]) {
+  id: ID!
+}
+
+type TextContent @model @auth(rules: [{allow: public}]) {
+  id: ID!
+}
+
+type Message @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  text: String
+  gif: String
+  image: String
+  chat: String
+}
+
+type Chat @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  messages: String
+}
+
+type AppSubscription @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  tier: String
+}
+
+type Location @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  secondaryName: String
+  address: String
+  surface: String
+  images: String
+  fieldSize: String
+  games: String
+  private: String
+  schedule: String
+  events: String
+}
+
+type Rating @model @auth(rules: [{allow: public}]) {
+  id: ID!
+}
+ 
