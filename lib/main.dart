@@ -10,6 +10,7 @@ import 'commands/base_command.dart' as Commands;
 import 'models/app_model.dart';
 import 'models/user_model.dart';
 import 'services/user_service.dart';
+import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home_page.dart';
 import 'views/login_page.dart';
 
@@ -23,16 +24,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // final amplifyAuthService = AmplifyAuthService();
   final emailController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
+  final confirmSignInValueController = TextEditingController();
+  bool isSignedIn = false;
   late TabController _tabController;
   @override
   void initState() {
     print("test");
     super.initState();
-    _configureAmplify();
+    AmplifyAuth.AmplifyAuthService.configureAmplify();
   }
 
   Future<void> _configureAmplify() async {
@@ -48,52 +52,52 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  
-
-  Future<String> signIn() async {
+  void signIn() async {
     try {
-      SignInResult res = await Amplify.Auth.signIn(
-        username: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-      setState(() {
-        print("is signed in!");
-        // isSignedIn = res.isSignedIn;
-      });
-      } on AuthException catch (e) {
-        print("AuthException: "+e.message);
-      }
+      SignInResult signInRes = await AmplifyAuth.AmplifyAuthService.signIn(
+          emailController, passwordController);
 
-      return "res";
-  }
-
-  Future<String> signUp() async {
-    try {
-      Map<CognitoUserAttributeKey, String> userAttributes = {
-        CognitoUserAttributeKey.name: usernameController.text.trim(),
-        CognitoUserAttributeKey.email: emailController.text.trim(),
-        CognitoUserAttributeKey.preferredUsername: emailController.text.trim(),
-        // Note: phone_number requires country code
-        CognitoUserAttributeKey.phoneNumber: '+1'+phoneController.text.trim(),
-      };
-      SignUpResult res = await Amplify.Auth.signUp(
-        username: emailController.text.trim(),
-        password: passwordController.text.trim(),
-        options: CognitoSignUpOptions(
-          userAttributes: userAttributes
-        )
-      );
       setState(() {
-        print("signed up!");
+        print("is signed in???");
+        print(signInRes.toString());
       });
     } on AuthException catch (e) {
-      print(e.message);
+      print("SigninException: ");
       print(e);
     }
-    return "string";
   }
 
+  void signUp() async {
+    try {
+      SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
+          emailController,
+          passwordController,
+          usernameController,
+          phoneController);
+      setState(() {
+        print("signed up!");
+        print(signUpRes);
+      });
+    } on AuthException catch (e) {
+      print("signUpError");
+      print(e);
+    }
+  }
 
+  void confirmSignIn() async {
+    try {
+      SignInResult confirmSignInRes =
+          await AmplifyAuth.AmplifyAuthService.confirmSignIn(
+              confirmSignInValueController);
+      setState(() {
+        // isSignedIn = confirmSignInRes.isSign
+        print(confirmSignInRes.toString());
+      });
+    } on AuthException catch (e) {
+      print("confirmSignInError");
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext _) {
@@ -137,29 +141,28 @@ class _MyAppState extends State<MyApp> {
                                 TextField(
                                   controller: emailController,
                                   decoration: new InputDecoration.collapsed(
-                                    hintText: 'Email'
-                                  ),
+                                      hintText: 'Email'),
                                 ),
                                 TextField(
                                   controller: phoneController,
                                   decoration: new InputDecoration.collapsed(
-                                    hintText: 'Phone'
-                                  ),
+                                      hintText: 'Phone'),
                                 ),
                                 TextField(
                                   controller: passwordController,
                                   decoration: new InputDecoration.collapsed(
-                                    hintText: 'Password'
-                                  ),
+                                      hintText: 'Password'),
                                 ),
-
 
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.blue, // background
                                     onPrimary: Colors.white, // foreground
                                   ),
-                                  onPressed: () { signIn(); },
+                                  //emailController, passwordController
+                                  onPressed: () {
+                                    signIn();
+                                  },
                                   child: Text('Sign In'),
                                 )
                               ],
@@ -196,28 +199,23 @@ class _MyAppState extends State<MyApp> {
                                 TextField(
                                   controller: emailController,
                                   decoration: new InputDecoration.collapsed(
-                                    hintText: 'Email'
-                                  ),
-                                  
+                                      hintText: 'Email'),
                                 ),
-                               
+
                                 TextField(
                                   controller: usernameController,
                                   decoration: new InputDecoration.collapsed(
-                                    hintText: 'Username'
-                                  ),
+                                      hintText: 'Username'),
                                 ),
                                 TextField(
                                   controller: phoneController,
                                   decoration: new InputDecoration.collapsed(
-                                    hintText: 'Phone'
-                                  ),
+                                      hintText: 'Phone'),
                                 ),
-                                 TextField(
+                                TextField(
                                   controller: passwordController,
                                   decoration: new InputDecoration.collapsed(
-                                    hintText: 'Password'
-                                  ),
+                                      hintText: 'Password'),
                                 ),
 
                                 ElevatedButton(
@@ -225,8 +223,69 @@ class _MyAppState extends State<MyApp> {
                                     primary: Colors.blue, // background
                                     onPrimary: Colors.white, // foreground
                                   ),
-                                  onPressed: () { signUp(); },
+                                  //emailController, passwordController, usernameController, phoneController
+                                  onPressed: () {
+                                    signUp();
+                                  },
                                   child: Text('Sign Up'),
+                                )
+                                // SignUpForm.custom(
+                                //   fields: [
+                                //     SignUpFormField.username(),
+                                //     SignUpFormField.email(required: true),
+                                //     SignUpFormField.phoneNumber(),
+                                //     SignUpFormField.password(),
+
+                                //   ],
+
+                                // ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // custom button to take the user to sign in
+                        persistentFooterButtons: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('Already have an account?'),
+                              TextButton(
+                                onPressed: () => state.changeStep(
+                                  AuthenticatorStep.signIn,
+                                ),
+                                child: const Text('Sign In'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    case AuthenticatorStep.confirmSignUp:
+                      return Scaffold(
+                        body: Padding(
+                          padding: padding,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                // app logo
+                                const Center(child: FlutterLogo(size: 100)),
+                                // prebuilt sign up form from amplify_authenticator package
+
+                                TextField(
+                                  controller: confirmSignInValueController,
+                                  decoration: new InputDecoration.collapsed(
+                                      hintText: 'Confirmation Code'),
+                                ),
+
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.blue, // background
+                                    onPrimary: Colors.white, // foreground
+                                  ),
+                                  //emailController, passwordController, usernameController, phoneController
+                                  onPressed: () {
+                                    confirmSignIn();
+                                  },
+                                  child: Text('Confirm'),
                                 )
                                 // SignUpForm.custom(
                                 //   fields: [
