@@ -56,10 +56,12 @@ class _MyAppState extends State<MyApp> {
     try {
       SignInResult signInRes = await AmplifyAuth.AmplifyAuthService.signIn(
           emailController, passwordController);
+      // signInRes.isSignedIn;
 
       setState(() {
         print("is signed in???");
         print(signInRes.toString());
+        // signInRes.nextStep;
       });
     } on AuthException catch (e) {
       print("SigninException: ");
@@ -77,6 +79,7 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         print("signed up!");
         print(signUpRes);
+        // signUpRes.isSignUpComplete;
       });
     } on AuthException catch (e) {
       print("signUpError");
@@ -92,6 +95,7 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         // isSignedIn = confirmSignInRes.isSign
         print(confirmSignInRes.toString());
+        // confirmSignInRes.isSignedIn;
       });
     } on AuthException catch (e) {
       print("confirmSignInError");
