@@ -1,6 +1,32 @@
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Player: Player @hasOne
+  Organizer: Organizer @hasOne
+  Coach: Coach @hasOne
+  Referee: Referee @hasOne
+  name: String
+  phone: String
+  email: String
+  username: String
+}
+
+type Coach @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  User: User @belongsTo
+}
+
+type Referee @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  User: User @belongsTo
+}
+
+type Organizer @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  User: User @belongsTo
+}
+
 type Player @model @auth(rules: [{allow: public}]) {
   id: ID!
-  nickname: String
   playerRating: String
   wagerRating: String
   events: String
@@ -8,10 +34,8 @@ type Player @model @auth(rules: [{allow: public}]) {
   ratings: String
   hasRating: String
   showRating: String
-  name: String
-  email: String
-  phone: String
   hasSubscription: String
+  User: User @belongsTo
 }
 
 type Payment @model @auth(rules: [{allow: public}]) {

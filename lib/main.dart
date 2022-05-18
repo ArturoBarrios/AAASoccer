@@ -32,6 +32,7 @@ class _MyAppState extends State<MyApp> {
   final confirmSignInValueController = TextEditingController();
   bool isSignedIn = false;
   late TabController _tabController;
+
   @override
   void initState() {
     print("test");
@@ -52,24 +53,34 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void signIn() async {
+  void signOut(AuthenticatorState state) async {
+    try {
+      await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
+    } on AuthException catch (e) {
+      print(e.message);
+    }
+  }
+
+  void signIn(AuthenticatorState state) async {
     try {
       SignInResult signInRes = await AmplifyAuth.AmplifyAuthService.signIn(
           emailController, passwordController);
       // signInRes.isSignedIn;
 
       setState(() {
-        print("is signed in???");
-        print(signInRes.toString());
-        // signInRes.nextStep;
+        print("signInRes: " +signInRes.nextStep!.signInStep);
+        String signInStep = signInRes.nextStep!.signInStep;
+AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
+        signInRes.nextStep!.signInStep;
       });
     } on AuthException catch (e) {
       print("SigninException: ");
       print(e);
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(e.message, state);
     }
   }
 
-  void signUp() async {
+  void signUp(AuthenticatorState state) async {
     try {
       SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
           emailController,
@@ -77,25 +88,38 @@ class _MyAppState extends State<MyApp> {
           usernameController,
           phoneController);
       setState(() {
-        print("signed up!");
-        print(signUpRes);
-        // signUpRes.isSignUpComplete;
+        print("signedUpRes: "+signUpRes.nextStep.signUpStep);
+        String signUpStep = signUpRes.nextStep.signUpStep;
+        AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signUpStep, state);
+        if(signUpRes.isSignUpComplete){
+          
+        }
+        
       });
     } on AuthException catch (e) {
       print("signUpError");
       print(e);
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(e.message, state);
     }
   }
 
-  void confirmSignIn() async {
+  void confirmSignIn(AuthenticatorState state) async {
     try {
-      SignInResult confirmSignInRes =
-          await AmplifyAuth.AmplifyAuthService.confirmSignIn(
-              confirmSignInValueController);
-      setState(() {
-        // isSignedIn = confirmSignInRes.isSign
+      SignUpResult confirmSignInRes =
+          await AmplifyAuth.AmplifyAuthService.confirmSignUp(
+              confirmSignInValueController.text.trim(), emailController.text.trim());
+      setState(() async {
         print(confirmSignInRes.toString());
-        // confirmSignInRes.isSignedIn;
+        String signInStep = confirmSignInRes.nextStep.signUpStep;
+        AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
+        print("confirmSignInmain.dart: "+ signInStep);
+        final result = await Amplify.Auth.fetchAuthSession();
+        print("fetchAuthSession: ");
+        print(result);
+        final user = await Amplify.Auth.getCurrentUser();
+        print("getCurrentUser: ");
+        print(user);
+        // state.changeStep(AuthenticatorStep.)
       });
     } on AuthException catch (e) {
       print("confirmSignInError");
@@ -165,7 +189,7 @@ class _MyAppState extends State<MyApp> {
                                   ),
                                   //emailController, passwordController
                                   onPressed: () {
-                                    signIn();
+                                    signIn(state);
                                   },
                                   child: Text('Sign In'),
                                 )
@@ -229,7 +253,7 @@ class _MyAppState extends State<MyApp> {
                                   ),
                                   //emailController, passwordController, usernameController, phoneController
                                   onPressed: () {
-                                    signUp();
+                                    signUp(state);
                                   },
                                   child: Text('Sign Up'),
                                 )
@@ -287,7 +311,7 @@ class _MyAppState extends State<MyApp> {
                                   ),
                                   //emailController, passwordController, usernameController, phoneController
                                   onPressed: () {
-                                    confirmSignIn();
+                                    confirmSignIn(state);
                                   },
                                   child: Text('Confirm'),
                                 )

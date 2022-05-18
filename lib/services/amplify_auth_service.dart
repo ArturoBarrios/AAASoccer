@@ -1,9 +1,40 @@
+import '../amplifyconfiguration.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import '../amplifyconfiguration.dart';
+import 'package:amplify_api/amplify_api.dart';
+
 
 class AmplifyAuthService {
+
+  static void changeAuthenticatorStep(String nextStep, AuthenticatorState state) {
+      print("changeAuthenticatorStep");
+      if(nextStep.contains("An account with the given email already exists.")||nextStep.contains("DONE")){
+        print("An account with the given email already exists.");
+        state.changeStep(AuthenticatorStep.signIn);
+      }
+      else if(nextStep.contains("User is not confirmed")){
+        print("User is not confirmed");
+        state.changeStep(AuthenticatorStep.confirmSignUp);
+      }
+      else if(nextStep.contains("User does not exist")){
+        print("User does not exist");
+        state.changeStep(AuthenticatorStep.signUp);
+      }
+      else if(nextStep.contains("CONFIRM_SIGN_UP_STEP")){
+        print("CONFIRM_SIGN_UP_STEP");
+        state.changeStep(AuthenticatorStep.confirmSignUp);
+      }
+      else if(nextStep.contains("DONE")){
+        print("DONE");
+        state.changeStep(AuthenticatorStep.onboarding);
+      }
+      
+
+    
+
+  }
+
   static Future<void> configureAmplify() async {
     try {
       // Add the following line to add Auth plugin to your app.
@@ -44,10 +75,11 @@ class AmplifyAuthService {
     return res;
   }
 
-  static Future<SignInResult> confirmSignIn(
-      confirmSignInValueController) async {
-    SignInResult res = await Amplify.Auth.confirmSignIn(
-        confirmationValue: confirmSignInValueController);
+  static Future<SignUpResult> confirmSignUp(String confirmValue, String email) async {
+    print("confirmSignIn");
+    SignUpResult res = await Amplify.Auth.confirmSignUp(
+        username: email,
+        confirmationCode: confirmValue);
 
     return res;
   }
