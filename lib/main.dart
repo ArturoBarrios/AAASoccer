@@ -13,6 +13,8 @@ import 'services/user_service.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home_page.dart';
 import 'views/login_page.dart';
+import 'package:amplify_api/amplify_api.dart';
+import 'models/ModelProvider.dart';
 
 void main() => runApp(MyApp());
 
@@ -44,9 +46,11 @@ class _MyAppState extends State<MyApp> {
     try {
       // Add the following line to add Auth plugin to your app.
       await Amplify.addPlugin(AmplifyAuthCognito());
+      Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
 
       // call Amplify.configure to use the initialized categories in your app
       await Amplify.configure(amplifyconfig);
+
       print("amplify configured!");
     } on Exception catch (e) {
       print('An error occurred configuring Amplify: $e');
@@ -366,7 +370,7 @@ class AppScaffold extends StatelessWidget {
 
     // Return the current view, based on the currentUser value:
     return Scaffold(
-      body: currentUser != "" ? HomePage() : LoginPage(),
+      body: HomePage()
     );
   }
 }

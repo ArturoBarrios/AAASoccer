@@ -13,11 +13,7 @@
     },
     "categories": {
       "auth": {
-        "soccerappca9cc684ca9cc684": {
-          "facebookAppId": "587269708900867",
-          "googleClientId": "ljasldkfjasdkf",
-          "appleAppId": "kjhsdkjfjas"
-        }
+        "soccerappca9cc684ca9cc684": {}
       }
     }
   }
