@@ -14,7 +14,7 @@ import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home_page.dart';
 import 'views/login_page.dart';
 import 'package:amplify_api/amplify_api.dart';
-import 'models/ModelProvider.dart';
+// import 'models/ModelProvider.dart';
 
 void main() => runApp(MyApp());
 
@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
     try {
       // Add the following line to add Auth plugin to your app.
       await Amplify.addPlugin(AmplifyAuthCognito());
-      Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
+      // Amplify.SaddPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
 
       // call Amplify.configure to use the initialized categories in your app
       await Amplify.configure(amplifyconfig);
