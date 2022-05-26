@@ -3,6 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_api/amplify_api.dart';
+import '../models/ModelProvider.dart';
 
 
 class AmplifyAuthService {
@@ -39,6 +40,7 @@ class AmplifyAuthService {
     try {
       // Add the following line to add Auth plugin to your app.
       await Amplify.addPlugin(AmplifyAuthCognito());
+      await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
 
       // call Amplify.configure to use the initialized categories in your app
       await Amplify.configure(amplifyconfig);

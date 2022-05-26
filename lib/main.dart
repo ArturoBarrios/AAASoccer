@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'commands/base_command.dart' as Commands;
+import 'commands/user_command.dart';
 import 'models/app_model.dart';
 import 'models/user_model.dart';
 import 'services/user_service.dart';
@@ -16,6 +17,7 @@ import 'views/login_page.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'models/ModelProvider.dart';
 import 'amplifyconfiguration.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -46,23 +48,6 @@ class _MyAppState extends State<MyApp> {
     print("test");
     super.initState();
     AmplifyAuth.AmplifyAuthService.configureAmplify();
-  }
-
-  Future<void> _configureAmplify() async {
-    try {
-      // Add the following line to add Auth plugin to your app.
-      await Amplify.addPlugin(AmplifyAuthCognito());
-       Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-      
-      // Amplify.SaddPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-
-      // call Amplify.configure to use the initialized categories in your app
-      await Amplify.configure(amplifyconfig);
-
-      print("amplify configured!");
-    } on Exception catch (e) {
-      print('An error occurred configuring Amplify: $e');
-    }
   }
 
   void signOut(AuthenticatorState state) async {
@@ -103,12 +88,16 @@ AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
           genderController, 
           addressController);
       setState(() {
-        print("signedUpRes: "+signUpRes.nextStep.signUpStep);
+        print("signedUpRes nextStep: ");
+        print(signUpRes.nextStep);
         String signUpStep = signUpRes.nextStep.signUpStep;
         AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signUpStep, state);
-        if(signUpRes.isSignUpComplete){
-          
-        }
+        
+        Map<String, dynamic>userInput = {"email": emailController.text.trim(), "username": usernameController.text.trim(), "phone": phoneController.text.trim(), "birthdate": birthdateController.text.trim(), "gender": genderController.text.trim(), "address": addressController.text.trim(), "status": "SignedUp"};
+        Future <Map<String, dynamic>> createUserResp = UserCommand().createUser(userInput);
+        print("createUserResp: ");
+        print(createUserResp);
+        
         
       });
     } on AuthException catch (e) {
