@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:amplify_api/amplify_api.dart';
-// import './User.dart';
+import './User.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 
 class UserModel extends ChangeNotifier {
@@ -13,35 +13,28 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  //   var map = {
-  //   "myPropertyName":50,
-  //   "myArrayProperty":[
-  //     "anArrayEntry"
-  //   ],
-  //   "mySubobject": {
-  //     "subObjectProperty":"someValue"
-  //   }
-  // };
+  Future<Map<String, dynamic>> createUser(String email, String username, String phone, String birthdate, String gender, String address ) async{
+    Map<String, dynamic> createUserResponse = {"success": 0, "message": "Default Error"};
+    try {
+      User user = User(email: email, username: username, phone: phone, birthdate: birthdate, gender: gender, address: address);
+      final request = ModelMutations.create(user);
+      final response = await Amplify.API.mutate(request: request).response;
 
-  // Future<String> createUser(String email, String username, String phoneController) async{
-  //   try {
-  //     User todo = User(email: 'my first todo',: 'todo description');
-  //     final request = ModelMutations.create(User);
-  //     final response = await Amplify.API.mutate(request: request).response;
-
-  //     User? createdTodo = response.data;
-  //     if (createdTodo == null) {
-  //       print('errors: ' + response.errors.toString());
-  //       return "fuck";
-  //     }
-  //     print('Mutation result: ' + createdTodo.name);
-  //   } on ApiException catch (e) {
-  //     print('Mutation failed: $e');
-  //     return "fuck";
-  //   }
-
-  //   return "";
-  // }
+      User? createdUser = response.data;
+      if (createdUser == null) {
+        print('errors: ' + response.errors.toString());
+        return createUserResponse;
+      }
+      createUserResponse["success"] = 1;
+      createUserResponse["messasge"] = "Successfully Created User";
+      print('Mutation result: ' );
+      print(createdUser);
+      return createUserResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return createUserResponse;
+    }
+  }
 
 
 }

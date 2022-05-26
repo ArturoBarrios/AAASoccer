@@ -10,6 +10,11 @@
       "StackName": "amplify-soccerappnew-staging-223649",
       "StackId": "arn:aws:cloudformation:us-east-1:085913618949:stack/amplify-soccerappnew-staging-223649/d5ec8c40-dae8-11ec-840b-0aad322225f7",
       "AmplifyAppId": "d3nnj1lw7q3d91"
+    },
+    "categories": {
+      "auth": {
+        "soccerappnew": {}
+      }
     }
   }
 }

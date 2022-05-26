@@ -14,7 +14,8 @@ import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home_page.dart';
 import 'views/login_page.dart';
 import 'package:amplify_api/amplify_api.dart';
-// import 'models/ModelProvider.dart';
+import 'models/ModelProvider.dart';
+import 'amplifyconfiguration.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,7 +32,12 @@ class _MyAppState extends State<MyApp> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
+  final birthdateController = TextEditingController();
+  final genderController = TextEditingController();
+  final addressController = TextEditingController();
   final confirmSignInValueController = TextEditingController();
+
+  
   bool isSignedIn = false;
   late TabController _tabController;
 
@@ -46,6 +52,8 @@ class _MyAppState extends State<MyApp> {
     try {
       // Add the following line to add Auth plugin to your app.
       await Amplify.addPlugin(AmplifyAuthCognito());
+       Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
+      
       // Amplify.SaddPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
 
       // call Amplify.configure to use the initialized categories in your app
@@ -90,7 +98,10 @@ AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
           emailController,
           passwordController,
           usernameController,
-          phoneController);
+          phoneController, 
+          birthdateController, 
+          genderController, 
+          addressController);
       setState(() {
         print("signedUpRes: "+signUpRes.nextStep.signUpStep);
         String signUpStep = signUpRes.nextStep.signUpStep;
@@ -248,6 +259,21 @@ AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
                                   controller: passwordController,
                                   decoration: new InputDecoration.collapsed(
                                       hintText: 'Password'),
+                                ),
+                                TextField(
+                                  controller: birthdateController,
+                                  decoration: new InputDecoration.collapsed(
+                                      hintText: 'Birthdate'),
+                                ),
+                                TextField(
+                                  controller: genderController,
+                                  decoration: new InputDecoration.collapsed(
+                                      hintText: 'Gender'),
+                                ),
+                                TextField(
+                                  controller: addressController,
+                                  decoration: new InputDecoration.collapsed(
+                                      hintText: 'Address'),
                                 ),
 
                                 ElevatedButton(

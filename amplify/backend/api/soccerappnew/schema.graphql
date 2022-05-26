@@ -1,28 +1,31 @@
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
-  Player: Player @hasOne
-  Organizer: Organizer @hasOne
-  Coach: Coach @hasOne
-  Referee: Referee @hasOne
+  player: Player @hasOne
+  organizer: Organizer @hasOne
+  coach: Coach @hasOne
+  referee: Referee @hasOne
   name: String
   phone: String
   email: String
   username: String
+  birthdate: String
+  gender: String
+  address: String
 }
 
 type Coach @model @auth(rules: [{allow: public}]) {
   id: ID!
-  User: User @belongsTo
+  user: User @belongsTo
 }
 
 type Referee @model @auth(rules: [{allow: public}]) {
   id: ID!
-  User: User @belongsTo
+  user: User @belongsTo
 }
 
 type Organizer @model @auth(rules: [{allow: public}]) {
   id: ID!
-  User: User @belongsTo
+  user: User @belongsTo
 }
 
 type Player @model @auth(rules: [{allow: public}]) {
@@ -35,7 +38,7 @@ type Player @model @auth(rules: [{allow: public}]) {
   hasRating: String
   showRating: String
   hasSubscription: String
-  User: User @belongsTo
+  user: User @belongsTo
 }
 
 type Payment @model @auth(rules: [{allow: public}]) {

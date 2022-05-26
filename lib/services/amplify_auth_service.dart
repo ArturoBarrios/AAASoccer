@@ -59,13 +59,16 @@ class AmplifyAuthService {
   }
 
   static Future<SignUpResult> signUp(emailController, passwordController,
-      usernameController, phoneController) async {
+      usernameController, phoneController, birthdateController, genderController, addressController) async {
     Map<CognitoUserAttributeKey, String> userAttributes = {
       CognitoUserAttributeKey.name: usernameController.text.trim(),
       CognitoUserAttributeKey.email: emailController.text.trim(),
       CognitoUserAttributeKey.preferredUsername: emailController.text.trim(),
       // Note: phone_number requires country code
       CognitoUserAttributeKey.phoneNumber: '+1' + phoneController.text.trim(),
+      CognitoUserAttributeKey.birthdate: birthdateController.text.trim(),
+      CognitoUserAttributeKey.gender: genderController.text.trim(),
+      CognitoUserAttributeKey.address: addressController.text.trim()
     };
     SignUpResult res = await Amplify.Auth.signUp(
         username: emailController.text.trim(),
