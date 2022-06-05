@@ -70,7 +70,7 @@ export 'Wager.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "3e12344486603fdc1673cdb4daf5b7dd";
+  String version = "df396fe0fc7a12f945b37eecdbf5bbaa";
   @override
   List<ModelSchema> modelSchemas = [AppSubscription.schema, Chat.schema, Coach.schema, Event.schema, Game.schema, GifContent.schema, Image.schema, League.schema, Location.schema, Message.schema, Organization.schema, Organizer.schema, Payment.schema, Player.schema, Rating.schema, Referee.schema, Team.schema, TextContent.schema, Tournament.schema, Training.schema, Tryout.schema, User.schema, Wager.schema];
   static final ModelProvider _instance = ModelProvider();

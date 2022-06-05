@@ -8,7 +8,6 @@ class UserCommand extends BaseCommand {
   Future<List<String>> run(String user) async {
     // Make service call and inject results into the model
     List<String> posts = await userService.getPosts(user);
-    userModel.userPosts = posts;
 
     // Return our posts to the caller in case they care
     return posts;
@@ -31,6 +30,8 @@ class UserCommand extends BaseCommand {
       }
       createUserResponse["success"] = 1;
       createUserResponse["messasge"] = "Successfully Created User";
+      createUserResponse["data"] = user;
+
       print('Mutation result: ' );
       print(createdUser);
       return createUserResponse;
@@ -39,5 +40,59 @@ class UserCommand extends BaseCommand {
       return createUserResponse;
     }
   }
-  
+
+  Future<Map<String, dynamic>> updateUserLogin(String email ) async{ 
+    Map<String, dynamic> updateUserResponse = {"success": 0, "message": "Default Error"};
+    try{
+      User oldUser = (await Amplify.DataStore.query(User.classType,
+      where: User.EMAIL.eq(email)))[0];
+      
+      User newUser = oldUser.copyWith(last_login: new DateTime.now().millisecondsSinceEpoch);
+      await Amplify.DataStore.save(newUser);
+    } catch(e){
+
+      
+    }
+    return updateUserResponse;
+ }
+
+  Future<Map<String, dynamic>> updateUserStatus(String email, String newUserStatus ) async{ 
+    Map<String, dynamic> updateUserResponse = {"success": 0, "message": "Default Error"};
+      try{
+        User oldUser = (await Amplify.DataStore.query(User.classType,
+        where: User.EMAIL.eq(email)))[0];
+        
+        User newUser = oldUser.copyWith(status: newUserStatus);
+        await Amplify.DataStore.save(newUser);
+      } catch(e){
+
+        
+      }
+    return updateUserResponse;
+  }
+
+
+  void setUserID(){
+      // userModel.userID = userId;
+    }
+
+    Future<Map<String, dynamic>> getUser(String email) async{
+    print("getUser");
+    Map<String, dynamic> resp = {"success": 0, "message": "no user found", "data": null};
+    try {
+      print("before query");
+      List<User> user = await Amplify.DataStore.query(User.classType, where: User.EMAIL.eq(email));
+      print("user got: ");
+      print(user.length);
+      resp["success"] = 1;
+      resp["message"] = "user found";
+      resp["data"] = user;
+    }  catch (e) {
+      print('Query failed: $e');
+    }
+    return resp;
+  }
+
+ 
+
 }

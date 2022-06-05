@@ -40,6 +40,9 @@ class User extends Model {
   final String? _birthdate;
   final String? _gender;
   final String? _address;
+  final String? _status;
+  final int? _last_login;
+  final int? _last_updated;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
   final String? _userPlayerId;
@@ -99,6 +102,18 @@ class User extends Model {
     return _address;
   }
   
+  String? get status {
+    return _status;
+  }
+  
+  int? get last_login {
+    return _last_login;
+  }
+  
+  int? get last_updated {
+    return _last_updated;
+  }
+  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -123,9 +138,9 @@ class User extends Model {
     return _userRefereeId;
   }
   
-  const User._internal({required this.id, player, organizer, coach, referee, name, phone, email, username, birthdate, gender, address, createdAt, updatedAt, userPlayerId, userOrganizerId, userCoachId, userRefereeId}): _player = player, _organizer = organizer, _coach = coach, _referee = referee, _name = name, _phone = phone, _email = email, _username = username, _birthdate = birthdate, _gender = gender, _address = address, _createdAt = createdAt, _updatedAt = updatedAt, _userPlayerId = userPlayerId, _userOrganizerId = userOrganizerId, _userCoachId = userCoachId, _userRefereeId = userRefereeId;
+  const User._internal({required this.id, player, organizer, coach, referee, name, phone, email, username, birthdate, gender, address, status, last_login, last_updated, createdAt, updatedAt, userPlayerId, userOrganizerId, userCoachId, userRefereeId}): _player = player, _organizer = organizer, _coach = coach, _referee = referee, _name = name, _phone = phone, _email = email, _username = username, _birthdate = birthdate, _gender = gender, _address = address, _status = status, _last_login = last_login, _last_updated = last_updated, _createdAt = createdAt, _updatedAt = updatedAt, _userPlayerId = userPlayerId, _userOrganizerId = userOrganizerId, _userCoachId = userCoachId, _userRefereeId = userRefereeId;
   
-  factory User({String? id, Player? player, Organizer? organizer, Coach? coach, Referee? referee, String? name, String? phone, String? email, String? username, String? birthdate, String? gender, String? address, String? userPlayerId, String? userOrganizerId, String? userCoachId, String? userRefereeId}) {
+  factory User({String? id, Player? player, Organizer? organizer, Coach? coach, Referee? referee, String? name, String? phone, String? email, String? username, String? birthdate, String? gender, String? address, String? status, int? last_login, int? last_updated, String? userPlayerId, String? userOrganizerId, String? userCoachId, String? userRefereeId}) {
     return User._internal(
       id: id == null ? UUID.getUUID() : id,
       player: player,
@@ -139,6 +154,9 @@ class User extends Model {
       birthdate: birthdate,
       gender: gender,
       address: address,
+      status: status,
+      last_login: last_login,
+      last_updated: last_updated,
       userPlayerId: userPlayerId,
       userOrganizerId: userOrganizerId,
       userCoachId: userCoachId,
@@ -165,6 +183,9 @@ class User extends Model {
       _birthdate == other._birthdate &&
       _gender == other._gender &&
       _address == other._address &&
+      _status == other._status &&
+      _last_login == other._last_login &&
+      _last_updated == other._last_updated &&
       _userPlayerId == other._userPlayerId &&
       _userOrganizerId == other._userOrganizerId &&
       _userCoachId == other._userCoachId &&
@@ -187,6 +208,9 @@ class User extends Model {
     buffer.write("birthdate=" + "$_birthdate" + ", ");
     buffer.write("gender=" + "$_gender" + ", ");
     buffer.write("address=" + "$_address" + ", ");
+    buffer.write("status=" + "$_status" + ", ");
+    buffer.write("last_login=" + (_last_login != null ? _last_login!.toString() : "null") + ", ");
+    buffer.write("last_updated=" + (_last_updated != null ? _last_updated!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null") + ", ");
     buffer.write("userPlayerId=" + "$_userPlayerId" + ", ");
@@ -198,7 +222,7 @@ class User extends Model {
     return buffer.toString();
   }
   
-  User copyWith({String? id, Player? player, Organizer? organizer, Coach? coach, Referee? referee, String? name, String? phone, String? email, String? username, String? birthdate, String? gender, String? address, String? userPlayerId, String? userOrganizerId, String? userCoachId, String? userRefereeId}) {
+  User copyWith({String? id, Player? player, Organizer? organizer, Coach? coach, Referee? referee, String? name, String? phone, String? email, String? username, String? birthdate, String? gender, String? address, String? status, int? last_login, int? last_updated, String? userPlayerId, String? userOrganizerId, String? userCoachId, String? userRefereeId}) {
     return User._internal(
       id: id ?? this.id,
       player: player ?? this.player,
@@ -212,6 +236,9 @@ class User extends Model {
       birthdate: birthdate ?? this.birthdate,
       gender: gender ?? this.gender,
       address: address ?? this.address,
+      status: status ?? this.status,
+      last_login: last_login ?? this.last_login,
+      last_updated: last_updated ?? this.last_updated,
       userPlayerId: userPlayerId ?? this.userPlayerId,
       userOrganizerId: userOrganizerId ?? this.userOrganizerId,
       userCoachId: userCoachId ?? this.userCoachId,
@@ -239,6 +266,9 @@ class User extends Model {
       _birthdate = json['birthdate'],
       _gender = json['gender'],
       _address = json['address'],
+      _status = json['status'],
+      _last_login = (json['last_login'] as num?)?.toInt(),
+      _last_updated = (json['last_updated'] as num?)?.toInt(),
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
       _userPlayerId = json['userPlayerId'],
@@ -247,7 +277,7 @@ class User extends Model {
       _userRefereeId = json['userRefereeId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'player': _player?.toJson(), 'organizer': _organizer?.toJson(), 'coach': _coach?.toJson(), 'referee': _referee?.toJson(), 'name': _name, 'phone': _phone, 'email': _email, 'username': _username, 'birthdate': _birthdate, 'gender': _gender, 'address': _address, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'userPlayerId': _userPlayerId, 'userOrganizerId': _userOrganizerId, 'userCoachId': _userCoachId, 'userRefereeId': _userRefereeId
+    'id': id, 'player': _player?.toJson(), 'organizer': _organizer?.toJson(), 'coach': _coach?.toJson(), 'referee': _referee?.toJson(), 'name': _name, 'phone': _phone, 'email': _email, 'username': _username, 'birthdate': _birthdate, 'gender': _gender, 'address': _address, 'status': _status, 'last_login': _last_login, 'last_updated': _last_updated, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'userPlayerId': _userPlayerId, 'userOrganizerId': _userOrganizerId, 'userCoachId': _userCoachId, 'userRefereeId': _userRefereeId
   };
 
   static final QueryField ID = QueryField(fieldName: "user.id");
@@ -270,6 +300,9 @@ class User extends Model {
   static final QueryField BIRTHDATE = QueryField(fieldName: "birthdate");
   static final QueryField GENDER = QueryField(fieldName: "gender");
   static final QueryField ADDRESS = QueryField(fieldName: "address");
+  static final QueryField STATUS = QueryField(fieldName: "status");
+  static final QueryField LAST_LOGIN = QueryField(fieldName: "last_login");
+  static final QueryField LAST_UPDATED = QueryField(fieldName: "last_updated");
   static final QueryField USERPLAYERID = QueryField(fieldName: "userPlayerId");
   static final QueryField USERORGANIZERID = QueryField(fieldName: "userOrganizerId");
   static final QueryField USERCOACHID = QueryField(fieldName: "userCoachId");
@@ -359,6 +392,24 @@ class User extends Model {
       key: User.ADDRESS,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.STATUS,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.LAST_LOGIN,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.LAST_UPDATED,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.int)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

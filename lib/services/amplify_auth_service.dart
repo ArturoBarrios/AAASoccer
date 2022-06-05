@@ -1,12 +1,35 @@
+import 'package:soccermadeeasy/commands/base_command.dart';
+import 'package:soccermadeeasy/models/app_model.dart';
+
 import '../amplifyconfiguration.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/ModelProvider.dart';
+import '../commands/user_command.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
+import '../models/user_model.dart';
 
 
 class AmplifyAuthService {
+
+  static Future<Map<String, dynamic>> fetchUserAuthSession()async {
+    print("fetchUserAuthSession");
+    Map<String, dynamic> fetchUserAuthResponse = {"success": 0, "message": "Something went wrong with fetching User", "data": null};
+    try{
+    AuthSession authSessionRes = await Amplify.Auth.fetchAuthSession();
+    fetchUserAuthResponse["data"] = authSessionRes;
+    fetchUserAuthResponse["success"] = 1;
+    fetchUserAuthResponse["message"] = "Fetched User";
+    }catch(e){
+      print(e.toString());
+    }
+     
+    return fetchUserAuthResponse;
+  }
+
+  
 
   static void changeAuthenticatorStep(String nextStep, AuthenticatorState state) {
       print("changeAuthenticatorStep");
@@ -30,24 +53,52 @@ class AmplifyAuthService {
         print("DONE");
         state.changeStep(AuthenticatorStep.onboarding);
       }
-      
-
-    
-
   }
 
-  static Future<void> configureAmplify() async {
+
+
+  static Future<Map<String, dynamic>> configureAmplify() async {
+    print("configureAmplify");
+    Map<String, dynamic> configureAmplifyResp = {"success": 0, "message": "Default Error"};
+    await Amplify.addPlugin(AmplifyAuthCognito());
+    await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
+    // Add the following lines to your app initialization to add the DataStore plugin
+    AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance);
+    await Amplify.addPlugin(datastorePlugin);
     try {
       // Add the following line to add Auth plugin to your app.
-      await Amplify.addPlugin(AmplifyAuthCognito());
-      await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-
+      
       // call Amplify.configure to use the initialized categories in your app
       await Amplify.configure(amplifyconfig);
-      print("amplify configured!");
+      print("amplify configured");
+      Map<String, dynamic> authSessionRes = await fetchUserAuthSession();
+
+      if(authSessionRes["data"].isSignedIn){
+        print("isSignedIn!!!!");
+        List<AuthUserAttribute> userAttributes = await Amplify.Auth.fetchUserAttributes();
+        int indexOfEmail = userAttributes.indexWhere((f) => f.userAttributeKey.key == "email");
+        
+        print("indexOfEmail: ");
+        print(indexOfEmail);
+        String email = userAttributes[indexOfEmail].value;
+        print("email");
+        print(email);
+        UserModel().userEmail = email;
+        print("authSessionRes: "+authSessionRes.toString());
+        print("amplify configured end of function!");
+        configureAmplifyResp["success"] =  1;
+        configureAmplifyResp["message"] = "amplify configured";
+        configureAmplifyResp["data"] = authSessionRes["data"];
+        AppModel().isSignedIn = true;
+      }
+      AppModel().amplifyConfigured = true;
+      
+      
     } on Exception catch (e) {
       print('An error occurred configuring Amplify: $e');
     }
+
+    return configureAmplifyResp;
   }
 
   static Future<SignInResult> signIn(

@@ -12,6 +12,8 @@ type User @model @auth(rules: [{allow: public}]) {
   gender: String
   address: String
   status: String
+  last_login: Int
+  last_updated: Int
 }
 
 type Coach @model @auth(rules: [{allow: public}]) {
