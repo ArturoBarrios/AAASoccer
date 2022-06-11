@@ -19,6 +19,7 @@ class AmplifyAuthService {
     Map<String, dynamic> fetchUserAuthResponse = {"success": 0, "message": "Something went wrong with fetching User", "data": null};
     try{
     AuthSession authSessionRes = await Amplify.Auth.fetchAuthSession();
+    print("authSessionRes: "+ authSessionRes.isSignedIn.toString());
     fetchUserAuthResponse["data"] = authSessionRes;
     fetchUserAuthResponse["success"] = 1;
     fetchUserAuthResponse["message"] = "Fetched User";
@@ -99,6 +100,15 @@ class AmplifyAuthService {
     }
 
     return configureAmplifyResp;
+  }
+
+   void signOut() async {
+    try {
+      await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
+      //base_command set initial app models to reflect signout
+    } on AuthException catch (e) {
+      print(e.message);
+    }
   }
 
   static Future<SignInResult> signIn(

@@ -1,5 +1,10 @@
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-
+//amplify auth packages
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import '../services/amplify_auth_service.dart' as AmplifyAuth;
 //import widgets
 import '../components/bottom_nav.dart';
 import '../components/select_icon_button.dart';
@@ -7,12 +12,13 @@ import '../components/search_field.dart';
 import '../components/animated_dialogue.dart';
 //card widgets
 import '../components/Cards/pickup_card.dart';
+//models
+import '../models/home_page_model.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
-
   @override
-  State<Home> createState() => _Home();
+  _Home createState() => _Home();
+
 }
 
 class _Home extends State<Home> {
@@ -22,30 +28,69 @@ class _Home extends State<Home> {
     {"key": 2, "opened": false}
   ];
   double globalPadding = 10.0;
-  bool cardViewIsVisible = false;
+  
 
-  void showCardView() {
+
+  
+
+  void openCardView() {
+    print("openCardView");
     setState(() => {
-          cardViewIsVisible = true,
+          HomePageModel().isDialogueViewOpened = true,
         });
   }
 
-  void hideCardView() {
-    setState(() => {cardViewIsVisible = false});
+  void closeCardView(){
+    setState(() => {
+      HomePageModel().isDialogueViewOpened = false,
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
+    bool isDialogueViewOpened = context.select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
     return (Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: Text(isDialogueViewOpened.toString()),
         backgroundColor: Colors.green.shade600,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add_alert),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+             AmplifyAuth.AmplifyAuthService().signOut();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.navigate_next),
+            tooltip: 'Go to the next page',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Next page'),
+                    ),
+                    body: const Center(
+                      child: Text(
+                        'This is the next page',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                  );
+                },
+              ));
+            },
+          ),
+        ],
       ),
       body: Stack(children: <Widget>[
+        if(true)
         Container(constraints: BoxConstraints.expand(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width),
-                child: AnimatedDialogue()),
+                child: AnimatedDialogue(isVisible: true)),
         Container(
             constraints: BoxConstraints.expand(
                 height: MediaQuery.of(context).size.height,
@@ -98,20 +143,26 @@ class _Home extends State<Home> {
                           child: Row(children: <Widget>[
                             InkWell(
                               onTap: () {
-                                showCardView();
+                                // openCardView();
                               },
-                              child: PickupCard(),
+                              child: GestureDetector(
+                                  onTap: () {openCardView();},
+                                  child: PickupCard()),
                             ),
                             InkWell(
                                 onTap: () {
-                                  showCardView();
+                                  // openCardView();
                                 },
-                                child: PickupCard()),
+                                child: GestureDetector(
+                                  onTap: () {openCardView();},
+                                  child: PickupCard())),
                             InkWell(
                                 onTap: () {
-                                  showCardView();
+                                  // openCardView();
                                 },
-                                child: PickupCard()),
+                                child: GestureDetector(
+                                  onTap: () {openCardView();},
+                                  child: PickupCard())),
                           ])),
                     ])),
                 // Stack(

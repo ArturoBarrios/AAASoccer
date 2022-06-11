@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:soccermadeeasy/models/home_page_model.dart';
 
 import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,7 @@ import 'views/home_page_temporary.dart';
 import 'views/home.dart';
 
 import 'views/login_page.dart';
-import 'package:amplify_api/amplify_api.dart';
-import 'models/ModelProvider.dart';
-import 'amplifyconfiguration.dart';
-
+import 'commands/base_command.dart' as Commands;
 
 
 void main() => runApp(MyApp());
@@ -186,9 +184,11 @@ void setupListeners(){
       providers: [
         ChangeNotifierProvider(create: (c) => AppModel()),
         ChangeNotifierProvider(create: (c) => UserModel()),
+        ChangeNotifierProvider(create: (c) => HomePageModel()),
         Provider(create: (c) => UserService()),
       ],
       child: Builder(builder: (context) {
+        Commands.init(context);
         // Save a context our Commands can use to access provided Models and Services
         
 
@@ -433,13 +433,10 @@ class AppScaffold extends StatelessWidget {
     // Bind to AppModel.currentUser
     String currentUser =
         context.select<AppModel, String>((value) => value.currentUser);
-    bool isSignedIn =
-        context.select<AppModel, bool>((value) => value.isSignedIn);
-    print("isjlasjdfkljaslkf;jdsal;kfjadskl;fjasdkf "+isSignedIn.toString());
 
     // Return the current view, based on the currentUser value:
     return Scaffold(
-      body: !isSignedIn ?  Home() : LoginPage(),
+      body: currentUser != "" ?  Home() : LoginPage(),
     );
   }
 }

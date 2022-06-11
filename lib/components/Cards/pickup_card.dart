@@ -14,7 +14,6 @@ class _PickupCard extends State<PickupCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      
       height: 150,
       width: MediaQuery.of(context).size.width * 1,
       child: Card(
@@ -23,12 +22,31 @@ class _PickupCard extends State<PickupCard> {
           Text("test"),
           Align(
             alignment: Alignment.bottomCenter,
-            child: BasicElevatedButton())
+            child: 
+            
+              BasicElevatedButton())
 
         ]),
         
     ));
   }
 }
+
+
+// new GestureDetector(
+    //     onTap: (){
+    //       print("Container clicked");
+    //     },
+    //     child: new Container(
+    //       width: 500.0,
+    //       padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+    //       color: Colors.green,
+    //       child: new Column(
+    //           children: [
+    //             new Text("Ableitungen"),
+    //           ]
+    //       ),
+    //     )
+    // );
 
 

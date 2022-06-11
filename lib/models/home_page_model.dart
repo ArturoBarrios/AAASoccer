@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 
-class AppModel extends ChangeNotifier {
+class HomePageModel extends ChangeNotifier {
 
   String _currentUser = "";
   String get currentUser => _currentUser;
@@ -12,8 +12,15 @@ class AppModel extends ChangeNotifier {
 
   bool _amplifyConfigured = false;
   bool get amplifyConfigured => _amplifyConfigured;
+
+  bool _isDialogueViewOpened = false;
+  bool get isDialogueViewOpened => _isDialogueViewOpened;
   
   
+  set isDialogueViewOpened(bool isDialogueViewOpened){
+    _isDialogueViewOpened = isDialogueViewOpened;
+    notifyListeners();
+  }
 
   set amplifyConfigured(bool amplifyConfigured){
     _amplifyConfigured = amplifyConfigured;

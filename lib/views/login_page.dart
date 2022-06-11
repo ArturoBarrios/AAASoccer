@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../commands/login_command.dart';
-import '../models/app_model.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,14 +13,10 @@ class _LoginPageState extends State<LoginPage> {
   void _handleLoginPressed() async {
     setState(() => _isLoading = true);
     bool success = await LoginCommand().run("someuser", "somepass");
+    
     if (!success) setState(() => _isLoading = false);
   }
-void testFunction(){
-  print("testFunction in login_page");
-setState(() {
-    AppModel().amplifyConfigured = true;
-  });
-}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +25,7 @@ setState(() {
             ? CircularProgressIndicator()
             : FlatButton(
                 child: Text("Login"),
-                onPressed: testFunction,
+                onPressed: _handleLoginPressed,
               ),
       ),
     );
