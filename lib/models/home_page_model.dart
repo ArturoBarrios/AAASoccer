@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 
-class AppModel extends ChangeNotifier {
+class HomePageModel extends ChangeNotifier {
 
   String _currentUser = "";
   String get currentUser => _currentUser;
@@ -13,13 +13,14 @@ class AppModel extends ChangeNotifier {
   bool _amplifyConfigured = false;
   bool get amplifyConfigured => _amplifyConfigured;
 
-  bool _initialConditionsMet = false;
-  bool get initialConditionsMet => _initialConditionsMet;
+  bool _isDialogueViewOpened = false;
+  bool get isDialogueViewOpened => _isDialogueViewOpened;
   
-    set initialConditionsMet(bool initialConditionsMet){
-    _initialConditionsMet = initialConditionsMet;
+  
+  set isDialogueViewOpened(bool isDialogueViewOpened){
+    _isDialogueViewOpened = isDialogueViewOpened;
     notifyListeners();
-  }  
+  }
 
   set amplifyConfigured(bool amplifyConfigured){
     _amplifyConfigured = amplifyConfigured;
@@ -35,5 +36,7 @@ class AppModel extends ChangeNotifier {
     _isSignedIn = isSignedIn;
     notifyListeners();
   }
+
+  
   // Eventually other stuff would go here, appSettings, premiumUser flags, currentTheme, etc...
 }

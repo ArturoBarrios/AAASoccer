@@ -1,6 +1,38 @@
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  player: Player @hasOne
+  organizer: Organizer @hasOne
+  coach: Coach @hasOne
+  referee: Referee @hasOne
+  name: String
+  phone: String
+  email: String
+  username: String
+  birthdate: String
+  gender: String
+  address: String
+  status: String
+  last_login: Int
+  last_updated: Int
+}
+
+type Coach @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  user: User @belongsTo
+}
+
+type Referee @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  user: User @belongsTo
+}
+
+type Organizer @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  user: User @belongsTo
+}
+
 type Player @model @auth(rules: [{allow: public}]) {
   id: ID!
-  nickname: String
   playerRating: String
   wagerRating: String
   events: String
@@ -8,10 +40,8 @@ type Player @model @auth(rules: [{allow: public}]) {
   ratings: String
   hasRating: String
   showRating: String
-  name: String
-  email: String
-  phone: String
   hasSubscription: String
+  user: User @belongsTo
 }
 
 type Payment @model @auth(rules: [{allow: public}]) {
@@ -153,7 +183,6 @@ type Location @model @auth(rules: [{allow: public}]) {
   surface: String
   images: String
   fieldSize: String
-  games: String
   private: String
   schedule: String
   events: String
@@ -161,5 +190,4 @@ type Location @model @auth(rules: [{allow: public}]) {
 
 type Rating @model @auth(rules: [{allow: public}]) {
   id: ID!
-}
- 
+} 

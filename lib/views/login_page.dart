@@ -13,6 +13,7 @@ class _LoginPageState extends State<LoginPage> {
   void _handleLoginPressed() async {
     setState(() => _isLoading = true);
     bool success = await LoginCommand().run("someuser", "somepass");
+    
     if (!success) setState(() => _isLoading = false);
   }
 

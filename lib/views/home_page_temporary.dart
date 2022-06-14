@@ -5,12 +5,13 @@ import '../commands/refresh_posts_command.dart';
 import '../models/app_model.dart';
 import '../models/user_model.dart';
 
-class HomePage extends StatefulWidget {
+
+class HomePageTemporary extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageTemporaryState createState() => _HomePageTemporaryState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageTemporaryState extends State<HomePageTemporary> {
   bool _isLoading = false;
 
   void _handleRefreshPressed() async {
