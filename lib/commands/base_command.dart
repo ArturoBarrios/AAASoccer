@@ -51,8 +51,19 @@ class BaseCommand {
     return resp;
   
   }
-
   
+  Future<Map<String, dynamic>> purgeProfile(Map<String, dynamic> data) async{
+    print("purgeProfile");
+    Map<String, dynamic> resp = {"success": false, "message": "profile not purged", "data": null};
+    try{
+      UserCommand().deleteUser(data['userId']);
+    }on ApiException catch(e){
+      print("handle exception");
+    }
+
+    return resp; 
+
+  }
 
   void initialConditionsMet(){
     appModel.initialConditionsMet = true;

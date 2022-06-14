@@ -99,6 +99,19 @@ class UserCommand extends BaseCommand {
     return resp;
   }
 
+  Future<Map<String, dynamic>> deleteUser(String userId) async {
+    print("delteUser");
+    Map<String, dynamic> resp = {"success": false, "message": "user not deleted", "data": null};
+    try{
+      final request = ModelMutations.deleteById(User.classType, userId);
+      final response = await Amplify.API.mutate(request: request).response;
+      resp['success'] = true;
+    }on ApiException catch(e){
+      print("handle exception");
+    }
+    return resp;
+  }
+
  
 
 }
