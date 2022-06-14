@@ -16,13 +16,14 @@ class _AnimatedDialogue extends State<AnimatedDialogue> {
     return AnimatedOpacity(
           // If the widget is visible, animate to 0.0 (invisible).
           // If the widget is hidden, animate to 1.0 (fully visible).
-          opacity: HomePageModel().isDialogueViewOpened ? 1.0 : 0.0,
-          duration: const Duration(seconds: 5),
+          opacity: widget.isVisible == true ? 1.0 : 0.0,
+          duration: const Duration(seconds: 0),
           // The green box must be a child of the AnimatedOpacity widget.
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             color: Colors.red,
+            
           ),
         );
   }

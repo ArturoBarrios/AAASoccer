@@ -183,7 +183,6 @@ type Location @model @auth(rules: [{allow: public}]) {
   surface: String
   images: String
   fieldSize: String
-  games: String
   private: String
   schedule: String
   events: String

@@ -30,16 +30,20 @@ class BaseCommand {
     try{
       
       Map<String, dynamic> getUserResp = await UserCommand().getUser(email);
+      print("getUserResp: ");
+      print(getUserResp);
       if(getUserResp["success"]){
         User user = getUserResp["data"];
         setUserId(user.id);
         setUser(user);
         userModel.userSetup.value = true;
-        resp = {"success": 1, "message": "success", "data": null};
+        resp = {"success": true, "message": "success", "data": null};
+        print("user stuff: ");
       }
       
     }catch(e){
-      print("error");
+      print("errorrrrrrrr: ");
+      print(e);
       userModel.userSetup.value = false;
     }
     
@@ -47,16 +51,25 @@ class BaseCommand {
     return resp;
   
   }
+
   
 
-  setUserId(String userId){
+  void initialConditionsMet(){
+    appModel.initialConditionsMet = true;
+  }
+  
+
+  void setUserId(String userId){
     userModel.userID = userId;
 }
 
-  setUser(User user){
+  void setUser(User user){
     userModel.user = user;
   }
 
+  void setIsSigned(bool signedIn){
+    appModel.isSignedIn = signedIn;
+  }
   
 
   

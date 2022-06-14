@@ -34,7 +34,8 @@ class AmplifyAuthService {
 
   static void changeAuthenticatorStep(String nextStep, AuthenticatorState state) {
       print("changeAuthenticatorStep");
-      if(nextStep.contains("An account with the given email already exists.")||nextStep.contains("DONE")){
+      print(nextStep);
+      if(nextStep.contains("An account with the given email already exists.")){
         print("An account with the given email already exists.");
         state.changeStep(AuthenticatorStep.signIn);
       }
@@ -52,7 +53,11 @@ class AmplifyAuthService {
       }
       else if(nextStep.contains("DONE")){
         print("DONE");
-        state.changeStep(AuthenticatorStep.onboarding);
+        state.skipVerifyUser();
+      }
+      else{
+        print("else");
+        // state.changeStep(AuthenticatorStep.)
       }
   }
 
@@ -60,7 +65,7 @@ class AmplifyAuthService {
 
   static Future<Map<String, dynamic>> configureAmplify() async {
     print("configureAmplify");
-    Map<String, dynamic> configureAmplifyResp = {"success": 0, "message": "Default Error"};
+    Map<String, dynamic> configureAmplifyResp = {"success": false, "message": "Default Error"};
     await Amplify.addPlugin(AmplifyAuthCognito());
     await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
     // Add the following lines to your app initialization to add the DataStore plugin
@@ -87,10 +92,10 @@ class AmplifyAuthService {
         UserModel().userEmail = email;
         print("authSessionRes: "+authSessionRes.toString());
         print("amplify configured end of function!");
-        configureAmplifyResp["success"] =  1;
-        configureAmplifyResp["message"] = "amplify configured";
+        configureAmplifyResp["success"] =  true;
+        configureAmplifyResp["message"] = "isSignedIn";
         configureAmplifyResp["data"] = authSessionRes["data"];
-        AppModel().isSignedIn = true;
+        // AppModel().isSignedIn = true;
       }
       AppModel().amplifyConfigured = true;
       
@@ -106,13 +111,13 @@ class AmplifyAuthService {
     try {
       await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
       //base_command set initial app models to reflect signout
+   
     } on AuthException catch (e) {
       print(e.message);
     }
   }
 
-  static Future<SignInResult> signIn(
-      emailController, passwordController) async {
+  static Future<SignInResult> signIn(emailController, passwordController) async {
     SignInResult res = await Amplify.Auth.signIn(
       username: emailController.text.trim(),
       password: passwordController.text.trim(),
@@ -126,7 +131,7 @@ class AmplifyAuthService {
     Map<CognitoUserAttributeKey, String> userAttributes = {
       CognitoUserAttributeKey.name: usernameController.text.trim(),
       CognitoUserAttributeKey.email: emailController.text.trim(),
-      CognitoUserAttributeKey.preferredUsername: emailController.text.trim(),
+      CognitoUserAttributeKey.preferredUsername: usernameController.text.trim(),
       // Note: phone_number requires country code
       CognitoUserAttributeKey.phoneNumber: '+1' + phoneController.text.trim(),
       CognitoUserAttributeKey.birthdate: birthdateController.text.trim(),

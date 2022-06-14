@@ -78,15 +78,21 @@ class UserCommand extends BaseCommand {
 
     Future<Map<String, dynamic>> getUser(String email) async{
     print("getUser");
-    Map<String, dynamic> resp = {"success": 0, "message": "no user found", "data": null};
+    Map<String, dynamic> resp = {"success": false, "message": "no user found", "data": null};
     try {
       print("before query");
-      List<User> user = await Amplify.DataStore.query(User.classType, where: User.EMAIL.eq(email));
+      final request = ModelQueries.list(User.classType, where: User.EMAIL.eq(email));
+      final response = await Amplify.API.query(request: request).response;
+
+      User? user = response.data?.items.first;
       print("user got: ");
-      print(user.length);
-      resp["success"] = 1;
-      resp["message"] = "user found";
-      resp["data"] = user;
+      print(user);
+      if(user!=null){
+        resp["success"] = true;
+        resp["message"] = "user found";
+        resp["data"] = user;
+      }
+      
     }  catch (e) {
       print('Query failed: $e');
     }

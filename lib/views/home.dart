@@ -14,6 +14,8 @@ import '../components/animated_dialogue.dart';
 import '../components/Cards/pickup_card.dart';
 //models
 import '../models/home_page_model.dart';
+//commands
+import '../commands/home_page_command.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -33,18 +35,15 @@ class _Home extends State<Home> {
 
   
 
-  void openCardView() {
-    print("openCardView");
+  void cardTapped() {
+    print("cardTapped");
     setState(() => {
-          HomePageModel().isDialogueViewOpened = true,
+          // HomePageModel().isDialogueViewOpened = true,        
+          HomePageCommand().cardTapped()
         });
   }
 
-  void closeCardView(){
-    setState(() => {
-      HomePageModel().isDialogueViewOpened = false,
-    });
-  }
+ 
 
 
   @override
@@ -86,11 +85,10 @@ class _Home extends State<Home> {
         ],
       ),
       body: Stack(children: <Widget>[
-        if(true)
         Container(constraints: BoxConstraints.expand(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width),
-                child: AnimatedDialogue(isVisible: true)),
+                child: AnimatedDialogue(isVisible: isDialogueViewOpened)),
         Container(
             constraints: BoxConstraints.expand(
                 height: MediaQuery.of(context).size.height,
@@ -146,7 +144,7 @@ class _Home extends State<Home> {
                                 // openCardView();
                               },
                               child: GestureDetector(
-                                  onTap: () {openCardView();},
+                                  onTap: () {cardTapped();},
                                   child: PickupCard()),
                             ),
                             InkWell(
@@ -154,14 +152,14 @@ class _Home extends State<Home> {
                                   // openCardView();
                                 },
                                 child: GestureDetector(
-                                  onTap: () {openCardView();},
+                                  onTap: () {cardTapped();},
                                   child: PickupCard())),
                             InkWell(
                                 onTap: () {
                                   // openCardView();
                                 },
                                 child: GestureDetector(
-                                  onTap: () {openCardView();},
+                                  onTap: () {cardTapped();},
                                   child: PickupCard())),
                           ])),
                     ])),

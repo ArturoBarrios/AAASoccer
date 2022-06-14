@@ -36,5 +36,7 @@ class HomePageModel extends ChangeNotifier {
     _isSignedIn = isSignedIn;
     notifyListeners();
   }
+
+  
   // Eventually other stuff would go here, appSettings, premiumUser flags, currentTheme, etc...
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import '../views/pickup/view.dart';
+import '../views/location/create.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -36,58 +37,57 @@ class _BottomNav extends State<BottomNav> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height * .05;
-    final ButtonStyle buttonStyle =
-        ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.green),
-            fixedSize: MaterialStateProperty.all(const Size(40, 40)),
-              shape: MaterialStateProperty.all(CircleBorder()),
-              
-            );
-    return 
-    SizedBox(
-      height: MediaQuery.of(context).size.height * .1,
-      width: MediaQuery.of(context).size.width,
-      child:
-     Stack(
-      children: <Widget> [
-        Container(
-          height: MediaQuery.of(context).size.height * .1,
-      width: MediaQuery.of(context).size.width,
-          alignment: Alignment.bottomLeft,
-          child: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.business),
-                label: 'Event History',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.school),
-                label: 'Wagers',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.amber[800],
-            onTap: _onItemTapped,
+    final ButtonStyle buttonStyle = ButtonStyle(
+      backgroundColor: MaterialStateProperty.all(Colors.green),
+      fixedSize: MaterialStateProperty.all(const Size(40, 40)),
+      shape: MaterialStateProperty.all(CircleBorder()),
+    );
+    return SizedBox(
+        height: MediaQuery.of(context).size.height * .1,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height * .1,
+            width: MediaQuery.of(context).size.width,
+            alignment: Alignment.bottomLeft,
+            child: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.business),
+                  label: 'Event History',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.school),
+                  label: 'Wagers',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.amber[800],
+              onTap: _onItemTapped,
+            ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * .04),
-          child: 
-            Align(
+          Container(
+            margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * .04),
+            child: Align(
               alignment: Alignment.center,
               child: ElevatedButton(
                 style: buttonStyle,
-                onPressed: () { },
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>  LocationCreate()),
+                  );
+                },
                 child: Text('+'),
               ),
             ),
-        )
-      ]
-    )
-    );
+          )
+        ]));
   }
 }

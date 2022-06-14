@@ -12,8 +12,14 @@ class AppModel extends ChangeNotifier {
 
   bool _amplifyConfigured = false;
   bool get amplifyConfigured => _amplifyConfigured;
+
+  bool _initialConditionsMet = false;
+  bool get initialConditionsMet => _initialConditionsMet;
   
-  
+    set initialConditionsMet(bool initialConditionsMet){
+    _initialConditionsMet = initialConditionsMet;
+    notifyListeners();
+  }  
 
   set amplifyConfigured(bool amplifyConfigured){
     _amplifyConfigured = amplifyConfigured;
