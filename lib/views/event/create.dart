@@ -1,14 +1,14 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
-import '../../commands/location_command.dart';
+import '../../commands/event_command.dart';
 
-class LocationCreate extends StatefulWidget {
+class EventCreate extends StatefulWidget {
   @override
-  _LocationCreateState createState() => _LocationCreateState();
+  _EventCreateState createState() => _EventCreateState();
 }
 
-class _LocationCreateState extends State<LocationCreate> {
+class _EventCreateState extends State<EventCreate> {
   final nameController = TextEditingController();
   final imageController = TextEditingController();
   final secondaryNameController = TextEditingController();
@@ -19,14 +19,14 @@ class _LocationCreateState extends State<LocationCreate> {
 
   bool _isLoading = false;
 
-  Future<Map<String, dynamic>> createLocation() async {
-    print("createLocation");
-    Map<String, dynamic> createLocationResponse = {
+  Future<Map<String, dynamic>> createEvent() async {
+    print("createEvent");
+    Map<String, dynamic> createPickupGameResponse = {
       "success": false,
       "message": "Default Error"
     };
     try {
-      Map<String, dynamic> createLocationInput = {
+      Map<String, dynamic> createEventInput = {
         "name": nameController.text.trim(),
         "secondaryName": secondaryNameController.text.trim(),
         "address": addressController.text.trim(),
@@ -35,14 +35,14 @@ class _LocationCreateState extends State<LocationCreate> {
         "fieldSize": fieldSizeController.text.trim(),
         "private": privateController.text.trim()
       };
-      Map<String, dynamic> createLocationRes = await LocationCommand().createLocation(createLocationInput);
-      if(createLocationRes['success']){
-        createLocationResponse['success'] = true;
+      Map<String, dynamic> createEventRes =
+          await EventCommand().createEvent(createEventInput);
+      if (createEventRes['success']) {
+        createPickupGameResponse['success'] = true;
       }
-
-      return createLocationResponse;
+      return createPickupGameResponse;
     } on ApiException catch (e) {
-      return createLocationResponse;
+      return createPickupGameResponse;
     }
   }
 
@@ -81,7 +81,7 @@ class _LocationCreateState extends State<LocationCreate> {
         ),
         GestureDetector(
             onTap: () {
-              createLocation();
+              createEvent();
             },
             child: Text("tap me")),
       ])),
