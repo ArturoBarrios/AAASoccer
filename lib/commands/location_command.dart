@@ -15,7 +15,7 @@ class LocationCommand extends BaseCommand {
 
  Future<Map<String, dynamic>> createLocation(Map<String, dynamic> userInput ) async{
      print("createLocation");
-    Map<String, dynamic> createLocationResponse = {"success": 0, "message": "Default Error"};
+    Map<String, dynamic> createLocationResponse = {"success": false, "message": "Default Error"};
     try {
       Location location = Location(name: userInput['name'], secondaryName: userInput['secondaryName'], address: userInput['address'], surface: userInput['surface'], images: userInput['images'], fieldSize: userInput['fieldSize'], private: userInput['private']  );
       final request = ModelMutations.create(location);
@@ -24,13 +24,12 @@ class LocationCommand extends BaseCommand {
       print("response");
 
       Location? createdLocation = response.data;
-      if (createdLocation == null) {
-        print('errors: ' + response.errors.toString());
-        return createLocationResponse;
+      if (createdLocation != null) {
+        createLocationResponse["success"] = true;
+        createLocationResponse["messasge"] = "Successfully Created Location";
+        createLocationResponse["data"] = location;
+
       }
-      createLocationResponse["success"] = 1;
-      createLocationResponse["messasge"] = "Successfully Created Location";
-      createLocationResponse["data"] = location;
 
       print('Mutation result: ' );
       print(createdLocation);

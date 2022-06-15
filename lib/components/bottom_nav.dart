@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../views/pickup/view.dart';
+import '../views/game/create.dart';
 import '../views/location/create.dart';
 
 class BottomNav extends StatefulWidget {
@@ -81,7 +81,7 @@ class _BottomNav extends State<BottomNav> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>  LocationCreate()),
+                        builder: (context) =>  GameCreate()),
                   );
                 },
                 child: Text('+'),
