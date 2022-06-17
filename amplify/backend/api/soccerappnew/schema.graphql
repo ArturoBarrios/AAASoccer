@@ -1,3 +1,11 @@
+enum EventType {
+  TRYOUT
+  GAME
+  LEAGUE
+  TOURNAMENT
+  TRAINING
+}
+
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   player: Player @hasOne
@@ -79,13 +87,14 @@ type Game @model @auth(rules: [{allow: public}]) {
   score: String
   wagers: String
   pickup: Boolean
+  event: Event @hasOne
 }
 
 type Tryout @model @auth(rules: [{allow: public}]) {
   id: ID!
   players: String
   game: String
-  event: String
+  event: Event @hasOne
 }
 
 type League @model @auth(rules: [{allow: public}]) {
@@ -96,6 +105,7 @@ type League @model @auth(rules: [{allow: public}]) {
   wagers: String
   images: String
   events: String
+  event: Event @hasOne
 }
 
 type Tournament @model @auth(rules: [{allow: public}]) {
@@ -105,26 +115,28 @@ type Tournament @model @auth(rules: [{allow: public}]) {
   teams: String
   images: String
   events: String
+  event: Event @hasOne
 }
 
 type Training @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
   players: String
-  event: String
+  event: Event @hasOne
 }
 
 type Event @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
   organizer: String
-  game: String
   tryout: String
   training: String
   ratings: String
   images: String
   price: String
   location: String
+  type: EventType
+  locationID: ID @index(name: "byLocation")
 }
 
 type Team @model @auth(rules: [{allow: public}]) {
@@ -185,9 +197,10 @@ type Location @model @auth(rules: [{allow: public}]) {
   fieldSize: String
   private: String
   schedule: String
-  events: String
+  events: [Event] @hasMany(indexName: "byLocation", fields: ["id"])
 }
 
 type Rating @model @auth(rules: [{allow: public}]) {
   id: ID!
-} 
+}
+ 

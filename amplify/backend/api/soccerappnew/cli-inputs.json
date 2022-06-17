@@ -3,10 +3,21 @@
   "serviceConfiguration": {
     "apiName": "soccerappnew",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/Users/arturobarrios/Documents/soccermadeeasy/amplify/backend/api/soccerappnew/schema.graphql",
+    "gqlSchemaPath": "/tmp/amplify-6575445a-6354-4f7e-8809-3148bf2557f7/amplify/backend/api/soccerappnew/schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
-      "expirationTime": 7
+      "keyDescription": "api key description",
+      "expirationTime": 30
+    },
+    "additionalAuthTypes": [
+      {
+        "mode": "AWS_IAM"
+      }
+    ],
+    "conflictResolution": {
+      "defaultResolutionStrategy": {
+        "type": "AUTOMERGE"
+      }
     }
   }
 }

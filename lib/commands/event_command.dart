@@ -11,7 +11,7 @@ class EventCommand extends BaseCommand {
      print("createEvent");
     Map<String, dynamic> createEventResponse = {"success": false, "message": "Default Error"};
     try {
-      Event event = Event(name: userInput['name'], game: userInput['gameId'], price: userInput['price'], location: userInput['location'], images: userInput['images']);
+      Event event = Event(name: userInput['name'], price: userInput['price'], location: userInput['location'], images: userInput['images'], type: userInput['type']);
       final request = ModelMutations.create(event);
       print("request");
       final response = await Amplify.API.mutate(request: request).response;

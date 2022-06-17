@@ -19,6 +19,7 @@
 
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
+import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/foundation.dart';
 
@@ -30,13 +31,14 @@ class Event extends Model {
   final String id;
   final String? _name;
   final String? _organizer;
-  final String? _game;
   final String? _tryout;
   final String? _training;
   final String? _ratings;
   final String? _images;
   final String? _price;
   final String? _location;
+  final EventType? _type;
+  final String? _locationID;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
 
@@ -54,10 +56,6 @@ class Event extends Model {
   
   String? get organizer {
     return _organizer;
-  }
-  
-  String? get game {
-    return _game;
   }
   
   String? get tryout {
@@ -84,6 +82,14 @@ class Event extends Model {
     return _location;
   }
   
+  EventType? get type {
+    return _type;
+  }
+  
+  String? get locationID {
+    return _locationID;
+  }
+  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -92,20 +98,21 @@ class Event extends Model {
     return _updatedAt;
   }
   
-  const Event._internal({required this.id, name, organizer, game, tryout, training, ratings, images, price, location, createdAt, updatedAt}): _name = name, _organizer = organizer, _game = game, _tryout = tryout, _training = training, _ratings = ratings, _images = images, _price = price, _location = location, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Event._internal({required this.id, name, organizer, tryout, training, ratings, images, price, location, type, locationID, createdAt, updatedAt}): _name = name, _organizer = organizer, _tryout = tryout, _training = training, _ratings = ratings, _images = images, _price = price, _location = location, _type = type, _locationID = locationID, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Event({String? id, String? name, String? organizer, String? game, String? tryout, String? training, String? ratings, String? images, String? price, String? location}) {
+  factory Event({String? id, String? name, String? organizer, String? tryout, String? training, String? ratings, String? images, String? price, String? location, EventType? type, String? locationID}) {
     return Event._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
       organizer: organizer,
-      game: game,
       tryout: tryout,
       training: training,
       ratings: ratings,
       images: images,
       price: price,
-      location: location);
+      location: location,
+      type: type,
+      locationID: locationID);
   }
   
   bool equals(Object other) {
@@ -119,13 +126,14 @@ class Event extends Model {
       id == other.id &&
       _name == other._name &&
       _organizer == other._organizer &&
-      _game == other._game &&
       _tryout == other._tryout &&
       _training == other._training &&
       _ratings == other._ratings &&
       _images == other._images &&
       _price == other._price &&
-      _location == other._location;
+      _location == other._location &&
+      _type == other._type &&
+      _locationID == other._locationID;
   }
   
   @override
@@ -139,13 +147,14 @@ class Event extends Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("organizer=" + "$_organizer" + ", ");
-    buffer.write("game=" + "$_game" + ", ");
     buffer.write("tryout=" + "$_tryout" + ", ");
     buffer.write("training=" + "$_training" + ", ");
     buffer.write("ratings=" + "$_ratings" + ", ");
     buffer.write("images=" + "$_images" + ", ");
     buffer.write("price=" + "$_price" + ", ");
     buffer.write("location=" + "$_location" + ", ");
+    buffer.write("type=" + (_type != null ? enumToString(_type)! : "null") + ", ");
+    buffer.write("locationID=" + "$_locationID" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -153,48 +162,51 @@ class Event extends Model {
     return buffer.toString();
   }
   
-  Event copyWith({String? id, String? name, String? organizer, String? game, String? tryout, String? training, String? ratings, String? images, String? price, String? location}) {
+  Event copyWith({String? id, String? name, String? organizer, String? tryout, String? training, String? ratings, String? images, String? price, String? location, EventType? type, String? locationID}) {
     return Event._internal(
       id: id ?? this.id,
       name: name ?? this.name,
       organizer: organizer ?? this.organizer,
-      game: game ?? this.game,
       tryout: tryout ?? this.tryout,
       training: training ?? this.training,
       ratings: ratings ?? this.ratings,
       images: images ?? this.images,
       price: price ?? this.price,
-      location: location ?? this.location);
+      location: location ?? this.location,
+      type: type ?? this.type,
+      locationID: locationID ?? this.locationID);
   }
   
   Event.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _name = json['name'],
       _organizer = json['organizer'],
-      _game = json['game'],
       _tryout = json['tryout'],
       _training = json['training'],
       _ratings = json['ratings'],
       _images = json['images'],
       _price = json['price'],
       _location = json['location'],
+      _type = enumFromString<EventType>(json['type'], EventType.values),
+      _locationID = json['locationID'],
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'organizer': _organizer, 'game': _game, 'tryout': _tryout, 'training': _training, 'ratings': _ratings, 'images': _images, 'price': _price, 'location': _location, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'organizer': _organizer, 'tryout': _tryout, 'training': _training, 'ratings': _ratings, 'images': _images, 'price': _price, 'location': _location, 'type': enumToString(_type), 'locationID': _locationID, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
   static final QueryField ID = QueryField(fieldName: "event.id");
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField ORGANIZER = QueryField(fieldName: "organizer");
-  static final QueryField GAME = QueryField(fieldName: "game");
   static final QueryField TRYOUT = QueryField(fieldName: "tryout");
   static final QueryField TRAINING = QueryField(fieldName: "training");
   static final QueryField RATINGS = QueryField(fieldName: "ratings");
   static final QueryField IMAGES = QueryField(fieldName: "images");
   static final QueryField PRICE = QueryField(fieldName: "price");
   static final QueryField LOCATION = QueryField(fieldName: "location");
+  static final QueryField TYPE = QueryField(fieldName: "type");
+  static final QueryField LOCATIONID = QueryField(fieldName: "locationID");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Event";
     modelSchemaDefinition.pluralName = "Events";
@@ -220,12 +232,6 @@ class Event extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Event.ORGANIZER,
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Event.GAME,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
@@ -262,6 +268,18 @@ class Event extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Event.LOCATION,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Event.TYPE,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.enumeration)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Event.LOCATIONID,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));

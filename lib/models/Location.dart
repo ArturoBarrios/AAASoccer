@@ -19,7 +19,9 @@
 
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
+import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 
@@ -34,10 +36,9 @@ class Location extends Model {
   final String? _surface;
   final String? _images;
   final String? _fieldSize;
-  final String? _games;
   final String? _private;
   final String? _schedule;
-  final String? _events;
+  final List<Event>? _events;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
 
@@ -73,10 +74,6 @@ class Location extends Model {
     return _fieldSize;
   }
   
-  String? get games {
-    return _games;
-  }
-  
   String? get private {
     return _private;
   }
@@ -85,7 +82,7 @@ class Location extends Model {
     return _schedule;
   }
   
-  String? get events {
+  List<Event>? get events {
     return _events;
   }
   
@@ -97,9 +94,9 @@ class Location extends Model {
     return _updatedAt;
   }
   
-  const Location._internal({required this.id, name, secondaryName, address, surface, images, fieldSize, games, private, schedule, events, createdAt, updatedAt}): _name = name, _secondaryName = secondaryName, _address = address, _surface = surface, _images = images, _fieldSize = fieldSize, _games = games, _private = private, _schedule = schedule, _events = events, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Location._internal({required this.id, name, secondaryName, address, surface, images, fieldSize, private, schedule, events, createdAt, updatedAt}): _name = name, _secondaryName = secondaryName, _address = address, _surface = surface, _images = images, _fieldSize = fieldSize, _private = private, _schedule = schedule, _events = events, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Location({String? id, String? name, String? secondaryName, String? address, String? surface, String? images, String? fieldSize, String? games, String? private, String? schedule, String? events}) {
+  factory Location({String? id, String? name, String? secondaryName, String? address, String? surface, String? images, String? fieldSize, String? private, String? schedule, List<Event>? events}) {
     return Location._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
@@ -108,10 +105,9 @@ class Location extends Model {
       surface: surface,
       images: images,
       fieldSize: fieldSize,
-      games: games,
       private: private,
       schedule: schedule,
-      events: events);
+      events: events != null ? List<Event>.unmodifiable(events) : events);
   }
   
   bool equals(Object other) {
@@ -129,10 +125,9 @@ class Location extends Model {
       _surface == other._surface &&
       _images == other._images &&
       _fieldSize == other._fieldSize &&
-      _games == other._games &&
       _private == other._private &&
       _schedule == other._schedule &&
-      _events == other._events;
+      DeepCollectionEquality().equals(_events, other._events);
   }
   
   @override
@@ -150,10 +145,8 @@ class Location extends Model {
     buffer.write("surface=" + "$_surface" + ", ");
     buffer.write("images=" + "$_images" + ", ");
     buffer.write("fieldSize=" + "$_fieldSize" + ", ");
-    buffer.write("games=" + "$_games" + ", ");
     buffer.write("private=" + "$_private" + ", ");
     buffer.write("schedule=" + "$_schedule" + ", ");
-    buffer.write("events=" + "$_events" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -161,7 +154,7 @@ class Location extends Model {
     return buffer.toString();
   }
   
-  Location copyWith({String? id, String? name, String? secondaryName, String? address, String? surface, String? images, String? fieldSize, String? games, String? private, String? schedule, String? events}) {
+  Location copyWith({String? id, String? name, String? secondaryName, String? address, String? surface, String? images, String? fieldSize, String? private, String? schedule, List<Event>? events}) {
     return Location._internal(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -170,7 +163,6 @@ class Location extends Model {
       surface: surface ?? this.surface,
       images: images ?? this.images,
       fieldSize: fieldSize ?? this.fieldSize,
-      games: games ?? this.games,
       private: private ?? this.private,
       schedule: schedule ?? this.schedule,
       events: events ?? this.events);
@@ -184,15 +176,19 @@ class Location extends Model {
       _surface = json['surface'],
       _images = json['images'],
       _fieldSize = json['fieldSize'],
-      _games = json['games'],
       _private = json['private'],
       _schedule = json['schedule'],
-      _events = json['events'],
+      _events = json['events'] is List
+        ? (json['events'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Event.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'secondaryName': _secondaryName, 'address': _address, 'surface': _surface, 'images': _images, 'fieldSize': _fieldSize, 'games': _games, 'private': _private, 'schedule': _schedule, 'events': _events, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'secondaryName': _secondaryName, 'address': _address, 'surface': _surface, 'images': _images, 'fieldSize': _fieldSize, 'private': _private, 'schedule': _schedule, 'events': _events?.map((Event? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
   static final QueryField ID = QueryField(fieldName: "location.id");
@@ -202,10 +198,11 @@ class Location extends Model {
   static final QueryField SURFACE = QueryField(fieldName: "surface");
   static final QueryField IMAGES = QueryField(fieldName: "images");
   static final QueryField FIELDSIZE = QueryField(fieldName: "fieldSize");
-  static final QueryField GAMES = QueryField(fieldName: "games");
   static final QueryField PRIVATE = QueryField(fieldName: "private");
   static final QueryField SCHEDULE = QueryField(fieldName: "schedule");
-  static final QueryField EVENTS = QueryField(fieldName: "events");
+  static final QueryField EVENTS = QueryField(
+    fieldName: "events",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Event).toString()));
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Location";
     modelSchemaDefinition.pluralName = "Locations";
@@ -260,12 +257,6 @@ class Location extends Model {
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Location.GAMES,
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Location.PRIVATE,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
@@ -277,10 +268,11 @@ class Location extends Model {
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
       key: Location.EVENTS,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofModelName: (Event).toString(),
+      associatedKey: Event.LOCATIONID
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

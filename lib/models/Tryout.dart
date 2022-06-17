@@ -19,6 +19,7 @@
 
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
+import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/foundation.dart';
 
@@ -30,9 +31,10 @@ class Tryout extends Model {
   final String id;
   final String? _players;
   final String? _game;
-  final String? _event;
+  final Event? _event;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
+  final String? _tryoutEventId;
 
   @override
   getInstanceType() => classType;
@@ -50,7 +52,7 @@ class Tryout extends Model {
     return _game;
   }
   
-  String? get event {
+  Event? get event {
     return _event;
   }
   
@@ -62,14 +64,19 @@ class Tryout extends Model {
     return _updatedAt;
   }
   
-  const Tryout._internal({required this.id, players, game, event, createdAt, updatedAt}): _players = players, _game = game, _event = event, _createdAt = createdAt, _updatedAt = updatedAt;
+  String? get tryoutEventId {
+    return _tryoutEventId;
+  }
   
-  factory Tryout({String? id, String? players, String? game, String? event}) {
+  const Tryout._internal({required this.id, players, game, event, createdAt, updatedAt, tryoutEventId}): _players = players, _game = game, _event = event, _createdAt = createdAt, _updatedAt = updatedAt, _tryoutEventId = tryoutEventId;
+  
+  factory Tryout({String? id, String? players, String? game, Event? event, String? tryoutEventId}) {
     return Tryout._internal(
       id: id == null ? UUID.getUUID() : id,
       players: players,
       game: game,
-      event: event);
+      event: event,
+      tryoutEventId: tryoutEventId);
   }
   
   bool equals(Object other) {
@@ -83,7 +90,8 @@ class Tryout extends Model {
       id == other.id &&
       _players == other._players &&
       _game == other._game &&
-      _event == other._event;
+      _event == other._event &&
+      _tryoutEventId == other._tryoutEventId;
   }
   
   @override
@@ -97,38 +105,45 @@ class Tryout extends Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("players=" + "$_players" + ", ");
     buffer.write("game=" + "$_game" + ", ");
-    buffer.write("event=" + "$_event" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
+    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null") + ", ");
+    buffer.write("tryoutEventId=" + "$_tryoutEventId");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  Tryout copyWith({String? id, String? players, String? game, String? event}) {
+  Tryout copyWith({String? id, String? players, String? game, Event? event, String? tryoutEventId}) {
     return Tryout._internal(
       id: id ?? this.id,
       players: players ?? this.players,
       game: game ?? this.game,
-      event: event ?? this.event);
+      event: event ?? this.event,
+      tryoutEventId: tryoutEventId ?? this.tryoutEventId);
   }
   
   Tryout.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _players = json['players'],
       _game = json['game'],
-      _event = json['event'],
+      _event = json['event']?['serializedData'] != null
+        ? Event.fromJson(new Map<String, dynamic>.from(json['event']['serializedData']))
+        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
+      _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
+      _tryoutEventId = json['tryoutEventId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'players': _players, 'game': _game, 'event': _event, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'players': _players, 'game': _game, 'event': _event?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'tryoutEventId': _tryoutEventId
   };
 
   static final QueryField ID = QueryField(fieldName: "tryout.id");
   static final QueryField PLAYERS = QueryField(fieldName: "players");
   static final QueryField GAME = QueryField(fieldName: "game");
-  static final QueryField EVENT = QueryField(fieldName: "event");
+  static final QueryField EVENT = QueryField(
+    fieldName: "event",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Event).toString()));
+  static final QueryField TRYOUTEVENTID = QueryField(fieldName: "tryoutEventId");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Tryout";
     modelSchemaDefinition.pluralName = "Tryouts";
@@ -158,10 +173,11 @@ class Tryout extends Model {
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
       key: Tryout.EVENT,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofModelName: (Event).toString(),
+      associatedKey: Event.ID
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
@@ -176,6 +192,12 @@ class Tryout extends Model {
       isRequired: false,
       isReadOnly: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Tryout.TRYOUTEVENTID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
   });
 }
