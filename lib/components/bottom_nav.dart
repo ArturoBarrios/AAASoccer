@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+// import 'package:soccermadeeasy/views/tryout/create.dart';
 import '../views/game/create.dart';
 import '../views/location/create.dart';
+import '../views/tryout/create.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -81,7 +83,7 @@ class _BottomNav extends State<BottomNav> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>  GameCreate()),
+                        builder: (context) =>  TryoutCreate()),
                   );
                 },
                 child: Text('+'),

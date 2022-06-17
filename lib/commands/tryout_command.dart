@@ -6,31 +6,31 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 class TryoutCommand extends BaseCommand {
 
 
- void createTryout(Map<String, dynamic> tryoutInput ) async{
-    //  print("createGame");
-    // Map<String, dynamic> createGameResponse = {"success": false, "message": "Default Error"};
-    // try {
-    //   Tryout game = Tryout(hometeam: tryoutInput['hometeam'], awayTeam: tryoutInput['awayteam'], pickup: tryoutInput['pickup']);
-    //   final request = ModelMutations.create(game);
-    //   print("request");
-    //   final response = await Amplify.API.mutate(request: request).response;
-    //   print("response");
+ Future<Map<String, dynamic>> createTryout(Map<String, dynamic> userInput ) async{
+     print("createTryout");
+    Map<String, dynamic> createTryoutResponse = {"success": false, "message": "Default Error"};
+    try {
+      Tryout tryout = Tryout(tryoutEventId: userInput['tryoutEventId']);
+      final request = ModelMutations.create(tryout);
+      print("request");
+      final response = await Amplify.API.mutate(request: request).response;
+      print("response");
 
-    //   Game? createdGame = response.data;
-    //   if (createdGame != null) {
-    //    createGameResponse["success"] = true;
-    //   createGameResponse["messasge"] = "Successfully Created Location";
-    //   createGameResponse["data"] = createdGame;
+      Tryout? createdTryout = response.data;
+      if (createdTryout != null) {
+       createTryoutResponse["success"] = true;
+      createTryoutResponse["messasge"] = "Successfully Created Location";
+      createTryoutResponse["data"] = createdTryout;
 
-    //   }
+      }
       
-    //   print('Mutation result: ' );
-    //   print(createdGame);
-    //   return createGameResponse;
-    // } on ApiException catch (e) {
-    //   print('Mutation failed: $e');
-    //   return createGameResponse;
-    // }
+      print('Mutation result: ' );
+      print(createdTryout);
+      return createTryoutResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return createTryoutResponse;
+    }
   }
 
   
