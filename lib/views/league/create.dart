@@ -1,16 +1,16 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
-import '../../commands/tryout_command.dart';
+import '../../commands/league_command.dart';
 import '../../commands/event_command.dart';
 import '../../models/EventType.dart';
 
-class TryoutCreate extends StatefulWidget {
+class LeagueCreate extends StatefulWidget {
   @override
-  _TryoutCreateState createState() => _TryoutCreateState();
+  _LeagueCreateState createState() => _LeagueCreateState();
 }
 
-class _TryoutCreateState extends State<TryoutCreate> {
+class _LeagueCreateState extends State<LeagueCreate> {
   final nameController = TextEditingController();
   final hometeamController = TextEditingController();
   final awayteamController = TextEditingController();
@@ -24,7 +24,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
 
   bool _isLoading = false;
 
-  Future<Map<String, dynamic>> createTryout() async {
+  Future<Map<String, dynamic>> createLeague() async {
     print("createGame");
     Map<String, dynamic> createEventResponse = {
       "success": false,
@@ -36,7 +36,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
         "price": priceController.text.trim(),
         "location": locationController.text.trim(),
         "images": imagesController.text.trim(),
-        "type": EventType.TRYOUT,
+        "type": EventType.LEAGUE,
       };
 
       Map<String, dynamic> createdEvent =
@@ -44,15 +44,15 @@ class _TryoutCreateState extends State<TryoutCreate> {
     print("createdEvent: ");
     print(createdEvent['data']);
       if (createdEvent['success']) {
-        Map<String, dynamic> createTryoutInput = {
+        Map<String, dynamic> createLeagueInput = {
           
           
-          "tryoutEventId": createdEvent['data'].id
+          "leagueEventId": createdEvent['data'].id
         };
-        Map<String, dynamic> createdTryout =
-            await TryoutCommand().createTryout(createTryoutInput);
+        Map<String, dynamic> createdLeague =
+            await LeagueCommand().createLeague(createLeagueInput);
 
-        if (createdTryout['success']) {
+        if (createdLeague['success']) {
           createEventResponse['success'] = true;
         }
       }
@@ -109,7 +109,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
         ),
         GestureDetector(
             onTap: () {
-              createTryout();
+              createLeague();
             },
             child: Text("tap me")),
       ])),

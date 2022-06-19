@@ -1,16 +1,16 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
-import '../../commands/tryout_command.dart';
+import '../../commands/training_command.dart';
 import '../../commands/event_command.dart';
 import '../../models/EventType.dart';
 
-class TryoutCreate extends StatefulWidget {
+class TrainingCreate extends StatefulWidget {
   @override
-  _TryoutCreateState createState() => _TryoutCreateState();
+  _TrainingCreateState createState() => _TrainingCreateState();
 }
 
-class _TryoutCreateState extends State<TryoutCreate> {
+class _TrainingCreateState extends State<TrainingCreate> {
   final nameController = TextEditingController();
   final hometeamController = TextEditingController();
   final awayteamController = TextEditingController();
@@ -24,7 +24,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
 
   bool _isLoading = false;
 
-  Future<Map<String, dynamic>> createTryout() async {
+  Future<Map<String, dynamic>> createTraining() async {
     print("createGame");
     Map<String, dynamic> createEventResponse = {
       "success": false,
@@ -36,7 +36,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
         "price": priceController.text.trim(),
         "location": locationController.text.trim(),
         "images": imagesController.text.trim(),
-        "type": EventType.TRYOUT,
+        "type": EventType.TRAINING,
       };
 
       Map<String, dynamic> createdEvent =
@@ -44,15 +44,15 @@ class _TryoutCreateState extends State<TryoutCreate> {
     print("createdEvent: ");
     print(createdEvent['data']);
       if (createdEvent['success']) {
-        Map<String, dynamic> createTryoutInput = {
+        Map<String, dynamic> createTrainingInput = {
           
           
-          "tryoutEventId": createdEvent['data'].id
+          "trainingEventId": createdEvent['data'].id
         };
-        Map<String, dynamic> createdTryout =
-            await TryoutCommand().createTryout(createTryoutInput);
+        Map<String, dynamic> createdTraining =
+            await TrainingCommand().createTraining(createTrainingInput);
 
-        if (createdTryout['success']) {
+        if (createdTraining['success']) {
           createEventResponse['success'] = true;
         }
       }
@@ -109,7 +109,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
         ),
         GestureDetector(
             onTap: () {
-              createTryout();
+              createTraining();
             },
             child: Text("tap me")),
       ])),

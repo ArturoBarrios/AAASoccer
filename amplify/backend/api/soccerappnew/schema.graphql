@@ -95,6 +95,7 @@ type Tryout @model @auth(rules: [{allow: public}]) {
   players: String
   game: String
   event: Event @hasOne
+  events: [Event] @hasMany(indexName: "byTryout", fields: ["id"])
 }
 
 type League @model @auth(rules: [{allow: public}]) {
@@ -104,8 +105,8 @@ type League @model @auth(rules: [{allow: public}]) {
   teams: String
   wagers: String
   images: String
-  events: String
   event: Event @hasOne
+  events: [Event] @hasMany(indexName: "byLeague", fields: ["id"])
 }
 
 type Tournament @model @auth(rules: [{allow: public}]) {
@@ -114,8 +115,8 @@ type Tournament @model @auth(rules: [{allow: public}]) {
   groupPlay: Boolean
   teams: String
   images: String
-  events: String
   event: Event @hasOne
+  events: [Event] @hasMany(indexName: "byTournament", fields: ["id"])
 }
 
 type Training @model @auth(rules: [{allow: public}]) {
@@ -123,6 +124,7 @@ type Training @model @auth(rules: [{allow: public}]) {
   name: String
   players: String
   event: Event @hasOne
+  events: [Event] @hasMany(indexName: "byTraining", fields: ["id"])
 }
 
 type Event @model @auth(rules: [{allow: public}]) {
@@ -137,6 +139,10 @@ type Event @model @auth(rules: [{allow: public}]) {
   location: String
   type: EventType
   locationID: ID @index(name: "byLocation")
+  trainingID: ID @index(name: "byTraining")
+  tournamentID: ID @index(name: "byTournament")
+  leagueID: ID @index(name: "byLeague")
+  tryoutID: ID @index(name: "byTryout")
 }
 
 type Team @model @auth(rules: [{allow: public}]) {
