@@ -13,6 +13,7 @@ import 'commands/user_command.dart';
 import 'models/app_model.dart';
 import 'models/user_model.dart';
 import 'services/user_service.dart';
+import 'services/geolocation_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home_page_temporary.dart';
 import 'views/home.dart';
@@ -21,6 +22,7 @@ import 'views/login_page.dart';
 import 'commands/base_command.dart' as Commands;
 
 import 'components/Loading/loading_version1.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -49,18 +51,27 @@ class _MyAppState extends State<MyApp> {
     print("initState");
     super.initState();
     // setupListeners();
-    configureAmplify();
+    // configureAmplify();
+    configureApp();
   }
 
+  void configureApp(){
+    configureAmplify();
+    
+    
+  }
   void configureAmplify() async {
     Map<String, dynamic> configureAmplify =
         await AmplifyAuth.AmplifyAuthService.configureAmplify();
     setState(() {
       if (configureAmplify['success']) {
         print("configured amplify!");
+        print(configureAmplify);
         AppModel().amplifyConfigured = true;
         Commands.BaseCommand().setIsSigned(true);
+        Commands.BaseCommand().setupInitialAppConfigs();
         if(configureAmplify['message'] == "isSignedIn"){
+          print("startLoadToHomeTransition");
           startLoadToHomeTransition();
           
 
@@ -199,7 +210,10 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (c) => AppModel()),
         ChangeNotifierProvider(create: (c) => UserModel()),
         ChangeNotifierProvider(create: (c) => HomePageModel()),
+
         Provider(create: (c) => UserService()),
+        Provider(create: (c) => GeoLocationServices()),
+
       ],
       child: Builder(builder: (context) {
         Commands.init(context);

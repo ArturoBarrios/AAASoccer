@@ -3,6 +3,8 @@ import '../views/game/create.dart';
 import '../views/location/create.dart';
 import '../views/tryout/create.dart';
 import '../views/training/create.dart';
+import '../views/team/create.dart';
+import '../views/wager/create.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -83,7 +85,7 @@ class _BottomNav extends State<BottomNav> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>  TrainingCreate()),
+                        builder: (context) =>  WagerCreate()),
                   );
                 },
                 child: Text('+'),

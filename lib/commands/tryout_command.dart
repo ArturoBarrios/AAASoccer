@@ -19,7 +19,7 @@ class TryoutCommand extends BaseCommand {
       Tryout? createdTryout = response.data;
       if (createdTryout != null) {
        createTryoutResponse["success"] = true;
-      createTryoutResponse["messasge"] = "Successfully Created Location";
+      createTryoutResponse["messasge"] = "Successfully Created Tryout";
       createTryoutResponse["data"] = createdTryout;
 
       }

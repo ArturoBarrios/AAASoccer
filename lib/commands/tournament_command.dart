@@ -19,7 +19,7 @@ class TournamentCommand extends BaseCommand {
       Tournament? createdTournament = response.data;
       if (createdTournament != null) {
        createTournamentResponse["success"] = true;
-      createTournamentResponse["messasge"] = "Successfully Created Location";
+      createTournamentResponse["messasge"] = "Successfully Created Tournament";
       createTournamentResponse["data"] = createdTournament;
 
       }

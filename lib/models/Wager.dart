@@ -19,6 +19,7 @@
 
 // ignore_for_file: public_member_api_docs, annotate_overrides, dead_code, dead_codepublic_member_api_docs, depend_on_referenced_packages, file_names, library_private_types_in_public_api, no_leading_underscores_for_library_prefixes, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, null_check_on_nullable_type_parameter, prefer_adjacent_string_concatenation, prefer_const_constructors, prefer_if_null_operators, prefer_interpolation_to_compose_strings, slash_for_doc_comments, sort_child_properties_last, unnecessary_const, unnecessary_constructor_name, unnecessary_late, unnecessary_new, unnecessary_null_aware_assignments, unnecessary_nullable_for_final_variable_declarations, unnecessary_string_interpolations, use_build_context_synchronously
 
+import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/foundation.dart';
 
@@ -31,12 +32,12 @@ class Wager extends Model {
   final String? _name;
   final String? _amount;
   final String? _players;
-  final String? _events;
-  final String? _private;
-  final String? _league;
-  final String? _tournament;
+  final String? _eligibleEventTypes;
+  final bool? _private;
+  final Event? _events;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
+  final String? _wagerEventsId;
 
   @override
   getInstanceType() => classType;
@@ -58,20 +59,16 @@ class Wager extends Model {
     return _players;
   }
   
-  String? get events {
-    return _events;
+  String? get eligibleEventTypes {
+    return _eligibleEventTypes;
   }
   
-  String? get private {
+  bool? get private {
     return _private;
   }
   
-  String? get league {
-    return _league;
-  }
-  
-  String? get tournament {
-    return _tournament;
+  Event? get events {
+    return _events;
   }
   
   TemporalDateTime? get createdAt {
@@ -82,18 +79,22 @@ class Wager extends Model {
     return _updatedAt;
   }
   
-  const Wager._internal({required this.id, name, amount, players, events, private, league, tournament, createdAt, updatedAt}): _name = name, _amount = amount, _players = players, _events = events, _private = private, _league = league, _tournament = tournament, _createdAt = createdAt, _updatedAt = updatedAt;
+  String? get wagerEventsId {
+    return _wagerEventsId;
+  }
   
-  factory Wager({String? id, String? name, String? amount, String? players, String? events, String? private, String? league, String? tournament}) {
+  const Wager._internal({required this.id, name, amount, players, eligibleEventTypes, private, events, createdAt, updatedAt, wagerEventsId}): _name = name, _amount = amount, _players = players, _eligibleEventTypes = eligibleEventTypes, _private = private, _events = events, _createdAt = createdAt, _updatedAt = updatedAt, _wagerEventsId = wagerEventsId;
+  
+  factory Wager({String? id, String? name, String? amount, String? players, String? eligibleEventTypes, bool? private, Event? events, String? wagerEventsId}) {
     return Wager._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
       amount: amount,
       players: players,
-      events: events,
+      eligibleEventTypes: eligibleEventTypes,
       private: private,
-      league: league,
-      tournament: tournament);
+      events: events,
+      wagerEventsId: wagerEventsId);
   }
   
   bool equals(Object other) {
@@ -108,10 +109,10 @@ class Wager extends Model {
       _name == other._name &&
       _amount == other._amount &&
       _players == other._players &&
-      _events == other._events &&
+      _eligibleEventTypes == other._eligibleEventTypes &&
       _private == other._private &&
-      _league == other._league &&
-      _tournament == other._tournament;
+      _events == other._events &&
+      _wagerEventsId == other._wagerEventsId;
   }
   
   @override
@@ -126,27 +127,26 @@ class Wager extends Model {
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("amount=" + "$_amount" + ", ");
     buffer.write("players=" + "$_players" + ", ");
-    buffer.write("events=" + "$_events" + ", ");
-    buffer.write("private=" + "$_private" + ", ");
-    buffer.write("league=" + "$_league" + ", ");
-    buffer.write("tournament=" + "$_tournament" + ", ");
+    buffer.write("eligibleEventTypes=" + "$_eligibleEventTypes" + ", ");
+    buffer.write("private=" + (_private != null ? _private!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
+    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null") + ", ");
+    buffer.write("wagerEventsId=" + "$_wagerEventsId");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  Wager copyWith({String? id, String? name, String? amount, String? players, String? events, String? private, String? league, String? tournament}) {
+  Wager copyWith({String? id, String? name, String? amount, String? players, String? eligibleEventTypes, bool? private, Event? events, String? wagerEventsId}) {
     return Wager._internal(
       id: id ?? this.id,
       name: name ?? this.name,
       amount: amount ?? this.amount,
       players: players ?? this.players,
-      events: events ?? this.events,
+      eligibleEventTypes: eligibleEventTypes ?? this.eligibleEventTypes,
       private: private ?? this.private,
-      league: league ?? this.league,
-      tournament: tournament ?? this.tournament);
+      events: events ?? this.events,
+      wagerEventsId: wagerEventsId ?? this.wagerEventsId);
   }
   
   Wager.fromJson(Map<String, dynamic> json)  
@@ -154,25 +154,29 @@ class Wager extends Model {
       _name = json['name'],
       _amount = json['amount'],
       _players = json['players'],
-      _events = json['events'],
+      _eligibleEventTypes = json['eligibleEventTypes'],
       _private = json['private'],
-      _league = json['league'],
-      _tournament = json['tournament'],
+      _events = json['events']?['serializedData'] != null
+        ? Event.fromJson(new Map<String, dynamic>.from(json['events']['serializedData']))
+        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
+      _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
+      _wagerEventsId = json['wagerEventsId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'amount': _amount, 'players': _players, 'events': _events, 'private': _private, 'league': _league, 'tournament': _tournament, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'amount': _amount, 'players': _players, 'eligibleEventTypes': _eligibleEventTypes, 'private': _private, 'events': _events?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'wagerEventsId': _wagerEventsId
   };
 
   static final QueryField ID = QueryField(fieldName: "wager.id");
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField AMOUNT = QueryField(fieldName: "amount");
   static final QueryField PLAYERS = QueryField(fieldName: "players");
-  static final QueryField EVENTS = QueryField(fieldName: "events");
+  static final QueryField ELIGIBLEEVENTTYPES = QueryField(fieldName: "eligibleEventTypes");
   static final QueryField PRIVATE = QueryField(fieldName: "private");
-  static final QueryField LEAGUE = QueryField(fieldName: "league");
-  static final QueryField TOURNAMENT = QueryField(fieldName: "tournament");
+  static final QueryField EVENTS = QueryField(
+    fieldName: "events",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Event).toString()));
+  static final QueryField WAGEREVENTSID = QueryField(fieldName: "wagerEventsId");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Wager";
     modelSchemaDefinition.pluralName = "Wagers";
@@ -209,7 +213,7 @@ class Wager extends Model {
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Wager.EVENTS,
+      key: Wager.ELIGIBLEEVENTTYPES,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
@@ -217,19 +221,14 @@ class Wager extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Wager.PRIVATE,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: ModelFieldType(ModelFieldTypeEnum.bool)
     ));
     
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Wager.LEAGUE,
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+      key: Wager.EVENTS,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-      key: Wager.TOURNAMENT,
-      isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofModelName: (Event).toString(),
+      associatedKey: Event.ID
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
@@ -244,6 +243,12 @@ class Wager extends Model {
       isRequired: false,
       isReadOnly: true,
       ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Wager.WAGEREVENTSID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
   });
 }

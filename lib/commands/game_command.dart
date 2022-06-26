@@ -19,7 +19,7 @@ class GameCommand extends BaseCommand {
       Game? createdGame = response.data;
       if (createdGame != null) {
        createGameResponse["success"] = true;
-      createGameResponse["messasge"] = "Successfully Created Location";
+      createGameResponse["messasge"] = "Successfully Created Game";
       createGameResponse["data"] = createdGame;
 
       }

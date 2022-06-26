@@ -21,6 +21,7 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 
@@ -32,6 +33,8 @@ class Tryout extends Model {
   final String? _players;
   final String? _game;
   final Event? _event;
+  final List<Event>? _events;
+  final List<TryoutEvent>? _eligibleEventTypes;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
   final String? _tryoutEventId;
@@ -56,6 +59,14 @@ class Tryout extends Model {
     return _event;
   }
   
+  List<Event>? get events {
+    return _events;
+  }
+  
+  List<TryoutEvent>? get eligibleEventTypes {
+    return _eligibleEventTypes;
+  }
+  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -68,14 +79,16 @@ class Tryout extends Model {
     return _tryoutEventId;
   }
   
-  const Tryout._internal({required this.id, players, game, event, createdAt, updatedAt, tryoutEventId}): _players = players, _game = game, _event = event, _createdAt = createdAt, _updatedAt = updatedAt, _tryoutEventId = tryoutEventId;
+  const Tryout._internal({required this.id, players, game, event, events, eligibleEventTypes, createdAt, updatedAt, tryoutEventId}): _players = players, _game = game, _event = event, _events = events, _eligibleEventTypes = eligibleEventTypes, _createdAt = createdAt, _updatedAt = updatedAt, _tryoutEventId = tryoutEventId;
   
-  factory Tryout({String? id, String? players, String? game, Event? event, String? tryoutEventId}) {
+  factory Tryout({String? id, String? players, String? game, Event? event, List<Event>? events, List<TryoutEvent>? eligibleEventTypes, String? tryoutEventId}) {
     return Tryout._internal(
       id: id == null ? UUID.getUUID() : id,
       players: players,
       game: game,
       event: event,
+      events: events != null ? List<Event>.unmodifiable(events) : events,
+      eligibleEventTypes: eligibleEventTypes != null ? List<TryoutEvent>.unmodifiable(eligibleEventTypes) : eligibleEventTypes,
       tryoutEventId: tryoutEventId);
   }
   
@@ -91,6 +104,8 @@ class Tryout extends Model {
       _players == other._players &&
       _game == other._game &&
       _event == other._event &&
+      DeepCollectionEquality().equals(_events, other._events) &&
+      DeepCollectionEquality().equals(_eligibleEventTypes, other._eligibleEventTypes) &&
       _tryoutEventId == other._tryoutEventId;
   }
   
@@ -113,12 +128,14 @@ class Tryout extends Model {
     return buffer.toString();
   }
   
-  Tryout copyWith({String? id, String? players, String? game, Event? event, String? tryoutEventId}) {
+  Tryout copyWith({String? id, String? players, String? game, Event? event, List<Event>? events, List<TryoutEvent>? eligibleEventTypes, String? tryoutEventId}) {
     return Tryout._internal(
       id: id ?? this.id,
       players: players ?? this.players,
       game: game ?? this.game,
       event: event ?? this.event,
+      events: events ?? this.events,
+      eligibleEventTypes: eligibleEventTypes ?? this.eligibleEventTypes,
       tryoutEventId: tryoutEventId ?? this.tryoutEventId);
   }
   
@@ -129,12 +146,24 @@ class Tryout extends Model {
       _event = json['event']?['serializedData'] != null
         ? Event.fromJson(new Map<String, dynamic>.from(json['event']['serializedData']))
         : null,
+      _events = json['events'] is List
+        ? (json['events'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Event.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
+      _eligibleEventTypes = json['eligibleEventTypes'] is List
+        ? (json['eligibleEventTypes'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => TryoutEvent.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
       _tryoutEventId = json['tryoutEventId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'players': _players, 'game': _game, 'event': _event?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'tryoutEventId': _tryoutEventId
+    'id': id, 'players': _players, 'game': _game, 'event': _event?.toJson(), 'events': _events?.map((Event? e) => e?.toJson()).toList(), 'eligibleEventTypes': _eligibleEventTypes?.map((TryoutEvent? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'tryoutEventId': _tryoutEventId
   };
 
   static final QueryField ID = QueryField(fieldName: "tryout.id");
@@ -143,6 +172,12 @@ class Tryout extends Model {
   static final QueryField EVENT = QueryField(
     fieldName: "event",
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Event).toString()));
+  static final QueryField EVENTS = QueryField(
+    fieldName: "events",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Event).toString()));
+  static final QueryField ELIGIBLEEVENTTYPES = QueryField(
+    fieldName: "eligibleEventTypes",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (TryoutEvent).toString()));
   static final QueryField TRYOUTEVENTID = QueryField(fieldName: "tryoutEventId");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Tryout";
@@ -178,6 +213,20 @@ class Tryout extends Model {
       isRequired: false,
       ofModelName: (Event).toString(),
       associatedKey: Event.ID
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: Tryout.EVENTS,
+      isRequired: false,
+      ofModelName: (Event).toString(),
+      associatedKey: Event.TRYOUTID
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: Tryout.ELIGIBLEEVENTTYPES,
+      isRequired: false,
+      ofModelName: (TryoutEvent).toString(),
+      associatedKey: TryoutEvent.TRYOUT
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

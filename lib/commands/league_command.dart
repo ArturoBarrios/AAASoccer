@@ -19,7 +19,7 @@ class LeagueCommand extends BaseCommand {
       League? createdLeague = response.data;
       if (createdLeague != null) {
        createLeagueResponse["success"] = true;
-      createLeagueResponse["messasge"] = "Successfully Created Location";
+      createLeagueResponse["messasge"] = "Successfully Created League";
       createLeagueResponse["data"] = createdLeague;
 
       }

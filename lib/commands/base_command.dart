@@ -9,6 +9,8 @@ import '../models/User.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import '../commands/user_command.dart';
+import '../services/geolocation_services.dart';
+import 'package:geolocator/geolocator.dart';
 
 
 late BuildContext _mainContext;
@@ -23,6 +25,26 @@ class BaseCommand {
   HomePageModel homePageModel = _mainContext.read();
   // Services
   UserService userService = _mainContext.read();
+  GeoLocationServices geoLocationServices = _mainContext.read();
+
+
+
+  Future <Map<String, dynamic>> setupInitialAppConfigs() async{
+    print("setupInitialAppConfigs");
+    Map<String, dynamic> setupInitialAppConfigsResponse = {"success": 0, "message": "Something went wrong with setting up initial app configs", "data": Map<String, dynamic>()};
+    try{
+      Position userPosition = await geoLocationServices.getPosition();
+      userModel.position = userPosition;
+      setupInitialAppConfigsResponse["success"] = 1;
+      setupInitialAppConfigsResponse["message"] = "Setup initial app configs";
+      setupInitialAppConfigsResponse["data"]["position"] = userPosition;
+      print("position: ");
+      print(userPosition);
+    }catch(e){
+      print(e.toString());
+    }
+    return setupInitialAppConfigsResponse;
+  }
 
   Future <Map<String, dynamic>> setupInitialAppModels(String email) async{
     print("setupInitialAppModels");
@@ -36,7 +58,7 @@ class BaseCommand {
         User user = getUserResp["data"];
         setUserId(user.id);
         setUser(user);
-        userModel.userSetup.value = true;
+        // userModel.userSetup.value = true;
         resp = {"success": true, "message": "success", "data": null};
         print("user stuff: ");
       }
@@ -44,7 +66,7 @@ class BaseCommand {
     }catch(e){
       print("errorrrrrrrr: ");
       print(e);
-      userModel.userSetup.value = false;
+      // userModel.userSetup.value = false;
     }
     
 

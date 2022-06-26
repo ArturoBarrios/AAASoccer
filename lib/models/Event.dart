@@ -21,6 +21,7 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 
@@ -39,6 +40,14 @@ class Event extends Model {
   final String? _location;
   final EventType? _type;
   final String? _locationID;
+  final String? _trainingID;
+  final String? _tournamentID;
+  final String? _leagueID;
+  final String? _tryoutID;
+  final List<TryoutEvent>? _tryouts;
+  final List<LeagueEvent>? _leagues;
+  final List<TournamentEvent>? _tournaments;
+  final List<TrainingEvent>? _trainings;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
 
@@ -90,6 +99,38 @@ class Event extends Model {
     return _locationID;
   }
   
+  String? get trainingID {
+    return _trainingID;
+  }
+  
+  String? get tournamentID {
+    return _tournamentID;
+  }
+  
+  String? get leagueID {
+    return _leagueID;
+  }
+  
+  String? get tryoutID {
+    return _tryoutID;
+  }
+  
+  List<TryoutEvent>? get tryouts {
+    return _tryouts;
+  }
+  
+  List<LeagueEvent>? get leagues {
+    return _leagues;
+  }
+  
+  List<TournamentEvent>? get tournaments {
+    return _tournaments;
+  }
+  
+  List<TrainingEvent>? get trainings {
+    return _trainings;
+  }
+  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -98,9 +139,9 @@ class Event extends Model {
     return _updatedAt;
   }
   
-  const Event._internal({required this.id, name, organizer, tryout, training, ratings, images, price, location, type, locationID, createdAt, updatedAt}): _name = name, _organizer = organizer, _tryout = tryout, _training = training, _ratings = ratings, _images = images, _price = price, _location = location, _type = type, _locationID = locationID, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Event._internal({required this.id, name, organizer, tryout, training, ratings, images, price, location, type, locationID, trainingID, tournamentID, leagueID, tryoutID, tryouts, leagues, tournaments, trainings, createdAt, updatedAt}): _name = name, _organizer = organizer, _tryout = tryout, _training = training, _ratings = ratings, _images = images, _price = price, _location = location, _type = type, _locationID = locationID, _trainingID = trainingID, _tournamentID = tournamentID, _leagueID = leagueID, _tryoutID = tryoutID, _tryouts = tryouts, _leagues = leagues, _tournaments = tournaments, _trainings = trainings, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Event({String? id, String? name, String? organizer, String? tryout, String? training, String? ratings, String? images, String? price, String? location, EventType? type, String? locationID}) {
+  factory Event({String? id, String? name, String? organizer, String? tryout, String? training, String? ratings, String? images, String? price, String? location, EventType? type, String? locationID, String? trainingID, String? tournamentID, String? leagueID, String? tryoutID, List<TryoutEvent>? tryouts, List<LeagueEvent>? leagues, List<TournamentEvent>? tournaments, List<TrainingEvent>? trainings}) {
     return Event._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
@@ -112,7 +153,15 @@ class Event extends Model {
       price: price,
       location: location,
       type: type,
-      locationID: locationID);
+      locationID: locationID,
+      trainingID: trainingID,
+      tournamentID: tournamentID,
+      leagueID: leagueID,
+      tryoutID: tryoutID,
+      tryouts: tryouts != null ? List<TryoutEvent>.unmodifiable(tryouts) : tryouts,
+      leagues: leagues != null ? List<LeagueEvent>.unmodifiable(leagues) : leagues,
+      tournaments: tournaments != null ? List<TournamentEvent>.unmodifiable(tournaments) : tournaments,
+      trainings: trainings != null ? List<TrainingEvent>.unmodifiable(trainings) : trainings);
   }
   
   bool equals(Object other) {
@@ -133,7 +182,15 @@ class Event extends Model {
       _price == other._price &&
       _location == other._location &&
       _type == other._type &&
-      _locationID == other._locationID;
+      _locationID == other._locationID &&
+      _trainingID == other._trainingID &&
+      _tournamentID == other._tournamentID &&
+      _leagueID == other._leagueID &&
+      _tryoutID == other._tryoutID &&
+      DeepCollectionEquality().equals(_tryouts, other._tryouts) &&
+      DeepCollectionEquality().equals(_leagues, other._leagues) &&
+      DeepCollectionEquality().equals(_tournaments, other._tournaments) &&
+      DeepCollectionEquality().equals(_trainings, other._trainings);
   }
   
   @override
@@ -155,6 +212,10 @@ class Event extends Model {
     buffer.write("location=" + "$_location" + ", ");
     buffer.write("type=" + (_type != null ? enumToString(_type)! : "null") + ", ");
     buffer.write("locationID=" + "$_locationID" + ", ");
+    buffer.write("trainingID=" + "$_trainingID" + ", ");
+    buffer.write("tournamentID=" + "$_tournamentID" + ", ");
+    buffer.write("leagueID=" + "$_leagueID" + ", ");
+    buffer.write("tryoutID=" + "$_tryoutID" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -162,7 +223,7 @@ class Event extends Model {
     return buffer.toString();
   }
   
-  Event copyWith({String? id, String? name, String? organizer, String? tryout, String? training, String? ratings, String? images, String? price, String? location, EventType? type, String? locationID}) {
+  Event copyWith({String? id, String? name, String? organizer, String? tryout, String? training, String? ratings, String? images, String? price, String? location, EventType? type, String? locationID, String? trainingID, String? tournamentID, String? leagueID, String? tryoutID, List<TryoutEvent>? tryouts, List<LeagueEvent>? leagues, List<TournamentEvent>? tournaments, List<TrainingEvent>? trainings}) {
     return Event._internal(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -174,7 +235,15 @@ class Event extends Model {
       price: price ?? this.price,
       location: location ?? this.location,
       type: type ?? this.type,
-      locationID: locationID ?? this.locationID);
+      locationID: locationID ?? this.locationID,
+      trainingID: trainingID ?? this.trainingID,
+      tournamentID: tournamentID ?? this.tournamentID,
+      leagueID: leagueID ?? this.leagueID,
+      tryoutID: tryoutID ?? this.tryoutID,
+      tryouts: tryouts ?? this.tryouts,
+      leagues: leagues ?? this.leagues,
+      tournaments: tournaments ?? this.tournaments,
+      trainings: trainings ?? this.trainings);
   }
   
   Event.fromJson(Map<String, dynamic> json)  
@@ -189,11 +258,39 @@ class Event extends Model {
       _location = json['location'],
       _type = enumFromString<EventType>(json['type'], EventType.values),
       _locationID = json['locationID'],
+      _trainingID = json['trainingID'],
+      _tournamentID = json['tournamentID'],
+      _leagueID = json['leagueID'],
+      _tryoutID = json['tryoutID'],
+      _tryouts = json['tryouts'] is List
+        ? (json['tryouts'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => TryoutEvent.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
+      _leagues = json['leagues'] is List
+        ? (json['leagues'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => LeagueEvent.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
+      _tournaments = json['tournaments'] is List
+        ? (json['tournaments'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => TournamentEvent.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
+      _trainings = json['trainings'] is List
+        ? (json['trainings'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => TrainingEvent.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'organizer': _organizer, 'tryout': _tryout, 'training': _training, 'ratings': _ratings, 'images': _images, 'price': _price, 'location': _location, 'type': enumToString(_type), 'locationID': _locationID, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'organizer': _organizer, 'tryout': _tryout, 'training': _training, 'ratings': _ratings, 'images': _images, 'price': _price, 'location': _location, 'type': enumToString(_type), 'locationID': _locationID, 'trainingID': _trainingID, 'tournamentID': _tournamentID, 'leagueID': _leagueID, 'tryoutID': _tryoutID, 'tryouts': _tryouts?.map((TryoutEvent? e) => e?.toJson()).toList(), 'leagues': _leagues?.map((LeagueEvent? e) => e?.toJson()).toList(), 'tournaments': _tournaments?.map((TournamentEvent? e) => e?.toJson()).toList(), 'trainings': _trainings?.map((TrainingEvent? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
   static final QueryField ID = QueryField(fieldName: "event.id");
@@ -207,6 +304,22 @@ class Event extends Model {
   static final QueryField LOCATION = QueryField(fieldName: "location");
   static final QueryField TYPE = QueryField(fieldName: "type");
   static final QueryField LOCATIONID = QueryField(fieldName: "locationID");
+  static final QueryField TRAININGID = QueryField(fieldName: "trainingID");
+  static final QueryField TOURNAMENTID = QueryField(fieldName: "tournamentID");
+  static final QueryField LEAGUEID = QueryField(fieldName: "leagueID");
+  static final QueryField TRYOUTID = QueryField(fieldName: "tryoutID");
+  static final QueryField TRYOUTS = QueryField(
+    fieldName: "tryouts",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (TryoutEvent).toString()));
+  static final QueryField LEAGUES = QueryField(
+    fieldName: "leagues",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (LeagueEvent).toString()));
+  static final QueryField TOURNAMENTS = QueryField(
+    fieldName: "tournaments",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (TournamentEvent).toString()));
+  static final QueryField TRAININGS = QueryField(
+    fieldName: "trainings",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (TrainingEvent).toString()));
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Event";
     modelSchemaDefinition.pluralName = "Events";
@@ -282,6 +395,58 @@ class Event extends Model {
       key: Event.LOCATIONID,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Event.TRAININGID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Event.TOURNAMENTID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Event.LEAGUEID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Event.TRYOUTID,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: Event.TRYOUTS,
+      isRequired: false,
+      ofModelName: (TryoutEvent).toString(),
+      associatedKey: TryoutEvent.EVENT
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: Event.LEAGUES,
+      isRequired: false,
+      ofModelName: (LeagueEvent).toString(),
+      associatedKey: LeagueEvent.EVENT
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: Event.TOURNAMENTS,
+      isRequired: false,
+      ofModelName: (TournamentEvent).toString(),
+      associatedKey: TournamentEvent.EVENT
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: Event.TRAININGS,
+      isRequired: false,
+      ofModelName: (TrainingEvent).toString(),
+      associatedKey: TrainingEvent.EVENT
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

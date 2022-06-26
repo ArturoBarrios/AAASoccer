@@ -21,6 +21,7 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 
@@ -32,6 +33,8 @@ class Training extends Model {
   final String? _name;
   final String? _players;
   final Event? _event;
+  final List<Event>? _events;
+  final List<TrainingEvent>? _eligibleEventTypes;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
   final String? _trainingEventId;
@@ -56,6 +59,14 @@ class Training extends Model {
     return _event;
   }
   
+  List<Event>? get events {
+    return _events;
+  }
+  
+  List<TrainingEvent>? get eligibleEventTypes {
+    return _eligibleEventTypes;
+  }
+  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -68,14 +79,16 @@ class Training extends Model {
     return _trainingEventId;
   }
   
-  const Training._internal({required this.id, name, players, event, createdAt, updatedAt, trainingEventId}): _name = name, _players = players, _event = event, _createdAt = createdAt, _updatedAt = updatedAt, _trainingEventId = trainingEventId;
+  const Training._internal({required this.id, name, players, event, events, eligibleEventTypes, createdAt, updatedAt, trainingEventId}): _name = name, _players = players, _event = event, _events = events, _eligibleEventTypes = eligibleEventTypes, _createdAt = createdAt, _updatedAt = updatedAt, _trainingEventId = trainingEventId;
   
-  factory Training({String? id, String? name, String? players, Event? event, String? trainingEventId}) {
+  factory Training({String? id, String? name, String? players, Event? event, List<Event>? events, List<TrainingEvent>? eligibleEventTypes, String? trainingEventId}) {
     return Training._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
       players: players,
       event: event,
+      events: events != null ? List<Event>.unmodifiable(events) : events,
+      eligibleEventTypes: eligibleEventTypes != null ? List<TrainingEvent>.unmodifiable(eligibleEventTypes) : eligibleEventTypes,
       trainingEventId: trainingEventId);
   }
   
@@ -91,6 +104,8 @@ class Training extends Model {
       _name == other._name &&
       _players == other._players &&
       _event == other._event &&
+      DeepCollectionEquality().equals(_events, other._events) &&
+      DeepCollectionEquality().equals(_eligibleEventTypes, other._eligibleEventTypes) &&
       _trainingEventId == other._trainingEventId;
   }
   
@@ -113,12 +128,14 @@ class Training extends Model {
     return buffer.toString();
   }
   
-  Training copyWith({String? id, String? name, String? players, Event? event, String? trainingEventId}) {
+  Training copyWith({String? id, String? name, String? players, Event? event, List<Event>? events, List<TrainingEvent>? eligibleEventTypes, String? trainingEventId}) {
     return Training._internal(
       id: id ?? this.id,
       name: name ?? this.name,
       players: players ?? this.players,
       event: event ?? this.event,
+      events: events ?? this.events,
+      eligibleEventTypes: eligibleEventTypes ?? this.eligibleEventTypes,
       trainingEventId: trainingEventId ?? this.trainingEventId);
   }
   
@@ -129,12 +146,24 @@ class Training extends Model {
       _event = json['event']?['serializedData'] != null
         ? Event.fromJson(new Map<String, dynamic>.from(json['event']['serializedData']))
         : null,
+      _events = json['events'] is List
+        ? (json['events'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Event.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
+      _eligibleEventTypes = json['eligibleEventTypes'] is List
+        ? (json['eligibleEventTypes'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => TrainingEvent.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
       _trainingEventId = json['trainingEventId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'players': _players, 'event': _event?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'trainingEventId': _trainingEventId
+    'id': id, 'name': _name, 'players': _players, 'event': _event?.toJson(), 'events': _events?.map((Event? e) => e?.toJson()).toList(), 'eligibleEventTypes': _eligibleEventTypes?.map((TrainingEvent? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'trainingEventId': _trainingEventId
   };
 
   static final QueryField ID = QueryField(fieldName: "training.id");
@@ -143,6 +172,12 @@ class Training extends Model {
   static final QueryField EVENT = QueryField(
     fieldName: "event",
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Event).toString()));
+  static final QueryField EVENTS = QueryField(
+    fieldName: "events",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Event).toString()));
+  static final QueryField ELIGIBLEEVENTTYPES = QueryField(
+    fieldName: "eligibleEventTypes",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (TrainingEvent).toString()));
   static final QueryField TRAININGEVENTID = QueryField(fieldName: "trainingEventId");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Training";
@@ -178,6 +213,20 @@ class Training extends Model {
       isRequired: false,
       ofModelName: (Event).toString(),
       associatedKey: Event.ID
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: Training.EVENTS,
+      isRequired: false,
+      ofModelName: (Event).toString(),
+      associatedKey: Event.TRAININGID
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: Training.ELIGIBLEEVENTTYPES,
+      isRequired: false,
+      ofModelName: (TrainingEvent).toString(),
+      associatedKey: TrainingEvent.TRAINING
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

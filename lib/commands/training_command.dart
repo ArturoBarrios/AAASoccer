@@ -19,7 +19,7 @@ class TrainingCommand extends BaseCommand {
       Training? createdTraining = response.data;
       if (createdTraining != null) {
        createTrainingResponse["success"] = true;
-      createTrainingResponse["messasge"] = "Successfully Created Location";
+      createTrainingResponse["messasge"] = "Successfully Created Training";
       createTrainingResponse["data"] = createdTraining;
 
       }
