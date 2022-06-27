@@ -12,7 +12,8 @@ class BasicElevatedButton extends StatefulWidget {
 class _BasicElevatedButton extends State<BasicElevatedButton> {
  bool visible = false;
  Map<String, dynamic> data = {
-  "num_of_locs": 0,
+  "num_of_user_locs": 4500,
+  'num_of_users': 4500
  };
   @override
   Widget build(BuildContext context) {

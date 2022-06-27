@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 
+
 class GeoLocationServices {
   /// Determine the current position of the device.
   ///
@@ -41,4 +42,8 @@ class GeoLocationServices {
     // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
   }
+
+  
+
+  
 }

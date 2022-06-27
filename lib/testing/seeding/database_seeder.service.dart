@@ -7,6 +7,6 @@ import 'location_seeder.dart';
 
 class DatabaseSeeder {
   void run(Map<String, dynamic> data) async {
-    LocationSeeder().run(data['num_of_locs']);
+    LocationSeeder().createRandomUserLocations(data);
   }
 }

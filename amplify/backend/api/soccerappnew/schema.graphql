@@ -203,6 +203,8 @@ type AppSubscription @model @auth(rules: [{allow: public}]) {
 type Location @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
+  latitude: Double
+  longitude: Double
   secondaryName: String
   address: String
   surface: String

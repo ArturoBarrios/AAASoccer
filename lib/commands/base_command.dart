@@ -11,6 +11,8 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 import '../commands/user_command.dart';
 import '../services/geolocation_services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+
 
 
 late BuildContext _mainContext;
@@ -35,6 +37,21 @@ class BaseCommand {
     try{
       Position userPosition = await geoLocationServices.getPosition();
       userModel.position = userPosition;
+      try {
+        
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        userPosition.latitude,
+        userPosition.longitude
+      );
+
+      Placemark place = placemarks[0];
+      print("place: ");
+      print(place);
+      
+    } catch (e) {
+      print(e);
+    }
+      
       setupInitialAppConfigsResponse["success"] = 1;
       setupInitialAppConfigsResponse["message"] = "Setup initial app configs";
       setupInitialAppConfigsResponse["data"]["position"] = userPosition;
