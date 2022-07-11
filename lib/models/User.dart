@@ -21,6 +21,7 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 
@@ -43,6 +44,8 @@ class User extends Model {
   final String? _status;
   final int? _last_login;
   final int? _last_updated;
+  final String? _locationID;
+  final List<Location>? _locations;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
   final String? _userPlayerId;
@@ -114,6 +117,23 @@ class User extends Model {
     return _last_updated;
   }
   
+  String get locationID {
+    try {
+      return _locationID!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
+  List<Location>? get locations {
+    return _locations;
+  }
+  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -138,9 +158,9 @@ class User extends Model {
     return _userRefereeId;
   }
   
-  const User._internal({required this.id, player, organizer, coach, referee, name, phone, email, username, birthdate, gender, address, status, last_login, last_updated, createdAt, updatedAt, userPlayerId, userOrganizerId, userCoachId, userRefereeId}): _player = player, _organizer = organizer, _coach = coach, _referee = referee, _name = name, _phone = phone, _email = email, _username = username, _birthdate = birthdate, _gender = gender, _address = address, _status = status, _last_login = last_login, _last_updated = last_updated, _createdAt = createdAt, _updatedAt = updatedAt, _userPlayerId = userPlayerId, _userOrganizerId = userOrganizerId, _userCoachId = userCoachId, _userRefereeId = userRefereeId;
+  const User._internal({required this.id, player, organizer, coach, referee, name, phone, email, username, birthdate, gender, address, status, last_login, last_updated, required locationID, locations, createdAt, updatedAt, userPlayerId, userOrganizerId, userCoachId, userRefereeId}): _player = player, _organizer = organizer, _coach = coach, _referee = referee, _name = name, _phone = phone, _email = email, _username = username, _birthdate = birthdate, _gender = gender, _address = address, _status = status, _last_login = last_login, _last_updated = last_updated, _locationID = locationID, _locations = locations, _createdAt = createdAt, _updatedAt = updatedAt, _userPlayerId = userPlayerId, _userOrganizerId = userOrganizerId, _userCoachId = userCoachId, _userRefereeId = userRefereeId;
   
-  factory User({String? id, Player? player, Organizer? organizer, Coach? coach, Referee? referee, String? name, String? phone, String? email, String? username, String? birthdate, String? gender, String? address, String? status, int? last_login, int? last_updated, String? userPlayerId, String? userOrganizerId, String? userCoachId, String? userRefereeId}) {
+  factory User({String? id, Player? player, Organizer? organizer, Coach? coach, Referee? referee, String? name, String? phone, String? email, String? username, String? birthdate, String? gender, String? address, String? status, int? last_login, int? last_updated, required String locationID, List<Location>? locations, String? userPlayerId, String? userOrganizerId, String? userCoachId, String? userRefereeId}) {
     return User._internal(
       id: id == null ? UUID.getUUID() : id,
       player: player,
@@ -157,6 +177,8 @@ class User extends Model {
       status: status,
       last_login: last_login,
       last_updated: last_updated,
+      locationID: locationID,
+      locations: locations != null ? List<Location>.unmodifiable(locations) : locations,
       userPlayerId: userPlayerId,
       userOrganizerId: userOrganizerId,
       userCoachId: userCoachId,
@@ -186,6 +208,8 @@ class User extends Model {
       _status == other._status &&
       _last_login == other._last_login &&
       _last_updated == other._last_updated &&
+      _locationID == other._locationID &&
+      DeepCollectionEquality().equals(_locations, other._locations) &&
       _userPlayerId == other._userPlayerId &&
       _userOrganizerId == other._userOrganizerId &&
       _userCoachId == other._userCoachId &&
@@ -211,6 +235,7 @@ class User extends Model {
     buffer.write("status=" + "$_status" + ", ");
     buffer.write("last_login=" + (_last_login != null ? _last_login!.toString() : "null") + ", ");
     buffer.write("last_updated=" + (_last_updated != null ? _last_updated!.toString() : "null") + ", ");
+    buffer.write("locationID=" + "$_locationID" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null") + ", ");
     buffer.write("userPlayerId=" + "$_userPlayerId" + ", ");
@@ -222,7 +247,7 @@ class User extends Model {
     return buffer.toString();
   }
   
-  User copyWith({String? id, Player? player, Organizer? organizer, Coach? coach, Referee? referee, String? name, String? phone, String? email, String? username, String? birthdate, String? gender, String? address, String? status, int? last_login, int? last_updated, String? userPlayerId, String? userOrganizerId, String? userCoachId, String? userRefereeId}) {
+  User copyWith({String? id, Player? player, Organizer? organizer, Coach? coach, Referee? referee, String? name, String? phone, String? email, String? username, String? birthdate, String? gender, String? address, String? status, int? last_login, int? last_updated, String? locationID, List<Location>? locations, String? userPlayerId, String? userOrganizerId, String? userCoachId, String? userRefereeId}) {
     return User._internal(
       id: id ?? this.id,
       player: player ?? this.player,
@@ -239,6 +264,8 @@ class User extends Model {
       status: status ?? this.status,
       last_login: last_login ?? this.last_login,
       last_updated: last_updated ?? this.last_updated,
+      locationID: locationID ?? this.locationID,
+      locations: locations ?? this.locations,
       userPlayerId: userPlayerId ?? this.userPlayerId,
       userOrganizerId: userOrganizerId ?? this.userOrganizerId,
       userCoachId: userCoachId ?? this.userCoachId,
@@ -269,6 +296,13 @@ class User extends Model {
       _status = json['status'],
       _last_login = (json['last_login'] as num?)?.toInt(),
       _last_updated = (json['last_updated'] as num?)?.toInt(),
+      _locationID = json['locationID'],
+      _locations = json['locations'] is List
+        ? (json['locations'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Location.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null,
       _userPlayerId = json['userPlayerId'],
@@ -277,7 +311,7 @@ class User extends Model {
       _userRefereeId = json['userRefereeId'];
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'player': _player?.toJson(), 'organizer': _organizer?.toJson(), 'coach': _coach?.toJson(), 'referee': _referee?.toJson(), 'name': _name, 'phone': _phone, 'email': _email, 'username': _username, 'birthdate': _birthdate, 'gender': _gender, 'address': _address, 'status': _status, 'last_login': _last_login, 'last_updated': _last_updated, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'userPlayerId': _userPlayerId, 'userOrganizerId': _userOrganizerId, 'userCoachId': _userCoachId, 'userRefereeId': _userRefereeId
+    'id': id, 'player': _player?.toJson(), 'organizer': _organizer?.toJson(), 'coach': _coach?.toJson(), 'referee': _referee?.toJson(), 'name': _name, 'phone': _phone, 'email': _email, 'username': _username, 'birthdate': _birthdate, 'gender': _gender, 'address': _address, 'status': _status, 'last_login': _last_login, 'last_updated': _last_updated, 'locationID': _locationID, 'locations': _locations?.map((Location? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format(), 'userPlayerId': _userPlayerId, 'userOrganizerId': _userOrganizerId, 'userCoachId': _userCoachId, 'userRefereeId': _userRefereeId
   };
 
   static final QueryField ID = QueryField(fieldName: "user.id");
@@ -303,6 +337,10 @@ class User extends Model {
   static final QueryField STATUS = QueryField(fieldName: "status");
   static final QueryField LAST_LOGIN = QueryField(fieldName: "last_login");
   static final QueryField LAST_UPDATED = QueryField(fieldName: "last_updated");
+  static final QueryField LOCATIONID = QueryField(fieldName: "locationID");
+  static final QueryField LOCATIONS = QueryField(
+    fieldName: "locations",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Location).toString()));
   static final QueryField USERPLAYERID = QueryField(fieldName: "userPlayerId");
   static final QueryField USERORGANIZERID = QueryField(fieldName: "userOrganizerId");
   static final QueryField USERCOACHID = QueryField(fieldName: "userCoachId");
@@ -410,6 +448,19 @@ class User extends Model {
       key: User.LAST_UPDATED,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: User.LOCATIONID,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+      key: User.LOCATIONS,
+      isRequired: false,
+      ofModelName: (Location).toString(),
+      associatedKey: Location.USERID
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

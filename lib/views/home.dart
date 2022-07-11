@@ -16,6 +16,7 @@ import '../components/Cards/pickup_card.dart';
 import '../models/home_page_model.dart';
 //commands
 import '../commands/home_page_command.dart';
+import '../components/Buttons/seed_data_button.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -85,6 +86,12 @@ class _Home extends State<Home> {
         ],
       ),
       body: Stack(children: <Widget>[
+          //  Container(
+          //   constraints: BoxConstraints.expand(
+          //       height: MediaQuery.of(context).size.height,
+          //       width: MediaQuery.of(context).size.width),
+          //   child: 
+          //   SeedDataButton()),
         Container(constraints: BoxConstraints.expand(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width),
@@ -162,6 +169,7 @@ class _Home extends State<Home> {
                                   onTap: () {cardTapped();},
                                   child: PickupCard())),
                           ])),
+                          SeedDataButton()
                     ])),
                 // Stack(
                 //         children: [

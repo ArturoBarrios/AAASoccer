@@ -48,7 +48,7 @@ class _GameCreateState extends State<GameCreate> {
           "hometeam": hometeamController.text.trim(),
           "awayTeam": awayteamController.text.trim(),
           "pickup": true,
-          "gameEventId": createdEvent['data'].id
+          "eventID": createdEvent['data'].id
         };
         Map<String, dynamic> createdGame =
             await GameCommand().createGame(createGameInput);

@@ -32,72 +32,100 @@ enum GenderType {
   FEMALE
 }
 
-type User @model @auth(rules: [{allow: public}]) {
+enum ModelType {
+  USER
+  ORGANIZATION
+  EVENT
+}
+
+type User @model {
   id: ID!
-  player: Player @hasOne
-  organizer: Organizer @hasOne
-  coach: Coach @hasOne
-  referee: Referee @hasOne
+  locations: [Location] @relation
+  player: Player
+  organizer: Organizer
+  coach: Coach
+  referee: Referee
   name: String
   phone: String
   email: String
   username: String
   birthdate: String
   gender: String
-  address: String
   status: String
   last_login: Int
   last_updated: Int
-  locationID: ID! @index(name: "byLocation")
-  locations: [Location] @hasMany(indexName: "byUser", fields: ["id"])
+  images: [Image] @relation
 }
 
-type Coach @model @auth(rules: [{allow: public}]) {
+type Coach @model  {
   id: ID!
-  user: User @belongsTo
+  user: User
 }
 
-type Referee @model @auth(rules: [{allow: public}]) {
+type Referee @model  {
   id: ID!
-  user: User @belongsTo
+  user: User
 }
 
-type Organizer @model @auth(rules: [{allow: public}]) {
+type Organizer @model  {
   id: ID!
-  user: User @belongsTo
+  user: User
 }
 
-type Player @model @auth(rules: [{allow: public}]) {
+type Player @model  {
   id: ID!
   playerRating: String
   wagerRating: String
-  events: String
+  events: [Event] @relation
   competitiveLevel: String
   ratings: String
   hasRating: String
   showRating: String
   hasSubscription: String
-  user: User @belongsTo
+  user: User
 }
 
-type Payment @model @auth(rules: [{allow: public}]) {
+# a payment is attached to event
+# use payment object to create payment screen details for event
+type Payment @model  {
   id: ID!
   amount: String
+  event: Event
 }
 
-type Organization @model @auth(rules: [{allow: public}]) {
+# orgs can have many suborgs
+# allow org to behave as Sponsor
+type Organization @model  {
   id: ID!
   name: String
-  images: String
+  images: [Image] @relation
   rating: String
-  events: String
+  events: [Event] @relation
+  suborgs: [Organization] @relation
+  sponsor: Sponsor
+  sponsors: [Sponsor] @relation
   description: String
-  ageRange: AWSJSON
+  minAge: Int
+  maxAge: Int
   inviteOnly: Boolean
-  members: String
+  private: Boolean #it won't show up in public search
+  isMainOrg: Bolean
 }
 
-type Wager @model @auth(rules: [{allow: public}]) {
+type Sponsor @model{aaa
+  id: ID!
+  name: String
+  images: [Image] @relation
+  description: String
+  url: String
+  event: Event
+  organization: Organization
+  sponsoredOrgs: [Organization] @relation
+  sponsoredPlayers: [Player] @relation
+  sponsoredTeams: [Team] @relation
+}
+
+type Wager @model  {
   id: ID!
   name: String
   amount: String
@@ -107,7 +135,7 @@ type Wager @model @auth(rules: [{allow: public}]) {
   events: Event @hasOne
 }
 
-type Game @model @auth(rules: [{allow: public}]) {
+type Game @model  {
   id: ID!
   hometeam: String
   awayTeam: String
@@ -117,7 +145,7 @@ type Game @model @auth(rules: [{allow: public}]) {
   event: Event @hasOne
 }
 
-type Tryout @model @auth(rules: [{allow: public}]) {
+type Tryout @model  {
   id: ID!
   players: String
   game: String
@@ -126,7 +154,7 @@ type Tryout @model @auth(rules: [{allow: public}]) {
   eligibleEventTypes: [Event] @manyToMany(relationName: "TryoutEvent")
 }
 
-type League @model @auth(rules: [{allow: public}]) {
+type League @model  {
   id: ID!
   name: String
   tournament: String
@@ -138,7 +166,7 @@ type League @model @auth(rules: [{allow: public}]) {
   eligibleEventTypes: [Event] @manyToMany(relationName: "LeagueEvent")
 }
 
-type Tournament @model @auth(rules: [{allow: public}]) {
+type Tournament @model  {
   id: ID!
   name: String
   groupPlay: Boolean
@@ -149,7 +177,7 @@ type Tournament @model @auth(rules: [{allow: public}]) {
   eligibleEventTypes: [Event] @manyToMany(relationName: "TournamentEvent")
 }
 
-type Training @model @auth(rules: [{allow: public}]) {
+type Training @model  {
   id: ID!
   name: String
   players: String
@@ -158,17 +186,21 @@ type Training @model @auth(rules: [{allow: public}]) {
   eligibleEventTypes: [Event] @manyToMany(relationName: "TrainingEvent")
 }
 
-type Event @model @auth(rules: [{allow: public}]) {
+type Event @model  {
   id: ID!
   name: String
-  organizer: String
+  organization: Organization
+  coorganizations: [Organization] @relation
+  creator: User 
   tryout: String
   training: String
   ratings: String
-  images: String
+  images: [Image] @relation
   price: String
   location: String
   type: EventType
+  payment: Payment
+  users: [User] @relation
   locationID: ID @index(name: "byLocation")
   trainingID: ID @index(name: "byTraining")
   tournamentID: ID @index(name: "byTournament")
@@ -180,7 +212,7 @@ type Event @model @auth(rules: [{allow: public}]) {
   trainings: [Training] @manyToMany(relationName: "TrainingEvent")
 }
 
-type Team @model @auth(rules: [{allow: public}]) {
+type Team @model  {
   id: ID!
   name: String
   color: String
@@ -193,24 +225,24 @@ type Team @model @auth(rules: [{allow: public}]) {
   tournaments: String
 }
 
-type Image @model @auth(rules: [{allow: public}]) {
+type Image @model  {
   id: ID!
   url: String
-  players: String
-  tournaments: String
-  leagues: String
-  events: String
+  user: User
+  event: Event
+  organization: Organization
+  attachedModelType: ModelType
 }
 
-type GifContent @model @auth(rules: [{allow: public}]) {
+type GifContent @model  {
   id: ID!
 }
 
-type TextContent @model @auth(rules: [{allow: public}]) {
+type TextContent @model  {
   id: ID!
 }
 
-type Message @model @auth(rules: [{allow: public}]) {
+type Message @model  {
   id: ID!
   text: String
   gif: String
@@ -218,17 +250,17 @@ type Message @model @auth(rules: [{allow: public}]) {
   chat: String
 }
 
-type Chat @model @auth(rules: [{allow: public}]) {
+type Chat @model  {
   id: ID!
   messages: String
 }
 
-type AppSubscription @model @auth(rules: [{allow: public}]) {
+type AppSubscription @model  {
   id: ID!
   tier: String
 }
 
-type Location @model @auth(rules: [{allow: public}]) {
+type Location @model  {
   id: ID!
   name: String
   secondaryName: String
@@ -242,9 +274,9 @@ type Location @model @auth(rules: [{allow: public}]) {
   longitude: Float
   events: [Event] @hasMany(indexName: "byLocation", fields: ["id"])
   userID: ID! @index(name: "byUser")
-  user: User @belongsTo
+  user: [User] @relation
 }
 
-type Rating @model @auth(rules: [{allow: public}]) {
+type Rating @model  {
   id: ID!
 }

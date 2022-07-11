@@ -33,12 +33,16 @@ class Location extends Model {
   final String? _name;
   final String? _secondaryName;
   final String? _address;
-  final String? _surface;
+  final SurfaceType? _surface;
   final String? _images;
-  final String? _fieldSize;
-  final String? _private;
+  final FieldPlayerOccupancySize? _fieldSize;
+  final bool? _private;
   final String? _schedule;
+  final double? _latitude;
+  final double? _longitude;
   final List<Event>? _events;
+  final String? _userID;
+  final User? _user;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
 
@@ -62,7 +66,7 @@ class Location extends Model {
     return _address;
   }
   
-  String? get surface {
+  SurfaceType? get surface {
     return _surface;
   }
   
@@ -70,11 +74,11 @@ class Location extends Model {
     return _images;
   }
   
-  String? get fieldSize {
+  FieldPlayerOccupancySize? get fieldSize {
     return _fieldSize;
   }
   
-  String? get private {
+  bool? get private {
     return _private;
   }
   
@@ -82,8 +86,33 @@ class Location extends Model {
     return _schedule;
   }
   
+  double? get latitude {
+    return _latitude;
+  }
+  
+  double? get longitude {
+    return _longitude;
+  }
+  
   List<Event>? get events {
     return _events;
+  }
+  
+  String get userID {
+    try {
+      return _userID!;
+    } catch(e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
+  User? get user {
+    return _user;
   }
   
   TemporalDateTime? get createdAt {
@@ -94,9 +123,9 @@ class Location extends Model {
     return _updatedAt;
   }
   
-  const Location._internal({required this.id, name, secondaryName, address, surface, images, fieldSize, private, schedule, events, createdAt, updatedAt}): _name = name, _secondaryName = secondaryName, _address = address, _surface = surface, _images = images, _fieldSize = fieldSize, _private = private, _schedule = schedule, _events = events, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Location._internal({required this.id, name, secondaryName, address, surface, images, fieldSize, private, schedule, latitude, longitude, events, required userID, user, createdAt, updatedAt}): _name = name, _secondaryName = secondaryName, _address = address, _surface = surface, _images = images, _fieldSize = fieldSize, _private = private, _schedule = schedule, _latitude = latitude, _longitude = longitude, _events = events, _userID = userID, _user = user, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Location({String? id, String? name, String? secondaryName, String? address, String? surface, String? images, String? fieldSize, String? private, String? schedule, List<Event>? events}) {
+  factory Location({String? id, String? name, String? secondaryName, String? address, SurfaceType? surface, String? images, FieldPlayerOccupancySize? fieldSize, bool? private, String? schedule, double? latitude, double? longitude, List<Event>? events, required String userID, User? user}) {
     return Location._internal(
       id: id == null ? UUID.getUUID() : id,
       name: name,
@@ -107,7 +136,11 @@ class Location extends Model {
       fieldSize: fieldSize,
       private: private,
       schedule: schedule,
-      events: events != null ? List<Event>.unmodifiable(events) : events);
+      latitude: latitude,
+      longitude: longitude,
+      events: events != null ? List<Event>.unmodifiable(events) : events,
+      userID: userID,
+      user: user);
   }
   
   bool equals(Object other) {
@@ -127,7 +160,11 @@ class Location extends Model {
       _fieldSize == other._fieldSize &&
       _private == other._private &&
       _schedule == other._schedule &&
-      DeepCollectionEquality().equals(_events, other._events);
+      _latitude == other._latitude &&
+      _longitude == other._longitude &&
+      DeepCollectionEquality().equals(_events, other._events) &&
+      _userID == other._userID &&
+      _user == other._user;
   }
   
   @override
@@ -142,11 +179,15 @@ class Location extends Model {
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("secondaryName=" + "$_secondaryName" + ", ");
     buffer.write("address=" + "$_address" + ", ");
-    buffer.write("surface=" + "$_surface" + ", ");
+    buffer.write("surface=" + (_surface != null ? enumToString(_surface)! : "null") + ", ");
     buffer.write("images=" + "$_images" + ", ");
-    buffer.write("fieldSize=" + "$_fieldSize" + ", ");
-    buffer.write("private=" + "$_private" + ", ");
+    buffer.write("fieldSize=" + (_fieldSize != null ? enumToString(_fieldSize)! : "null") + ", ");
+    buffer.write("private=" + (_private != null ? _private!.toString() : "null") + ", ");
     buffer.write("schedule=" + "$_schedule" + ", ");
+    buffer.write("latitude=" + (_latitude != null ? _latitude!.toString() : "null") + ", ");
+    buffer.write("longitude=" + (_longitude != null ? _longitude!.toString() : "null") + ", ");
+    buffer.write("userID=" + "$_userID" + ", ");
+    buffer.write("user=" + (_user != null ? _user!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -154,7 +195,7 @@ class Location extends Model {
     return buffer.toString();
   }
   
-  Location copyWith({String? id, String? name, String? secondaryName, String? address, String? surface, String? images, String? fieldSize, String? private, String? schedule, List<Event>? events}) {
+  Location copyWith({String? id, String? name, String? secondaryName, String? address, SurfaceType? surface, String? images, FieldPlayerOccupancySize? fieldSize, bool? private, String? schedule, double? latitude, double? longitude, List<Event>? events, String? userID, User? user}) {
     return Location._internal(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -165,7 +206,11 @@ class Location extends Model {
       fieldSize: fieldSize ?? this.fieldSize,
       private: private ?? this.private,
       schedule: schedule ?? this.schedule,
-      events: events ?? this.events);
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      events: events ?? this.events,
+      userID: userID ?? this.userID,
+      user: user ?? this.user);
   }
   
   Location.fromJson(Map<String, dynamic> json)  
@@ -173,22 +218,28 @@ class Location extends Model {
       _name = json['name'],
       _secondaryName = json['secondaryName'],
       _address = json['address'],
-      _surface = json['surface'],
+      _surface = enumFromString<SurfaceType>(json['surface'], SurfaceType.values),
       _images = json['images'],
-      _fieldSize = json['fieldSize'],
+      _fieldSize = enumFromString<FieldPlayerOccupancySize>(json['fieldSize'], FieldPlayerOccupancySize.values),
       _private = json['private'],
       _schedule = json['schedule'],
+      _latitude = (json['latitude'] as num?)?.toDouble(),
+      _longitude = (json['longitude'] as num?)?.toDouble(),
       _events = json['events'] is List
         ? (json['events'] as List)
           .where((e) => e?['serializedData'] != null)
           .map((e) => Event.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
+      _userID = json['userID'],
+      _user = json['user']?['serializedData'] != null
+        ? User.fromJson(new Map<String, dynamic>.from(json['user']['serializedData']))
+        : null,
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'secondaryName': _secondaryName, 'address': _address, 'surface': _surface, 'images': _images, 'fieldSize': _fieldSize, 'private': _private, 'schedule': _schedule, 'events': _events?.map((Event? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'secondaryName': _secondaryName, 'address': _address, 'surface': enumToString(_surface), 'images': _images, 'fieldSize': enumToString(_fieldSize), 'private': _private, 'schedule': _schedule, 'latitude': _latitude, 'longitude': _longitude, 'events': _events?.map((Event? e) => e?.toJson()).toList(), 'userID': _userID, 'user': _user?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
   static final QueryField ID = QueryField(fieldName: "location.id");
@@ -200,9 +251,15 @@ class Location extends Model {
   static final QueryField FIELDSIZE = QueryField(fieldName: "fieldSize");
   static final QueryField PRIVATE = QueryField(fieldName: "private");
   static final QueryField SCHEDULE = QueryField(fieldName: "schedule");
+  static final QueryField LATITUDE = QueryField(fieldName: "latitude");
+  static final QueryField LONGITUDE = QueryField(fieldName: "longitude");
   static final QueryField EVENTS = QueryField(
     fieldName: "events",
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (Event).toString()));
+  static final QueryField USERID = QueryField(fieldName: "userID");
+  static final QueryField USER = QueryField(
+    fieldName: "user",
+    fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (User).toString()));
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Location";
     modelSchemaDefinition.pluralName = "Locations";
@@ -241,7 +298,7 @@ class Location extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Location.SURFACE,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: ModelFieldType(ModelFieldTypeEnum.enumeration)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
@@ -253,13 +310,13 @@ class Location extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Location.FIELDSIZE,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: ModelFieldType(ModelFieldTypeEnum.enumeration)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Location.PRIVATE,
       isRequired: false,
-      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+      ofType: ModelFieldType(ModelFieldTypeEnum.bool)
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
@@ -268,11 +325,36 @@ class Location extends Model {
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));
     
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Location.LATITUDE,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.double)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Location.LONGITUDE,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.double)
+    ));
+    
     modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
       key: Location.EVENTS,
       isRequired: false,
       ofModelName: (Event).toString(),
       associatedKey: Event.LOCATIONID
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Location.USERID,
+      isRequired: true,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+      key: Location.USER,
+      isRequired: false,
+      targetName: "userLocationsId",
+      ofModelName: (User).toString()
     ));
     
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(

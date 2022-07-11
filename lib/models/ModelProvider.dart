@@ -53,7 +53,9 @@ export 'Chat.dart';
 export 'Coach.dart';
 export 'Event.dart';
 export 'EventType.dart';
+export 'FieldPlayerOccupancySize.dart';
 export 'Game.dart';
+export 'GenderType.dart';
 export 'GifContent.dart';
 export 'Image.dart';
 export 'League.dart';
@@ -66,6 +68,7 @@ export 'Payment.dart';
 export 'Player.dart';
 export 'Rating.dart';
 export 'Referee.dart';
+export 'SurfaceType.dart';
 export 'Team.dart';
 export 'TextContent.dart';
 export 'Tournament.dart';
@@ -79,7 +82,7 @@ export 'Wager.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "ccceb79062f6226e62c222b8ecd119b8";
+  String version = "a9748fd5a0cb31ee112bc583f89ffc23";
   @override
   List<ModelSchema> modelSchemas = [AppSubscription.schema, Chat.schema, Coach.schema, Event.schema, Game.schema, GifContent.schema, Image.schema, League.schema, LeagueEvent.schema, Location.schema, Message.schema, Organization.schema, Organizer.schema, Payment.schema, Player.schema, Rating.schema, Referee.schema, Team.schema, TextContent.schema, Tournament.schema, TournamentEvent.schema, Training.schema, TrainingEvent.schema, Tryout.schema, TryoutEvent.schema, User.schema, Wager.schema];
   static final ModelProvider _instance = ModelProvider();

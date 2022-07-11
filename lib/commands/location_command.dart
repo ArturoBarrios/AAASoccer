@@ -15,9 +15,9 @@ class LocationCommand extends BaseCommand {
 
  Future<Map<String, dynamic>> createLocation(Map<String, dynamic> userInput ) async{
      print("createLocation");
-    Map<String, dynamic> createLocationResponse = {"success": false, "message": "Default Error"};
+    Map<String, dynamic> createLocationResponse = {"success": false, "message": "Default Error", "data": Map<String, dynamic>()};
     try {
-      Location location = Location(name: userInput['name'], secondaryName: userInput['secondaryName'], address: userInput['address'], surface: userInput['surface'], images: userInput['images'], fieldSize: userInput['fieldSize'], private: userInput['private']  );
+      Location location = Location(latitude: userInput["latitude"], longitude: userInput["longitude"], name: userInput['name'], secondaryName: userInput['secondaryName'], address: userInput['address'], surface: userInput['surface'], fieldSize: userInput['fieldSize'], private: userInput['private']  );
       final request = ModelMutations.create(location);
       print("request");
       final response = await Amplify.API.mutate(request: request).response;
@@ -27,7 +27,7 @@ class LocationCommand extends BaseCommand {
       if (createdLocation != null) {
         createLocationResponse["success"] = true;
         createLocationResponse["messasge"] = "Successfully Created Location";
-        createLocationResponse["data"] = location;
+        createLocationResponse["data"]["randomLocation"] = createdLocation;
 
       }
 

@@ -15,9 +15,10 @@ class UserCommand extends BaseCommand {
 
    Future<Map<String, dynamic>> createUser(Map<String, dynamic> userInput ) async{
      print("createUser");
-    Map<String, dynamic> createUserResponse = {"success": 0, "message": "Default Error"};
+    Map<String, dynamic> createUserResponse = {"success": false, "message": "Default Error"};
     try {
       User user = User(email: userInput['email'], username: userInput['username'], phone: userInput['phone'], birthdate: userInput['birthdate'], gender: userInput['gender'], address: userInput['address']);
+
       final request = ModelMutations.create(user);
       print("request");
       final response = await Amplify.API.mutate(request: request).response;
@@ -28,7 +29,7 @@ class UserCommand extends BaseCommand {
         print('errors: ' + response.errors.toString());
         return createUserResponse;
       }
-      createUserResponse["success"] = 1;
+      createUserResponse["success"] = true;
       createUserResponse["messasge"] = "Successfully Created User";
       createUserResponse["data"] = user;
 
@@ -42,13 +43,14 @@ class UserCommand extends BaseCommand {
   }
 
   Future<Map<String, dynamic>> updateUserLogin(String email ) async{ 
-    Map<String, dynamic> updateUserResponse = {"success": 0, "message": "Default Error"};
+    Map<String, dynamic> updateUserResponse = {"success": false, "message": "Default Error"};
     try{
       User oldUser = (await Amplify.DataStore.query(User.classType,
       where: User.EMAIL.eq(email)))[0];
       
       User newUser = oldUser.copyWith(last_login: new DateTime.now().millisecondsSinceEpoch);
       await Amplify.DataStore.save(newUser);
+      updateUserResponse["success"] = true;
     } catch(e){
 
       
@@ -57,13 +59,14 @@ class UserCommand extends BaseCommand {
  }
 
   Future<Map<String, dynamic>> updateUserStatus(String email, String newUserStatus ) async{ 
-    Map<String, dynamic> updateUserResponse = {"success": 0, "message": "Default Error"};
+    Map<String, dynamic> updateUserResponse = {"success": false, "message": "Default Error"};
       try{
         User oldUser = (await Amplify.DataStore.query(User.classType,
         where: User.EMAIL.eq(email)))[0];
         
         User newUser = oldUser.copyWith(status: newUserStatus);
         await Amplify.DataStore.save(newUser);
+        updateUserResponse["success"] = true;
       } catch(e){
 
         

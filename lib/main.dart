@@ -20,11 +20,41 @@ import 'views/home.dart';
 
 import 'views/login_page.dart';
 import 'commands/base_command.dart' as Commands;
-
 import 'components/Loading/loading_version1.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gql_http_link/gql_http_link.dart';
+import 'package:ferry/ferry.dart';
 
+void main() async {
+  // We're using HiveStore for persistence,
+  // so we need to initialize Hive.
+  // await initHiveForFlutter();
 
-void main() => runApp(MyApp());
+  // final HttpLink httpLink = HttpLink(
+  //   'https://api.github.com/graphql',
+  // );
+
+  // final AuthLink authLink = AuthLink(
+  //   getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+  //   // OR
+  //   // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+  // );
+
+  // final Link link = authLink.concat(httpLink);
+
+  // ValueNotifier<GraphQLClient> client = ValueNotifier(
+  //   GraphQLClient(
+  //     link: link,
+  //     // The default store is the InMemoryStore, which does NOT persist to disk
+  //     cache: GraphQLCache(store: HiveStore()),
+  //   ),
+  // );
+
+  // var app = GraphQProvider(client: client, child: MyApp());
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -55,11 +85,17 @@ class _MyAppState extends State<MyApp> {
     configureApp();
   }
 
-  void configureApp(){
+  void configureApp() {
+    print("environment: ");
+    print(dotenv.env['ENVIRONMENT']);
+    //SHOULD MODULARIZE THIS
+    final link = HttpLink(dotenv.env['GRAPHQLURLDEV'].toString());
+
+    final client = Client(link: link);
     configureAmplify();
-    
-    
   }
+
+  void configureGraphQL() {}
   void configureAmplify() async {
     Map<String, dynamic> configureAmplify =
         await AmplifyAuth.AmplifyAuthService.configureAmplify();
@@ -70,11 +106,9 @@ class _MyAppState extends State<MyApp> {
         AppModel().amplifyConfigured = true;
         Commands.BaseCommand().setIsSigned(true);
         Commands.BaseCommand().setupInitialAppConfigs();
-        if(configureAmplify['message'] == "isSignedIn"){
+        if (configureAmplify['message'] == "isSignedIn") {
           print("startLoadToHomeTransition");
           startLoadToHomeTransition();
-          
-
         }
       }
     });
@@ -110,7 +144,7 @@ class _MyAppState extends State<MyApp> {
       Map<String, dynamic> setUpResp = await BaseCommand()
           .setupInitialAppModels(emailController.text.trim());
 
-          startLoadToHomeTransition();
+      startLoadToHomeTransition();
       // UserCommand().updateUserLogin(emailController.text.trim());
 
       // });
@@ -164,8 +198,7 @@ class _MyAppState extends State<MyApp> {
   void startLoadToHomeTransition() {
     print("startLoadToHomeTransition");
     Future.delayed(const Duration(milliseconds: 100), () {
-     Commands.BaseCommand().initialConditionsMet();
-
+      Commands.BaseCommand().initialConditionsMet();
     });
   }
 
@@ -210,10 +243,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (c) => AppModel()),
         ChangeNotifierProvider(create: (c) => UserModel()),
         ChangeNotifierProvider(create: (c) => HomePageModel()),
-
         Provider(create: (c) => UserService()),
         Provider(create: (c) => GeoLocationServices()),
-
       ],
       child: Builder(builder: (context) {
         Commands.init(context);
@@ -232,7 +263,6 @@ class _MyAppState extends State<MyApp> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
-                           
                             //todo
                             //create switch to switch between login and signup
                             //onpress function that creates creates/updates cognito user
@@ -455,7 +485,8 @@ class AppScaffold extends StatelessWidget {
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
 
-bool isDialogueViewOpened = context.select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
+    bool isDialogueViewOpened = context
+        .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
     print("isSignedINnnnn: ");
     print(isSignedIn);
     // Return the current view, based on the currentUser value:
