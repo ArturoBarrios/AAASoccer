@@ -40,7 +40,7 @@ enum ModelType {
 
 type User @model {
   id: ID!
-  locations: [Location] @relation
+  location: Location
   player: Player
   organizer: Organizer
   coach: Coach
@@ -55,6 +55,7 @@ type User @model {
   last_login: Int
   last_updated: Int
   images: [Image] @relation
+  events: [Event] @relation
 }
 
 type Coach @model  {
@@ -76,13 +77,16 @@ type Player @model  {
   id: ID!
   playerRating: String
   wagerRating: String
+  wagers: [Wager] @relation
   events: [Event] @relation
+  teams: [Team] @relation
   competitiveLevel: String
   ratings: String
   hasRating: String
   showRating: String
   hasSubscription: String
   user: User
+  sponsors: [Sponsor] @relation
 }
 
 # a payment is attached to event
@@ -112,14 +116,14 @@ type Organization @model  {
   isMainOrg: Bolean
 }
 
-type Sponsor @model{aaa
+# sponsor is an org
+type Sponsor @model{
   id: ID!
   name: String
   images: [Image] @relation
   description: String
   url: String
-  event: Event
-  organization: Organization
+  event: [Event] @relation  
   sponsoredOrgs: [Organization] @relation
   sponsoredPlayers: [Player] @relation
   sponsoredTeams: [Team] @relation
@@ -129,100 +133,97 @@ type Wager @model  {
   id: ID!
   name: String
   amount: String
-  players: String
-  eligibleEventTypes: String
+  players: [Player] @relation
+  eligibleEventTypes: [EventType] @relation
   private: Boolean
-  events: Event @hasOne
+  events: [Event] @relation
 }
 
 type Game @model  {
   id: ID!
-  hometeam: String
-  awayTeam: String
-  score: String
-  wagers: String
+  hometeam: Team
+  awayTeam: Team
+  homegoals: Int
+  awaygoals: Int
   pickup: Boolean
-  event: Event @hasOne
+  event: Event
 }
 
 type Tryout @model  {
   id: ID!
-  players: String
   game: String
-  event: Event @hasOne
-  events: [Event] @hasMany(indexName: "byTryout", fields: ["id"])
-  eligibleEventTypes: [Event] @manyToMany(relationName: "TryoutEvent")
+  event: Event
+  events: [Event] @relation #tryout can have a pickup game
+  eligibleEventTypes: [EventType] @relation
 }
 
 type League @model  {
   id: ID!
   name: String
-  tournament: String
-  teams: String
-  wagers: String
-  images: String
-  event: Event @hasOne
-  events: [Event] @hasMany(indexName: "byLeague", fields: ["id"])
-  eligibleEventTypes: [Event] @manyToMany(relationName: "LeagueEvent")
+  tournament: Tournament  
+  event: Event
+  events: [Event] @relation
+  eligibleEventTypes: [EventType] @relation
 }
 
 type Tournament @model  {
   id: ID!
+  league: League
   name: String
-  groupPlay: Boolean
-  teams: String
-  images: String
-  event: Event @hasOne
-  events: [Event] @hasMany(indexName: "byTournament", fields: ["id"])
-  eligibleEventTypes: [Event] @manyToMany(relationName: "TournamentEvent")
+  groupPlay: Boolean  
+  event: Event
+  events: [Event] @relation
+  eligibleEventTypes: [EventType] @relation
 }
 
 type Training @model  {
   id: ID!
   name: String
-  players: String
-  event: Event @hasOne
-  events: [Event] @hasMany(indexName: "byTraining", fields: ["id"])
-  eligibleEventTypes: [Event] @manyToMany(relationName: "TrainingEvent")
+  event: Event
+  events: [Event] @relation
+  eligibleEventTypes: [Event] @relation
 }
 
-type Event @model  {
+type Event @model  {#aaa
   id: ID!
   name: String
-  organization: Organization
+  organization:  #need org to create events? nah. allow user to create events,
+                  #if user has orgs, they can select which org to create event for                
   coorganizations: [Organization] @relation
+  sponsors: [Sponsor] @relation
   creator: User 
-  tryout: String
-  training: String
-  ratings: String
+  ratings: [Rating] @relation
   images: [Image] @relation
-  price: String
-  location: String
+  price: Price
+  locations: [Location] @relation
   type: EventType
   payment: Payment
+  training: Training
+  tournament: Tournament
+  league: League
+  tryout: Tryout
+  teams: [Team] @relation
+  game: Game  
   users: [User] @relation
-  locationID: ID @index(name: "byLocation")
-  trainingID: ID @index(name: "byTraining")
-  tournamentID: ID @index(name: "byTournament")
-  leagueID: ID @index(name: "byLeague")
-  tryoutID: ID @index(name: "byTryout")
-  tryouts: [Tryout] @manyToMany(relationName: "TryoutEvent")
-  leagues: [League] @manyToMany(relationName: "LeagueEvent")
-  tournaments: [Tournament] @manyToMany(relationName: "TournamentEvent")
-  trainings: [Training] @manyToMany(relationName: "TrainingEvent")
+  #I don't think you need these since tournament 
+  #can have many events but not the other way around
+  # tournament: Tournament 
+  # tryouts: [Tryout] @relation
+  # leagues: [League] @relation
+  # tournaments: [Tournament] @relation
+  # trainings: [Training] @relation 
+  wager: [Wager] @relation
 }
 
 type Team @model  {
-  id: ID!
+  id: ID!  
   name: String
   color: String
   logo: String
-  event: String
-  images: String
-  players: String
-  events: String
-  leagues: String
-  tournaments: String
+  events: [Event] @relation
+  images: [Image] @relation
+  players: [Player] @relation    
+  sponsors: [Sponsor] @relation
 }
 
 type Image @model  {
@@ -230,6 +231,8 @@ type Image @model  {
   url: String
   user: User
   event: Event
+  team: Team
+  location: Location
   organization: Organization
   attachedModelType: ModelType
 }
@@ -266,17 +269,23 @@ type Location @model  {
   secondaryName: String
   address: String
   surface: SurfaceType
-  images: String
+  images: [Image] @relation
   fieldSize: FieldPlayerOccupancySize
   private: Boolean
   schedule: String
   latitude: Float
   longitude: Float
-  events: [Event] @hasMany(indexName: "byLocation", fields: ["id"])
-  userID: ID! @index(name: "byUser")
-  user: [User] @relation
+  events: [Event] @relation
+  user: User
 }
 
 type Rating @model  {
   id: ID!
+  event: Event
+}
+
+type Price @model  {
+  id: ID!
+  amount: String
+  event: Event
 }
