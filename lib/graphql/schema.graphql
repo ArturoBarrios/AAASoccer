@@ -38,7 +38,7 @@ enum ModelType {
   EVENT
 }
 
-type User @model {
+type User  {
   id: ID!
   location: Location
   player: Player
@@ -50,7 +50,7 @@ type User @model {
   email: String
   username: String
   birthdate: String
-  gender: String
+  gender: GenderType
   status: String
   last_login: Int
   last_updated: Int
@@ -58,27 +58,27 @@ type User @model {
   events: [Event] @relation
 }
 
-type Coach @model  {
+type Coach   {
   id: ID!
   user: User
 }
 
-type Referee @model  {
+type Referee   {
   id: ID!
   user: User
 }
 
-type Organizer @model  {
+type Organizer   {
   id: ID!
   user: User
 }
 
-type Player @model  {
+type Player   {
   id: ID!
   playerRating: String
   wagerRating: String
   wagers: [Wager] @relation
-  events: [Event] @relation
+  # events: [Event] @relation
   teams: [Team] @relation
   competitiveLevel: String
   ratings: String
@@ -91,7 +91,7 @@ type Player @model  {
 
 # a payment is attached to event
 # use payment object to create payment screen details for event
-type Payment @model  {
+type Payment   {
   id: ID!
   amount: String
   event: Event
@@ -99,25 +99,25 @@ type Payment @model  {
 
 # orgs can have many suborgs
 # allow org to behave as Sponsor
-type Organization @model  {
+type Organization   {
   id: ID!
   name: String
   images: [Image] @relation
   rating: String
   events: [Event] @relation
-  suborgs: [Organization] @relation
-  sponsor: Sponsor
+  # suborgs: [Organization] @relation
+  # sponsor: Sponsor
   sponsors: [Sponsor] @relation
   description: String
   minAge: Int
   maxAge: Int
   inviteOnly: Boolean
   private: Boolean #it won't show up in public search
-  isMainOrg: Bolean
+  isMainOrg: Boolean
 }
 
 # sponsor is an org
-type Sponsor @model{
+type Sponsor {
   id: ID!
   name: String
   images: [Image] @relation
@@ -129,17 +129,17 @@ type Sponsor @model{
   sponsoredTeams: [Team] @relation
 }
 
-type Wager @model  {
+type Wager   {
   id: ID!
   name: String
   amount: String
   players: [Player] @relation
-  eligibleEventTypes: [EventType] @relation
+  # eligibleEventTypes: [EventType] @relation
   private: Boolean
   events: [Event] @relation
 }
 
-type Game @model  {
+type Game   {
   id: ID!
   hometeam: Team
   awayTeam: Team
@@ -149,73 +149,75 @@ type Game @model  {
   event: Event
 }
 
-type Tryout @model  {
+type Tryout   {
   id: ID!
   game: String
-  event: Event
-  events: [Event] @relation #tryout can have a pickup game
-  eligibleEventTypes: [EventType] @relation
+  # event: Event
+  events: [Event] @relation 
+  #tryout can have a pickup game
+  # eligibleEventTypes: [EventType] @relation
 }
 
-type League @model  {
+type League   {
   id: ID!
   name: String
   tournament: Tournament  
-  event: Event
+  # event: Event
   events: [Event] @relation
-  eligibleEventTypes: [EventType] @relation
+  # eligibleEventTypes: [EventType] @relation
 }
 
-type Tournament @model  {
+type Tournament   {
   id: ID!
   league: League
   name: String
   groupPlay: Boolean  
-  event: Event
+  # event: Event
   events: [Event] @relation
-  eligibleEventTypes: [EventType] @relation
+  # eligibleEventTypes: [EventType] @relation
 }
 
-type Training @model  {
+type Training   {
   id: ID!
   name: String
-  event: Event
   events: [Event] @relation
-  eligibleEventTypes: [Event] @relation
+  # eligibleEventTypes: [EventType] @relation
 }
 
-type Event @model  {#aaa
+type Event   {
   id: ID!
   name: String
-  organization:  #need org to create events? nah. allow user to create events,
-                  #if user has orgs, they can select which org to create event for                
+  # organization: Organization
+  #need org to create events? nah. allow user to create events,
+  #if user has orgs, they can select which org to create event for                
   coorganizations: [Organization] @relation
   sponsors: [Sponsor] @relation
-  creator: User 
+  # creator: User 
   ratings: [Rating] @relation
   images: [Image] @relation
   price: Price
   locations: [Location] @relation
   type: EventType
   payment: Payment
-  training: Training
-  tournament: Tournament
-  league: League
-  tryout: Tryout
+  # training: Training
+  # tournament: Tournament
+  # league: League
+  # tryout: Tryout
   teams: [Team] @relation
-  game: Game  
+  games: [Game] @relation
   users: [User] @relation
+  isMainEvent: Boolean
   #I don't think you need these since tournament 
   #can have many events but not the other way around
   # tournament: Tournament 
-  # tryouts: [Tryout] @relation
-  # leagues: [League] @relation
-  # tournaments: [Tournament] @relation
-  # trainings: [Training] @relation 
+  tryouts: [Tryout] @relation
+  leagues: [League] @relation
+  tournaments: [Tournament] @relation
+  trainings: [Training] @relation 
   wager: [Wager] @relation
 }
 
-type Team @model  {
+type Team   {
   id: ID!  
   name: String
   color: String
@@ -226,7 +228,7 @@ type Team @model  {
   sponsors: [Sponsor] @relation
 }
 
-type Image @model  {
+type Image   {
   id: ID!
   url: String
   user: User
@@ -235,17 +237,18 @@ type Image @model  {
   location: Location
   organization: Organization
   attachedModelType: ModelType
+  sponsor: Sponsor
 }
 
-type GifContent @model  {
+type GifContent   {
   id: ID!
 }
 
-type TextContent @model  {
+type TextContent   {
   id: ID!
 }
 
-type Message @model  {
+type Message   {
   id: ID!
   text: String
   gif: String
@@ -253,17 +256,17 @@ type Message @model  {
   chat: String
 }
 
-type Chat @model  {
+type Chat   {
   id: ID!
   messages: String
 }
 
-type AppSubscription @model  {
+type AppSubscription   {
   id: ID!
   tier: String
 }
 
-type Location @model  {
+type Location   {
   id: ID!
   name: String
   secondaryName: String
@@ -279,12 +282,12 @@ type Location @model  {
   user: User
 }
 
-type Rating @model  {
+type Rating   {
   id: ID!
   event: Event
 }
 
-type Price @model  {
+type Price   {
   id: ID!
   amount: String
   event: Event
