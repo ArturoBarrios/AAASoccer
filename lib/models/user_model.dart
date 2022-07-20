@@ -11,7 +11,7 @@ class UserModel extends ChangeNotifier {
   List<String> get userPosts => _userPosts;
   String userID = "";
   String userEmail = "";
-  User user = User();
+  // User user = User();
   
   
   dynamic _position = null;

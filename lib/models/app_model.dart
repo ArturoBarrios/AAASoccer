@@ -1,8 +1,17 @@
 import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
+import 'package:faunadb_http/faunadb_http.dart';
 
 class AppModel extends ChangeNotifier {
+
+  FaunaClient _faunaClient = FaunaClient(FaunaConfig.build(
+      secret: 'fnAEr6K_CIACT8LrjVZdayh8ZPF2QcQKcaKO-M1-',
+      domain: 'db.fauna.com'
+    ));
+
+  FaunaClient get faunaClient => _faunaClient;
+
 
   String _currentUser = "";
   String get currentUser => _currentUser;
@@ -20,6 +29,11 @@ class AppModel extends ChangeNotifier {
     _initialConditionsMet = initialConditionsMet;
     notifyListeners();
   }  
+
+  set faunaClient(FaunaClient faunaClient) {
+    _faunaClient = faunaClient;
+    notifyListeners();
+  }
 
   set amplifyConfigured(bool amplifyConfigured){
     _amplifyConfigured = amplifyConfigured;

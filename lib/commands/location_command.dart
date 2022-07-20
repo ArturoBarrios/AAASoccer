@@ -17,22 +17,22 @@ class LocationCommand extends BaseCommand {
      print("createLocation");
     Map<String, dynamic> createLocationResponse = {"success": false, "message": "Default Error", "data": Map<String, dynamic>()};
     try {
-      Location location = Location(latitude: userInput["latitude"], longitude: userInput["longitude"], name: userInput['name'], secondaryName: userInput['secondaryName'], address: userInput['address'], surface: userInput['surface'], fieldSize: userInput['fieldSize'], private: userInput['private']  );
-      final request = ModelMutations.create(location);
-      print("request");
-      final response = await Amplify.API.mutate(request: request).response;
-      print("response");
+      // Location location = Location(latitude: userInput["latitude"], longitude: userInput["longitude"], name: userInput['name'], secondaryName: userInput['secondaryName'], address: userInput['address'], surface: userInput['surface'], fieldSize: userInput['fieldSize'], private: userInput['private']  );
+      // final request = ModelMutations.create(location);
+      // print("request");
+      // final response = await Amplify.API.mutate(request: request).response;
+      // print("response");
 
-      Location? createdLocation = response.data;
-      if (createdLocation != null) {
-        createLocationResponse["success"] = true;
-        createLocationResponse["messasge"] = "Successfully Created Location";
-        createLocationResponse["data"]["randomLocation"] = createdLocation;
+      // Location? createdLocation = response.data;
+      // if (createdLocation != null) {
+      //   createLocationResponse["success"] = true;
+      //   createLocationResponse["messasge"] = "Successfully Created Location";
+      //   createLocationResponse["data"]["randomLocation"] = createdLocation;
 
-      }
+      // }
 
-      print('Mutation result: ' );
-      print(createdLocation);
+      // print('Mutation result: ' );
+      // print(createdLocation);
       return createLocationResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');

@@ -13,6 +13,7 @@ import 'commands/user_command.dart';
 import 'models/app_model.dart';
 import 'models/user_model.dart';
 import 'services/user_service.dart';
+import 'services/fauna_db_services.dart';
 import 'services/geolocation_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home_page_temporary.dart';
@@ -24,37 +25,9 @@ import 'components/Loading/loading_version1.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gql_http_link/gql_http_link.dart';
-import 'package:ferry/ferry.dart';
+import 'package:faunadb_http/faunadb_http.dart';
 
-void main() async {
-  // We're using HiveStore for persistence,
-  // so we need to initialize Hive.
-  // await initHiveForFlutter();
-
-  // final HttpLink httpLink = HttpLink(
-  //   'https://api.github.com/graphql',
-  // );
-
-  // final AuthLink authLink = AuthLink(
-  //   getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
-  //   // OR
-  //   // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
-  // );
-
-  // final Link link = authLink.concat(httpLink);
-
-  // ValueNotifier<GraphQLClient> client = ValueNotifier(
-  //   GraphQLClient(
-  //     link: link,
-  //     // The default store is the InMemoryStore, which does NOT persist to disk
-  //     cache: GraphQLCache(store: HiveStore()),
-  //   ),
-  // );
-
-  // var app = GraphQProvider(client: client, child: MyApp());
-
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -78,40 +51,78 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    print("initState");
     super.initState();
+
+    print("initState");
     // setupListeners();
     // configureAmplify();
     configureApp();
   }
 
-  void configureApp() {
+  void configureApp() async {
+    await dotenv.load(fileName: ".env");
     print("environment: ");
     print(dotenv.env['ENVIRONMENT']);
-    //SHOULD MODULARIZE THIS
-    final link = HttpLink(dotenv.env['GRAPHQLURLDEV'].toString());
+    Map<String, dynamic> configureAmplifyResp = await configureAmplify();
+     if (configureAmplifyResp['message'] == "isSignedIn") {
+      FaunaDBServices().createFaunaClient();
+      Map<String, dynamic> otherConfigurationResp = otherConfigurations();
+      if(otherConfigurationResp['success']){
+        print("startLoadToHomeTransition");
 
-    final client = Client(link: link);
-    configureAmplify();
+        startLoadToHomeTransition();
+      }
+
+      
+    }
+    // configureGraphQL();
   }
 
-  void configureGraphQL() {}
-  void configureAmplify() async {
+  // void configureGraphQL() async {
+  //   //SHOULD MODULARIZE THIS
+  //   await initHiveForFlutter();
+
+  //   final HttpLink httpLink = HttpLink(dotenv.env['GRAPHQLURLDEV'].toString());
+
+  //   final AuthLink authLink = AuthLink(
+  //     getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+  //     // OR
+  //     // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+  //   );
+
+  //   final Link link = authLink.concat(httpLink);
+
+  //   ValueNotifier<GraphQLClient> client = ValueNotifier(
+  //     GraphQLClient(
+  //       link: link,
+  //       // The default store is the InMemoryStore, which does NOT persist to disk
+  //       cache: GraphQLCache(store: HiveStore()),
+  //     ),
+  //   );
+  // }
+
+  Future <Map<String, dynamic>> configureAmplify() async {    
     Map<String, dynamic> configureAmplify =
         await AmplifyAuth.AmplifyAuthService.configureAmplify();
     setState(() {
       if (configureAmplify['success']) {
         print("configured amplify!");
         print(configureAmplify);
-        AppModel().amplifyConfigured = true;
-        Commands.BaseCommand().setIsSigned(true);
-        Commands.BaseCommand().setupInitialAppConfigs();
-        if (configureAmplify['message'] == "isSignedIn") {
-          print("startLoadToHomeTransition");
-          startLoadToHomeTransition();
-        }
+
+       
       }
     });
+      return configureAmplify;
+  }
+
+  Map<String, dynamic> otherConfigurations() {
+    Map<String, dynamic> otherConfigurationsResp = {"success": true, "message": "successfully configured other shit"};
+    AppModel().amplifyConfigured = true;
+    Commands.BaseCommand().setIsSigned(true);
+    Commands.BaseCommand().setupInitialAppConfigs();
+
+    return otherConfigurationsResp;
+    
   }
 
   void testFunction() {
@@ -243,6 +254,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (c) => AppModel()),
         ChangeNotifierProvider(create: (c) => UserModel()),
         ChangeNotifierProvider(create: (c) => HomePageModel()),
+        Provider(create: (c) => FaunaDBServices()),
         Provider(create: (c) => UserService()),
         Provider(create: (c) => GeoLocationServices()),
       ],

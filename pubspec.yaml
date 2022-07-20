@@ -47,8 +47,9 @@ dependencies:
   geolocator: ^9.0.0
   geocoding: ^2.0.4
   vector_math: ^2.1.2
-  graphql_flutter: ^5.1.0
+  graphql_flutter: ^5.1.1-beta.3
   flutter_dotenv: ^5.0.2
+  faunadb_http: ^0.13.4
   
   
 

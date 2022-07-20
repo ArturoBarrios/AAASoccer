@@ -28,6 +28,7 @@ class BaseCommand {
   // Services
   UserService userService = _mainContext.read();
   GeoLocationServices geoLocationServices = _mainContext.read();
+  
 
 
 
@@ -114,7 +115,7 @@ class BaseCommand {
 }
 
   void setUser(User user){
-    userModel.user = user;
+    // userModel.user = user;
   }
 
   void setIsSigned(bool signedIn){

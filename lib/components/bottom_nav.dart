@@ -5,6 +5,7 @@ import '../views/tryout/create.dart';
 import '../views/training/create.dart';
 import '../views/team/create.dart';
 import '../views/wager/create.dart';
+import '../commands/user_command.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -36,6 +37,13 @@ class _BottomNav extends State<BottomNav> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void createUser() async{
+    Map<String, dynamic> userInput = {
+      'name': 'Gavan Singh'
+    };
+    Map<String, dynamic> createUserResp = await UserCommand().createUser(userInput);
   }
 
   @override
@@ -82,11 +90,13 @@ class _BottomNav extends State<BottomNav> {
               child: ElevatedButton(
                 style: buttonStyle,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>  WagerCreate()),
-                  );
+                  createUser();
+                  //uncomment
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) =>  WagerCreate()),
+                  // );
                 },
                 child: Text('+'),
               ),

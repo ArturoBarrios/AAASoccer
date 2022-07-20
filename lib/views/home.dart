@@ -169,7 +169,7 @@ class _Home extends State<Home> {
                                   onTap: () {cardTapped();},
                                   child: PickupCard())),
                           ])),
-                          SeedDataButton()
+                          // SeedDataButton()
                     ])),
                 // Stack(
                 //         children: [

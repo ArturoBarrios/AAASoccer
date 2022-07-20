@@ -2,6 +2,9 @@ import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/User.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
+import '../models/app_model.dart';
 
 class UserCommand extends BaseCommand {
 
@@ -17,24 +20,18 @@ class UserCommand extends BaseCommand {
      print("createUser");
     Map<String, dynamic> createUserResponse = {"success": false, "message": "Default Error"};
     try {
-      User user = User(email: userInput['email'], username: userInput['username'], phone: userInput['phone'], birthdate: userInput['birthdate'], gender: userInput['gender'], address: userInput['address']);
 
-      final request = ModelMutations.create(user);
-      print("request");
-      final response = await Amplify.API.mutate(request: request).response;
-      print("response");
+      final createDocument = Create(
+        Collection('users'),
+        Obj({
+          'data': {'name': 'Gavan Singh'}
+        }),
+      );  
 
-      User? createdUser = response.data;
-      if (createdUser == null) {
-        print('errors: ' + response.errors.toString());
-        return createUserResponse;
-      }
+      FaunaResponse result = await AppModel().faunaClient.query(createDocument);
+      print("result: ");
+      print(result.toJson());
       createUserResponse["success"] = true;
-      createUserResponse["messasge"] = "Successfully Created User";
-      createUserResponse["data"] = user;
-
-      print('Mutation result: ' );
-      print(createdUser);
       return createUserResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
