@@ -18,13 +18,16 @@ class UserCommand extends BaseCommand {
 
    Future<Map<String, dynamic>> createUser(Map<String, dynamic> userInput ) async{
      print("createUser");
-    Map<String, dynamic> createUserResponse = {"success": false, "message": "Default Error"};
+    Map<String, dynamic> createUserResponse = {"success": false, "message": "Default Error", "data": null};
     try {
-
       final createDocument = Create(
-        Collection('users'),
+        Collection('User'),
         Obj({
-          'data': {'name': 'Gavan Singh'}
+          'data': {
+            'name': userInput['name'],
+            'phone': userInput['phone'],
+            'email': userInput['email'],            
+            }
         }),
       );  
 
@@ -32,6 +35,9 @@ class UserCommand extends BaseCommand {
       print("result: ");
       print(result.toJson());
       createUserResponse["success"] = true;
+      createUserResponse["message"] = "User Created";
+      createUserResponse["data"] = result;
+      
       return createUserResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');

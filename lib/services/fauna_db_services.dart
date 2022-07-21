@@ -13,11 +13,13 @@ class FaunaDBServices {
       "success": false,
       "message": "Default Error"
     };
-    final FaunaClient faunaClient = FaunaClient(FaunaConfig.build(
-      secret: 'fnAEr6K_CIACT8LrjVZdayh8ZPF2QcQKcaKO-M1-',
-      domain: 'db.fauna.com'
-    ));
-    AppModel().faunaClient = faunaClient;
+    // final FaunaClient faunaClient = FaunaClient(FaunaConfig.build(
+    //   secret: 'fnAEr6K_CIACT8LrjVZdayh8ZPF2QcQKcaKO-M1-',
+    //   domain: 'db.fauna.com'
+    // ));
+    // AppModel().faunaClient = faunaClient;
+    /////might wanna check if client is even 
+    ///available    
     print("client: ");
     print(AppModel().faunaClient.toString());
     createFaunaClientResponse["success"] = true;

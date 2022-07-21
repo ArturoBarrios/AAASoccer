@@ -6,6 +6,7 @@ import '../views/training/create.dart';
 import '../views/team/create.dart';
 import '../views/wager/create.dart';
 import '../commands/user_command.dart';
+import '../commands/player_command.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -40,10 +41,13 @@ class _BottomNav extends State<BottomNav> {
   }
 
   void createUser() async{
-    Map<String, dynamic> userInput = {
-      'name': 'Gavan Singh'
+    Map<String, dynamic> userPlayerInput = {
+      'name': 'Gavan Singh',
+      'email': 'arturobarrios@gmail.com',
+      'phone': '123456789',
+      'competitive_level': 'Beginner',
     };
-    Map<String, dynamic> createUserResp = await UserCommand().createUser(userInput);
+    Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userPlayerInput);
   }
 
   @override
