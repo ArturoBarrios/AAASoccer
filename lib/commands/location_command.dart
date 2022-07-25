@@ -2,6 +2,9 @@ import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/Location.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
+import '../models/app_model.dart';
 
 class LocationCommand extends BaseCommand {
 
@@ -13,26 +16,31 @@ class LocationCommand extends BaseCommand {
     return posts;
   }
 
- Future<Map<String, dynamic>> createLocation(Map<String, dynamic> userInput ) async{
+ Future<Map<String, dynamic>> createLocation(Map<String, dynamic> locationInput ) async{
      print("createLocation");
-    Map<String, dynamic> createLocationResponse = {"success": false, "message": "Default Error", "data": Map<String, dynamic>()};
+    Map<String, dynamic> createLocationResponse = {"success": false, "message": "Default Error", "data": null};
     try {
-      // Location location = Location(latitude: userInput["latitude"], longitude: userInput["longitude"], name: userInput['name'], secondaryName: userInput['secondaryName'], address: userInput['address'], surface: userInput['surface'], fieldSize: userInput['fieldSize'], private: userInput['private']  );
-      // final request = ModelMutations.create(location);
-      // print("request");
-      // final response = await Amplify.API.mutate(request: request).response;
-      // print("response");
 
-      // Location? createdLocation = response.data;
-      // if (createdLocation != null) {
-      //   createLocationResponse["success"] = true;
-      //   createLocationResponse["messasge"] = "Successfully Created Location";
-      //   createLocationResponse["data"]["randomLocation"] = createdLocation;
+      final createDocument = Create(
+        Collection('Location'),
+        Obj({
+          'data': {            
+            'name': 'house!',
+            'latitude': locationInput['latitude'],
+            'longitude': locationInput['longitude'],
+          }
+        })
+      );
 
-      // }
+      FaunaResponse result = await AppModel().faunaClient.query(createDocument);
+      print("result: ");
+      print(result.toJson());
 
-      // print('Mutation result: ' );
-      // print(createdLocation);
+      createLocationResponse["success"] = true;
+      createLocationResponse["message"] = "Location Created";
+      createLocationResponse["data"] = result;
+      
+
       return createLocationResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');

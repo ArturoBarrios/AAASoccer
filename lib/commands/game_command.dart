@@ -2,30 +2,36 @@ import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/Game.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
+import '../models/app_model.dart';
+import '../commands/event_command.dart';
 
 class GameCommand extends BaseCommand {
 
 
- Future<Map<String, dynamic>> createGame(Map<String, dynamic> userInput ) async{
+ Future<Map<String, dynamic>> createGame(Map<String, dynamic> gameInput, Map<String, dynamic> eventInput ) async{
      print("createGame");
     Map<String, dynamic> createGameResponse = {"success": false, "message": "Default Error"};
     try {
-      Game game = Game(gameEventId: userInput['gameEventId'], hometeam: userInput['hometeam'], awayTeam: userInput['awayteam'], pickup: userInput['pickup']);
-      final request = ModelMutations.create(game);
-      print("request");
-      final response = await Amplify.API.mutate(request: request).response;
-      print("response");
-
-      Game? createdGame = response.data;
-      if (createdGame != null) {
-       createGameResponse["success"] = true;
-      createGameResponse["messasge"] = "Successfully Created Game";
-      createGameResponse["data"] = createdGame;
-
+      Map<String, dynamic> createEventResp = await EventCommand().createEvent(eventInput);
+      if(createEventResp["success"]){
+        FaunaResponse eventFaunaResult = createEventResp["data"];
+        Map<String, dynamic> eventResult = eventFaunaResult.asMap();
+        print("gameResult before creating Game: ");
+        print(eventResult['resource']['ref']['@ref']['id']);
+        if(eventResult['resource']['ref']['@ref']['id']){
+          final createDocument = Create(
+            Collection('Game'),
+            Obj({
+              'data': {
+                'pickup': gameInput['pickup'],           
+                'event': Ref(Collection("Event"), eventResult['resource']['ref']['@ref']['id']),
+                }
+            }),
+          ); 
+        }
       }
-      
-      print('Mutation result: ' );
-      print(createdGame);
       return createGameResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');

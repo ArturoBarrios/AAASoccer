@@ -15,15 +15,9 @@ class DatabaseSeeder {
 
   void run() async {
     print("run DatabaseSeeder");
-    //locations
-    Map<String, dynamic> createRandomUserLocationsResp = await LocationSeeder().createRandomUserLocations(data);
-    if(createRandomUserLocationsResp["success"]){
-      print("createRandomUserLocationsResp: ");
-      print(createRandomUserLocationsResp);
-      data["randomLocations"] = createRandomUserLocationsResp["data"]["randomLocations"];
       //users
-      Map<String, dynamic> createRandomUsersResp = await UserSeeder().createRandomUsers(data);
-    }
+    Map<String, dynamic> createRandomUsersResp = await UserSeeder().createRandomUsers(data);
+    
 
   }
 }

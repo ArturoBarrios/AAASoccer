@@ -38,6 +38,12 @@ enum ModelType {
   EVENT
 }
 
+enum UserAccountStatus{
+  UNCOMFIRMED
+  CONFIRMED
+  BANNED
+}
+
 type User  {
   id: ID!
   location: Location
@@ -51,7 +57,7 @@ type User  {
   username: String
   birthdate: String
   gender: GenderType
-  status: String
+  status: UserAccountStatus
   last_login: Int
   last_updated: Int
   images: [Image] @relation

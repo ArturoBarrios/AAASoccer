@@ -24,9 +24,14 @@ class UserCommand extends BaseCommand {
         Collection('User'),
         Obj({
           'data': {
-            'name': userInput['name'],
-            'phone': userInput['phone'],
             'email': userInput['email'],            
+            'name': userInput['name'],
+            'username': userInput['username'],
+            'phone': userInput['phone'],
+            'birthdate': userInput['birthdate'],
+            'gender': userInput['gender'],    
+            'location': Ref(Collection("Location"), userInput['location']['resource']['ref']['@ref']['id']),                    
+
             }
         }),
       );  

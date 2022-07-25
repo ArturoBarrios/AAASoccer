@@ -7,6 +7,7 @@ import '../views/team/create.dart';
 import '../views/wager/create.dart';
 import '../commands/user_command.dart';
 import '../commands/player_command.dart';
+import '../testing/seeding/database_seeder.service.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -39,15 +40,10 @@ class _BottomNav extends State<BottomNav> {
       _selectedIndex = index;
     });
   }
+  //testing methods(I know, what an amazing place to test models) :)
 
-  void createUser() async{
-    Map<String, dynamic> userPlayerInput = {
-      'name': 'Gavan Singh',
-      'email': 'arturobarrios@gmail.com',
-      'phone': '123456789',
-      'competitive_level': 'Beginner',
-    };
-    Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userPlayerInput);
+  void testFunction() async{
+    DatabaseSeeder().run();
   }
 
   @override
@@ -94,7 +90,7 @@ class _BottomNav extends State<BottomNav> {
               child: ElevatedButton(
                 style: buttonStyle,
                 onPressed: () {
-                  createUser();
+                  testFunction();
                   //uncomment
                   // Navigator.push(
                   //   context,

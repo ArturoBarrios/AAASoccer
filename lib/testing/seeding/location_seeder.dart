@@ -13,17 +13,13 @@ import '../../models/FieldPlayerOccupancySize.dart';
 
 class LocationSeeder {
   int radius = 16000; //10 miles in meters
-  List<Map<String, dynamic>> locations = [
-    {"latitude": 32.7157380, "longitude": -117.1610838}, //San Diego
-    {"latitude": 39.1031182, "longitude": -84.5120196}, //Cincinnati
-    {"latitude": 39.9611755, "longitude": -82.9987942}, //Columbus
-    {"latitude": 39.5069974, "longitude": -84.7452310}, //Oxford
-    {"latitude": 39.2903848, "longitude": -76.6121893}, //Baltimore
+  List<Map<String, dynamic>> locations = [    
+    // {"latitude": 32.7157380, "longitude": -117.1610838}, //San Diego
+    // {"latitude": 39.1031182, "longitude": -84.5120196}, //Cincinnati
+    // {"latitude": 39.9611755, "longitude": -82.9987942}, //Columbus
+    // {"latitude": 39.5069974, "longitude": -84.7452310}, //Oxford
+    // {"latitude": 39.2903848, "longitude": -76.6121893}, //Baltimore
     {"latitude": 39.9525839, "longitude": -75.1652215}, //Philadelphia
-    {"latitude": 30.2671530, "longitude": -97.7430608}, //Austin
-    {"latitude": 40.7127753, "longitude": -74.0059728}, //New York
-    {"latitude": 45.5152320, "longitude": -122.6783853}, //Portland
-    {"latitude": 47.6062095, "longitude": -122.3320708}, //Seattle
   ];
   List<LocationModel.Location> randomLocations = [];
 
