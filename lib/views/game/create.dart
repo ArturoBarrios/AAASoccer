@@ -51,7 +51,7 @@ class _GameCreateState extends State<GameCreate> {
           "eventID": createdEvent['data'].id
         };
         Map<String, dynamic> createdGame =
-            await GameCommand().createGame(createGameInput);
+            await GameCommand().createGame(createGameInput, createEventInput);
 
         if (createdGame['success']) {
           createPickupGameResponse['success'] = true;

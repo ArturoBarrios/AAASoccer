@@ -175,8 +175,7 @@ type League   {
 
 type Tournament   {
   id: ID!
-  league: League
-  name: String
+  league: League  
   groupPlay: Boolean  
   # event: Event
   events: [Event] @relation
@@ -185,8 +184,7 @@ type Tournament   {
 
 type Training   {
   id: ID!
-  name: String
-  events: [Event] @relation
+  events: [Event] @relation    
   # eligibleEventTypes: [EventType] @relation
 }
 
@@ -212,7 +210,7 @@ type Event   {
   teams: [Team] @relation
   games: [Game] @relation
   users: [User] @relation
-  isMainEvent: Boolean
+  isMainEvent: Boolean!
   #I don't think you need these since tournament 
   #can have many events but not the other way around
   # tournament: Tournament 
@@ -226,8 +224,7 @@ type Event   {
 type Team   {
   id: ID!  
   name: String
-  color: String
-  logo: String
+  color: String  
   events: [Event] @relation
   images: [Image] @relation
   players: [Player] @relation    
@@ -243,7 +240,7 @@ type Image   {
   location: Location
   organization: Organization
   attachedModelType: ModelType
-  sponsor: Sponsor
+  sponsor: Sponsor  
 }
 
 type GifContent   {

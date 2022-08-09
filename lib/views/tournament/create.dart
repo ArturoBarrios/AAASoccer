@@ -30,36 +30,36 @@ class _TournamentCreateState extends State<TournamentCreate> {
       "success": false,
       "message": "Default Error"
     };
-    try {
-      Map<String, dynamic> createEventInput = {
-        "name": nameController.text.trim(),
-        "price": priceController.text.trim(),
-        "location": locationController.text.trim(),
-        "images": imagesController.text.trim(),
-        "type": EventType.TOURNAMENT,
-      };
+    // try {
+    //   Map<String, dynamic> createEventInput = {
+    //     "name": nameController.text.trim(),
+    //     "price": priceController.text.trim(),
+    //     "location": locationController.text.trim(),
+    //     "images": imagesController.text.trim(),
+    //     "type": EventType.TOURNAMENT,
+    //   };
 
-      Map<String, dynamic> createdEvent =
-          await EventCommand().createEvent(createEventInput);
-    print("createdEvent: ");
-    print(createdEvent['data']);
-      if (createdEvent['success']) {
-        Map<String, dynamic> createTournamentInput = {
+    //   Map<String, dynamic> createdEvent =
+    //       await EventCommand().createEvent(createEventInput);
+    // print("createdEvent: ");
+    // print(createdEvent['data']);
+    //   if (createdEvent['success']) {
+    //     Map<String, dynamic> createTournamentInput = {
           
           
-          "tournamentEventId": createdEvent['data'].id
-        };
-        Map<String, dynamic> createdTournament =
-            await TournamentCommand().createTournament(createTournamentInput);
+    //       "tournamentEventId": createdEvent['data'].id
+    //     };
+    //     Map<String, dynamic> createdTournament =
+    //         await TournamentCommand().createTournament(createTournamentInput, eventInput);
 
-        if (createdTournament['success']) {
-          createEventResponse['success'] = true;
-        }
-      }
+    //     if (createdTournament['success']) {
+    //       createEventResponse['success'] = true;
+        // }
+      // }
+      // return createEventResponse;
+    // } on ApiException catch (e) {
       return createEventResponse;
-    } on ApiException catch (e) {
-      return createEventResponse;
-    }
+    // }
   }
 
   @override

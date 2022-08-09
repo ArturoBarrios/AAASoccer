@@ -7,7 +7,7 @@ import '../models/app_model.dart';
 
 class PlayerCommand extends BaseCommand {
 
- Future<Map<String, dynamic>> createPlayer(Map<String, dynamic> userInput, Map<String, dynamic> playerInput  ) async{
+ Future<Map<String, dynamic>> createPlayer(Map<String, dynamic> userInput, Map<String, dynamic> playerInput, Boolean withTeam  ) async{
      
      print("createPlayer");
     Map<String, dynamic> createPlayerResponse = {"success": false, "message": "Default Error", "data": null};
@@ -28,7 +28,7 @@ class PlayerCommand extends BaseCommand {
               'data': {
                 'competitveLevel': playerInput['competitveLevel'],  
                 'user': Ref(Collection("User"), userResult['resource']['ref']['@ref']['id']),
-          
+                'team': withTeam ? playerInput['team']['resource']['ref']['@ref']['id'] : null,
                 }
             }),
           );  

@@ -20,6 +20,8 @@ class UserCommand extends BaseCommand {
      print("createUser");
     Map<String, dynamic> createUserResponse = {"success": false, "message": "Default Error", "data": null};
     try {
+      print("location Input: ");
+      print(userInput);
       final createDocument = Create(
         Collection('User'),
         Obj({
@@ -29,7 +31,7 @@ class UserCommand extends BaseCommand {
             'username': userInput['username'],
             'phone': userInput['phone'],
             'birthdate': userInput['birthdate'],
-            'gender': userInput['gender'],    
+            'gender': "test",//should be userInput['gender'];
             'location': Ref(Collection("Location"), userInput['location']['resource']['ref']['@ref']['id']),                    
 
             }

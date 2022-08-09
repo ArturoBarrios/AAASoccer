@@ -19,7 +19,8 @@ class EventCommand extends BaseCommand {
         Obj({
           'data': {
             'name': eventInput['name'],
-                      
+            'isMainEvent': eventInput['isMainEvent'],
+            'location': eventInput['location']['resource']['ref']['@ref']['id']                          
             }
         }),
       );

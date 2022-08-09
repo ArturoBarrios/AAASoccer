@@ -43,7 +43,7 @@ class _BottomNav extends State<BottomNav> {
   //testing methods(I know, what an amazing place to test models) :)
 
   void testFunction() async{
-    DatabaseSeeder().run();
+   await DatabaseSeeder().run();
   }
 
   @override

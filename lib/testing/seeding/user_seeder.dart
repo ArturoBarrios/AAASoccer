@@ -2,48 +2,44 @@ import '../../models/Location.dart';
 import '../../models/GenderType.dart';
 import '../../commands/user_command.dart';
 import '../../commands/location_command.dart';
+import '../../commands/player_command.dart';
 import '../../models/User.dart';
 import './location_seeder.dart';
 import 'dart:math';
 import 'package:faunadb_http/faunadb_http.dart';
 
 class UserSeeder {
-  Future<Map<String, dynamic>> createRandomUsers(
-      Map<String, dynamic> data) async {
-    Map<String, dynamic> createUsersResponse = {
+  Future<Map<String, dynamic>> createRandomPlayer(    
+     Map<String, dynamic> team) async {
+        print("createRandomUser");
+    Map<String, dynamic> createRandomUserResponse = {
       "success": false,
       "message": "Something went wrong with creating random user locations",
-      "data": [],
+      "data": null,
     };    
-    for (int i = 0; i < data['numberOfUsers']; i++) {
-      Map<String, dynamic> getRandomUserDataResp = getRandomUserData();
-      if(getRandomUserDataResp["success"]){
-        Map<String, dynamic> phillyLocation = LocationSeeder().locations[0];
-        Map<String, dynamic> randomLocationResp = await LocationSeeder().generateRandomLocation(phillyLocation);
-        Map<String, dynamic> randomLocationData = randomLocationResp["data"]["randomLocation"];
-        Map<String, dynamic>createLocationInput = LocationSeeder().getRandomLocationData();
-        createLocationInput["latitude"] = randomLocationData["data"]["randomLocation"]["latitude"];
-        createLocationInput["longitude"] = randomLocationData["data"]["randomLocation"]["longitude"];
-        Map<String, dynamic> createLocationResp = await LocationCommand().createLocation(createLocationInput);
-        FaunaResponse locationFaunaResponse = createLocationResp["data"];
-        Map<String, dynamic> locationResult = locationFaunaResponse.asMap();
-        if(createLocationResp['success']){
-          Map<String, dynamic> randomUserData = getRandomUserDataResp["data"]["randomUserData"];  
-          randomUserData['location'] = locationResult;//createLocationResp["data"]["randomLocation"];      
-          Map<String, dynamic> createUserResponse = await UserCommand().createUser(randomUserData);
-          if(createUserResponse["success"]){
-            FaunaResponse createdUser = createUserResponse["data"];
-            createUsersResponse["data"].add(createdUser);
-            
-          }
-        }
+    // for (int i = 0; i < data['numberOfUsers']; i++) {      
+      Map<String, dynamic> getRandomUserDataResp = await getRandomUserData();
+      Map<String, dynamic> getRandomPlayerDataResp = getRandomPlayerData();
+      
+      Map<String, dynamic> createLocationResp = await LocationSeeder().createRandomLocation();
+      FaunaResponse locationFaunaResponse = createLocationResp["data"];
+      Map<String, dynamic> locationResult = locationFaunaResponse.asMap();
+      if(createLocationResp['success']){
         
+        getRandomUserDataResp['location'] = locationResult;//createLocationResp["data"]["randomLocation"];          
+        getRandomPlayerDataResp['team'] = team;
+        Map<String, dynamic> createUserResponse = await PlayerCommand().createPlayer(getRandomUserDataResp, getRandomPlayerDataResp, true);
+
+        if(createUserResponse["success"]){
+       
       }
+        
+      
     }
 
-    createUsersResponse["success"] = true;
+    createRandomUserResponse["success"] = true;
 
-    return createUsersResponse;
+    return createRandomUserResponse;
   }
 
 
@@ -51,22 +47,53 @@ class UserSeeder {
     Map<String, dynamic> randomUserDataResponse = {
       "success": false,
       "message": "Something went wrong with creating random user data",
-      "data": Map<String, dynamic>(),
+      "data": null,
     
     };
     var rng = Random();
     Map<String, dynamic> randomUserData = {
-      "email": "randomEmail" + rng.nextInt(1000000000).toString()+"@gmail.com",
-      'name': 'Name' + rng.nextInt(1000000000).toString(),
-      "username": "randomUsername" + rng.nextInt(1000000000).toString(),
-      "phone": rng.nextInt(10000000000).toString(),
+      "email": "randomEmail" + rng.nextInt(100000000).toString()+"@gmail.com",
+      'name': 'Name' + rng.nextInt(100000000).toString(),
+      "username": "randomUsername" + rng.nextInt(100000000).toString(),
+      "phone": rng.nextInt(100000000).toString(),
       "birthdate": DateTime.now().subtract(Duration(days: rng.nextInt(1000000))),
       "gender": rng.nextInt(2) == 0 ? GenderType.MALE : GenderType.FEMALE,
     };
 
+    randomUserDataResponse['success'] = true;
+    randomUserDataResponse['message'] = "random user generated";  
+    randomUserDataResponse['data'] = randomUserData;   
+
 
 
     return randomUserDataResponse;
+
+  }
+
+  Map<String, dynamic> getRandomPlayerData(){
+    Map<String, dynamic> randomPlayerDataResponse = {
+      "success": false,
+      "message": "Something went wrong with creating random user data",
+      "data": null,
+    
+    };
+    var rng = Random();
+    Map<String, dynamic> randomPlayerData = {
+      "email": "randomEmail" + rng.nextInt(100000000).toString()+"@gmail.com",
+      'name': 'Name' + rng.nextInt(100000000).toString(),
+      "username": "randomUsername" + rng.nextInt(100000000).toString(),
+      "phone": rng.nextInt(100000000).toString(),
+      "birthdate": DateTime.now().subtract(Duration(days: rng.nextInt(1000000))),
+      "gender": rng.nextInt(2) == 0 ? GenderType.MALE : GenderType.FEMALE,
+    };
+
+    randomPlayerDataResponse['success'] = true;
+    randomPlayerDataResponse['message'] = "random user generated";  
+    randomPlayerDataResponse['data'] = randomPlayerData;   
+
+
+
+    return randomPlayerDataResponse;
 
   }
 }
