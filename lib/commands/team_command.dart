@@ -1,32 +1,38 @@
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/Team.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
+import '../models/app_model.dart';
 
 class TeamCommand extends BaseCommand {
 
 
- Future<Map<String, dynamic>> createTeam(Map<String, dynamic> userInput ) async{
+ Future<Map<String, dynamic>> createTeam(Map<String, dynamic> teamInput ) async{
      print("createTeam");
-    Map<String, dynamic> createTeamResponse = {"success": false, "message": "Default Error"};
+    Map<String, dynamic> createTeamResponse = {"success": false, "message": "Default Error", "data": null};
     try {
-      Team team = Team(name: userInput['name'], color: userInput['color'], logo: userInput['logo'], images: userInput['images']);
-      final request = ModelMutations.create(team);
-      print("request");
-      final response = await Amplify.API.mutate(request: request).response;
-      print("response");
+     print("team input: ");
+     print(teamInput);
+     final createDocument = Create(
+        Collection('Team'),
+        Obj({
+          'data': {            
+            'name': teamInput['name'],
+            'color': teamInput['color'],            
+            'location': Ref(Collection("Location"), teamInput['location']['resource']['ref']['@ref']['id']),                    
 
-      Team? createdTeam = response.data;
-      if (createdTeam != null) {
-       createTeamResponse["success"] = true;
-      createTeamResponse["messasge"] = "Successfully Created Team";
-      createTeamResponse["data"] = createdTeam;
+            }
+        }),
+      );  
 
-      }
-      
-      print('Mutation result: ' );
-      print(createdTeam);
-      return createTeamResponse;
+      FaunaResponse result = await AppModel().faunaClient.query(createDocument);
+      print("result: ");
+      print(result.toJson());
+      createTeamResponse["success"] = true;
+      createTeamResponse["message"] = "User Created";
+      createTeamResponse["data"] = result;
+
+     return createTeamResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
       return createTeamResponse;

@@ -229,6 +229,7 @@ type Team   {
   images: [Image] @relation
   players: [Player] @relation    
   sponsors: [Sponsor] @relation
+  location: Location
 }
 
 type Image   {
@@ -283,6 +284,7 @@ type Location   {
   longitude: Float
   events: [Event] @relation
   user: User
+  team: Team
 }
 
 type Rating   {

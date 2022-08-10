@@ -112,7 +112,7 @@ class EventSeeder {
     int randomLocationNumber = rng.nextInt(100000000);
     randomTournamentData['groupPlay'] = rng.nextBool();
     randomTournamentData['numberOfTeams'] = numberOfTeamsOptions[rng.nextInt(numberOfTeamsOptions.length)];
-    randomTournamentData['numberOfGroups'] = rng.
+    // randomTournamentData['numberOfGroups'] = rng
 
     return randomTournamentData;
   }

@@ -12,7 +12,7 @@ import 'team_seeder.dart';
 
 class DatabaseSeeder {
   Map<String, dynamic> data = {
-  'numberOfTeams': 16,//4500,
+  'numberOfTeams': 2,//4500,
   "numberOfUserLocations": 4,//4500,
   'numberOfUsers': 4,//4500,
   'randomLocations': [],
@@ -45,7 +45,7 @@ class DatabaseSeeder {
 
     }
     // Map<String, dynamic> createRandomUsersResp = await UserSeeder().createRandomUsers(data);
-    Map<String, dynamic> createEventsResp = await EventSeeder().createEvents(data);
+    // Map<String, dynamic> createEventsResp = await EventSeeder().createEvents(data);
     print("finished Seeding DatabaseSeeder");
     
     

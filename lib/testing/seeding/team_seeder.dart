@@ -20,7 +20,6 @@ class TeamSeeder {
     for (int i = 0; i < data['numberOfTeams']; i++) {      
       Map<String, dynamic> getRandomTeamDataResp = getRandomTeamData();
       if(getRandomTeamDataResp["success"]){
-
         print("success");
         Map<String, dynamic> createLocationResp = await LocationSeeder().createRandomLocation();
         FaunaResponse locationFaunaResponse = createLocationResp["data"];
