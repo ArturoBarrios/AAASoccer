@@ -6,6 +6,7 @@ import '../../commands/event_command.dart';
 import '../../commands/training_command.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/game_command.dart';
+import 'game_seeder.dart';
 import '../../commands/geolocation_command.dart';
 import '../../testing/seeding/location_seeder.dart';
 
@@ -33,7 +34,9 @@ class EventSeeder {
         'location': locationResult,
       };
       Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput);
-
+      if(createPickupGameResp['success']){
+        GameSeeder().createGameRelationships();
+      }      
     }
     //Training Sessions
     for(int i = 0; i<data['numberOfTrainingSessions']; i++){
@@ -48,7 +51,9 @@ class EventSeeder {
         
       };
       Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(trainingInput, eventInput);
-      
+      if(createTrainingResp['success']){
+        TrainingSeeder().createTrainingRelationships();
+      }
 
     }
     //tournaments
@@ -62,8 +67,28 @@ class EventSeeder {
         "location": locationResult,
       };
       Map<String, dynamic> createTournamentResp = await TournamentCommand().createTournament(randomTournamentData, eventInput);
+      if(createTournamentResp['success']){
+        TournamentSeeder().createTournamentRelationships();
+      }
     }
     //leagues
+    for(int i = 0;i<data['numberOfLeagues'];i++){
+      Map<String, dynamic> randomLeagueData = getRandomLeagueData();
+        Map<String, dynamic> locationResult = await createRandomLocation();
+      Map<String, dynamic> eventInput = {
+        "name": "League " + i.toString(),
+        'isMainEvent': true,        
+        "location": locationResult,
+      };
+      Map<String, dynamic> createLeagueResp = await LeagueCommand().createLeague(randomLeagueData, eventInput);
+      if(createLeagueResp['success']){
+        //make sure to check if league has tournament
+        //you should be able to keep adding tournaments 
+        //even as the league is going on
+        LeagueSeeder().createLeagueRelationships();
+      }
+    }
+
     createEventsResponse["success"] = true;
 
 
@@ -117,4 +142,16 @@ class EventSeeder {
     return randomTournamentData;
   }
 
+  Map<String, dynamic> getRandomLeagueData(){
+    Map<String, dynamic> randomLeagueData = {};
+    var rng = Random();
+    int randomLocationNumber = rng.nextInt(100000000);
+    
+
+    randomLeagueData["name"] = "League " + randomLocationNumber.toString();
+    randomLeagueData["hasTournament"] = rng.nextBool();
+    
+
+    return randomLeagueData;
+  }
 }
