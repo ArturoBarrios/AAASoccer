@@ -168,8 +168,7 @@ type Tryout   {
 
 type League   {
   id: ID!
-  name: String
-  tournament: Tournament  
+  tournament: Tournament    
   # event: Event
   events: [Event] @relation
   # eligibleEventTypes: [EventType] @relation

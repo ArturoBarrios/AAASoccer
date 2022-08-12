@@ -5,10 +5,14 @@ import '../../commands/location_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/training_command.dart';
 import '../../commands/tournament_command.dart';
+import '../../commands/league_command.dart';
 import '../../commands/game_command.dart';
 import 'game_seeder.dart';
 import '../../commands/geolocation_command.dart';
 import '../../testing/seeding/location_seeder.dart';
+import '../../testing/seeding/training_seeder.dart';
+import '../../testing/seeding/tournament_seeder.dart';
+import '../../testing/seeding/league_seeder.dart';
 
 import '../../models/SurfaceType.dart';
 import '../../models/FieldPlayerOccupancySize.dart';
@@ -81,6 +85,9 @@ class EventSeeder {
         "location": locationResult,
       };
       Map<String, dynamic> createLeagueResp = await LeagueCommand().createLeague(randomLeagueData, eventInput);
+      if(randomLeagueData['hasTournament']){
+        //add tournament to league here?
+      }
       if(createLeagueResp['success']){
         //make sure to check if league has tournament
         //you should be able to keep adding tournaments 

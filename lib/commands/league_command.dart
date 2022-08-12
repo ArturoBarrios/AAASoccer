@@ -2,33 +2,36 @@ import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/League.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import '../commands/event_command.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
 
 class LeagueCommand extends BaseCommand {
 
 
- Future<Map<String, dynamic>> createLeague(Map<String, dynamic> userInput ) async{
+ Future<Map<String, dynamic>> createLeague(Map<String, dynamic> leagueData, eventInput ) async{
      print("createLeague");
-    Map<String, dynamic> createLeagueResponse = {"success": false, "message": "Default Error"};
+    Map<String, dynamic> createLeagueResponse = {"success": false, "message": "Default Error", "data": null};
     try {
-      League league = League(leagueEventId: userInput['leagueEventId']);
-      final request = ModelMutations.create(league);
-      print("request");
-      final response = await Amplify.API.mutate(request: request).response;
-      print("response");
-
-      League? createdLeague = response.data;
-      if (createdLeague != null) {
-       createLeagueResponse["success"] = true;
-      createLeagueResponse["messasge"] = "Successfully Created League";
-      createLeagueResponse["data"] = createdLeague;
-
+      Map<String, dynamic> createEventResp = await EventCommand().createEvent(eventInput);
+      if(createEventResp["success"]){
+        FaunaResponse eventFaunaResult = createEventResp["data"];
+        Map<String, dynamic> eventResult = eventFaunaResult.asMap();
+        print("event before creating Tournament: ");
+        print(eventResult['resource']['ref']['@ref']['id']);
+        final createDocument = Create(
+            Collection('League'),
+            Obj({
+              'data': {                
+                'event': Ref(Collection("Event"), eventResult['resource']['ref']['@ref']['id']),                
+                }
+            }),
+        ); 
       }
       
-      print('Mutation result: ' );
-      print(createdLeague);
       return createLeagueResponse;
     } on ApiException catch (e) {
-      print('Mutation failed: $e');
+      print('Mutation failed: $e');      
       return createLeagueResponse;
     }
   }
