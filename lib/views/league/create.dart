@@ -30,36 +30,36 @@ class _LeagueCreateState extends State<LeagueCreate> {
       "success": false,
       "message": "Default Error"
     };
-    try {
-      Map<String, dynamic> createEventInput = {
-        "name": nameController.text.trim(),
-        "price": priceController.text.trim(),
-        "location": locationController.text.trim(),
-        "images": imagesController.text.trim(),
-        "type": EventType.LEAGUE,
-      };
+    // try {
+    //   Map<String, dynamic> createEventInput = {
+    //     "name": nameController.text.trim(),
+    //     "price": priceController.text.trim(),
+    //     "location": locationController.text.trim(),
+    //     "images": imagesController.text.trim(),
+    //     "type": EventType.LEAGUE,
+    //   };
 
-      Map<String, dynamic> createdEvent =
-          await EventCommand().createEvent(createEventInput);
-    print("createdEvent: ");
-    print(createdEvent['data']);
-      if (createdEvent['success']) {
-        Map<String, dynamic> createLeagueInput = {
+    //   Map<String, dynamic> createdEvent =
+    //       await EventCommand().createEvent(createEventInput);
+    // print("createdEvent: ");
+    // print(createdEvent['data']);
+    //   if (createdEvent['success']) {
+    //     Map<String, dynamic> createLeagueInput = {
           
           
-          "leagueEventId": createdEvent['data'].id
-        };
-        Map<String, dynamic> createdLeague =
-            await LeagueCommand().createLeague(createLeagueInput);
+    //       "leagueEventId": createdEvent['data'].id
+    //     };
+    //     Map<String, dynamic> createdLeague =
+    //         await LeagueCommand().createLeague(createLeagueInput, eventInput);
 
-        if (createdLeague['success']) {
-          createEventResponse['success'] = true;
-        }
-      }
+    //     if (createdLeague['success']) {
+    //       createEventResponse['success'] = true;
+    //     }
+    //   }
+    //   return createEventResponse;
+    // } on ApiException catch (e) {
       return createEventResponse;
-    } on ApiException catch (e) {
-      return createEventResponse;
-    }
+    // }
   }
 
   @override

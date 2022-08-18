@@ -37,9 +37,11 @@ class EventSeeder {
         'isMainEvent': true,
         'location': locationResult,
       };
-      Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput);
+      Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput);      
+      
       if(createPickupGameResp['success']){
-        GameSeeder().createGameRelationships();
+        
+        GameSeeder().createGameRelationships(createPickupGameResp['data'] ,data);
       }      
     }
     //Training Sessions

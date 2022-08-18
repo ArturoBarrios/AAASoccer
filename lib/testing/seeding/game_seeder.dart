@@ -11,38 +11,37 @@ import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 
 class GameSeeder {
-  Future<Map<String, dynamic>> createGameRelationships() async{
+  //assumes that data contains List of games and players of FaunaResponse type
+  Future<Map<String, dynamic>> createGameRelationships(FaunaResponse gameFaunaResponse,data) async{
+    print("createGameRelationships");
     Map<String, dynamic> createGameRelationshipsResp = {
       "success": false,
       "message": "Something went wrong with creating game relationships",
       "data": null,
     };
+    // Map<String, dynamic> gameMap = gameFaunaResponse.asMap();
+    // final readUser = Get(Ref(Collection('Game'), gameMap['resource']['ref']['@ref']['id']));
+
+    // final result = await AppModel().faunaClient.query(readUser);
 
     //create relationship with games and players
-    //get all games and seed each game with players
+    int numberOfPlayersPerPickupGame = data['numberOfPlayersPerPickupGame'];
+    for(int i = 0;i<numberOfPlayersPerPickupGame;i++){
+      String userRef = "";
+      final readUser = Get(Ref(Collection('users'), userRef));
+
+        final result = await AppModel().faunaClient.query(readUser);
 
 
-final readAllUsers = Map_(
-  Paginate(Match(Index('all_Users'))),
-  Lambda(
-    'userRef',
-    Let(
-      {
-        'userDoc': Get(Var('userRef')),
-      },
-      Obj(
-        {
-          'id': Select(['ref', 'id'], Var('userDoc')),
-          'name': Select(['data', 'name'], Var('userDoc')),
-        },
-      ),
-    ),
-  ),
-);
+    }
 
-  final result = await AppModel().faunaClient.query(query);
+
+
+
+
     
-
+  print("result: ");
+  print(result.toJson());
     return createGameRelationshipsResp;
 
   }

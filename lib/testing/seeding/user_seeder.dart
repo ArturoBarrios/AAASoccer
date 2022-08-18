@@ -12,7 +12,7 @@ class UserSeeder {
   Future<Map<String, dynamic>> createRandomPlayer(    
      Map<String, dynamic> team) async {
         print("createRandomUser");
-    Map<String, dynamic> createRandomUserResponse = {
+    Map<String, dynamic> createRandomPlayerResponse = {
       "success": false,
       "message": "Something went wrong with creating random user locations",
       "data": null,
@@ -31,15 +31,18 @@ class UserSeeder {
         Map<String, dynamic> createUserResponse = await PlayerCommand().createPlayer(getRandomUserDataResp, getRandomPlayerDataResp, true);
 
         if(createUserResponse["success"]){
-       
+          createRandomPlayerResponse["success"] = true;
+          createRandomPlayerResponse["data"] = createUserResponse["data"];
+          
+
       }
         
       
     }
 
-    createRandomUserResponse["success"] = true;
+    
 
-    return createRandomUserResponse;
+    return createRandomPlayerResponse;
   }
 
 

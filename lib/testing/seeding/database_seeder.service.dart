@@ -21,23 +21,32 @@ class DatabaseSeeder {
   'numberOfTournaments': 4,//4500,
   'numberOfTryouts': 4,//4500,
   'numberOfTrainingSessions': 4,//4500,
-  'numberOfPlayersPerTeam': 13,
+  'numberOfPlayersPerTeam': 13,  //important
+  'numberOfPlayersPerPickupGame': 13,  //important
  };
 
   Future run() async {
     print("run DatabaseSeeder");
+    List players = [];
+    List teams = [];
     //seed teams
     Map<String, dynamic> createTeamsResponse = await TeamSeeder().createRandomTeams(data);
     if(createTeamsResponse['success']){
-      List teams = createTeamsResponse['data'];
+      teams = createTeamsResponse['data'];
       print("create users for teams");
       //create x users for each team      
       for(int i = 0;i<teams.length;i++){
-        FaunaResponse team = teams[i];        
-        Map<String, dynamic> createUserResponse = await UserSeeder().createRandomPlayer(team.asMap());
+        FaunaResponse team = teams[i];                
+        Map<String, dynamic> createPlayerResponse = await UserSeeder().createRandomPlayer(team.asMap());
+        if(createPlayerResponse['success']){
+          players.add(createPlayerResponse['data']);
+        }
+        
       }
 
     }    
+    data['players'] = players;
+    data['teams'] = teams;
     Map<String, dynamic> createEventsResp = await EventSeeder().createEvents(data);
     
     print("finished Seeding DatabaseSeeder");
