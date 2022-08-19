@@ -1,10 +1,7 @@
-import '../../models/Location.dart';
-import '../../models/GenderType.dart';
 import '../../models/app_model.dart';
 import '../../commands/user_command.dart';
 import '../../commands/team_command.dart';
 import '../../commands/location_command.dart';
-import '../../models/User.dart';
 import './location_seeder.dart';
 import 'dart:math';
 import 'package:faunadb_http/faunadb_http.dart';
@@ -29,14 +26,14 @@ class GameSeeder {
     for(int i = 0;i<numberOfPlayersPerPickupGame;i++){
       print("for loop!");
       Map<String, dynamic> playerMap = data['players'][i].asMap();
-      String userRef = playerMap['resource']['ref']['@ref']['id'];
-      print("userRef: ");
-      print(userRef);
+      String playerRef = playerMap['resource']['ref']['@ref']['id'];
+      print("playerRef: ");
+      print(playerRef);
       String gameRef = gameFaunaResponse.asMap()['resource']['ref']['@ref']['id'];
       final updateUser = Update(
         Ref(Collection('Game'), gameRef),
         Obj({
-          'data': {'players': userRef}
+          'data': {'Player': Ref(Collection("players"), playerRef)}
         }),
       );
       

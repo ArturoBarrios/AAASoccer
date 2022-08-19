@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/training_command.dart';
 import '../../commands/event_command.dart';
-import '../../models/EventType.dart';
 
 class TrainingCreate extends StatefulWidget {
   @override
@@ -36,7 +35,7 @@ class _TrainingCreateState extends State<TrainingCreate> {
         "price": priceController.text.trim(),
         "location": locationController.text.trim(),
         "images": imagesController.text.trim(),
-        "type": EventType.TRAINING,
+        "type": "EventType.TRAINING",
       };
 
       Map<String, dynamic> createdEvent =

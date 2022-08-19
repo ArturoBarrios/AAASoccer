@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 
 class FaunaDBServices {
@@ -21,11 +22,25 @@ class FaunaDBServices {
     /////might wanna check if client is even 
     ///available    
     print("client: ");
-    print(AppModel().faunaClient.toString());
+    print(AppModel().faunaClient.toString());    
     createFaunaClientResponse["success"] = true;
     createFaunaClientResponse["message"] = "Fauna Client Created";
     // createFaunaClientResponse["faunaClient"] = faunaClient;
 
     return createFaunaClientResponse;
+  }
+
+  Future<Map<String, dynamic>> retrieveInitialModels() async {
+    Map<String, dynamic> retrieveInitialModelsResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": Map<String, dynamic>()
+    };
+
+    // final paginateUsers = Paginate(
+    //   Match(Index('user-by-name'), terms: ['Gavan Singh']),
+    // );
+
+    return retrieveInitialModelsResponse;
   }
 }

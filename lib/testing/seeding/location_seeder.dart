@@ -5,9 +5,7 @@ import '../../commands/location_command.dart';
 import '../../commands/geolocation_command.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import '../../models/Location.dart' as LocationModel;
-import '../../models/SurfaceType.dart';
-import '../../models/FieldPlayerOccupancySize.dart';
+
 
 // import '../../models/Location.dart';
 
@@ -21,7 +19,7 @@ class LocationSeeder {
     // {"latitude": 39.2903848, "longitude": -76.6121893}, //Baltimore
     {"latitude": 39.9525839, "longitude": -75.1652215}, //Philadelphia
   ];
-  List<LocationModel.Location> randomLocations = [];
+  List<String> randomLocations = [];
 
 
 
@@ -29,24 +27,24 @@ class LocationSeeder {
     Map<String, dynamic> randomLocationData = {};
     var rng = Random();
     int randomLocationNumber = rng.nextInt(100000000);
-    List<SurfaceType> surfaceTypes = [
-      SurfaceType.TURFPOOR,
-      SurfaceType.TURFOKAY,
-      SurfaceType.TURFGOOD,
-      SurfaceType.TURFEXCELLENT,
-      SurfaceType.GRASSPOOR,
-      SurfaceType.GRASSOKAY,
-      SurfaceType.GRASSGOOD,
-      SurfaceType.HARDFLOOR,
-      SurfaceType.SAND,
-      SurfaceType.NAILS,
-      SurfaceType.QUICKSAND,
+    List<String> surfaceTypes = [
+      "SurfaceType.TURFPOOR",
+      "SurfaceType.TURFOKAY",
+      "SurfaceType.TURFGOOD",
+      "SurfaceType.TURFEXCELLENT",
+      "SurfaceType.GRASSPOOR",
+      "SurfaceType.GRASSOKAY",
+      "SurfaceType.GRASSGOOD",
+      "SurfaceType.HARDFLOOR",
+      "SurfaceType.SAND",
+      "SurfaceType.NAILS",
+      "SurfaceType.QUICKSAND",
     ];
 
-    List<FieldPlayerOccupancySize> fieldPlayerOccupancySizes = [
-      FieldPlayerOccupancySize.SMALL,
-      FieldPlayerOccupancySize.MEDIUM,
-      FieldPlayerOccupancySize.FULLSIZE,
+    List<String> fieldPlayerOccupancySizes = [
+      "FieldPlayerOccupancySize.SMALL",
+      "FieldPlayerOccupancySize.MEDIUM",
+      "FieldPlayerOccupancySize.FULLSIZE",
     ];
 
     randomLocationData["name"] =

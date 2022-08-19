@@ -16,10 +16,8 @@ import 'services/user_service.dart';
 import 'services/fauna_db_services.dart';
 import 'services/geolocation_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
-import 'views/home_page_temporary.dart';
 import 'views/home.dart';
 
-import 'views/login_page.dart';
 import 'commands/base_command.dart' as Commands;
 import 'components/Loading/loading_version1.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -54,8 +52,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     print("initState");
-    // setupListeners();
-    // configureAmplify();
     configureApp();
   }
 
@@ -66,6 +62,7 @@ class _MyAppState extends State<MyApp> {
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
      if (configureAmplifyResp['message'] == "isSignedIn") {
       FaunaDBServices().createFaunaClient();
+      FaunaDBServices().retrieveInitialModels();
       Map<String, dynamic> otherConfigurationResp = otherConfigurations();
       if(otherConfigurationResp['success']){
         print("startLoadToHomeTransition");
@@ -78,38 +75,13 @@ class _MyAppState extends State<MyApp> {
     // configureGraphQL();
   }
 
-  // void configureGraphQL() async {
-  //   //SHOULD MODULARIZE THIS
-  //   await initHiveForFlutter();
-
-  //   final HttpLink httpLink = HttpLink(dotenv.env['GRAPHQLURLDEV'].toString());
-
-  //   final AuthLink authLink = AuthLink(
-  //     getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
-  //     // OR
-  //     // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
-  //   );
-
-  //   final Link link = authLink.concat(httpLink);
-
-  //   ValueNotifier<GraphQLClient> client = ValueNotifier(
-  //     GraphQLClient(
-  //       link: link,
-  //       // The default store is the InMemoryStore, which does NOT persist to disk
-  //       cache: GraphQLCache(store: HiveStore()),
-  //     ),
-  //   );
-  // }
-
   Future <Map<String, dynamic>> configureAmplify() async {    
     Map<String, dynamic> configureAmplify =
         await AmplifyAuth.AmplifyAuthService.configureAmplify();
     setState(() {
       if (configureAmplify['success']) {
         print("configured amplify!");
-        print(configureAmplify);
-
-       
+        print(configureAmplify);       
       }
     });
       return configureAmplify;
@@ -125,15 +97,7 @@ class _MyAppState extends State<MyApp> {
     
   }
 
-  void testFunction() {
-    setState(() {
-      AppModel().amplifyConfigured = true;
-    });
-  }
 
-  void setupListeners() {
-    // AppModel().amplifyConfigured.addListener(() => print("niceeeee"));
-  }
 
   void signOut(AuthenticatorState state) async {
     try {
@@ -503,7 +467,8 @@ class AppScaffold extends StatelessWidget {
     print(isSignedIn);
     // Return the current view, based on the currentUser value:
     return Scaffold(
-      body: initialConditionsMet == false ? LoginPage() : Home(),
+      //replace first condition with loading screen
+      body: initialConditionsMet == false ? Home() : Home(),
       // body: currentUser != "" ?  Home() : LoginPage(),
     );
   }

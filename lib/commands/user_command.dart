@@ -1,10 +1,10 @@
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/User.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
+import '../models/User.dart';
 
 class UserCommand extends BaseCommand {
 

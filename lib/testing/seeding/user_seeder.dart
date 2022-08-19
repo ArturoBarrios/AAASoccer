@@ -1,9 +1,6 @@
-import '../../models/Location.dart';
-import '../../models/GenderType.dart';
 import '../../commands/user_command.dart';
 import '../../commands/location_command.dart';
 import '../../commands/player_command.dart';
-import '../../models/User.dart';
 import './location_seeder.dart';
 import 'dart:math';
 import 'package:faunadb_http/faunadb_http.dart';
@@ -62,7 +59,7 @@ class UserSeeder {
       "username": "randomUsername" + rng.nextInt(100000000).toString(),
       "phone": rng.nextInt(100000000).toString(),
       "birthdate": DateTime.now().subtract(Duration(days: rng.nextInt(1000000))),
-      "gender": rng.nextInt(2) == 0 ? GenderType.MALE : GenderType.FEMALE,
+      "gender": rng.nextInt(2) == 0 ? "GenderType.MALE" : "GenderType.FEMALE",
     };
 
     randomUserDataResponse['success'] = true;
@@ -89,7 +86,7 @@ class UserSeeder {
       "username": "randomUsername" + rng.nextInt(100000000).toString(),
       "phone": rng.nextInt(100000000).toString(),
       "birthdate": DateTime.now().subtract(Duration(days: rng.nextInt(1000000))),
-      "gender": rng.nextInt(2) == 0 ? GenderType.MALE : GenderType.FEMALE,
+      "gender": rng.nextInt(2) == 0 ? "GenderType.MALE" : "GenderType.FEMALE",
     };
 
     randomPlayerDataResponse['success'] = true;

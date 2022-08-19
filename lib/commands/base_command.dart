@@ -6,8 +6,6 @@ import '/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/User.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
 import '../commands/user_command.dart';
 import '../services/geolocation_services.dart';
 import 'package:geolocator/geolocator.dart';

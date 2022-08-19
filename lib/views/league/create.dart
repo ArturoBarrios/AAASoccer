@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/league_command.dart';
 import '../../commands/event_command.dart';
-import '../../models/EventType.dart';
 
 class LeagueCreate extends StatefulWidget {
   @override

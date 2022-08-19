@@ -13,9 +13,6 @@ import '../../testing/seeding/location_seeder.dart';
 import '../../testing/seeding/training_seeder.dart';
 import '../../testing/seeding/tournament_seeder.dart';
 import '../../testing/seeding/league_seeder.dart';
-
-import '../../models/SurfaceType.dart';
-import '../../models/FieldPlayerOccupancySize.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 
 class EventSeeder {

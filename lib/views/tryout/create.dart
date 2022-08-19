@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/tryout_command.dart';
 import '../../commands/event_command.dart';
-import '../../models/EventType.dart';
 
 class TryoutCreate extends StatefulWidget {
   @override
@@ -36,7 +35,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
         "price": priceController.text.trim(),
         "location": locationController.text.trim(),
         "images": imagesController.text.trim(),
-        "type": EventType.TRYOUT,
+        "type": "EventType.TRYOUT",
       };
 
       Map<String, dynamic> createdEvent =
