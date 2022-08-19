@@ -61,8 +61,8 @@ class _MyAppState extends State<MyApp> {
     print(dotenv.env['ENVIRONMENT']);
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
      if (configureAmplifyResp['message'] == "isSignedIn") {
-      FaunaDBServices().createFaunaClient();
-      FaunaDBServices().retrieveInitialModels();
+      await FaunaDBServices().createFaunaClient();
+      await FaunaDBServices().retrieveInitialModels();
       Map<String, dynamic> otherConfigurationResp = otherConfigurations();
       if(otherConfigurationResp['success']){
         print("startLoadToHomeTransition");

@@ -1,0 +1,9 @@
+# lib/spaceships.graphql
+query GetGames {
+  Game {
+    data {
+      _id
+      name
+    }
+  }
+}

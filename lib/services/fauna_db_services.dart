@@ -2,6 +2,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
+import '../graphql/queries/games.dart';
 
 class FaunaDBServices {
   /// Determine the current position of the device.
@@ -31,15 +32,22 @@ class FaunaDBServices {
   }
 
   Future<Map<String, dynamic>> retrieveInitialModels() async {
+    print("fauna_db_services.dart: retrieveInitialModels");
     Map<String, dynamic> retrieveInitialModelsResponse = {
       "success": false,
       "message": "Default Error",
       "data": Map<String, dynamic>()
     };
 
-    // final paginateUsers = Paginate(
-    //   Match(Index('user-by-name'), terms: ['Gavan Singh']),
-    // );
+    Map<String, dynamic> getGames = await GameQueries().getGames();
+    if(getGames['success']){
+      print("retrieved games successfully from fauna db");
+      retrieveInitialModelsResponse["success"] = true;
+      retrieveInitialModelsResponse["message"] = "Games retrieved";
+      retrieveInitialModelsResponse["data"]["games"] = getGames["data"];
+    }
+
+    
 
     return retrieveInitialModelsResponse;
   }

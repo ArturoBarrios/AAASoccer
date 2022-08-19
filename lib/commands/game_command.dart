@@ -1,5 +1,4 @@
 import 'base_command.dart';
-import 'package:amplify_api/amplify_api.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
@@ -38,7 +37,7 @@ class GameCommand extends BaseCommand {
         
       }
       return createGameResponse;
-    } on ApiException catch (e) {
+    } on Exception catch (e) {
       print('Mutation failed: $e');
       return createGameResponse;
     }
