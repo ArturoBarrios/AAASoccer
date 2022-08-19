@@ -9,15 +9,16 @@ import 'dart:math';
 import 'package:faunadb_http/faunadb_http.dart';
 
 class UserSeeder {
-  Future<Map<String, dynamic>> createRandomPlayer(    
-     Map<String, dynamic> team) async {
+  Future<Map<String, dynamic>> createRandomPlayersForTeam(    
+     Map<String, dynamic> data, Map<String, dynamic> team) async {
         print("createRandomUser");
     Map<String, dynamic> createRandomPlayerResponse = {
       "success": false,
       "message": "Something went wrong with creating random user locations",
-      "data": null,
+      "data": [],
     };    
-    // for (int i = 0; i < data['numberOfUsers']; i++) {      
+    
+    for (int i = 0; i < data['numberOfPlayersPerTeam']; i++) {      
       Map<String, dynamic> getRandomUserDataResp = await getRandomUserData();
       Map<String, dynamic> getRandomPlayerDataResp = getRandomPlayerData();
       
@@ -32,12 +33,13 @@ class UserSeeder {
 
         if(createUserResponse["success"]){
           createRandomPlayerResponse["success"] = true;
-          createRandomPlayerResponse["data"] = createUserResponse["data"];
+          createRandomPlayerResponse["data"].add(createUserResponse["data"]);
           
 
       }
         
       
+    }
     }
 
     

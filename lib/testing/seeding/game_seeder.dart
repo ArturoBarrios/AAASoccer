@@ -12,7 +12,7 @@ import 'package:faunadb_http/query.dart';
 
 class GameSeeder {
   //assumes that data contains List of games and players of FaunaResponse type
-  Future<Map<String, dynamic>> createGameRelationships(FaunaResponse gameFaunaResponse,data) async{
+  Future<Map<String, dynamic>> createGameRelationships(Map<String, dynamic> data, FaunaResponse gameFaunaResponse) async{
     print("createGameRelationships");
     Map<String, dynamic> createGameRelationshipsResp = {
       "success": false,
@@ -27,21 +27,34 @@ class GameSeeder {
     //create relationship with games and players
     int numberOfPlayersPerPickupGame = data['numberOfPlayersPerPickupGame'];
     for(int i = 0;i<numberOfPlayersPerPickupGame;i++){
-      String userRef = "";
-      final readUser = Get(Ref(Collection('users'), userRef));
-
-        final result = await AppModel().faunaClient.query(readUser);
+      print("for loop!");
+      Map<String, dynamic> playerMap = data['players'][i].asMap();
+      String userRef = playerMap['resource']['ref']['@ref']['id'];
+      print("userRef: ");
+      print(userRef);
+      String gameRef = gameFaunaResponse.asMap()['resource']['ref']['@ref']['id'];
+      final updateUser = Update(
+        Ref(Collection('Game'), gameRef),
+        Obj({
+          'data': {'players': userRef}
+        }),
+      );
+      
+      final result = await AppModel().faunaClient.query(updateUser);
+      print("result: ");
+      print(result.toJson());
 
 
     }
+    print("end of for loop");
+
 
 
 
 
 
     
-  print("result: ");
-  print(result.toJson());
+
     return createGameRelationshipsResp;
 
   }

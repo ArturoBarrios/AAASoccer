@@ -37,9 +37,9 @@ class DatabaseSeeder {
       //create x users for each team      
       for(int i = 0;i<teams.length;i++){
         FaunaResponse team = teams[i];                
-        Map<String, dynamic> createPlayerResponse = await UserSeeder().createRandomPlayer(team.asMap());
-        if(createPlayerResponse['success']){
-          players.add(createPlayerResponse['data']);
+        Map<String, dynamic> createPlayersPerTeamResponse = await UserSeeder().createRandomPlayersForTeam(data, team.asMap());
+        if(createPlayersPerTeamResponse['success']){
+          players = createPlayersPerTeamResponse['data'];
         }
         
       }
