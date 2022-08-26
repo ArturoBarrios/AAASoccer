@@ -17,6 +17,9 @@ import '../models/home_page_model.dart';
 //commands
 import '../commands/home_page_command.dart';
 import '../components/Buttons/seed_data_button.dart';
+import 'package:soccermadeeasy/svg_widgets.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -31,6 +34,7 @@ class _Home extends State<Home> {
     {"key": 2, "opened": false}
   ];
   double globalPadding = 10.0;
+  Svg svgImage = SVGWidgets().getSoccerBallSVGImagePath();
   
 
 
@@ -108,22 +112,22 @@ class _Home extends State<Home> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const <Widget>[
+                      children:  <Widget>[
                         Padding(
                             padding: EdgeInsets.all(10),
-                            child: SelectIconButton()),
+                            child: SelectIconButton(title: "Pickup", svgImage: svgImage)),
                         Padding(
                             padding: EdgeInsets.all(10),
-                            child: SelectIconButton()),
+                            child: SelectIconButton(title: "Tournament", svgImage: svgImage)),
                         Padding(
                             padding: EdgeInsets.all(10),
-                            child: SelectIconButton()),
+                            child: SelectIconButton(title: "League", svgImage: svgImage)),
                         Padding(
                             padding: EdgeInsets.all(10),
-                            child: SelectIconButton()),
+                            child: SelectIconButton(title: "Team", svgImage: svgImage)),
                         Padding(
                             padding: EdgeInsets.all(10),
-                            child: SelectIconButton()),
+                            child: SelectIconButton(title: "Tryout", svgImage: svgImage)),
                       ]),
                 ),
                 Padding(

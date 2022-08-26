@@ -30,7 +30,9 @@ class PlayerCommand extends BaseCommand {
             'data': {
               'competitveLevel': playerInput['competitveLevel'],  
               'user': Ref(Collection("User"), userResult['resource']['ref']['@ref']['id']),
-              'team': withTeam ? Ref(Collection("Team"), playerInput['team']['resource']['ref']['@ref']['id']) : null,
+              'teams': withTeam ? [
+                Ref(Collection("Team"), playerInput['team']['resource']['ref']['@ref']['id'])
+               ] : null,
               }
           }),
         );  

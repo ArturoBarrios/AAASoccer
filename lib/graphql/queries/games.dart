@@ -13,16 +13,17 @@ class GameQueries {
 
     try{
       final paginateGames = Paginate(
-        Collection('Game'),
+        Documents(Collection('Game')),
         size: 10,
+        sources: true,
       );
     
       FaunaResponse result = await AppModel().faunaClient.query(paginateGames);
       print("getGames response: ");
-      print(result.toJson());
+      print(result.asMap());//["resource"]["data"][0]["@ref"]["collection"]["@ref"]["id"].runtimeType);
       getGamesResp["success"] = true;
       getGamesResp["message"] = "Games retrieved";
-      getGamesResp["data"] = result;
+      getGamesResp["data"] = [{"name": "Game 1"}];
       return getGamesResp;
     } on Exception catch (e) {
       print('getGames Query failed: $e');

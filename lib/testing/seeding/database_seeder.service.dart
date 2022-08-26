@@ -21,8 +21,8 @@ class DatabaseSeeder {
   'numberOfTournaments': 4,//4500,
   'numberOfTryouts': 4,//4500,
   'numberOfTrainingSessions': 4,//4500,
-  'numberOfPlayersPerTeam': 13,  //important
-  'numberOfPlayersPerPickupGame': 13,  //important
+  'numberOfPlayersPerTeam': 2,  //important
+  'numberOfPlayersPerPickupGame': 2,  //important
  };
 
   Future run() async {

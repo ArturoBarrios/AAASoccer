@@ -6,7 +6,7 @@ import 'package:faunadb_http/faunadb_http.dart';
 class AppModel extends ChangeNotifier {
 
   FaunaClient _faunaClient = FaunaClient(FaunaConfig.build(
-      secret: 'fnAEr6K_CIACT8LrjVZdayh8ZPF2QcQKcaKO-M1-',
+      secret: 'fnAEuzcnfBACUMDsvTjCHV0Yt9WZZHIH08szMEho',
       domain: 'db.fauna.com'
     ));
 

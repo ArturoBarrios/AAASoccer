@@ -24,6 +24,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:faunadb_http/faunadb_http.dart';
+import 'package:soccermadeeasy/svg_widgets.dart';
 
 void main() => runApp(MyApp());
 

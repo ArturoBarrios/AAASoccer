@@ -16,7 +16,7 @@ class _SearchField extends State<SearchField> {
         contentPadding: const EdgeInsets.all(15),
         border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(30)),
-        prefixIcon: const Icon(Icons.person),
+        prefixIcon: const Icon(Icons.search),
         prefixIconColor:
             MaterialStateColor.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.focused)) {
@@ -27,7 +27,7 @@ class _SearchField extends State<SearchField> {
           }
           return Colors.grey;
         }),
-        labelText: 'Password',
+        labelText: '',
       ),
     );
   }
