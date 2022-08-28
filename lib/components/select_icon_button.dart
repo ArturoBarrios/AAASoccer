@@ -18,13 +18,6 @@ class _SelectIconButton extends State<SelectIconButton> {
   Widget build(BuildContext context) {
     return 
        Stack(children: <Widget>[
-        Image(
-                width: 200,
-                height: 200,
-                // image: Svg('lib/assets/icons/soccer_ball.svg'),
-                image: widget.svgImage,
-                color: Colors.red,
-              ),
         SizedBox(
           height: MediaQuery.of(context).size.height * .1,
           width: MediaQuery.of(context).size.width * .4,
@@ -38,7 +31,13 @@ class _SelectIconButton extends State<SelectIconButton> {
             ),
             onPressed: () {},
           ),
-        )
+        ),
+        Image(          
+          width: MediaQuery.of(context).size.width * .4,
+          height: MediaQuery.of(context).size.height * .1,                          
+          image: widget.svgImage,
+          color: Colors.white,
+              ),
     ]);
   }
 }

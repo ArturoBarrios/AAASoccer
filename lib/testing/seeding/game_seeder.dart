@@ -24,8 +24,8 @@ class GameSeeder {
 
     //create relationship with games and players
     int numberOfPlayersPerPickupGame = data['numberOfPlayersPerPickupGame'];
+    print("for loop!");
     for (int i = 0; i < numberOfPlayersPerPickupGame; i++) {
-      print("for loop!");
       Map<String, dynamic> playerMap = data['players'][i].asMap();
       String playerRef = playerMap['resource']['ref']['@ref']['id'];
       print("playerRef: ");
@@ -44,7 +44,7 @@ class GameSeeder {
         Ref(Collection('Game'), gameRef),
         Obj({
           'data': {
-            'players': [Ref(Collection("Player"), playerRef)]
+            'players': {'connect': [Ref(Collection("Player"), playerRef)]}
           }
         }),
       );

@@ -93,7 +93,7 @@ type Player   {
   hasSubscription: String
   user: User
   sponsors: [Sponsor] @relation
-  games: [Game] @relation
+  games: [Game] @relation(name: "game_players")
 }
 
 # a payment is attached to event
@@ -154,7 +154,7 @@ type Game   {
   awaygoals: Int
   pickup: Boolean
   event: Event
-  players: [Player] @relation
+  players: [Player] @relation(name: "game_players")
 }
 
 type Tryout   {
