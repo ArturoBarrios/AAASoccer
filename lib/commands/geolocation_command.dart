@@ -9,35 +9,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class GeoLocationCommand extends BaseCommand {
-  void getLocation() async {
-    await GeoLocationServices().getPosition();
-  }
-
-  Future<Map<String, dynamic>> getPlacemark(
-      double latitude, double longitude) async {
-    print("getPlacemark");
-    print("latitude: ${latitude}; longitude: ${longitude}");
-    Map<String, dynamic> getPlacemarkResponse = {
-      "success": false,
-      "message": "Something went wrong with getting placemark",
-      "data": Map<String, dynamic>()
-    };
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
-      print("placemarks: ${placemarks}");
-      // List<Placemark place = placemarks[0];
-
-      getPlacemarkResponse["success"] = true;
-      getPlacemarkResponse["message"] = "Got placemark";
-      getPlacemarkResponse["data"]["placemarks"] = placemarks;
-
-      // return placemarks[0];
-    } catch (e) {
-      print(e.toString());
-    }
-
-    return getPlacemarkResponse;
+  Future <Position> determinePosition() async {
+    Position position = await GeoLocationServices().determinePosition();
+    return position;
   }
 
   //test functions

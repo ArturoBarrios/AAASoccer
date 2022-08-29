@@ -34,13 +34,14 @@ class BaseCommand {
     print("setupInitialAppConfigs");
     Map<String, dynamic> setupInitialAppConfigsResponse = {"success": 0, "message": "Something went wrong with setting up initial app configs", "data": Map<String, dynamic>()};
     try{
-      Position userPosition = await geoLocationServices.getPosition();
+      Position userPosition = await geoLocationServices.determinePosition();
       userModel.position = userPosition;
       try {
         
       List<Placemark> placemarks = await placemarkFromCoordinates(
         userPosition.latitude,
-        userPosition.longitude
+        userPosition.longitude,
+        localeIdentifier: 'en_US',
       );
 
       Placemark place = placemarks[0];

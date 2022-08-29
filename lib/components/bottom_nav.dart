@@ -8,6 +8,10 @@ import '../views/wager/create.dart';
 import '../commands/user_command.dart';
 import '../commands/player_command.dart';
 import '../testing/seeding/database_seeder.service.dart';
+import '../commands/geolocation_command.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -43,7 +47,8 @@ class _BottomNav extends State<BottomNav> {
   //testing methods(I know, what an amazing place to test models) :)
 
   void testFunction() async{
-   await DatabaseSeeder().run();
+    Position position = await GeoLocationCommand().determinePosition();
+  //  await DatabaseSeeder().run();
   }
 
   @override
