@@ -198,9 +198,41 @@ class _Home extends State<Home> {
           
           Stack(children: <Widget>[Column(
               children: [
-                Expanded(
-                  child: Text("test"),
+                Container(
+            constraints: BoxConstraints.expand(
+                height: 200,
+                width: MediaQuery.of(context).size.width),
+            child: Column(
+              children: <Widget>[
+                const Padding(
+                    padding: EdgeInsets.all(10.0), child: SearchField()),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children:  <Widget>[
+                        Padding(
+                            padding: EdgeInsets.all(10),
+                            child: SelectIconButton(title: "Pickup", svgImage: svgImage)),
+                        Padding(
+                            padding: EdgeInsets.all(10),
+                            child: SelectIconButton(title: "Tournament", svgImage: svgImage)),
+                        Padding(
+                            padding: EdgeInsets.all(10),
+                            child: SelectIconButton(title: "League", svgImage: svgImage)),
+                        Padding(
+                            padding: EdgeInsets.all(10),
+                            child: SelectIconButton(title: "Team", svgImage: svgImage)),
+                        Padding(
+                            padding: EdgeInsets.all(10),
+                            child: SelectIconButton(title: "Tryout", svgImage: svgImage)),
+                      ]),
                 ),
+              ])),
+
+                // Expanded(
+                //   child: Text("test"),
+                // ),
                 
                 //list view
                 Expanded(

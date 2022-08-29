@@ -48,10 +48,11 @@ class _BottomNav extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height * .05;
+    double height = MediaQuery.of(context).size.height * .06;
+    double width = MediaQuery.of(context).size.width * .06;
     final ButtonStyle buttonStyle = ButtonStyle(
       backgroundColor: MaterialStateProperty.all(Colors.green),
-      fixedSize: MaterialStateProperty.all(const Size(40, 40)),
+      fixedSize: MaterialStateProperty.all( Size(40, height)),
       shape: MaterialStateProperty.all(CircleBorder()),
     );
     return SizedBox(
@@ -68,10 +69,10 @@ class _BottomNav extends State<BottomNav> {
                   icon: Icon(Icons.home),
                   label: 'Home',
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.business),
-                  label: 'Event History',
-                ),
+                // BottomNavigationBarItem(
+                //   icon: Icon(Icons.business),
+                //   label: 'Event History',
+                // ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.school),
                   label: 'Wagers',
