@@ -14,14 +14,17 @@ class SelectIconButton extends StatefulWidget {
 }
 
 class _SelectIconButton extends State<SelectIconButton> {
+  final ButtonStyle style =
+        ElevatedButton.styleFrom(primary: Colors.orange.shade500, textStyle: const TextStyle(fontSize: 20));
   @override
   Widget build(BuildContext context) {
     return 
        Stack(children: <Widget>[
-        SizedBox(
+        SizedBox(          
           height: MediaQuery.of(context).size.height * .1,
           width: MediaQuery.of(context).size.width * .4,
           child: ElevatedButton(
+            style: style,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

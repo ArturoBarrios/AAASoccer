@@ -16,6 +16,12 @@ Future<Map<String, dynamic>> getGamesNearLocation() async{
     print("getGamesNearLocation");
     print("my position");
     Position myPosition = await GeoLocationCommand().determinePosition();
+    final getGamesQuery = Paginate(Documents(Collection("Game")));
+    final result = await AppModel().faunaClient.query(getGamesQuery);
+    
+    print("result: ");
+    print(result.toJson());
+    //get games
     print(myPosition);
   } on Exception catch (e) {
     print('Mutation failed: $e');

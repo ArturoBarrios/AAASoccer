@@ -10,6 +10,8 @@ import '../components/bottom_nav.dart';
 import '../components/select_icon_button.dart';
 import '../components/search_field.dart';
 import '../components/animated_dialogue.dart';
+import '../components/profile.dart';
+import '../components/header.dart';
 //card widgets
 import '../components/Cards/pickup_card.dart';
 //models
@@ -25,7 +27,6 @@ import 'dart:convert';
 class Home extends StatefulWidget {
   @override
   _Home createState() => _Home();
-
 }
 
 class _Home extends State<Home> {
@@ -36,20 +37,16 @@ class _Home extends State<Home> {
   ];
   double globalPadding = 10.0;
   Svg svgImage = SVGWidgets().getSoccerBallSVGImagePath();
-  
-
-
-  
 
   void cardTapped() {
     print("cardTapped");
     setState(() => {
-          // HomePageModel().isDialogueViewOpened = true,        
+          // HomePageModel().isDialogueViewOpened = true,
           HomePageCommand().cardTapped()
         });
   }
 
-    // We will fetch data from this Rest api
+  // We will fetch data from this Rest api
   final _baseUrl = 'https://jsonplaceholder.typicode.com/posts';
 
   // At the beginning, we fetch the first 20 posts
@@ -69,7 +66,7 @@ class _Home extends State<Home> {
   // This holds the posts fetched from the server
   List _posts = [];
 
- void _firstLoad() async {
+  void _firstLoad() async {
     setState(() {
       _isFirstLoadRunning = true;
     });
@@ -88,11 +85,11 @@ class _Home extends State<Home> {
       _isFirstLoadRunning = false;
     });
   }
-  
+
   // The controller for the ListView
   late ScrollController _controller = ScrollController();
 
-    // This function will be triggered whenver the user scroll
+  // This function will be triggered whenver the user scroll
   // to near the bottom of the list view
   void _loadMore() async {
     if (_hasNextPage == true &&
@@ -131,7 +128,6 @@ class _Home extends State<Home> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -144,46 +140,26 @@ class _Home extends State<Home> {
     _controller.removeListener(_loadMore);
     super.dispose();
   }
-  
-
- 
-
 
   @override
   Widget build(BuildContext context) {
-    
-
-
-    bool isDialogueViewOpened = context.select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
+    bool isDialogueViewOpened = context
+        .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
     return (Scaffold(
       appBar: AppBar(
-        title: Text(isDialogueViewOpened.toString()),
-        backgroundColor: Colors.green.shade600,
+        centerTitle: false,
+        title: new Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text("Find Soccer Near You")),
+        backgroundColor: Colors.orange.shade500,
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.add_alert),
-            tooltip: 'Show Snackbar',
-            onPressed: () {
-             AmplifyAuth.AmplifyAuthService().signOut();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.navigate_next),
+            icon: const Icon(Icons.account_circle),
             tooltip: 'Go to the next page',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Next page'),
-                    ),
-                    body: const Center(
-                      child: Text(
-                        'This is the next page',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
-                  );
+                  return Profile();
                 },
               ));
             },
@@ -194,89 +170,93 @@ class _Home extends State<Home> {
           ? const Center(
               child: const CircularProgressIndicator(),
             )
-          : 
-          
-          Stack(children: <Widget>[Column(
-              children: [
-                Container(
-            constraints: BoxConstraints.expand(
-                height: 200,
-                width: MediaQuery.of(context).size.width),
-            child: Column(
-              children: <Widget>[
-                const Padding(
-                    padding: EdgeInsets.all(10.0), child: SearchField()),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children:  <Widget>[
-                        Padding(
-                            padding: EdgeInsets.all(10),
-                            child: SelectIconButton(title: "Pickup", svgImage: svgImage)),
-                        Padding(
-                            padding: EdgeInsets.all(10),
-                            child: SelectIconButton(title: "Tournament", svgImage: svgImage)),
-                        Padding(
-                            padding: EdgeInsets.all(10),
-                            child: SelectIconButton(title: "League", svgImage: svgImage)),
-                        Padding(
-                            padding: EdgeInsets.all(10),
-                            child: SelectIconButton(title: "Team", svgImage: svgImage)),
-                        Padding(
-                            padding: EdgeInsets.all(10),
-                            child: SelectIconButton(title: "Tryout", svgImage: svgImage)),
-                      ]),
-                ),
-              ])),
-
-                // Expanded(
-                //   child: Text("test"),
-                // ),
-                
-                //list view
-                Expanded(
-                  child: ListView.builder(
-                    controller: _controller,
-                    itemCount: _posts.length,
-                    itemBuilder: (_, index) => Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 10),
-                          child: const PickupCard(),
-                      
-                      )
-                    // itemBuilder: (_, index) => Card(
-                    //   margin: const EdgeInsets.symmetric(
-                    //       vertical: 8, horizontal: 10),
-                    //   child: ListTile(
-                    //     title: Text(_posts[index]['title']),
-                    //     subtitle: Text(_posts[index]['body']),
-                    //   ),
-                    // ),
-                  ),
-                ),
-
-                // when the _loadMore function is running
-                if (_isLoadMoreRunning == true)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 40),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-
-                // When nothing else to load
-                if (_hasNextPage == false)
+          : Stack(children: <Widget>[
+              Column(
+                children: [
                   Container(
-                    padding: const EdgeInsets.only(top: 30, bottom: 40),
-                    color: Colors.amber,
-                    child: const Center(
-                      child: Text('You have fetched all of the content'),
-                    ),
+                      constraints: BoxConstraints.expand(
+                          height: 200,
+                          width: MediaQuery.of(context).size.width),
+                      child: Column(children: <Widget>[
+                        const Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: SearchField()),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: SelectIconButton(
+                                        title: "Pickup", svgImage: svgImage)),
+                                Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: SelectIconButton(
+                                        title: "Tournament",
+                                        svgImage: svgImage)),
+                                Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: SelectIconButton(
+                                        title: "League", svgImage: svgImage)),
+                                Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: SelectIconButton(
+                                        title: "Team", svgImage: svgImage)),
+                                Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: SelectIconButton(
+                                        title: "Tryout", svgImage: svgImage)),
+                              ]),
+                        ),
+                      ])),
+
+                  // Expanded(
+                  //   child: Text("test"),
+                  // ),
+
+                  //list view
+                  Expanded(
+                    child: ListView.builder(
+                        controller: _controller,
+                        itemCount: _posts.length,
+                        itemBuilder: (_, index) => Card(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 10),
+                              child: const PickupCard(),
+                            )
+                        // itemBuilder: (_, index) => Card(
+                        //   margin: const EdgeInsets.symmetric(
+                        //       vertical: 8, horizontal: 10),
+                        //   child: ListTile(
+                        //     title: Text(_posts[index]['title']),
+                        //     subtitle: Text(_posts[index]['body']),
+                        //   ),
+                        // ),
+                        ),
                   ),
-              ],
-          )]),
-           
+
+                  // when the _loadMore function is running
+                  if (_isLoadMoreRunning == true)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 40),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+
+                  // When nothing else to load
+                  if (_hasNextPage == false)
+                    Container(
+                      padding: const EdgeInsets.only(top: 30, bottom: 40),
+                      color: Colors.amber,
+                      child: const Center(
+                        child: Text('You have fetched all of the content'),
+                      ),
+                    ),
+                ],
+              )
+            ]),
       bottomNavigationBar: const BottomNav(),
     ));
   }
