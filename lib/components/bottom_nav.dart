@@ -80,7 +80,7 @@ return BottomAppBar(
                     text: "Add",
                     icon: Icons.add_outlined,
                     selected: false,
-                    onPressed: () {}),
+                    onPressed: () {testFunction();}),
                 IconBottomBar(
                     text: "Cart",
                     icon: Icons.local_grocery_store_outlined,

@@ -172,11 +172,9 @@ class _Home extends State<Home> {
             )
           : Stack(children: <Widget>[
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
-                      constraints: BoxConstraints.expand(
-                          height: 200,
-                          width: MediaQuery.of(context).size.width),
+                  Expanded(
                       child: Column(children: <Widget>[
                         const Padding(
                             padding: EdgeInsets.all(10.0),
@@ -207,7 +205,8 @@ class _Home extends State<Home> {
                                     padding: EdgeInsets.all(10),
                                     child: SelectIconButton(
                                         title: "Tryout", svgImage: svgImage)),
-                              ]),
+                              ]
+                              ),
                         ),
                       ])),
 
@@ -239,7 +238,7 @@ class _Home extends State<Home> {
                   // when the _loadMore function is running
                   if (_isLoadMoreRunning == true)
                     const Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 40),
+                      padding: EdgeInsets.only(top: 0, bottom: 0),
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
