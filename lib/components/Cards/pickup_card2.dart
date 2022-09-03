@@ -3,8 +3,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
-class SelectIconButton extends StatefulWidget {
-  const SelectIconButton(
+class PickupCard2 extends StatefulWidget {
+  const PickupCard2(
       {Key? key, required this.title, required this.svgImage})
       : super(key: key);
   final String title;  
@@ -12,10 +12,10 @@ class SelectIconButton extends StatefulWidget {
   final double bevel = 10.0;  
 
   @override
-  State<SelectIconButton> createState() => _SelectIconButton();
+  State<PickupCard2> createState() => _PickupCard2();
 }
 
-class _SelectIconButton extends State<SelectIconButton> {
+class _PickupCard2 extends State<PickupCard2> {
   final bool _isPressed = false;
     final Color color = Colors.grey.shade200;    
   
@@ -49,16 +49,16 @@ class _SelectIconButton extends State<SelectIconButton> {
             boxShadow: _isPressed
                 ? null
                 : [
-                    // BoxShadow(
-                    //   blurRadius: 10.0,
-                    //   offset: -Offset(10.0/2, 10.0/2),
-                    //   color: Colors.white,
-                    // ),
-                    // BoxShadow(
-                    //   blurRadius: widget.bevel,
-                    //   offset: Offset(10.0/2, 10.0/2),
-                    //   color: Colors.black,
-                    // )
+                    BoxShadow(
+                      blurRadius: 10.0,
+                      offset: -Offset(10.0/2, 10.0/2),
+                      color: Colors.white,
+                    ),
+                    BoxShadow(
+                      blurRadius: widget.bevel,
+                      offset: Offset(10.0/7, 10.0/7),
+                      color: Colors.black38,
+                    )
                   ],
           ),
           child: Container(
@@ -116,7 +116,7 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: 150,
-        height: 120,
+        height: 150,
         padding: const EdgeInsets.all(15.0),
        
         child: Column(
@@ -137,7 +137,7 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
               subtitle,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: Colors.grey,
+                  color: Colors.black,
                   fontWeight: FontWeight.normal,
                   fontSize: 12),
             ),

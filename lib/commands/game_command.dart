@@ -16,44 +16,49 @@ Future<Map<String, dynamic>> getGamesNearLocation() async{
     print("getGamesNearLocation");
     print("my position");
     Position myPosition = await GeoLocationCommand().determinePosition();
-// Map_(
-//   Paginate(Documents(Collection('Game'))),
-//   // and in this function, the magic will happen, for now we just return the tweet.
-//   Lambda('f',
-//     Let({
-//         'game': Get(Var('g'))
-//       },
-//       Var('game')
-//     )
-//   )
-// );
-
-//     final getGamesQuery = Map_(
-//    Paginate(Documents(Collection('Game'))),
-//    Lambda('ref', Var('ref'))
-// );
 final getGamesQuery = Map_(
   Paginate(Documents(Collection('Game'))),
-  // and in this function, the magic will happen
+  // and in this function, the magic will happen, for now we just return the tweet.
   Lambda('g',
-    Let(
-      {
+    Let({
         'game': Get(Var('g')),
-        'player': Get(Select(['data', 'player'], Var('game'))), // we get the author reference
+        'players': Get(Select(['data', 'players'], Var('game'))),
       },
-      // And now we return a nested doc    
-      
-        Var('game'),
-        
-      
-      
-      // Expr in_{
-      //   Var('game'),
-      //   Var('player')
-      // }
+      Obj({
+         'game':  Var('game'),
+          // 'player': Var('players'),
+      })
     )
   )
 );
+
+
+// final getGamesQuery = Map_(
+//   Paginate(Documents(Collection('Game'))),
+//   // and in this function, the magic will happen
+//   Lambda('g',
+//     Let(
+//       {
+//         'game': Get(Var('g')),
+//         'players': Get(Select(['data', 'players'], Var('game'))), // we get the author reference
+//       },
+//       // And now we return a nested doc    
+      
+//         Obj({
+//           'game': Var('game'),
+//           'players': Var('player')
+           
+//         })
+        
+      
+      
+//       // Expr in_{
+//       //   Var('game'),
+//       //   Var('player')
+//       // }
+//     )
+//   )
+// );
     // final getGamesQuery = Paginate(Documents(Collection("Game")));
     final result = await AppModel().faunaClient.query(getGamesQuery);
     

@@ -14,6 +14,7 @@ import '../components/profile.dart';
 import '../components/header.dart';
 //card widgets
 import '../components/Cards/pickup_card.dart';
+import '../components/Cards/pickup_card2.dart';
 //models
 import '../models/home_page_model.dart';
 //commands
@@ -35,8 +36,51 @@ class _Home extends State<Home> {
     {"key": 1, "opened": false},
     {"key": 2, "opened": false}
   ];
+  
   double globalPadding = 10.0;
   Svg svgImage = SVGWidgets().getSoccerBallSVGImagePath();
+  Map<String, dynamic> enabledEvents = {
+    "pickupGames": true,
+    "tournaments": false,
+    "leagues": false,
+    "teams": false,
+    "tryouts": false,
+    
+  };
+
+  Map<String, dynamic> events = {
+    "pickupGames": 
+    [      
+      {
+        "name": "Pickup",
+        "description": "pickup at the soccer field.",
+      },
+      {
+        "name": "Pickup2",
+        "description": "pickup at the soccer field."
+      },
+      {
+        "name": "Pickup3",
+        "description": "pickup at the soccer field."
+      },
+      {
+        "name": "Pickup4",
+        "description": "pickup at the soccer field."
+      }
+    ],
+    "tounaments": 
+    [      
+    ],
+    "leagues": 
+    [
+    ],
+    "teams": 
+    [
+    ],
+    "tryouts": 
+    [
+    ]
+  };
 
   void cardTapped() {
     print("cardTapped");
@@ -65,6 +109,7 @@ class _Home extends State<Home> {
 
   // This holds the posts fetched from the server
   List _posts = [];
+  List eventsList = [];
 
   void _firstLoad() async {
     setState(() {
@@ -74,7 +119,8 @@ class _Home extends State<Home> {
       final res =
           await http.get(Uri.parse("$_baseUrl?_page=$_page&_limit=$_limit"));
       setState(() {
-        _posts = json.decode(res.body);
+        getEventCards();
+        // _posts = json.decode(res.body);
       });
     } catch (err) {
       print("error");
@@ -107,7 +153,8 @@ class _Home extends State<Home> {
         final List fetchedPosts = json.decode(res.body);
         if (fetchedPosts.isNotEmpty) {
           setState(() {
-            _posts.addAll(fetchedPosts);
+            getEventCards();
+            // _posts.addAll(fetchedPosts);
           });
         } else {
           // This means there is no more data
@@ -127,6 +174,43 @@ class _Home extends State<Home> {
       });
     }
   }
+
+  //can add filtering and sorting here
+   List getEventCards()
+  {
+    
+    Row eventsRow = new Row(children: []);
+    
+    enabledEvents.forEach((key, value) {
+      //if event enabled
+      if(value){
+        events.forEach((k, eventMap) => {
+
+          if(k==key){            
+            eventMap.forEach((item) => {   
+              eventsList.add(
+                item
+              ),                         
+              // eventsRow.children.add(
+              //   Padding(
+              //     padding: EdgeInsets.all(10),
+              //     child: SelectIconButton(
+              //         title: "testinggg", svgImage: svgImage)
+              //   ),
+              // )
+            })
+          }
+        });
+      }
+
+    });
+    print("event widgets length: ");
+    print(eventsList.length);
+    return eventsList;
+
+  }
+
+
 
   @override
   void initState() {
@@ -181,9 +265,12 @@ class _Home extends State<Home> {
                             child: SearchField()),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          child: 
+                          
+                          Row(                              
                               children: <Widget>[
+                                
+                               
                                 Padding(
                                     padding: EdgeInsets.all(10),
                                     child: SelectIconButton(
@@ -208,7 +295,8 @@ class _Home extends State<Home> {
                               ]
                               ),
                         ),
-                      ])),
+                      ]
+                      )),
 
                   // Expanded(
                   //   child: Text("test"),
@@ -218,11 +306,11 @@ class _Home extends State<Home> {
                   Expanded(
                     child: ListView.builder(
                         controller: _controller,
-                        itemCount: _posts.length,
+                        itemCount: eventsList.length,
                         itemBuilder: (_, index) => Card(
                               margin: const EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 10),
-                              child: const PickupCard(),
+                              child:  PickupCard2(title:"test", svgImage: svgImage),
                             )
                         // itemBuilder: (_, index) => Card(
                         //   margin: const EdgeInsets.symmetric(

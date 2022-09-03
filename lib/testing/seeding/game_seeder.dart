@@ -44,7 +44,9 @@ class GameSeeder {
         Ref(Collection('Game'), gameRef),
         Obj({
           'data': {
-            'players': {'connect': [Ref(Collection("Player"), playerRef)]}
+            'players': [
+                Ref(Collection("Player"), playerRef)
+              ]
           }
         }),
       );
