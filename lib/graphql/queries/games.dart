@@ -18,7 +18,7 @@ class GameQueries {
         sources: true,
       );
     
-      FaunaResponse result = await AppModel().faunaClient.query(paginateGames);
+      final result = null;//await AppModel().faunaClient.query(paginateGames);
       print("getGames response: ");
       print(result.asMap());//["resource"]["data"][0]["@ref"]["collection"]["@ref"]["id"].runtimeType);
       getGamesResp["success"] = true;

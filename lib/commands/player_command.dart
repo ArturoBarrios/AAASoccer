@@ -36,7 +36,7 @@ class PlayerCommand extends BaseCommand {
               }
           }),
         );  
-        FaunaResponse result = await AppModel().faunaClient.query(createDocument);
+        final result = null;//await AppModel().faunaClient.query(createDocument);
         print("result: ");
         print(result.toJson());
         createPlayerResponse["success"] = true;

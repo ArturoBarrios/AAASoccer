@@ -62,18 +62,44 @@ class _MyAppState extends State<MyApp> {
     print(dotenv.env['ENVIRONMENT']);
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
      if (configureAmplifyResp['message'] == "isSignedIn") {
-      await FaunaDBServices().createFaunaClient();
+      await configureGraphQL();      
       await FaunaDBServices().retrieveInitialModels();
       Map<String, dynamic> otherConfigurationResp = otherConfigurations();
       if(otherConfigurationResp['success']){
         print("startLoadToHomeTransition");
-
         startLoadToHomeTransition();
       }
 
       
     }
-    // configureGraphQL();
+    
+  }
+
+  Future configureGraphQL() async{
+    print("configureGraphQL");
+    await initHiveForFlutter();
+    final HttpLink httpLink = HttpLink(
+      'db.fauna.com',
+    );
+
+    final AuthLink authLink = AuthLink(
+      getToken: () async => 'Bearer fnAEvcFslGACTyx_6wrw7CVbXYEYrgGj34EfXpFN',
+    );
+
+    final Link link = authLink.concat(httpLink);
+
+    ValueNotifier<GraphQLClient> client = ValueNotifier(
+      GraphQLClient(
+        link: link,
+        // The default store is the InMemoryStore, which does NOT persist to disk
+        cache: GraphQLCache(store: HiveStore()),
+      ),
+    );
+    print("graphQL client: ");
+    print(client);
+    // AppModel().faunaClient = client;
+
+
   }
 
   Future <Map<String, dynamic>> configureAmplify() async {    

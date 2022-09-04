@@ -2,16 +2,20 @@ import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 import 'package:faunadb_http/faunadb_http.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class AppModel extends ChangeNotifier {
 
-  FaunaClient _faunaClient = FaunaClient(FaunaConfig.build(
-      secret: 'fnAEvcFslGACTyx_6wrw7CVbXYEYrgGj34EfXpFN',
-      domain: 'db.fauna.com'
-    ));
+  
+  // FaunaClient _faunaClient = FaunaClient(FaunaConfig.build(
+  //     secret: 'fnAEvcFslGACTyx_6wrw7CVbXYEYrgGj34EfXpFN',
+  //     domain: 'db.fauna.com'
+  //   ));
 
-  FaunaClient get faunaClient => _faunaClient;
+  // FaunaClient get faunaClient => _faunaClient;
 
+  ValueNotifier<GraphQLClient>? _faunaClient = null;
+  ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
 
   String _currentUser = "";
   String get currentUser => _currentUser;
@@ -30,7 +34,7 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }  
 
-  set faunaClient(FaunaClient faunaClient) {
+  set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
     _faunaClient = faunaClient;
     notifyListeners();
   }

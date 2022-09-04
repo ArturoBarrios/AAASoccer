@@ -38,7 +38,7 @@ class _Home extends State<Home> {
   ];
   
   double globalPadding = 10.0;
-  Svg svgImage = SVGWidgets().getSoccerBallSVGImagePath();
+  Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
   Map<String, dynamic> enabledEvents = {
     "pickupGames": true,
     "tournaments": false,
@@ -54,18 +54,22 @@ class _Home extends State<Home> {
       {
         "name": "Pickup",
         "description": "pickup at the soccer field.",
+        'image': SVGWidgets().getSoccerBallSVGImage(),
       },
       {
         "name": "Pickup2",
-        "description": "pickup at the soccer field."
+        "description": "pickup at the soccer field.",
+        'image': SVGWidgets().getSoccerBallSVGImage(),
       },
       {
         "name": "Pickup3",
-        "description": "pickup at the soccer field."
+        "description": "pickup at the soccer field.",
+        'image': SVGWidgets().getSoccerBallSVGImage(),
       },
       {
         "name": "Pickup4",
-        "description": "pickup at the soccer field."
+        "description": "pickup at the soccer field.",
+        'image': SVGWidgets().getSoccerBallSVGImage(),
       }
     ],
     "tounaments": 
@@ -310,7 +314,7 @@ class _Home extends State<Home> {
                         itemBuilder: (_, index) => Card(
                               margin: const EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 10),
-                              child:  PickupCard2(title:"test", svgImage: svgImage),
+                              child:  PickupCard2(eventObject: eventsList[index], svgImage: svgImage),
                             )
                         // itemBuilder: (_, index) => Card(
                         //   margin: const EdgeInsets.symmetric(
@@ -333,15 +337,15 @@ class _Home extends State<Home> {
                     ),
 
                   // When nothing else to load
-                  if (_hasNextPage == false)
-                    Container(
-                      padding: const EdgeInsets.only(top: 30, bottom: 40),
-                      color: Colors.amber,
-                      child: const Center(
-                        child: Text('You have fetched all of the content'),
-                      ),
-                    ),
-                ],
+                  // if (_hasNextPage == false)
+                    // Container(
+                    //   padding: const EdgeInsets.only(top: 30, bottom: 40),
+                    //   color: Colors.amber,
+                    //   child: const Center(
+                    //     child: Text('You have fetched all of the content'),
+                    //   ),
+                    // ),
+                ]
               )
             ]),
       bottomNavigationBar: const BottomNav(),

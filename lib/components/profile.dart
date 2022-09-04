@@ -8,6 +8,8 @@ const primaryColor = Color(0xff4338CA);
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
+
+  
 }
 
 class _ProfileState extends State<Profile> {
@@ -15,6 +17,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return  Scaffold(
       body: ListView(
+        physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             Column(
               mainAxisSize: MainAxisSize.min,
@@ -158,7 +161,7 @@ class _ProfileState extends State<Profile> {
                       )
                     ],
                   ),
-                ),
+                ),              
                 Padding(
                   padding: EdgeInsets.only(left: 15.0),
                   child: Row(
@@ -172,6 +175,7 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
+
                 InfoDetailListTile(
                     name:"Excellent Perfomance", value:"Top 1%", tooltip: "Today", date: "02/23/2019"),
                InfoDetailListTile(

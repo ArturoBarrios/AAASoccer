@@ -51,7 +51,7 @@ class GameSeeder {
         }),
       );
 
-      final result = await AppModel().faunaClient.query(updateUser);
+      final result = null;//await AppModel().faunaClient.query(updateUser);
       print("result: ");
       print(result.toJson());
     }

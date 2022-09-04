@@ -5,9 +5,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class PickupCard2 extends StatefulWidget {
   const PickupCard2(
-      {Key? key, required this.title, required this.svgImage})
+      {Key? key, required this.eventObject, required this.svgImage})
       : super(key: key);
-  final String title;  
+  final Map<String,dynamic> eventObject;  
   final Svg svgImage;
   final double bevel = 10.0;  
 
@@ -63,11 +63,13 @@ class _PickupCard2 extends State<PickupCard2> {
           ),
           child: Container(
               child: InnerNeumorphicCardFb1(
-                  text: widget.title,
-                  imageUrl:
-                      imageUrl,
-                  subtitle: widget.title,
-                  onPressed: () {}))),
+                  text: widget.eventObject['name'],
+                  svgImage:
+                      widget.eventObject['image'],
+                  subtitle: widget.eventObject['description'],
+                  onPressed: () {
+                    
+                  }))),
     );
   }
 
@@ -98,13 +100,13 @@ class _PickupCard2 extends State<PickupCard2> {
 
 class InnerNeumorphicCardFb1 extends StatelessWidget {
   final String text;
-  final String imageUrl;
+  final Svg svgImage;
   final String subtitle;
   final Function() onPressed;
 
   const InnerNeumorphicCardFb1(
       {required this.text,
-      required this.imageUrl,
+      required this.svgImage,
       required this.subtitle,
       required this.onPressed,
       Key? key})
@@ -121,7 +123,13 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
        
         child: Column(
           children: [
-            Image.network(imageUrl, height: 59, fit: BoxFit.cover),
+            Image(          
+          width: MediaQuery.of(context).size.width * .4,
+          height: MediaQuery.of(context).size.height * .1,                          
+          image: svgImage,
+          color: Colors.white,
+              ),
+            // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
             const Spacer(),
             Text(text,
                 textAlign: TextAlign.center,

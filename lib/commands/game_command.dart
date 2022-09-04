@@ -25,8 +25,12 @@ final getGamesQuery = Map_(
         'players': Get(Select(['data', 'players'], Var('game'))),
       },
       Obj({
-         'game':  Var('game'),
-          // 'player': Var('players'),
+        'game': Select(['data', 'id'], Var('game')),
+        'players': {
+          'name': Select(['data', 'id'], Var('players')), 
+        }
+        //  'game':  Var('game'),
+        //   'player': Var('players'),
       })
     )
   )
@@ -60,7 +64,7 @@ final getGamesQuery = Map_(
 //   )
 // );
     // final getGamesQuery = Paginate(Documents(Collection("Game")));
-    final result = await AppModel().faunaClient.query(getGamesQuery);
+    final result = null;//await AppModel().faunaClient.query(getGamesQuery);
     
     print("result: ");
     print(result.toJson());
@@ -96,7 +100,7 @@ Future<Map<String, dynamic>> createGame(Map<String, dynamic> gameInput, Map<Stri
                 }
             }),
           ); 
-          FaunaResponse result = await AppModel().faunaClient.query(createDocument);
+          final result = null;//await AppModel().faunaClient.query(createDocument);
           print("response: ");
           print(result.toJson());
           createGameResponse["success"] = true;

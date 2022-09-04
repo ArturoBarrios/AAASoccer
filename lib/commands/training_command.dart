@@ -34,7 +34,7 @@ class TrainingCommand extends BaseCommand {
               }
             }),
           );
-          FaunaResponse result = await AppModel().faunaClient.query(createDocument);
+          final result = null;//await AppModel().faunaClient.query(createDocument);
           print("response: ");
           print(result.toJson());
           createTrainingResponse["success"] = true;

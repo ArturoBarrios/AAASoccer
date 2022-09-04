@@ -12,6 +12,7 @@ import '../testing/seeding/database_seeder.service.dart';
 import '../commands/geolocation_command.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import '../components/history.dart';
 
 
 
@@ -87,10 +88,17 @@ return BottomAppBar(
                     selected: false,
                     onPressed: () {}),
                 IconBottomBar(
-                    text: "Calendar",
-                    icon: Icons.date_range_outlined,
+                    text: "Friends",
+                    icon: Icons.person_add_outlined,
                     selected: false,
-                    onPressed: () {})
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute<void>(
+                        builder: (BuildContext context) {
+                          return History();
+                        },
+              ));
+                    
+                    })
               ],
             ),
           ),
