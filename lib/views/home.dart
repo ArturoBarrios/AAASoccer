@@ -24,6 +24,7 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../strings.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -39,25 +40,49 @@ class _Home extends State<Home> {
   
   double globalPadding = 10.0;
   Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
-  Map<String, dynamic> enabledEvents = {
-    "pickupGames": true,
-    "tournaments": false,
-    "leagues": false,
-    "teams": false,
-    "tryouts": false,
-    
-  };
+  List enabledEvents = [    
+      {
+        "enabled": true,
+        "name": StringConstants.PICKUPGAMESTITLE,
+        "description": "",
+        "image": SVGWidgets().getSoccerBallSVGImage(),
+      },
+      {
+        "enabled": false,
+        "name": StringConstants.TOURNAMENTSTITLE,
+        "description": "",
+        "image": SVGWidgets().getSoccerBallSVGImage(),
+      },    
+    {
+      "enabled": false,
+      "name": StringConstants.LEAGUESTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },        
+    {
+      "enabled": false,
+      "name": StringConstants.TEAMSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },    
+    {
+      "enabled": false,
+      "name": StringConstants.TRYOUTSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },    
+  ];
 
   Map<String, dynamic> events = {
-    "pickupGames": 
+    StringConstants.PICKUPGAMESTITLE: 
     [      
-      {
-        "name": "Pickup",
+      {       
+        "name": "Pickup1",
         "description": "pickup at the soccer field.",
         'image': SVGWidgets().getSoccerBallSVGImage(),
       },
       {
-        "name": "Pickup2",
+        "name": "Pickup2",        
         "description": "pickup at the soccer field.",
         'image': SVGWidgets().getSoccerBallSVGImage(),
       },
@@ -72,16 +97,16 @@ class _Home extends State<Home> {
         'image': SVGWidgets().getSoccerBallSVGImage(),
       }
     ],
-    "tounaments": 
+    StringConstants.TOURNAMENTSTITLE: 
     [      
     ],
-    "leagues": 
+    StringConstants.LEAGUESTITLE: 
     [
     ],
-    "teams": 
+    StringConstants.TEAMSTITLE: 
     [
     ],
-    "tryouts": 
+    StringConstants.TRYOUTSTITLE: 
     [
     ]
   };
@@ -114,6 +139,7 @@ class _Home extends State<Home> {
   // This holds the posts fetched from the server
   List _posts = [];
   List eventsList = [];
+  List eventsEnabledList = [];
 
   void _firstLoad() async {
     setState(() {
@@ -181,35 +207,26 @@ class _Home extends State<Home> {
 
   //can add filtering and sorting here
    List getEventCards()
-  {
-    
-    Row eventsRow = new Row(children: []);
-    
-    enabledEvents.forEach((key, value) {
+  {        
+    enabledEvents.forEach((object) {      
+      print("valueeeee: " + object.toString());
       //if event enabled
-      if(value){
+      if(object['enabled']){
         events.forEach((k, eventMap) => {
 
-          if(k==key){            
+          if(k==object['name']){            
             eventMap.forEach((item) => {   
               eventsList.add(
                 item
-              ),                         
-              // eventsRow.children.add(
-              //   Padding(
-              //     padding: EdgeInsets.all(10),
-              //     child: SelectIconButton(
-              //         title: "testinggg", svgImage: svgImage)
-              //   ),
-              // )
+              ),                                      
             })
           }
         });
       }
 
     });
-    print("event widgets length: ");
-    print(eventsList.length);
+    // print("event widgets length: ");
+    // print(eventsList.length);
     return eventsList;
 
   }
@@ -267,44 +284,60 @@ class _Home extends State<Home> {
                         const Padding(
                             padding: EdgeInsets.all(10.0),
                             child: SearchField()),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: 
+                        // SingleChildScrollView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   child: 
                           
-                          Row(                              
-                              children: <Widget>[
+                        //   Row(                              
+                        //       children: <Widget>[
                                 
                                
-                                Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: SelectIconButton(
-                                        title: "Pickup", svgImage: svgImage)),
-                                Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: SelectIconButton(
-                                        title: "Tournament",
-                                        svgImage: svgImage)),
-                                Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: SelectIconButton(
-                                        title: "League", svgImage: svgImage)),
-                                Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: SelectIconButton(
-                                        title: "Team", svgImage: svgImage)),
-                                Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: SelectIconButton(
-                                        title: "Tryout", svgImage: svgImage)),
-                              ]
-                              ),
-                        ),
-                      ]
-                      )),
+                        //         Padding(
+                        //             padding: EdgeInsets.all(10),
+                        //             child: SelectIconButton(
+                        //                 title: "Pickup", svgImage: svgImage)),
+                        //         Padding(
+                        //             padding: EdgeInsets.all(10),
+                        //             child: SelectIconButton(
+                        //                 title: "Tournament",
+                        //                 svgImage: svgImage)),
+                        //         Padding(
+                        //             padding: EdgeInsets.all(10),
+                        //             child: SelectIconButton(
+                        //                 title: "League", svgImage: svgImage)),
+                        //         Padding(
+                        //             padding: EdgeInsets.all(10),
+                        //             child: SelectIconButton(
+                        //                 title: "Team", svgImage: svgImage)),
+                              //   Padding(
+                              //       padding: EdgeInsets.all(10),
+                              //       child: SelectIconButton(
+                              //           title: "Tryout", svgImage: svgImage)),
+                              // ]
+                              // ),
+                        // ),
 
-                  // Expanded(
-                  //   child: Text("test"),
-                  // ),
+
+
+                        ///////////////////////////uncomment this
+                         Expanded( child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        controller: _controller,
+                        itemCount: enabledEvents.length,
+                        itemBuilder: (_, index) => Card(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 10),
+                              child:  SelectIconButton(eventObject: enabledEvents[index], svgImage: svgImage),
+                            )                       
+                        )),
+                      ]
+                      )
+                      ),
+
+
+
+
+
 
                   //list view
                   Expanded(
@@ -315,15 +348,7 @@ class _Home extends State<Home> {
                               margin: const EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 10),
                               child:  PickupCard2(eventObject: eventsList[index], svgImage: svgImage),
-                            )
-                        // itemBuilder: (_, index) => Card(
-                        //   margin: const EdgeInsets.symmetric(
-                        //       vertical: 8, horizontal: 10),
-                        //   child: ListTile(
-                        //     title: Text(_posts[index]['title']),
-                        //     subtitle: Text(_posts[index]['body']),
-                        //   ),
-                        // ),
+                            )                       
                         ),
                   ),
 

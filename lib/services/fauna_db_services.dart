@@ -34,7 +34,7 @@ class FaunaDBServices {
       "data": Map<String, dynamic>()
     };
 
-    Map<String, dynamic> getGames = await GameQueries().getGames();
+    Map<String, dynamic> getGames = {"success": "false"};//await GameQueries().getGames();
     if(getGames['success']){
       print("retrieved games successfully from fauna db");
       retrieveInitialModelsResponse["success"] = true;

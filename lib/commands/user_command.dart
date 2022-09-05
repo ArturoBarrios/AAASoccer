@@ -1,10 +1,12 @@
-import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
+import 'base_command.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 import '../models/User.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import  '../graphql/queries/users.dart';
 
 class UserCommand extends BaseCommand {
 
@@ -125,6 +127,32 @@ class UserCommand extends BaseCommand {
     return resp;
   }
 
+  Future<Map<String, dynamic>> getAllUsers() async {
+    print("getUsers");
+    Map<String, dynamic> resp = {"success": false, "message": "no users found", "data": null};
+    try {
+      print("before query");
+      
+      final readRespositoriesResult = useQuery(
+        QueryOptions(
+          document: gql(UserQueries.getAllUsers), // this is the query string you just created
+          variables: {
+            'nRepositories': 50,
+          },
+          pollInterval: const Duration(seconds: 10),
+        ),
+      );
+      final result = readRespositoriesResult.result;
+
+      print("users got: ");
+      print(result);
+      
+      
+    }  catch (e) {
+      print('Query failed: $e');
+    }
+    return resp;
+  }
  
 
 }

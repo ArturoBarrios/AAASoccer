@@ -5,11 +5,12 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class SelectIconButton extends StatefulWidget {
   const SelectIconButton(
-      {Key? key, required this.title, required this.svgImage})
-      : super(key: key);
-  final String title;  
+      {Key? key, required this.eventObject, required this.svgImage})
+      : super(key: key);  
+  final Map<String,dynamic> eventObject; 
   final Svg svgImage;
   final double bevel = 10.0;  
+
 
   @override
   State<SelectIconButton> createState() => _SelectIconButton();
@@ -24,6 +25,7 @@ class _SelectIconButton extends State<SelectIconButton> {
   final imageUrl = "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
+  print("obeyyyyyyyy");
 
     return Listener(
       child: AnimatedContainer(
@@ -63,48 +65,25 @@ class _SelectIconButton extends State<SelectIconButton> {
           ),
           child: Container(
               child: InnerNeumorphicCardFb1(
-                  text: widget.title,
-                  imageUrl:
-                      imageUrl,
-                  subtitle: widget.title,
+                  text: widget.eventObject['name'],
+                  svgImage:
+                      widget.eventObject['image'],
+                  subtitle: widget.eventObject['description'],
                   onPressed: () {}))),
     );
   }
 
-    //    Stack(children: <Widget>[
-    //     SizedBox(          
-    //       height: MediaQuery.of(context).size.height * .1,
-    //       width: MediaQuery.of(context).size.width * .4,
-    //       child: ElevatedButton(
-    //         style: style,
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: <Widget>[
-    //             AutoSizeText('${widget.title}',
-    //                 style: TextStyle(fontSize: 25), maxLines: 1)
-    //           ],
-    //         ),
-    //         onPressed: () {},
-    //       ),
-    //     ),
-    // Image(          
-    //   width: MediaQuery.of(context).size.width * .4,
-    //   height: MediaQuery.of(context).size.height * .1,                          
-    //   image: widget.svgImage,
-    //   color: Colors.white,
-    //       ),
-    // ]);
 }
 
 class InnerNeumorphicCardFb1 extends StatelessWidget {
   final String text;
-  final String imageUrl;
+  final Svg svgImage;
   final String subtitle;
   final Function() onPressed;
 
   const InnerNeumorphicCardFb1(
       {required this.text,
-      required this.imageUrl,
+      required this.svgImage,
       required this.subtitle,
       required this.onPressed,
       Key? key})
@@ -121,7 +100,12 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
        
         child: Column(
           children: [
-            Image.network(imageUrl, height: 59, fit: BoxFit.cover),
+            Image(          
+          width: MediaQuery.of(context).size.width * .4,
+          height: MediaQuery.of(context).size.height * .1,                          
+          image: svgImage,
+          color: Colors.white,
+              ),
             const Spacer(),
             Text(text,
                 textAlign: TextAlign.center,

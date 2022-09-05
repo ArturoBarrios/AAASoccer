@@ -13,8 +13,8 @@ import '../commands/geolocation_command.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import '../components/history.dart';
-
-
+import 'package:graphql_flutter/graphql_flutter.dart';
+import '../graphql/queries/users.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNav extends State<BottomNav> {
-   final orangeColor = const Color(0xffFF8527);
+  final orangeColor = const Color(0xffFF8527);
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -50,59 +50,62 @@ class _BottomNav extends State<BottomNav> {
   }
   //testing methods(I know, what an amazing place to test models) :)
 
-  void testFunction() async{
-    Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
-  //  await DatabaseSeeder().run();
+  void testFunction() async {
+    // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
+    //  await DatabaseSeeder().run();
   }
 
   @override
   Widget build(BuildContext context) {
-return BottomAppBar(
-        color: Colors.white,
-        child: SizedBox(
-          height: 56,
-          width: MediaQuery.of(context).size.width,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconBottomBar(
-                    text: "Home",
-                    icon: Icons.home_outlined,
-                    selected: true,
-                    onPressed: () {}),
-                IconBottomBar(
-                    text: "Search",
-                    icon: Icons.search_outlined,
-                    selected: false,
-                    onPressed: () {}),
-                IconBottomBar2(
-                    text: "Add",
-                    icon: Icons.add_outlined,
-                    selected: false,
-                    onPressed: () {testFunction();}),
-                IconBottomBar(
-                    text: "Cart",
-                    icon: Icons.local_grocery_store_outlined,
-                    selected: false,
-                    onPressed: () {}),
-                IconBottomBar(
-                    text: "Friends",
-                    icon: Icons.person_add_outlined,
-                    selected: false,
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute<void>(
-                        builder: (BuildContext context) {
-                          return History();
-                        },
-              ));
+    String testText = "test";
+    return BottomAppBar(
+      color: Colors.white,
+      child: SizedBox(
+        height: 56,
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconBottomBar(
+                  text: "Home",
+                  icon: Icons.home_outlined,
+                  selected: true,
+                  onPressed: () {}),
+              IconBottomBar(
+                  text: "Search",
+                  icon: Icons.search_outlined,
+                  selected: false,
+                  onPressed: () {}),
+              IconBottomBar2(
+                  text: "Add",
+                  icon: Icons.add_outlined,
+                  selected: false,
+                  onPressed: () {
                     
-                    })
-              ],
-            ),
+                    //  testFunction();
+                  }),
+              IconBottomBar(
+                  text: "Cart",
+                  icon: Icons.local_grocery_store_outlined,
+                  selected: false,
+                  onPressed: () {}),
+              IconBottomBar(
+                  text: "Friends",
+                  icon: Icons.person_add_outlined,
+                  selected: false,
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return History();
+                      },
+                    ));
+                  })
+            ],
           ),
         ),
+      ),
     );
   }
   //   double height = MediaQuery.of(context).size.height * .06;
@@ -163,6 +166,7 @@ return BottomAppBar(
   //       ]));
   // }
 }
+
 class IconBottomBar extends StatelessWidget {
   const IconBottomBar(
       {Key? key,
@@ -195,7 +199,6 @@ class IconBottomBar extends StatelessWidget {
     );
   }
 }
-
 
 class IconBottomBar2 extends StatelessWidget {
   const IconBottomBar2(

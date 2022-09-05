@@ -26,10 +26,38 @@ import 'package:gql_http_link/gql_http_link.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+
+    await initHiveForFlutter();
+    final HttpLink httpLink = HttpLink(
+      'https://neat-sunfish-45.hasura.app/v1/graphql',
+    );
+
+    final AuthLink authLink = AuthLink(
+      getToken: () async => 'Bearer xqxOjEQssWDUtt1ULO24E4wSsbuMBWpdVDSPk5R5UCFrJGsdpx3y5H2XV1t5ONdF',
+    );
+    
+
+    final Link link = authLink.concat(httpLink);
+
+    ValueNotifier<GraphQLClient> client = ValueNotifier(
+      GraphQLClient(
+        link: link,
+        // The default store is the InMemoryStore, which does NOT persist to disk
+        cache: GraphQLCache(store: HiveStore()),
+      ),
+    );
+    print("graphQL client: ");
+    print(client);
+
+  runApp(MyApp(client: client));
+
+}
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final ValueNotifier<GraphQLClient> client;
+
+  const MyApp({Key? key, required this.client }) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -48,6 +76,8 @@ class _MyAppState extends State<MyApp> {
 
   late TabController _tabController;
 
+
+
   @override
   void initState() {
     super.initState();
@@ -62,29 +92,27 @@ class _MyAppState extends State<MyApp> {
     print(dotenv.env['ENVIRONMENT']);
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
      if (configureAmplifyResp['message'] == "isSignedIn") {
-      await configureGraphQL();      
-      await FaunaDBServices().retrieveInitialModels();
+      // await configureGraphQL();      
+      // await FaunaDBServices().retrieveInitialModels();
       Map<String, dynamic> otherConfigurationResp = otherConfigurations();
       if(otherConfigurationResp['success']){
         print("startLoadToHomeTransition");
         startLoadToHomeTransition();
-      }
-
-      
-    }
-    
+      }      
+    }    
   }
 
   Future configureGraphQL() async{
     print("configureGraphQL");
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(
-      'db.fauna.com',
+      'https://neat-sunfish-45.hasura.app/v1/graphql',
     );
 
     final AuthLink authLink = AuthLink(
-      getToken: () async => 'Bearer fnAEvcFslGACTyx_6wrw7CVbXYEYrgGj34EfXpFN',
+      getToken: () async => 'Bearer xqxOjEQssWDUtt1ULO24E4wSsbuMBWpdVDSPk5R5UCFrJGsdpx3y5H2XV1t5ONdF',
     );
+    
 
     final Link link = authLink.concat(httpLink);
 
@@ -240,238 +268,241 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext _) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (c) => AppModel()),
-        ChangeNotifierProvider(create: (c) => UserModel()),
-        ChangeNotifierProvider(create: (c) => HomePageModel()),
-        Provider(create: (c) => FaunaDBServices()),
-        Provider(create: (c) => UserService()),
-        Provider(create: (c) => GeoLocationServices()),
-      ],
-      child: Builder(builder: (context) {
-        Commands.init(context);
-        // Save a context our Commands can use to access provided Models and Services
-        // return authenticated user, create or update user in model
-        return Authenticator(
-            authenticatorBuilder:
-                (BuildContext context, AuthenticatorState state) {
-              const padding =
-                  EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
-              switch (state.currentStep) {
-                case AuthenticatorStep.signIn:
-                  return Scaffold(
-                    body: Padding(
-                      padding: padding,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            //todo
-                            //create switch to switch between login and signup
-                            //onpress function that creates creates/updates cognito user
-                            TextField(
-                              controller: emailController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Email'),
-                            ),
-                            TextField(
-                              controller: phoneController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Phone'),
-                            ),
-                            TextField(
-                              controller: passwordController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Password'),
-                            ),
-
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue, // background
-                                onPrimary: Colors.white, // foreground
+    return 
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (c) => AppModel()),
+          ChangeNotifierProvider(create: (c) => UserModel()),
+          ChangeNotifierProvider(create: (c) => HomePageModel()),
+          Provider(create: (c) => FaunaDBServices()),
+          Provider(create: (c) => UserService()),
+          Provider(create: (c) => GeoLocationServices()),
+        ],
+        child: Builder(builder: (context) {
+          Commands.init(context);
+          // Save a context our Commands can use to access provided Models and Services
+          // return authenticated user, create or update user in model
+          return Authenticator(
+              authenticatorBuilder:
+                  (BuildContext context, AuthenticatorState state) {
+                const padding =
+                    EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
+                switch (state.currentStep) {
+                  case AuthenticatorStep.signIn:
+                    return Scaffold(
+                      body: Padding(
+                        padding: padding,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              //todo
+                              //create switch to switch between login and signup
+                              //onpress function that creates creates/updates cognito user
+                              TextField(
+                                controller: emailController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Email'),
                               ),
-                              //emailController, passwordController
-                              onPressed: () {
-                                signIn(state);
-                              },
-                              child: Text('Sign In'),
-                            )
-                          ],
+                              TextField(
+                                controller: phoneController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Phone'),
+                              ),
+                              TextField(
+                                controller: passwordController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Password'),
+                              ),
+
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
+                                //emailController, passwordController
+                                onPressed: () {
+                                  signIn(state);
+                                },
+                                child: Text('Sign In'),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    // custom button to take the user to sign up
-                    persistentFooterButtons: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Don\'t have an account?'),
-                          TextButton(
-                            onPressed: () => state.changeStep(
-                              AuthenticatorStep.signUp,
-                            ),
-                            child: const Text('Sign Up'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                case AuthenticatorStep.signUp:
-                  return Scaffold(
-                    body: Padding(
-                      padding: padding,
-                      child: SingleChildScrollView(
-                        child: Column(
+                      // custom button to take the user to sign up
+                      persistentFooterButtons: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // app logo
-                            const Center(child: FlutterLogo(size: 100)),
-                            // prebuilt sign up form from amplify_authenticator package
-
-                            TextField(
-                              controller: emailController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Email'),
-                            ),
-
-                            TextField(
-                              controller: usernameController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Username'),
-                            ),
-                            TextField(
-                              controller: phoneController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Phone'),
-                            ),
-                            TextField(
-                              controller: passwordController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Password'),
-                            ),
-                            TextField(
-                              controller: birthdateController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Birthdate'),
-                            ),
-                            TextField(
-                              controller: genderController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Gender'),
-                            ),
-                            TextField(
-                              controller: addressController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Address'),
-                            ),
-
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue, // background
-                                onPrimary: Colors.white, // foreground
+                            const Text('Don\'t have an account?'),
+                            TextButton(
+                              onPressed: () => state.changeStep(
+                                AuthenticatorStep.signUp,
                               ),
-                              //emailController, passwordController, usernameController, phoneController
-                              onPressed: () {
-                                signUp(state);
-                              },
-                              child: Text('Sign Up'),
-                            )
-                            // SignUpForm.custom(
-                            //   fields: [
-                            //     SignUpFormField.username(),
-                            //     SignUpFormField.email(required: true),
-                            //     SignUpFormField.phoneNumber(),
-                            //     SignUpFormField.password(),
-
-                            //   ],
-
-                            // ),
+                              child: const Text('Sign Up'),
+                            ),
                           ],
                         ),
-                      ),
-                    ),
-                    // custom button to take the user to sign in
-                    persistentFooterButtons: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Already have an account?'),
-                          TextButton(
-                            onPressed: () => state.changeStep(
-                              AuthenticatorStep.signIn,
-                            ),
-                            child: const Text('Sign In'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                case AuthenticatorStep.confirmSignUp:
-                  return Scaffold(
-                    body: Padding(
-                      padding: padding,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            // app logo
-                            const Center(child: FlutterLogo(size: 100)),
-                            // prebuilt sign up form from amplify_authenticator package
+                      ],
+                    );
+                  case AuthenticatorStep.signUp:
+                    return Scaffold(
+                      body: Padding(
+                        padding: padding,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              // app logo
+                              const Center(child: FlutterLogo(size: 100)),
+                              // prebuilt sign up form from amplify_authenticator package
 
-                            TextField(
-                              controller: confirmSignInValueController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Confirmation Code'),
-                            ),
-
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue, // background
-                                onPrimary: Colors.white, // foreground
+                              TextField(
+                                controller: emailController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Email'),
                               ),
-                              //emailController, passwordController, usernameController, phoneController
-                              onPressed: () {
-                                confirmSignIn(state);
-                              },
-                              child: Text('Confirm'),
-                            )
-                            // SignUpForm.custom(
-                            //   fields: [
-                            //     SignUpFormField.username(),
-                            //     SignUpFormField.email(required: true),
-                            //     SignUpFormField.phoneNumber(),
-                            //     SignUpFormField.password(),
 
-                            //   ],
+                              TextField(
+                                controller: usernameController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Username'),
+                              ),
+                              TextField(
+                                controller: phoneController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Phone'),
+                              ),
+                              TextField(
+                                controller: passwordController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Password'),
+                              ),
+                              TextField(
+                                controller: birthdateController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Birthdate'),
+                              ),
+                              TextField(
+                                controller: genderController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Gender'),
+                              ),
+                              TextField(
+                                controller: addressController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Address'),
+                              ),
 
-                            // ),
-                          ],
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
+                                //emailController, passwordController, usernameController, phoneController
+                                onPressed: () {
+                                  signUp(state);
+                                },
+                                child: Text('Sign Up'),
+                              )
+                              // SignUpForm.custom(
+                              //   fields: [
+                              //     SignUpFormField.username(),
+                              //     SignUpFormField.email(required: true),
+                              //     SignUpFormField.phoneNumber(),
+                              //     SignUpFormField.password(),
+
+                              //   ],
+
+                              // ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    // custom button to take the user to sign in
-                    persistentFooterButtons: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Already have an account?'),
-                          TextButton(
-                            onPressed: () => state.changeStep(
-                              AuthenticatorStep.signIn,
+                      // custom button to take the user to sign in
+                      persistentFooterButtons: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Already have an account?'),
+                            TextButton(
+                              onPressed: () => state.changeStep(
+                                AuthenticatorStep.signIn,
+                              ),
+                              child: const Text('Sign In'),
                             ),
-                            child: const Text('Sign In'),
+                          ],
+                        ),
+                      ],
+                    );
+                  case AuthenticatorStep.confirmSignUp:
+                    return Scaffold(
+                      body: Padding(
+                        padding: padding,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              // app logo
+                              const Center(child: FlutterLogo(size: 100)),
+                              // prebuilt sign up form from amplify_authenticator package
+
+                              TextField(
+                                controller: confirmSignInValueController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Confirmation Code'),
+                              ),
+
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
+                                //emailController, passwordController, usernameController, phoneController
+                                onPressed: () {
+                                  confirmSignIn(state);
+                                },
+                                child: Text('Confirm'),
+                              )
+                              // SignUpForm.custom(
+                              //   fields: [
+                              //     SignUpFormField.username(),
+                              //     SignUpFormField.email(required: true),
+                              //     SignUpFormField.phoneNumber(),
+                              //     SignUpFormField.password(),
+
+                              //   ],
+
+                              // ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ],
-                  );
-                default:
-                  // returning null defaults to the prebuilt authenticator for all other steps
-                  return null;
-              }
-            },
-            child: MaterialApp(
-                builder: Authenticator.builder(), home: AppScaffold()));
-      }),
-    );
+                      // custom button to take the user to sign in
+                      persistentFooterButtons: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Already have an account?'),
+                            TextButton(
+                              onPressed: () => state.changeStep(
+                                AuthenticatorStep.signIn,
+                              ),
+                              child: const Text('Sign In'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  default:
+                    // returning null defaults to the prebuilt authenticator for all other steps
+                    return null;
+                }
+              },
+              child: 
+              
+              MaterialApp(
+                  builder: Authenticator.builder(), home: AppScaffold()));
+        }),
+      );
   }
 }
 
