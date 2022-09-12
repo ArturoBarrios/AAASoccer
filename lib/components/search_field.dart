@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../models/app_model.dart';
 
 class SearchField extends StatefulWidget {
-  const SearchField({Key? key}) : super(key: key);
+  const SearchField({Key? key, required this.testText}) : super(key: key);
+
+  final String testText;
 
   @override
   State<SearchField> createState() => _SearchField();
@@ -27,7 +30,7 @@ class _SearchField extends State<SearchField> {
           }
           return Colors.grey;
         }),
-        labelText: '',
+        labelText: widget.testText,
       ),
     );
   }

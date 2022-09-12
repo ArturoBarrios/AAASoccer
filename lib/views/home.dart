@@ -17,6 +17,7 @@ import '../components/Cards/pickup_card.dart';
 import '../components/Cards/pickup_card2.dart';
 //models
 import '../models/home_page_model.dart';
+import '../models/app_model.dart';
 //commands
 import '../commands/home_page_command.dart';
 import '../components/Buttons/seed_data_button.dart';
@@ -25,10 +26,12 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../strings.dart';
+import '../models/event_types_model.dart';
 
 class Home extends StatefulWidget {
   @override
   _Home createState() => _Home();
+  
 }
 
 class _Home extends State<Home> {
@@ -37,52 +40,67 @@ class _Home extends State<Home> {
     {"key": 1, "opened": false},
     {"key": 2, "opened": false}
   ];
-  
+
   double globalPadding = 10.0;
   Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
-  List enabledEvents = [    
-      {
-        "enabled": true,
-        "name": StringConstants.PICKUPGAMESTITLE,
-        "description": "",
-        "image": SVGWidgets().getSoccerBallSVGImage(),
-      },
-      {
-        "enabled": false,
-        "name": StringConstants.TOURNAMENTSTITLE,
-        "description": "",
-        "image": SVGWidgets().getSoccerBallSVGImage(),
-      },    
-    {
-      "enabled": false,
-      "name": StringConstants.LEAGUESTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },        
-    {
-      "enabled": false,
-      "name": StringConstants.TEAMSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },    
-    {
-      "enabled": false,
-      "name": StringConstants.TRYOUTSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },    
-  ];
+  // List enabledEvents = [
+  //   {
+  //     "key": 0,
+  //     "enabled": true,
+  //     "name": StringConstants.PICKUPGAMESTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //   {
+  //     "key": 1,
+  //     "enabled": true,
+  //     "name": StringConstants.TOURNAMENTSTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //   {
+  //     "key": 2,
+  //     "enabled": false,
+  //     "name": StringConstants.LEAGUESTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //   {
+  //     "key": 3,
+  //     "enabled": false,
+  //     "name": StringConstants.TEAMSTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //   {
+  //     "key": 4,
+  //     "enabled": false,
+  //     "name": StringConstants.TRYOUTSTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  // ];
+
+  String test = "";
+
+  // List  enabledEvents = [
+  //   EventTypeModel(
+  //     StringConstants.PICKUPGAMESTITLE,
+  //     "",
+  //     SVGWidgets().getSoccerBallSVGImage(),
+  //     true,
+  //   )
+  // ];
 
   Map<String, dynamic> events = {
-    StringConstants.PICKUPGAMESTITLE: 
-    [      
-      {       
+    StringConstants.PICKUPGAMESTITLE: [
+      {
         "name": "Pickup1",
         "description": "pickup at the soccer field.",
         'image': SVGWidgets().getSoccerBallSVGImage(),
       },
       {
-        "name": "Pickup2",        
+        "name": "Pickup2",
         "description": "pickup at the soccer field.",
         'image': SVGWidgets().getSoccerBallSVGImage(),
       },
@@ -97,18 +115,31 @@ class _Home extends State<Home> {
         'image': SVGWidgets().getSoccerBallSVGImage(),
       }
     ],
-    StringConstants.TOURNAMENTSTITLE: 
-    [      
+    StringConstants.TOURNAMENTSTITLE: [
+      {
+        "name": "Tournament1",
+        "description": "Tournament at the soccer field.",
+        'image': SVGWidgets().getSoccerBallSVGImage(),
+      },
+      {
+        "name": "Tournament2",
+        "description": "pickup at the soccer field.",
+        'image': SVGWidgets().getSoccerBallSVGImage(),
+      },
+      {
+        "name": "Tournament3",
+        "description": "pickup at the soccer field.",
+        'image': SVGWidgets().getSoccerBallSVGImage(),
+      },
+      {
+        "name": "Tournament4",
+        "description": "pickup at the soccer field.",
+        'image': SVGWidgets().getSoccerBallSVGImage(),
+      }
     ],
-    StringConstants.LEAGUESTITLE: 
-    [
-    ],
-    StringConstants.TEAMSTITLE: 
-    [
-    ],
-    StringConstants.TRYOUTSTITLE: 
-    [
-    ]
+    StringConstants.LEAGUESTITLE: [],
+    StringConstants.TEAMSTITLE: [],
+    StringConstants.TRYOUTSTITLE: []
   };
 
   void cardTapped() {
@@ -206,32 +237,25 @@ class _Home extends State<Home> {
   }
 
   //can add filtering and sorting here
-   List getEventCards()
-  {        
-    enabledEvents.forEach((object) {      
-      print("valueeeee: " + object.toString());
-      //if event enabled
-      if(object['enabled']){
-        events.forEach((k, eventMap) => {
-
-          if(k==object['name']){            
-            eventMap.forEach((item) => {   
-              eventsList.add(
-                item
-              ),                                      
-            })
-          }
-        });
-      }
-
-    });
-    // print("event widgets length: ");
-    // print(eventsList.length);
-    return eventsList;
-
+  List getEventCards() {
+      HomePageModel().enabledEvents.forEach((object) {
+        print("valueeeee: " + object.toString());
+        //if event enabled
+        if (object['enabled']) {
+          events.forEach((k, eventMap) => {
+                if (k == object['name'])
+                  {
+                    eventMap.forEach((item) => {
+                          eventsList.add(item),
+                        })
+                  }
+              });
+        }
+      });
+      // print("event widgets length: ");
+      // print(eventsList.length);
+      return eventsList;
   }
-
-
 
   @override
   void initState() {
@@ -250,6 +274,17 @@ class _Home extends State<Home> {
   Widget build(BuildContext context) {
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
+
+    List enabledEvents = context
+        .select<HomePageModel, List>((value) => value.enabledEvents);
+    int i = 0;
+    for(var i = 0;i<HomePageModel().enabledEvents.length;i++){
+      context.select<HomePageModel, bool>((value) => value.enabledEvents[i]['enabled']);
+    }
+
+    String testText =
+        context.select<HomePageModel, String>((value) => value.testText);
+
     return (Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -277,92 +312,53 @@ class _Home extends State<Home> {
             )
           : Stack(children: <Widget>[
               Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                      child: Column(children: <Widget>[
-                        const Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: SearchField()),
-                        // SingleChildScrollView(
-                        //   scrollDirection: Axis.horizontal,
-                        //   child: 
-                          
-                        //   Row(                              
-                        //       children: <Widget>[
-                                
-                               
-                        //         Padding(
-                        //             padding: EdgeInsets.all(10),
-                        //             child: SelectIconButton(
-                        //                 title: "Pickup", svgImage: svgImage)),
-                        //         Padding(
-                        //             padding: EdgeInsets.all(10),
-                        //             child: SelectIconButton(
-                        //                 title: "Tournament",
-                        //                 svgImage: svgImage)),
-                        //         Padding(
-                        //             padding: EdgeInsets.all(10),
-                        //             child: SelectIconButton(
-                        //                 title: "League", svgImage: svgImage)),
-                        //         Padding(
-                        //             padding: EdgeInsets.all(10),
-                        //             child: SelectIconButton(
-                        //                 title: "Team", svgImage: svgImage)),
-                              //   Padding(
-                              //       padding: EdgeInsets.all(10),
-                              //       child: SelectIconButton(
-                              //           title: "Tryout", svgImage: svgImage)),
-                              // ]
-                              // ),
-                        // ),
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                        child: Column(children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: SearchField(testText: testText)),
+                      Expanded(
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              controller: _controller,
+                              itemCount: enabledEvents.length,
+                              itemBuilder: (_, index) => Card(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 10),
+                                    child: SelectIconButton(
+                                        eventObject: enabledEvents[index],
+                                        svgImage: svgImage,
+                                        index: index),
+                                  ))),
+                    ])),
 
-
-
-                        ///////////////////////////uncomment this
-                         Expanded( child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        controller: _controller,
-                        itemCount: enabledEvents.length,
-                        itemBuilder: (_, index) => Card(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 10),
-                              child:  SelectIconButton(eventObject: enabledEvents[index], svgImage: svgImage),
-                            )                       
-                        )),
-                      ]
-                      )
-                      ),
-
-
-
-
-
-
-                  //list view
-                  Expanded(
-                    child: ListView.builder(
-                        controller: _controller,
-                        itemCount: eventsList.length,
-                        itemBuilder: (_, index) => Card(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 10),
-                              child:  PickupCard2(eventObject: eventsList[index], svgImage: svgImage),
-                            )                       
-                        ),
-                  ),
-
-                  // when the _loadMore function is running
-                  if (_isLoadMoreRunning == true)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 0, bottom: 0),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                    //list view
+                    Expanded(
+                      child: ListView.builder(
+                          controller: _controller,
+                          itemCount: eventsList.length,
+                          itemBuilder: (_, index) => Card(
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 10),
+                                child: PickupCard2(
+                                    eventObject: eventsList[index],
+                                    svgImage: svgImage),
+                              )),
                     ),
 
-                  // When nothing else to load
-                  // if (_hasNextPage == false)
+                    // when the _loadMore function is running
+                    if (_isLoadMoreRunning == true)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 0, bottom: 0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+
+                    // When nothing else to load
+                    // if (_hasNextPage == false)
                     // Container(
                     //   padding: const EdgeInsets.only(top: 30, bottom: 40),
                     //   color: Colors.amber,
@@ -370,8 +366,7 @@ class _Home extends State<Home> {
                     //     child: Text('You have fetched all of the content'),
                     //   ),
                     // ),
-                ]
-              )
+                  ])
             ]),
       bottomNavigationBar: const BottomNav(),
     ));

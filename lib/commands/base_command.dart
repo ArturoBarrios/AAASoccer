@@ -30,6 +30,9 @@ class BaseCommand {
 
 
 
+  void testUpdateText() {
+    homePageModel.testText = "testingggggg";
+  }
   Future <Map<String, dynamic>> setupInitialAppConfigs() async{
     print("setupInitialAppConfigs");
     Map<String, dynamic> setupInitialAppConfigsResponse = {"success": 0, "message": "Something went wrong with setting up initial app configs", "data": Map<String, dynamic>()};

@@ -44,12 +44,12 @@ void main() async {
       GraphQLClient(
         link: link,
         // The default store is the InMemoryStore, which does NOT persist to disk
-        cache: GraphQLCache(store: HiveStore()),
+        cache: GraphQLCache(store: InMemoryStore()),
       ),
     );
     print("graphQL client: ");
     print(client);
-
+  
   runApp(MyApp(client: client));
 
 }

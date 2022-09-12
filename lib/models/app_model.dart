@@ -17,6 +17,8 @@ class AppModel extends ChangeNotifier {
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
 
+  
+
   String _currentUser = "";
   String get currentUser => _currentUser;
   
@@ -29,7 +31,8 @@ class AppModel extends ChangeNotifier {
   bool _initialConditionsMet = false;
   bool get initialConditionsMet => _initialConditionsMet;
   
-    set initialConditionsMet(bool initialConditionsMet){
+
+  set initialConditionsMet(bool initialConditionsMet){
     _initialConditionsMet = initialConditionsMet;
     notifyListeners();
   }  
