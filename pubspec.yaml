@@ -52,6 +52,7 @@ dependencies:
   faunadb_http: ^0.13.4
   flutter_svg: ^1.1.4
   flutter_svg_provider: ^1.0.3
+  http: ^0.13.5
   
   
 

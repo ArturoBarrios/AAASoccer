@@ -56,11 +56,21 @@ class _BottomNav extends State<BottomNav> {
 
   void testFunction() async {
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
-    //  await DatabaseSeeder().run();
-    print("test text updated");
-    HomePageCommand().testUpdateText();
+     await DatabaseSeeder().run();
+    // print("test text updated");
+    // HomePageCommand().testUpdateText();
 
-    print(HomePageModel().testText);
+    // print(HomePageModel().testText);
+    // Map<String,dynamic> userInput = {
+    //   "name": "Arturo",
+    //   "phone": "1234567890",
+    //   "email": "email",
+    //   "username": "username",
+    //   "birthdate": "birthdate",
+
+    // };
+    // PlayerCommand().createPlayer(userInput, {}, false);
+    
   }
 
   @override

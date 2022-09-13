@@ -239,7 +239,7 @@ class _Home extends State<Home> {
   //can add filtering and sorting here
   List getEventCards() {
       HomePageModel().enabledEvents.forEach((object) {
-        print("valueeeee: " + object.toString());
+        print("valueeeee: " + object.toString()); 
         //if event enabled
         if (object['enabled']) {
           events.forEach((k, eventMap) => {

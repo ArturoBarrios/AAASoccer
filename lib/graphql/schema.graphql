@@ -276,8 +276,7 @@ type AppSubscription   {
   tier: String
 }
 
-type Location   {
-  id: ID!
+type Location   {  
   name: String
   secondaryName: String
   address: String
@@ -286,8 +285,8 @@ type Location   {
   fieldSize: FieldPlayerOccupancySize
   private: Boolean
   schedule: String
-  latitude: Float
-  longitude: Float
+  latitude: Float!
+  longitude: Float!
   events: [Event] @relation
   user: User
   team: Team

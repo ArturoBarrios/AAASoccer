@@ -132,17 +132,18 @@ class UserCommand extends BaseCommand {
     Map<String, dynamic> resp = {"success": false, "message": "no users found", "data": null};
     try {
       print("before query");
-      
-      final readRespositoriesResult = useQuery(
-        QueryOptions(
-          document: gql(UserQueries.getAllUsers), // this is the query string you just created
-          variables: {
-            'nRepositories': 50,
-          },
-          pollInterval: const Duration(seconds: 10),
-        ),
-      );
-      final result = readRespositoriesResult.result;
+
+     final result = null; 
+      // final readRespositoriesResult = useQuery(
+      //   QueryOptions(
+      //     document: gql(UserQueries.getAllUsers), // this is the query string you just created
+      //     variables: {
+      //       'nRepositories': 50,
+      //     },
+      //     pollInterval: const Duration(seconds: 10),
+      //   ),
+      // );
+      // final result = readRespositoriesResult.result;
 
       print("users got: ");
       print(result);

@@ -19,17 +19,19 @@ class TeamSeeder {
       if(getRandomTeamDataResp["success"]){
         print("success");
         Map<String, dynamic> createLocationResp = await LocationSeeder().createRandomLocation();
-        FaunaResponse locationFaunaResponse = createLocationResp["data"];
-        Map<String, dynamic> locationResult = locationFaunaResponse.asMap();
+        Map<String,dynamic> location = createLocationResp['data'];
+        print("data after method call");
+        print(location);        
         if(createLocationResp['success']){
           Map<String, dynamic> randomTeamData = getRandomTeamDataResp["data"];  
-          randomTeamData['location'] = locationResult;//createLocationResp["data"]["randomLocation"];      
-          Map<String, dynamic> createTeamResponse = await TeamCommand().createTeam(randomTeamData);
-          if(createTeamResponse["success"]){
-            FaunaResponse createdTeam = createTeamResponse["data"];
-            createTeamsResponse["data"].add(createdTeam);
+          //should return something like: {_id: 342647957360738896, name: Random Location97334003, latitude: -75.12578095675477, longitude: 39.688642504605156}
+          randomTeamData['location'] = location;//createLocationResp["data"]["randomLocation"];      
+        //   Map<String, dynamic> createTeamResponse = await TeamCommand().createTeam(randomTeamData);
+        //   if(createTeamResponse["success"]){
+        //     FaunaResponse createdTeam = createTeamResponse["data"];
+        //     createTeamsResponse["data"].add(createdTeam);
             
-          }
+        //   }
         }
         
       }
