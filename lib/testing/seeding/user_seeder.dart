@@ -8,7 +8,7 @@ import 'package:faunadb_http/faunadb_http.dart';
 class UserSeeder {
   Future<Map<String, dynamic>> createRandomPlayersForTeam(    
      Map<String, dynamic> data, Map<String, dynamic> team) async {
-        print("createRandomUser");
+        print("createRandomPlayersForTeam");
     Map<String, dynamic> createRandomPlayerResponse = {
       "success": false,
       "message": "Something went wrong with creating random user locations",
@@ -19,24 +19,22 @@ class UserSeeder {
       Map<String, dynamic> getRandomUserDataResp = await getRandomUserData();
       Map<String, dynamic> getRandomPlayerDataResp = getRandomPlayerData();
       
-      Map<String, dynamic> createLocationResp = await LocationSeeder().createRandomLocation();
-      FaunaResponse locationFaunaResponse = createLocationResp["data"];
-      Map<String, dynamic> locationResult = locationFaunaResponse.asMap();
-      if(createLocationResp['success']){
+      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      print("locationInputCheck: " + locationInput.toString());                                  
+      Map<String, dynamic> createRandomPlayersForTeamResponse = await PlayerCommand().createPlayer(getRandomUserDataResp, getRandomPlayerDataResp, locationInput, true);
+      print("createRandomPlayersForTeamResponse");
+      print(createRandomPlayersForTeamResponse);
+
+      if(createRandomPlayersForTeamResponse["success"]){
+        createRandomPlayerResponse["success"] = true;
+        // createRandomPlayerResponse["data"].add(createRandomPlayersForTeamResponse["data"]);
         
-        getRandomUserDataResp['location'] = locationResult;//createLocationResp["data"]["randomLocation"];          
-        getRandomPlayerDataResp['team'] = team;
-        Map<String, dynamic> createUserResponse = await PlayerCommand().createPlayer(getRandomUserDataResp, getRandomPlayerDataResp, true);
 
-        if(createUserResponse["success"]){
-          createRandomPlayerResponse["success"] = true;
-          createRandomPlayerResponse["data"].add(createUserResponse["data"]);
-          
-
-      }
+    }
         
       
-    }
+    
     }
 
     

@@ -1,9 +1,9 @@
 class PlayerMutations {
-
-  String createPlayer(Map<String, dynamic> userInput,Map<String,dynamic> playerInput){
+  String createPlayer(Map<String, dynamic> userInput,
+      Map<String, dynamic> playerInput, Map<String, dynamic> locationInput) {
     String createPlayer = """
       mutation {
-        createPlayer(data: {
+        createPlayer(data: {                    
           user: {
             create: 
             {
@@ -12,19 +12,67 @@ class PlayerMutations {
               email: "${userInput['email']}",
               username: "${userInput['username']}",
               birthdate: "${userInput['birthdate']}"
+              location: {
+                create: 
+                {
+                  latitude: ${locationInput['latitude']}
+                  longitude: ${locationInput['longitude']}
+                }
+              }
             }
           } 
           }) {
             _id
             user{
+              _id
               name,
               phone
-            }      
+              location{
+                _id
+                latitude
+                longitude
+              } 
+            }     
           }   
         }
         """;
 
     return createPlayer;
+  }
+
+  String updatePlayerWithTeam(
+      Map<String, dynamic> playerInput, Map<String, dynamic> teamInput) {
+    String updatePlayerWithTeam = """      
+      mutation {
+        updatePlayer(id: 342359000856134224,
+  				data: {
+            showRating:"true"
+            teams:{
+              connect:[
+                342821317827887695
+              ]
+              
+            }
+          }
+                      
+        ){
+            _id
+    				showRating
+    				teams{	
+              data{
+                  	_id
+                    
+              }
+            }
+            
+                  
+            
+            
+  }
+}
+        """;
+
+    return updatePlayerWithTeam;
   }
 
   static String createPlayerString = r'''
@@ -49,5 +97,4 @@ class PlayerMutations {
 		  }
 }
   ''';
-
 }

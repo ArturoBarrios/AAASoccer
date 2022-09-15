@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 class PlayerCommand extends BaseCommand {
   Future<Map<String, dynamic>> createPlayer(Map<String, dynamic> userInput,
-      Map<String, dynamic> playerInput, bool withTeam) async {
+      Map<String, dynamic> playerInput, Map<String, dynamic> locationInput, bool withTeam) async {
     print("createPlayer");
     Map<String, dynamic> createPlayerResponse = {
       "success": false,
@@ -27,19 +27,18 @@ class PlayerCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': PlayerMutations().createPlayer(userInput, playerInput),
+          'query': PlayerMutations().createPlayer(userInput, playerInput, locationInput),
         }),
       );
 
-      print("createPlayer: ");
-      print(response.toString());
+      print("response body: ");
+      print(jsonDecode(response.body));
 
-      final result = null; //await AppModel().faunaClient.query(createDocument);
-      print("result: ");
+      
       
       createPlayerResponse["success"] = true;
-      createPlayerResponse["message"] = "Player Created";
-      createPlayerResponse["data"] = result;
+      createPlayerResponse["message"] = "Player for Team Created";
+      createPlayerResponse["data"] = null;//jsonDecode(response.body)['data']['createPlayer'];
 
       return createPlayerResponse;
     } on ApiException catch (e) {

@@ -71,7 +71,7 @@ type User  {
 
 type Player   {  
   wagerRating: String
-  wagers: [Wager] @relation
+  wagers: [Wager] @relation  
   # events: [Event] @relation
   teams: [Team] @relation
   competitiveLevel: String
@@ -80,7 +80,7 @@ type Player   {
   showRating: String
   hasSubscription: String
   user: User
-  selfRating: Rating
+  selfRating: Int
   sponsors: [Sponsor] @relation
   games: [Game] @relation
 }

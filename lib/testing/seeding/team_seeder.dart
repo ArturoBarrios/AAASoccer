@@ -18,26 +18,30 @@ class TeamSeeder {
       Map<String, dynamic> getRandomTeamDataResp = getRandomTeamData();
       if(getRandomTeamDataResp["success"]){
         print("success");
-        Map<String, dynamic> createLocationResp = await LocationSeeder().createRandomLocation();
-        Map<String,dynamic> location = createLocationResp['data'];
-        print("data after method call");
-        print(location);        
-        if(createLocationResp['success']){
-          Map<String, dynamic> randomTeamData = getRandomTeamDataResp["data"];  
-          //should return something like: {_id: 342647957360738896, name: Random Location97334003, latitude: -75.12578095675477, longitude: 39.688642504605156}
-          randomTeamData['location'] = location;//createLocationResp["data"]["randomLocation"];      
-        //   Map<String, dynamic> createTeamResponse = await TeamCommand().createTeam(randomTeamData);
-        //   if(createTeamResponse["success"]){
-        //     FaunaResponse createdTeam = createTeamResponse["data"];
-        //     createTeamsResponse["data"].add(createdTeam);
-            
-        //   }
-        }
-        
+        Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+        Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+        print("locationInputCheck: " + locationInput.toString());
+        // Map<String,dynamic> location = createLocationResp['data'];
+        // print("data after method call");
+        // print(location);        
+        // if(createLocationResp['success']){
+        Map<String, dynamic> randomTeamData = getRandomTeamDataResp["data"];  
+        //should return something like: {_id: 342647957360738896, name: Random Location97334003, latitude: -75.12578095675477, longitude: 39.688642504605156}
+        // randomTeamData['location'] = location;//createLocationResp["data"]["randomLocation"];      
+        Map<String, dynamic> createTeamResponse = await TeamCommand().createTeam(randomTeamData, locationInput);
+        if(createTeamResponse['success']){            
+          Map<String, dynamic> createdTeam = createTeamResponse["data"];
+          print("createdTeam: ");
+          print(createdTeam);
+          createTeamsResponse["data"].add(createdTeam);
+        }        
       }
     }
     print("random teams created");
-    createTeamsResponse["success"] = true;
+    if(createTeamsResponse["data"].length==data['numberOfTeams']){
+      createTeamsResponse["success"] = true;
+      createTeamsResponse["message"] = "Successfully created random teams";
+    }    
 
     return createTeamsResponse;
   }

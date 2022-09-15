@@ -35,8 +35,8 @@ class _TeamCreateState extends State<TeamCreate> {
           
           
         };
-        Map<String, dynamic> createdTeam =
-            await TeamCommand().createTeam(createTeamInput);
+        Map<String, dynamic> createdTeam = {"success": false};
+            // await TeamCommand().createTeam(createTeamInput);
 
         if (createdTeam['success']) {
           createEventResponse['success'] = true;
