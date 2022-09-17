@@ -33,17 +33,53 @@ class PlayerCommand extends BaseCommand {
 
       print("response body: ");
       print(jsonDecode(response.body));
-
-      
-      
+            
       createPlayerResponse["success"] = true;
       createPlayerResponse["message"] = "Player for Team Created";
-      createPlayerResponse["data"] = null;//jsonDecode(response.body)['data']['createPlayer'];
+      createPlayerResponse["data"] = jsonDecode(response.body)['data']['createPlayer'];
 
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');      
+    }
       return createPlayerResponse;
+  }
+
+  Future<Map<String, dynamic>> updatePlayerWithTeam(Map<String,dynamic>playerInput, Map<String,dynamic>teamInput) async {
+    print("updatePlayerWithTeam");
+    Map<String, dynamic> updatePlayerWithTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    print("before updating player with team input");
+    print(playerInput);
+    print(teamInput);
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer fnAEwU2qV_ACT5r5tpk0an5_qFS-M8vncFSUZPvL',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': PlayerMutations().updatePlayerWithTeam(playerInput, teamInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      updatePlayerWithTeamResponse["success"] = true;
+      updatePlayerWithTeamResponse["message"] = "Player for Team Created";      
+      updatePlayerWithTeamResponse["data"] = jsonDecode(response.body)['data']['updatePlayer'];
+
+      
     } on ApiException catch (e) {
       print('Mutation failed: $e');
-      return createPlayerResponse;
+      
     }
+    return updatePlayerWithTeamResponse;
   }
 }

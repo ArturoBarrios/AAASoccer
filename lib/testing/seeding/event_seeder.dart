@@ -18,6 +18,7 @@ import 'package:faunadb_http/faunadb_http.dart';
 class EventSeeder {
   Future<Map<String, dynamic>> createEvents(
       Map<String, dynamic> data) async {
+        print("createEvents");
     Map<String, dynamic> createEventsResponse = {
       "success": false,
       "message": "Something went wrong with creating random user locations",
@@ -28,17 +29,18 @@ class EventSeeder {
     for(int i = 0; i<data['numberOfPickupGames']; i++){
       Map<String, dynamic> randomPickupData = getRandomPickupGameData();
       var rng = Random();
-      Map<String, dynamic> locationResult = await createRandomLocation();      
+      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      print("locationInputCheck: " + locationInput.toString());                                  
       Map<String, dynamic> eventInput = {
         "name": "Pickup Game " + i.toString(),
-        'isMainEvent': true,
-        'location': locationResult,
+        'isMainEvent': true,        
       };
-      Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput);      
+      Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput, locationInput);      
       
       if(createPickupGameResp['success']){
-        
-        GameSeeder().createGameRelationships(data, createPickupGameResp['data']);
+        Map<String, dynamic> pickupGame = createPickupGameResp['data'];
+        await GameSeeder().createGameRelationships(data, pickupGame);
       }      
     }
     // //Training Sessions

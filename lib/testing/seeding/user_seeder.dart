@@ -9,10 +9,10 @@ class UserSeeder {
   Future<Map<String, dynamic>> createRandomPlayersForTeam(    
      Map<String, dynamic> data, Map<String, dynamic> team) async {
         print("createRandomPlayersForTeam");
-    Map<String, dynamic> createRandomPlayerResponse = {
+    Map<String, dynamic> createRandomPlayersResponse = {
       "success": false,
       "message": "Something went wrong with creating random user locations",
-      "data": [],
+      "data": <Map<String,dynamic>>[],
     };    
     
     for (int i = 0; i < data['numberOfPlayersPerTeam']; i++) {      
@@ -22,24 +22,28 @@ class UserSeeder {
       Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
       Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
       print("locationInputCheck: " + locationInput.toString());                                  
-      Map<String, dynamic> createRandomPlayersForTeamResponse = await PlayerCommand().createPlayer(getRandomUserDataResp, getRandomPlayerDataResp, locationInput, true);
-      print("createRandomPlayersForTeamResponse");
-      print(createRandomPlayersForTeamResponse);
+      Map<String, dynamic> createRandomPlayerResponse = await PlayerCommand().createPlayer(getRandomUserDataResp, getRandomPlayerDataResp, locationInput, true);
 
-      if(createRandomPlayersForTeamResponse["success"]){
-        createRandomPlayerResponse["success"] = true;
-        // createRandomPlayerResponse["data"].add(createRandomPlayersForTeamResponse["data"]);
-        
+      print("createRandomPlayerResponse");
+      print(createRandomPlayerResponse);
 
+      if(createRandomPlayerResponse["success"]){           
+        Map<String, dynamic> randomPlayer = createRandomPlayerResponse["data"];
+        Map<String, dynamic> updatePlayerWithTeamResponse = await PlayerCommand().updatePlayerWithTeam(randomPlayer, team);
+        if(updatePlayerWithTeamResponse["success"]){
+          print("updatePlayerWithTeamResponse");
+          print(updatePlayerWithTeamResponse['data']);
+          Map<String, dynamic> playerWithTeam = updatePlayerWithTeamResponse['data'];
+          createRandomPlayersResponse["data"].add(playerWithTeam);
+        }        
+      }                  
     }
-        
-      
-    
+    if(createRandomPlayersResponse["data"].length!=0){
+      createRandomPlayersResponse["success"] = true;
+      createRandomPlayersResponse["message"] = "Successfully created random players";
     }
 
-    
-
-    return createRandomPlayerResponse;
+    return createRandomPlayersResponse;
   }
 
 

@@ -12,7 +12,7 @@ import 'team_seeder.dart';
 
 class DatabaseSeeder {
   Map<String, dynamic> data = {
-  'numberOfTeams': 1,//4500,
+  'numberOfTeams': 2,//4500,
   "numberOfUserLocations": 4,//4500,
   'numberOfUsers': 4,//4500,
   'randomLocations': [],
@@ -27,8 +27,8 @@ class DatabaseSeeder {
 
   Future run() async {
     print("run DatabaseSeeder");
-    List players = [];
-    List teams = [];
+    List<Map<String, dynamic>> players = [];
+    List<Map<String, dynamic>> teams = [];
     //seed teams
     Map<String, dynamic> createTeamsResponse = await TeamSeeder().createRandomTeams(data);
     if(createTeamsResponse['success']){
@@ -36,20 +36,22 @@ class DatabaseSeeder {
       print("create users for teams");
       //create x users for each team      
       for(int i = 0;i<teams.length;i++){
-        Map<String, dynamic> team = teams[i];               
+        Map<String, dynamic> team = teams[i];           
         print("yaiii");
         print(team);
         Map<String, dynamic> createPlayersPerTeamResponse = await UserSeeder().createRandomPlayersForTeam(data, team);
-    //     if(createPlayersPerTeamResponse['success']){
-    //       players = createPlayersPerTeamResponse['data'];
-    //     }
+          print("testtttttttt: ");
+          print(createPlayersPerTeamResponse);
+        if(createPlayersPerTeamResponse['success']){
+          players = createPlayersPerTeamResponse['data'];
+        }
         
       }
 
     }    
-    // data['players'] = players;
-    // data['teams'] = teams;
-    // Map<String, dynamic> createEventsResp = await EventSeeder().createEvents(data);
+    data['players'] = players;
+    data['teams'] = teams;
+    Map<String, dynamic> createEventsResp = await EventSeeder().createEvents(data);
     
     print("finished Seeding DatabaseSeeder");
     

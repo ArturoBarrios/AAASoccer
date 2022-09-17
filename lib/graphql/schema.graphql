@@ -48,6 +48,7 @@ type Query {
   allGames: [Game!]
   allUsers: [User!]
   allPlayers: [Player!]
+  allTeams: [Team!]
 }
 
 type User  {  
@@ -86,7 +87,6 @@ type Player   {
 }
 
 type Game   {
-  id: ID!
   hometeam: Team
   awayTeam: Team
   homegoals: Int
@@ -108,7 +108,7 @@ type Event   {
   # creator: User 
   ratings: [Rating] @relation
   images: [Image] @relation
-  locations: [Location] @relation
+  location: [Location] @relation
   type: EventType
   payment: Payment
   # training: Training

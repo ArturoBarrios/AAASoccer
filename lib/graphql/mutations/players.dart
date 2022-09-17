@@ -44,12 +44,12 @@ class PlayerMutations {
       Map<String, dynamic> playerInput, Map<String, dynamic> teamInput) {
     String updatePlayerWithTeam = """      
       mutation {
-        updatePlayer(id: 342359000856134224,
+        updatePlayer(id: "${playerInput['_id']}",
   				data: {
             showRating:"true"
             teams:{
               connect:[
-                342821317827887695
+                "${teamInput['_id']}"
               ]
               
             }

@@ -12,7 +12,7 @@ class TeamSeeder {
     Map<String, dynamic> createTeamsResponse = {
       "success": false,
       "message": "Something went wrong with creating random user locations",
-      "data": [],
+      "data": <Map<String,dynamic>>[],
     };    
     for (int i = 0; i < data['numberOfTeams']; i++) {      
       Map<String, dynamic> getRandomTeamDataResp = getRandomTeamData();
@@ -34,6 +34,7 @@ class TeamSeeder {
           print("createdTeam: ");
           print(createdTeam);
           createTeamsResponse["data"].add(createdTeam);
+          
         }        
       }
     }
