@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import 'commands/base_command.dart';
 import 'commands/user_command.dart';
+import 'commands/event_command.dart';
 import 'models/app_model.dart';
 import 'models/user_model.dart';
 import 'services/user_service.dart';
@@ -26,6 +27,7 @@ import 'package:gql_http_link/gql_http_link.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 
+
 void main() async {
 
     await initHiveForFlutter();
@@ -34,7 +36,7 @@ void main() async {
     );
 
     final AuthLink authLink = AuthLink(
-      getToken: () async => 'Bearer xqxOjEQssWDUtt1ULO24E4wSsbuMBWpdVDSPk5R5UCFrJGsdpx3y5H2XV1t5ONdF',
+      getToken: () async => 'Bearer fnAEwyiZocACT1B4JJ2YkT2yPqdbIBgQz55x7a-0',
     );
     
 
@@ -227,6 +229,7 @@ class _MyAppState extends State<MyApp> {
 
   void startLoadToHomeTransition() {
     print("startLoadToHomeTransition");
+    AppCommands().testFunction();
     Future.delayed(const Duration(milliseconds: 100), () {
       Commands.BaseCommand().initialConditionsMet();
     });

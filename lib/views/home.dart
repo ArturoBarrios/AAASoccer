@@ -27,6 +27,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../strings.dart';
 import '../models/event_types_model.dart';
+import '../models/events_model.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -43,54 +44,10 @@ class _Home extends State<Home> {
 
   double globalPadding = 10.0;
   Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
-  // List enabledEvents = [
-  //   {
-  //     "key": 0,
-  //     "enabled": true,
-  //     "name": StringConstants.PICKUPGAMESTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //   {
-  //     "key": 1,
-  //     "enabled": true,
-  //     "name": StringConstants.TOURNAMENTSTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //   {
-  //     "key": 2,
-  //     "enabled": false,
-  //     "name": StringConstants.LEAGUESTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //   {
-  //     "key": 3,
-  //     "enabled": false,
-  //     "name": StringConstants.TEAMSTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //   {
-  //     "key": 4,
-  //     "enabled": false,
-  //     "name": StringConstants.TRYOUTSTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  // ];
 
   String test = "";
 
-  // List  enabledEvents = [
-  //   EventTypeModel(
-  //     StringConstants.PICKUPGAMESTITLE,
-  //     "",
-  //     SVGWidgets().getSoccerBallSVGImage(),
-  //     true,
-  //   )
-  // ];
+
 
   Map<String, dynamic> events = {
     StringConstants.PICKUPGAMESTITLE: [
@@ -194,7 +151,8 @@ class _Home extends State<Home> {
   }
 
   // The controller for the ListView
-  late ScrollController _controller = ScrollController();
+  late ScrollController _selectEventTypeController = ScrollController();
+  late ScrollController _selectEventController = ScrollController();
 
   // This function will be triggered whenver the user scroll
   // to near the bottom of the list view
@@ -202,7 +160,7 @@ class _Home extends State<Home> {
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
-        _controller.position.extentAfter < 300) {
+        _selectEventController.position.extentAfter < 300) {
       setState(() {
         _isLoadMoreRunning = true; // Display a progress indicator at the bottom
       });
@@ -261,12 +219,12 @@ class _Home extends State<Home> {
   void initState() {
     super.initState();
     _firstLoad();
-    _controller = ScrollController()..addListener(_loadMore);
+    _selectEventController = ScrollController()..addListener(_loadMore);
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_loadMore);
+    _selectEventController.removeListener(_loadMore);
     super.dispose();
   }
 
@@ -284,6 +242,9 @@ class _Home extends State<Home> {
 
     String testText =
         context.select<HomePageModel, String>((value) => value.testText);
+
+    //events
+    List games = context.select<EventsModel, List>((value) => value.games);
 
     return (Scaffold(
       appBar: AppBar(
@@ -322,7 +283,7 @@ class _Home extends State<Home> {
                       Expanded(
                           child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              controller: _controller,
+                              controller: _selectEventTypeController,
                               itemCount: enabledEvents.length,
                               itemBuilder: (_, index) => Card(
                                     margin: const EdgeInsets.symmetric(
@@ -337,7 +298,7 @@ class _Home extends State<Home> {
                     //list view
                     Expanded(
                       child: ListView.builder(
-                          controller: _controller,
+                          controller: _selectEventController,
                           itemCount: eventsList.length,
                           itemBuilder: (_, index) => Card(
                                 margin: const EdgeInsets.symmetric(

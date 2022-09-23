@@ -40,28 +40,32 @@ class EventSeeder {
       
       if(createPickupGameResp['success']){
         Map<String, dynamic> pickupGame = createPickupGameResp['data'];
-        await GameSeeder().createGameRelationships(data, pickupGame);
-      }      
-    }
-    // //Training Sessions
-    // for(int i = 0; i<data['numberOfTrainingSessions']; i++){
-    //   Map<String, dynamic> randomTraniningData = getRandomTrainingData();      
-    //   Map<String, dynamic> locationResult = await createRandomLocation();
-    //   Map<String, dynamic> eventInput = {
-    //     "name": "Training Session " + i.toString(),
-    //     'isMainEvent': true,
-    //     "location": locationResult,        
-    //   };
-    //   Map<String, dynamic> trainingInput = {
+        Map<String, dynamic> event = pickupGame['event'];        
+        await EventSeeder().createEventRelationships(data, event);
+      }    
+    }  
+    
+    // Training Sessions
+    for(int i = 0; i<data['numberOfTrainingSessions']; i++){
+      Map<String, dynamic> randomTraniningData = getRandomTrainingData();      
+      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      Map<String, dynamic> eventInput = {
+        "name": "Training Session " + i.toString(),
+        'isMainEvent': true,        
+      };
+      Map<String, dynamic> trainingInput = {
         
-    //   };
-    //   Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(trainingInput, eventInput);
-    //   if(createTrainingResp['success']){
-    //     TrainingSeeder().createTrainingRelationships();
-    //   }
+      };
+      Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(trainingInput, eventInput, locationInput);
+      if(createTrainingResp['success']){
+        Map<String, dynamic> training = createTrainingResp['data'];
+        Map<String, dynamic> event = training['event'];
+        await EventSeeder().createEventRelationships(data, event);
+      }
 
-    // }
-    // //tournaments
+    }
+    //tournaments
      
     // for(int i = 0;i<data['numberOfTournaments'];i++){
     //   Map<String, dynamic> randomTournamentData = getRandomTournamentData();
@@ -103,6 +107,45 @@ class EventSeeder {
     return createEventsResponse;
   }
   
+
+   //assumes that data contains List of games and players of FaunaResponse type
+  Future<Map<String, dynamic>> createEventRelationships(
+      Map<String, dynamic> data, Map<String, dynamic> event) async {
+    print("createEventRelationships");
+    Map<String, dynamic> createEventRelationshipsResp = {
+      "success": false,
+      "message": "Something went wrong with creating game relationships",
+      "data": <Map<String, dynamic>>[],
+    };
+    print(data['players']);
+    List<dynamic> players = data['players'];
+
+    //attach players to game
+    for(int i = 0; i < players.length; i++){
+      print("player: ");
+      print(players[i]);    
+      print("event: ");
+      print(event);
+      dynamic player = players[i];  
+      Map<String, dynamic> createPlayerEventResp = await EventCommand().addPlayerToEvent(event, player);
+      if(createPlayerEventResp['success']){
+        print("createPlayerGameResp: " + createPlayerEventResp.toString());
+        createEventRelationshipsResp['data'].add(createPlayerEventResp['data']);
+      }
+    }
+
+    if(createEventRelationshipsResp['data'].length!=0){
+      print("successfully attached players to game!");
+      createEventRelationshipsResp['success'] = true;
+      createEventRelationshipsResp['message'] = "Successfully created game relationships";
+    }    
+  
+
+    return createEventRelationshipsResp;
+  }
+
+
+
 
   Future<Map<String, dynamic>> createRandomLocation() async{
     Map<String, dynamic> createLocationResp = await LocationSeeder().createRandomLocation();
@@ -162,4 +205,5 @@ class EventSeeder {
 
     return randomLeagueData;
   }
-}
+  }
+

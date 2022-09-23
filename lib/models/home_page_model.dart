@@ -46,31 +46,45 @@ class HomePageModel extends ChangeNotifier {
   
 
   List _enabledEvents = [
+    {
+      "key": 0,
+      "enabled": true,
+      "name": StringConstants.PICKUPGAMESTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
      {
       "key": 1,
-      "enabled": true,
-      "name": StringConstants.TOURNAMENTSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-    {
-      "key": 2,
       "enabled": false,
-      "name": StringConstants.LEAGUESTITLE,
+      "name": StringConstants.PLAYERSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },
      {
-      "key": 3,
+      "key": 2,
       "enabled": false,
       "name": StringConstants.TEAMSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },
     {
-      "key": 4,
+      "key": 3,
       "enabled": false,
       "name": StringConstants.TRYOUTSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    {
+      "key": 4,
+      "enabled": false,
+      "name": StringConstants.TOURNAMENTSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    {
+      "key": 5,
+      "enabled": false,
+      "name": StringConstants.LEAGUESTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },
@@ -79,6 +93,9 @@ class HomePageModel extends ChangeNotifier {
   List get enabledEvents => _enabledEvents;
 
   void toggleEvent(int index){
+    _enabledEvents.forEach((element) { 
+        element['enabled'] = false;
+    });
     _enabledEvents[index]['enabled'] = !_enabledEvents[index]['enabled'];
     notifyListeners();
   }

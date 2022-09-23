@@ -73,29 +73,6 @@ class _PickupCard2 extends State<PickupCard2> {
     );
   }
 
-    //    Stack(children: <Widget>[
-    //     SizedBox(          
-    //       height: MediaQuery.of(context).size.height * .1,
-    //       width: MediaQuery.of(context).size.width * .4,
-    //       child: ElevatedButton(
-    //         style: style,
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: <Widget>[
-    //             AutoSizeText('${widget.title}',
-    //                 style: TextStyle(fontSize: 25), maxLines: 1)
-    //           ],
-    //         ),
-    //         onPressed: () {},
-    //       ),
-    //     ),
-    //     Image(          
-    //       width: MediaQuery.of(context).size.width * .4,
-    //       height: MediaQuery.of(context).size.height * .1,                          
-    //       image: widget.svgImage,
-    //       color: Colors.white,
-    //           ),
-    // ]);
 }
 
 class InnerNeumorphicCardFb1 extends StatelessWidget {

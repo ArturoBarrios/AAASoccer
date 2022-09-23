@@ -51,8 +51,10 @@ class _TrainingCreateState extends State<TrainingCreate> {
         Map<String, dynamic> eventInput = {
 
         };
-        Map<String, dynamic> createdTraining =
-            await TrainingCommand().createTraining(createTrainingInput, eventInput);
+        Map<String, dynamic> createdTraining = {
+          "success": false,
+          "message": "Default Error"
+        };            
 
         if (createdTraining['success']) {
           createEventResponse['success'] = true;

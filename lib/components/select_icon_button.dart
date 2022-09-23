@@ -67,35 +67,38 @@ class _SelectIconButton extends State<SelectIconButton> {
             boxShadow: _isPressed
                 ? null
                 : [
-                    // BoxShadow(
-                    //   blurRadius: 10.0,
-                    //   offset: -Offset(10.0/2, 10.0/2),
-                    //   color: Colors.white,
-                    // ),
-                    // BoxShadow(
-                    //   blurRadius: widget.bevel,
-                    //   offset: Offset(10.0/2, 10.0/2),
-                    //   color: Colors.black,
-                    // )
+                    BoxShadow(
+                      blurRadius: 10.0,
+                      offset: -Offset(10.0/2, 10.0/2),
+                      color: Colors.white,
+                    ),
+                    BoxShadow(
+                      blurRadius: widget.bevel,
+                      offset: Offset(10.0/2, 10.0/2),
+                      color: Colors.black,
+                    )
                   ],
           ),
-          child: Text("test"),
-          // Container(
-          //     child: 
-          //     InnerNeumorphicCardFb1(
-          //         text: widget.eventObject['name'],
-          //         svgImage:
-          //             widget.eventObject['image'],
-          //         subtitle: widget.eventObject['description'],
-          //         onPressed: () {}))
+          child: Container(
+              child: 
+              InnerNeumorphicCardFb1(
+                  text: widget.eventObject['name'],
+                  svgImage:
+                      widget.eventObject['image'],
+                  subtitle: widget.eventObject['description'],
+                  onPressed: () {
+                    
+                  })
+                  )),
+
                   )
-                  ),
+                  
     );
   }
 
 }
 
-class InnerNeumorphicCardFb1 extends StatefulWidget {
+class InnerNeumorphicCardFb1 extends StatelessWidget {
   final String text;
   final Svg svgImage;
   final String subtitle;

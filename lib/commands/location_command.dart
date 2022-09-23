@@ -8,6 +8,7 @@ import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/locations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LocationCommand extends BaseCommand {
 
@@ -27,7 +28,7 @@ class LocationCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer fnAEwU2qV_ACT5r5tpk0an5_qFS-M8vncFSUZPvL',
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{

@@ -12,7 +12,7 @@ import 'team_seeder.dart';
 
 class DatabaseSeeder {
   Map<String, dynamic> data = {
-  'numberOfTeams': 2,//4500,
+  'numberOfTeams': 1,//4500,
   "numberOfUserLocations": 4,//4500,
   'numberOfUsers': 4,//4500,
   'randomLocations': [],

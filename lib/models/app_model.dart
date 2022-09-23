@@ -16,9 +16,7 @@ class AppModel extends ChangeNotifier {
 
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
-
   
-
   String _currentUser = "";
   String get currentUser => _currentUser;
   

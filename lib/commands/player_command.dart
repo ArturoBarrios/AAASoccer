@@ -9,6 +9,7 @@ import '../commands/user_command.dart';
 import '../models/app_model.dart';
 import '../graphql/mutations/players.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PlayerCommand extends BaseCommand {
   Future<Map<String, dynamic>> createPlayer(Map<String, dynamic> userInput,
@@ -23,7 +24,7 @@ class PlayerCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer fnAEwU2qV_ACT5r5tpk0an5_qFS-M8vncFSUZPvL',
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -58,7 +59,7 @@ class PlayerCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer fnAEwU2qV_ACT5r5tpk0an5_qFS-M8vncFSUZPvL',
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{

@@ -45,7 +45,7 @@ enum UserAccountStatus{
 }
 
 type Query {
-  allGames: [Game!]
+  allGames(pickup: Boolean): [Game!]  
   allUsers: [User!]
   allPlayers: [Player!]
   allTeams: [Team!]
@@ -83,7 +83,7 @@ type Player   {
   user: User
   selfRating: Int
   sponsors: [Sponsor] @relation
-  games: [Game] @relation
+  # games: [Game] @relation  
 }
 
 type Game   {
@@ -92,8 +92,7 @@ type Game   {
   homegoals: Int
   awaygoals: Int
   pickup: Boolean
-  event: Event
-  players: [Player] @relation
+  event: Event  
 }
 
 type Event   {
@@ -231,9 +230,8 @@ type Tournament   {
   # eligibleEventTypes: [EventType] @relation
 }
 
-type Training   {
-  id: ID!
-  events: [Event] @relation    
+type Training   {  
+  event: Event  
   # eligibleEventTypes: [EventType] @relation
 }
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '/models/app_model.dart';
 import '/models/user_model.dart';
 import '/models/home_page_model.dart';
+import '/models/events_model.dart';
+import '/models/games_model.dart';
 import '/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -23,6 +25,8 @@ class BaseCommand {
   UserModel userModel = _mainContext.read();
   AppModel appModel = _mainContext.read();
   HomePageModel homePageModel = _mainContext.read();
+  EventsModel eventsModel = _mainContext.read();  
+  GamesModel gamesModel = _mainContext.read();  
   // Services
   UserService userService = _mainContext.read();
   GeoLocationServices geoLocationServices = _mainContext.read();

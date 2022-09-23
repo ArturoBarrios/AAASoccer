@@ -8,6 +8,13 @@ class EventTypesModel extends ChangeNotifier{
   
 
  List _enabledEvents = [
+    {      
+      "key": 0,
+      "enabled": true,
+      "name": StringConstants.PICKUPGAMESTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
      {
       "key": 1,
       "enabled": false,
@@ -22,7 +29,7 @@ class EventTypesModel extends ChangeNotifier{
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },
-     {
+    {      
       "key": 3,
       "enabled": false,
       "name": StringConstants.TEAMSTITLE,

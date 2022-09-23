@@ -58,6 +58,16 @@ class PlayerMutations {
         ){
             _id
     				showRating
+            user{
+              _id
+              name,
+              phone
+              location{
+                _id
+                latitude
+                longitude
+              } 
+            }  
     				teams{	
               data{
                   	_id
