@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
@@ -7,6 +8,8 @@ import '../models/app_model.dart';
 import '../models/User.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import  '../graphql/queries/users.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserCommand extends BaseCommand {
 
@@ -93,25 +96,41 @@ class UserCommand extends BaseCommand {
 
     Future<Map<String, dynamic>> getUser(String email) async{
     print("getUser");
-    Map<String, dynamic> resp = {"success": false, "message": "no user found", "data": null};
+    Map<String, dynamic> getUserResp = {"success": false, "message": "no user found", "data": null};
     try {
-      print("before query");
-      final request = ModelQueries.list(User.classType, where: User.EMAIL.eq(email));
-      final response = await Amplify.API.query(request: request).response;
+      print("email: ");
+      print(email);
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserQueries().getUser(email),
+        }),
+      );
 
-      User? user = response.data?.items.first;
-      print("user got: ");
-      print(user);
-      if(user!=null){
-        resp["success"] = true;
-        resp["message"] = "user found";
-        resp["data"] = user;
+      print("response: ");
+      print(jsonDecode(response.body));
+      final result = jsonDecode(response.body)['data']['findUser'];
+
+
+      if(result != null){
+        getUserResp["success"] = true;
+        getUserResp["message"] = "user found";
+        getUserResp["data"] = result;
       }
+
+
+
+
+     
       
     }  catch (e) {
       print('Query failed: $e');
     }
-    return resp;
+    return getUserResp;
   }
 
   Future<Map<String, dynamic>> deleteUser(String userId) async {

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/User.dart';
 import '../commands/user_command.dart';
+import '../commands/game_command.dart';
 import '../services/geolocation_services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -39,7 +40,7 @@ class BaseCommand {
   }
   Future <Map<String, dynamic>> setupInitialAppConfigs() async{
     print("setupInitialAppConfigs");
-    Map<String, dynamic> setupInitialAppConfigsResponse = {"success": 0, "message": "Something went wrong with setting up initial app configs", "data": Map<String, dynamic>()};
+    Map<String, dynamic> setupInitialAppConfigsResponse = {"success": false, "message": "Something went wrong with setting up initial app configs", "data": Map<String, dynamic>()};
     try{
       Position userPosition = await geoLocationServices.determinePosition();
       userModel.position = userPosition;
@@ -59,7 +60,7 @@ class BaseCommand {
       print(e);
     }
       
-      setupInitialAppConfigsResponse["success"] = 1;
+      setupInitialAppConfigsResponse["success"] = true;
       setupInitialAppConfigsResponse["message"] = "Setup initial app configs";
       setupInitialAppConfigsResponse["data"]["position"] = userPosition;
       print("position: ");
@@ -72,18 +73,27 @@ class BaseCommand {
 
   Future <Map<String, dynamic>> setupInitialAppModels(String email) async{
     print("setupInitialAppModels");
-    Map<String, dynamic> resp = {"success": 0, "message": "setup unsuccessfull", "data": null};
-    try{
-      
-      Map<String, dynamic> getUserResp = await UserCommand().getUser(email);
+    Map<String, dynamic> resp = {"success": false, "message": "setup unsuccessfull", "data": null};
+    try{      
+      Map<String, dynamic> getUserResp = await UserCommand().getUser(email);      
       print("getUserResp: ");
       print(getUserResp);
       if(getUserResp["success"]){
         User user = getUserResp["data"];
         setUserId(user.id);
         setUser(user);
-        // userModel.userSetup.value = true;
-        resp = {"success": true, "message": "success", "data": null};
+        Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
+        if(getGamesNearLocationResp["success"]){
+          List<dynamic> games = getGamesNearLocationResp["data"];          
+          print("games to set");
+          print(games);
+        }
+        if(getGamesNearLocationResp["success"]){
+          resp["success"] = true;
+          resp["message"] = "setup successfull";
+          
+        }        
+
         print("user stuff: ");
       }
       

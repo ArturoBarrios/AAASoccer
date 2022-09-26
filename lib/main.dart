@@ -10,9 +10,12 @@ import 'package:provider/provider.dart';
 
 import 'commands/base_command.dart';
 import 'commands/user_command.dart';
+import 'commands/player_command.dart';
 import 'commands/event_command.dart';
 import 'models/app_model.dart';
 import 'models/user_model.dart';
+import 'models/events_model.dart';
+import 'models/games_model.dart';
 import 'services/user_service.dart';
 import 'services/fauna_db_services.dart';
 import 'services/geolocation_services.dart';
@@ -20,7 +23,7 @@ import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home.dart';
 
 import 'commands/base_command.dart' as Commands;
-import 'components/Loading/loading_version1.dart';
+import 'components/Loading/loading_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gql_http_link/gql_http_link.dart';
@@ -93,14 +96,18 @@ class _MyAppState extends State<MyApp> {
     print("environment: ");
     print(dotenv.env['ENVIRONMENT']);
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
+    print("configureAmplifyResp: ");
+    print(configureAmplifyResp);
+     //already signed in
      if (configureAmplifyResp['message'] == "isSignedIn") {
       // await configureGraphQL();      
       // await FaunaDBServices().retrieveInitialModels();
-      Map<String, dynamic> otherConfigurationResp = otherConfigurations();
-      if(otherConfigurationResp['success']){
-        print("startLoadToHomeTransition");
-        startLoadToHomeTransition();
-      }      
+      // Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
+      // print("otherConfigurationResp: ");
+      // print(otherConfigurationResp.toString());
+      // if(otherConfigurationResp['success']){        
+        await startLoadToHomeTransition();
+      // }      
     }    
   }
 
@@ -144,11 +151,13 @@ class _MyAppState extends State<MyApp> {
       return configureAmplify;
   }
 
-  Map<String, dynamic> otherConfigurations() {
+//handle location here???
+  Future<Map<String, dynamic>> otherConfigurations() async {
+    print("otherConfigurations");
     Map<String, dynamic> otherConfigurationsResp = {"success": true, "message": "successfully configured other shit"};
     AppModel().amplifyConfigured = true;
     Commands.BaseCommand().setIsSigned(true);
-    Commands.BaseCommand().setupInitialAppConfigs();
+    await Commands.BaseCommand().setupInitialAppConfigs();
 
     return otherConfigurationsResp;
     
@@ -171,15 +180,12 @@ class _MyAppState extends State<MyApp> {
           emailController, passwordController);
       print("signInRes: " + signInRes.nextStep!.signInStep);
       String signInStep = signInRes.nextStep!.signInStep;
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
-      // signInRes.nextStep!.signInStep;
-      Map<String, dynamic> setUpResp = await BaseCommand()
-          .setupInitialAppModels(emailController.text.trim());
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);      
+      //should probably make sure you're actually signed in
+      //assumes you are atm
 
-      startLoadToHomeTransition();
-      // UserCommand().updateUserLogin(emailController.text.trim());
-
-      // });
+      UserModel().userEmail = emailController.text.trim();
+      await startLoadToHomeTransition();
       setState(() {});
     } on AuthException catch (e) {
       print("SigninException: ");
@@ -204,9 +210,10 @@ class _MyAppState extends State<MyApp> {
       print(signUpRes.toString());
       String signUpStep = signUpRes.nextStep.signUpStep;
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signUpStep, state);
-      await BaseCommand().setupInitialAppModels(emailController.text.trim());
-      await UserCommand()
-          .updateUserStatus(emailController.text.trim(), "SignedUp");
+      
+      // await BaseCommand().setupInitialAppModels(emailController.text.trim());
+      // await UserCommand()
+      //     .updateUserStatus(emailController.text.trim(), "SignedUp");
       Map<String, dynamic> userInput = {
         "email": emailController.text.trim(),
         "username": usernameController.text.trim(),
@@ -215,9 +222,12 @@ class _MyAppState extends State<MyApp> {
         "gender": genderController.text.trim(),
         "address": addressController.text.trim(),
         "status": "SignedUp"
-      };
-      Future<Map<String, dynamic>> createUserResp =
-          UserCommand().createUser(userInput);
+      };      
+      Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};
+      Map<String, dynamic> createUserResp =
+          await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
+        
+      await startLoadToHomeTransition();
       print("createUserResp: ");
       print(createUserResp);
     } on AuthException catch (e) {
@@ -227,12 +237,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void startLoadToHomeTransition() {
+  //assumes email's been set in AppModel
+  //assumes user's been created in FaunaDB
+  //assumes you're signed in/up
+  Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    AppCommands().testFunction();
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
+    if(otherConfigurationResp['success']){
+      await BaseCommand().setupInitialAppModels(emailController.text.trim());      
       Commands.BaseCommand().initialConditionsMet();
-    });
+    }    
+    else{
+      print("error in startLoadToHomeTransition");
+    }
   }
 
   void confirmSignIn(AuthenticatorState state) async {
@@ -277,6 +294,8 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (c) => AppModel()),
           ChangeNotifierProvider(create: (c) => UserModel()),
           ChangeNotifierProvider(create: (c) => HomePageModel()),
+          ChangeNotifierProvider(create: (c) => EventsModel()),
+          ChangeNotifierProvider(create: (c) => GamesModel()),
           Provider(create: (c) => FaunaDBServices()),
           Provider(create: (c) => UserService()),
           Provider(create: (c) => GeoLocationServices()),
@@ -513,8 +532,8 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Bind to AppModel.currentUser
-    String currentUser =
-        context.select<AppModel, String>((value) => value.currentUser);
+    Map<String, dynamic> currentUser =
+        context.select<AppModel, Map<String, dynamic>>((value) => value.currentUser);
 
     bool isSignedIn =
         context.select<AppModel, bool>((value) => value.isSignedIn);
@@ -529,7 +548,16 @@ class AppScaffold extends StatelessWidget {
     // Return the current view, based on the currentUser value:
     return Scaffold(
       //replace first condition with loading screen
-      body: initialConditionsMet == false ? Home() : Home(),
+      body: initialConditionsMet == false ? 
+        Container(
+            height: double.infinity,
+            width: double.infinity,
+            child:Align(
+              alignment: Alignment.center,
+              child: LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
+            )
+          ) 
+          : Home(),
       // body: currentUser != "" ?  Home() : LoginPage(),
     );
   }

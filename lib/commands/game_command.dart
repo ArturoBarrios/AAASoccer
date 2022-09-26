@@ -18,7 +18,7 @@ class GameCommand extends BaseCommand {
 //read
 Future<Map<String, dynamic>> getGamesNearLocation() async{
     print("getGamesNearLocation");
-  Map<String, dynamic> gamesResp = {"success": false, "message": "Default Error", "data": []};
+  Map<String, dynamic> getGamesNearLocationResp = {"success": false, "message": "Default Error", "data": []};
   try{
     print("my position");
     Position myPosition = await GeoLocationCommand().determinePosition();
@@ -37,15 +37,16 @@ Future<Map<String, dynamic>> getGamesNearLocation() async{
       print(jsonDecode(response.body));
 
 
-    final result = null;//await AppModel().faunaClient.query(getGamesQuery);
-        
+    final result = jsonDecode(response.body)['data']['allGames'];
+    getGamesNearLocationResp["success"] = true;
+    getGamesNearLocationResp["message"] = "Games Retrieved";
+    getGamesNearLocationResp["data"] = result;
     
   } on Exception catch (e) {
-    print('Mutation failed: $e');
-    return gamesResp;
+    print('Mutation failed: $e');  
   }
 
-  return gamesResp;
+  return getGamesNearLocationResp;
 
 }
 //create

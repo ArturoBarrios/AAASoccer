@@ -17,8 +17,13 @@ class AppModel extends ChangeNotifier {
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
   
-  String _currentUser = "";
-  String get currentUser => _currentUser;
+
+  Map<String, dynamic> _currentUser = {};
+  Map<String, dynamic> get currentUser => _currentUser;
+  set currentUser(Map<String, dynamic> currentUser) {
+    _currentUser = currentUser;
+    notifyListeners();
+  }
   
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
@@ -45,10 +50,6 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  set currentUser(String currentUser) {
-    _currentUser = currentUser;
-    notifyListeners();
-  }
 
   set isSignedIn(bool isSignedIn){
     _isSignedIn = isSignedIn;

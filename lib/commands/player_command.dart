@@ -34,10 +34,14 @@ class PlayerCommand extends BaseCommand {
 
       print("response body: ");
       print(jsonDecode(response.body));
+
+      Map<String, dynamic> player = jsonDecode(response.body)['data']['createPlayer'];
+      Map<String, dynamic> user = player['user'];      
+      AppModel().currentUser = user;
             
       createPlayerResponse["success"] = true;
       createPlayerResponse["message"] = "Player for Team Created";
-      createPlayerResponse["data"] = jsonDecode(response.body)['data']['createPlayer'];
+      createPlayerResponse["data"] = player;
 
     } on ApiException catch (e) {
       print('Mutation failed: $e');      

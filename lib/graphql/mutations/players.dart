@@ -26,6 +26,7 @@ class PlayerMutations {
             user{
               _id
               name,
+              email,
               phone
               location{
                 _id

@@ -267,11 +267,13 @@ class _Home extends State<Home> {
           ),
         ],
       ),
-      body: _isFirstLoadRunning
-          ? const Center(
-              child: const CircularProgressIndicator(),
-            )
-          : Stack(children: <Widget>[
+      body: 
+      // _isFirstLoadRunning
+      //     ? const Center(
+      //         child: const CircularProgressIndicator(),
+      //       )
+      //     : 
+          Stack(children: <Widget>[
               Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -310,13 +312,13 @@ class _Home extends State<Home> {
                     ),
 
                     // when the _loadMore function is running
-                    if (_isLoadMoreRunning == true)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 0, bottom: 0),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
+                    // if (_isLoadMoreRunning == true)
+                    //   const Padding(
+                    //     padding: EdgeInsets.only(top: 0, bottom: 0),
+                    //     child: Center(
+                    //       child: CircularProgressIndicator(),
+                    //     ),
+                    //   ),
 
                     // When nothing else to load
                     // if (_hasNextPage == false)

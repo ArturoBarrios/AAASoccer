@@ -49,6 +49,7 @@ type Query {
   allUsers: [User!]
   allPlayers: [Player!]
   allTeams: [Team!]
+  getUser(email: String): User
 }
 
 type User  {  

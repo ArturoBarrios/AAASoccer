@@ -19,6 +19,7 @@ import '../components/history.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../graphql/queries/users.dart';
 import '../models/home_page_model.dart';
+import '../services/amplify_auth_service.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -55,8 +56,9 @@ class _BottomNav extends State<BottomNav> {
   //testing methods(I know, what an amazing place to test models) :)
 
   void testFunction() async {
+    // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
-     await DatabaseSeeder().run();
+    //  await DatabaseSeeder().run();
     // print("test text updated");
     // HomePageCommand().testUpdateText();
 
