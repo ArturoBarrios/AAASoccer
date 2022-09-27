@@ -75,27 +75,34 @@ class BaseCommand {
     print("setupInitialAppModels");
     Map<String, dynamic> resp = {"success": false, "message": "setup unsuccessfull", "data": null};
     try{      
-      Map<String, dynamic> getUserResp = await UserCommand().getUser(email);      
-      print("getUserResp: ");
-      print(getUserResp);
-      if(getUserResp["success"]){
-        User user = getUserResp["data"];
-        setUserId(user.id);
-        setUser(user);
-        Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
-        if(getGamesNearLocationResp["success"]){
-          List<dynamic> games = getGamesNearLocationResp["data"];          
-          print("games to set");
-          print(games);
-        }
-        if(getGamesNearLocationResp["success"]){
-          resp["success"] = true;
-          resp["message"] = "setup successfull";
-          
-        }        
+      Map<String, dynamic> getUserResp = await UserCommand().getUser(email);     
+      if(getUserResp["success"] == true){
+        print("getUserResp: ");
+        print(getUserResp);
+        if(getUserResp["success"]){
+          Map<String, dynamic> user = getUserResp["data"];
+          AppModel().currentUser = user;
+          // setUserId(user.id);
+          // setUser(user);
+          Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
+          if(getGamesNearLocationResp["success"]){
+            List<dynamic> games = getGamesNearLocationResp["data"];          
+            print("games to set");
+            print(games);
+          }
+          if(getGamesNearLocationResp["success"]){
+            resp["success"] = true;
+            resp["message"] = "setup successfull";
+            
+          }        
 
-        print("user stuff: ");
-      }
+          print("user stuff: ");
+        }
+        else{
+          print("something went wrong in fetching user");
+        }
+
+      }      
       
     }catch(e){
       print("errorrrrrrrr: ");

@@ -113,7 +113,7 @@ class UserCommand extends BaseCommand {
 
       print("response: ");
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['findUser'];
+      final result = jsonDecode(response.body)['data']['getUser'];
 
 
       if(result != null){
@@ -121,6 +121,7 @@ class UserCommand extends BaseCommand {
         getUserResp["message"] = "user found";
         getUserResp["data"] = result;
       }
+      
 
 
 

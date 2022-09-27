@@ -100,14 +100,8 @@ class _MyAppState extends State<MyApp> {
     print(configureAmplifyResp);
      //already signed in
      if (configureAmplifyResp['message'] == "isSignedIn") {
-      // await configureGraphQL();      
-      // await FaunaDBServices().retrieveInitialModels();
-      // Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
-      // print("otherConfigurationResp: ");
-      // print(otherConfigurationResp.toString());
-      // if(otherConfigurationResp['success']){        
-        await startLoadToHomeTransition();
-      // }      
+      emailController.text = configureAmplifyResp['email'];      
+      await startLoadToHomeTransition();   
     }    
   }
 
@@ -223,13 +217,15 @@ class _MyAppState extends State<MyApp> {
         "address": addressController.text.trim(),
         "status": "SignedUp"
       };      
-      Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};
-      Map<String, dynamic> createUserResp =
-          await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
+      Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};      
+      Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
+      print("createPlayerResp: ");
+      print(createPlayerResp);
+      
+      AppModel().currentUser = createPlayerResp['data'];
+
         
       await startLoadToHomeTransition();
-      print("createUserResp: ");
-      print(createUserResp);
     } on AuthException catch (e) {
       print("signUpError");
       print(e);

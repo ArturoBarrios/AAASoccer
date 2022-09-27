@@ -94,7 +94,8 @@ class AmplifyAuthService {
         print("amplify configured end of function!");
         configureAmplifyResp["success"] =  true;
         configureAmplifyResp["message"] = "isSignedIn";
-        configureAmplifyResp["data"] = authSessionRes["data"];
+        configureAmplifyResp["data"] = authSessionRes["data"];    
+        configureAmplifyResp["email"] = email;    
         // AppModel().isSignedIn = true;
       }
       AppModel().amplifyConfigured = true;

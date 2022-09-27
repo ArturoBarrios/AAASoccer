@@ -56,7 +56,7 @@ class _BottomNav extends State<BottomNav> {
   //testing methods(I know, what an amazing place to test models) :)
 
   void testFunction() async {
-    // AmplifyAuthService().signOut();
+    AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
     // print("test text updated");
