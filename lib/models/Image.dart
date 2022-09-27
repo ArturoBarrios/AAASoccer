@@ -145,7 +145,7 @@ class Image extends Model {
     'id': id, 'url': _url, 'players': _players, 'tournaments': _tournaments, 'leagues': _leagues, 'events': _events, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "image.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField URL = QueryField(fieldName: "url");
   static final QueryField PLAYERS = QueryField(fieldName: "players");
   static final QueryField TOURNAMENTS = QueryField(fieldName: "tournaments");

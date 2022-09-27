@@ -1,7 +1,15 @@
-import 'base_command.dart';
+import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/User.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'base_command.dart';
+import 'package:faunadb_http/query.dart';
+import '../models/app_model.dart';
+import '../models/User.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import  '../graphql/queries/users.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserCommand extends BaseCommand {
 
@@ -15,25 +23,33 @@ class UserCommand extends BaseCommand {
 
    Future<Map<String, dynamic>> createUser(Map<String, dynamic> userInput ) async{
      print("createUser");
-    Map<String, dynamic> createUserResponse = {"success": 0, "message": "Default Error"};
+    Map<String, dynamic> createUserResponse = {"success": false, "message": "Default Error", "data": null};
     try {
-      User user = User(email: userInput['email'], username: userInput['username'], phone: userInput['phone'], birthdate: userInput['birthdate'], gender: userInput['gender'], address: userInput['address']);
-      final request = ModelMutations.create(user);
-      print("request");
-      final response = await Amplify.API.mutate(request: request).response;
-      print("response");
+      print("location Input: ");
+      print(userInput);
+      final createDocument = Create(
+        Collection('User'),
+        Obj({
+          'data': {
+            'email': userInput['email'],            
+            'name': userInput['name'],
+            'username': userInput['username'],
+            'phone': userInput['phone'],
+            'birthdate': userInput['birthdate'],
+            'gender': "test",//should be userInput['gender'];
+            'location': Ref(Collection("Location"), userInput['location']['resource']['ref']['@ref']['id']),                    
 
-      User? createdUser = response.data;
-      if (createdUser == null) {
-        print('errors: ' + response.errors.toString());
-        return createUserResponse;
-      }
-      createUserResponse["success"] = 1;
-      createUserResponse["messasge"] = "Successfully Created User";
-      createUserResponse["data"] = user;
+            }
+        }),
+      );  
 
-      print('Mutation result: ' );
-      print(createdUser);
+      final result = null;//await AppModel().faunaClient.query(createDocument);
+      print("result: ");
+      print(result.toJson());
+      createUserResponse["success"] = true;
+      createUserResponse["message"] = "User Created";
+      createUserResponse["data"] = result;
+      
       return createUserResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
@@ -42,13 +58,14 @@ class UserCommand extends BaseCommand {
   }
 
   Future<Map<String, dynamic>> updateUserLogin(String email ) async{ 
-    Map<String, dynamic> updateUserResponse = {"success": 0, "message": "Default Error"};
+    Map<String, dynamic> updateUserResponse = {"success": false, "message": "Default Error"};
     try{
       User oldUser = (await Amplify.DataStore.query(User.classType,
       where: User.EMAIL.eq(email)))[0];
       
       User newUser = oldUser.copyWith(last_login: new DateTime.now().millisecondsSinceEpoch);
       await Amplify.DataStore.save(newUser);
+      updateUserResponse["success"] = true;
     } catch(e){
 
       
@@ -57,13 +74,14 @@ class UserCommand extends BaseCommand {
  }
 
   Future<Map<String, dynamic>> updateUserStatus(String email, String newUserStatus ) async{ 
-    Map<String, dynamic> updateUserResponse = {"success": 0, "message": "Default Error"};
+    Map<String, dynamic> updateUserResponse = {"success": false, "message": "Default Error"};
       try{
         User oldUser = (await Amplify.DataStore.query(User.classType,
         where: User.EMAIL.eq(email)))[0];
         
         User newUser = oldUser.copyWith(status: newUserStatus);
         await Amplify.DataStore.save(newUser);
+        updateUserResponse["success"] = true;
       } catch(e){
 
         
@@ -78,25 +96,42 @@ class UserCommand extends BaseCommand {
 
     Future<Map<String, dynamic>> getUser(String email) async{
     print("getUser");
-    Map<String, dynamic> resp = {"success": false, "message": "no user found", "data": null};
+    Map<String, dynamic> getUserResp = {"success": false, "message": "no user found", "data": null};
     try {
-      print("before query");
-      final request = ModelQueries.list(User.classType, where: User.EMAIL.eq(email));
-      final response = await Amplify.API.query(request: request).response;
+      print("email: ");
+      print(email);
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserQueries().getUser(email),
+        }),
+      );
 
-      User? user = response.data?.items.first;
-      print("user got: ");
-      print(user);
-      if(user!=null){
-        resp["success"] = true;
-        resp["message"] = "user found";
-        resp["data"] = user;
+      print("response: ");
+      print(jsonDecode(response.body));
+      final result = jsonDecode(response.body)['data']['getUser'];
+
+
+      if(result != null){
+        getUserResp["success"] = true;
+        getUserResp["message"] = "user found";
+        getUserResp["data"] = result;
       }
+      
+
+
+
+
+     
       
     }  catch (e) {
       print('Query failed: $e');
     }
-    return resp;
+    return getUserResp;
   }
 
   Future<Map<String, dynamic>> deleteUser(String userId) async {
@@ -112,6 +147,33 @@ class UserCommand extends BaseCommand {
     return resp;
   }
 
+  Future<Map<String, dynamic>> getAllUsers() async {
+    print("getUsers");
+    Map<String, dynamic> resp = {"success": false, "message": "no users found", "data": null};
+    try {
+      print("before query");
+
+     final result = null; 
+      // final readRespositoriesResult = useQuery(
+      //   QueryOptions(
+      //     document: gql(UserQueries.getAllUsers), // this is the query string you just created
+      //     variables: {
+      //       'nRepositories': 50,
+      //     },
+      //     pollInterval: const Duration(seconds: 10),
+      //   ),
+      // );
+      // final result = readRespositoriesResult.result;
+
+      print("users got: ");
+      print(result);
+      
+      
+    }  catch (e) {
+      print('Query failed: $e');
+    }
+    return resp;
+  }
  
 
 }

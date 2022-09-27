@@ -95,7 +95,7 @@ class TextContent extends Model {
     'id': id, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "textContent.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "TextContent";
     modelSchemaDefinition.pluralName = "TextContents";

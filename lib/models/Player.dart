@@ -188,7 +188,7 @@ class Player extends Model {
     'id': id, 'playerRating': _playerRating, 'wagerRating': _wagerRating, 'events': _events, 'competitiveLevel': _competitiveLevel, 'ratings': _ratings, 'hasRating': _hasRating, 'showRating': _showRating, 'hasSubscription': _hasSubscription, 'user': _user?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "player.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField PLAYERRATING = QueryField(fieldName: "playerRating");
   static final QueryField WAGERRATING = QueryField(fieldName: "wagerRating");
   static final QueryField EVENTS = QueryField(fieldName: "events");

@@ -23,7 +23,8 @@ class _EventCreateState extends State<EventCreate> {
     print("createEvent");
     Map<String, dynamic> createPickupGameResponse = {
       "success": false,
-      "message": "Default Error"
+      "message": "Default Error",
+      "data": null
     };
     try {
       Map<String, dynamic> createEventInput = {
@@ -39,6 +40,7 @@ class _EventCreateState extends State<EventCreate> {
           await EventCommand().createEvent(createEventInput);
       if (createEventRes['success']) {
         createPickupGameResponse['success'] = true;
+        createPickupGameResponse['data'] = createEventRes['data'];
       }
       return createPickupGameResponse;
     } on ApiException catch (e) {

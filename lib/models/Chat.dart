@@ -105,7 +105,7 @@ class Chat extends Model {
     'id': id, 'messages': _messages, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "chat.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField MESSAGES = QueryField(fieldName: "messages");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Chat";

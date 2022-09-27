@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../models/app_model.dart';
 
 class SearchField extends StatefulWidget {
-  const SearchField({Key? key}) : super(key: key);
+  const SearchField({Key? key, required this.testText}) : super(key: key);
+
+  final String testText;
 
   @override
   State<SearchField> createState() => _SearchField();
@@ -16,7 +19,7 @@ class _SearchField extends State<SearchField> {
         contentPadding: const EdgeInsets.all(15),
         border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(30)),
-        prefixIcon: const Icon(Icons.person),
+        prefixIcon: const Icon(Icons.search),
         prefixIconColor:
             MaterialStateColor.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.focused)) {
@@ -27,7 +30,7 @@ class _SearchField extends State<SearchField> {
           }
           return Colors.grey;
         }),
-        labelText: 'Password',
+        labelText: widget.testText,
       ),
     );
   }

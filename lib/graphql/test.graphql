@@ -1,0 +1,25 @@
+type User {    
+    name: String!
+}
+
+type Todo {
+   title: String!
+   completed: Boolean
+}
+
+type Event {
+   name: String!   
+   pickup: Boolean
+}
+
+type Game {
+   pickup: Boolean
+   event: Event
+}
+
+
+type Query {
+   allTodos: [Todo!]
+   allUsers: [User!]
+   todosByCompletedFlag(completed: Boolean!): [Todo!]
+}

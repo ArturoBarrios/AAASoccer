@@ -28,6 +28,7 @@ import 'Game.dart';
 import 'GifContent.dart';
 import 'Image.dart';
 import 'League.dart';
+import 'LeagueEvent.dart';
 import 'Location.dart';
 import 'Message.dart';
 import 'Organization.dart';
@@ -39,8 +40,11 @@ import 'Referee.dart';
 import 'Team.dart';
 import 'TextContent.dart';
 import 'Tournament.dart';
+import 'TournamentEvent.dart';
 import 'Training.dart';
+import 'TrainingEvent.dart';
 import 'Tryout.dart';
+import 'TryoutEvent.dart';
 import 'User.dart';
 import 'Wager.dart';
 
@@ -48,10 +52,14 @@ export 'AppSubscription.dart';
 export 'Chat.dart';
 export 'Coach.dart';
 export 'Event.dart';
+export 'EventType.dart';
+export 'FieldPlayerOccupancySize.dart';
 export 'Game.dart';
+export 'GenderType.dart';
 export 'GifContent.dart';
 export 'Image.dart';
 export 'League.dart';
+export 'LeagueEvent.dart';
 export 'Location.dart';
 export 'Message.dart';
 export 'Organization.dart';
@@ -60,19 +68,23 @@ export 'Payment.dart';
 export 'Player.dart';
 export 'Rating.dart';
 export 'Referee.dart';
+export 'SurfaceType.dart';
 export 'Team.dart';
 export 'TextContent.dart';
 export 'Tournament.dart';
+export 'TournamentEvent.dart';
 export 'Training.dart';
+export 'TrainingEvent.dart';
 export 'Tryout.dart';
+export 'TryoutEvent.dart';
 export 'User.dart';
 export 'Wager.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "df396fe0fc7a12f945b37eecdbf5bbaa";
+  String version = "a9748fd5a0cb31ee112bc583f89ffc23";
   @override
-  List<ModelSchema> modelSchemas = [AppSubscription.schema, Chat.schema, Coach.schema, Event.schema, Game.schema, GifContent.schema, Image.schema, League.schema, Location.schema, Message.schema, Organization.schema, Organizer.schema, Payment.schema, Player.schema, Rating.schema, Referee.schema, Team.schema, TextContent.schema, Tournament.schema, Training.schema, Tryout.schema, User.schema, Wager.schema];
+  List<ModelSchema> modelSchemas = [AppSubscription.schema, Chat.schema, Coach.schema, Event.schema, Game.schema, GifContent.schema, Image.schema, League.schema, LeagueEvent.schema, Location.schema, Message.schema, Organization.schema, Organizer.schema, Payment.schema, Player.schema, Rating.schema, Referee.schema, Team.schema, TextContent.schema, Tournament.schema, TournamentEvent.schema, Training.schema, TrainingEvent.schema, Tryout.schema, TryoutEvent.schema, User.schema, Wager.schema];
   static final ModelProvider _instance = ModelProvider();
   @override
   List<ModelSchema> customTypeSchemas = [];
@@ -97,6 +109,8 @@ class ModelProvider implements ModelProviderInterface {
         return Image.classType;
       case "League":
         return League.classType;
+      case "LeagueEvent":
+        return LeagueEvent.classType;
       case "Location":
         return Location.classType;
       case "Message":
@@ -119,10 +133,16 @@ class ModelProvider implements ModelProviderInterface {
         return TextContent.classType;
       case "Tournament":
         return Tournament.classType;
+      case "TournamentEvent":
+        return TournamentEvent.classType;
       case "Training":
         return Training.classType;
+      case "TrainingEvent":
+        return TrainingEvent.classType;
       case "Tryout":
         return Tryout.classType;
+      case "TryoutEvent":
+        return TryoutEvent.classType;
       case "User":
         return User.classType;
       case "Wager":

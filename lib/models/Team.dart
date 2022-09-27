@@ -185,7 +185,7 @@ class Team extends Model {
     'id': id, 'name': _name, 'color': _color, 'logo': _logo, 'event': _event, 'images': _images, 'players': _players, 'events': _events, 'leagues': _leagues, 'tournaments': _tournaments, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "team.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField COLOR = QueryField(fieldName: "color");
   static final QueryField LOGO = QueryField(fieldName: "logo");

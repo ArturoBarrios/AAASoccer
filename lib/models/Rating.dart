@@ -95,7 +95,7 @@ class Rating extends Model {
     'id': id, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "rating.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Rating";
     modelSchemaDefinition.pluralName = "Ratings";

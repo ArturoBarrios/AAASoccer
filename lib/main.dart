@@ -10,22 +10,59 @@ import 'package:provider/provider.dart';
 
 import 'commands/base_command.dart';
 import 'commands/user_command.dart';
+import 'commands/player_command.dart';
+import 'commands/event_command.dart';
 import 'models/app_model.dart';
 import 'models/user_model.dart';
+import 'models/events_model.dart';
+import 'models/games_model.dart';
 import 'services/user_service.dart';
+import 'services/fauna_db_services.dart';
+import 'services/geolocation_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
-import 'views/home_page_temporary.dart';
 import 'views/home.dart';
 
-import 'views/login_page.dart';
 import 'commands/base_command.dart' as Commands;
+import 'components/Loading/loading_screen.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gql_http_link/gql_http_link.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:soccermadeeasy/svg_widgets.dart';
 
-import 'components/Loading/loading_version1.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+
+    await initHiveForFlutter();
+    final HttpLink httpLink = HttpLink(
+      'https://neat-sunfish-45.hasura.app/v1/graphql',
+    );
+
+    final AuthLink authLink = AuthLink(
+      getToken: () async => 'Bearer fnAEwyiZocACT1B4JJ2YkT2yPqdbIBgQz55x7a-0',
+    );
+    
+
+    final Link link = authLink.concat(httpLink);
+
+    ValueNotifier<GraphQLClient> client = ValueNotifier(
+      GraphQLClient(
+        link: link,
+        // The default store is the InMemoryStore, which does NOT persist to disk
+        cache: GraphQLCache(store: InMemoryStore()),
+      ),
+    );
+    print("graphQL client: ");
+    print(client);
+  
+  runApp(MyApp(client: client));
+
+}
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final ValueNotifier<GraphQLClient> client;
+
+  const MyApp({Key? key, required this.client }) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -44,40 +81,83 @@ class _MyAppState extends State<MyApp> {
 
   late TabController _tabController;
 
+
+
   @override
   void initState() {
-    print("initState");
     super.initState();
-    // setupListeners();
-    configureAmplify();
+
+    print("initState");
+    configureApp();
   }
 
-  void configureAmplify() async {
+  void configureApp() async {
+    await dotenv.load(fileName: ".env");
+    print("environment: ");
+    print(dotenv.env['ENVIRONMENT']);
+    Map<String, dynamic> configureAmplifyResp = await configureAmplify();
+    print("configureAmplifyResp: ");
+    print(configureAmplifyResp);
+     //already signed in
+     if (configureAmplifyResp['message'] == "isSignedIn") {
+      emailController.text = configureAmplifyResp['email'];      
+      await startLoadToHomeTransition();   
+    }    
+  }
+
+  Future configureGraphQL() async{
+    print("configureGraphQL");
+    await initHiveForFlutter();
+    final HttpLink httpLink = HttpLink(
+      'https://neat-sunfish-45.hasura.app/v1/graphql',
+    );
+
+    final AuthLink authLink = AuthLink(
+      getToken: () async => 'Bearer xqxOjEQssWDUtt1ULO24E4wSsbuMBWpdVDSPk5R5UCFrJGsdpx3y5H2XV1t5ONdF',
+    );
+    
+
+    final Link link = authLink.concat(httpLink);
+
+    ValueNotifier<GraphQLClient> client = ValueNotifier(
+      GraphQLClient(
+        link: link,
+        // The default store is the InMemoryStore, which does NOT persist to disk
+        cache: GraphQLCache(store: HiveStore()),
+      ),
+    );
+    print("graphQL client: ");
+    print(client);
+    // AppModel().faunaClient = client;
+
+
+  }
+
+  Future <Map<String, dynamic>> configureAmplify() async {    
     Map<String, dynamic> configureAmplify =
         await AmplifyAuth.AmplifyAuthService.configureAmplify();
     setState(() {
       if (configureAmplify['success']) {
         print("configured amplify!");
-        AppModel().amplifyConfigured = true;
-        Commands.BaseCommand().setIsSigned(true);
-        if(configureAmplify['message'] == "isSignedIn"){
-          startLoadToHomeTransition();
-          
-
-        }
+        print(configureAmplify);       
       }
     });
+      return configureAmplify;
   }
 
-  void testFunction() {
-    setState(() {
-      AppModel().amplifyConfigured = true;
-    });
+//handle location here???
+  Future<Map<String, dynamic>> otherConfigurations() async {
+    print("otherConfigurations");
+    Map<String, dynamic> otherConfigurationsResp = {"success": true, "message": "successfully configured other shit"};
+    AppModel().amplifyConfigured = true;
+    Commands.BaseCommand().setIsSigned(true);
+    await Commands.BaseCommand().setupInitialAppConfigs();
+
+    return otherConfigurationsResp;
+    
   }
 
-  void setupListeners() {
-    // AppModel().amplifyConfigured.addListener(() => print("niceeeee"));
-  }
+
 
   void signOut(AuthenticatorState state) async {
     try {
@@ -94,15 +174,12 @@ class _MyAppState extends State<MyApp> {
           emailController, passwordController);
       print("signInRes: " + signInRes.nextStep!.signInStep);
       String signInStep = signInRes.nextStep!.signInStep;
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
-      // signInRes.nextStep!.signInStep;
-      Map<String, dynamic> setUpResp = await BaseCommand()
-          .setupInitialAppModels(emailController.text.trim());
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);      
+      //should probably make sure you're actually signed in
+      //assumes you are atm
 
-          startLoadToHomeTransition();
-      // UserCommand().updateUserLogin(emailController.text.trim());
-
-      // });
+      UserModel().userEmail = emailController.text.trim();
+      await startLoadToHomeTransition();
       setState(() {});
     } on AuthException catch (e) {
       print("SigninException: ");
@@ -127,9 +204,10 @@ class _MyAppState extends State<MyApp> {
       print(signUpRes.toString());
       String signUpStep = signUpRes.nextStep.signUpStep;
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signUpStep, state);
-      await BaseCommand().setupInitialAppModels(emailController.text.trim());
-      await UserCommand()
-          .updateUserStatus(emailController.text.trim(), "SignedUp");
+      
+      // await BaseCommand().setupInitialAppModels(emailController.text.trim());
+      // await UserCommand()
+      //     .updateUserStatus(emailController.text.trim(), "SignedUp");
       Map<String, dynamic> userInput = {
         "email": emailController.text.trim(),
         "username": usernameController.text.trim(),
@@ -138,11 +216,16 @@ class _MyAppState extends State<MyApp> {
         "gender": genderController.text.trim(),
         "address": addressController.text.trim(),
         "status": "SignedUp"
-      };
-      Future<Map<String, dynamic>> createUserResp =
-          UserCommand().createUser(userInput);
-      print("createUserResp: ");
-      print(createUserResp);
+      };      
+      Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};      
+      Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
+      print("createPlayerResp: ");
+      print(createPlayerResp);
+      
+      AppModel().currentUser = createPlayerResp['data'];
+
+        
+      await startLoadToHomeTransition();
     } on AuthException catch (e) {
       print("signUpError");
       print(e);
@@ -150,12 +233,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void startLoadToHomeTransition() {
+  //assumes email's been set in AppModel
+  //assumes user's been created in FaunaDB
+  //assumes you're signed in/up
+  Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    Future.delayed(const Duration(milliseconds: 100), () {
-     Commands.BaseCommand().initialConditionsMet();
-
-    });
+    Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
+    if(otherConfigurationResp['success']){
+      await BaseCommand().setupInitialAppModels(emailController.text.trim());      
+      Commands.BaseCommand().initialConditionsMet();
+    }    
+    else{
+      print("error in startLoadToHomeTransition");
+    }
   }
 
   void confirmSignIn(AuthenticatorState state) async {
@@ -194,237 +284,243 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext _) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (c) => AppModel()),
-        ChangeNotifierProvider(create: (c) => UserModel()),
-        ChangeNotifierProvider(create: (c) => HomePageModel()),
-        Provider(create: (c) => UserService()),
-      ],
-      child: Builder(builder: (context) {
-        Commands.init(context);
-        // Save a context our Commands can use to access provided Models and Services
-        // return authenticated user, create or update user in model
-        return Authenticator(
-            authenticatorBuilder:
-                (BuildContext context, AuthenticatorState state) {
-              const padding =
-                  EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
-              switch (state.currentStep) {
-                case AuthenticatorStep.signIn:
-                  return Scaffold(
-                    body: Padding(
-                      padding: padding,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                           
-                            //todo
-                            //create switch to switch between login and signup
-                            //onpress function that creates creates/updates cognito user
-                            TextField(
-                              controller: emailController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Email'),
-                            ),
-                            TextField(
-                              controller: phoneController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Phone'),
-                            ),
-                            TextField(
-                              controller: passwordController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Password'),
-                            ),
-
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue, // background
-                                onPrimary: Colors.white, // foreground
+    return 
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (c) => AppModel()),
+          ChangeNotifierProvider(create: (c) => UserModel()),
+          ChangeNotifierProvider(create: (c) => HomePageModel()),
+          ChangeNotifierProvider(create: (c) => EventsModel()),
+          ChangeNotifierProvider(create: (c) => GamesModel()),
+          Provider(create: (c) => FaunaDBServices()),
+          Provider(create: (c) => UserService()),
+          Provider(create: (c) => GeoLocationServices()),
+        ],
+        child: Builder(builder: (context) {
+          Commands.init(context);
+          // Save a context our Commands can use to access provided Models and Services
+          // return authenticated user, create or update user in model
+          return Authenticator(
+              authenticatorBuilder:
+                  (BuildContext context, AuthenticatorState state) {
+                const padding =
+                    EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
+                switch (state.currentStep) {
+                  case AuthenticatorStep.signIn:
+                    return Scaffold(
+                      body: Padding(
+                        padding: padding,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              //todo
+                              //create switch to switch between login and signup
+                              //onpress function that creates creates/updates cognito user
+                              TextField(
+                                controller: emailController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Email'),
                               ),
-                              //emailController, passwordController
-                              onPressed: () {
-                                signIn(state);
-                              },
-                              child: Text('Sign In'),
-                            )
-                          ],
+                              TextField(
+                                controller: phoneController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Phone'),
+                              ),
+                              TextField(
+                                controller: passwordController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Password'),
+                              ),
+
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
+                                //emailController, passwordController
+                                onPressed: () {
+                                  signIn(state);
+                                },
+                                child: Text('Sign In'),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    // custom button to take the user to sign up
-                    persistentFooterButtons: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Don\'t have an account?'),
-                          TextButton(
-                            onPressed: () => state.changeStep(
-                              AuthenticatorStep.signUp,
-                            ),
-                            child: const Text('Sign Up'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                case AuthenticatorStep.signUp:
-                  return Scaffold(
-                    body: Padding(
-                      padding: padding,
-                      child: SingleChildScrollView(
-                        child: Column(
+                      // custom button to take the user to sign up
+                      persistentFooterButtons: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // app logo
-                            const Center(child: FlutterLogo(size: 100)),
-                            // prebuilt sign up form from amplify_authenticator package
-
-                            TextField(
-                              controller: emailController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Email'),
-                            ),
-
-                            TextField(
-                              controller: usernameController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Username'),
-                            ),
-                            TextField(
-                              controller: phoneController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Phone'),
-                            ),
-                            TextField(
-                              controller: passwordController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Password'),
-                            ),
-                            TextField(
-                              controller: birthdateController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Birthdate'),
-                            ),
-                            TextField(
-                              controller: genderController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Gender'),
-                            ),
-                            TextField(
-                              controller: addressController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Address'),
-                            ),
-
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue, // background
-                                onPrimary: Colors.white, // foreground
+                            const Text('Don\'t have an account?'),
+                            TextButton(
+                              onPressed: () => state.changeStep(
+                                AuthenticatorStep.signUp,
                               ),
-                              //emailController, passwordController, usernameController, phoneController
-                              onPressed: () {
-                                signUp(state);
-                              },
-                              child: Text('Sign Up'),
-                            )
-                            // SignUpForm.custom(
-                            //   fields: [
-                            //     SignUpFormField.username(),
-                            //     SignUpFormField.email(required: true),
-                            //     SignUpFormField.phoneNumber(),
-                            //     SignUpFormField.password(),
-
-                            //   ],
-
-                            // ),
+                              child: const Text('Sign Up'),
+                            ),
                           ],
                         ),
-                      ),
-                    ),
-                    // custom button to take the user to sign in
-                    persistentFooterButtons: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Already have an account?'),
-                          TextButton(
-                            onPressed: () => state.changeStep(
-                              AuthenticatorStep.signIn,
-                            ),
-                            child: const Text('Sign In'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                case AuthenticatorStep.confirmSignUp:
-                  return Scaffold(
-                    body: Padding(
-                      padding: padding,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            // app logo
-                            const Center(child: FlutterLogo(size: 100)),
-                            // prebuilt sign up form from amplify_authenticator package
+                      ],
+                    );
+                  case AuthenticatorStep.signUp:
+                    return Scaffold(
+                      body: Padding(
+                        padding: padding,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              // app logo
+                              const Center(child: FlutterLogo(size: 100)),
+                              // prebuilt sign up form from amplify_authenticator package
 
-                            TextField(
-                              controller: confirmSignInValueController,
-                              decoration: new InputDecoration.collapsed(
-                                  hintText: 'Confirmation Code'),
-                            ),
-
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue, // background
-                                onPrimary: Colors.white, // foreground
+                              TextField(
+                                controller: emailController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Email'),
                               ),
-                              //emailController, passwordController, usernameController, phoneController
-                              onPressed: () {
-                                confirmSignIn(state);
-                              },
-                              child: Text('Confirm'),
-                            )
-                            // SignUpForm.custom(
-                            //   fields: [
-                            //     SignUpFormField.username(),
-                            //     SignUpFormField.email(required: true),
-                            //     SignUpFormField.phoneNumber(),
-                            //     SignUpFormField.password(),
 
-                            //   ],
+                              TextField(
+                                controller: usernameController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Username'),
+                              ),
+                              TextField(
+                                controller: phoneController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Phone'),
+                              ),
+                              TextField(
+                                controller: passwordController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Password'),
+                              ),
+                              TextField(
+                                controller: birthdateController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Birthdate'),
+                              ),
+                              TextField(
+                                controller: genderController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Gender'),
+                              ),
+                              TextField(
+                                controller: addressController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Address'),
+                              ),
 
-                            // ),
-                          ],
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
+                                //emailController, passwordController, usernameController, phoneController
+                                onPressed: () {
+                                  signUp(state);
+                                },
+                                child: Text('Sign Up'),
+                              )
+                              // SignUpForm.custom(
+                              //   fields: [
+                              //     SignUpFormField.username(),
+                              //     SignUpFormField.email(required: true),
+                              //     SignUpFormField.phoneNumber(),
+                              //     SignUpFormField.password(),
+
+                              //   ],
+
+                              // ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    // custom button to take the user to sign in
-                    persistentFooterButtons: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Already have an account?'),
-                          TextButton(
-                            onPressed: () => state.changeStep(
-                              AuthenticatorStep.signIn,
+                      // custom button to take the user to sign in
+                      persistentFooterButtons: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Already have an account?'),
+                            TextButton(
+                              onPressed: () => state.changeStep(
+                                AuthenticatorStep.signIn,
+                              ),
+                              child: const Text('Sign In'),
                             ),
-                            child: const Text('Sign In'),
+                          ],
+                        ),
+                      ],
+                    );
+                  case AuthenticatorStep.confirmSignUp:
+                    return Scaffold(
+                      body: Padding(
+                        padding: padding,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              // app logo
+                              const Center(child: FlutterLogo(size: 100)),
+                              // prebuilt sign up form from amplify_authenticator package
+
+                              TextField(
+                                controller: confirmSignInValueController,
+                                decoration: new InputDecoration.collapsed(
+                                    hintText: 'Confirmation Code'),
+                              ),
+
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
+                                //emailController, passwordController, usernameController, phoneController
+                                onPressed: () {
+                                  confirmSignIn(state);
+                                },
+                                child: Text('Confirm'),
+                              )
+                              // SignUpForm.custom(
+                              //   fields: [
+                              //     SignUpFormField.username(),
+                              //     SignUpFormField.email(required: true),
+                              //     SignUpFormField.phoneNumber(),
+                              //     SignUpFormField.password(),
+
+                              //   ],
+
+                              // ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ],
-                  );
-                default:
-                  // returning null defaults to the prebuilt authenticator for all other steps
-                  return null;
-              }
-            },
-            child: MaterialApp(
-                builder: Authenticator.builder(), home: AppScaffold()));
-      }),
-    );
+                      // custom button to take the user to sign in
+                      persistentFooterButtons: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Already have an account?'),
+                            TextButton(
+                              onPressed: () => state.changeStep(
+                                AuthenticatorStep.signIn,
+                              ),
+                              child: const Text('Sign In'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  default:
+                    // returning null defaults to the prebuilt authenticator for all other steps
+                    return null;
+                }
+              },
+              child: 
+              
+              MaterialApp(
+                  builder: Authenticator.builder(), home: AppScaffold()));
+        }),
+      );
   }
 }
 
@@ -432,8 +528,8 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Bind to AppModel.currentUser
-    String currentUser =
-        context.select<AppModel, String>((value) => value.currentUser);
+    Map<String, dynamic> currentUser =
+        context.select<AppModel, Map<String, dynamic>>((value) => value.currentUser);
 
     bool isSignedIn =
         context.select<AppModel, bool>((value) => value.isSignedIn);
@@ -441,12 +537,23 @@ class AppScaffold extends StatelessWidget {
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
 
-bool isDialogueViewOpened = context.select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
+    bool isDialogueViewOpened = context
+        .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
     print("isSignedINnnnn: ");
     print(isSignedIn);
     // Return the current view, based on the currentUser value:
     return Scaffold(
-      body: initialConditionsMet == false ? LoginPage() : Home(),
+      //replace first condition with loading screen
+      body: initialConditionsMet == false ? 
+        Container(
+            height: double.infinity,
+            width: double.infinity,
+            child:Align(
+              alignment: Alignment.center,
+              child: LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
+            )
+          ) 
+          : Home(),
       // body: currentUser != "" ?  Home() : LoginPage(),
     );
   }

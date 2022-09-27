@@ -1,3 +1,38 @@
+enum EventType {
+  TRYOUT
+  GAME
+  LEAGUE
+  TOURNAMENT
+  TRAINING
+  TEST
+}
+
+enum SurfaceType {
+  TURFPOOR
+  TURFOKAY
+  TURFGOOD
+  TURFEXCELLENT
+  GRASSPOOR
+  GRASSOKAY
+  GRASSGOOD
+  GRASSEXCELLENT
+  HARDFLOOR
+  SAND
+  NAILS
+  QUICKSAND
+}
+
+enum FieldPlayerOccupancySize {
+  SMALL
+  MEDIUM
+  FULLSIZE
+}
+
+enum GenderType {
+  MALE
+  FEMALE
+}
+
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   player: Player @hasOne
@@ -14,6 +49,8 @@ type User @model @auth(rules: [{allow: public}]) {
   status: String
   last_login: Int
   last_updated: Int
+  locationID: ID! @index(name: "byLocation")
+  locations: [Location] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type Coach @model @auth(rules: [{allow: public}]) {
@@ -66,10 +103,9 @@ type Wager @model @auth(rules: [{allow: public}]) {
   name: String
   amount: String
   players: String
-  events: String
-  private: String
-  league: String
-  tournament: String
+  eligibleEventTypes: String
+  private: Boolean
+  events: Event @hasOne
 }
 
 type Game @model @auth(rules: [{allow: public}]) {
@@ -79,13 +115,16 @@ type Game @model @auth(rules: [{allow: public}]) {
   score: String
   wagers: String
   pickup: Boolean
+  event: Event @hasOne
 }
 
 type Tryout @model @auth(rules: [{allow: public}]) {
   id: ID!
   players: String
   game: String
-  event: String
+  event: Event @hasOne
+  events: [Event] @hasMany(indexName: "byTryout", fields: ["id"])
+  eligibleEventTypes: [Event] @manyToMany(relationName: "TryoutEvent")
 }
 
 type League @model @auth(rules: [{allow: public}]) {
@@ -95,7 +134,9 @@ type League @model @auth(rules: [{allow: public}]) {
   teams: String
   wagers: String
   images: String
-  events: String
+  event: Event @hasOne
+  events: [Event] @hasMany(indexName: "byLeague", fields: ["id"])
+  eligibleEventTypes: [Event] @manyToMany(relationName: "LeagueEvent")
 }
 
 type Tournament @model @auth(rules: [{allow: public}]) {
@@ -104,27 +145,40 @@ type Tournament @model @auth(rules: [{allow: public}]) {
   groupPlay: Boolean
   teams: String
   images: String
-  events: String
+  event: Event @hasOne
+  events: [Event] @hasMany(indexName: "byTournament", fields: ["id"])
+  eligibleEventTypes: [Event] @manyToMany(relationName: "TournamentEvent")
 }
 
 type Training @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
   players: String
-  event: String
+  event: Event @hasOne
+  events: [Event] @hasMany(indexName: "byTraining", fields: ["id"])
+  eligibleEventTypes: [Event] @manyToMany(relationName: "TrainingEvent")
 }
 
 type Event @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
   organizer: String
-  game: String
   tryout: String
   training: String
   ratings: String
   images: String
   price: String
   location: String
+  type: EventType
+  locationID: ID @index(name: "byLocation")
+  trainingID: ID @index(name: "byTraining")
+  tournamentID: ID @index(name: "byTournament")
+  leagueID: ID @index(name: "byLeague")
+  tryoutID: ID @index(name: "byTryout")
+  tryouts: [Tryout] @manyToMany(relationName: "TryoutEvent")
+  leagues: [League] @manyToMany(relationName: "LeagueEvent")
+  tournaments: [Tournament] @manyToMany(relationName: "TournamentEvent")
+  trainings: [Training] @manyToMany(relationName: "TrainingEvent")
 }
 
 type Team @model @auth(rules: [{allow: public}]) {
@@ -180,14 +234,18 @@ type Location @model @auth(rules: [{allow: public}]) {
   name: String
   secondaryName: String
   address: String
-  surface: String
+  surface: SurfaceType
   images: String
-  fieldSize: String
-  private: String
+  fieldSize: FieldPlayerOccupancySize
+  private: Boolean
   schedule: String
-  events: String
+  latitude: Float
+  longitude: Float
+  events: [Event] @hasMany(indexName: "byLocation", fields: ["id"])
+  userID: ID! @index(name: "byUser")
+  user: User @belongsTo
 }
 
 type Rating @model @auth(rules: [{allow: public}]) {
   id: ID!
-} 
+}

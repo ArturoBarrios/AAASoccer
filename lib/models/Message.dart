@@ -135,7 +135,7 @@ class Message extends Model {
     'id': id, 'text': _text, 'gif': _gif, 'image': _image, 'chat': _chat, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "message.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField TEXT = QueryField(fieldName: "text");
   static final QueryField GIF = QueryField(fieldName: "gif");
   static final QueryField IMAGE = QueryField(fieldName: "image");

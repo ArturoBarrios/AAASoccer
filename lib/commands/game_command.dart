@@ -1,44 +1,113 @@
+import 'dart:convert';
+import 'dart:ffi';
 import 'base_command.dart';
-import 'package:amplify_api/amplify_api.dart';
-import '../models/Game.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
+import '../models/app_model.dart';
+import '../commands/event_command.dart';
+import '../commands/geolocation_command.dart';
+import 'package:geolocator/geolocator.dart';
+import '../graphql/mutations/games.dart';
+import '../graphql/queries/games.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GameCommand extends BaseCommand {
 
-  Future<List<String>> run(String user) async {
-    // Make service call and inject results into the model
-    List<String> posts = await userService.getPosts(user);
 
-    // Return our posts to the caller in case they care
-    return posts;
+//read
+Future<Map<String, dynamic>> getGamesNearLocation() async{
+    print("getGamesNearLocation");
+  Map<String, dynamic> getGamesNearLocationResp = {"success": false, "message": "Default Error", "data": []};
+  try{
+    print("my position");
+    Position myPosition = await GeoLocationCommand().determinePosition();
+    http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': GameQueries().getGames(true),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+
+    final result = jsonDecode(response.body)['data']['allGames'];
+    getGamesNearLocationResp["success"] = true;
+    getGamesNearLocationResp["message"] = "Games Retrieved";
+    getGamesNearLocationResp["data"] = result;
+    
+  } on Exception catch (e) {
+    print('Mutation failed: $e');  
   }
 
- Future<Map<String, dynamic>> createGame(Map<String, dynamic> userInput ) async{
+  return getGamesNearLocationResp;
+
+}
+//create
+Future<Map<String, dynamic>> createGame(Map<String, dynamic> gameInput, Map<String, dynamic> eventInput, Map<String, dynamic> locationInput ) async{
      print("createGame");
-    Map<String, dynamic> createGameResponse = {"success": false, "message": "Default Error"};
+     print(gameInput);
+    Map<String, dynamic> createGameResponse = {"success": false, "message": "Default Error", "data": null};
     try {
-      Game game = Game(hometeam: userInput['hometeam'], awayTeam: userInput['awayteam'], pickup: userInput['pickup']);
-      final request = ModelMutations.create(game);
-      print("request");
-      final response = await Amplify.API.mutate(request: request).response;
-      print("response");
 
-      Game? createdGame = response.data;
-      if (createdGame != null) {
-       createGameResponse["success"] = true;
-      createGameResponse["messasge"] = "Successfully Created Location";
-      createGameResponse["data"] = createdGame;
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': GameMutations().createGame(gameInput, eventInput, locationInput),
+        }),
+      );
 
-      }
+      print("response body: ");
+      print(jsonDecode(response.body));
+        
+        createGameResponse["success"] = true;
+        createGameResponse["message"] = "Game Created";
+        createGameResponse["data"] = jsonDecode(response.body)['data']['createGame'];
+        
       
-      print('Mutation result: ' );
-      print(createdGame);
       return createGameResponse;
-    } on ApiException catch (e) {
+    } on Exception catch (e) {
       print('Mutation failed: $e');
       return createGameResponse;
     }
   }
+
+  Future<Map<String, dynamic>> addPlayerToGame(Map<String, dynamic> gameInput, Map<String, dynamic> playerInput ) async{
+    print("addPlayerToGame");
+    Map<String, dynamic> addPlayerToGameResponse = {"success": false, "message": "Default Error", "data": null};
+    
+    http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': GameMutations().addPlayerToGame(gameInput, playerInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+        
+      addPlayerToGameResponse["success"] = true;
+      addPlayerToGameResponse["message"] = "Game Created";
+      addPlayerToGameResponse["data"] = jsonDecode(response.body)['data']['updateGame'];
+
+    return addPlayerToGameResponse;
+  }
+
+
 
   
 

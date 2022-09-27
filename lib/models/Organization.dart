@@ -175,7 +175,7 @@ class Organization extends Model {
     'id': id, 'name': _name, 'images': _images, 'rating': _rating, 'events': _events, 'description': _description, 'ageRange': _ageRange, 'inviteOnly': _inviteOnly, 'members': _members, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "organization.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField IMAGES = QueryField(fieldName: "images");
   static final QueryField RATING = QueryField(fieldName: "rating");

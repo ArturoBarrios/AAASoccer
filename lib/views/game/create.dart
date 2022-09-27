@@ -30,25 +30,29 @@ class _GameCreateState extends State<GameCreate> {
       "message": "Default Error"
     };
     try {
-      Map<String, dynamic> createGameInput = {
-        "hometeam": hometeamController.text.trim(),
-        "awayTeam": awayteamController.text.trim(),
-        "pickup": isPickupController.text.trim()
+      Map<String, dynamic> createEventInput = {
+        "name": nameController.text.trim(),
+        "price": priceController.text.trim(),
+        "location": locationController.text.trim(),
+        "images": imagesController.text.trim(),
+        "type": "EventType.GAME",
       };
-      Map<String, dynamic> createdGame =
-          await GameCommand().createGame(createGameInput);
-      if(createdGame['success']){
-        
-        Map<String, dynamic> createEventInput = {
-          "name": nameController.text.trim(),
-          "gameId": createdGame['data'].id,
-          "price": priceController.text.trim(),
-          "location": locationController.text.trim(),
-          "images": imagesController.text.trim()
+
+      Map<String, dynamic> createdEvent =
+          await EventCommand().createEvent(createEventInput);
+    print("createdEvent: ");
+    print(createdEvent['data']);
+      if (createdEvent['success']) {
+        Map<String, dynamic> createGameInput = {
+          "hometeam": hometeamController.text.trim(),
+          "awayTeam": awayteamController.text.trim(),
+          "pickup": true,
+          "eventID": createdEvent['data'].id
         };
-        Map<String, dynamic> createdEvent =
-            await EventCommand().createEvent(createEventInput);
-        if(createdEvent['success']){
+        Map<String, dynamic> createdGame = {"success": false, "message": "Default Error"};
+            // await GameCommand().createGame(createGameInput, createEventInput);
+
+        if (createdGame['success']) {
           createPickupGameResponse['success'] = true;
         }
       }

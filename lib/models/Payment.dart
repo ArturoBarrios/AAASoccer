@@ -105,7 +105,7 @@ class Payment extends Model {
     'id': id, 'amount': _amount, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "payment.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField AMOUNT = QueryField(fieldName: "amount");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Payment";

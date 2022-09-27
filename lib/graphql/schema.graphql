@@ -1,0 +1,303 @@
+enum EventType {
+  TRYOUT
+  GAME
+  LEAGUE
+  TOURNAMENT
+  TRAINING
+}
+
+enum SurfaceType {
+  TURFPOOR
+  TURFOKAY
+  TURFGOOD
+  TURFEXCELLENT
+  GRASSPOOR
+  GRASSOKAY
+  GRASSGOOD
+  GRASSEXCELLENT
+  HARDFLOOR
+  SAND
+  NAILS
+  QUICKSAND
+}
+
+enum FieldPlayerOccupancySize {
+  SMALL
+  MEDIUM
+  FULLSIZE
+}
+
+enum GenderType {
+  MALE
+  FEMALE
+}
+
+enum ModelType {
+  USER
+  ORGANIZATION
+  EVENT
+}
+
+enum UserAccountStatus{
+  UNCOMFIRMED
+  CONFIRMED
+  BANNED
+}
+
+type Query {
+  allGames(pickup: Boolean): [Game!]  
+  allUsers: [User!]
+  allPlayers: [Player!]
+  allTeams: [Team!]
+  getUser(email: String): User
+}
+
+type User  {  
+  name: String!
+  phone: String!
+  email: String!
+  username: String!
+  birthdate: String!
+  gender: GenderType
+  location: Location
+  player: Player
+  organizer: Organizer
+  coach: Coach
+  referee: Referee
+  status: UserAccountStatus
+  last_login: Int
+  last_updated: Int
+  images: [Image] @relation
+  events: [Event] @relation
+}
+
+type Player   {  
+  wagerRating: String
+  wagers: [Wager] @relation  
+  # events: [Event] @relation
+  teams: [Team] @relation
+  competitiveLevel: String
+  ratings: String
+  hasRating: String
+  showRating: String
+  hasSubscription: String
+  user: User
+  selfRating: Int
+  sponsors: [Sponsor] @relation
+  # games: [Game] @relation  
+}
+
+type Game   {
+  hometeam: Team
+  awayTeam: Team
+  homegoals: Int
+  awaygoals: Int
+  pickup: Boolean
+  event: Event  
+}
+
+type Event   {
+  name: String!
+  isMainEvent: Boolean!
+  price: Price
+  # organization: Organization
+  #need org to create events? nah. allow user to create events,
+  #if user has orgs, they can select which org to create event for                
+  coorganizations: [Organization] @relation
+  sponsors: [Sponsor] @relation
+  # creator: User 
+  ratings: [Rating] @relation
+  images: [Image] @relation
+  location: [Location] @relation
+  type: EventType
+  payment: Payment
+  # training: Training
+  # tournament: Tournament
+  # league: League
+  # tryout: Tryout
+  teams: [Team] @relation
+  games: [Game] @relation
+  users: [User] @relation
+  #I don't think you need these since tournament 
+  #can have many events but not the other way around
+  # tournament: Tournament 
+  tryouts: [Tryout] @relation
+  leagues: [League] @relation
+  tournaments: [Tournament] @relation
+  trainings: [Training] @relation 
+  wager: [Wager] @relation
+}
+
+type Team   {
+  name: String!
+  color: String!  
+  events: [Event] @relation
+  images: [Image] @relation
+  players: [Player] @relation    
+  sponsors: [Sponsor] @relation
+  location: Location
+}
+
+type Coach   {
+  id: ID!
+  user: User
+}
+
+type Referee   {
+  id: ID!
+  user: User
+}
+
+type Organizer   {
+  id: ID!
+  user: User
+}
+
+
+# a payment is attached to event
+# use payment object to create payment screen details for event
+type Payment   {
+  id: ID!
+  amount: String
+  event: Event
+}
+
+# orgs can have many suborgs
+# allow org to behave as Sponsor
+type Organization   {
+  id: ID!
+  name: String
+  images: [Image] @relation
+  rating: String
+  events: [Event] @relation
+  # suborgs: [Organization] @relation
+  # sponsor: Sponsor
+  sponsors: [Sponsor] @relation
+  description: String
+  minAge: Int
+  maxAge: Int
+  inviteOnly: Boolean
+  private: Boolean #it won't show up in public search
+  isMainOrg: Boolean
+}
+
+# sponsor is an org
+type Sponsor {
+  id: ID!
+  name: String
+  images: [Image] @relation
+  description: String
+  url: String
+  event: [Event] @relation  
+  sponsoredOrgs: [Organization] @relation
+  sponsoredPlayers: [Player] @relation
+  sponsoredTeams: [Team] @relation
+}
+
+type Wager   {
+  id: ID!
+  name: String
+  amount: String
+  players: [Player] @relation
+  # eligibleEventTypes: [EventType] @relation
+  private: Boolean
+  events: [Event] @relation
+}
+
+
+type Tryout   {
+  id: ID!
+  game: String
+  # event: Event
+  events: [Event] @relation 
+  #tryout can have a pickup game
+  # eligibleEventTypes: [EventType] @relation
+}
+
+type League   {
+  id: ID!
+  tournament: Tournament    
+  # event: Event
+  events: [Event] @relation
+  # eligibleEventTypes: [EventType] @relation
+}
+
+type Tournament   {
+  id: ID!
+  league: League  
+  groupPlay: Boolean  
+  # event: Event
+  events: [Event] @relation
+  # eligibleEventTypes: [EventType] @relation
+}
+
+type Training   {  
+  event: Event  
+  # eligibleEventTypes: [EventType] @relation
+}
+
+
+type Image   {
+  id: ID!
+  url: String
+  user: User
+  event: Event
+  team: Team
+  location: Location
+  organization: Organization
+  attachedModelType: ModelType
+  sponsor: Sponsor  
+}
+
+type GifContent   {
+  id: ID!
+}
+
+type TextContent   {
+  id: ID!
+}
+
+type Message   {
+  id: ID!
+  text: String
+  gif: String
+  image: String
+  chat: String
+}
+
+type Chat   {
+  id: ID!
+  messages: String
+}
+
+type AppSubscription   {
+  id: ID!
+  tier: String
+}
+
+type Location   {  
+  name: String
+  secondaryName: String
+  address: String
+  surface: SurfaceType
+  images: [Image] @relation
+  fieldSize: FieldPlayerOccupancySize
+  private: Boolean
+  schedule: String
+  latitude: Float!
+  longitude: Float!
+  events: [Event] @relation
+  user: User
+  team: Team
+}
+
+type Rating   {
+  id: ID!
+  event: Event
+}
+
+type Price   {
+  id: ID!
+  amount: String
+  event: Event
+}

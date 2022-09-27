@@ -105,7 +105,7 @@ class AppSubscription extends Model {
     'id': id, 'tier': _tier, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
-  static final QueryField ID = QueryField(fieldName: "appSubscription.id");
+  static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField TIER = QueryField(fieldName: "tier");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "AppSubscription";
