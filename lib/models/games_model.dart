@@ -3,7 +3,6 @@ import 'dart:ffi';
 import 'package:flutter/foundation.dart';
 import '../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
-import 'event_types_model.dart';
 
 class GamesModel extends ChangeNotifier {
   List _games = [];

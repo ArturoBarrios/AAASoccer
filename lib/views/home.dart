@@ -26,7 +26,6 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../strings.dart';
-import '../models/event_types_model.dart';
 import '../models/events_model.dart';
 
 class Home extends StatefulWidget {
@@ -173,7 +172,6 @@ class _Home extends State<Home> {
         if (fetchedPosts.isNotEmpty) {
           setState(() {
             getEventCards();
-            // _posts.addAll(fetchedPosts);
           });
         } else {
           // This means there is no more data
@@ -196,7 +194,7 @@ class _Home extends State<Home> {
 
   //can add filtering and sorting here
   List getEventCards() {
-      HomePageModel().enabledEvents.forEach((object) {
+      HomePageModel().enabledSelections.forEach((object) {
         print("valueeeee: " + object.toString()); 
         //if event enabled
         if (object['enabled']) {
@@ -217,7 +215,7 @@ class _Home extends State<Home> {
 
   @override
   void initState() {
-    super.initState();
+    super.initState();    
     _firstLoad();
     _selectEventController = ScrollController()..addListener(_loadMore);
   }
@@ -233,13 +231,25 @@ class _Home extends State<Home> {
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
 
-    List enabledEvents = context
-        .select<HomePageModel, List>((value) => value.enabledEvents);
-    int i = 0;
-    for(var i = 0;i<HomePageModel().enabledEvents.length;i++){
-      context.select<HomePageModel, bool>((value) => value.enabledEvents[i]['enabled']);
+    List selectedObjects = context
+        .select<HomePageModel, List>((value) => value.selectedObjects);
+    
+    List enabledSelections = context
+        .select<HomePageModel, List>((value) => value.enabledSelections);
+    Map<String, dynamic> enabledSelections2 = context
+        .select<HomePageModel, Map<String, dynamic>>((value) => value.enabledSelections2);
+
+    //track selection 'enabled' state
+    for(var i = 0;i<HomePageModel().enabledSelections.length;i++){
+      context.select<HomePageModel, bool>((value) => value.enabledSelections[i]['enabled']);
     }
 
+    HomePageModel().enabledSelections2.forEach((k, v) => {
+      context.select<HomePageModel, bool>((value) => value.enabledSelections2[k]['enabled'])
+      
+    });
+
+  print("selectedObjects: " + selectedObjects.toString());
     String testText =
         context.select<HomePageModel, String>((value) => value.testText);
 
@@ -286,27 +296,32 @@ class _Home extends State<Home> {
                           child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               controller: _selectEventTypeController,
-                              itemCount: enabledEvents.length,
-                              itemBuilder: (_, index) => Card(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 10),
-                                    child: SelectIconButton(
-                                        eventObject: enabledEvents[index],
-                                        svgImage: svgImage,
-                                        index: index),
-                                  ))),
+                              itemCount: enabledSelections2.length,                                       
+                              itemBuilder: (_, index){
+                                String key = enabledSelections2.keys.elementAt(index);
+                                return 
+                                  Card(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 10),
+                                      child: SelectIconButton(
+                                          eventObject: enabledSelections2[key],
+                                          svgImage: svgImage,
+                                          index: index),
+                                );
+                              },
+                                  )),
                     ])),
 
                     //list view
                     Expanded(
                       child: ListView.builder(
                           controller: _selectEventController,
-                          itemCount: eventsList.length,
+                          itemCount: selectedObjects.length,
                           itemBuilder: (_, index) => Card(
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 10),
                                 child: PickupCard2(
-                                    eventObject: eventsList[index],
+                                    eventObject: selectedObjects[index],
                                     svgImage: svgImage),
                               )),
                     ),

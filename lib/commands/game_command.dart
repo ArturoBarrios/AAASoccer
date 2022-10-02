@@ -18,7 +18,7 @@ class GameCommand extends BaseCommand {
 //read
 Future<Map<String, dynamic>> getGamesNearLocation() async{
     print("getGamesNearLocation");
-  Map<String, dynamic> getGamesNearLocationResp = {"success": false, "message": "Default Error", "data": []};
+  Map<String, dynamic> getGamesNearLocationResp = {"success": false, "message": "Default Error", "data": null};
   try{
     print("my position");
     Position myPosition = await GeoLocationCommand().determinePosition();
@@ -37,7 +37,7 @@ Future<Map<String, dynamic>> getGamesNearLocation() async{
       print(jsonDecode(response.body));
 
 
-    final result = jsonDecode(response.body)['data']['allGames'];
+    final result = jsonDecode(response.body)['data']['allGames']['data'];
     getGamesNearLocationResp["success"] = true;
     getGamesNearLocationResp["message"] = "Games Retrieved";
     getGamesNearLocationResp["data"] = result;

@@ -3,7 +3,6 @@ import 'dart:ffi';
 import 'package:flutter/foundation.dart';
 import '../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
-import 'event_types_model.dart';
 
 class HomePageModel extends ChangeNotifier {
 
@@ -42,14 +41,85 @@ class HomePageModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _selectedKey = "0";
+  String get selectedKey => _selectedKey;
+  set selectedKey(String selectedKey){
+    _selectedKey = selectedKey;
+    notifyListeners();
+  }
 
-  
+  Map<String, dynamic> _enabledSelections2 = {
+    "0": {
+      "key": "0",
+      "enabled": true,
+      "name": StringConstants.PICKUPGAMESTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+      
+    },
+    "6": {
+      "key": "6",
+      "enabled": false,
+      "name": StringConstants.TRAININGSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+     "1": {
+      "key": "1",
+      "enabled": false,
+      "name": StringConstants.PLAYERSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+     "2": {
+      "key": "2",
+      "enabled": false,
+      "name": StringConstants.TEAMSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    "3": {
+      "key": "3",
+      "enabled": false,
+      "name": StringConstants.TRYOUTSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    "4":{
+      "key": "4",
+      "enabled": false,
+      "name": StringConstants.TOURNAMENTSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    "5":{
+      "key": "5",
+      "enabled": false,
+      "name": StringConstants.LEAGUESTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+  };
+  Map<String, dynamic> get enabledSelections2 => _enabledSelections2;
+  set enabledSelections2(Map<String, dynamic> enabledSelections2){
+    _enabledSelections2 = enabledSelections2;    
+    notifyListeners();
+  }
 
-  List _enabledEvents = [
+
+  List _enabledSelections = [
     {
       "key": 0,
       "enabled": true,
       "name": StringConstants.PICKUPGAMESTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+      
+    },
+    {
+      "key": 6,
+      "enabled": false,
+      "name": StringConstants.TRAININGSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },
@@ -89,19 +159,25 @@ class HomePageModel extends ChangeNotifier {
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },
   ];
-  //traverse enabledEvents
-  List get enabledEvents => _enabledEvents;
-
-  void toggleEvent(int index){
-    _enabledEvents.forEach((element) { 
-        element['enabled'] = false;
-    });
-    _enabledEvents[index]['enabled'] = !_enabledEvents[index]['enabled'];
+  List get enabledSelections => _enabledSelections;
+  set enabledSelections(List enabledSelections){
+    _enabledSelections = enabledSelections;    
     notifyListeners();
   }
 
-  set enabledEvents(List enabledEvents){
-    _enabledEvents = enabledEvents;    
+  // void toggleEvent(int index){
+  //   _enabledSelections.forEach((element) { 
+  //       element['enabled'] = false;
+  //       selectedKey = element['key'];
+  //   });
+  //   _enabledSelections[index]['enabled'] = !_enabledSelections[index]['enabled'];    
+  //   notifyListeners();
+  // }
+
+  List _selectedObjects = [];
+  List get selectedObjects => _selectedObjects;
+  set selectedObjects(List selectedObjects){
+    _selectedObjects = selectedObjects;
     notifyListeners();
   }
 
