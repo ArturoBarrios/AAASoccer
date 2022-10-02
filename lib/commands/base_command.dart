@@ -10,6 +10,7 @@ import 'package:amplify_api/amplify_api.dart';
 import '../models/User.dart';
 import '../commands/user_command.dart';
 import '../commands/game_command.dart';
+import '../commands/event_command.dart';
 import '../services/geolocation_services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -84,9 +85,19 @@ class BaseCommand {
           AppModel().currentUser = user;
           // setUserId(user.id);
           // setUser(user);
-          Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
+          EventCommand().setupMappedEvents();
+          Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();          
           if(getGamesNearLocationResp["success"]){
-            List<dynamic> games = getGamesNearLocationResp["data"];          
+            print("games List: ");
+            print(getGamesNearLocationResp["data"]);
+            print("success!");
+            print("type: ");
+            print(getGamesNearLocationResp["data"].runtimeType);
+            List<dynamic> games = getGamesNearLocationResp["data"];    
+            homePageModel.selectedObjects = games;  
+            eventsModel.games = games;    
+            print("selectedObjects set: ");
+            print(homePageModel.selectedObjects);
             print("games to set");
             print(games);
           }

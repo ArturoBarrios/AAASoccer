@@ -1,3 +1,5 @@
+import 'package:soccermadeeasy/models/events_model.dart';
+
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/Event.dart';
@@ -131,6 +133,25 @@ class EventCommand extends BaseCommand {
     }
 
     return getEventResp;
+
+  }
+
+  Future<Map<String, dynamic>> setupMappedEvents() async {
+    Map<String, dynamic> setupMappedEventsResp = {"success": false, "message": "Default Error", "data": null};
+    try{
+      EventsModel().mappedEvents = {
+        "0": EventsModel().games,
+        "3": EventsModel().tryouts,
+        "4": EventsModel().tournaments,
+        "5": EventsModel().leagues,
+
+      };
+    }on Exception catch(e) {
+      print('Could not setup mapped events: $e');
+      return setupMappedEventsResp;
+    }
+
+    return setupMappedEventsResp;
 
   }
 

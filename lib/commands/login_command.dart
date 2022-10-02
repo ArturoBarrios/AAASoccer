@@ -14,7 +14,7 @@ class LoginCommand extends BaseCommand {
       // await RefreshPostsCommand().run(user);
     }
     // Update appModel with current user. Any views bound to this will rebuild
-    appModel.currentUser = loginSuccess? user : "";
+    // appModel.currentUser = loginSuccess? user : "";
 
     // Return the result to whoever called us, in case they care
     return loginSuccess;

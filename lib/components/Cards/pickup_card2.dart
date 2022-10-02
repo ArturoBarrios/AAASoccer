@@ -24,7 +24,8 @@ class _PickupCard2 extends State<PickupCard2> {
   final imageUrl = "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-
+    print("widget name: ");
+    print(widget.eventObject.toString());
     return Listener(
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
@@ -63,10 +64,10 @@ class _PickupCard2 extends State<PickupCard2> {
           ),
           child: Container(
               child: InnerNeumorphicCardFb1(
-                  text: widget.eventObject['name'],
+                  text: widget.eventObject['event']['name'],
                   svgImage:
-                      widget.eventObject['image'],
-                  subtitle: widget.eventObject['description'],
+                      widget.svgImage,
+                  subtitle: "test subtitle",//widget.eventObject['description'],
                   onPressed: () {
                     
                   }))),
