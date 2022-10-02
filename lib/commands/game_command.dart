@@ -49,6 +49,7 @@ Future<Map<String, dynamic>> getGamesNearLocation() async{
   return getGamesNearLocationResp;
 
 }
+
 //create
 Future<Map<String, dynamic>> createGame(Map<String, dynamic> gameInput, Map<String, dynamic> eventInput, Map<String, dynamic> locationInput ) async{
      print("createGame");

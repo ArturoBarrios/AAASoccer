@@ -46,6 +46,7 @@ enum UserAccountStatus{
 
 type Query {
   allGames(pickup: Boolean): [Game!]  
+  allTrainings: [Training!]  
   allUsers: [User!]
   allPlayers: [Player!]
   allTeams: [Team!]

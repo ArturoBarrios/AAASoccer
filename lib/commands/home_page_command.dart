@@ -60,11 +60,12 @@ class HomePageCommand extends BaseCommand {
       case "0":
         print("check games: ");
         print(eventsModel.games);
-        homePageModel.selectedObjects= eventsModel.games;
+        homePageModel.selectedObjects = eventsModel.games;
         break;
       case "6":
       print("niceeeee");
         homePageModel.selectedObjects = eventsModel.trainings;
+
         break;      
       default:
         // homePageModel.selectedEvents = EventsModel().games;

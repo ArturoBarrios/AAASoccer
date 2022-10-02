@@ -7,6 +7,8 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
+import '../commands/game_command.dart';
+import '../commands/training_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
 import 'dart:convert';
@@ -135,6 +137,31 @@ class EventCommand extends BaseCommand {
     return getEventResp;
 
   }
+
+  Future<Map<String, dynamic>> setupEvents() async{
+    Map<String,dynamic> setupEventsResp = {"success": false, "message": "Default Error", "data": []};
+
+    Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
+    if(getGamesNearLocationResp['success']){
+      List<dynamic> games = getGamesNearLocationResp['data']; 
+      eventsModel.games = games;
+      homePageModel.selectedObjects = games;             
+    }    
+    Map<String, dynamic> getTrainingsNearLocationResp = await TrainingCommand().getTrainingsNearLocation();
+    if(getTrainingsNearLocationResp['success']){
+      List<dynamic> trainings = getTrainingsNearLocationResp['data'];
+      print("trainings: ");
+      print(trainings);
+      eventsModel.trainings = trainings;            
+    }
+
+
+    
+
+    return setupEventsResp;
+
+  }
+  
 
   Future<Map<String, dynamic>> setupMappedEvents() async {
     Map<String, dynamic> setupMappedEventsResp = {"success": false, "message": "Default Error", "data": null};

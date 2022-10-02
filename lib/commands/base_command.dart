@@ -86,28 +86,27 @@ class BaseCommand {
           // setUserId(user.id);
           // setUser(user);
           EventCommand().setupMappedEvents();
-          Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();          
-          if(getGamesNearLocationResp["success"]){
-            print("games List: ");
-            print(getGamesNearLocationResp["data"]);
-            print("success!");
-            print("type: ");
-            print(getGamesNearLocationResp["data"].runtimeType);
-            List<dynamic> games = getGamesNearLocationResp["data"];    
-            homePageModel.selectedObjects = games;  
-            eventsModel.games = games;    
-            print("selectedObjects set: ");
-            print(homePageModel.selectedObjects);
-            print("games to set");
-            print(games);
-          }
-          if(getGamesNearLocationResp["success"]){
+          // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();          
+          // if(getGamesNearLocationResp["success"]){
+          //   print("games List: ");
+          //   print(getGamesNearLocationResp["data"]);
+          //   print("success!");
+          //   print("type: ");
+          //   print(getGamesNearLocationResp["data"].runtimeType);
+            // List<dynamic> games = getGamesNearLocationResp["data"];    
+            // homePageModel.selectedObjects = games;  
+            // eventsModel.games = games;    
+            await EventCommand().setupEvents();
+            print("Setup Events");
+            // 
+          // }
+         
             resp["success"] = true;
             resp["message"] = "setup successfull";
             
-          }        
+         
 
-          print("user stuff: ");
+         
         }
         else{
           print("something went wrong in fetching user");
