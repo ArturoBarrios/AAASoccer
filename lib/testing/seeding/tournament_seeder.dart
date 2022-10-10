@@ -15,4 +15,5 @@ class TournamentSeeder {
 
     return createTournamentRelationshipsResp;
   }
+  
 }

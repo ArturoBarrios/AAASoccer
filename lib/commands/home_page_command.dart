@@ -70,11 +70,9 @@ class HomePageCommand extends BaseCommand {
       default:
         // homePageModel.selectedEvents = EventsModel().games;
         break;
-    }
-    
-    
-    
-    
+    }    
   }
+
+  
 }
 

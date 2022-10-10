@@ -6,4 +6,5 @@ class StringConstants {
   static final String TEAMSTITLE = "Teams";
   static final String TRYOUTSTITLE = "Tryouts";
   static final String PLAYERSTITLE = "Players";
+  static final String MYEVENTS = "My Events";
 }

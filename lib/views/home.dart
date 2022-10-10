@@ -215,6 +215,7 @@ class _Home extends State<Home> {
 
   @override
   void initState() {
+    print("init state");
     super.initState();    
     _firstLoad();
     _selectEventController = ScrollController()..addListener(_loadMore);
@@ -228,21 +229,24 @@ class _Home extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    print("buildDDDDDD");
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
 
     List selectedObjects = context
         .select<HomePageModel, List>((value) => value.selectedObjects);
-    
-    List enabledSelections = context
-        .select<HomePageModel, List>((value) => value.enabledSelections);
+       
     Map<String, dynamic> enabledSelections2 = context
         .select<HomePageModel, Map<String, dynamic>>((value) => value.enabledSelections2);
 
     //track selection 'enabled' state
     for(var i = 0;i<HomePageModel().enabledSelections.length;i++){
       context.select<HomePageModel, bool>((value) => value.enabledSelections[i]['enabled']);
+
     }
+    
+    context
+        .select<EventsModel, List<dynamic>>((value) => value.games);
 
     HomePageModel().enabledSelections2.forEach((k, v) => {
       context.select<HomePageModel, bool>((value) => value.enabledSelections2[k]['enabled'])

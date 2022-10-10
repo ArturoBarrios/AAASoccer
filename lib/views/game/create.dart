@@ -1,8 +1,12 @@
+import 'dart:ffi';
+import 'dart:math';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
+import '../../testing/seeding/event_seeder.dart';
+import '../../testing/seeding/location_seeder.dart';
 
 class GameCreate extends StatefulWidget {
   @override
@@ -30,34 +34,29 @@ class _GameCreateState extends State<GameCreate> {
       "message": "Default Error"
     };
     try {
-      Map<String, dynamic> createEventInput = {
-        "name": nameController.text.trim(),
-        "price": priceController.text.trim(),
-        "location": locationController.text.trim(),
-        "images": imagesController.text.trim(),
-        "type": "EventType.GAME",
+      var rng = Random();
+      Map<String, dynamic> eventInput = {
+        "name": "Pickup Game " + rng.nextInt(100000000).toString(),
+        'isMainEvent': true,        
       };
 
-      Map<String, dynamic> createdEvent =
-          await EventCommand().createEvent(createEventInput);
-    print("createdEvent: ");
-    print(createdEvent['data']);
-      if (createdEvent['success']) {
-        Map<String, dynamic> createGameInput = {
-          "hometeam": hometeamController.text.trim(),
-          "awayTeam": awayteamController.text.trim(),
-          "pickup": true,
-          "eventID": createdEvent['data'].id
-        };
-        Map<String, dynamic> createdGame = {"success": false, "message": "Default Error"};
-            // await GameCommand().createGame(createGameInput, createEventInput);
+      Map<String, dynamic> randomPickupData = EventSeeder().getRandomPickupGameData();      
+      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      print("locationInputCheck: " + locationInput.toString());                                  
 
-        if (createdGame['success']) {
-          createPickupGameResponse['success'] = true;
-        }
-      }
+      Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput, locationInput);      
+      print("createPickupGameResp: ");
+      print(createPickupGameResp['data']);
+      if (createPickupGameResp['success']) {
+        Map<String, dynamic> pickupGame = createPickupGameResp['data'];
+        Map<String, dynamic> event = pickupGame['event'];             
+        Navigator.pop(context);
+       
+      }      
       return createPickupGameResponse;
     } on ApiException catch (e) {
+
       return createPickupGameResponse;
     }
   }

@@ -138,6 +138,8 @@ class EventCommand extends BaseCommand {
 
   }
 
+
+
   Future<Map<String, dynamic>> setupEvents() async{
     Map<String,dynamic> setupEventsResp = {"success": false, "message": "Default Error", "data": []};
 
@@ -161,7 +163,35 @@ class EventCommand extends BaseCommand {
     return setupEventsResp;
 
   }
+
+  // updates models for views dependent on EventsModel
+  Future<Map<String, dynamic>> updateViewModels() async{
+    Map<String,dynamic> updateViewModelsResp = {"success": false, "message": "Default Error", "data": []};
+    print("length of events modeL games: ");
+    print(eventsModel.games.length);
+    print("length of homePageModel selectedObjects: ");
+    print(homePageModel.selectedObjects.length);
+    //update homepagemodel
+    homePageModel.selectedObjects = eventsModel.games;
+    
+    
+    
+
+
+    
+
+    return updateViewModelsResp;
+
+  }
   
+  Future<Map<String, dynamic>>addGame(Map<String, dynamic> game, bool updateViewModelsBool) async{
+    Map<String,dynamic> addGameResp = {"success": false, "message": "Default Error", "data": []};
+    eventsModel.games.add(game);
+    if(updateViewModelsBool)
+      await updateViewModels();
+
+    return addGameResp;
+  }
 
   Future<Map<String, dynamic>> setupMappedEvents() async {
     Map<String, dynamic> setupMappedEventsResp = {"success": false, "message": "Default Error", "data": null};

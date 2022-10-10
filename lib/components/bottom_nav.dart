@@ -10,6 +10,7 @@ import '../views/wager/create.dart';
 import '../commands/user_command.dart';
 import '../commands/base_command.dart';
 import '../commands/player_command.dart';
+import '../commands/tournament_command.dart';
 import '../commands/game_command.dart';
 import '../testing/seeding/database_seeder.service.dart';
 import '../commands/geolocation_command.dart';
@@ -56,7 +57,13 @@ class _BottomNav extends State<BottomNav> {
   //testing methods(I know, what an amazing place to test models) :)
 
   void testFunction() async {
-    AmplifyAuthService().signOut();
+    TournamentCommand().bergerTable(14);
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) =>  GameCreate()),
+    // );
+    // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
     // print("test text updated");

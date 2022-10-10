@@ -17,8 +17,8 @@ class DatabaseSeeder {
   'numberOfUsers': 4,//4500,
   'randomLocations': [],
   'numberOfPickupGames': 4,//4500,
-  'numberOfLeagues': 4,//4500,
-  'numberOfTournaments': 4,//4500,
+  'numberOfLeagues': 1,//4500,
+  'numberOfTournaments': 1,//4500,
   'numberOfTryouts': 4,//4500,
   'numberOfTrainingSessions': 4,//4500,
   'numberOfPlayersPerTeam': 2,  //important

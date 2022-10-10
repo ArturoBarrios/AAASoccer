@@ -116,6 +116,16 @@ class HomePageModel extends ChangeNotifier {
       "image": SVGWidgets().getSoccerBallSVGImage(),
       
     },
+    //include past events, sort by most current
+    //that way past events are always last
+    {
+      "key": 7,
+      "enabled": true,
+      "name": StringConstants.MYEVENTS,
+      "description": "My Events",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+      
+    },
     {
       "key": 6,
       "enabled": false,
@@ -177,6 +187,7 @@ class HomePageModel extends ChangeNotifier {
   List _selectedObjects = [];
   List get selectedObjects => _selectedObjects;
   set selectedObjects(List selectedObjects){
+    print("set selected objects!");
     _selectedObjects = selectedObjects;
     notifyListeners();
   }

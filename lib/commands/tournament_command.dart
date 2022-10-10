@@ -45,6 +45,59 @@ class TournamentCommand extends BaseCommand {
     }
   }
 
+  //CREDIT TO https://github.com/sasatatar
+  //LINK TO CODE: https://github.com/sasatatar/berger-table-generator/blob/master/index.js
+  List<dynamic> bergerTable(int size, {bool useDummy=false}){    
+    List<dynamic> bergerTableResponse = [];
+    List<dynamic> teams = [];
+    Object dummy = {};
+    for (var i = 0; i < size; i++) {
+      teams.add(i);
+    }
+    if(teams.length % 2 != 0){
+      teams.add(dummy);
+    }
+    int n = teams.length;
+    int numberOfRounds = n-1;
+    int gamesPerRound = (n/2).floor();
+
+    List<dynamic> columnA = teams.sublist(0, gamesPerRound);
+    List<dynamic> columnB = teams.sublist(gamesPerRound);
+    dynamic fixed = teams[0];
+
+    for(int i = 0; i < numberOfRounds; i++){
+      int gameCount = 1;
+      List<dynamic> acc = [];
+      for(int k = 0;k<gamesPerRound;k++){
+        if (useDummy || (columnA[k] != dummy && columnB[k] != dummy)) {
+          acc.add
+          ({
+              "round": i+1,
+              "game": gameCount,
+              "teamA": columnA[k],
+              "teamB": columnB[k]
+            });
+            gameCount++;
+        }
+
+
+      }
+      bergerTableResponse.add(acc);      
+      // rotate elements
+      columnA = [fixed, columnB.removeAt(0), ...columnA.sublist(1)];
+      columnB.add(columnA.removeLast());
+    }
+
+    print("bergerTableResponse");
+    print(bergerTableResponse);           
+
+    return bergerTableResponse;
+    
+  }
+
+
+
+
   
 
  

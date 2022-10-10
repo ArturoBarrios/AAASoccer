@@ -5,6 +5,7 @@ import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 import '../commands/event_command.dart';
+import '../models/events_model.dart';
 import '../commands/geolocation_command.dart';
 import 'package:geolocator/geolocator.dart';
 import '../graphql/mutations/games.dart';
@@ -67,13 +68,15 @@ Future<Map<String, dynamic>> createGame(Map<String, dynamic> gameInput, Map<Stri
           'query': GameMutations().createGame(gameInput, eventInput, locationInput),
         }),
       );
-
+      Map<String, dynamic> createdGame = jsonDecode(response.body)['data']['createGame'];
+      // EventsModel().games.add(createdGame);
       print("response body: ");
       print(jsonDecode(response.body));
         
-        createGameResponse["success"] = true;
-        createGameResponse["message"] = "Game Created";
-        createGameResponse["data"] = jsonDecode(response.body)['data']['createGame'];
+      createGameResponse["success"] = true;
+      createGameResponse["message"] = "Game Created";
+      createGameResponse["data"] = jsonDecode(response.body)['data']['createGame'];
+      await EventCommand().addGame(createdGame, true);
         
       
       return createGameResponse;
