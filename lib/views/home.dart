@@ -170,7 +170,7 @@ class _Home extends State<Home> {
 
         final List fetchedPosts = json.decode(res.body);
         if (fetchedPosts.isNotEmpty) {
-          setState(() {
+          setState(() {            
             getEventCards();
           });
         } else {
@@ -194,6 +194,7 @@ class _Home extends State<Home> {
 
   //can add filtering and sorting here
   List getEventCards() {
+    print("getEventCards");
       HomePageModel().enabledSelections.forEach((object) {
         print("valueeeee: " + object.toString()); 
         //if event enabled
@@ -290,7 +291,7 @@ class _Home extends State<Home> {
           Stack(children: <Widget>[
               Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
+                  children: [                    
                     Expanded(
                         child: Column(children: <Widget>[
                       Padding(

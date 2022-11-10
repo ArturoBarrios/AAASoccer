@@ -76,6 +76,7 @@ class BaseCommand {
     print("setupInitialAppModels");
     Map<String, dynamic> resp = {"success": false, "message": "setup unsuccessfull", "data": null};
     try{      
+      print("email used to getUser: " + email);
       Map<String, dynamic> getUserResp = await UserCommand().getUser(email);     
       if(getUserResp["success"] == true){
         print("getUserResp: ");

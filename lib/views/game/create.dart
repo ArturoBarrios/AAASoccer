@@ -48,17 +48,21 @@ class _GameCreateState extends State<GameCreate> {
       Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput, locationInput);      
       print("createPickupGameResp: ");
       print(createPickupGameResp['data']);
-      if (createPickupGameResp['success']) {
-        Map<String, dynamic> pickupGame = createPickupGameResp['data'];
-        Map<String, dynamic> event = pickupGame['event'];             
-        Navigator.pop(context);
+      // if (createPickupGameResp['success']) {
+      //   Map<String, dynamic> pickupGame = createPickupGameResp['data'];
+      //   Map<String, dynamic> event = pickupGame['event'];             
+      //   Navigator.pop(context);
        
-      }      
+      // }      
       return createPickupGameResponse;
     } on ApiException catch (e) {
 
       return createPickupGameResponse;
     }
+  }
+
+  void goBack(){
+    Navigator.pop(context);
   }
 
   @override
@@ -111,6 +115,11 @@ class _GameCreateState extends State<GameCreate> {
               createPickupGame();
             },
             child: Text("tap me")),
+        GestureDetector(
+            onTap: () {
+              goBack();
+            },
+            child: Text("Back to Home")),
       ])),
     );
   }

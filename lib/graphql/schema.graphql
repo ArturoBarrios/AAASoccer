@@ -91,6 +91,10 @@ type Player   {
 type Game   {
   hometeam: Team
   awayTeam: Team
+  teamA: String 
+  teamB: String
+  round: Int
+  gameNumber: Int
   homegoals: Int
   awaygoals: Int
   pickup: Boolean
@@ -195,8 +199,7 @@ type Sponsor {
   sponsoredTeams: [Team] @relation
 }
 
-type Wager   {
-  id: ID!
+type Wager   {  
   name: String
   amount: String
   players: [Player] @relation
@@ -206,8 +209,7 @@ type Wager   {
 }
 
 
-type Tryout   {
-  id: ID!
+type Tryout   {  
   game: String
   # event: Event
   events: [Event] @relation 
@@ -215,8 +217,7 @@ type Tryout   {
   # eligibleEventTypes: [EventType] @relation
 }
 
-type League   {
-  id: ID!
+type League   {  
   tournament: Tournament    
   # event: Event
   events: [Event] @relation

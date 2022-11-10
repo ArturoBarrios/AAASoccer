@@ -13,6 +13,9 @@ class TournamentSeeder {
       "data": null,
     };
 
+    List<dynamic> tournamentSizeOptions = [4,8,16,32];
+    
+
     return createTournamentRelationshipsResp;
   }
   

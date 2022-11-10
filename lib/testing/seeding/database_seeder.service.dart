@@ -30,27 +30,27 @@ class DatabaseSeeder {
     List<Map<String, dynamic>> players = [];
     List<Map<String, dynamic>> teams = [];
     //seed teams
-    Map<String, dynamic> createTeamsResponse = await TeamSeeder().createRandomTeams(data);
-    if(createTeamsResponse['success']){
-      teams = createTeamsResponse['data'];
-      print("create users for teams");
-      //create x users for each team      
-      for(int i = 0;i<teams.length;i++){
-        Map<String, dynamic> team = teams[i];           
-        print("yaiii");
-        print(team);
-        Map<String, dynamic> createPlayersPerTeamResponse = await UserSeeder().createRandomPlayersForTeam(data, team);
-          print("testtttttttt: ");
-          print(createPlayersPerTeamResponse);
-        if(createPlayersPerTeamResponse['success']){
-          players = createPlayersPerTeamResponse['data'];
-        }
+    // Map<String, dynamic> createTeamsResponse = await TeamSeeder().createRandomTeams(data);
+    // if(createTeamsResponse['success']){
+    //   teams = createTeamsResponse['data'];
+    //   print("create users for teams");
+    //   //create x users for each team      
+    //   for(int i = 0;i<teams.length;i++){
+    //     Map<String, dynamic> team = teams[i];           
+    //     print("yaiii");
+    //     print(team);
+    //     Map<String, dynamic> createPlayersPerTeamResponse = await UserSeeder().createRandomPlayersForTeam(data, team);
+    //       print("testtttttttt: ");
+    //       print(createPlayersPerTeamResponse);
+    //     if(createPlayersPerTeamResponse['success']){
+    //       players = createPlayersPerTeamResponse['data'];
+    //     }
         
-      }
+    //   }
 
-    }    
-    data['players'] = players;
-    data['teams'] = teams;
+    // }    
+    // data['players'] = players;
+    // data['teams'] = teams;
     Map<String, dynamic> createEventsResp = await EventSeeder().createEvents(data);
     
     print("finished Seeding DatabaseSeeder");

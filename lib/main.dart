@@ -29,6 +29,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
+import '../components/bottom_nav.dart';
 
 
 void main() async {
@@ -550,7 +551,9 @@ class AppScaffold extends StatelessWidget {
             width: double.infinity,
             child:Align(
               alignment: Alignment.center,
-              child: LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
+              child: 
+              // BottomNav()//for times when user deleted in cognito but still signed into app
+              LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
             )
           ) 
           : Home(),

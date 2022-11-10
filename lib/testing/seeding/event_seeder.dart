@@ -26,45 +26,45 @@ class EventSeeder {
     };
     
     //pickup games
-    for(int i = 0; i<data['numberOfPickupGames']; i++){
-      Map<String, dynamic> randomPickupData = getRandomPickupGameData();
-      var rng = Random();
-      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
-      print("locationInputCheck: " + locationInput.toString());                                  
-      Map<String, dynamic> eventInput = {
-        "name": "Pickup Game " + i.toString(),
-        'isMainEvent': true,        
-      };
-      Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput, locationInput);      
+    // for(int i = 0; i<data['numberOfPickupGames']; i++){
+    //   Map<String, dynamic> randomPickupData = getRandomPickupGameData();
+    //   var rng = Random();
+    //   Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+    //   Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+    //   print("locationInputCheck: " + locationInput.toString());                                  
+    //   Map<String, dynamic> eventInput = {
+    //     "name": "Pickup Game " + i.toString(),
+    //     'isMainEvent': true,        
+    //   };
+    //   Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput, locationInput);      
       
-      if(createPickupGameResp['success']){
-        Map<String, dynamic> pickupGame = createPickupGameResp['data'];
-        Map<String, dynamic> event = pickupGame['event'];        
-        await EventSeeder().createEventRelationships(data, event);
-      }    
-    }  
+    //   if(createPickupGameResp['success']){
+    //     Map<String, dynamic> pickupGame = createPickupGameResp['data'];
+    //     Map<String, dynamic> event = pickupGame['event'];        
+    //     await EventSeeder().createEventRelationships(data, event);
+    //   }    
+    // }  
     
-    // Training Sessions
-    for(int i = 0; i<data['numberOfTrainingSessions']; i++){
-      Map<String, dynamic> randomTraniningData = getRandomTrainingData();      
-      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
-      Map<String, dynamic> eventInput = {
-        "name": "Training Session " + i.toString(),
-        'isMainEvent': true,        
-      };
-      Map<String, dynamic> trainingInput = {
+    // // Training Sessions
+    // for(int i = 0; i<data['numberOfTrainingSessions']; i++){
+    //   Map<String, dynamic> randomTraniningData = getRandomTrainingData();      
+    //   Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+    //   Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+    //   Map<String, dynamic> eventInput = {
+    //     "name": "Training Session " + i.toString(),
+    //     'isMainEvent': true,        
+    //   };
+    //   Map<String, dynamic> trainingInput = {
         
-      };
-      Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(trainingInput, eventInput, locationInput);
-      if(createTrainingResp['success']){
-        Map<String, dynamic> training = createTrainingResp['data'];
-        Map<String, dynamic> event = training['event'];
-        await EventSeeder().createEventRelationships(data, event);
-      }
+    //   };
+    //   Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(trainingInput, eventInput, locationInput);
+    //   if(createTrainingResp['success']){
+    //     Map<String, dynamic> training = createTrainingResp['data'];
+    //     Map<String, dynamic> event = training['event'];
+    //     await EventSeeder().createEventRelationships(data, event);
+    //   }
 
-    }
+    // }
     //tournaments
      
     // for(int i = 0;i<data['numberOfTournaments'];i++){
@@ -80,16 +80,16 @@ class EventSeeder {
     //     TournamentSeeder().createTournamentRelationships();
     //   }
     // }
-    // //leagues
-    // for(int i = 0;i<data['numberOfLeagues'];i++){
-    //   Map<String, dynamic> randomLeagueData = getRandomLeagueData();
-    //     Map<String, dynamic> locationResult = await createRandomLocation();
-    //   Map<String, dynamic> eventInput = {
-    //     "name": "League " + i.toString(),
-    //     'isMainEvent': true,        
-    //     "location": locationResult,
-    //   };
-    //   Map<String, dynamic> createLeagueResp = await LeagueCommand().createLeague(randomLeagueData, eventInput);
+    //leagues
+    for(int i = 0;i<data['numberOfLeagues'];i++){
+      Map<String, dynamic> leagueInput = getRandomLeagueData();
+      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      Map<String, dynamic> eventInput = {
+        "name": "League " + i.toString(),
+        'isMainEvent': true,                
+      };      
+      Map<String, dynamic> createLeagueResp = await LeagueCommand().createLeague(leagueInput, eventInput, locationInput);
     //   if(randomLeagueData['hasTournament']){
     //     //add tournament to league here?
     //   }
@@ -99,7 +99,7 @@ class EventSeeder {
     //     //even as the league is going on
     //     LeagueSeeder().createLeagueRelationships();
     //   }
-    // }
+    }
 
     createEventsResponse["success"] = true;
 
@@ -169,6 +169,19 @@ class EventSeeder {
     return randomPickupGameData;
   }
 
+  Map<String, dynamic> getRandomNonPickupGameData() {
+    Map<String, dynamic> randomPickupGameData = {};
+    var rng = Random();
+    int randomLocationNumber = rng.nextInt(100000000);
+    
+
+    randomPickupGameData["pickup"] =
+        false;
+    
+
+    return randomPickupGameData;
+  }
+
   Map<String, dynamic> getRandomTrainingData(){
     Map<String, dynamic> randomTrainingData = {};
     var rng = Random();
@@ -197,10 +210,6 @@ class EventSeeder {
     Map<String, dynamic> randomLeagueData = {};
     var rng = Random();
     int randomLocationNumber = rng.nextInt(100000000);
-    
-
-    randomLeagueData["name"] = "League " + randomLocationNumber.toString();
-    randomLeagueData["hasTournament"] = rng.nextBool();
     
 
     return randomLeagueData;
