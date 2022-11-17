@@ -2,6 +2,8 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/team_command.dart';
+import '../../testing/seeding/team_seeder.dart';
+import '../../testing/seeding/location_seeder.dart';
 
 class TeamCreate extends StatefulWidget {
   @override
@@ -24,6 +26,10 @@ class _TeamCreateState extends State<TeamCreate> {
       "message": "Default Error"
     };
     try {
+      Map<String, dynamic> randomPickupData = TeamSeeder().getRandomTeamData();      
+      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      print("locationInputCheck: " + locationInput.toString());                                  
      
       
         Map<String, dynamic> createTeamInput = {
@@ -36,7 +42,7 @@ class _TeamCreateState extends State<TeamCreate> {
           
         };
         Map<String, dynamic> createdTeam = {"success": false};
-            // await TeamCommand().createTeam(createTeamInput);
+            await TeamCommand().createTeam(createTeamInput, locationInput);
 
         if (createdTeam['success']) {
           createEventResponse['success'] = true;

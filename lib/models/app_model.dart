@@ -55,5 +55,18 @@ class AppModel extends ChangeNotifier {
     _isSignedIn = isSignedIn;
     notifyListeners();
   }
-  // Eventually other stuff would go here, appSettings, premiumUser flags, currentTheme, etc...
+
+  List _players = [];
+  List get players => _players;
+  set players(List players) {
+    _players = players;
+    notifyListeners();
+  }
+
+  List _teams = [];
+  List get teams => _teams;
+  set teams(List teams) {
+    _teams = teams;
+    notifyListeners();
+  }
 }

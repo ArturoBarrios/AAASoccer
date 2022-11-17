@@ -111,6 +111,34 @@ Future<Map<String, dynamic>> createGame(Map<String, dynamic> gameInput, Map<Stri
     return addPlayerToGameResponse;
   }
 
+  Future<Map<String,dynamic>> deleteGame(String eventId, String gameId) async{
+    print("deleteGame");
+    Map<String, dynamic> deleteGameResponse = {"success": false, "message": "Default Error", "data": null};
+    http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': GameMutations().deleteGame(gameId),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      deleteGameResponse["success"] = true;
+      deleteGameResponse["message"] = "Game Deleted";
+      deleteGameResponse["data"] = jsonDecode(response.body)['data']['deleteGame'];
+      await EventCommand().deleteGame(jsonDecode(response.body), true);
+
+
+
+    return deleteGameResponse;
+    
+  }
+
 
 
   

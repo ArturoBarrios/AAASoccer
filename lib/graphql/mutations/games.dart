@@ -1,5 +1,6 @@
-class GameMutations{
-  String createGame(Map<String, dynamic> gameInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput) {
+class GameMutations {
+  String createGame(Map<String, dynamic> gameInput,
+      Map<String, dynamic> eventInput, Map<String, dynamic> locationInput) {
     String createGame = """
       mutation {
         createGame(data: {
@@ -8,12 +9,12 @@ class GameMutations{
             create: 
             {
               name: "${eventInput['name']}",
-              isMainEvent: ${eventInput ['isMainEvent']},
+              isMainEvent: ${eventInput['isMainEvent']},
               location: {
                 create: 
                 {
                   latitude: ${locationInput['latitude']},
-                  longitude: ${locationInput ['longitude']},
+                  longitude: ${locationInput['longitude']},
                 }
               }
             }
@@ -49,11 +50,9 @@ class GameMutations{
             players:{
               connect:[
                 ${playerInput['_id']}
-              ]
-              
+              ]              
             }
-          }
-                      
+          }                      
         ){
             _id
     				pickup            
@@ -72,11 +71,34 @@ class GameMutations{
                   	_id
                     
               }
-            }
-            
-                  
-            
-            
+            }   
+  }
+}
+        """;
+
+    return addPlayerToGame;
+  }
+
+  String deleteGame(
+      String _id) {
+    String addPlayerToGame = """      
+      mutation {
+        deleteGame(id: ${_id},
+  				                  
+        ){
+            _id
+    				pickup            
+            event{
+              _id
+              location{
+                data{
+                  _id
+                  latitude
+                  longitude
+                }
+              }
+            } 
+    			  
   }
 }
         """;

@@ -4,6 +4,7 @@ import 'event_command.dart';
 import '../models/home_page_model.dart';
 import '../models/events_model.dart';
 import 'package:flutter/foundation.dart';
+import '../constants.dart';
 
 
 class HomePageCommand extends BaseCommand {
@@ -56,22 +57,36 @@ class HomePageCommand extends BaseCommand {
     // find key from homePageModel.enabledEvents where enabled is true
     
     // HomePageModel.enabledEvents
-    switch(homePageModel.selectedKey){
-      case "0":
+    // if(Constants.LEAGUE=="kjkj")
+    
+      if(homePageModel.selectedKey==Constants.LEAGUE){
         print("check games: ");
         print(eventsModel.games);
         homePageModel.selectedObjects = eventsModel.games;
-        break;
-      case "6":
-      print("niceeeee");
+      }
+      else if(homePageModel.selectedKey==Constants.TEAM){
+        print("check teams: ");
+        print(appModel.teams);
+        homePageModel.selectedObjects = appModel.teams;      
+      }
+      else if(homePageModel.selectedKey==Constants.PLAYER){
+        print("check players: ");
+        print(appModel.players);
+        homePageModel.selectedObjects = appModel.players;
+      }      
+      else if(homePageModel.selectedKey==Constants.TRAINING){
+        print("check training: ");
+        print(eventsModel.trainings);
         homePageModel.selectedObjects = eventsModel.trainings;
+      }
+      
+      
 
-        break;      
-      default:
-        // homePageModel.selectedEvents = EventsModel().games;
-        break;
+      
+      
+      
     }    
-  }
+  
 
   
 }

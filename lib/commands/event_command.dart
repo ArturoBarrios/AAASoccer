@@ -176,12 +176,6 @@ class EventCommand extends BaseCommand {
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
     homePageModel.selectedObjects = List.from(eventsModel.games);    
-
-    // homePageModel.selectedObjects.add(game);
-    //update homepagemodel
-    // homePageModel.selectedObjects = eventsModel.games;
-    // print("length of selectedObjects after setting to games: ");
-    // print(homePageModel.selectedObjects.length);
     
     
     
@@ -193,6 +187,31 @@ class EventCommand extends BaseCommand {
 
   }
   
+  Future<Map<String, dynamic>>deleteGame(Map<String, dynamic> game, bool updateViewModelsBool) async{
+    Map<String,dynamic> deleteGameResp = {"success": false, "message": "Default Error", "data": []};
+    print("length of games before deleting game: ");
+    print(eventsModel.games.length);    
+    var i = 0;
+    var found = false;
+    while(i < eventsModel.games.length-1 && !found){
+      if(eventsModel.games[i]['id'] == game['id']){
+        var removed = eventsModel.games.removeAt(i);        
+        print("removedGameObject: ");
+        print(removed);
+        found = true;
+      }            
+      i+=1;
+    }
+    print("length of games after deleting game: ");
+    print(eventsModel.games.length);    
+    print("updateViewModelsBool: ");
+    print(updateViewModelsBool);
+    if(updateViewModelsBool)
+      await updateViewModelsWithGame(game);
+
+    return deleteGameResp;
+  }
+
   Future<Map<String, dynamic>>addGame(Map<String, dynamic> game, bool updateViewModelsBool) async{
     Map<String,dynamic> addGameResp = {"success": false, "message": "Default Error", "data": []};
     print("length of games before adding game: ");

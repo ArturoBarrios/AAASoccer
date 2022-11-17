@@ -9,7 +9,7 @@ import '../services/amplify_auth_service.dart' as AmplifyAuth;
 import '../components/bottom_nav.dart';
 import '../components/select_icon_button.dart';
 import '../components/search_field.dart';
-import '../components/animated_dialogue.dart';
+import '../components/Dialogues/animated_dialogue.dart';
 import '../components/profile.dart';
 import '../components/header.dart';
 //card widgets
@@ -27,6 +27,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../strings.dart';
 import '../models/events_model.dart';
+import '../components/Dialogues/dialogue_scale.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -239,12 +240,6 @@ class _Home extends State<Home> {
        
     Map<String, dynamic> enabledSelections2 = context
         .select<HomePageModel, Map<String, dynamic>>((value) => value.enabledSelections2);
-
-    //track selection 'enabled' state
-    for(var i = 0;i<HomePageModel().enabledSelections.length;i++){
-      context.select<HomePageModel, bool>((value) => value.enabledSelections[i]['enabled']);
-
-    }
     
     context
         .select<EventsModel, List<dynamic>>((value) => value.games);
@@ -253,6 +248,8 @@ class _Home extends State<Home> {
       context.select<HomePageModel, bool>((value) => value.enabledSelections2[k]['enabled'])
       
     });
+
+    Map<String, dynamic> createEventTypes = HomePageModel().createEventTypes;
 
   print("selectedObjects: " + selectedObjects.toString());
     String testText =
@@ -329,7 +326,8 @@ class _Home extends State<Home> {
                                     eventObject: selectedObjects[index],
                                     svgImage: svgImage),
                               )),
-                    ),
+                    ),                   
+                    
 
                     // when the _loadMore function is running
                     // if (_isLoadMoreRunning == true)

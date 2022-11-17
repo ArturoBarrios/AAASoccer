@@ -59,6 +59,7 @@ type User  {
   email: String!
   username: String!
   birthdate: String!
+  friends: [User]
   gender: GenderType
   location: Location
   player: Player
