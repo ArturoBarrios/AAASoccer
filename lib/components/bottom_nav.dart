@@ -33,7 +33,7 @@ class BottomNav extends StatefulWidget {
 
 class _BottomNav extends State<BottomNav> {
   final orangeColor = const Color(0xffFF8527);
-  int selectedIndex = 0;
+  
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
@@ -86,6 +86,7 @@ class _BottomNav extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
+    int selectIndex = 0;
     String testText = "test";
     return BottomAppBar(
       color: Colors.white,
@@ -112,16 +113,18 @@ class _BottomNav extends State<BottomNav> {
                   icon: Icons.add_outlined,
                   selected: false,                  
                   onPressed: () async {
-                     testFunction();
+                    //  testFunction();
                     int? index = await showAnimatedDialog<int>(
                       context: context,
                       barrierDismissible: true,
                       builder: (BuildContext context) {
                         return ClassicListDialogWidget<dynamic>(
-                            selectedIndex: selectedIndex,
+                            selectedIndex: selectIndex,
                             titleText: 'Title',
                             listType: ListType.singleSelect,
-                            onPositiveClick: () {},
+                            onPositiveClick: () {
+                              print("onPositiveClick: "+ selectIndex.toString());
+                            },
                             activeColor: Colors.green,
                             dataList: 
                             // ['1', '2', '3', '4']
@@ -139,7 +142,7 @@ class _BottomNav extends State<BottomNav> {
                     );
                     // selectIndex = index ?? selectIndex;
 
-                print('selectedIndex:$index');
+                print('selectIndex:$index');
                 // setState(() {
                 //   this.singleSelectedIndexText = '${selectIndex ?? ''}';
                 // });

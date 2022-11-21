@@ -10,8 +10,46 @@ import '../models/app_model.dart';
 import '../graphql/mutations/players.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../commands/geolocation_command.dart';
+import 'package:geolocator/geolocator.dart';
+import '../graphql/queries/players.dart';
 
 class PlayerCommand extends BaseCommand {
+
+   Future<Map<String, dynamic>> getPlayersNearLocation() async{
+      print("getGamesNearLocation");
+    Map<String, dynamic> getTrainingsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
+    try{
+      print("my position");
+      Position myPosition = await GeoLocationCommand().determinePosition();
+      http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': UserQueries().getPlayers(),
+          }),
+        );
+
+        print("response body: ");
+        print(jsonDecode(response.body));
+
+
+      final result = jsonDecode(response.body)['data']['allPlayers']['data'];
+      getTrainingsNearLocationResp["success"] = true;
+      getTrainingsNearLocationResp["message"] = "Games Retrieved";
+      getTrainingsNearLocationResp["data"] = result;
+      
+    } on Exception catch (e) {
+      print('Mutation failed: $e');  
+    }
+
+    return getTrainingsNearLocationResp;
+
+  }
+
   Future<Map<String, dynamic>> createPlayer(Map<String, dynamic> userInput,
       Map<String, dynamic> playerInput, Map<String, dynamic> locationInput, bool withTeam) async {
     print("createPlayer");

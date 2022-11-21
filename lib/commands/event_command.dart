@@ -3,11 +3,14 @@ import 'package:soccermadeeasy/models/events_model.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/Event.dart';
+import '../models/app_model.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 import '../commands/game_command.dart';
+import '../commands/player_command.dart';
+import '../commands/team_command.dart';
 import '../commands/training_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
@@ -139,7 +142,7 @@ class EventCommand extends BaseCommand {
   }
 
 
-
+  //setupSelections() should be function name
   Future<Map<String, dynamic>> setupEvents() async{
     print("setupEvents()");
     Map<String,dynamic> setupEventsResp = {"success": false, "message": "Default Error", "data": []};
@@ -160,6 +163,27 @@ class EventCommand extends BaseCommand {
       print(trainings);
       eventsModel.trainings = trainings;            
     }
+    Map<String, dynamic> getPlayersNearLocationResp = await PlayerCommand().getPlayersNearLocation();
+    if(getPlayersNearLocationResp['success']){
+      List<dynamic> players = getPlayersNearLocationResp['data'];
+      print("players: ");
+      print(players);
+      appModel.players = players;            
+    }
+    Map<String, dynamic> getTeamsNearLocationResp = await TeamCommand().getTeamsNearLocation();
+    if(getTeamsNearLocationResp['success']){
+      List<dynamic> teams = getTeamsNearLocationResp['data'];
+      print("teams: ");
+      print(teams);
+      appModel.teams = teams;            
+    }
+    // Map<String, dynamic> getTrainingsNearLocationResp = await TrainingCommand().getTrainingsNearLocation();
+    // if(getTrainingsNearLocationResp['success']){
+    //   List<dynamic> trainings = getTrainingsNearLocationResp['data'];
+    //   print("trainings: ");
+    //   print(trainings);
+    //   eventsModel.trainings = trainings;            
+    // }
 
 
     

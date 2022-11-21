@@ -98,6 +98,7 @@ class BaseCommand {
             // homePageModel.selectedObjects = games;  
             // eventsModel.games = games;    
             await EventCommand().setupEvents();
+            
             print("Setup Events");
             // 
           // }

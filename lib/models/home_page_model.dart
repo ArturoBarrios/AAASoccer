@@ -50,7 +50,7 @@ class HomePageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _selectedKey = "0";
+  String _selectedKey = Constants.PICKUP;
   String get selectedKey => _selectedKey;
   set selectedKey(String selectedKey){
     _selectedKey = selectedKey;
@@ -180,73 +180,73 @@ class HomePageModel extends ChangeNotifier {
   
 
 
-  List _enabledSelections = [
-    {
-      "key": 0,
-      "enabled": true,
-      "name": StringConstants.PICKUPGAMESTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+  // List _enabledSelections = [
+  //   {
+  //     "key": Constants.PICKUP,
+  //     "enabled": true,
+  //     "name": StringConstants.PICKUPGAMESTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
       
-    },
-    //include past events, sort by most current
-    //that way past events are always last
-    {
-      "key": 7,
-      "enabled": true,
-      "name": StringConstants.MYEVENTS,
-      "description": "My Events",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //   //include past events, sort by most current
+  //   //that way past events are always last
+  //   {
+  //     "key": Constants.PICKUP,
+  //     "enabled": true,
+  //     "name": StringConstants.MYEVENTS,
+  //     "description": "My Events",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
       
-    },
-    {
-      "key": 6,
-      "enabled": false,
-      "name": StringConstants.TRAININGSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-     {
-      "key": 1,
-      "enabled": false,
-      "name": StringConstants.PLAYERSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-     {
-      "key": 2,
-      "enabled": false,
-      "name": StringConstants.TEAMSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-    {
-      "key": 3,
-      "enabled": false,
-      "name": StringConstants.TRYOUTSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-    {
-      "key": 4,
-      "enabled": false,
-      "name": StringConstants.TOURNAMENTSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-    {
-      "key": 5,
-      "enabled": false,
-      "name": StringConstants.LEAGUESTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-  ];
-  List get enabledSelections => _enabledSelections;
-  set enabledSelections(List enabledSelections){
-    _enabledSelections = enabledSelections;    
-    notifyListeners();
-  }
+  //   },
+  //   {
+  //     "key": Constants.PICKUP,
+  //     "enabled": false,
+  //     "name": StringConstants.TRAININGSTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //    {
+  //     "key": Constants.PICKUP,
+  //     "enabled": false,
+  //     "name": StringConstants.PLAYERSTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //    {
+  //     "key": Constants.PICKUP,
+  //     "enabled": false,
+  //     "name": StringConstants.TEAMSTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //   {
+  //     "key": Constants.PICKUP,
+  //     "enabled": false,
+  //     "name": StringConstants.TRYOUTSTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //   {
+  //     "key": Constants.PICKUP,
+  //     "enabled": false,
+  //     "name": StringConstants.TOURNAMENTSTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  //   {
+  //     "key": Constants.PICKUP,
+  //     "enabled": false,
+  //     "name": StringConstants.LEAGUESTITLE,
+  //     "description": "",
+  //     "image": SVGWidgets().getSoccerBallSVGImage(),
+  //   },
+  // ];
+  // List get enabledSelections => _enabledSelections;
+  // set enabledSelections(List enabledSelections){
+  //   _enabledSelections = enabledSelections;    
+  //   notifyListeners();
+  // }
 
   List _selectedObjects = [];
   List get selectedObjects => _selectedObjects;

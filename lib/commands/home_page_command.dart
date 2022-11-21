@@ -59,7 +59,7 @@ class HomePageCommand extends BaseCommand {
     // HomePageModel.enabledEvents
     // if(Constants.LEAGUE=="kjkj")
     
-      if(homePageModel.selectedKey==Constants.LEAGUE){
+      if(homePageModel.selectedKey==Constants.PICKUP){
         print("check games: ");
         print(eventsModel.games);
         homePageModel.selectedObjects = eventsModel.games;

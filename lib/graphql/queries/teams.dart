@@ -1,8 +1,8 @@
-class UserQueries {
-  String getPlayer(String id)
+class TeamQueries {
+  String getTeam(String id)
    {
-      String getPlayer = """
-        query getPlayer {
+      String getTeam = """
+        query getTeam {
           findPlayer(id: $id) {
             data {      
               _id              
@@ -20,30 +20,28 @@ class UserQueries {
         }
       """;
 
-      return getPlayer;
+      return getTeam;
    }
 
-    String getPlayers()
+    String getTeams()
     {
-        String getPlayers = """
-          query getPlayers {
-            allPlayers {
+        String getTeams = """
+          query getTeams {
+            allTeams {
               data {      
-                _id              
-                user{
-                    name        
-                    age	
-                    phone
-                    email
-                    username
-                    birthdate
+                _id 
+                name                             
+                players{
+                  data{
+                    _id
+                    }
                     }
                   }
                 }
               }
           """;
 
-          return getPlayers;
+          return getTeams;
 
     }
 
