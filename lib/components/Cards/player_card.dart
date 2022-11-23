@@ -4,7 +4,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../commands/game_command.dart';
+import '../../models/app_model.dart';
+import '../../commands/user_command.dart';
 import '../../views/player/view.dart';
 
 class PlayerCard extends StatefulWidget {
@@ -23,20 +24,20 @@ void playerClicked() {
   print("Player Clicked");
 }
 
-Future<Map<String, dynamic>> deletePlayer(dynamic gameObject) async {
-  print("deletePlayer for gameobject: $gameObject");
-  Map<String, dynamic> deletePlayerResp = {
+Future<Map<String, dynamic>> addPlayer(dynamic friendObject) async {
+  print("addPlayer for friendObject: $friendObject");
+  Map<String, dynamic> addPlayerResp = {
     "success": false,
-    "message": "Player deleted successfully"
+    "message": "Player added successfully"
   };
-  Map<String, dynamic> deletePlayerResponse = await GameCommand()
-      .deleteGame(gameObject["user"]["_id"], gameObject["_id"]);
-  print("deletePlayerResponse: $deletePlayerResponse");
-  if (deletePlayerResponse["success"]) {
-    deletePlayerResp["success"] = true;
+  Map<String, dynamic> addPlayerResponse = await UserCommand()
+      .sendFriendRequest(AppModel().currentUser['_id'], friendObject["user"]["_id"]);
+  print("addPlayerResponse: $addPlayerResponse");
+  if (addPlayerResponse["success"]) {
+    addPlayerResp["success"] = true;
   }
 
-  return deletePlayerResp;
+  return addPlayerResp;
 }
 
 class _PlayerCard extends State<PlayerCard> {
@@ -114,6 +115,7 @@ class _PlayerCard extends State<PlayerCard> {
                       titleText: 'Are you sure you want to delete this player?',
                       contentText: '',
                       onPositiveClick: () {
+                        addPlayer(widget.playerObject);
                        
                       },
                       onNegativeClick: () {

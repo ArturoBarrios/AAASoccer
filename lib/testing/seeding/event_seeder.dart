@@ -4,6 +4,7 @@ import 'dart:math';
 import '../../commands/location_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/training_command.dart';
+import '../../commands/tryout_command.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/league_command.dart';
 import '../../commands/game_command.dart';
@@ -45,7 +46,7 @@ class EventSeeder {
     //   }    
     // }  
     
-    // // Training Sessions
+    // Training Sessions
     // for(int i = 0; i<data['numberOfTrainingSessions']; i++){
     //   Map<String, dynamic> randomTraniningData = getRandomTrainingData();      
     //   Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
@@ -64,7 +65,28 @@ class EventSeeder {
     //     await EventSeeder().createEventRelationships(data, event);
     //   }
 
-    // }
+    //Tryouts
+    for(int i = 0; i<data['numberOfTryouts']; i++){
+      Map<String, dynamic> randomTryoutData = getRandomTryoutData();      
+      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      Map<String, dynamic> eventInput = {
+        "name": "Tryout Session " + i.toString(),
+        'isMainEvent': true,        
+      };
+      Map<String, dynamic> tryoutInput = {
+        
+      };
+      Map<String, dynamic> createTryoutResp = await TryoutCommand().createTryout(tryoutInput, eventInput, locationInput);
+      if(createTryoutResp['success']){
+        Map<String, dynamic> tryout = createTryoutResp['data'];
+        Map<String, dynamic> event = tryout['event'];
+        await EventSeeder().createEventRelationships(data, event);
+      }
+
+    }
+
+
     //tournaments
      
     // for(int i = 0;i<data['numberOfTournaments'];i++){
@@ -81,15 +103,15 @@ class EventSeeder {
     //   }
     // }
     //leagues
-    for(int i = 0;i<data['numberOfLeagues'];i++){
-      Map<String, dynamic> leagueInput = getRandomLeagueData();
-      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
-      Map<String, dynamic> eventInput = {
-        "name": "League " + i.toString(),
-        'isMainEvent': true,                
-      };      
-      Map<String, dynamic> createLeagueResp = await LeagueCommand().createLeague(leagueInput, eventInput, locationInput);
+    // for(int i = 0;i<data['numberOfLeagues'];i++){
+    //   Map<String, dynamic> leagueInput = getRandomLeagueData();
+    //   Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+    //   Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+    //   Map<String, dynamic> eventInput = {
+    //     "name": "League " + i.toString(),
+    //     'isMainEvent': true,                
+    //   };      
+    //   Map<String, dynamic> createLeagueResp = await LeagueCommand().createLeague(leagueInput, eventInput, locationInput);
     //   if(randomLeagueData['hasTournament']){
     //     //add tournament to league here?
     //   }
@@ -99,7 +121,7 @@ class EventSeeder {
     //     //even as the league is going on
     //     LeagueSeeder().createLeagueRelationships();
     //   }
-    }
+    // }
 
     createEventsResponse["success"] = true;
 
@@ -192,6 +214,18 @@ class EventSeeder {
     
 
     return randomTrainingData;
+  }
+
+  Map<String, dynamic> getRandomTryoutData(){
+    Map<String, dynamic> randomTryoutData = {};
+    var rng = Random();
+    int randomLocationNumber = rng.nextInt(100000000);
+    
+
+    randomTryoutData["name"] = "Tryout Session " + randomLocationNumber.toString();
+    
+
+    return randomTryoutData;
   }
 
   Map<String, dynamic> getRandomTournamentData(){

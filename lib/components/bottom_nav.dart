@@ -113,36 +113,36 @@ class _BottomNav extends State<BottomNav> {
                   icon: Icons.add_outlined,
                   selected: false,                  
                   onPressed: () async {
-                    //  testFunction();
-                    int? index = await showAnimatedDialog<int>(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return ClassicListDialogWidget<dynamic>(
-                            selectedIndex: selectIndex,
-                            titleText: 'Title',
-                            listType: ListType.singleSelect,
-                            onPositiveClick: () {
-                              print("onPositiveClick: "+ selectIndex.toString());
-                            },
-                            activeColor: Colors.green,
-                            dataList: 
-                            // ['1', '2', '3', '4']
-                            List.generate(
-                        20,
-                        (index) {
-                          return index;
-                        },
-                      ),
+                     testFunction();
+                //     int? index = await showAnimatedDialog<int>(
+                //       context: context,
+                //       barrierDismissible: true,
+                //       builder: (BuildContext context) {
+                //         return ClassicListDialogWidget<dynamic>(
+                //             selectedIndex: selectIndex,
+                //             titleText: 'Title',
+                //             listType: ListType.singleSelect,
+                //             onPositiveClick: () {
+                //               print("onPositiveClick: "+ selectIndex.toString());
+                //             },
+                //             activeColor: Colors.green,
+                //             dataList: 
+                //             // ['1', '2', '3', '4']
+                //             List.generate(
+                //         20,
+                //         (index) {
+                //           return index;
+                //         },
+                //       ),
                             
-                            );
-                      },
-                      animationType: DialogTransitionType.size,
-                      curve: Curves.linear,
-                    );
-                    // selectIndex = index ?? selectIndex;
+                //             );
+                //       },
+                //       animationType: DialogTransitionType.size,
+                //       curve: Curves.linear,
+                //     );
+                    
 
-                print('selectIndex:$index');
+                // print('selectIndex:$index');
                 // setState(() {
                 //   this.singleSelectedIndexText = '${selectIndex ?? ''}';
                 // });

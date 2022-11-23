@@ -54,6 +54,7 @@ dependencies:
   flutter_svg_provider: ^1.0.3
   http: ^0.13.5
   flutter_animated_dialog: ^2.0.1
+  flutter_stripe: ^7.0.0
   
   
 

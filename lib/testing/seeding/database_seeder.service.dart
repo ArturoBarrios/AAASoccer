@@ -49,8 +49,8 @@ class DatabaseSeeder {
       }
 
     }    
-    // data['players'] = players;
-    // data['teams'] = teams;
+    data['players'] = players;
+    data['teams'] = teams;
     Map<String, dynamic> createEventsResp = await EventSeeder().createEvents(data);
     
     print("finished Seeding DatabaseSeeder");
