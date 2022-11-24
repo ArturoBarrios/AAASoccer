@@ -125,11 +125,23 @@ class UserCommand extends BaseCommand {
       
       sendFriendRequestResponse["success"] = true;
       sendFriendRequestResponse["message"] = "Player for Team Created";      
-      sendFriendRequestResponse["data"] = jsonDecode(response.body)['data']['updatePlayer'];
+      sendFriendRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];
     
       
     } catch (e) {}
     return sendFriendRequestResponse;
+  }
+
+  Future<Map<String, dynamic>> updateFriendRequest() async{
+     Map<String, dynamic> updateFriendRequestResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    
+
+    return updateFriendRequestResponse;
+    
   }
 
   Future<Map<String, dynamic>> getUser(String email) async {

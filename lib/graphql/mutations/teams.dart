@@ -27,4 +27,45 @@ class TeamMutations {
 
     return createTeam;
   }
+
+  String sendTeamRequest(
+      Map<String, dynamic> senderInput, Map<String, dynamic> teamInput) {
+      String createTeamRequest = """
+      mutation {
+        CreateFriendRequest(data: {    
+          requestAttempts: 1, 
+          team: {
+            connect: 
+            {
+              _id: "${teamInput['_id']}"
+            }
+          },  
+          from: {
+            connect: 
+            {
+              _id: "${senderInput['_id']}"
+            }
+          }                       
+          }) {
+            _id
+            status
+            requestAttempts
+            team{
+              data{
+                _id
+                name
+              }
+            }   
+            from{
+              data{
+                _id
+                name
+              }
+            }            
+          }   
+        }
+        """;
+
+    return createTeamRequest;
+    }
 }

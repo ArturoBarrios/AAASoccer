@@ -52,6 +52,38 @@ class EventCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> sendEventRequest(Map<String, dynamic> userInput, Map<String, dynamic> receiverInput  ) async{
+    print("sendEventRequest");
+    Map<String, dynamic> sendEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
+    try {      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations().sendEventRequest(userInput, receiverInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      sendEventRequestResponse["success"] = true;
+      sendEventRequestResponse["message"] = "Player for Team Created";      
+      sendEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];
+    
+      
+    } catch (e) {}
+
+    return sendEventRequestResponse;
+  }
+
+  
+
    Future<Map<String, dynamic>> addPlayerToEvent(Map<String, dynamic> eventInput, Map<String, dynamic> playerInput ) async{
     print("addPlayerToEvent");
     Map<String, dynamic> addPlayerToEventResponse = {"success": false, "message": "Default Error", "data": null};
