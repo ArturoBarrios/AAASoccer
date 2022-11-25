@@ -66,25 +66,25 @@ class EventSeeder {
     //   }
 
     //Tryouts
-    for(int i = 0; i<data['numberOfTryouts']; i++){
-      Map<String, dynamic> randomTryoutData = getRandomTryoutData();      
-      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
-      Map<String, dynamic> eventInput = {
-        "name": "Tryout Session " + i.toString(),
-        'isMainEvent': true,        
-      };
-      Map<String, dynamic> tryoutInput = {
+    // for(int i = 0; i<data['numberOfTryouts']; i++){
+    //   Map<String, dynamic> randomTryoutData = getRandomTryoutData();      
+    //   Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+    //   Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+    //   Map<String, dynamic> eventInput = {
+    //     "name": "Tryout Session " + i.toString(),
+    //     'isMainEvent': true,        
+    //   };
+    //   Map<String, dynamic> tryoutInput = {
         
-      };
-      Map<String, dynamic> createTryoutResp = await TryoutCommand().createTryout(tryoutInput, eventInput, locationInput);
-      if(createTryoutResp['success']){
-        Map<String, dynamic> tryout = createTryoutResp['data'];
-        Map<String, dynamic> event = tryout['event'];
-        await EventSeeder().createEventRelationships(data, event);
-      }
+    //   };
+    //   Map<String, dynamic> createTryoutResp = await TryoutCommand().createTryout(tryoutInput, eventInput, locationInput);
+    //   if(createTryoutResp['success']){
+    //     Map<String, dynamic> tryout = createTryoutResp['data'];
+    //     Map<String, dynamic> event = tryout['event'];
+    //     await EventSeeder().createEventRelationships(data, event);
+    //   }
 
-    }
+    // }
 
 
     //tournaments

@@ -2,21 +2,20 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
-    "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "soccercc0f4736",
-    "userPoolName": "soccerappnew",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "aaasoc05802647",
+    "userPoolName": "AAASoccer",
     "autoVerifiedAttributes": [
-      "phone_number"
+      "email"
     ],
-    "mfaConfiguration": "OPTIONAL",
+    "mfaConfiguration": "OFF",
     "mfaTypes": [
-      "SMS Text Message",
-      "TOTP"
+      "SMS Text Message"
     ],
-    "smsAuthenticationMessage": "Your login code is {####}",
-    "smsVerificationMessage": "Verification code: {####}",
-    "emailVerificationSubject": "Your verification code",
-    "emailVerificationMessage": "Your verification code is {####}",
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Verification code: {####}",
+    "emailVerificationMessage": "Verification code: {####}",
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [
@@ -27,10 +26,8 @@
     ],
     "requiredAttributes": [
       "email",
-      "preferred_username",
-      "birthdate",
       "phone_number",
-      "gender",
+      "name",
       "address"
     ],
     "aliasAttributes": [],
@@ -38,10 +35,10 @@
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "soccercc0f4736_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "AAASoc05802647_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "cc0f4736",
-    "resourceName": "soccerappnew",
+    "sharedId": "05802647",
+    "resourceName": "AAASoccer",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
     "usernameAttributes": [
@@ -55,20 +52,6 @@
     "thirdPartyAuth": false,
     "authProviders": [],
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true,
-    "authRoleArn": {
-      "Fn::GetAtt": [
-        "AuthRole",
-        "Arn"
-      ]
-    },
-    "unauthRoleArn": {
-      "Fn::GetAtt": [
-        "UnauthRole",
-        "Arn"
-      ]
-    },
-    "breakCircularDependency": true,
-    "dependsOn": []
+    "useEnabledMfas": true
   }
-}
+} 

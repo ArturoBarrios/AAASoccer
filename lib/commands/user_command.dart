@@ -9,6 +9,7 @@ import '../models/User.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../graphql/queries/users.dart';
 import '../graphql/mutations/users.dart';
+import '../graphql/mutations/teams.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -100,6 +101,41 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
+Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequestInput) async {
+   Map<String, dynamic> acceptFriendRequestResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().acceptFriendRequest(friendRequestInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      acceptFriendRequestResponse["success"] = true;
+      acceptFriendRequestResponse["message"] = "Accepted Friend Request";      
+      acceptFriendRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];
+
+    }catch(e) {}
+
+  return acceptFriendRequestResponse;
+
+}
+
   Future<Map<String, dynamic>> sendFriendRequest(Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
     Map<String, dynamic> sendFriendRequestResponse = {
       "success": false,
@@ -130,6 +166,38 @@ class UserCommand extends BaseCommand {
       
     } catch (e) {}
     return sendFriendRequestResponse;
+  }
+  
+  Future<Map<String, dynamic>> sendTeamOrganizerRequest(Map<String, dynamic> fromInput, Map<String, dynamic> toInput  ,Map<String, dynamic> teamInput ) async {
+    Map<String, dynamic> sendOrganizerRequestResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TeamMutations().sendTeamOrganizerRequest(fromInput, toInput, teamInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      sendOrganizerRequestResponse["success"] = true;
+      sendOrganizerRequestResponse["message"] = "Player for Team Created";      
+      sendOrganizerRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];
+    
+      
+    } catch (e) {}
+    return sendOrganizerRequestResponse;
   }
 
   Future<Map<String, dynamic>> updateFriendRequest() async{

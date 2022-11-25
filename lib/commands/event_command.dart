@@ -52,7 +52,7 @@ class EventCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> sendEventRequest(Map<String, dynamic> userInput, Map<String, dynamic> receiverInput  ) async{
+  Future<Map<String, dynamic>> sendEventRequest(Map<String, dynamic> fromInput, Map<String, dynamic> toInput, Map<String, dynamic> eventInput  ) async{
     print("sendEventRequest");
     Map<String, dynamic> sendEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
     try {      
@@ -63,7 +63,7 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventMutations().sendEventRequest(userInput, receiverInput),
+          'query': EventMutations().sendEventRequest(fromInput, toInput, eventInput),
         }),
       );
 

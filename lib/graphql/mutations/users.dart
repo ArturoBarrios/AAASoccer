@@ -3,7 +3,7 @@
 class UserMutations {
   String sendFriendRequest(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
-      String createFriendRequest = """
+      String sendFriendRequestString = """
       mutation {
         CreateFriendRequest(data: {    
           requestAttempts: 1, 
@@ -39,8 +39,43 @@ class UserMutations {
         }
         """;
 
-    return createFriendRequest;
-    }
+    return sendFriendRequestString;
+    }  
+
+
+    String acceptFriendRequest(
+      Map<String, dynamic> friendRequestInput) {
+    String acceptFriendRequestString = """      
+      mutation {
+        UpdateFriendRequest(id: ${friendRequestInput['_id']},
+  				data: {            
+            status:           
+                ${friendRequestInput['status']}                          
+          }                      
+        ){
+            _id
+            status
+            requestAttempts
+            to{
+              data{
+                _id
+                name
+              }
+            }   
+            from{
+              data{
+                _id
+                name
+              }
+            }                        
+            
+    			
+  }
+}
+        """;
+
+    return acceptFriendRequestString;
+  }
 
 }
 

@@ -69,6 +69,7 @@ type FriendRequest {
 # event request will be sent to event organizers
 type EventRequest {
   from: User!
+  to: User!
   event: Event!  
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
@@ -78,7 +79,15 @@ type EventRequest {
 type TeamRequest {
   from: User!
   to: User!
+  team: Team!
+  status: RequestStatus @default(value: PENDING)
+  requestAttempts: Int @default(value: 0)
+}
 
+
+type OrganizerRequest {
+  from: User!
+  to: User!
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
 }
@@ -174,6 +183,7 @@ type Team   {
   players: [Player] @relation    
   sponsors: [Sponsor] @relation
   location: Location
+  
 }
 
 type Coach   {
@@ -254,15 +264,16 @@ type League   {
   tournament: Tournament    
   # event: Event
   events: [Event] @relation
+  numberOfTeams: Int
   # eligibleEventTypes: [EventType] @relation
 }
 
 type Tournament   {
   id: ID!
-  league: League  
   groupPlay: Boolean  
   # event: Event
   events: [Event] @relation
+  numberOfTeams: Int
   # eligibleEventTypes: [EventType] @relation
 }
 
