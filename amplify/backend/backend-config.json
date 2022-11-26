@@ -1,6 +1,6 @@
 {
   "auth": {
-    "soccerappnew": {
+    "AAASoccer": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -12,10 +12,8 @@
         ],
         "signupAttributes": [
           "EMAIL",
-          "PREFERRED_USERNAME",
-          "BIRTHDATE",
           "PHONE_NUMBER",
-          "GENDER",
+          "NAME",
           "ADDRESS"
         ],
         "passwordProtectionSettings": {
@@ -27,57 +25,14 @@
             "REQUIRES_UPPERCASE"
           ]
         },
-        "mfaConfiguration": "OPTIONAL",
+        "mfaConfiguration": "OFF",
         "mfaTypes": [
-          "SMS",
-          "TOTP"
+          "SMS"
         ],
         "verificationMechanisms": [
-          "PHONE_NUMBER"
+          "EMAIL"
         ]
       }
-    }
-  },
-  "api": {
-    "soccerappnew": {
-      "service": "AppSync",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "output": {
-        "authConfig": {
-          "defaultAuthentication": {
-            "authenticationType": "API_KEY",
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 30,
-              "description": "api key description"
-            }
-          },
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "AWS_IAM"
-            }
-          ]
-        }
-      }
-    }
-  },
-  "geo": {
-    "placeindexb62f276e": {
-      "isDefault": true,
-      "providerPlugin": "awscloudformation",
-      "service": "PlaceIndex",
-      "dataProvider": "HERE",
-      "dataSourceIntendedUse": "SingleUse",
-      "accessType": "AuthorizedAndGuestUsers",
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "soccerappnew",
-          "attributes": [
-            "UserPoolId"
-          ]
-        }
-      ]
     }
   }
 }

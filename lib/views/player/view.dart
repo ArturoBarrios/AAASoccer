@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class PickupView extends StatefulWidget {
+class PlayerView extends StatefulWidget {
   @override
-  _PickupViewState createState() => _PickupViewState();
+  _PlayerViewState createState() => _PlayerViewState();
 }
 
-class _PickupViewState extends State<PickupView> {
+class _PlayerViewState extends State<PlayerView> {
   final nameController = TextEditingController();
   final imageController = TextEditingController();
   final secondaryNameController = TextEditingController();
@@ -41,7 +41,7 @@ class _PickupViewState extends State<PickupView> {
         ),
         TextField(
           controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Pickup'),
+          decoration: new InputDecoration.collapsed(hintText: 'Player'),
         ),
         TextField(
           controller: surfaceController,

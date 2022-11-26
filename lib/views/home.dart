@@ -9,12 +9,14 @@ import '../services/amplify_auth_service.dart' as AmplifyAuth;
 import '../components/bottom_nav.dart';
 import '../components/select_icon_button.dart';
 import '../components/search_field.dart';
-import '../components/animated_dialogue.dart';
+import '../components/Dialogues/animated_dialogue.dart';
 import '../components/profile.dart';
 import '../components/header.dart';
 //card widgets
 import '../components/Cards/pickup_card.dart';
 import '../components/Cards/pickup_card2.dart';
+import '../components/Cards/player_card.dart';
+import '../components/Cards/team_card.dart';
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
@@ -26,7 +28,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../strings.dart';
+import '../constants.dart';
 import '../models/events_model.dart';
+import '../components/Dialogues/dialogue_scale.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -170,7 +174,7 @@ class _Home extends State<Home> {
 
         final List fetchedPosts = json.decode(res.body);
         if (fetchedPosts.isNotEmpty) {
-          setState(() {
+          setState(() {            
             getEventCards();
           });
         } else {
@@ -194,20 +198,21 @@ class _Home extends State<Home> {
 
   //can add filtering and sorting here
   List getEventCards() {
-      HomePageModel().enabledSelections.forEach((object) {
-        print("valueeeee: " + object.toString()); 
-        //if event enabled
-        if (object['enabled']) {
-          events.forEach((k, eventMap) => {
-                if (k == object['name'])
-                  {
-                    eventMap.forEach((item) => {
-                          eventsList.add(item),
-                        })
-                  }
-              });
-        }
-      });
+    // print("getEventCards");
+    //   HomePageModel().enabledSelections.forEach((object) {
+    //     print("valueeeee: " + object.toString()); 
+    //     //if event enabled
+    //     if (object['enabled']) {
+    //       events.forEach((k, eventMap) => {
+    //             if (k == object['name'])
+    //               {
+    //                 eventMap.forEach((item) => {
+    //                       eventsList.add(item),
+    //                     })
+    //               }
+    //           });
+    //     }
+    //   });
       // print("event widgets length: ");
       // print(eventsList.length);
       return eventsList;
@@ -215,6 +220,7 @@ class _Home extends State<Home> {
 
   @override
   void initState() {
+    print("init state");
     super.initState();    
     _firstLoad();
     _selectEventController = ScrollController()..addListener(_loadMore);
@@ -226,35 +232,61 @@ class _Home extends State<Home> {
     super.dispose();
   }
 
+  Widget getCard(String selectedKey, dynamic selectedObject, Svg svgImage){
+    print("getCard()");
+    print("selectedKey: " + selectedKey);
+    print("selectedObject: " + selectedObject.toString());
+    Widget card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
+
+    if(selectedKey==Constants.PICKUP){
+      card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
+    }
+    else if(selectedKey==Constants.TRAINING){
+      card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
+    }
+    else if(selectedKey==Constants.PLAYER){
+      card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
+    }
+    else if(selectedKey==Constants.TEAM){
+      card = TeamCard(teamObject: selectedObject, svgImage: svgImage);
+    }
+
+    return card;
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("buildDDDDDD");
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
+    
+    String selectedKey = context
+        .select<HomePageModel, String>((value) => value.selectedKey);
 
     List selectedObjects = context
         .select<HomePageModel, List>((value) => value.selectedObjects);
-    
-    List enabledSelections = context
-        .select<HomePageModel, List>((value) => value.enabledSelections);
+       
     Map<String, dynamic> enabledSelections2 = context
         .select<HomePageModel, Map<String, dynamic>>((value) => value.enabledSelections2);
-
-    //track selection 'enabled' state
-    for(var i = 0;i<HomePageModel().enabledSelections.length;i++){
-      context.select<HomePageModel, bool>((value) => value.enabledSelections[i]['enabled']);
-    }
+    
+    context
+        .select<EventsModel, List<dynamic>>((value) => value.games);
 
     HomePageModel().enabledSelections2.forEach((k, v) => {
       context.select<HomePageModel, bool>((value) => value.enabledSelections2[k]['enabled'])
       
     });
 
-  print("selectedObjects: " + selectedObjects.toString());
+    Map<String, dynamic> createEventTypes = HomePageModel().createEventTypes;
+
+  
     String testText =
         context.select<HomePageModel, String>((value) => value.testText);
 
     //events
     List games = context.select<EventsModel, List>((value) => value.games);
+
+      print("selectedKey in build: " + selectedKey);
 
     return (Scaffold(
       appBar: AppBar(
@@ -286,7 +318,7 @@ class _Home extends State<Home> {
           Stack(children: <Widget>[
               Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
+                  children: [                    
                     Expanded(
                         child: Column(children: <Widget>[
                       Padding(
@@ -320,11 +352,15 @@ class _Home extends State<Home> {
                           itemBuilder: (_, index) => Card(
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 10),
-                                child: PickupCard2(
-                                    eventObject: selectedObjects[index],
-                                    svgImage: svgImage),
+                                child:    
+                                  getCard(selectedKey, selectedObjects[index], svgImage),                              
+                                  // PickupCard2(
+                                  //     eventObject: selectedObjects[index],
+                                  //     svgImage: svgImage),
+                                                   
                               )),
-                    ),
+                    ),                   
+                    
 
                     // when the _loadMore function is running
                     // if (_isLoadMoreRunning == true)

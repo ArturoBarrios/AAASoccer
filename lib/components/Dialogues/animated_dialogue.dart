@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/home_page_model.dart';
+import '../../models/home_page_model.dart';
 
 class AnimatedDialogue extends StatefulWidget {
   final bool? isVisible;

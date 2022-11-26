@@ -4,42 +4,43 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../commands/game_command.dart';
-import '../../views/game/view.dart';
+import '../../models/app_model.dart';
+import '../../commands/user_command.dart';
+import '../../views/player/view.dart';
 
-class PickupCard2 extends StatefulWidget {
-  const PickupCard2(
-      {Key? key, required this.eventObject, required this.svgImage})
+class PlayerCard extends StatefulWidget {
+  const PlayerCard(
+      {Key? key, required this.playerObject, required this.svgImage})
       : super(key: key);
-  final Map<String, dynamic> eventObject;
+  final Map<String, dynamic> playerObject;
   final Svg svgImage;
   final double bevel = 10.0;
 
   @override
-  State<PickupCard2> createState() => _PickupCard2();
+  State<PlayerCard> createState() => _PlayerCard();
 }
 
-void pickupClicked() {
-  print("Pickup Clicked");
+void playerClicked() {
+  print("Player Clicked");
 }
 
-Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
-  print("deletePickup for gameobject: $gameObject");
-  Map<String, dynamic> deletePickupResp = {
+Future<Map<String, dynamic>> addPlayer(dynamic friendObject) async {
+  print("addPlayer for friendObject: $friendObject");
+  Map<String, dynamic> addPlayerResp = {
     "success": false,
-    "message": "Pickup deleted successfully"
+    "message": "Player added successfully"
   };
-  Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .deleteGame(gameObject["event"]["_id"], gameObject["_id"]);
-  print("deletePickupResponse: $deletePickupResponse");
-  if (deletePickupResponse["success"]) {
-    deletePickupResp["success"] = true;
+  Map<String, dynamic> addPlayerResponse = await UserCommand()
+      .sendFriendRequest(AppModel().currentUser['_id'], friendObject["user"]["_id"]);
+  print("addPlayerResponse: $addPlayerResponse");
+  if (addPlayerResponse["success"]) {
+    addPlayerResp["success"] = true;
   }
 
-  return deletePickupResp;
+  return addPlayerResp;
 }
 
-class _PickupCard2 extends State<PickupCard2> {
+class _PlayerCard extends State<PlayerCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
@@ -51,7 +52,7 @@ class _PickupCard2 extends State<PickupCard2> {
   @override
   Widget build(BuildContext context) {
     print("widget name: ");
-    print(widget.eventObject.toString());
+    print(widget.playerObject.toString());
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -59,7 +60,7 @@ class _PickupCard2 extends State<PickupCard2> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PickupView();
+            return PlayerView();
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -97,10 +98,10 @@ class _PickupCard2 extends State<PickupCard2> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.eventObject['event']['name'],
+                    text: widget.playerObject['user']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.eventObject['description'],
+                        "test subtitle", //widget.playerObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -111,13 +112,11 @@ class _PickupCard2 extends State<PickupCard2> {
                   barrierDismissible: true,
                   builder: (BuildContext context) {
                     return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this event?',
+                      titleText: 'Are you sure you want to delete this player?',
                       contentText: '',
                       onPositiveClick: () {
-                        Navigator.of(context).pop();
-                        //delete event aaa
-                        print(widget.eventObject.toString());
-                        deletePickup(widget.eventObject);
+                        addPlayer(widget.playerObject);
+                       
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();

@@ -40,6 +40,7 @@ class PlayerMutations {
 
     return createPlayer;
   }
+  
 
   String updatePlayerWithTeam(
       Map<String, dynamic> playerInput, Map<String, dynamic> teamInput) {
@@ -108,4 +109,6 @@ class PlayerMutations {
 		  }
 }
   ''';
+
+
 }

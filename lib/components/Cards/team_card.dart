@@ -5,41 +5,41 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
-import '../../views/game/view.dart';
+import '../../views/team/view.dart';
 
-class PickupCard2 extends StatefulWidget {
-  const PickupCard2(
-      {Key? key, required this.eventObject, required this.svgImage})
+class TeamCard extends StatefulWidget {
+  const TeamCard(
+      {Key? key, required this.teamObject, required this.svgImage})
       : super(key: key);
-  final Map<String, dynamic> eventObject;
+  final Map<String, dynamic> teamObject;
   final Svg svgImage;
   final double bevel = 10.0;
 
   @override
-  State<PickupCard2> createState() => _PickupCard2();
+  State<TeamCard> createState() => _TeamCard();
 }
 
-void pickupClicked() {
-  print("Pickup Clicked");
+void teamClicked() {
+  print("Team Clicked");
 }
 
-Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
-  print("deletePickup for gameobject: $gameObject");
-  Map<String, dynamic> deletePickupResp = {
+Future<Map<String, dynamic>> deleteTeam(dynamic gameObject) async {
+  print("deleteTeam for gameobject: $gameObject");
+  Map<String, dynamic> deleteTeamResp = {
     "success": false,
-    "message": "Pickup deleted successfully"
+    "message": "Team deleted successfully"
   };
-  Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .deleteGame(gameObject["event"]["_id"], gameObject["_id"]);
-  print("deletePickupResponse: $deletePickupResponse");
-  if (deletePickupResponse["success"]) {
-    deletePickupResp["success"] = true;
+  Map<String, dynamic> deleteTeamResponse = await GameCommand()
+      .deleteGame(gameObject["user"]["_id"], gameObject["_id"]);
+  print("deleteTeamResponse: $deleteTeamResponse");
+  if (deleteTeamResponse["success"]) {
+    deleteTeamResp["success"] = true;
   }
 
-  return deletePickupResp;
+  return deleteTeamResp;
 }
 
-class _PickupCard2 extends State<PickupCard2> {
+class _TeamCard extends State<TeamCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
@@ -51,7 +51,7 @@ class _PickupCard2 extends State<PickupCard2> {
   @override
   Widget build(BuildContext context) {
     print("widget name: ");
-    print(widget.eventObject.toString());
+    print(widget.teamObject.toString());
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -59,7 +59,7 @@ class _PickupCard2 extends State<PickupCard2> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PickupView();
+            return TeamView();
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -97,10 +97,10 @@ class _PickupCard2 extends State<PickupCard2> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.eventObject['event']['name'],
+                    text: widget.teamObject['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.eventObject['description'],
+                        "test subtitle", //widget.teamObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -111,13 +111,10 @@ class _PickupCard2 extends State<PickupCard2> {
                   barrierDismissible: true,
                   builder: (BuildContext context) {
                     return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this event?',
+                      titleText: 'Are you sure you want to delete this team?',
                       contentText: '',
                       onPositiveClick: () {
-                        Navigator.of(context).pop();
-                        //delete event aaa
-                        print(widget.eventObject.toString());
-                        deletePickup(widget.eventObject);
+                       
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();

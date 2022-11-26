@@ -7,8 +7,8 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../views/game/view.dart';
 
-class PickupCard2 extends StatefulWidget {
-  const PickupCard2(
+class Card extends StatefulWidget {
+  const Card(
       {Key? key, required this.eventObject, required this.svgImage})
       : super(key: key);
   final Map<String, dynamic> eventObject;
@@ -16,7 +16,7 @@ class PickupCard2 extends StatefulWidget {
   final double bevel = 10.0;
 
   @override
-  State<PickupCard2> createState() => _PickupCard2();
+  State<Card> createState() => _Card();
 }
 
 void pickupClicked() {
@@ -39,7 +39,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
-class _PickupCard2 extends State<PickupCard2> {
+class _Card extends State<Card> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 

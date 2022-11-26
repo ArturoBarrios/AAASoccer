@@ -1,3 +1,14 @@
+type Query {
+  allGames(pickup: Boolean): [Game!]  
+  allTrainings: [Training!]  
+  allLeagues: [League!]  
+  allTournaments: [Tournament!]  
+  allUsers: [User!]
+  allPlayers: [Player!]
+  allTeams: [Team!]
+  getUser(email: String): User
+}
+
 enum EventType {
   TRYOUT
   GAME
@@ -44,20 +55,61 @@ enum UserAccountStatus{
   BANNED
 }
 
-type Query {
-  allGames(pickup: Boolean): [Game!]  
-  allUsers: [User!]
-  allPlayers: [Player!]
-  allTeams: [Team!]
-  getUser(email: String): User
+enum RequestStatus{
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+enum UserType{
+  PLAYER
+  COACH
+  REF
 }
 
+type FriendRequest {
+  from: User!
+  to: User!
+  status: RequestStatus @default(value: PENDING)
+  requestAttempts: Int @default(value: 0)
+}
+
+# event request will be sent to event organizers
+type EventRequest {
+  from: User!
+  to: User!
+  event: Event!  
+  status: RequestStatus @default(value: PENDING)
+  requestAttempts: Int @default(value: 0)
+}
+
+# event request will be sent to team captains
+type TeamRequest {
+  from: User!
+  to: User!
+  team: Team!
+  status: RequestStatus @default(value: PENDING)
+  requestAttempts: Int @default(value: 0)
+}
+
+
+type OrganizerRequest {
+  from: User!
+  to: User!
+  status: RequestStatus @default(value: PENDING)
+  requestAttempts: Int @default(value: 0)
+}
+
+
+
 type User  {  
+  userType: UserType!
   name: String!
   phone: String!
   email: String!
   username: String!
   birthdate: String!
+  age: Int
+  friends: [User]
   gender: GenderType
   location: Location
   player: Player
@@ -70,6 +122,7 @@ type User  {
   images: [Image] @relation
   events: [Event] @relation
 }
+
 
 type Player   {  
   wagerRating: String
@@ -90,6 +143,10 @@ type Player   {
 type Game   {
   hometeam: Team
   awayTeam: Team
+  teamA: String 
+  teamB: String
+  round: Int
+  gameNumber: Int
   homegoals: Int
   awaygoals: Int
   pickup: Boolean
@@ -136,6 +193,7 @@ type Team   {
   players: [Player] @relation    
   sponsors: [Sponsor] @relation
   location: Location
+  
 }
 
 type Coach   {
@@ -194,8 +252,7 @@ type Sponsor {
   sponsoredTeams: [Team] @relation
 }
 
-type Wager   {
-  id: ID!
+type Wager   {  
   name: String
   amount: String
   players: [Player] @relation
@@ -205,8 +262,7 @@ type Wager   {
 }
 
 
-type Tryout   {
-  id: ID!
+type Tryout   {  
   game: String
   # event: Event
   events: [Event] @relation 
@@ -214,20 +270,19 @@ type Tryout   {
   # eligibleEventTypes: [EventType] @relation
 }
 
-type League   {
-  id: ID!
+type League   {  
   tournament: Tournament    
   # event: Event
   events: [Event] @relation
+  numberOfTeams: Int
   # eligibleEventTypes: [EventType] @relation
 }
 
 type Tournament   {
-  id: ID!
-  league: League  
   groupPlay: Boolean  
   # event: Event
   events: [Event] @relation
+  numberOfTeams: Int
   # eligibleEventTypes: [EventType] @relation
 }
 

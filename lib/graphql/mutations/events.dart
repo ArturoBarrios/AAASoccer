@@ -38,4 +38,57 @@ class EventMutations{
 
     return addPlayerToEvent;
   }
+
+  String sendEventRequest(
+      Map<String, dynamic> fromInput, Map<String, dynamic> toInput, Map<String, dynamic> eventInput) {
+      String createFriendRequest = """
+      mutation {
+        CreateFriendRequest(data: {    
+          requestAttempts: 1, 
+          to: {
+            connect: 
+            {
+              _id: "${toInput['_id']}"
+            }
+          },  
+          from: {
+            connect: 
+            {
+              _id: "${fromInput['_id']}"
+            }
+          }                       
+          event: {
+            connect: 
+            {
+              _id: "${eventInput['_id']}"
+            }
+          }                       
+          }) {
+            _id
+            status
+            requestAttempts
+            to{
+              data{
+                _id
+                name
+              }
+            }   
+            from{
+              data{
+                _id
+                name
+              }
+            }            
+            event{
+              data{
+                _id
+                name
+              }
+            }            
+          }   
+        }
+        """;
+
+    return createFriendRequest;
+    }
 }

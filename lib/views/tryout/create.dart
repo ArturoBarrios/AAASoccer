@@ -48,8 +48,8 @@ class _TryoutCreateState extends State<TryoutCreate> {
           
           "tryoutEventId": createdEvent['data'].id
         };
-        Map<String, dynamic> createdTryout =
-            await TryoutCommand().createTryout(createTryoutInput);
+        Map<String, dynamic> createdTryout = {};
+            //await TryoutCommand().createTryout(createTryoutInput);
 
         if (createdTryout['success']) {
           createEventResponse['success'] = true;
