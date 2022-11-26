@@ -1,48 +1,134 @@
+import 'dart:convert';
+import 'dart:math';
+import 'package:soccermadeeasy/graphql/queries/tournaments.dart';
+
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 import '../commands/event_command.dart';
+import '../commands/game_command.dart';
+import '../graphql/mutations/tournaments.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../../testing/seeding/location_seeder.dart';
+import '../commands/geolocation_command.dart';
+import 'package:geolocator/geolocator.dart';
 
 class TournamentCommand extends BaseCommand {
 
-
- Future<Map<String, dynamic>> createTournament(Map<String, dynamic> tournamentData, Map<String, dynamic> eventInput ) async{
-     print("createTournament");
-    Map<String, dynamic> createTournamentResponse = {"success": false, "message": "Default Error", "data": null};
+Future<Map<String, dynamic>> getTournamentsNearLocation() async {
+    print("getTournamentsNearLocation");
+    Map<String, dynamic> getTournamentsNearLocationResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
     try {
-     Map<String, dynamic> createEventResp = await EventCommand().createEvent(eventInput);
-     if(createEventResp["success"]){
-        FaunaResponse eventFaunaResult = createEventResp["data"];
-        Map<String, dynamic> eventResult = eventFaunaResult.asMap();
-        print("event before creating Tournament: ");
-        print(eventResult['resource']['ref']['@ref']['id']);
-        final createDocument = Create(
-            Collection('Tournament'),
-            Obj({
-              'data': {
-                'groupPlay': tournamentData['groupPlay'],           
-                'event': Ref(Collection("Event"), eventResult['resource']['ref']['@ref']['id']),                
-                }
-            }),
-        ); 
-        //get teams
-        if(tournamentData['groupPlay']){
-          //create groups
-          //number of teams in group
-          //there's situations where you want to
-          //give user ability to remove team from group
-          //and allow system to play on without any
-          //errors
-         
-        }
-     } 
-      return createTournamentResponse;
-    } on ApiException catch (e) {
+      print("my position");
+      Position myPosition = await GeoLocationCommand().determinePosition();
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TournamentQueries().getTournaments(),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      final result = jsonDecode(response.body)['data']['allTournaments']['data'];
+      getTournamentsNearLocationResp["success"] = true;
+      getTournamentsNearLocationResp["message"] = "Tournaments Retrieved";
+      getTournamentsNearLocationResp["data"] = result;
+    } on Exception catch (e) {
       print('Mutation failed: $e');
-      return createTournamentResponse;
     }
+
+    return getTournamentsNearLocationResp;
+  }
+
+ Future<Map<String, dynamic>> createTournament(Map<String, dynamic> tournamentData, Map<String, dynamic> eventInput, Map<String, dynamic> locationInput) async{
+     Map<String, dynamic> createTournamentResp = {
+      "success": false,
+      "message": "Something went wrong with creating game relationships",
+      "data": null,
+    };
+
+    var rng = Random();
+
+    List<dynamic> numberOfTeamsOptions = [2,4,8,16,32];
+    int randomLocationNumber = rng.nextInt(100000000);
+    int numberOfTeams = numberOfTeamsOptions[rng.nextInt(1)];
+    
+    List<dynamic> bergerTable = TournamentCommand().bergerTable(numberOfTeams);
+    print("bergerTable length: " + bergerTable.length.toString());
+    http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TournamentMutations().createTournament(tournamentData, eventInput, locationInput),
+      }),
+    );
+    print("createTournament response: ");    
+    print(jsonDecode(response.body));
+    Map<String, dynamic> createdTournament = jsonDecode(response.body)['data']['createTournament'];      
+    print("createdTournament: ");
+    print(createdTournament);    
+    
+    //create games from bergerTable    
+    for(int i = 0;i<bergerTable.length;i++){
+      List<dynamic> roundGames = bergerTable[i];
+      for(int k = 0; k<roundGames.length;k++){
+        if(i==0 && k<2){
+          Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+          Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+          Map<String, dynamic> eventInput = {
+            "name": "Game: ${bergerTable[i][k]['game']}",
+            "isMainEvent": false
+          };
+          Map<String, dynamic> gameInput = {
+            "pickup": false,
+            "teamA": bergerTable[i][k]['teamA'].toString(),
+            "teamB": bergerTable[i][k]['teamB'].toString(),
+            "round": bergerTable[i][k]['round'],
+            "gameNumber": bergerTable[i][k]['game'],
+          };
+          
+          Map<String, dynamic> gameResp = await GameCommand().createGame(gameInput, eventInput, locationInput);
+          print("create gameResp: ");
+          print(gameResp);
+          Map<String, dynamic> createdEvent = gameResp['data']['event'];
+          //attach game to tournament     
+          http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': TournamentMutations().addEventToTournament(createdTournament, createdEvent),
+            }),
+          );
+
+          print("addEventtoTournament response body: ");
+          print(jsonDecode(response.body));
+
+        
+
+      }
+
+    }
+  }
+    return createTournamentResp;
   }
 
   //CREDIT TO https://github.com/sasatatar

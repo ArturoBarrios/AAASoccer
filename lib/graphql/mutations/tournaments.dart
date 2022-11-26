@@ -1,9 +1,10 @@
-class LeagueMutations{
-  String createLeague(Map<String, dynamic> leagueInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput) {
-    String createLeague = """
+class TournamentMutations{
+  String createTournament(Map<String, dynamic> tournamentInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput) {
+    String createTournament = """
       mutation {
-        createLeague(data: {      
-          numberOfTeams: ${leagueInput['numberOfTeams']},                       
+        createTournament(data: {      
+          numberOfTeams: ${tournamentInput['numberOfTeams']},   
+          groupPlay: ${tournamentInput['groupPlay']},                    
           events: {
             create: 
             {
@@ -19,7 +20,9 @@ class LeagueMutations{
             }
           } 
           }) {
-            _id                        
+            _id    
+            numberOfTeams
+            groupPlay                    
             events{
               data{
               _id
@@ -38,14 +41,14 @@ class LeagueMutations{
         }
         """;
 
-    return createLeague;
+    return createTournament;
   }
 
-  String addEventToLeague(
-      Map<String, dynamic> leagueInput, Map<String, dynamic> eventInput) {
-         String addGameToLeague = """      
+  String addEventToTournament(
+      Map<String, dynamic> tournamentInput, Map<String, dynamic> eventInput) {
+         String addGameToTournament = """      
       mutation {
-        updateLeague(id: ${leagueInput['_id']},
+        updateTournament(id: ${tournamentInput['_id']},
   				data: {            
             events:{
               connect:[
@@ -56,7 +59,9 @@ class LeagueMutations{
           }
                       
         ){
-            _id    				            
+            _id    	
+            numberOfTeams
+            groupPlay			            
             events{
               data{
                 _id
@@ -73,7 +78,7 @@ class LeagueMutations{
         }
         """;
 
-return addGameToLeague;
+return addGameToTournament;
 
   }
 

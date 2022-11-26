@@ -14,8 +14,47 @@ import '../../commands/game_command.dart';
 import '../graphql/mutations/leagues.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../commands/geolocation_command.dart';
+import 'package:geolocator/geolocator.dart';
+import '../graphql/queries/leagues.dart';
 
 class LeagueCommand extends BaseCommand {
+
+Future<Map<String, dynamic>> getLeaguesNearLocation() async {
+    print("getLeaguesNearLocation");
+    Map<String, dynamic> getLeaguesNearLocationResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      print("my position");
+      Position myPosition = await GeoLocationCommand().determinePosition();
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': LeagueQueries().getLeagues(),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      final result = jsonDecode(response.body)['data']['allLeagues']['data'];
+      getLeaguesNearLocationResp["success"] = true;
+      getLeaguesNearLocationResp["message"] = "Leagues Retrieved";
+      getLeaguesNearLocationResp["data"] = result;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+    }
+
+    return getLeaguesNearLocationResp;
+  }
+
 
 
  Future<Map<String, dynamic>> createLeague(Map<String, dynamic> leagueData, eventInput, Map<String, dynamic> locationInput ) async{
@@ -27,11 +66,12 @@ class LeagueCommand extends BaseCommand {
 
     var rng = Random();
 
-    List<dynamic> numberOfTeamsOptions = [4,8,16,32];
+    List<dynamic> numberOfTeamsOptions = [2,4,8,16,32];
     int randomLocationNumber = rng.nextInt(100000000);
-    int numberOfTeams = numberOfTeamsOptions[rng.nextInt(numberOfTeamsOptions.length)];
+    int numberOfTeams = numberOfTeamsOptions[rng.nextInt(1)];
     
     List<dynamic> bergerTable = TournamentCommand().bergerTable(numberOfTeams);
+    print("bergerTable length: " + bergerTable.length.toString());
     http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -93,19 +133,6 @@ class LeagueCommand extends BaseCommand {
 
     }
   }
-    
-      
-    
-      
-        
-    
-      
-
-    
-
-
-    
-
     return createLeagueResp;
 
   }

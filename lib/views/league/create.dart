@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/league_command.dart';
 import '../../commands/event_command.dart';
+import '../../testing/seeding/location_seeder.dart';
+import '../../components/profile.dart';
 
 class LeagueCreate extends StatefulWidget {
   @override
@@ -12,7 +14,7 @@ class LeagueCreate extends StatefulWidget {
 class _LeagueCreateState extends State<LeagueCreate> {
   final nameController = TextEditingController();
   final hometeamController = TextEditingController();
-  final awayteamController = TextEditingController();
+  final numberOfTeamsController = TextEditingController();
   final isPickupController = TextEditingController();
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
@@ -24,46 +26,65 @@ class _LeagueCreateState extends State<LeagueCreate> {
   bool _isLoading = false;
 
   Future<Map<String, dynamic>> createLeague() async {
-    print("createGame");
+    print("createLeague");
     Map<String, dynamic> createEventResponse = {
       "success": false,
       "message": "Default Error"
     };
-    // try {
-    //   Map<String, dynamic> createEventInput = {
-    //     "name": nameController.text.trim(),
-    //     "price": priceController.text.trim(),
-    //     "location": locationController.text.trim(),
-    //     "images": imagesController.text.trim(),
-    //     "type": EventType.LEAGUE,
-    //   };
+    try {
+      Map<String, dynamic> createEventInput = {
+        "name": nameController.text.trim(),
+        "price": priceController.text.trim(),
+        'isMainEvent': true,   
+      };
 
-    //   Map<String, dynamic> createdEvent =
-    //       await EventCommand().createEvent(createEventInput);
-    // print("createdEvent: ");
-    // print(createdEvent['data']);
-    //   if (createdEvent['success']) {
-    //     Map<String, dynamic> createLeagueInput = {
-          
-          
-    //       "leagueEventId": createdEvent['data'].id
-    //     };
-    //     Map<String, dynamic> createdLeague =
-    //         await LeagueCommand().createLeague(createLeagueInput, eventInput);
+      // Map<String, dynamic> createdEvent =
+      //     await EventCommand().createEvent(createEventInput);
+      // print("createdEvent: ");
+      // print(createdEvent['data']);
+      // if (createdEvent['success']) {
+        Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+        Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+        print("locationInputCheck: " + locationInput.toString());   
+        Map<String, dynamic> createLeagueInput = {
+          "numberOfTeams": numberOfTeamsController.text.trim(),
+        };
+        Map<String, dynamic> createdLeague =
+            await LeagueCommand().createLeague(createLeagueInput, createEventInput, locationInput);
 
-    //     if (createdLeague['success']) {
-    //       createEventResponse['success'] = true;
-    //     }
-    //   }
-    //   return createEventResponse;
-    // } on ApiException catch (e) {
+        if (createdLeague['success']) {
+          createEventResponse['success'] = true;
+        }
+      // }
       return createEventResponse;
-    // }
+    } on ApiException catch (e) {
+      return createEventResponse;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: new Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text("Find Soccer Near You")),
+        backgroundColor: Colors.orange.shade500,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Go to the next page',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Profile();
+                },
+              ));
+            },
+          ),
+        ],
+      ),
       body: Center(
           child: Column(children: [
         TextField(
@@ -71,12 +92,12 @@ class _LeagueCreateState extends State<LeagueCreate> {
           decoration: new InputDecoration.collapsed(hintText: 'Name'),
         ),
         TextField(
-          controller: hometeamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Home'),
+          controller: priceController,
+          decoration: new InputDecoration.collapsed(hintText: 'Price'),
         ),
         TextField(
-          controller: awayteamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Away'),
+          controller: numberOfTeamsController,
+          decoration: new InputDecoration.collapsed(hintText: 'Number of Teams'),
         ),
         TextField(
           controller: isPickupController,
@@ -93,10 +114,6 @@ class _LeagueCreateState extends State<LeagueCreate> {
         TextField(
           controller: privateController,
           decoration: new InputDecoration.collapsed(hintText: 'Private'),
-        ),
-        TextField(
-          controller: priceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Price'),
         ),
         TextField(
           controller: locationController,

@@ -1,6 +1,8 @@
 type Query {
   allGames(pickup: Boolean): [Game!]  
   allTrainings: [Training!]  
+  allLeagues: [League!]  
+  allTournaments: [Tournament!]  
   allUsers: [User!]
   allPlayers: [Player!]
   allTeams: [Team!]
@@ -58,6 +60,11 @@ enum RequestStatus{
   ACCEPTED
   REJECTED
 }
+enum UserType{
+  PLAYER
+  COACH
+  REF
+}
 
 type FriendRequest {
   from: User!
@@ -92,7 +99,10 @@ type OrganizerRequest {
   requestAttempts: Int @default(value: 0)
 }
 
+
+
 type User  {  
+  userType: UserType!
   name: String!
   phone: String!
   email: String!
@@ -269,7 +279,6 @@ type League   {
 }
 
 type Tournament   {
-  id: ID!
   groupPlay: Boolean  
   # event: Event
   events: [Event] @relation

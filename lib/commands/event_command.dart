@@ -12,6 +12,8 @@ import '../commands/game_command.dart';
 import '../commands/player_command.dart';
 import '../commands/team_command.dart';
 import '../commands/training_command.dart';
+import '../commands/tournament_command.dart';
+import '../commands/league_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
 import 'dart:convert';
@@ -26,24 +28,7 @@ class EventCommand extends BaseCommand {
      print("createEvent");
     Map<String, dynamic> createEventResponse = {"success": false, "message": "Default Error", "data": null};
     try {
-      final createDocument = Create(
-        Collection('Event'),
-        Obj({
-          'data': {
-            'name': eventInput['name'],
-            'isMainEvent': eventInput['isMainEvent'],
-            'location': eventInput['location']['resource']['ref']['@ref']['id']                          
-            }
-        }),
-      );
-
-      final result = null;//await AppModel().faunaClient.query(createDocument);
-      print("result: ");
-      print(result.toJson());
-     
-      createEventResponse["success"] = true;
-      createEventResponse["message"] = "Event Created";
-      createEventResponse["data"] = result;
+      
 
       return createEventResponse;
     } on ApiException catch (e) {
@@ -187,6 +172,20 @@ class EventCommand extends BaseCommand {
       eventsModel.games = games;
       homePageModel.selectedObjects = json.decode(json.encode(games));     
       print("length of games: "+games.length.toString());        
+    }
+    Map<String, dynamic> getLeaguesNearLocationResp = await LeagueCommand().getLeaguesNearLocation();
+    if(getLeaguesNearLocationResp['success']){
+      List<dynamic> leagues = getLeaguesNearLocationResp['data']; 
+      print("in if statement");
+      print("leagues: "+leagues.toString());
+      eventsModel.leagues = leagues;      
+    } 
+     Map<String, dynamic> getTournamentsNearLocationResp = await TournamentCommand().getTournamentsNearLocation();   
+    if(getTournamentsNearLocationResp['success']){
+      List<dynamic> tournaments = getTournamentsNearLocationResp['data']; 
+      print("in if statement");
+      print("tournaments: "+tournaments.toString());
+      eventsModel.tournaments = tournaments;      
     }    
     Map<String, dynamic> getTrainingsNearLocationResp = await TrainingCommand().getTrainingsNearLocation();
     if(getTrainingsNearLocationResp['success']){
