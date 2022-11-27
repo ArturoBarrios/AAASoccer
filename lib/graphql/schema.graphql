@@ -282,6 +282,7 @@ type Tournament   {
   groupPlay: Boolean  
   # event: Event
   events: [Event] @relation
+  mainEvent: Event
   numberOfTeams: Int
   # eligibleEventTypes: [EventType] @relation
 }

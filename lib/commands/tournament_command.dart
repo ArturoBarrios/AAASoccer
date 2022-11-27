@@ -18,6 +18,34 @@ import 'package:geolocator/geolocator.dart';
 
 class TournamentCommand extends BaseCommand {
 
+
+
+
+Map<String, dynamic> currateTournamentData(dynamic selectedObject)  {
+  print("currateTournamentData");
+  Map<String, dynamic> currateTournamentDataResp = {
+    "success": false,
+    "message": "Default Error",
+    "data": null
+  };
+  Map<String, dynamic>? getMainEvent = null;
+  selectedObject['events']['data'].forEach((event) {
+    if (event['isMainEvent'] == true) {
+      getMainEvent = event;
+    }
+  });
+
+  print("getMainEvent");
+  print(getMainEvent);
+  selectedObject['mainEvent'] = getMainEvent;  
+
+
+
+
+  return currateTournamentDataResp;
+}
+
+
 Future<Map<String, dynamic>> getTournamentsNearLocation() async {
     print("getTournamentsNearLocation");
     Map<String, dynamic> getTournamentsNearLocationResp = {

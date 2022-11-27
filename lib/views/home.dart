@@ -16,12 +16,18 @@ import '../components/header.dart';
 import '../components/Cards/pickup_card.dart';
 import '../components/Cards/pickup_card2.dart';
 import '../components/Cards/player_card.dart';
+import '../components/Cards/training_card.dart';
+// import '../components/Cards/league_card.dart';
+import '../components/Cards/tournament_card.dart';
+import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
 //commands
 import '../commands/home_page_command.dart';
+import '../commands/tournament_command.dart';
+import '../commands/league_command.dart';
 import '../components/Buttons/seed_data_button.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -242,7 +248,17 @@ class _Home extends State<Home> {
       card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
     }
     else if(selectedKey==Constants.TRAINING){
-      card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
+      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage);
+    }
+    else if(selectedKey==Constants.TOURNAMENT){
+      //process tournament data for card
+      TournamentCommand().currateTournamentData(selectedObject);
+      card = TournamentCard(tournamentObject: selectedObject, svgImage: svgImage);
+    }
+    else if(selectedKey==Constants.LEAGUE){
+      //process league data for card
+      LeagueCommand().currateLeagueData(selectedObject);
+      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage);
     }
     else if(selectedKey==Constants.PLAYER){
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
