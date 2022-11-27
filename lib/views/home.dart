@@ -17,7 +17,7 @@ import '../components/Cards/pickup_card.dart';
 import '../components/Cards/pickup_card2.dart';
 import '../components/Cards/player_card.dart';
 import '../components/Cards/training_card.dart';
-// import '../components/Cards/league_card.dart';
+import '../components/Cards/tryout_card.dart';
 import '../components/Cards/tournament_card.dart';
 import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
@@ -249,6 +249,10 @@ class _Home extends State<Home> {
     }
     else if(selectedKey==Constants.TRAINING){
       card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage);
+    }
+    else if(selectedKey==Constants.TRYOUT){
+      print("selected tryout");
+      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage);
     }
     else if(selectedKey==Constants.TOURNAMENT){
       //process tournament data for card

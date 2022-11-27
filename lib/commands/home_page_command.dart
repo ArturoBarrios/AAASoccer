@@ -69,6 +69,11 @@ class HomePageCommand extends BaseCommand {
         print(eventsModel.trainings);
         homePageModel.selectedObjects = eventsModel.trainings;
       }
+      else if(homePageModel.selectedKey==Constants.TRYOUT){
+        print("check tryout: ");
+        print(eventsModel.tryouts);
+        homePageModel.selectedObjects = eventsModel.tryouts;
+      }
       else if(homePageModel.selectedKey==Constants.TOURNAMENT){
         print("check tournament: ");
         print(eventsModel.tournaments);

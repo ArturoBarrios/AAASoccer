@@ -12,6 +12,7 @@ import '../commands/game_command.dart';
 import '../commands/player_command.dart';
 import '../commands/team_command.dart';
 import '../commands/training_command.dart';
+import '../commands/tryout_command.dart';
 import '../commands/tournament_command.dart';
 import '../commands/league_command.dart';
 import 'package:http/http.dart' as http;
@@ -193,6 +194,13 @@ class EventCommand extends BaseCommand {
       print("trainings: ");
       print(trainings);
       eventsModel.trainings = trainings;            
+    }
+    Map<String, dynamic> getTryoutsNearLocationResp = await TryoutCommand().getTryoutsNearLocation();
+    if(getTryoutsNearLocationResp['success']){
+      List<dynamic> tryouts = getTryoutsNearLocationResp['data'];
+      print("tryouts: ");
+      print(tryouts);
+      eventsModel.tryouts = tryouts;            
     }
     Map<String, dynamic> getPlayersNearLocationResp = await PlayerCommand().getPlayersNearLocation();
     if(getPlayersNearLocationResp['success']){

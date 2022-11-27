@@ -5,8 +5,46 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geolocator/geolocator.dart';
+import '../commands/geolocation_command.dart';
+import '../graphql/queries/tryouts.dart';
 
 class TryoutCommand extends BaseCommand {
+
+
+Future<Map<String, dynamic>> getTryoutsNearLocation() async{
+      print("getTryoutsNearLocation");
+    Map<String, dynamic> getTryoutsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
+    try{
+      print("my position");
+      Position myPosition = await GeoLocationCommand().determinePosition();
+      http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': TryoutQueries().getTryouts(),
+          }),
+        );
+
+        print("response body: ");
+        print(jsonDecode(response.body));
+
+
+      final result = jsonDecode(response.body)['data']['allTryouts']['data'];
+      getTryoutsNearLocationResp["success"] = true;
+      getTryoutsNearLocationResp["message"] = "Tryouts Retrieved";
+      getTryoutsNearLocationResp["data"] = result;
+      
+    } on Exception catch (e) {
+      print('Mutation failed: $e');  
+    }
+
+    return getTryoutsNearLocationResp;
+
+  }
 
 
  Future<Map<String, dynamic>> createTryout(

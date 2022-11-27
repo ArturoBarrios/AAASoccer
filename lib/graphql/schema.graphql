@@ -1,6 +1,7 @@
 type Query {
   allGames(pickup: Boolean): [Game!]  
   allTrainings: [Training!]  
+  allTryouts: [Tryout!]  
   allLeagues: [League!]  
   allTournaments: [Tournament!]  
   allUsers: [User!]
@@ -265,7 +266,7 @@ type Wager   {
 type Tryout   {  
   game: String
   # event: Event
-  events: [Event] @relation 
+  event: Event
   #tryout can have a pickup game
   # eligibleEventTypes: [EventType] @relation
 }
@@ -282,7 +283,6 @@ type Tournament   {
   groupPlay: Boolean  
   # event: Event
   events: [Event] @relation
-  mainEvent: Event
   numberOfTeams: Int
   # eligibleEventTypes: [EventType] @relation
 }

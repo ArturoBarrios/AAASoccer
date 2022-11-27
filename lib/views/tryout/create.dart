@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/tryout_command.dart';
 import '../../commands/event_command.dart';
+import '../../components/profile.dart';
 
 class TryoutCreate extends StatefulWidget {
   @override
@@ -64,6 +65,26 @@ class _TryoutCreateState extends State<TryoutCreate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: new Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text("Find Soccer Near You")),
+        backgroundColor: Colors.orange.shade500,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Go to the next page',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Profile();
+                },
+              ));
+            },
+          ),
+        ],
+      ),
       body: Center(
           child: Column(children: [
         TextField(
