@@ -17,7 +17,11 @@ class GameQueries {
                           _id
                           name
                         }
-                      }                    
+                      }    
+                      event{                        
+                          _id
+                          name                        
+                      }                
                   }
               }                         
             }

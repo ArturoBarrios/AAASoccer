@@ -36,7 +36,7 @@ class EventCommand extends BaseCommand {
       print('Mutation failed: $e');
       return createEventResponse;
     }
-  }
+  }  
 
   Future<Map<String, dynamic>> sendPlayerEventRequest(Map<String, dynamic> gameInput  ) async{
     print("sendPlayerEventRequest");
@@ -52,7 +52,7 @@ class EventCommand extends BaseCommand {
       Map<String, dynamic> eventRequestInput = {
         "from_id": AppModel().currentUser['_id'],
         "event_id": gameInput['event']['_id'],
-      };
+      };    
       //iterate over organizers, 
       //send request to organizer(in bulk or individually?)
       //Create EventRequest
@@ -61,8 +61,8 @@ class EventCommand extends BaseCommand {
         //create string with _ids and syntax and call in 
         //tos
         dynamic eventUserOrganizers = gameInput['event']['eventUserOrganizers']['users'];
-        String tosString = "";
-      for (var i = 0; i < eventUserOrganizers.length; i++) {
+        String tosString = "";        
+      for (var i = 0; i < eventUserOrganizers.length; i++) {        
         String toUserId = eventUserOrganizers[i]['_id'];
         //send onesignal notification
         String toQueryString = """

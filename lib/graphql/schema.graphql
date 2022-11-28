@@ -74,14 +74,16 @@ type FriendRequest {
   requestAttempts: Int @default(value: 0)
 }
 
-type EventTo {
+type To {
   user: User!
+  eventRequests: [EventRequest]
+
 }
 
 # event request will be sent to event organizers
 type EventRequest {
   from: User!
-  tos: [EventTo]!@relation
+  tos: [To!] @relation
   event: Event!  
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
@@ -127,7 +129,7 @@ type User  {
   images: [Image] @relation
   events: [Event] @relation
   eventUserOrganizers: [EventUserOrganizers] @relation
-  eventTo: EventTo
+
 }
 
 
@@ -148,8 +150,8 @@ type Player   {
 }
 
 type EventUserOrganizers {
-  event: Event!
-  users: [User]!   @relation
+  event: Event
+  users: [User]! @relation
 }
 
 type Game   {

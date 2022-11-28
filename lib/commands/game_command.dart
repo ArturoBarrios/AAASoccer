@@ -64,6 +64,10 @@ class GameCommand extends BaseCommand {
       "data": null
     };
     try {
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };
+      print("eventtttttttttt input: "+eventInput.toString());
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -72,14 +76,14 @@ class GameCommand extends BaseCommand {
         },
         body: jsonEncode(<String, String>{
           'query':
-              GameMutations().createGame(gameInput, eventInput, locationInput),
+              GameMutations().createGame(gameInput, eventInput, locationInput, userInput),
         }),
       );
+      print("response body: ");
+      print(jsonDecode(response.body));
       Map<String, dynamic> createdGame =
           jsonDecode(response.body)['data']['createGame'];
       // EventsModel().games.add(createdGame);
-      print("response body: ");
-      print(jsonDecode(response.body));
 
       createGameResponse["success"] = true;
       createGameResponse["message"] = "Game Created";
