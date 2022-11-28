@@ -40,34 +40,33 @@ class EventMutations{
   }
 
   String sendEventRequest(
-      Map<String, dynamic> fromInput, Map<String, dynamic> toInput, Map<String, dynamic> eventInput) {
-      String createFriendRequest = """
+      Map<String, dynamic> eventRequestInput, String tos) {
+      String createEventRequest = """
       mutation {
-        CreateFriendRequest(data: {    
+        CreateEventRequest(data: {    
           requestAttempts: 1, 
-          to: {
-            connect: 
-            {
-              _id: "${toInput['_id']}"
-            }
+          tos: {
+            connect: [
+              tos
+            ]
           },  
           from: {
             connect: 
             {
-              _id: "${fromInput['_id']}"
+              _id: "${eventRequestInput['from_id']}"
             }
           }                       
           event: {
             connect: 
             {
-              _id: "${eventInput['_id']}"
+              _id: "${eventRequestInput['event_id']}"
             }
           }                       
           }) {
             _id
             status
             requestAttempts
-            to{
+            tos{
               data{
                 _id
                 name
@@ -89,6 +88,6 @@ class EventMutations{
         }
         """;
 
-    return createFriendRequest;
+    return createEventRequest;
     }
 }

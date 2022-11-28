@@ -5,7 +5,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
+import '../../commands/event_command.dart';
 import '../../views/game/view.dart';
+import '../../assets/icons/plus_circle_outline.svg';
 
 class PickupCard2 extends StatefulWidget {
   const PickupCard2(
@@ -128,6 +130,25 @@ class _PickupCard2 extends State<PickupCard2> {
                   curve: Curves.fastOutSlowIn,
                   duration: Duration(seconds: 1),
                 );
+              },
+              child: Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Image(
+                    width: 20,
+                    height: 20,
+                    image: SVGWidgets().deleteSVGImage(),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                //send event request
+                print("send event request");
+                EventCommand().sendOrganizerEventRequest(widget.eventObject);
+                
               },
               child: Container(
                 child: ClipRRect(

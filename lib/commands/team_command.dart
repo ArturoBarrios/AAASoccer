@@ -16,7 +16,7 @@ import '../graphql/queries/teams.dart';
 class TeamCommand extends BaseCommand {
 
    Future<Map<String, dynamic>> getTeamsNearLocation() async{
-      print("getGamesNearLocation");
+      print("getTeamsNearLocation");
     Map<String, dynamic> getTrainingsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
     try{
       print("my position");

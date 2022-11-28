@@ -74,10 +74,14 @@ type FriendRequest {
   requestAttempts: Int @default(value: 0)
 }
 
+type EventTo {
+  user: User!
+}
+
 # event request will be sent to event organizers
 type EventRequest {
   from: User!
-  to: User!
+  tos: [EventTo]!@relation
   event: Event!  
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
@@ -122,6 +126,8 @@ type User  {
   last_updated: Int
   images: [Image] @relation
   events: [Event] @relation
+  eventUserOrganizers: [EventUserOrganizers] @relation
+  eventTo: EventTo
 }
 
 
@@ -141,6 +147,11 @@ type Player   {
   # games: [Game] @relation  
 }
 
+type EventUserOrganizers {
+  event: Event!
+  users: [User]!   @relation
+}
+
 type Game   {
   hometeam: Team
   awayTeam: Team
@@ -157,6 +168,7 @@ type Game   {
 type Event   {
   name: String!
   isMainEvent: Boolean!
+  eventUserOrganizers: EventUserOrganizers
   price: Price
   # organization: Organization
   #need org to create events? nah. allow user to create events,
@@ -175,7 +187,7 @@ type Event   {
   # tryout: Tryout
   teams: [Team] @relation
   games: [Game] @relation
-  users: [User] @relation
+  users: [User] @relation  
   #I don't think you need these since tournament 
   #can have many events but not the other way around
   # tournament: Tournament 
