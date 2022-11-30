@@ -43,47 +43,38 @@ class EventMutations{
       Map<String, dynamic> eventRequestInput, String tos) {
       String createEventRequest = """
       mutation {
-        CreateEventRequest(data: {    
+        createEventRequest(
+          data: {    
           requestAttempts: 1, 
-          tos: {
-            connect: [
-              tos
-            ]
-          },  
+          tos:[            
+            	"349720669660906050"                           
+          ],            
           from: {
-            connect: 
-            {
-              _id: "${eventRequestInput['from_id']}"
-            }
-          }                       
+           	connect: "${eventRequestInput['from_id']}"           
+          },                  
           event: {
-            connect: 
-            {
-              _id: "${eventRequestInput['event_id']}"
-            }
+          	connect: "${eventRequestInput['event_id']}"                       
           }                       
           }) {
-            _id
+              _id
             status
             requestAttempts
             tos{
-              data{
+              user{                
                 _id
                 name
               }
             }   
-            from{
-              data{
+            from{              
                 _id
-                name
-              }
+                name              
             }            
-            event{
-              data{
+            event{              
                 _id
-                name
-              }
+                name              
             }            
+    				
+                 
           }   
         }
         """;

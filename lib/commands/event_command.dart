@@ -17,6 +17,7 @@ import '../commands/tournament_command.dart';
 import '../commands/league_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
+import '../graphql/mutations/users.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './game_command.dart';
@@ -45,14 +46,65 @@ class EventCommand extends BaseCommand {
     return sendPlayerEventRequestResponse;
 
   }
+  Future<Map<String, dynamic>> createTo(Map<String, dynamic> userInput) async {
+    print("createTo");
+    print("userInput");
+    print(userInput);
+    Map<String, dynamic> createToResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {
+          
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query':
+              UserMutations().createTo(userInput),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      Map<String, dynamic> createTo =
+          jsonDecode(response.body)['data']['createTo'];      
+
+      createToResponse["success"] = true;
+      createToResponse["message"] = "To Created";
+      createToResponse["data"] =
+          jsonDecode(response.body)['data']['createTo'];
+
+      return createToResponse;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return createToResponse;
+    }    
+
+  }
+  
   Future<Map<String, dynamic>> sendOrganizerEventRequest(dynamic gameInput  ) async{
     print("sendOrganizerEventRequest");
     Map<String, dynamic> sendOrganizerEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
-    try {                  
+    try {    
+       //create To    
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };      
+      Map<String, dynamic> createToResponse = await createTo(userInput);
+      print("createToResponse");
+      print(createToResponse);
+      Map<String, dynamic>createToInput = createToResponse["data"]['createTo'];      
       Map<String, dynamic> eventRequestInput = {
-        "from_id": AppModel().currentUser['_id'],
+        "from_id": userInput['_id'],
         "event_id": gameInput['event']['_id'],
-      };    
+      };     
+      //create To 
+      //     
       //iterate over organizers, 
       //send request to organizer(in bulk or individually?)
       //Create EventRequest
@@ -60,19 +112,22 @@ class EventCommand extends BaseCommand {
       //possible solution for creating EventRequest
         //create string with _ids and syntax and call in 
         //tos
-        dynamic eventUserOrganizers = gameInput['event']['eventUserOrganizers']['users'];
-        String tosString = "";        
+        dynamic eventUserOrganizers = gameInput['event']['eventUserOrganizers']['users']['data'];
+        String tosString = "";              
       for (var i = 0; i < eventUserOrganizers.length; i++) {        
+        print("c "+eventUserOrganizers.toString());
         String toUserId = eventUserOrganizers[i]['_id'];
+        print("d: "+ toUserId);
         //send onesignal notification
         String toQueryString = """
-              {
-                _id: "${toUserId}"
-              },
+              "${toUserId}"
         """;
       
       tosString += toQueryString;
       }//is comma needed??????????????????????????
+      eventRequestInput['to_id'] = "347815276483446352";
+      print("eeeee: "+tosString);
+      print("eeeee: "+eventRequestInput.toString());
       //check if from and to are the same
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -84,7 +139,7 @@ class EventCommand extends BaseCommand {
           'query': EventMutations().sendEventRequest(eventRequestInput, tosString),//(fromInput, toInputs, gameInput),
         }),
       );
-
+    
       print("response body: ");
       print(jsonDecode(response.body));
 
