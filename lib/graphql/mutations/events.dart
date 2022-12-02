@@ -40,15 +40,56 @@ class EventMutations{
   }
 
   String sendEventRequest(
-      Map<String, dynamic> eventRequestInput, String tos) {
+      Map<String, dynamic> eventRequestInput) {
+      String createEventRequest = """
+      mutation {
+        createEventRequest(
+          data: {    
+          requestAttempts: 1,           
+          sender: {
+           	connect: "${eventRequestInput['sender_id']}"           
+          },                                    
+          event: {
+          	connect: "${eventRequestInput['event_id']}"                       
+          }                       
+          }) {
+              _id
+            status
+            requestAttempts
+            sender{                            
+              _id
+              name              
+            }   
+            acceptedBy{              
+                _id
+                name              
+            }            
+            organizerWhoAcceptedOrSentRequest {              
+                _id
+                name              
+            }            
+            event{              
+                _id
+                name              
+            }            
+    				
+                 
+          }   
+        }
+        """;
+
+    return createEventRequest;
+    }
+  String acceptEventRequest(
+      Map<String, dynamic> eventRequestInput) {
       String createEventRequest = """
       mutation {
         createEventRequest(
           data: {    
           requestAttempts: 1, 
-          tos:[            
-            	"349720669660906050"                           
-          ],            
+          organizer: {
+            connect: "${eventRequestInput['user_id']}",          
+          },
           from: {
            	connect: "${eventRequestInput['from_id']}"           
           },                  
@@ -59,11 +100,9 @@ class EventMutations{
               _id
             status
             requestAttempts
-            tos{
-              user{                
-                _id
-                name
-              }
+            organizer{                            
+              _id
+              name              
             }   
             from{              
                 _id

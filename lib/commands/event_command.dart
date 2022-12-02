@@ -46,47 +46,8 @@ class EventCommand extends BaseCommand {
     return sendPlayerEventRequestResponse;
 
   }
-  Future<Map<String, dynamic>> createTo(Map<String, dynamic> userInput) async {
-    print("createTo");
-    print("userInput");
-    print(userInput);
-    Map<String, dynamic> createToResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-
-    try {
-          
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query':
-              UserMutations().createTo(userInput),
-        }),
-      );
-      print("response body: ");
-      print(jsonDecode(response.body));
-      Map<String, dynamic> createTo =
-          jsonDecode(response.body)['data']['createTo'];      
-
-      createToResponse["success"] = true;
-      createToResponse["message"] = "To Created";
-      createToResponse["data"] =
-          jsonDecode(response.body)['data']['createTo'];
-
-      return createToResponse;
-    } on Exception catch (e) {
-      print('Mutation failed: $e');
-      return createToResponse;
-    }    
-
-  }
   
+
   Future<Map<String, dynamic>> sendOrganizerEventRequest(dynamic gameInput  ) async{
     print("sendOrganizerEventRequest");
     Map<String, dynamic> sendOrganizerEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
@@ -94,40 +55,23 @@ class EventCommand extends BaseCommand {
        //create To    
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
-      };      
-      Map<String, dynamic> createToResponse = await createTo(userInput);
-      print("createToResponse");
-      print(createToResponse);
-      Map<String, dynamic>createToInput = createToResponse["data"]['createTo'];      
+      };          
       Map<String, dynamic> eventRequestInput = {
-        "from_id": userInput['_id'],
+        "sender_id": appModel.currentUser['_id'],
         "event_id": gameInput['event']['_id'],
-      };     
-      //create To 
-      //     
-      //iterate over organizers, 
-      //send request to organizer(in bulk or individually?)
-      //Create EventRequest
+      };           
+      print("eventRequestInput");
+      print(eventRequestInput);
         //useful for preventing spam(set max to 50 per day)
       //possible solution for creating EventRequest
         //create string with _ids and syntax and call in 
         //tos
-        dynamic eventUserOrganizers = gameInput['event']['eventUserOrganizers']['users']['data'];
-        String tosString = "";              
+        dynamic eventUserOrganizers = gameInput['event']['eventUserOrganizers']['users']['data'];           
       for (var i = 0; i < eventUserOrganizers.length; i++) {        
-        print("c "+eventUserOrganizers.toString());
         String toUserId = eventUserOrganizers[i]['_id'];
-        print("d: "+ toUserId);
+        print("eventUserOrganizer "+ toUserId);
         //send onesignal notification
-        String toQueryString = """
-              "${toUserId}"
-        """;
-      
-      tosString += toQueryString;
-      }//is comma needed??????????????????????????
-      eventRequestInput['to_id'] = "347815276483446352";
-      print("eeeee: "+tosString);
-      print("eeeee: "+eventRequestInput.toString());
+      }
       //check if from and to are the same
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -136,20 +80,16 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventMutations().sendEventRequest(eventRequestInput, tosString),//(fromInput, toInputs, gameInput),
+          'query': EventMutations().sendEventRequest(eventRequestInput),//(fromInput, toInputs, gameInput),
         }),
       );
     
       print("response body: ");
       print(jsonDecode(response.body));
-
-      
-      
+            
       sendOrganizerEventRequestResponse["success"] = true;
-      sendOrganizerEventRequestResponse["message"] = "Player for Team Created";      
-      sendOrganizerEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];
-    
-      
+      sendOrganizerEventRequestResponse["message"] = "Event Request Created";      
+      sendOrganizerEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];          
     } catch (e) {}
 
     return sendOrganizerEventRequestResponse;

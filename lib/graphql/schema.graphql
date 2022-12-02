@@ -74,16 +74,13 @@ type FriendRequest {
   requestAttempts: Int @default(value: 0)
 }
 
-type To {
-  user: User!
-  eventRequests: [EventRequest]
-
-}
 
 # event request will be sent to event organizers
 type EventRequest {
-  from: User!
-  tos: [To!] @relation
+  organizerWhoAcceptedOrSentRequest: User @relation(name: "organizer_who_accepted_or_sent_event_request")
+  sender: User @relation(name: "event_requests_sent")
+  acceptedBy: User @relation(name: "event_requests_acceptedBy")
+  # tos: [To!] @relation
   event: Event!  
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
@@ -129,6 +126,9 @@ type User  {
   images: [Image] @relation
   events: [Event] @relation
   eventUserOrganizers: [EventUserOrganizers] @relation
+  organizerWhoAcceptedOrSentRequests: [EventRequest] @relation(name: "organizer_who_accepted_or_sent_event_request")
+  eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
+  eventRequestsAcceptedBy: [EventRequest] @relation(name: "event_requests_acceptedBy")
 
 }
 
