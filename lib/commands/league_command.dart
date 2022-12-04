@@ -20,6 +20,30 @@ import '../graphql/queries/leagues.dart';
 
 class LeagueCommand extends BaseCommand {
 
+Map<String, dynamic> currateLeagueData(dynamic selectedObject)  {
+  print("currateLeagueData");
+  Map<String, dynamic> currateLeagueDataResp = {
+    "success": false,
+    "message": "Default Error",
+    "data": null
+  };
+  Map<String, dynamic>? getMainEvent = null;
+  selectedObject['events']['data'].forEach((event) {
+    if (event['isMainEvent'] == true) {
+      getMainEvent = event;
+    }
+  });
+
+  print("getMainEvent");
+  print(getMainEvent);
+  selectedObject['mainEvent'] = getMainEvent;  
+
+
+
+
+  return currateLeagueDataResp;
+}
+
 Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     print("getLeaguesNearLocation");
     Map<String, dynamic> getLeaguesNearLocationResp = {

@@ -17,7 +17,7 @@ import '../graphql/queries/trainings.dart';
 class TrainingCommand extends BaseCommand {
   
   Future<Map<String, dynamic>> getTrainingsNearLocation() async{
-      print("getGamesNearLocation");
+      print("getTrainingNearLocation");
     Map<String, dynamic> getTrainingsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
     try{
       print("my position");
@@ -39,7 +39,7 @@ class TrainingCommand extends BaseCommand {
 
       final result = jsonDecode(response.body)['data']['allTrainings']['data'];
       getTrainingsNearLocationResp["success"] = true;
-      getTrainingsNearLocationResp["message"] = "Games Retrieved";
+      getTrainingsNearLocationResp["message"] = "Trainings Retrieved";
       getTrainingsNearLocationResp["data"] = result;
       
     } on Exception catch (e) {

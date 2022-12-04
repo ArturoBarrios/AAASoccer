@@ -42,6 +42,26 @@ class UserMutations {
     return sendFriendRequestString;
     }  
 
+    String createTo(Map<String, dynamic> userInput) {
+      String createTo = """
+        mutation {
+          createTo(data: {                    
+            user: {
+              connect: ${userInput['_id']}                                    
+            }
+            }) {
+              _id
+              user{
+                _id
+                name           
+              }   
+            }
+          }
+        """;
+
+      return createTo;
+  }
+
 
     String acceptFriendRequest(
       Map<String, dynamic> friendRequestInput) {

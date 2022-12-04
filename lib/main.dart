@@ -30,7 +30,7 @@ import 'package:gql_http_link/gql_http_link.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../components/bottom_nav.dart';
-
+import 'package:adapty_flutter/adapty_flutter.dart';
 
 void main() async {
 
@@ -42,7 +42,7 @@ void main() async {
     final AuthLink authLink = AuthLink(
       getToken: () async => 'Bearer fnAEwyiZocACT1B4JJ2YkT2yPqdbIBgQz55x7a-0',
     );
-    
+    Adapty.activate();
 
     final Link link = authLink.concat(httpLink);
 

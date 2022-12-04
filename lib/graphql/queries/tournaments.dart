@@ -10,9 +10,10 @@ class TournamentQueries {
               numberOfTeams
               groupPlay
               events{
-                data{
+                data{                  
                   name        	
                   _id
+                  isMainEvent
                   }                  
               } 
             }

@@ -32,17 +32,7 @@ class HomePageCommand extends BaseCommand {
       homePageModel.enabledSelections2[k]['enabled'] = false
     });
     homePageModel.enabledSelections2[key]['enabled'] = !homePageModel.enabledSelections2[key]['enabled'];
-    homePageModel.selectedKey = key;
-    // homePageModel.toggleEvent(key);   
-    // homePageModel.enabledSelections.forEach((element) { 
-    //     element['enabled'] = false;
-    //     homePageModel.selectedKey = element['key'];
-    //     // index +=1;
-    // });    
-    
-    print("checkkkkk");
-    print(homePageModel.enabledSelections2);
-
+    homePageModel.selectedKey = key;    
     getSelectedObjects();
     
   }
@@ -78,6 +68,21 @@ class HomePageCommand extends BaseCommand {
         print("check training: ");
         print(eventsModel.trainings);
         homePageModel.selectedObjects = eventsModel.trainings;
+      }
+      else if(homePageModel.selectedKey==Constants.TRYOUT){
+        print("check tryout: ");
+        print(eventsModel.tryouts);
+        homePageModel.selectedObjects = eventsModel.tryouts;
+      }
+      else if(homePageModel.selectedKey==Constants.TOURNAMENT){
+        print("check tournament: ");
+        print(eventsModel.tournaments);
+        homePageModel.selectedObjects = eventsModel.tournaments;
+      }
+      else if(homePageModel.selectedKey==Constants.LEAGUE){
+        print("check league: ");
+        print(eventsModel.leagues);
+        homePageModel.selectedObjects = eventsModel.leagues;
       }
       
       

@@ -7,11 +7,12 @@ class LeagueQueries {
           allLeagues {
             data {      
               _id              
-              numberOfTeams
+              numberOfTeams              
               events{
-                data{
+                data{                  
                   name        	
                   _id
+                  isMainEvent
                   }                  
               } 
             }

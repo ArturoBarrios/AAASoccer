@@ -241,7 +241,7 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
         getUserResp["success"] = true;
         getUserResp["message"] = "user found";
         getUserResp["data"] = result;
-      }
+      }     
     } catch (e) {
       print('Query failed: $e');
     }

@@ -1,15 +1,25 @@
 class GameMutations {
   String createGame(Map<String, dynamic> gameInput,
-      Map<String, dynamic> eventInput, Map<String, dynamic> locationInput) {
+      Map<String, dynamic> eventInput, Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
     String createGame = """
       mutation {
         createGame(data: {
-          pickup: ${gameInput['pickup']},                     
+          pickup: ${gameInput['pickup']}, 
           event: {
             create: 
             {
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput['isMainEvent']},
+              eventUserOrganizers: {
+                create:
+                  {
+                    users: {
+                      connect:[                        
+                          "${userInput['_id']}"                       
+                      ]
+                    }                    
+                  }                                     
+              },                    
               location: {
                 create: 
                 {

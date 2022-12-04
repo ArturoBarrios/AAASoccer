@@ -10,8 +10,20 @@ class GameQueries {
               pickup
               event{
                   name        	
-                  _id                  
-              } 
+                  _id  
+                  eventUserOrganizers{                    
+                      users{
+                        data{
+                          _id
+                          name
+                        }
+                      }    
+                      event{                        
+                          _id
+                          name                        
+                      }                
+                  }
+              }                         
             }
           }
         }

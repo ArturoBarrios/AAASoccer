@@ -62,11 +62,11 @@ class _BottomNav extends State<BottomNav> {
 
   void testFunction() async {
     // TournamentCommand().bergerTable(14);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => TournamentCreate()),
-    );
-    // AmplifyAuthService().signOut();
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => GameCreate()),
+    // );
+    AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
     // print("test text updated");

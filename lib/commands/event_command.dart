@@ -12,10 +12,12 @@ import '../commands/game_command.dart';
 import '../commands/player_command.dart';
 import '../commands/team_command.dart';
 import '../commands/training_command.dart';
+import '../commands/tryout_command.dart';
 import '../commands/tournament_command.dart';
 import '../commands/league_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
+import '../graphql/mutations/users.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './game_command.dart';
@@ -35,12 +37,42 @@ class EventCommand extends BaseCommand {
       print('Mutation failed: $e');
       return createEventResponse;
     }
-  }
+  }  
 
-  Future<Map<String, dynamic>> sendEventRequest(Map<String, dynamic> fromInput, Map<String, dynamic> toInput, Map<String, dynamic> eventInput  ) async{
-    print("sendEventRequest");
-    Map<String, dynamic> sendEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
-    try {      
+  Future<Map<String, dynamic>> sendPlayerEventRequest(Map<String, dynamic> gameInput  ) async{
+    print("sendPlayerEventRequest");
+    Map<String, dynamic> sendPlayerEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
+
+    return sendPlayerEventRequestResponse;
+
+  }
+  
+
+  Future<Map<String, dynamic>> sendOrganizerEventRequest(dynamic gameInput  ) async{
+    print("sendOrganizerEventRequest");
+    Map<String, dynamic> sendOrganizerEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
+    try {    
+       //create To    
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };          
+      Map<String, dynamic> eventRequestInput = {
+        "sender_id": appModel.currentUser['_id'],
+        "event_id": gameInput['event']['_id'],
+      };           
+      print("eventRequestInput");
+      print(eventRequestInput);
+        //useful for preventing spam(set max to 50 per day)
+      //possible solution for creating EventRequest
+        //create string with _ids and syntax and call in 
+        //tos
+        dynamic eventUserOrganizers = gameInput['event']['eventUserOrganizers']['users']['data'];           
+      for (var i = 0; i < eventUserOrganizers.length; i++) {        
+        String toUserId = eventUserOrganizers[i]['_id'];
+        print("eventUserOrganizer "+ toUserId);
+        //send onesignal notification
+      }
+      //check if from and to are the same
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -48,23 +80,19 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventMutations().sendEventRequest(fromInput, toInput, eventInput),
+          'query': EventMutations().sendEventRequest(eventRequestInput),//(fromInput, toInputs, gameInput),
         }),
       );
-
+    
       print("response body: ");
       print(jsonDecode(response.body));
-
-      
-      
-      sendEventRequestResponse["success"] = true;
-      sendEventRequestResponse["message"] = "Player for Team Created";      
-      sendEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];
-    
-      
+            
+      sendOrganizerEventRequestResponse["success"] = true;
+      sendOrganizerEventRequestResponse["message"] = "Event Request Created";      
+      sendOrganizerEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];          
     } catch (e) {}
 
-    return sendEventRequestResponse;
+    return sendOrganizerEventRequestResponse;
   }
 
   
@@ -193,6 +221,13 @@ class EventCommand extends BaseCommand {
       print("trainings: ");
       print(trainings);
       eventsModel.trainings = trainings;            
+    }
+    Map<String, dynamic> getTryoutsNearLocationResp = await TryoutCommand().getTryoutsNearLocation();
+    if(getTryoutsNearLocationResp['success']){
+      List<dynamic> tryouts = getTryoutsNearLocationResp['data'];
+      print("tryouts: ");
+      print(tryouts);
+      eventsModel.tryouts = tryouts;            
     }
     Map<String, dynamic> getPlayersNearLocationResp = await PlayerCommand().getPlayersNearLocation();
     if(getPlayersNearLocationResp['success']){

@@ -7,6 +7,7 @@ import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
+import '../../components/profile.dart';
 
 class GameCreate extends StatefulWidget {
   @override
@@ -35,7 +36,7 @@ class _GameCreateState extends State<GameCreate> {
     };
     try {
       var rng = Random();
-      Map<String, dynamic> eventInput = {
+      Map<String, dynamic> eventInput = {        
         "name": "Pickup Game " + rng.nextInt(100000000).toString(),
         'isMainEvent': true,        
       };
@@ -68,6 +69,26 @@ class _GameCreateState extends State<GameCreate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: new Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text("Find Soccer Near You")),
+        backgroundColor: Colors.orange.shade500,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Go to the next page',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Profile();
+                },
+              ));
+            },
+          ),
+        ],
+      ),
       body: Center(
           child: Column(children: [
         TextField(

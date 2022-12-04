@@ -83,7 +83,9 @@ class BaseCommand {
         print(getUserResp);
         if(getUserResp["success"]){
           Map<String, dynamic> user = getUserResp["data"];
-          AppModel().currentUser = user;
+          appModel.currentUser = user;
+          print("app model user: ");
+          print(appModel.currentUser);
           // setUserId(user.id);
           // setUser(user);
           EventCommand().setupMappedEvents();

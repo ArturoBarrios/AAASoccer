@@ -40,55 +40,84 @@ class EventMutations{
   }
 
   String sendEventRequest(
-      Map<String, dynamic> fromInput, Map<String, dynamic> toInput, Map<String, dynamic> eventInput) {
-      String createFriendRequest = """
+      Map<String, dynamic> eventRequestInput) {
+      String createEventRequest = """
       mutation {
-        CreateFriendRequest(data: {    
-          requestAttempts: 1, 
-          to: {
-            connect: 
-            {
-              _id: "${toInput['_id']}"
-            }
-          },  
-          from: {
-            connect: 
-            {
-              _id: "${fromInput['_id']}"
-            }
-          }                       
+        createEventRequest(
+          data: {    
+          requestAttempts: 1,           
+          sender: {
+           	connect: "${eventRequestInput['sender_id']}"           
+          },                                    
           event: {
-            connect: 
-            {
-              _id: "${eventInput['_id']}"
-            }
+          	connect: "${eventRequestInput['event_id']}"                       
           }                       
           }) {
-            _id
+              _id
             status
             requestAttempts
-            to{
-              data{
-                _id
-                name
-              }
+            sender{                            
+              _id
+              name              
             }   
-            from{
-              data{
+            acceptedBy{              
                 _id
-                name
-              }
+                name              
             }            
-            event{
-              data{
+            organizerWhoAcceptedOrSentRequest {              
                 _id
-                name
-              }
+                name              
             }            
+            event{              
+                _id
+                name              
+            }            
+    				
+                 
           }   
         }
         """;
 
-    return createFriendRequest;
+    return createEventRequest;
+    }
+  String acceptEventRequest(
+      Map<String, dynamic> eventRequestInput) {
+      String createEventRequest = """
+      mutation {
+        createEventRequest(
+          data: {    
+          requestAttempts: 1, 
+          organizer: {
+            connect: "${eventRequestInput['user_id']}",          
+          },
+          from: {
+           	connect: "${eventRequestInput['from_id']}"           
+          },                  
+          event: {
+          	connect: "${eventRequestInput['event_id']}"                       
+          }                       
+          }) {
+              _id
+            status
+            requestAttempts
+            organizer{                            
+              _id
+              name              
+            }   
+            from{              
+                _id
+                name              
+            }            
+            event{              
+                _id
+                name              
+            }            
+    				
+                 
+          }   
+        }
+        """;
+
+    return createEventRequest;
     }
 }

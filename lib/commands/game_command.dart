@@ -9,6 +9,7 @@ import '../models/events_model.dart';
 import '../commands/geolocation_command.dart';
 import 'package:geolocator/geolocator.dart';
 import '../graphql/mutations/games.dart';
+import '../graphql/mutations/users.dart';
 import '../graphql/queries/games.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -51,6 +52,49 @@ class GameCommand extends BaseCommand {
     return getGamesNearLocationResp;
   }
 
+  Future<Map<String, dynamic>> createTo(Map<String, dynamic> userInput) async {
+    print("createTo");
+    Map<String, dynamic> createToResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };     
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query':
+              UserMutations().createTo(userInput),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      Map<String, dynamic> createTo =
+          jsonDecode(response.body)['data']['createTo'];      
+
+      createToResponse["success"] = true;
+      createToResponse["message"] = "To Created";
+      createToResponse["data"] =
+          jsonDecode(response.body)['data']['createTo'];
+      await EventCommand().addGame(createTo, true);
+
+      return createToResponse;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return createToResponse;
+    }    
+
+  }
+
+
 //create
   Future<Map<String, dynamic>> createGame(
       Map<String, dynamic> gameInput,
@@ -64,6 +108,11 @@ class GameCommand extends BaseCommand {
       "data": null
     };
     try {
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };      
+
+      print("eventtttttttttt input: "+eventInput.toString());
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -72,14 +121,14 @@ class GameCommand extends BaseCommand {
         },
         body: jsonEncode(<String, String>{
           'query':
-              GameMutations().createGame(gameInput, eventInput, locationInput),
+              GameMutations().createGame(gameInput, eventInput, locationInput, userInput),
         }),
       );
+      print("response body: ");
+      print(jsonDecode(response.body));
       Map<String, dynamic> createdGame =
           jsonDecode(response.body)['data']['createGame'];
       // EventsModel().games.add(createdGame);
-      print("response body: ");
-      print(jsonDecode(response.body));
 
       createGameResponse["success"] = true;
       createGameResponse["message"] = "Game Created";

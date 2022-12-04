@@ -53,5 +53,8 @@
 		<false/>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
+		<key>AdaptyPublicSdkKey</key>
+    <string>public_live_3bVgZpam.ro2XqkHabWP3U7AKZaJr</string>
+		
 	</dict>
 </plist>
