@@ -100,6 +100,7 @@ class GameCommand extends BaseCommand {
       Map<String, dynamic> gameInput,
       Map<String, dynamic> eventInput,
       Map<String, dynamic> locationInput) async {
+        
     print("createGame");
     print(gameInput);
     Map<String, dynamic> createGameResponse = {

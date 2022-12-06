@@ -176,77 +176,7 @@ class HomePageModel extends ChangeNotifier {
   set enabledSelections2(Map<String, dynamic> enabledSelections2){
     _enabledSelections2 = enabledSelections2;    
     notifyListeners();
-  }
-  
-
-
-  // List _enabledSelections = [
-  //   {
-  //     "key": Constants.PICKUP,
-  //     "enabled": true,
-  //     "name": StringConstants.PICKUPGAMESTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-      
-  //   },
-  //   //include past events, sort by most current
-  //   //that way past events are always last
-  //   {
-  //     "key": Constants.PICKUP,
-  //     "enabled": true,
-  //     "name": StringConstants.MYEVENTS,
-  //     "description": "My Events",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-      
-  //   },
-  //   {
-  //     "key": Constants.PICKUP,
-  //     "enabled": false,
-  //     "name": StringConstants.TRAININGSTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //    {
-  //     "key": Constants.PICKUP,
-  //     "enabled": false,
-  //     "name": StringConstants.PLAYERSTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //    {
-  //     "key": Constants.PICKUP,
-  //     "enabled": false,
-  //     "name": StringConstants.TEAMSTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //   {
-  //     "key": Constants.PICKUP,
-  //     "enabled": false,
-  //     "name": StringConstants.TRYOUTSTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //   {
-  //     "key": Constants.PICKUP,
-  //     "enabled": false,
-  //     "name": StringConstants.TOURNAMENTSTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  //   {
-  //     "key": Constants.PICKUP,
-  //     "enabled": false,
-  //     "name": StringConstants.LEAGUESTITLE,
-  //     "description": "",
-  //     "image": SVGWidgets().getSoccerBallSVGImage(),
-  //   },
-  // ];
-  // List get enabledSelections => _enabledSelections;
-  // set enabledSelections(List enabledSelections){
-  //   _enabledSelections = enabledSelections;    
-  //   notifyListeners();
-  // }
+  }  
 
   List _selectedObjects = [];
   List get selectedObjects => _selectedObjects;

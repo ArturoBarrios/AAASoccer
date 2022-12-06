@@ -8,6 +8,7 @@ type Query {
   allPlayers: [Player!]
   allTeams: [Team!]
   getUser(email: String): User
+  allEventRequests: [EventRequest]
 }
 
 enum EventType {
@@ -106,7 +107,7 @@ type OrganizerRequest {
 
 
 type User  {  
-  userType: UserType!
+  userType: UserType
   name: String!
   phone: String!
   email: String!

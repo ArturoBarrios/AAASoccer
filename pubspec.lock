@@ -622,7 +622,7 @@ packages:
       name: graphql
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.2-beta.5"
+    version: "5.1.2-beta.6"
   graphql_flutter:
     dependency: "direct main"
     description:
@@ -734,7 +734,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   nested:
     dependency: transitive
     description:
@@ -756,6 +756,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.2"
+  onesignal_flutter:
+    dependency: "direct main"
+    description:
+      name: onesignal_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.5.0"
   package_config:
     dependency: transitive
     description:

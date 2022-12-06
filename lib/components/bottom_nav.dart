@@ -9,6 +9,7 @@ import '../views/team/create.dart';
 import '../views/wager/create.dart';
 import '../views/league/create.dart';
 import '../views/tournament/create.dart';
+import '../views/request/view.dart';
 import '../commands/user_command.dart';
 import '../commands/base_command.dart';
 import '../commands/player_command.dart';
@@ -62,11 +63,11 @@ class _BottomNav extends State<BottomNav> {
 
   void testFunction() async {
     // TournamentCommand().bergerTable(14);
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => GameCreate()),
-    // );
-    AmplifyAuthService().signOut();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GameCreate()),
+    );
+    // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
     // print("test text updated");
@@ -109,7 +110,13 @@ class _BottomNav extends State<BottomNav> {
                   text: "Search",
                   icon: Icons.search_outlined,
                   selected: false,
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return RequestsView();
+                      },
+                    ));
+                  }),
               IconBottomBar2(
                   text: "Add",
                   icon: Icons.add_outlined,

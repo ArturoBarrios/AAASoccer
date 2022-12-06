@@ -55,6 +55,7 @@ dependencies:
   http: ^0.13.5
   flutter_animated_dialog: ^2.0.1  
   adapty_flutter: ^1.0.14
+  onesignal_flutter: ^3.4.2
   
   
 
