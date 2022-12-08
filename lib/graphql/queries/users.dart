@@ -10,6 +10,17 @@ class UserQueries {
               username
               birthdate
               gender
+              eventRequestsToAccept{
+                data{
+                  _id
+                  status
+                  requestAttempts
+                  event{
+                    _id
+                    name
+                  }
+                }
+              }            
                                                
               
             

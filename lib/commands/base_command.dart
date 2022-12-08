@@ -4,12 +4,14 @@ import '/models/user_model.dart';
 import '/models/home_page_model.dart';
 import '/models/events_model.dart';
 import '/models/games_model.dart';
+import '/models/requests_model.dart';
+import '/models/requests_page_model.dart';
 import '/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/User.dart';
 import '../commands/user_command.dart';
-import '../commands/game_command.dart';
+import '../commands/player_command.dart';
 import '../commands/event_command.dart';
 import '../services/geolocation_services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -26,9 +28,11 @@ class BaseCommand {
   // Models
   UserModel userModel = _mainContext.read();
   AppModel appModel = _mainContext.read();
-  HomePageModel homePageModel = _mainContext.read();
   EventsModel eventsModel = _mainContext.read();  
   GamesModel gamesModel = _mainContext.read();  
+  HomePageModel homePageModel = _mainContext.read();
+  RequestsModel requestsModel = _mainContext.read();  
+  RequestsPageModel requestsPageModel = _mainContext.read();  
   // Services
   UserService userService = _mainContext.read();
   GeoLocationServices geoLocationServices = _mainContext.read();
@@ -75,14 +79,27 @@ class BaseCommand {
   Future <Map<String, dynamic>> setupInitialAppModels(String email) async{
     print("setupInitialAppModels");
     Map<String, dynamic> resp = {"success": false, "message": "setup unsuccessfull", "data": null};
-    try{      
-      print("email used to getUser: " + email);
+    try{            
       Map<String, dynamic> getUserResp = await UserCommand().getUser(email);     
       if(getUserResp["success"] == true){
         print("getUserResp: ");
         print(getUserResp);
-        if(getUserResp["success"]){
-          Map<String, dynamic> user = getUserResp["data"];
+        if(getUserResp["success"]){          
+          dynamic user = getUserResp["data"];
+          if(user==null){
+            Map<String, dynamic> userInput = {
+              "email": email,
+              "username": "username",
+              "phone": "2672136006",
+              "birthdate": "07/26/1997",
+              "gender": "male",
+              "address": "random address",
+              "status": "SignedUp"
+            };      
+            Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};      
+            Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
+            user = createPlayerResp['data'];
+          }
           appModel.currentUser = user;
           print("app model user: ");
           print(appModel.currentUser);

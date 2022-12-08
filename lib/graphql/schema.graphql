@@ -8,6 +8,7 @@ type Query {
   allPlayers: [Player!]
   allTeams: [Team!]
   getUser(email: String): User
+  allEventRequests: [EventRequest]
 }
 
 enum EventType {
@@ -77,9 +78,11 @@ type FriendRequest {
 
 # event request will be sent to event organizers
 type EventRequest {
+  organizers: [User!] @relation(name: "event_requests_organizers")
   organizerWhoAcceptedOrSentRequest: User @relation(name: "organizer_who_accepted_or_sent_event_request")
   sender: User @relation(name: "event_requests_sent")
   acceptedBy: User @relation(name: "event_requests_acceptedBy")
+  receivers: [User!] @relation(name: "event_requests_to_accept")
   # tos: [To!] @relation
   event: Event!  
   status: RequestStatus @default(value: PENDING)
@@ -106,7 +109,7 @@ type OrganizerRequest {
 
 
 type User  {  
-  userType: UserType!
+  userType: UserType
   name: String!
   phone: String!
   email: String!
@@ -129,6 +132,8 @@ type User  {
   organizerWhoAcceptedOrSentRequests: [EventRequest] @relation(name: "organizer_who_accepted_or_sent_event_request")
   eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
   eventRequestsAcceptedBy: [EventRequest] @relation(name: "event_requests_acceptedBy")
+  eventRequests: [EventRequest] @relation(name: "event_requests_organizers")
+  eventRequestsToAccept: [EventRequest] @relation(name: "event_requests_to_accept")
 
 }
 

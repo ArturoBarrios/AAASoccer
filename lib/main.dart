@@ -15,6 +15,8 @@ import 'commands/event_command.dart';
 import 'models/app_model.dart';
 import 'models/user_model.dart';
 import 'models/events_model.dart';
+import 'models/requests_model.dart';
+import 'models/requests_page_model.dart';
 import 'models/games_model.dart';
 import 'services/user_service.dart';
 import 'services/fauna_db_services.dart';
@@ -31,6 +33,7 @@ import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../components/bottom_nav.dart';
 import 'package:adapty_flutter/adapty_flutter.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() async {
 
@@ -127,7 +130,7 @@ class _MyAppState extends State<MyApp> {
         cache: GraphQLCache(store: HiveStore()),
       ),
     );
-    print("graphQL client: ");
+    print("graphQL clientt: ");
     print(client);
     // AppModel().faunaClient = client;
 
@@ -290,9 +293,11 @@ class _MyAppState extends State<MyApp> {
         providers: [
           ChangeNotifierProvider(create: (c) => AppModel()),
           ChangeNotifierProvider(create: (c) => UserModel()),
-          ChangeNotifierProvider(create: (c) => HomePageModel()),
           ChangeNotifierProvider(create: (c) => EventsModel()),
           ChangeNotifierProvider(create: (c) => GamesModel()),
+          ChangeNotifierProvider(create: (c) => RequestsModel()),
+          ChangeNotifierProvider(create: (c) => RequestsPageModel()),
+          ChangeNotifierProvider(create: (c) => HomePageModel()),
           Provider(create: (c) => FaunaDBServices()),
           Provider(create: (c) => UserService()),
           Provider(create: (c) => GeoLocationServices()),

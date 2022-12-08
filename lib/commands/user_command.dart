@@ -235,13 +235,12 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
 
       print("response: ");
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['getUser'];
-
-      if (result != null) {
+      final result = jsonDecode(response.body)['data']['getUser'];    
+      // if (result != null) {
         getUserResp["success"] = true;
         getUserResp["message"] = "user found";
         getUserResp["data"] = result;
-      }     
+      // }     
     } catch (e) {
       print('Query failed: $e');
     }

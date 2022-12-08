@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "203738467816",
+    "project_id": "soccer-app-a9060",
+    "storage_bucket": "soccer-app-a9060.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203738467816:android:f05c7c4f30736eecd3e85d",
+        "android_client_info": {
+          "package_name": "com.example.soccermadeeasy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203738467816-0jibgm7smij7cl7soj07iqf0qanhfj83.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvHFkoQb6Zo9z0_asEod7bzCekNXWrNhA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203738467816-0jibgm7smij7cl7soj07iqf0qanhfj83.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
