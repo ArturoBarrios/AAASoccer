@@ -66,9 +66,11 @@ class EventCommand extends BaseCommand {
       //possible solution for creating EventRequest
         //create string with _ids and syntax and call in 
         //tos
-        dynamic eventUserOrganizers = gameInput['event']['eventUserOrganizers']['users']['data'];           
+      dynamic eventUserOrganizers = gameInput['event']['eventUserOrganizers']['users']['data'];                 
+      String organizersString = "";
       for (var i = 0; i < eventUserOrganizers.length; i++) {        
         String toUserId = eventUserOrganizers[i]['_id'];
+        organizersString = organizersString + toUserId + " ";
         print("eventUserOrganizer "+ toUserId);
         //send onesignal notification
       }
@@ -80,7 +82,7 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventMutations().sendEventRequest(eventRequestInput),//(fromInput, toInputs, gameInput),
+          'query': EventMutations().sendEventRequest(eventRequestInput, organizersString, organizersString),//(fromInput, toInputs, gameInput),
         }),
       );
     

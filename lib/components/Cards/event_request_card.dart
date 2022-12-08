@@ -4,7 +4,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
-import '../../commands/event_command.dart';
+import '../../commands/requests_command.dart';
 import '../../views/game/view.dart';
 import '../../assets/icons/plus_circle_outline.svg';
 
@@ -147,7 +147,7 @@ class _EventRequestCard extends State<EventRequestCard> {
               onTap: () {
                 //send event request
                 print("send event request");
-                EventCommand().sendOrganizerEventRequest(widget.eventObject);
+                RequestsCommand().acceptEventRequest(widget.eventObject);
                 
               },
               child: Container(

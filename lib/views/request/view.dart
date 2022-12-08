@@ -42,7 +42,8 @@ class _RequestsViewState extends State<RequestsView> {
     print("getEventRequestsResp: " + getEventRequestsResp.toString());
     List eventRequests = getEventRequestsResp['data'];
     if (getEventRequestsResp['success']) {
-      print("niceee");
+      print("EventRequests to set: ");
+      print(eventRequests);
       print(RequestsPageModel().initialConditionsMet);
       RequestsCommand().updateEventRequestModels(eventRequests);
       print("initialConditionsMet: ");
@@ -50,7 +51,11 @@ class _RequestsViewState extends State<RequestsView> {
       print("initialConditionsMet after: ");
       print(RequestsPageModel().initialConditionsMet);
       print("done");
-    }
+    }    
+
+    setState(() {
+      
+    });
     
     
 
@@ -66,6 +71,7 @@ class _RequestsViewState extends State<RequestsView> {
     print("init state");
     super.initState();    
     //avoid multiple loads??    
+    
     getRequestPageData();    
   }
     
@@ -82,7 +88,7 @@ class _RequestsViewState extends State<RequestsView> {
     String selectedKey = context
         .select<RequestsPageModel, String>((value) => value.selectedKey);
 
-    print("selectedObjects:: " + selectedObjects.toString());
+    print("selectedObjects to build:: " + selectedObjects.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -129,7 +135,8 @@ class _RequestsViewState extends State<RequestsView> {
                           itemBuilder: (_, index) => Card(
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 10),
-                                child:    
+                                child:
+                                // Text("test") 
                                   getRequestCard(selectedKey, selectedObjects[index], svgImage),                              
                                   // PickupCard2(
                                   //     eventObject: selectedObjects[index],

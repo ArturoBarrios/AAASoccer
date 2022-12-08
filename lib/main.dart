@@ -130,7 +130,7 @@ class _MyAppState extends State<MyApp> {
         cache: GraphQLCache(store: HiveStore()),
       ),
     );
-    print("graphQL client: ");
+    print("graphQL clientt: ");
     print(client);
     // AppModel().faunaClient = client;
 

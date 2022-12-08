@@ -40,22 +40,39 @@ class EventMutations{
   }
 
   String sendEventRequest(
-      Map<String, dynamic> eventRequestInput) {
+      Map<String, dynamic> eventRequestInput, String organizersString, String receivers) {
       String createEventRequest = """
       mutation {
         createEventRequest(
           data: {    
-          requestAttempts: 1,           
-          sender: {
-           	connect: "${eventRequestInput['sender_id']}"           
-          },                                    
-          event: {
-          	connect: "${eventRequestInput['event_id']}"                       
-          }                       
+            status: PENDING,
+            requestAttempts: 1,                     
+            organizers: {
+              connect: [
+                $organizersString
+              ]
+            }
+            receivers: {
+              connect: [
+                $receivers
+              ]
+            }
+            sender: {
+              connect: "${eventRequestInput['sender_id']}"           
+            },                                    
+            event: {
+              connect: "${eventRequestInput['event_id']}"                       
+            }                       
           }) {
               _id
             status
             requestAttempts
+            organizers{
+              data{
+                _id
+                name
+              }
+            }
             sender{                            
               _id
               name              

@@ -56,6 +56,21 @@ class RequestsCommand extends BaseCommand {
     return getRequestsResp;
   }
 
+  Map<String, dynamic> acceptEventRequest(dynamic eventRequest){
+    print("acceptEventRequest");
+    print(eventRequest);
+    Map<String, dynamic> acceptEventRequestResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    
+
+    return acceptEventRequestResp;
+
+  }
+
+
   Map<String, dynamic> updateEventRequestModels(List eventRequests){
     print("UpdateEventRequestModels");
     print(eventRequests);
@@ -65,9 +80,14 @@ class RequestsCommand extends BaseCommand {
       "data": null
     };
 
-    RequestsModel().eventRequests = eventRequests;
-    RequestsPageModel().selectedObjects = eventRequests;
-    
+    print("UpdateEventRequestModels eventRequests to set: ");
+    print(eventRequests);
+    print("UpdateEventRequestModels before set eventRequests");
+    print(requestsModel.eventRequests);
+    requestsModel.eventRequests = eventRequests;
+    requestsPageModel.selectedObjects = eventRequests;
+    print("UpdateEventRequestModels after set eventRequests");
+    print(requestsModel.eventRequests);
 
     UpdateEventRequestModelsResp["success"] = true;
 
