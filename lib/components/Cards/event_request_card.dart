@@ -10,9 +10,9 @@ import '../../assets/icons/plus_circle_outline.svg';
 
 class EventRequestCard extends StatefulWidget {
   const EventRequestCard(
-      {Key? key, required this.eventObject, required this.svgImage})
+      {Key? key, required this.eventRequestObject, required this.svgImage})
       : super(key: key);
-  final Map<String, dynamic> eventObject;
+  final Map<String, dynamic> eventRequestObject;
   final Svg svgImage;
   final double bevel = 10.0;
 
@@ -53,7 +53,7 @@ class _EventRequestCard extends State<EventRequestCard> {
   Widget build(BuildContext context) {
   print("EventRequestCard Build()");
     print("widget name: ");
-    print(widget.eventObject.toString());
+    print(widget.eventRequestObject.toString());
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -99,10 +99,10 @@ class _EventRequestCard extends State<EventRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.eventObject['event']['name'],
+                    text: widget.eventRequestObject['event']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.eventObject['description'],
+                        "test subtitle", //widget.eventRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -118,8 +118,8 @@ class _EventRequestCard extends State<EventRequestCard> {
                       onPositiveClick: () {
                         Navigator.of(context).pop();
                         //delete event aaa
-                        print(widget.eventObject.toString());
-                        deletePickup(widget.eventObject);
+                        print(widget.eventRequestObject.toString());
+                        deletePickup(widget.eventRequestObject);
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();
@@ -146,8 +146,9 @@ class _EventRequestCard extends State<EventRequestCard> {
             GestureDetector(
               onTap: () {
                 //send event request
-                print("send event request");
-                RequestsCommand().acceptEventRequest(widget.eventObject);
+                print("update event request");
+                print(widget.toString());
+                RequestsCommand().updateEventRequest(widget.eventRequestObject);
                 
               },
               child: Container(

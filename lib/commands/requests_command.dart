@@ -12,6 +12,7 @@ import '../commands/geolocation_command.dart';
 import 'package:geolocator/geolocator.dart';
 import '../graphql/mutations/games.dart';
 import '../graphql/mutations/users.dart';
+import '../graphql/mutations/events.dart';
 import '../graphql/queries/requests.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -56,19 +57,39 @@ class RequestsCommand extends BaseCommand {
     return getRequestsResp;
   }
 
-  Map<String, dynamic> acceptEventRequest(dynamic eventRequest){
-    print("acceptEventRequest");
-    print(eventRequest);
-    Map<String, dynamic> acceptEventRequestResp = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
+  Future<Map<String, dynamic>> updateEventRequest(Map<String, dynamic> eventRequestInput  ) async{
+    print("updateEventRequest");
+    Map<String, dynamic> updateEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
+    try {         
+      eventRequestInput['acceptyBy'] = appModel.currentUser['_id'];          
+      // ????
+      // eventRequestInput['status'] = RequestStatus.ACCEPTED;
+       
+      //check if from and to are the same
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations().updateEventRequest(eventRequestInput),//(fromInput, toInputs, gameInput),
+        }),
+      );
     
+      print("response body: ");
+      print(jsonDecode(response.body));
+            
+      updateEventRequestResponse["success"] = true;
+      updateEventRequestResponse["message"] = "Event Request Created";      
+      updateEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];          
+    } catch (e) {}
 
-    return acceptEventRequestResp;
+    return updateEventRequestResponse;
 
   }
+
+
 
 
   Map<String, dynamic> updateEventRequestModels(List eventRequests){
