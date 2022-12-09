@@ -97,26 +97,24 @@ class EventMutations{
 
     return createEventRequest;
     }
-  String acceptEventRequest(
+  String updateEventRequest(
       Map<String, dynamic> eventRequestInput) {
       String createEventRequest = """
       mutation {
         createEventRequest(
-          data: {    
-          requestAttempts: 1, 
-          organizer: {
-            connect: "${eventRequestInput['user_id']}",          
-          },
-          from: {
-           	connect: "${eventRequestInput['from_id']}"           
-          },                  
-          event: {
-          	connect: "${eventRequestInput['event_id']}"                       
-          }                       
+          data: {              
+          status: ACCEPTED,
+          acceptedBy: {
+           	connect: "${eventRequestInput['acceptedBy_id']}"           
+          },                                                  
           }) {
               _id
             status
             requestAttempts
+            acceptedBy{              
+                _id
+                name              
+            }
             organizer{                            
               _id
               name              
