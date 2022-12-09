@@ -37,6 +37,9 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() async {
 
+
+  
+
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(
       'https://neat-sunfish-45.hasura.app/v1/graphql',
@@ -59,7 +62,17 @@ void main() async {
     print("graphQL client: ");
     print(client);
   
+  //Remove this method to stop OneSignal Debugging 
+OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+
+OneSignal.shared.setAppId("aeb22176-60a9-4077-b161-69381a79fa94");
+
+// The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+    print("Accepted permission: $accepted");
+});
   runApp(MyApp(client: client));
+
 
 }
 

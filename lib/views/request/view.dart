@@ -31,7 +31,7 @@ class _RequestsViewState extends State<RequestsView> {
       print("getRequestCard()");
       print("selectedKey: " + selectedKey);
       print("requestObject: " + requestObject.toString());
-      Widget card = EventRequestCard(eventObject: requestObject, svgImage: svgImage);     
+      Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
 
     return card;
   }

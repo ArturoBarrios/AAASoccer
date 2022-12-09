@@ -38,6 +38,7 @@ class EventCommand extends BaseCommand {
       return createEventResponse;
     }
   }  
+  
 
   Future<Map<String, dynamic>> sendPlayerEventRequest(Map<String, dynamic> gameInput  ) async{
     print("sendPlayerEventRequest");
@@ -46,6 +47,8 @@ class EventCommand extends BaseCommand {
     return sendPlayerEventRequestResponse;
 
   }
+
+
   
 
   Future<Map<String, dynamic>> sendOrganizerEventRequest(dynamic gameInput  ) async{
