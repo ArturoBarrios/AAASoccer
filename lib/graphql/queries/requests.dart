@@ -9,10 +9,12 @@ class RequestsQueries {
               _id
               status
               requestAttempts
-              organizerWhoAcceptedOrSentRequest{
-                _id
-                name
-              }
+              organizers{
+                data{
+                  _id
+                  name
+                }
+              }             
               sender{
                 _id
                 name

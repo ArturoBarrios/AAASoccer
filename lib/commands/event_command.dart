@@ -73,10 +73,11 @@ class EventCommand extends BaseCommand {
       String organizersString = "";
       for (var i = 0; i < eventUserOrganizers.length; i++) {        
         String toUserId = eventUserOrganizers[i]['_id'];
-        organizersString = organizersString + toUserId + " ";
-        print("eventUserOrganizer "+ toUserId);
+        organizersString = organizersString + toUserId + ",";        
         //send onesignal notification
       }
+      print("organizersString");
+      print(organizersString);
       //check if from and to are the same
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),

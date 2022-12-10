@@ -212,6 +212,42 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
     
   }
 
+  Future<Map<String, dynamic>> getCurrentUser() async {
+    print("getCurrentUser");
+    Map<String, dynamic> getUserResp = {
+      "success": false,
+      "message": "no user found",
+      "data": null
+    };
+    try {
+      String email = appModel.currentUser['email'];
+      print("email: ");
+      print(email);
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserQueries().getUser(email),
+        }),
+      );
+
+      print("response: ");
+      print(jsonDecode(response.body));
+      final result = jsonDecode(response.body)['data']['getUser'];    
+      // if (result != null) {
+        getUserResp["success"] = true;
+        getUserResp["message"] = "user found";
+        getUserResp["data"] = result;
+      // }     
+    } catch (e) {
+      print('Query failed: $e');
+    }
+    return getUserResp;
+  }
+
   Future<Map<String, dynamic>> getUser(String email) async {
     print("getUser");
     Map<String, dynamic> getUserResp = {

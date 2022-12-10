@@ -70,21 +70,27 @@ class EventMutations{
             organizers{
               data{
                 _id
+                email
+                name
+              }
+            }
+            receivers{
+              data{
+                _id
+                email
                 name
               }
             }
             sender{                            
               _id
+              email
               name              
             }   
             acceptedBy{              
                 _id
+                email
                 name              
-            }            
-            organizerWhoAcceptedOrSentRequest {              
-                _id
-                name              
-            }            
+            }                                  
             event{              
                 _id
                 name              
@@ -99,9 +105,9 @@ class EventMutations{
     }
   String updateEventRequest(
       Map<String, dynamic> eventRequestInput) {
-      String createEventRequest = """
+      String updateEventRequest = """
       mutation {
-        createEventRequest(
+        updateEventRequest(id: ${eventRequestInput['_id']},
           data: {              
           status: ACCEPTED,
           acceptedBy: {
@@ -114,14 +120,26 @@ class EventMutations{
             acceptedBy{              
                 _id
                 name              
+                email         
             }
-            organizer{                            
+            organizers{                            
+              data{
               _id
-              name              
+              name     
+              email         
+              }
             }   
-            from{              
+            receivers{                            
+              data{
+              _id
+              name     
+              email         
+              }
+            }   
+            sender{              
                 _id
-                name              
+                name          
+                email             
             }            
             event{              
                 _id
@@ -133,6 +151,6 @@ class EventMutations{
         }
         """;
 
-    return createEventRequest;
+    return updateEventRequest;
     }
 }

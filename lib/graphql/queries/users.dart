@@ -10,6 +10,23 @@ class UserQueries {
               username
               birthdate
               gender
+              friendRequests{
+                data{
+                  _id
+                  status
+                  requestAttempts
+                  sender{
+                    _id
+                    name
+                    email
+                  }
+                  receiver{
+                    _id
+                    name
+                    email
+                  }
+                }
+              }
               eventRequestsToAccept{
                 data{
                   _id

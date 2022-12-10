@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/commands/user_command.dart';
+import 'package:soccermadeeasy/models/app_model.dart';
 import '../../components/profile.dart';
 import '../../components/Cards/event_request_card.dart';
 import '../../models/requests_model.dart';
@@ -37,10 +39,11 @@ class _RequestsViewState extends State<RequestsView> {
   }
 
   void getRequestPageData() async{
-    print("getRequestPageData()");    
-    Map<String, dynamic> getEventRequestsResp = await RequestsCommand().getEventRequests();
+    print("getRequestPageData()");        
+    // Map<String, dynamic> getEventRequestsResp = await RequestsCommand().getEventRequests();
+    Map<String, dynamic> getEventRequestsResp = await UserCommand().getCurrentUser();
     print("getEventRequestsResp: " + getEventRequestsResp.toString());
-    List eventRequests = getEventRequestsResp['data'];
+    List eventRequests = getEventRequestsResp['data']['eventRequestsToAccept']['data'];
     if (getEventRequestsResp['success']) {
       print("EventRequests to set: ");
       print(eventRequests);

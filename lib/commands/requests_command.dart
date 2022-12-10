@@ -61,7 +61,9 @@ class RequestsCommand extends BaseCommand {
     print("updateEventRequest");
     Map<String, dynamic> updateEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
     try {         
-      eventRequestInput['acceptyBy'] = appModel.currentUser['_id'];          
+      print("user id before updateEventRequest: ");
+      print(appModel.currentUser['_id']);          
+      eventRequestInput['acceptedBy_id'] = appModel.currentUser['_id'];          
       // ????
       // eventRequestInput['status'] = RequestStatus.ACCEPTED;
        
@@ -82,7 +84,7 @@ class RequestsCommand extends BaseCommand {
             
       updateEventRequestResponse["success"] = true;
       updateEventRequestResponse["message"] = "Event Request Created";      
-      updateEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];          
+      updateEventRequestResponse["data"] = jsonDecode(response.body)['data']['updateEventRequest'];          
     } catch (e) {}
 
     return updateEventRequestResponse;
