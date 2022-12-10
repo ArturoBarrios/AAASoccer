@@ -1,7 +1,6 @@
 class TeamQueries {
-  String getTeam(String id)
-   {
-      String getTeam = """
+  String getTeam(String id) {
+    String getTeam = """
         query getTeam {
           findPlayer(id: $id) {
             data {      
@@ -14,36 +13,41 @@ class TeamQueries {
                   birthdate
                   gender
                   location                                    
-              } 
+              }               
             }
           }
         }
       """;
 
-      return getTeam;
-   }
+    return getTeam;
+  }
 
-    String getTeams()
-    {
-        String getTeams = """
+  String getTeams() {
+    String getTeams = """
           query getTeams {
             allTeams {
               data {      
                 _id 
-                name                             
+                name    
+                teamUserOrganizers{                                
+                users{
+                  data{
+                    _id
+                    name
+                  }                     
+                }                                
+            }                   
                 players{
                   data{
                     _id
                     }
                     }
+                    
                   }
                 }
               }
           """;
 
-          return getTeams;
-
-    }
-
-  
+    return getTeams;
+  }
 }

@@ -119,6 +119,13 @@ class HomePageModel extends ChangeNotifier {
 
 
   Map<String, dynamic> _enabledSelections2 = {
+    Constants.TEAM: {
+    "key": Constants.TEAM,
+    "enabled": false,
+    "name": StringConstants.TEAMSTITLE,
+    "description": "",
+    "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
     Constants.PICKUP: {
       "key": Constants.PICKUP,
       "enabled": true,
@@ -138,13 +145,6 @@ class HomePageModel extends ChangeNotifier {
       "key": Constants.PLAYER,
       "enabled": false,
       "name": StringConstants.PLAYERSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-     Constants.TEAM: {
-      "key": Constants.TEAM,
-      "enabled": false,
-      "name": StringConstants.TEAMSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },

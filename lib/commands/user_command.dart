@@ -168,49 +168,6 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
     return sendFriendRequestResponse;
   }
   
-  Future<Map<String, dynamic>> sendTeamOrganizerRequest(Map<String, dynamic> fromInput, Map<String, dynamic> toInput  ,Map<String, dynamic> teamInput ) async {
-    Map<String, dynamic> sendOrganizerRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    try {      
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': TeamMutations().sendTeamOrganizerRequest(fromInput, toInput, teamInput),
-        }),
-      );
-
-      print("response body: ");
-      print(jsonDecode(response.body));
-
-      
-      
-      sendOrganizerRequestResponse["success"] = true;
-      sendOrganizerRequestResponse["message"] = "Player for Team Created";      
-      sendOrganizerRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];
-    
-      
-    } catch (e) {}
-    return sendOrganizerRequestResponse;
-  }
-
-  Future<Map<String, dynamic>> updateFriendRequest() async{
-     Map<String, dynamic> updateFriendRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    
-
-    return updateFriendRequestResponse;
-    
-  }
 
   Future<Map<String, dynamic>> getCurrentUser() async {
     print("getCurrentUser");

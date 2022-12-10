@@ -56,9 +56,7 @@ class EventCommand extends BaseCommand {
     Map<String, dynamic> sendOrganizerEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
     try {    
        //create To    
-      Map<String, dynamic> userInput = {
-        "_id": appModel.currentUser['_id'],
-      };          
+       
       Map<String, dynamic> eventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
         "event_id": gameInput['event']['_id'],

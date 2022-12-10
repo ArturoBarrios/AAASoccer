@@ -5,6 +5,16 @@ class TeamMutations {
         createTeam(data: {
           name: "${teamInput['name']}",
           color: "${teamInput['color']}",
+          teamUserOrganizers: {
+            create:
+              {
+                users: {
+                  connect:[                        
+                      "${teamInput['user_id']}"                       
+                  ]
+                }                    
+              }                                     
+          },
           location: {
             create: 
             {
@@ -27,48 +37,6 @@ class TeamMutations {
 
     return createTeam;
   }
-
-  String sendTeamRequest(
-      Map<String, dynamic> senderInput, Map<String, dynamic> teamInput) {
-      String createTeamRequest = """
-      mutation {
-        CreateFriendRequest(data: {    
-          requestAttempts: 1, 
-          team: {
-            connect: 
-            {
-              _id: "${teamInput['_id']}"
-            }
-          },  
-          from: {
-            connect: 
-            {
-              _id: "${senderInput['_id']}"
-            }
-          }                       
-          }) {
-            _id
-            status
-            requestAttempts
-            team{
-              data{
-                _id
-                name
-              }
-            }   
-            from{
-              data{
-                _id
-                name
-              }
-            }            
-          }   
-        }
-        """;
-
-    return createTeamRequest;
-    }
-
     String acceptTeamRequest(
       Map<String, dynamic> teamRequestInput) {
     String acceptTeamRequestString = """      
@@ -104,57 +72,65 @@ class TeamMutations {
   }
 
 
-String sendTeamOrganizerRequest(
-      Map<String, dynamic> fromInput, Map<String, dynamic> toInput, Map<String, dynamic> teamInput) {
-      String sendTeamOrganizerRequestString = """
+String sendTeamRequest(
+      Map<String, dynamic> teamRequestInput, String organizersString, String receivers) {
+      String sendTeamRequestString = """
       mutation {
-        CreateTeamOrganizerRequest(data: {    
+        createTeamRequest(data: {    
           requestAttempts: 1, 
-          to: {
-            connect: 
-            {
-              _id: "${toInput['_id']}"
-            }
+          organizers: {
+            connect: [
+              $organizersString
+            ]
+          },
+          sender: {
+            connect: "${teamRequestInput['sender_id']}"            
           },  
-          from: {
-            connect: 
-            {
-              _id: "${fromInput['_id']}"
-            }
+          receivers: {
+            connect: [            
+              $receivers
+            ]
           }  
           team: {
-            connect: 
-            {
-              _id: "${teamInput['_id']}"
-            }
+            connect: "${teamRequestInput['_id']}"            
           }                     
           }) {
             _id
             status
             requestAttempts
-            to{
+            organizers{
               data{
                 _id
+                email
                 name
               }
+            }
+            receivers{
+              data{
+                _id
+                email
+                name
+              }
+            }
+            sender{              
+                _id
+                name
+                email              
             }   
-            from{
-              data{
+            acceptedBy{              
                 _id
-                name
-              }
+                email
+                name              
             }            
-            team{
-              data{
+            team{              
                 _id
-                name
-              }
+                name              
             }            
           }   
         }
         """;
 
-    return sendTeamOrganizerRequestString;
+    return sendTeamRequestString;
     }
 
 }
