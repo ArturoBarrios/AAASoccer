@@ -37,39 +37,58 @@ class TeamMutations {
 
     return createTeam;
   }
-    String acceptTeamRequest(
+    
+  
+ String updateTeamRequest(
       Map<String, dynamic> teamRequestInput) {
-    String acceptTeamRequestString = """      
+      String updateTeamRequest = """
       mutation {
-        UpdateTeamRequest(id: ${teamRequestInput['_id']},
-  				data: {            
-            status:           
-                ${teamRequestInput['status']}                          
-          }                      
-        ){
-            _id
+        updateTeamRequest(id: ${teamRequestInput['_id']},
+          data: {              
+          status: ACCEPTED,
+          acceptedBy: {
+           	connect: "${teamRequestInput['acceptedBy_id']}"           
+          },                                                  
+          }) {
+              _id
             status
             requestAttempts
-            to{
-              data{
+            acceptedBy{              
                 _id
-                name
+                name              
+                email         
+            }
+            organizers{                            
+              data{
+              _id
+              name     
+              email         
               }
             }   
-            from{
+            receivers{                            
               data{
-                _id
-                name
+              _id
+              name     
+              email         
               }
-            }                        
-            
-    			
-  }
-}
+            }   
+            sender{              
+                _id
+                name          
+                email             
+            }            
+            team{              
+                _id
+                name              
+            }            
+    				
+                 
+          }   
+        }
         """;
 
-    return acceptTeamRequestString;
-  }
+    return updateTeamRequest;
+    }  
 
 
 String sendTeamRequest(
@@ -78,6 +97,7 @@ String sendTeamRequest(
       mutation {
         createTeamRequest(data: {    
           requestAttempts: 1, 
+          status: PENDING,
           organizers: {
             connect: [
               $organizersString

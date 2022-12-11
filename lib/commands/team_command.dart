@@ -49,41 +49,6 @@ class TeamCommand extends BaseCommand {
 
   }
 
-  Future<Map<String, dynamic>> acceptTeamRequest(Map<String, dynamic> teamRequestInput) async {
-   Map<String, dynamic> acceptTeamRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-
-    try{
-
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': TeamMutations().acceptTeamRequest(teamRequestInput),
-        }),
-      );
-
-      print("response body: ");
-      print(jsonDecode(response.body));
-
-      
-      
-      acceptTeamRequestResponse["success"] = true;
-      acceptTeamRequestResponse["message"] = "Accepted Team Request";      
-      acceptTeamRequestResponse["data"] = jsonDecode(response.body)['data']['UpdateFriendRequest'];
-
-    }catch(e) {}
-
-  return acceptTeamRequestResponse;
-
-}
-
 Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
     print("sendTeamRequest");
     Map<String, dynamic> sendTeamRequestResponse = {"success": false, "message": "Default Error", "data": null};

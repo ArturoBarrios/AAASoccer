@@ -37,7 +37,18 @@ class UserQueries {
                     name
                   }
                 }
-              }            
+              } 
+              teamRequestsToAccept{
+                data{
+                  _id
+                  status
+                  requestAttempts
+                  team{
+                    _id
+                    name
+                  }
+                }
+              }           
                                                
               
             

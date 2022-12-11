@@ -8,16 +8,16 @@ import '../../commands/requests_command.dart';
 import '../../views/game/view.dart';
 import '../../assets/icons/plus_circle_outline.svg';
 
-class EventRequestCard extends StatefulWidget {
-  const EventRequestCard(
-      {Key? key, required this.eventRequestObject, required this.svgImage})
+class TeamRequestCard extends StatefulWidget {
+  const TeamRequestCard(
+      {Key? key, required this.teamRequestObject, required this.svgImage})
       : super(key: key);
-  final Map<String, dynamic> eventRequestObject;
+  final Map<String, dynamic> teamRequestObject;
   final Svg svgImage;
   final double bevel = 10.0;
 
   @override
-  State<EventRequestCard> createState() => _EventRequestCard();
+  State<TeamRequestCard> createState() => _TeamRequestCard();
 }
 
 void pickupClicked() {
@@ -31,7 +31,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
     "message": "Pickup deleted successfully"
   };
   Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .deleteGame(gameObject["event"]["_id"], gameObject["_id"]);
+      .deleteGame(gameObject["team"]["_id"], gameObject["_id"]);
   print("deletePickupResponse: $deletePickupResponse");
   if (deletePickupResponse["success"]) {
     deletePickupResp["success"] = true;
@@ -40,7 +40,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
-class _EventRequestCard extends State<EventRequestCard> {
+class _TeamRequestCard extends State<TeamRequestCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
@@ -51,9 +51,9 @@ class _EventRequestCard extends State<EventRequestCard> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-  print("EventRequestCard Build()");
+  print("TeamRequestCard Build()");
     print("widget name: ");
-    print(widget.eventRequestObject.toString());
+    print(widget.teamRequestObject.toString());
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -99,10 +99,10 @@ class _EventRequestCard extends State<EventRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.eventRequestObject['event']['name'],
+                    text: widget.teamRequestObject['team']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.eventRequestObject['description'],
+                        "test subtitle", //widget.teamRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -113,13 +113,13 @@ class _EventRequestCard extends State<EventRequestCard> {
                   barrierDismissible: true,
                   builder: (BuildContext context) {
                     return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this event?',
+                      titleText: 'Are you sure you want to delete this team?',
                       contentText: '',
                       onPositiveClick: () {
                         Navigator.of(context).pop();
-                        //delete event aaa
-                        print(widget.eventRequestObject.toString());
-                        deletePickup(widget.eventRequestObject);
+                        //delete team aaa
+                        print(widget.teamRequestObject.toString());
+                        deletePickup(widget.teamRequestObject);
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();
@@ -145,10 +145,10 @@ class _EventRequestCard extends State<EventRequestCard> {
             ),
             GestureDetector(
               onTap: () {
-                //send event request
-                print("update event request");
+                //send team request
+                print("update team request");
                 print(widget.toString());
-                RequestsCommand().updateEventRequests(widget.eventRequestObject);
+                RequestsCommand().updateTeamRequests(widget.teamRequestObject);
                 
               },
               child: Container(

@@ -3,6 +3,7 @@ import 'package:soccermadeeasy/commands/user_command.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import '../../components/profile.dart';
 import '../../components/Cards/event_request_card.dart';
+import '../../components/Cards/team_request_card.dart';
 import '../../models/requests_model.dart';
 import '../../commands/requests_command.dart';
 import '../../graphql/queries/requests.dart';
@@ -33,7 +34,8 @@ class _RequestsViewState extends State<RequestsView> {
       print("getRequestCard()");
       print("selectedKey: " + selectedKey);
       print("requestObject: " + requestObject.toString());
-      Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
+      // Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
+      Widget card = TeamRequestCard(teamRequestObject: requestObject, svgImage: svgImage);     
 
     return card;
   }
@@ -41,14 +43,19 @@ class _RequestsViewState extends State<RequestsView> {
   void getRequestPageData() async{
     print("getRequestPageData()");        
     // Map<String, dynamic> getEventRequestsResp = await RequestsCommand().getEventRequests();
-    Map<String, dynamic> getEventRequestsResp = await UserCommand().getCurrentUser();
-    print("getEventRequestsResp: " + getEventRequestsResp.toString());
-    List eventRequests = getEventRequestsResp['data']['eventRequestsToAccept']['data'];
-    if (getEventRequestsResp['success']) {
+    Map<String, dynamic> getRequestsResp = await UserCommand().getCurrentUser();
+    print("getEventRequestsResp: " + getRequestsResp.toString());
+    
+    if (getRequestsResp['success']) {
+      List eventRequests = getRequestsResp['data']['eventRequestsToAccept']['data'];
+      List teamRequests = getRequestsResp['data']['teamRequestsToAccept']['data'];
       print("EventRequests to set: ");
       print(eventRequests);
+      print("TeamRequests to set: ");
+      print(teamRequests);
       print(RequestsPageModel().initialConditionsMet);
-      RequestsCommand().updateEventRequestModels(eventRequests);
+      RequestsCommand().updateEventRequestsModel(eventRequests);
+      RequestsCommand().updateTeamRequestsModel(teamRequests);
       print("initialConditionsMet: ");
       print(RequestsCommand().initialConditionsMet);     
       print("initialConditionsMet after: ");
