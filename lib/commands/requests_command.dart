@@ -128,7 +128,7 @@ class RequestsCommand extends BaseCommand {
     return updateEventRequestResponse;
 
   }
-  
+
   Future<Map<String, dynamic>> updateTeamRequests(Map<String, dynamic> teamRequestInput  ) async{
     print("updateTeamRequests");
     Map<String, dynamic> updateTeamRequestsResponse = {"success": false, "message": "Default Error", "data": null};
@@ -162,7 +162,40 @@ class RequestsCommand extends BaseCommand {
     return updateTeamRequestsResponse;
 
   }
+  
+  Future<Map<String, dynamic>> updateFriendRequests(Map<String, dynamic> friendRequestInput  ) async{
+    print("updateFriendRequests");
+    Map<String, dynamic> updateFriendRequestsResponse = {"success": false, "message": "Default Error", "data": null};
+    try {         
+      print("user id before updateFriendRequests: ");
+      print(appModel.currentUser['_id']);          
+      friendRequestInput['acceptedBy_id'] = appModel.currentUser['_id'];          
+      // ????
+      // eventRequestInput['status'] = RequestStatus.ACCEPTED;
+       
+      //check if from and to are the same
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().updateFriendRequest(friendRequestInput),//(fromInput, toInputs, gameInput),
+        }),
+      );
+    
+      print("response body: ");
+      print(jsonDecode(response.body));
+            
+      updateFriendRequestsResponse["success"] = true;
+      updateFriendRequestsResponse["message"] = "Event Request Created";      
+      updateFriendRequestsResponse["data"] = jsonDecode(response.body)['data']['updateEventRequest'];          
+    } catch (e) {}
 
+    return updateFriendRequestsResponse;
+
+  }
 
   Map<String, dynamic> updateEventRequestsModel(List eventRequests){
     print("updateEventRequestsModel");
@@ -211,6 +244,32 @@ class RequestsCommand extends BaseCommand {
 
 
     return updateTeamRequestsModelResp;
+
+  }
+  
+  Map<String, dynamic> updateFriendRequestsModel(List friendRequests){
+    print("updateFriendRequestsModel");
+    print(friendRequests);
+    Map<String, dynamic> updateFriendRequestsModelResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    print("updateFriendRequestsModel friendRequests to set: ");
+    print(friendRequests);
+    print("updateFriendRequestsModel before set eventRequests");
+    print(requestsModel.friendRequests);
+    requestsModel.friendRequests = friendRequests;
+    requestsPageModel.selectedObjects = friendRequests;
+    print("updateFriendRequestsModel after set eventRequests");
+    print(requestsModel.eventRequests);
+
+    updateFriendRequestsModelResp["success"] = true;
+
+
+
+    return updateFriendRequestsModelResp;
 
   }
 

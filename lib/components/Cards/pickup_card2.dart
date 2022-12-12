@@ -147,8 +147,7 @@ class _PickupCard2 extends State<PickupCard2> {
               onTap: () {
                 //send event request
                 print("send event request");
-                EventCommand().sendOrganizerEventRequest(widget.eventObject);
-                
+                EventCommand().sendOrganizerEventRequest(widget.eventObject);                
               },
               child: Container(
                 child: ClipRRect(

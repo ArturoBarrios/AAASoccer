@@ -7,6 +7,7 @@ class UserQueries {
             data {      
               _id              
               user{
+                  _id
                   name        	
                   phone
                   email
@@ -31,6 +32,7 @@ class UserQueries {
               data {      
                 _id              
                 user{
+                    _id
                     name        
                     age	
                     phone

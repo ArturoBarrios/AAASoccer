@@ -24,21 +24,6 @@ void leagueClicked() {
   print("League Clicked");
 }
 
-Future<Map<String, dynamic>> addLeague(dynamic friendObject) async {
-  print("addLeague for friendObject: $friendObject");
-  Map<String, dynamic> addLeagueResp = {
-    "success": false,
-    "message": "League added successfully"
-  };
-  Map<String, dynamic> addLeagueResponse = await UserCommand()
-      .sendFriendRequest(AppModel().currentUser['_id'], friendObject["user"]["_id"]);
-  print("addLeagueResponse: $addLeagueResponse");
-  if (addLeagueResponse["success"]) {
-    addLeagueResp["success"] = true;
-  }
-
-  return addLeagueResp;
-}
 
 class _LeagueCard extends State<LeagueCard> {
   final bool _isPressed = false;
@@ -114,8 +99,7 @@ class _LeagueCard extends State<LeagueCard> {
                     return ClassicGeneralDialogWidget(
                       titleText: 'Are you sure you want to delete this league?',
                       contentText: '',
-                      onPositiveClick: () {
-                        addLeague(widget.leagueObject);
+                      onPositiveClick: () {                        
                        
                       },
                       onNegativeClick: () {

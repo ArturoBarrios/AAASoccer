@@ -101,47 +101,21 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
-Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequestInput) async {
-   Map<String, dynamic> acceptFriendRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
 
-    try{
-
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': UserMutations().acceptFriendRequest(friendRequestInput),
-        }),
-      );
-
-      print("response body: ");
-      print(jsonDecode(response.body));
-
-      
-      
-      acceptFriendRequestResponse["success"] = true;
-      acceptFriendRequestResponse["message"] = "Accepted Friend Request";      
-      acceptFriendRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];
-
-    }catch(e) {}
-
-  return acceptFriendRequestResponse;
-
-}
-
-  Future<Map<String, dynamic>> sendFriendRequest(Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
+  Future<Map<String, dynamic>> sendFriendRequest(Map<String, dynamic> receiverInput) async {
+    print("sendFriendRequest");
     Map<String, dynamic> sendFriendRequestResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
+    Map<String, dynamic> senderInput = {
+      "_id": appModel.currentUser['_id'],
+    };
+    print("senderInput");
+    print(senderInput);
+    print("receiverInput");
+    print(receiverInput);
     try {      
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -150,7 +124,7 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().sendFriendRequest(userInput, friendInput),
+          'query': UserMutations().sendFriendRequest(senderInput, receiverInput),
         }),
       );
 

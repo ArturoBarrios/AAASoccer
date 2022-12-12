@@ -5,35 +5,29 @@ class UserMutations {
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
       String sendFriendRequestString = """
       mutation {
-        CreateFriendRequest(data: {    
+        createFriendRequest(data: {    
           requestAttempts: 1, 
-          to: {
-            connect: 
-            {
-              _id: "${friendInput['_id']}"
-            }
+          status: PENDING,
+          sender: {
+            connect: "${userInput['_id']}"
           },  
-          from: {
-            connect: 
-            {
-              _id: "${userInput['_id']}"
-            }
+          receiver: {
+            connect: "${friendInput['_id']}"
+            
           }                       
           }) {
             _id
             status
             requestAttempts
-            to{
-              data{
-                _id
-                name
-              }
+            sender{
+              _id
+              email
+              name              
             }   
-            from{
-              data{
-                _id
-                name
-              }
+            receiver{              
+              _id
+              email
+              name              
             }            
           }   
         }
@@ -63,30 +57,25 @@ class UserMutations {
   }
 
 
-    String acceptFriendRequest(
+    String updateFriendRequest(
       Map<String, dynamic> friendRequestInput) {
-    String acceptFriendRequestString = """      
+    String updateFriendRequestString = """      
       mutation {
-        UpdateFriendRequest(id: ${friendRequestInput['_id']},
+        updateFriendRequest(id: ${friendRequestInput['_id']},
   				data: {            
-            status:           
-                ${friendRequestInput['status']}                          
+            status: ACCEPTED,                                                
           }                      
         ){
             _id
             status
             requestAttempts
-            to{
-              data{
-                _id
-                name
-              }
+            sender{              
+              _id
+              name              
             }   
-            from{
-              data{
-                _id
-                name
-              }
+            receiver{              
+              _id
+              name              
             }                        
             
     			
@@ -94,7 +83,7 @@ class UserMutations {
 }
         """;
 
-    return acceptFriendRequestString;
+    return updateFriendRequestString;
   }
 
 }

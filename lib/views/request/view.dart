@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/models/app_model.dart';
 import '../../components/profile.dart';
 import '../../components/Cards/event_request_card.dart';
 import '../../components/Cards/team_request_card.dart';
+import '../../components/Cards/friend_request_card.dart';
 import '../../models/requests_model.dart';
 import '../../commands/requests_command.dart';
 import '../../graphql/queries/requests.dart';
@@ -35,7 +36,8 @@ class _RequestsViewState extends State<RequestsView> {
       print("selectedKey: " + selectedKey);
       print("requestObject: " + requestObject.toString());
       // Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
-      Widget card = TeamRequestCard(teamRequestObject: requestObject, svgImage: svgImage);     
+      // Widget card = TeamRequestCard(teamRequestObject: requestObject, svgImage: svgImage);     
+      Widget card = FriendRequestCard(friendRequestObject: requestObject, svgImage: svgImage);     
 
     return card;
   }
@@ -49,6 +51,7 @@ class _RequestsViewState extends State<RequestsView> {
     if (getRequestsResp['success']) {
       List eventRequests = getRequestsResp['data']['eventRequestsToAccept']['data'];
       List teamRequests = getRequestsResp['data']['teamRequestsToAccept']['data'];
+      List friendRequests = getRequestsResp['data']['friendRequests']['data'];
       print("EventRequests to set: ");
       print(eventRequests);
       print("TeamRequests to set: ");
@@ -56,6 +59,7 @@ class _RequestsViewState extends State<RequestsView> {
       print(RequestsPageModel().initialConditionsMet);
       RequestsCommand().updateEventRequestsModel(eventRequests);
       RequestsCommand().updateTeamRequestsModel(teamRequests);
+      RequestsCommand().updateFriendRequestsModel(friendRequests);
       print("initialConditionsMet: ");
       print(RequestsCommand().initialConditionsMet);     
       print("initialConditionsMet after: ");
