@@ -270,6 +270,9 @@ class _Home extends State<Home> {
     else if(selectedKey==Constants.TEAM){
       card = TeamCard(teamObject: selectedObject, svgImage: svgImage);
     }
+    else if(selectedKey==Constants.FRIEND){
+      card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
+    }
 
     return card;
   }

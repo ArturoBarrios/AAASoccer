@@ -105,6 +105,7 @@ class BaseCommand {
           print(appModel.currentUser);
           // setUserId(user.id);
           // setUser(user);
+          //currently not being utilized
           EventCommand().setupMappedEvents();
           // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();          
           // if(getGamesNearLocationResp["success"]){
@@ -116,7 +117,7 @@ class BaseCommand {
             // List<dynamic> games = getGamesNearLocationResp["data"];    
             // homePageModel.selectedObjects = games;  
             // eventsModel.games = games;    
-            await EventCommand().setupEvents();
+            await EventCommand().setupEvents(user);
             
             print("Setup Events");
             // 

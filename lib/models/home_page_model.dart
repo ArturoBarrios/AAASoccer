@@ -127,6 +127,13 @@ class HomePageModel extends ChangeNotifier {
       "image": SVGWidgets().getSoccerBallSVGImage(),
       
     },    
+    Constants.FRIEND: {
+      "key": Constants.FRIEND,
+      "enabled": false,
+      "name": StringConstants.FRIENDSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
     Constants.PLAYER: {
       "key": Constants.PLAYER,
       "enabled": false,

@@ -69,4 +69,11 @@ class AppModel extends ChangeNotifier {
     _teams = teams;
     notifyListeners();
   }
+  
+  List _friends = [];
+  List get friends => _friends;
+  set friends(List friends) {
+    _friends = friends;
+    notifyListeners();
+  }
 }
