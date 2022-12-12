@@ -2,30 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:soccermadeeasy/commands/friend_command.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/app_model.dart';
-import '../../commands/user_command.dart';
-import '../../views/tryout/view.dart';
+import '../../commands/game_command.dart';
+// import '../../views/friend/view.dart';
 
-class TryoutCard extends StatefulWidget {
-  const TryoutCard(
-      {Key? key, required this.tryoutObject, required this.svgImage})
+class FriendCard extends StatefulWidget {
+  const FriendCard(
+      {Key? key, required this.friendObject, required this.svgImage})
       : super(key: key);
-  final Map<String, dynamic> tryoutObject;
+  final Map<String, dynamic> friendObject;
   final Svg svgImage;
   final double bevel = 10.0;
 
   @override
-  State<TryoutCard> createState() => _TryoutCard();
+  State<FriendCard> createState() => _FriendCard();
 }
 
-void tryoutClicked() {
-  print("Tryout Clicked");
+void friendClicked() {
+  print("Friend Clicked");
 }
 
+Future<Map<String, dynamic>> deleteFriend(dynamic gameObject) async {
+  print("deleteFriend for gameobject: $gameObject");
+  Map<String, dynamic> deleteFriendResp = {
+    "success": false,
+    "message": "Friend deleted successfully"
+  };
+  Map<String, dynamic> deleteFriendResponse = await GameCommand()
+      .deleteGame(gameObject["user"]["_id"], gameObject["_id"]);
+  print("deleteFriendResponse: $deleteFriendResponse");
+  if (deleteFriendResponse["success"]) {
+    deleteFriendResp["success"] = true;
+  }
 
-class _TryoutCard extends State<TryoutCard> {
+  return deleteFriendResp;
+}
+
+class _FriendCard extends State<FriendCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
@@ -37,7 +52,7 @@ class _TryoutCard extends State<TryoutCard> {
   @override
   Widget build(BuildContext context) {
     print("widget name: ");
-    print(widget.tryoutObject.toString());
+    print(widget.friendObject.toString());
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -45,7 +60,7 @@ class _TryoutCard extends State<TryoutCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TryoutView();
+            return FriendView();
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -83,10 +98,10 @@ class _TryoutCard extends State<TryoutCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.tryoutObject['event']['name'],
+                    text: widget.friendObject['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.tryoutObject['description'],
+                        "test subtitle", //widget.friendObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -97,9 +112,9 @@ class _TryoutCard extends State<TryoutCard> {
                   barrierDismissible: true,
                   builder: (BuildContext context) {
                     return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this tryout?',
+                      titleText: 'Are you sure you want to delete this friend?',
                       contentText: '',
-                      onPositiveClick: () {                        
+                      onPositiveClick: () {
                        
                       },
                       onNegativeClick: () {
@@ -111,6 +126,22 @@ class _TryoutCard extends State<TryoutCard> {
                   curve: Curves.fastOutSlowIn,
                   duration: Duration(seconds: 1),
                 );
+              },
+              child: Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Image(
+                    width: 20,
+                    height: 20,
+                    image: SVGWidgets().deleteSVGImage(),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                FriendCommand().sendFriendRequest(widget.friendObject);
               },
               child: Container(
                 child: ClipRRect(

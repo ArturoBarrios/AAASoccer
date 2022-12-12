@@ -148,7 +148,7 @@ class _EventRequestCard extends State<EventRequestCard> {
                 //send event request
                 print("update event request");
                 print(widget.toString());
-                RequestsCommand().updateEventRequest(widget.eventRequestObject);
+                RequestsCommand().updateEventRequests(widget.eventRequestObject);
                 
               },
               child: Container(

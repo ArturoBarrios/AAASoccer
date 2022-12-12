@@ -69,8 +69,8 @@ enum UserType{
 }
 
 type FriendRequest {
-  from: User!
-  to: User!
+  sender: User
+  receiver: User @relation(name: "friend_requests")
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
 }
@@ -78,12 +78,10 @@ type FriendRequest {
 
 # event request will be sent to event organizers
 type EventRequest {
-  organizers: [User!] @relation(name: "event_requests_organizers")
-  organizerWhoAcceptedOrSentRequest: User @relation(name: "organizer_who_accepted_or_sent_event_request")
+  organizers: [User!] @relation(name: "event_requests_organizers")  
   sender: User @relation(name: "event_requests_sent")
   acceptedBy: User @relation(name: "event_requests_acceptedBy")
-  receivers: [User!] @relation(name: "event_requests_to_accept")
-  # tos: [To!] @relation
+  receivers: [User!] @relation(name: "event_requests_to_accept")  
   event: Event!  
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
@@ -91,9 +89,11 @@ type EventRequest {
 
 # event request will be sent to team captains
 type TeamRequest {
-  from: User!
-  to: User!
-  team: Team!
+  organizers: [User!] @relation(name: "team_requests_organizers")  
+  sender: User @relation(name: "team_requests_sent")
+  acceptedBy: User @relation(name: "team_requests_acceptedBy")
+  receivers: [User!] @relation(name: "team_requests_to_accept")  
+  team: Team!  
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
 }
@@ -110,11 +110,11 @@ type OrganizerRequest {
 
 type User  {  
   userType: UserType
-  name: String!
-  phone: String!
-  email: String!
-  username: String!
-  birthdate: String!
+  name: String
+  phone: String
+  email: String
+  username: String
+  birthdate: String
   age: Int
   friends: [User]
   gender: GenderType
@@ -127,13 +127,18 @@ type User  {
   last_login: Int
   last_updated: Int
   images: [Image] @relation
-  events: [Event] @relation
-  eventUserOrganizers: [EventUserOrganizers] @relation
-  organizerWhoAcceptedOrSentRequests: [EventRequest] @relation(name: "organizer_who_accepted_or_sent_event_request")
+  events: [Event] @relation    
+  eventUserOrganizers: [EventUserOrganizers] @relation  
+  teamUserOrganizers: [TeamUserOrganizers] @relation  
   eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
   eventRequestsAcceptedBy: [EventRequest] @relation(name: "event_requests_acceptedBy")
-  eventRequests: [EventRequest] @relation(name: "event_requests_organizers")
+  eventRequestsOrganizers: [EventRequest] @relation(name: "event_requests_organizers")
   eventRequestsToAccept: [EventRequest] @relation(name: "event_requests_to_accept")
+  friendRequests: [FriendRequest] @relation(name: "friend_requests")
+  teamRequests: [TeamRequest] @relation(name: "team_requests_organizers")
+  teamRequestsToAccept: [TeamRequest] @relation(name: "team_requests_to_accept")
+  teamRequestsSent: [TeamRequest] @relation(name: "team_requests_sent")
+  teamRequestsAccepted: [TeamRequest] @relation(name: "team_requests_acceptedBy")
 
 }
 
@@ -156,6 +161,11 @@ type Player   {
 
 type EventUserOrganizers {
   event: Event
+  users: [User]! @relation
+}
+
+type TeamUserOrganizers {
+  team: Team
   users: [User]! @relation
 }
 
@@ -213,6 +223,7 @@ type Team   {
   players: [Player] @relation    
   sponsors: [Sponsor] @relation
   location: Location
+  teamUserOrganizers: TeamUserOrganizers
   
 }
 

@@ -24,22 +24,6 @@ void tournamentClicked() {
   print("Tournament Clicked");
 }
 
-Future<Map<String, dynamic>> addTournament(dynamic friendObject) async {
-  print("addTournament for friendObject: $friendObject");
-  Map<String, dynamic> addTournamentResp = {
-    "success": false,
-    "message": "Tournament added successfully"
-  };
-  Map<String, dynamic> addTournamentResponse = await UserCommand()
-      .sendFriendRequest(AppModel().currentUser['_id'], friendObject["user"]["_id"]);
-  print("addTournamentResponse: $addTournamentResponse");
-  if (addTournamentResponse["success"]) {
-    addTournamentResp["success"] = true;
-  }
-
-  return addTournamentResp;
-}
-
 class _TournamentCard extends State<TournamentCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
@@ -114,8 +98,7 @@ class _TournamentCard extends State<TournamentCard> {
                     return ClassicGeneralDialogWidget(
                       titleText: 'Are you sure you want to delete this tournament?',
                       contentText: '',
-                      onPositiveClick: () {
-                        addTournament(widget.tournamentObject);
+                      onPositiveClick: () {                        
                        
                       },
                       onNegativeClick: () {

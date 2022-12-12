@@ -10,6 +10,7 @@ import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 import '../commands/game_command.dart';
 import '../commands/player_command.dart';
+import '../commands/user_command.dart';
 import '../commands/team_command.dart';
 import '../commands/training_command.dart';
 import '../commands/tryout_command.dart';
@@ -56,9 +57,7 @@ class EventCommand extends BaseCommand {
     Map<String, dynamic> sendOrganizerEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
     try {    
        //create To    
-      Map<String, dynamic> userInput = {
-        "_id": appModel.currentUser['_id'],
-      };          
+       
       Map<String, dynamic> eventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
         "event_id": gameInput['event']['_id'],
@@ -73,10 +72,11 @@ class EventCommand extends BaseCommand {
       String organizersString = "";
       for (var i = 0; i < eventUserOrganizers.length; i++) {        
         String toUserId = eventUserOrganizers[i]['_id'];
-        organizersString = organizersString + toUserId + " ";
-        print("eventUserOrganizer "+ toUserId);
+        organizersString = organizersString + toUserId + ",";        
         //send onesignal notification
       }
+      print("organizersString");
+      print(organizersString);
       //check if from and to are the same
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -193,9 +193,29 @@ class EventCommand extends BaseCommand {
 
 
   //setupSelections() should be function name
-  Future<Map<String, dynamic>> setupEvents() async{
+  //pass userInput to check if you have to refetch user
+  //if dynamic null, refetch user
+  Future<Map<String, dynamic>> setupEvents(dynamic user) async{
     print("setupEvents()");
     Map<String,dynamic> setupEventsResp = {"success": false, "message": "Default Error", "data": []};
+    if(user == null){
+      print("user==null");
+      if(appModel.currentUser['email'] != null){
+        print("appModel.currentUser['email']");
+        print(appModel.currentUser['email']);
+        Map<String, dynamic> getUserResp = await UserCommand().getUser(appModel.currentUser['email']);             
+        if(getUserResp['success']){
+          List<dynamic> friends = getUserResp['data']['friends'];
+          print("friends: ");
+          print(friends);
+          appModel.friends = friends;            
+        }
+
+      }
+
+    }
+    //think of sorting friends by location
+    //
 
     Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     if(getGamesNearLocationResp['success']){
@@ -248,13 +268,14 @@ class EventCommand extends BaseCommand {
       print(teams);
       appModel.teams = teams;            
     }
-    // Map<String, dynamic> getTrainingsNearLocationResp = await TrainingCommand().getTrainingsNearLocation();
-    // if(getTrainingsNearLocationResp['success']){
-    //   List<dynamic> trainings = getTrainingsNearLocationResp['data'];
-    //   print("trainings: ");
-    //   print(trainings);
-    //   eventsModel.trainings = trainings;            
-    // }
+    
+    //currentUser is setup by this point. Either from login,
+    // or getting user again at top of function    
+    print("friends: ");
+    print(appModel.currentUser['friends']);
+    appModel.friends = appModel.currentUser['friends'];            
+    
+    
 
 
     

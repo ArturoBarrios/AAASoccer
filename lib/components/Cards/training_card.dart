@@ -24,21 +24,6 @@ void trainingClicked() {
   print("Training Clicked");
 }
 
-Future<Map<String, dynamic>> addTraining(dynamic friendObject) async {
-  print("addTraining for friendObject: $friendObject");
-  Map<String, dynamic> addTrainingResp = {
-    "success": false,
-    "message": "Training added successfully"
-  };
-  Map<String, dynamic> addTrainingResponse = await UserCommand()
-      .sendFriendRequest(AppModel().currentUser['_id'], friendObject["user"]["_id"]);
-  print("addTrainingResponse: $addTrainingResponse");
-  if (addTrainingResponse["success"]) {
-    addTrainingResp["success"] = true;
-  }
-
-  return addTrainingResp;
-}
 
 class _TrainingCard extends State<TrainingCard> {
   final bool _isPressed = false;
@@ -114,8 +99,7 @@ class _TrainingCard extends State<TrainingCard> {
                     return ClassicGeneralDialogWidget(
                       titleText: 'Are you sure you want to delete this training?',
                       contentText: '',
-                      onPositiveClick: () {
-                        addTraining(widget.trainingObject);
+                      onPositiveClick: () {                        
                        
                       },
                       onNegativeClick: () {

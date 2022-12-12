@@ -21,4 +21,11 @@ class RequestsModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  List _friendRequests = [];
+  List get friendRequests => _friendRequests;
+  set friendRequests(List friendRequests) {
+    _friendRequests = friendRequests;
+    notifyListeners();
+  }
+  
 }

@@ -65,7 +65,7 @@ class _BottomNav extends State<BottomNav> {
     // TournamentCommand().bergerTable(14);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GameCreate()),
+      MaterialPageRoute(builder: (context) => TeamCreate()),
     );
     // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
