@@ -34,7 +34,34 @@ class UserMutations {
         """;
 
     return sendFriendRequestString;
-    }  
+    } 
+
+    String addFriend(
+      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
+    String addFriendString = """      
+      mutation {
+        updateUser(id: ${userInput['_id']},
+  				data: {            
+            friends:              
+              ${friendInput['_id']}                                                                                 
+          }                      
+        ){
+        _id
+        name
+        email
+        friends{          
+            _id
+            name
+            email          
+        }                                        			
+  }
+}
+        """;
+
+    return addFriendString;
+  }
+
+
 
     String createTo(Map<String, dynamic> userInput) {
       String createTo = """

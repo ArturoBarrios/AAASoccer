@@ -5,6 +5,7 @@ import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 import '../commands/event_command.dart';
+import '../commands/user_command.dart';
 import '../models/events_model.dart';
 import '../models/requests_page_model.dart';
 import '../models/requests_model.dart';
@@ -170,6 +171,8 @@ class RequestsCommand extends BaseCommand {
       print("user id before updateFriendRequests: ");
       print(appModel.currentUser['_id']);          
       friendRequestInput['acceptedBy_id'] = appModel.currentUser['_id'];          
+      print("friendRequestInput: ");
+      print(friendRequestInput);
       // ????
       // eventRequestInput['status'] = RequestStatus.ACCEPTED;
        
@@ -184,6 +187,17 @@ class RequestsCommand extends BaseCommand {
           'query': UserMutations().updateFriendRequest(friendRequestInput),//(fromInput, toInputs, gameInput),
         }),
       );
+
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };
+
+      Map<String, dynamic> friendInput = {
+        "_id": friendRequestInput['sender']['_id'],
+      };
+      
+      //create friend relationship
+      await UserCommand().addFriend(userInput, friendInput);
     
       print("response body: ");
       print(jsonDecode(response.body));

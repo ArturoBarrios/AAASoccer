@@ -10,6 +10,11 @@ class UserQueries {
               username
               birthdate
               gender
+              friends{                
+                  _id
+                  name
+                  email                
+              }
               friendRequests{
                 data{
                   _id

@@ -110,11 +110,11 @@ type OrganizerRequest {
 
 type User  {  
   userType: UserType
-  name: String!
-  phone: String!
-  email: String!
-  username: String!
-  birthdate: String!
+  name: String
+  phone: String
+  email: String
+  username: String
+  birthdate: String
   age: Int
   friends: [User]
   gender: GenderType
@@ -127,7 +127,7 @@ type User  {
   last_login: Int
   last_updated: Int
   images: [Image] @relation
-  events: [Event] @relation  
+  events: [Event] @relation    
   eventUserOrganizers: [EventUserOrganizers] @relation  
   teamUserOrganizers: [TeamUserOrganizers] @relation  
   eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
