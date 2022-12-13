@@ -22,6 +22,7 @@ import '../components/Cards/tournament_card.dart';
 import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
 import '../components/Cards/friend_card.dart';
+import '../components/Cards/my_event_card.dart';
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
@@ -274,6 +275,10 @@ class _Home extends State<Home> {
     else if(selectedKey==Constants.FRIEND){
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
     }
+    else if(selectedKey==Constants.MYEVENTS){
+      card = MyEventCard(eventObject: selectedObject, svgImage: svgImage);
+    }
+
 
     return card;
   }

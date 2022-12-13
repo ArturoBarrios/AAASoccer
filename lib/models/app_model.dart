@@ -76,4 +76,11 @@ class AppModel extends ChangeNotifier {
     _friends = friends;
     notifyListeners();
   }
+  
+  List _myEvents = [];
+  List get myEvents => _myEvents;
+  set myEvents(List myEvents) {
+    _myEvents = myEvents;
+    notifyListeners();
+  }
 }

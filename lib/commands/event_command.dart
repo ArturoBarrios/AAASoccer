@@ -206,9 +206,13 @@ class EventCommand extends BaseCommand {
         Map<String, dynamic> getUserResp = await UserCommand().getUser(appModel.currentUser['email']);             
         if(getUserResp['success']){
           List<dynamic> friends = getUserResp['data']['friends'];
-          print("friends: ");
+          List<dynamic> myEvents = getUserResp['data']['events']['data'];
+          print("friends: ");          
           print(friends);
-          appModel.friends = friends;            
+          print("myEvents: ");
+          print(myEvents);
+          appModel.friends = friends;   
+          appModel.myEvents =  myEvents;       
         }
 
       }
@@ -273,7 +277,8 @@ class EventCommand extends BaseCommand {
     // or getting user again at top of function    
     print("friends: ");
     print(appModel.currentUser['friends']);
-    appModel.friends = appModel.currentUser['friends'];            
+    appModel.friends = appModel.currentUser['friends'];     
+    appModel.myEvents = appModel.currentUser['events']['data'];       
     
     
 
