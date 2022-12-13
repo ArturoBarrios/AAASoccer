@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:soccermadeeasy/commands/friend_command.dart';
+import 'package:soccermadeeasy/commands/user_command.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
-// import '../../views/friend/view.dart';
+import '../../views/player/view.dart';
 
 class FriendCard extends StatefulWidget {
   const FriendCard(
@@ -60,7 +60,7 @@ class _FriendCard extends State<FriendCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return FriendView();
+            return PlayerView();
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -104,44 +104,10 @@ class _FriendCard extends State<FriendCard> {
                         "test subtitle", //widget.friendObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
-                    })),
+                    })),            
             GestureDetector(
               onTap: () {
-                showAnimatedDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) {
-                    return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this friend?',
-                      contentText: '',
-                      onPositiveClick: () {
-                       
-                      },
-                      onNegativeClick: () {
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  },
-                  animationType: DialogTransitionType.slideFromBottom,
-                  curve: Curves.fastOutSlowIn,
-                  duration: Duration(seconds: 1),
-                );
-              },
-              child: Container(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: Image(
-                    width: 20,
-                    height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                FriendCommand().sendFriendRequest(widget.friendObject);
+                UserCommand().sendFriendRequest(widget.friendObject);
               },
               child: Container(
                 child: ClipRRect(

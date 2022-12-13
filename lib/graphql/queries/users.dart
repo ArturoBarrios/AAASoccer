@@ -15,6 +15,12 @@ class UserQueries {
                   name
                   email                
               }
+              teams{
+                data{
+                  _id
+                  name
+                }
+              }              
               friendRequests{
                 data{
                   _id

@@ -37,7 +37,7 @@ class TeamQueries {
                   }                     
                 }                                
             }                   
-                players{
+                users{
                   data{
                     _id
                     }

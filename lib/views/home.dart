@@ -21,6 +21,7 @@ import '../components/Cards/tryout_card.dart';
 import '../components/Cards/tournament_card.dart';
 import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
+import '../components/Cards/friend_card.dart';
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';

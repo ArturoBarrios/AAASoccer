@@ -47,7 +47,7 @@ class TeamCommand extends BaseCommand {
 
     return getTrainingsNearLocationResp;
 
-  }
+  }    
 
 Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
     print("sendTeamRequest");

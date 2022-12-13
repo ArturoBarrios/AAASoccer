@@ -117,6 +117,7 @@ type User  {
   birthdate: String
   age: Int
   friends: [User]
+  teams: [Team] @relation
   gender: GenderType
   location: Location
   player: Player
@@ -146,8 +147,7 @@ type User  {
 type Player   {  
   wagerRating: String
   wagers: [Wager] @relation  
-  # events: [Event] @relation
-  teams: [Team] @relation
+  # events: [Event] @relation  
   competitiveLevel: String
   ratings: String
   hasRating: String
@@ -220,9 +220,9 @@ type Team   {
   color: String!  
   events: [Event] @relation
   images: [Image] @relation
-  players: [Player] @relation    
+  users: [User] @relation    
   sponsors: [Sponsor] @relation
-  location: Location
+  location: Location  
   teamUserOrganizers: TeamUserOrganizers
   
 }

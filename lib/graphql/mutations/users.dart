@@ -60,6 +60,44 @@ class UserMutations {
 
     return addFriendString;
   }
+    
+    String addTeam(
+      Map<String, dynamic> userInput, Map<String, dynamic> teamInput) {
+    String addTeamString = """      
+      mutation {
+        updateUser(id: ${userInput['_id']},
+  				data: {            
+            teams: {
+              connect: [
+                ${teamInput['_id']}                                                                                 
+              ]
+            }             
+          }                      
+        ){
+        _id
+        name
+        email
+        teams{      
+          data{    
+            _id
+            name       
+            teamUserOrganizers{
+              users{
+                data{
+                  _id
+                  name
+                  email
+                }
+              }
+            }             
+          }
+        }                                        			
+  }
+}
+        """;
+
+    return addTeamString;
+  }
 
 
 

@@ -101,6 +101,46 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
+  Future<Map<String, dynamic>> addTeam(Map<String, dynamic> userInput, Map<String, dynamic> teamInput) async {
+    
+    print("addTeam");
+    Map<String, dynamic> addTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().addTeam(userInput, teamInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      addTeamResponse["success"] = true;
+      addTeamResponse["message"] = "Team added";      
+      addTeamResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
+
+    }catch(e){
+      print("error");
+    }
+
+
+    return addTeamResponse;
+
+  }
+
 
   Future<Map<String, dynamic>> addFriend(Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
     
