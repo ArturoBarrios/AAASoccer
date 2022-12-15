@@ -17,6 +17,7 @@ import 'models/user_model.dart';
 import 'models/events_model.dart';
 import 'models/requests_model.dart';
 import 'models/requests_page_model.dart';
+import 'models/friends_page_model.dart';
 import 'models/games_model.dart';
 import 'services/user_service.dart';
 import 'services/fauna_db_services.dart';
@@ -310,6 +311,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (c) => GamesModel()),
           ChangeNotifierProvider(create: (c) => RequestsModel()),
           ChangeNotifierProvider(create: (c) => RequestsPageModel()),
+          ChangeNotifierProvider(create: (c) => FriendsPageModel()),
           ChangeNotifierProvider(create: (c) => HomePageModel()),
           Provider(create: (c) => FaunaDBServices()),
           Provider(create: (c) => UserService()),

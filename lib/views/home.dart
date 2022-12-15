@@ -26,6 +26,7 @@ import '../components/Cards/my_event_card.dart';
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
+import '../models/EventType.dart';
 //commands
 import '../commands/home_page_command.dart';
 import '../commands/tournament_command.dart';
@@ -244,6 +245,8 @@ class _Home extends State<Home> {
     print("getCard()");
     print("selectedKey: " + selectedKey);
     print("selectedObject: " + selectedObject.toString());
+
+    
     Widget card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
 
     if(selectedKey==Constants.PICKUP){
@@ -276,7 +279,11 @@ class _Home extends State<Home> {
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
     }
     else if(selectedKey==Constants.MYEVENTS){
-      card = MyEventCard(eventObject: selectedObject, svgImage: svgImage);
+      print("testing EventType.GAME===Game.type ");
+    print(EventType.GAME.name.toString()==selectedObject['type'].toString());          
+      if(selectedObject['type'].toString() == EventType.GAME.name.toString()){
+        card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
+      }
     }
 
 

@@ -25,16 +25,11 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
   
-  bool _isSignedIn = false;
-  bool get isSignedIn => _isSignedIn;
 
-  bool _amplifyConfigured = false;
-  bool get amplifyConfigured => _amplifyConfigured;
+  
 
   bool _initialConditionsMet = false;
   bool get initialConditionsMet => _initialConditionsMet;
-  
-
   set initialConditionsMet(bool initialConditionsMet){
     _initialConditionsMet = initialConditionsMet;
     notifyListeners();
@@ -45,12 +40,17 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  bool _amplifyConfigured = false;
+  bool get amplifyConfigured => _amplifyConfigured;
   set amplifyConfigured(bool amplifyConfigured){
     _amplifyConfigured = amplifyConfigured;
     notifyListeners();
   }
 
 
+  bool _isSignedIn = false;
+  bool get isSignedIn => _isSignedIn;
   set isSignedIn(bool isSignedIn){
     _isSignedIn = isSignedIn;
     notifyListeners();

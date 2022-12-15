@@ -38,6 +38,7 @@ class PlayerCommand extends BaseCommand {
 
 
       final result = jsonDecode(response.body)['data']['allPlayers']['data'];
+      appModel.players = result;  
       getTrainingsNearLocationResp["success"] = true;
       getTrainingsNearLocationResp["message"] = "Games Retrieved";
       getTrainingsNearLocationResp["data"] = result;

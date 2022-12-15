@@ -94,7 +94,7 @@ class EventCommand extends BaseCommand {
             
       sendOrganizerEventRequestResponse["success"] = true;
       sendOrganizerEventRequestResponse["message"] = "Event Request Created";      
-      sendOrganizerEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];          
+      // sendOrganizerEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];          
     } catch (e) {}
 
     return sendOrganizerEventRequestResponse;

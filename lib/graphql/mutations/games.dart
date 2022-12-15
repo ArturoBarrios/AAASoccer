@@ -9,6 +9,7 @@ class GameMutations {
             create: 
             {
               name: "${eventInput['name']}",
+              type: GAME,
               isMainEvent: ${eventInput['isMainEvent']},
               eventUserOrganizers: {
                 create:
@@ -35,6 +36,7 @@ class GameMutations {
             event{
               _id
               name
+              type
               isMainEvent
               location{
                 data{

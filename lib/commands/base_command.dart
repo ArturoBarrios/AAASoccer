@@ -6,6 +6,7 @@ import '/models/events_model.dart';
 import '/models/games_model.dart';
 import '/models/requests_model.dart';
 import '/models/requests_page_model.dart';
+import '/models/friends_page_model.dart';
 import '/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -33,6 +34,7 @@ class BaseCommand {
   HomePageModel homePageModel = _mainContext.read();
   RequestsModel requestsModel = _mainContext.read();  
   RequestsPageModel requestsPageModel = _mainContext.read();  
+  FriendsPageModel friendsPageModel = _mainContext.read();  
   // Services
   UserService userService = _mainContext.read();
   GeoLocationServices geoLocationServices = _mainContext.read();

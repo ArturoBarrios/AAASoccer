@@ -300,6 +300,10 @@ class UserCommand extends BaseCommand {
     return getUserResp;
   }
 
+  void updateFriendsPageModel(List<dynamic> friends){
+    friendsPageModel.selectedObjects = friends;    
+  }
+
   Future<Map<String, dynamic>> getUser(String email) async {
     print("getUser");
     Map<String, dynamic> getUserResp = {
@@ -324,6 +328,7 @@ class UserCommand extends BaseCommand {
       print("response: ");
       print(jsonDecode(response.body));
       final result = jsonDecode(response.body)['data']['getUser'];    
+      appModel.currentUser = result;
       // if (result != null) {
         getUserResp["success"] = true;
         getUserResp["message"] = "user found";

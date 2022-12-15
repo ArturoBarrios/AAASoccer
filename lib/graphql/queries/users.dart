@@ -15,6 +15,7 @@ class UserQueries {
                   _id
                   name
                   isMainEvent
+                  type
                 }
               }
               friends{                
