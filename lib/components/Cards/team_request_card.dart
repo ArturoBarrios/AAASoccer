@@ -5,8 +5,8 @@ import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../commands/requests_command.dart';
-import '../../views/game/view.dart';
-import '../../assets/icons/plus_circle_outline.svg';
+import '../../views/team/view.dart';
+import '../../assets/icons/plus.svg';
 
 class TeamRequestCard extends StatefulWidget {
   const TeamRequestCard(
@@ -61,7 +61,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PickupView();
+            return TeamView();
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

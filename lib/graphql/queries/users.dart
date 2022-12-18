@@ -10,11 +10,25 @@ class UserQueries {
               username
               birthdate
               gender
+              events{
+                data{
+                  _id
+                  name
+                  isMainEvent
+                  type
+                }
+              }
               friends{                
                   _id
                   name
                   email                
               }
+              teams{
+                data{
+                  _id
+                  name
+                }
+              }              
               friendRequests{
                 data{
                   _id

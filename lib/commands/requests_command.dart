@@ -120,7 +120,15 @@ class RequestsCommand extends BaseCommand {
     
       print("response body: ");
       print(jsonDecode(response.body));
-            
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };
+      Map<String, dynamic> eventInput = {
+        "_id": eventRequestInput['event']['_id'],
+      };
+      await UserCommand().addEvent(userInput, eventInput);
+      //todo 
+      //add check and revert entirely if adding event fails???            
       updateEventRequestResponse["success"] = true;
       updateEventRequestResponse["message"] = "Event Request Created";      
       updateEventRequestResponse["data"] = jsonDecode(response.body)['data']['updateEventRequest'];          
@@ -150,11 +158,19 @@ class RequestsCommand extends BaseCommand {
         body: jsonEncode(<String, String>{
           'query': TeamMutations().updateTeamRequest(teamRequestInput),//(fromInput, toInputs, gameInput),
         }),
-      );
+      );      
     
       print("response body: ");
       print(jsonDecode(response.body));
-            
+
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };
+      Map<String, dynamic> teamInput = {
+        "_id": teamRequestInput['team']['_id'],
+      };
+      await UserCommand().addTeam(userInput, teamInput);    
+
       updateTeamRequestsResponse["success"] = true;
       updateTeamRequestsResponse["message"] = "Event Request Created";      
       updateTeamRequestsResponse["data"] = jsonDecode(response.body)['data']['updateEventRequest'];          

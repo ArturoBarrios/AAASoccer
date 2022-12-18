@@ -8,5 +8,6 @@ class Constants {
   static final String WAGER = "7";
   static final String PLAYER = "8";
   static final String FRIEND = "9";
+  static final String MYEVENTS = "10";
   
 }

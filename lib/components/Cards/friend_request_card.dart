@@ -6,7 +6,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../commands/requests_command.dart';
 import '../../views/game/view.dart';
-import '../../assets/icons/plus_circle_outline.svg';
+import '../../assets/icons/plus.svg';
 
 class FriendRequestCard extends StatefulWidget {
   const FriendRequestCard(
@@ -57,16 +57,7 @@ class _FriendRequestCard extends State<FriendRequestCard> {
     return Listener(
         child: GestureDetector(
       onTap: () {
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return PickupView();
-          },
-          animationType: DialogTransitionType.slideFromBottom,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 1),
-        );
+        
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),

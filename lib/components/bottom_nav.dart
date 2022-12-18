@@ -10,6 +10,7 @@ import '../views/wager/create.dart';
 import '../views/league/create.dart';
 import '../views/tournament/create.dart';
 import '../views/request/view.dart';
+import '../views/friends/view.dart';
 import '../commands/user_command.dart';
 import '../commands/base_command.dart';
 import '../commands/player_command.dart';
@@ -65,7 +66,7 @@ class _BottomNav extends State<BottomNav> {
     // TournamentCommand().bergerTable(14);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TeamCreate()),
+      MaterialPageRoute(builder: (context) => RequestsView()),
     );
     // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
@@ -108,12 +109,12 @@ class _BottomNav extends State<BottomNav> {
                   onPressed: () {}),
               IconBottomBar(
                   text: "Search",
-                  icon: Icons.search_outlined,
+                  icon: Icons.person,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return RequestsView();
+                        return FriendsView();
                       },
                     ));
                   }),
@@ -161,7 +162,13 @@ class _BottomNav extends State<BottomNav> {
                   text: "Cart",
                   icon: Icons.local_grocery_store_outlined,
                   selected: false,
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return RequestsView();
+                      },
+                    ));
+                  }),
               IconBottomBar(
                   text: "Friends",
                   icon: Icons.person_add_outlined,

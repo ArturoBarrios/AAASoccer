@@ -101,6 +101,86 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
+  Future<Map<String, dynamic>> addEvent(Map<String, dynamic> userInput, Map<String, dynamic> eventInput) async {
+    
+    print("addEvent");
+    Map<String, dynamic> addEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().addEvent(userInput, eventInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      addEventResponse["success"] = true;
+      addEventResponse["message"] = "User added to Event";      
+      addEventResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
+
+    }catch(e){
+      print("error");
+    }
+
+
+    return addEventResponse;
+
+  }
+
+  Future<Map<String, dynamic>> addTeam(Map<String, dynamic> userInput, Map<String, dynamic> teamInput) async {
+    
+    print("addTeam");
+    Map<String, dynamic> addTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().addTeam(userInput, teamInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      addTeamResponse["success"] = true;
+      addTeamResponse["message"] = "Team added";      
+      addTeamResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
+
+    }catch(e){
+      print("error");
+    }
+
+
+    return addTeamResponse;
+
+  }
+
 
   Future<Map<String, dynamic>> addFriend(Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
     
@@ -220,6 +300,10 @@ class UserCommand extends BaseCommand {
     return getUserResp;
   }
 
+  void updateFriendsPageModel(List<dynamic> friends){
+    friendsPageModel.selectedObjects = friends;    
+  }
+
   Future<Map<String, dynamic>> getUser(String email) async {
     print("getUser");
     Map<String, dynamic> getUserResp = {
@@ -244,6 +328,7 @@ class UserCommand extends BaseCommand {
       print("response: ");
       print(jsonDecode(response.body));
       final result = jsonDecode(response.body)['data']['getUser'];    
+      appModel.currentUser = result;
       // if (result != null) {
         getUserResp["success"] = true;
         getUserResp["message"] = "user found";
