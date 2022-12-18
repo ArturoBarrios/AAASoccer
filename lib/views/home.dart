@@ -22,7 +22,6 @@ import '../components/Cards/tournament_card.dart';
 import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
 import '../components/Cards/friend_card.dart';
-import '../components/Cards/my_event_card.dart';
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
@@ -247,10 +246,10 @@ class _Home extends State<Home> {
     print("selectedObject: " + selectedObject.toString());
 
     
-    Widget card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
+    Widget card = PickupCard2(eventObject: selectedObject, svgImage: svgImage, isMyEvent: false);
 
     if(selectedKey==Constants.PICKUP){
-      card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
+      card = PickupCard2(eventObject: selectedObject, svgImage: svgImage, isMyEvent: false);
     }
     else if(selectedKey==Constants.TRAINING){
       card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage);
@@ -282,7 +281,7 @@ class _Home extends State<Home> {
       print("testing EventType.GAME===Game.type ");
     print(EventType.GAME.name.toString()==selectedObject['type'].toString());          
       if(selectedObject['type'].toString() == EventType.GAME.name.toString()){
-        card = PickupCard2(eventObject: selectedObject, svgImage: svgImage);
+        card = PickupCard2(eventObject: selectedObject, svgImage: svgImage, isMyEvent: true);
       }
     }
 

@@ -112,12 +112,7 @@ class _FriendCard extends State<FriendCard> {
               child: Container(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20.0),
-                  child: Image(
-                    width: 20,
-                    height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
-                    color: Colors.white,
-                  ),
+                  child: const Icon(Icons.person_remove_sharp),
                 ),
               ),
             ),

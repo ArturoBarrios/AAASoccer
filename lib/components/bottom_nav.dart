@@ -109,7 +109,7 @@ class _BottomNav extends State<BottomNav> {
                   onPressed: () {}),
               IconBottomBar(
                   text: "Search",
-                  icon: Icons.search_outlined,
+                  icon: Icons.person,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
@@ -162,7 +162,13 @@ class _BottomNav extends State<BottomNav> {
                   text: "Cart",
                   icon: Icons.local_grocery_store_outlined,
                   selected: false,
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return RequestsView();
+                      },
+                    ));
+                  }),
               IconBottomBar(
                   text: "Friends",
                   icon: Icons.person_add_outlined,
