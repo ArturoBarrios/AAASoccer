@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/foundation.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:twilio_flutter/twilio_flutter.dart';
 
 class AppModel extends ChangeNotifier {
 
@@ -16,6 +17,17 @@ class AppModel extends ChangeNotifier {
 
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
+  set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
+    _faunaClient = faunaClient;
+    notifyListeners();
+  }
+  
+  TwilioFlutter? _twilioClient = null;
+  TwilioFlutter get twilioClient => _twilioClient!;
+  set twilioClient(TwilioFlutter twilioClient) {
+    _twilioClient = twilioClient;
+    notifyListeners();
+  }
   
 
   Map<String, dynamic> _currentUser = {};
@@ -35,10 +47,6 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }  
 
-  set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
-    _faunaClient = faunaClient;
-    notifyListeners();
-  }
 
 
   bool _amplifyConfigured = false;

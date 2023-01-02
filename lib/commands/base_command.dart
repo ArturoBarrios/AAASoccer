@@ -15,8 +15,10 @@ import '../commands/user_command.dart';
 import '../commands/player_command.dart';
 import '../commands/event_command.dart';
 import '../services/geolocation_services.dart';
+import '../services/twilio_services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:twilio_flutter/twilio_flutter.dart'; 
 
 
 
@@ -35,12 +37,15 @@ class BaseCommand {
   RequestsModel requestsModel = _mainContext.read();  
   RequestsPageModel requestsPageModel = _mainContext.read();  
   FriendsPageModel friendsPageModel = _mainContext.read();  
-  // Services
-  UserService userService = _mainContext.read();
+  // Services  
   GeoLocationServices geoLocationServices = _mainContext.read();
+  // TwilioServices twilioServices = _mainContext.read();
   
 
-
+  // void configureTwilio(){
+  //   TwilioFlutter twilioFlutterClient = twilioServices.configureTwilio();
+  //   appModel.twilioClient = twilioFlutterClient;
+  // }
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";

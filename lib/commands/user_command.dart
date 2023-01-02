@@ -14,13 +14,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserCommand extends BaseCommand {
-  Future<List<String>> run(String user) async {
-    // Make service call and inject results into the model
-    List<String> posts = await userService.getPosts(user);
-
-    // Return our posts to the caller in case they care
-    return posts;
-  }
 
   Future<Map<String, dynamic>> createUser(
       Map<String, dynamic> userInput) async {
@@ -263,6 +256,21 @@ class UserCommand extends BaseCommand {
     return sendFriendRequestResponse;
   }
   
+  Future<Map<String, dynamic>> removeFriend(dynamic friendInput) async {
+    print("removeFriend");
+    Map<String, dynamic> removeFriendResp = {
+      "success": false,
+      "message": "friend not removed",
+      "data": null
+    };
+
+    try{
+
+    }catch (e) {}
+
+    return removeFriendResp;
+
+  }
 
   Future<Map<String, dynamic>> getCurrentUser() async {
     print("getCurrentUser");

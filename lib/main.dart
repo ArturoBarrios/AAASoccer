@@ -22,6 +22,7 @@ import 'models/games_model.dart';
 import 'services/user_service.dart';
 import 'services/fauna_db_services.dart';
 import 'services/geolocation_services.dart';
+import 'services/twilio_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home.dart';
 
@@ -38,8 +39,11 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() async {
 
-
+  await dotenv.load(fileName: ".env");
+  print("environment: ");
+  print(dotenv.env['ENVIRONMENT']);
   
+  // Commands.BaseCommand().configureTwilio();
 
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(
@@ -110,9 +114,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void configureApp() async {
-    await dotenv.load(fileName: ".env");
-    print("environment: ");
-    print(dotenv.env['ENVIRONMENT']);
+    // await dotenv.load(fileName: ".env");
+    // print("environment: ");
+    // print(dotenv.env['ENVIRONMENT']);
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
     print("configureAmplifyResp: ");
     print(configureAmplifyResp);
@@ -313,9 +317,9 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (c) => RequestsPageModel()),
           ChangeNotifierProvider(create: (c) => FriendsPageModel()),
           ChangeNotifierProvider(create: (c) => HomePageModel()),
-          Provider(create: (c) => FaunaDBServices()),
-          Provider(create: (c) => UserService()),
+          Provider(create: (c) => FaunaDBServices()),          
           Provider(create: (c) => GeoLocationServices()),
+          
         ],
         child: Builder(builder: (context) {
           Commands.init(context);
