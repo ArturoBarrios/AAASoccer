@@ -29,6 +29,13 @@
             {
               "client_id": "203738467816-0jibgm7smij7cl7soj07iqf0qanhfj83.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "203738467816-619of74ng8gpc1goqiq5eq26utfg4rhg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.soccermadeeasy.OneSignalNotificationServiceExtension"
+              }
             }
           ]
         }

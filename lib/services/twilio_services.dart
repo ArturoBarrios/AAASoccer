@@ -49,12 +49,11 @@ class TwilioServices extends BaseCommand {
     return configureTwilioResp;
   }
 
-  void SendSMS(String phoneNumber){
+  void SendSMS(String phoneNumber, String message){
     appModel.twilioClient.sendSMS(
       toNumber : phoneNumber, 
-      messageBody : 'hello world'); 
+      messageBody : message); 
   }
-
 
 
 }

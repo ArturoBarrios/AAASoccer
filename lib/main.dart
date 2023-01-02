@@ -37,6 +37,8 @@ import '../components/bottom_nav.dart';
 import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:twilio_flutter/twilio_flutter.dart'; 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
 
@@ -44,6 +46,9 @@ void main() async {
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
   
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(

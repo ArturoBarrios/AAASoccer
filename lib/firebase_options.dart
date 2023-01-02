@@ -66,11 +66,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBVwwhIMyju-8G_lJ_8G6i_KzE0Pn2wf2E',
-    appId: '1:203738467816:ios:d2a2ffff23af3005d3e85d',
+    appId: '1:203738467816:ios:8a76a2d488ea53b0d3e85d',
     messagingSenderId: '203738467816',
     projectId: 'soccer-app-a9060',
     storageBucket: 'soccer-app-a9060.appspot.com',
-    iosClientId: '203738467816-ft0u65aup2gk46kue5q6jkunfjihaei9.apps.googleusercontent.com',
-    iosBundleId: 'com.example.soccermadeeasy',
+    iosClientId: '203738467816-619of74ng8gpc1goqiq5eq26utfg4rhg.apps.googleusercontent.com',
+    iosBundleId: 'com.example.soccermadeeasy.OneSignalNotificationServiceExtension',
   );
 }
