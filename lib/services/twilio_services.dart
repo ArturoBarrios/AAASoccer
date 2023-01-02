@@ -34,10 +34,10 @@ class TwilioServices extends BaseCommand {
         
         
       
-        // appModel.twilioClient = twilioFlutter;
+        appModel.twilioClient = twilioFlutter;
 
-        // print("appModel.twilioClient value");
-        // print(appModel.twilioClient);
+        print("appModel.twilioClient value");
+        print(appModel.twilioClient);
         
 
       

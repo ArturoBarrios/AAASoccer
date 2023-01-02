@@ -36,6 +36,7 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 import '../components/bottom_nav.dart';
 import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:twilio_flutter/twilio_flutter.dart'; 
 
 void main() async {
 
@@ -43,7 +44,6 @@ void main() async {
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
   
-  // Commands.BaseCommand().configureTwilio();
 
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(
@@ -260,6 +260,7 @@ class _MyAppState extends State<MyApp> {
   //assumes you're signed in/up
   Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
+    TwilioServices().configureTwilio();
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if(otherConfigurationResp['success']){
       await BaseCommand().setupInitialAppModels(emailController.text.trim());      
