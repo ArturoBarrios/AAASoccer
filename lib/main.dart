@@ -260,7 +260,7 @@ class _MyAppState extends State<MyApp> {
   //assumes you're signed in/up
   Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    TwilioServices().configureTwilio();
+    TwilioServices().configureTwilio();    
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if(otherConfigurationResp['success']){
       await BaseCommand().setupInitialAppModels(emailController.text.trim());      

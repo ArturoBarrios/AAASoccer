@@ -49,53 +49,12 @@ class TwilioServices extends BaseCommand {
     return configureTwilioResp;
   }
 
-   void signOut() async {
-    try {
-      await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
-      //base_command set initial app models to reflect signout
-   
-    } on AuthException catch (e) {
-      print(e.message);
-    }
+  void SendSMS(String phoneNumber){
+    appModel.twilioClient.sendSMS(
+      toNumber : phoneNumber, 
+      messageBody : 'hello world'); 
   }
 
-  static Future<SignInResult> signIn(emailController, passwordController) async {
-    SignInResult res = await Amplify.Auth.signIn(
-      username: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    );
 
-    //
 
-    return res;
-  }
-
-  static Future<SignUpResult> signUp(emailController, passwordController,
-      usernameController, phoneController, birthdateController, genderController, addressController) async {
-    Map<CognitoUserAttributeKey, String> userAttributes = {
-      CognitoUserAttributeKey.name: usernameController.text.trim(),
-      CognitoUserAttributeKey.email: emailController.text.trim(),
-      CognitoUserAttributeKey.preferredUsername: usernameController.text.trim(),
-      // Note: phone_number requires country code
-      CognitoUserAttributeKey.phoneNumber: '+1' + phoneController.text.trim(),
-      CognitoUserAttributeKey.birthdate: birthdateController.text.trim(),
-      CognitoUserAttributeKey.gender: genderController.text.trim(),
-      CognitoUserAttributeKey.address: addressController.text.trim()
-    };
-    SignUpResult res = await Amplify.Auth.signUp(
-        username: emailController.text.trim(),
-        password: passwordController.text.trim(),
-        options: CognitoSignUpOptions(userAttributes: userAttributes));
-
-    return res;
-  }
-
-  static Future<SignUpResult> confirmSignUp(String confirmValue, String email) async {
-    print("confirmSignIn");
-    SignUpResult res = await Amplify.Auth.confirmSignUp(
-        username: email,
-        confirmationCode: confirmValue);
-
-    return res;
-  }
 }
