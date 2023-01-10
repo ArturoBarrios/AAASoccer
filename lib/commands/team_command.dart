@@ -9,7 +9,7 @@ import '../graphql/mutations/teams.dart';
 import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import '../graphql/queries/teams.dart';
 
 
@@ -20,7 +20,7 @@ class TeamCommand extends BaseCommand {
     Map<String, dynamic> getTrainingsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
     try{
       print("my position");
-      Position myPosition = await GeoLocationCommand().determinePosition();
+      // Position myPosition = await GeoLocationCommand().determinePosition();
       http.Response response = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{

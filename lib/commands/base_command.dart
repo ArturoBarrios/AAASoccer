@@ -16,9 +16,8 @@ import '../commands/player_command.dart';
 import '../commands/event_command.dart';
 import '../services/geolocation_services.dart';
 import '../services/twilio_services.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:twilio_flutter/twilio_flutter.dart'; 
+// import 'package:geolocator/geolocator.dart';
+// import 'package:geocoding/geocoding.dart';
 
 
 
@@ -54,19 +53,19 @@ class BaseCommand {
     print("setupInitialAppConfigs");
     Map<String, dynamic> setupInitialAppConfigsResponse = {"success": false, "message": "Something went wrong with setting up initial app configs", "data": Map<String, dynamic>()};
     try{
-      Position userPosition = await geoLocationServices.determinePosition();
-      userModel.position = userPosition;
+      // Position userPosition = await geoLocationServices.determinePosition();
+      // userModel.position = userPosition;
       try {
         
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        userPosition.latitude,
-        userPosition.longitude,
-        localeIdentifier: 'en_US',
-      );
+      // List<Placemark> placemarks = await placemarkFromCoordinates(
+      //   userPosition.latitude,
+      //   userPosition.longitude,
+      //   localeIdentifier: 'en_US',
+      // );
 
-      Placemark place = placemarks[0];
-      print("place: ");
-      print(place);
+      // Placemark place = placemarks[0];
+      // print("place: ");
+      // print(place);
       
     } catch (e) {
       print(e);
@@ -74,9 +73,9 @@ class BaseCommand {
       
       setupInitialAppConfigsResponse["success"] = true;
       setupInitialAppConfigsResponse["message"] = "Setup initial app configs";
-      setupInitialAppConfigsResponse["data"]["position"] = userPosition;
+      // setupInitialAppConfigsResponse["data"]["position"] = userPosition;
       print("position: ");
-      print(userPosition);
+      // print(userPosition);
     }catch(e){
       print(e.toString());
     }

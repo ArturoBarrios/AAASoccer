@@ -44,3 +44,5 @@ target 'OneSignalNotificationServiceExtension' do
   use_frameworks!
   pod 'OneSignalXCFramework', '>= 3.4.3', '< 4.0'
 end
+
+# pod 'Adapty', '~> 2.2.0'

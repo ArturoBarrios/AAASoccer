@@ -35,20 +35,25 @@ import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../components/bottom_nav.dart';
 import 'package:adapty_flutter/adapty_flutter.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:twilio_flutter/twilio_flutter.dart'; 
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:onesignal_flutter/onesignal_flutter.dart';
+// import 'package:twilio_flutter/twilio_flutter.dart'; 
+// import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:location/location.dart';
+
 
 void main() async {
+
+  
+
 
   await dotenv.load(fileName: ".env");
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
   
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    // await Firebase.initializeApp(
+    //   options: DefaultFirebaseOptions.currentPlatform,
+    // );
 
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(
@@ -58,7 +63,13 @@ void main() async {
     final AuthLink authLink = AuthLink(
       getToken: () async => 'Bearer fnAEwyiZocACT1B4JJ2YkT2yPqdbIBgQz55x7a-0',
     );
-    Adapty.activate();
+    Adapty().activate();
+    Adapty().setLogLevel(AdaptyLogLevel.verbose);
+    print("adapty set!!!!");
+    // try{
+    //   await Adapty().activate();
+    // } on AdaptyError catch (AdaptyError) {}
+    // catch(e){}
 
     final Link link = authLink.concat(httpLink);
 
@@ -72,15 +83,40 @@ void main() async {
     print("graphQL client: ");
     print(client);
   
-  //Remove this method to stop OneSignal Debugging 
-OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+  Location location = new Location();
 
-OneSignal.shared.setAppId("aeb22176-60a9-4077-b161-69381a79fa94");
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
+
+  _serviceEnabled = await location.serviceEnabled();
+  print("_serviceEnabled: "+_serviceEnabled.toString());
+  if (!_serviceEnabled) {
+    _serviceEnabled = await location.requestService();
+    if (!_serviceEnabled) {
+      
+    }
+  }
+
+  _permissionGranted = await location.hasPermission();
+  if (_permissionGranted == PermissionStatus.denied) {
+    _permissionGranted = await location.requestPermission();
+    if (_permissionGranted != PermissionStatus.granted) {
+      
+    }
+  }
+
+  _locationData = await location.getLocation();
+  print("locationData: "+_locationData.latitude.toString() + _locationData.longitude.toString());
+  //Remove this method to stop OneSignal Debugging 
+// OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+
+// OneSignal.shared.setAppId("aeb22176-60a9-4077-b161-69381a79fa94");
 
 // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-    print("Accepted permission: $accepted");
-});
+// OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+    // print("Accepted permission: $accepted");
+// });
   runApp(MyApp(client: client));
 
 
@@ -173,7 +209,8 @@ class _MyAppState extends State<MyApp> {
   }
 
 //handle location here???
-  Future<Map<String, dynamic>> otherConfigurations() async {
+  Future<Map<String, dynamic>> otherConfigurations() async {      
+
     print("otherConfigurations");
     Map<String, dynamic> otherConfigurationsResp = {"success": true, "message": "successfully configured other shit"};
     AppModel().amplifyConfigured = true;

@@ -10,7 +10,7 @@ import '../models/events_model.dart';
 import '../models/requests_page_model.dart';
 import '../models/requests_model.dart';
 import '../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import '../graphql/mutations/games.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/mutations/teams.dart';

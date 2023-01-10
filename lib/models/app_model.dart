@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/foundation.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:twilio_flutter/twilio_flutter.dart';
+// import 'package:twilio_flutter/twilio_flutter.dart';
 
 class AppModel extends ChangeNotifier {
 
@@ -22,12 +22,12 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
   
-  TwilioFlutter? _twilioClient = null;
-  TwilioFlutter get twilioClient => _twilioClient!;
-  set twilioClient(TwilioFlutter twilioClient) {
-    _twilioClient = twilioClient;
-    notifyListeners();
-  }
+  // TwilioFlutter? _twilioClient = null;
+  // TwilioFlutter get twilioClient => _twilioClient!;
+  // set twilioClient(TwilioFlutter twilioClient) {
+  //   _twilioClient = twilioClient;
+  //   notifyListeners();
+  // }
   
 
   Map<String, dynamic> _currentUser = {};
