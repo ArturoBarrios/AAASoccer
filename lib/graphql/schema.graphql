@@ -88,7 +88,7 @@ type EventRequest {
   requestAttempts: Int @default(value: 0)
 }
 
-# event request will be sent to team captains
+# event request will be sent to team organizers
 type TeamRequest {
   organizers: [User!] @relation(name: "team_requests_organizers")  
   sender: User @relation(name: "team_requests_sent")
@@ -114,6 +114,7 @@ type User  {
   name: String
   phone: String
   email: String
+  bio: String
   username: String
   birthdate: String
   age: Int

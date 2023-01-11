@@ -7,7 +7,7 @@ import '../models/app_model.dart';
 import '../commands/event_command.dart';
 import '../models/events_model.dart';
 import '../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import '../graphql/mutations/games.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/games.dart';
@@ -27,7 +27,7 @@ class GameCommand extends BaseCommand {
     };
     try {
       print("my position");
-      Position myPosition = await GeoLocationCommand().determinePosition();
+      // Position myPosition = await GeoLocationCommand().determinePosition();
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{

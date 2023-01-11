@@ -44,8 +44,6 @@ dependencies:
   amplify_authenticator: ^0.1.0
   amplify_api: ^0.5.0
   auto_size_text: ^3.0.0
-  geolocator: ^9.0.0
-  geocoding: ^2.0.4
   vector_math: ^2.1.2
   graphql_flutter: ^5.1.1-beta.3
   flutter_dotenv: ^5.0.2
@@ -54,8 +52,11 @@ dependencies:
   flutter_svg_provider: ^1.0.3
   http: ^0.13.5
   flutter_animated_dialog: ^2.0.1  
-  adapty_flutter: ^1.0.14
+  location: ^4.4.0
+  adapty_flutter: ^2.2.0
   onesignal_flutter: ^3.4.2
+  twilio_flutter: ^0.0.9
+  firebase_core: ^2.4.1
   
   
 

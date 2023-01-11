@@ -1,4 +1,4 @@
-import 'package:geolocator/geolocator.dart';
+
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';

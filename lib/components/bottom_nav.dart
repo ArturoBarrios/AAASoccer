@@ -18,8 +18,8 @@ import '../commands/tournament_command.dart';
 import '../commands/game_command.dart';
 import '../testing/seeding/database_seeder.service.dart';
 import '../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:geocoding/geocoding.dart';
 import '../components/history.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../graphql/queries/users.dart';
@@ -64,11 +64,11 @@ class _BottomNav extends State<BottomNav> {
 
   void testFunction() async {
     // TournamentCommand().bergerTable(14);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RequestsView()),
-    );
-    // AmplifyAuthService().signOut();
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => RequestsView()),
+    // );
+    AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
     // print("test text updated");
