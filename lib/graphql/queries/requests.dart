@@ -9,10 +9,12 @@ class RequestsQueries {
               _id
               status
               requestAttempts
-              organizerWhoAcceptedOrSentRequest{
-                _id
-                name
-              }
+              organizers{
+                data{
+                  _id
+                  name
+                }
+              }             
               sender{
                 _id
                 name
@@ -39,6 +41,59 @@ class RequestsQueries {
       """;
 
       return getEventRequests;
+   }
+   String getTeamRequests()
+   {
+      String getTeamRequests = """
+        query GetTeamRequests {
+          allTeamRequests {
+            data {      
+              _id
+              status
+              requestAttempts
+              organizers{
+                data{
+                  _id
+                  email
+                  name
+                }
+              }
+              receivers{
+                data{
+                  _id
+                  email
+                  name
+                }
+              }             
+              sender{
+                _id
+                email
+                name
+              }
+              acceptedBy{
+                _id
+                email
+                name
+              }              
+              team{
+                name        	
+                _id  
+                teamUserOrganizers{                    
+                  users{
+                    data{
+                      email
+                      _id
+                      name
+                    }
+                  }                          
+                }
+              }                         
+            }
+          }
+        }
+      """;
+
+      return getTeamRequests;
    }
 
 }

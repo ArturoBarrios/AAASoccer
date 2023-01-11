@@ -10,6 +10,7 @@ import '../views/wager/create.dart';
 import '../views/league/create.dart';
 import '../views/tournament/create.dart';
 import '../views/request/view.dart';
+import '../views/friends/view.dart';
 import '../commands/user_command.dart';
 import '../commands/base_command.dart';
 import '../commands/player_command.dart';
@@ -17,8 +18,8 @@ import '../commands/tournament_command.dart';
 import '../commands/game_command.dart';
 import '../testing/seeding/database_seeder.service.dart';
 import '../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:geocoding/geocoding.dart';
 import '../components/history.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../graphql/queries/users.dart';
@@ -63,11 +64,11 @@ class _BottomNav extends State<BottomNav> {
 
   void testFunction() async {
     // TournamentCommand().bergerTable(14);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GameCreate()),
-    );
-    // AmplifyAuthService().signOut();
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => RequestsView()),
+    // );
+    AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
     // print("test text updated");
@@ -108,12 +109,12 @@ class _BottomNav extends State<BottomNav> {
                   onPressed: () {}),
               IconBottomBar(
                   text: "Search",
-                  icon: Icons.search_outlined,
+                  icon: Icons.person,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return RequestsView();
+                        return FriendsView();
                       },
                     ));
                   }),
@@ -161,7 +162,13 @@ class _BottomNav extends State<BottomNav> {
                   text: "Cart",
                   icon: Icons.local_grocery_store_outlined,
                   selected: false,
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return RequestsView();
+                      },
+                    ));
+                  }),
               IconBottomBar(
                   text: "Friends",
                   icon: Icons.person_add_outlined,

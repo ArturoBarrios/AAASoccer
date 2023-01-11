@@ -18,7 +18,7 @@ class SVGWidgets {
     return svgImage;
   }
   Svg plusCircleOutline() {
-    Svg svgImage = Svg('lib/assets/icons/plus_circle_outline.svg');
+    Svg svgImage = Svg('lib/assets/icons/plus.svg');
 
     return svgImage;
   }

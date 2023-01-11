@@ -12,14 +12,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LocationCommand extends BaseCommand {
 
-  Future<List<String>> run(String user) async {
-    // Make service call and inject results into the model
-    List<String> posts = await userService.getPosts(user);
-
-    // Return our posts to the caller in case they care
-    return posts;
-  }
-
  Future<Map<String, dynamic>> createLocation(Map<String, dynamic> locationInput ) async{
      print("createLocation");
     Map<String, dynamic> createLocationResponse = {"success": false, "message": "Default Error", "data": null};

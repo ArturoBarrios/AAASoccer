@@ -7,13 +7,14 @@ import '../models/app_model.dart';
 import '../commands/event_command.dart';
 import '../models/events_model.dart';
 import '../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import '../graphql/mutations/games.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/games.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
+import '../../models/types_models.dart';
 
 class GameCommand extends BaseCommand {
 
@@ -26,7 +27,7 @@ class GameCommand extends BaseCommand {
     };
     try {
       print("my position");
-      Position myPosition = await GeoLocationCommand().determinePosition();
+      // Position myPosition = await GeoLocationCommand().determinePosition();
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -109,6 +110,9 @@ class GameCommand extends BaseCommand {
       "data": null
     };
     try {
+      print("appModel.currentUser['_id']: ");
+      print(appModel.currentUser['_id']);
+      eventInput['type'] = EventType.GAME;
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
       };      
@@ -120,6 +124,7 @@ class GameCommand extends BaseCommand {
           'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
+
         body: jsonEncode(<String, String>{
           'query':
               GameMutations().createGame(gameInput, eventInput, locationInput, userInput),

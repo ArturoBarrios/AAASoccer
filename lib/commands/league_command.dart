@@ -15,7 +15,7 @@ import '../graphql/mutations/leagues.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import '../graphql/queries/leagues.dart';
 
 class LeagueCommand extends BaseCommand {
@@ -53,7 +53,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     };
     try {
       print("my position");
-      Position myPosition = await GeoLocationCommand().determinePosition();
+      // Position myPosition = await GeoLocationCommand().determinePosition();
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{

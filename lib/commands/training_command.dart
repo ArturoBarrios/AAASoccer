@@ -10,7 +10,7 @@ import '../models/app_model.dart';
 import '../graphql/mutations/training.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import '../commands/geolocation_command.dart';
 import '../graphql/queries/trainings.dart';
 
@@ -21,7 +21,7 @@ class TrainingCommand extends BaseCommand {
     Map<String, dynamic> getTrainingsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
     try{
       print("my position");
-      Position myPosition = await GeoLocationCommand().determinePosition();
+      // Position myPosition = await GeoLocationCommand().determinePosition();
       http.Response response = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{

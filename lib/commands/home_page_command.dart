@@ -84,6 +84,16 @@ class HomePageCommand extends BaseCommand {
         print(eventsModel.leagues);
         homePageModel.selectedObjects = eventsModel.leagues;
       }
+      else if(homePageModel.selectedKey==Constants.FRIEND){
+        print("check friend: ");
+        print(appModel.friends);
+        homePageModel.selectedObjects = appModel.friends;
+      }
+      else if(homePageModel.selectedKey==Constants.MYEVENTS){
+        print("check my events: ");
+        print(appModel.myEvents);
+        homePageModel.selectedObjects = appModel.myEvents;
+      }
       
       
 

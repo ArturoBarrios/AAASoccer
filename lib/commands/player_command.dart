@@ -11,7 +11,7 @@ import '../graphql/mutations/players.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import '../graphql/queries/players.dart';
 
 class PlayerCommand extends BaseCommand {
@@ -21,7 +21,7 @@ class PlayerCommand extends BaseCommand {
     Map<String, dynamic> getTrainingsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
     try{
       print("my position");
-      Position myPosition = await GeoLocationCommand().determinePosition();
+      // Position myPosition = await GeoLocationCommand().determinePosition();
       http.Response response = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{
@@ -38,6 +38,7 @@ class PlayerCommand extends BaseCommand {
 
 
       final result = jsonDecode(response.body)['data']['allPlayers']['data'];
+      appModel.players = result;  
       getTrainingsNearLocationResp["success"] = true;
       getTrainingsNearLocationResp["message"] = "Games Retrieved";
       getTrainingsNearLocationResp["data"] = result;

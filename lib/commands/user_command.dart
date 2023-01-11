@@ -14,13 +14,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserCommand extends BaseCommand {
-  Future<List<String>> run(String user) async {
-    // Make service call and inject results into the model
-    List<String> posts = await userService.getPosts(user);
-
-    // Return our posts to the caller in case they care
-    return posts;
-  }
 
   Future<Map<String, dynamic>> createUser(
       Map<String, dynamic> userInput) async {
@@ -101,8 +94,10 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
-Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequestInput) async {
-   Map<String, dynamic> acceptFriendRequestResponse = {
+  Future<Map<String, dynamic>> addEvent(Map<String, dynamic> userInput, Map<String, dynamic> eventInput) async {
+    
+    print("addEvent");
+    Map<String, dynamic> addEventResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
@@ -117,7 +112,7 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().acceptFriendRequest(friendRequestInput),
+          'query': UserMutations().addEvent(userInput, eventInput),
         }),
       );
 
@@ -126,22 +121,115 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
 
       
       
-      acceptFriendRequestResponse["success"] = true;
-      acceptFriendRequestResponse["message"] = "Accepted Friend Request";      
-      acceptFriendRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];
+      addEventResponse["success"] = true;
+      addEventResponse["message"] = "User added to Event";      
+      addEventResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
 
-    }catch(e) {}
+    }catch(e){
+      print("error");
+    }
 
-  return acceptFriendRequestResponse;
 
-}
+    return addEventResponse;
 
-  Future<Map<String, dynamic>> sendFriendRequest(Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
+  }
+
+  Future<Map<String, dynamic>> addTeam(Map<String, dynamic> userInput, Map<String, dynamic> teamInput) async {
+    
+    print("addTeam");
+    Map<String, dynamic> addTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().addTeam(userInput, teamInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      addTeamResponse["success"] = true;
+      addTeamResponse["message"] = "Team added";      
+      addTeamResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
+
+    }catch(e){
+      print("error");
+    }
+
+
+    return addTeamResponse;
+
+  }
+
+
+  Future<Map<String, dynamic>> addFriend(Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
+    
+    print("addFriend");
+    Map<String, dynamic> addFriendResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().addFriend(userInput, friendInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      
+      
+      addFriendResponse["success"] = true;
+      addFriendResponse["message"] = "Player for Team Created";      
+      addFriendResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
+
+    }catch(e){
+      print("error");
+    }
+
+
+    return addFriendResponse;
+
+  }
+
+
+  Future<Map<String, dynamic>> sendFriendRequest(Map<String, dynamic> receiverInput) async {
+    print("sendFriendRequest");
     Map<String, dynamic> sendFriendRequestResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
+    Map<String, dynamic> senderInput = {
+      "_id": appModel.currentUser['_id'],
+    };
+    print("senderInput");
+    print(senderInput);
+    print("receiverInput");
+    print(receiverInput);
     try {      
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -150,7 +238,7 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().sendFriendRequest(userInput, friendInput),
+          'query': UserMutations().sendFriendRequest(senderInput, receiverInput),
         }),
       );
 
@@ -168,48 +256,60 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
     return sendFriendRequestResponse;
   }
   
-  Future<Map<String, dynamic>> sendTeamOrganizerRequest(Map<String, dynamic> fromInput, Map<String, dynamic> toInput  ,Map<String, dynamic> teamInput ) async {
-    Map<String, dynamic> sendOrganizerRequestResponse = {
+  Future<Map<String, dynamic>> removeFriend(dynamic friendInput) async {
+    print("removeFriend");
+    Map<String, dynamic> removeFriendResp = {
       "success": false,
-      "message": "Default Error",
+      "message": "friend not removed",
       "data": null
     };
-    try {      
+
+    try{
+
+    }catch (e) {}
+
+    return removeFriendResp;
+
+  }
+
+  Future<Map<String, dynamic>> getCurrentUser() async {
+    print("getCurrentUser");
+    Map<String, dynamic> getUserResp = {
+      "success": false,
+      "message": "no user found",
+      "data": null
+    };
+    try {
+      String email = appModel.currentUser['email'];
+      print("email: ");
+      print(email);
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': TeamMutations().sendTeamOrganizerRequest(fromInput, toInput, teamInput),
+          'query': UserQueries().getUser(email),
         }),
       );
 
-      print("response body: ");
+      print("response: ");
       print(jsonDecode(response.body));
-
-      
-      
-      sendOrganizerRequestResponse["success"] = true;
-      sendOrganizerRequestResponse["message"] = "Player for Team Created";      
-      sendOrganizerRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];
-    
-      
-    } catch (e) {}
-    return sendOrganizerRequestResponse;
+      final result = jsonDecode(response.body)['data']['getUser'];    
+      // if (result != null) {
+        getUserResp["success"] = true;
+        getUserResp["message"] = "user found";
+        getUserResp["data"] = result;
+      // }     
+    } catch (e) {
+      print('Query failed: $e');
+    }
+    return getUserResp;
   }
 
-  Future<Map<String, dynamic>> updateFriendRequest() async{
-     Map<String, dynamic> updateFriendRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    
-
-    return updateFriendRequestResponse;
-    
+  void updateFriendsPageModel(List<dynamic> friends){
+    friendsPageModel.selectedObjects = friends;    
   }
 
   Future<Map<String, dynamic>> getUser(String email) async {
@@ -236,6 +336,7 @@ Future<Map<String, dynamic>> acceptFriendRequest(Map<String, dynamic> friendRequ
       print("response: ");
       print(jsonDecode(response.body));
       final result = jsonDecode(response.body)['data']['getUser'];    
+      appModel.currentUser = result;
       // if (result != null) {
         getUserResp["success"] = true;
         getUserResp["message"] = "user found";

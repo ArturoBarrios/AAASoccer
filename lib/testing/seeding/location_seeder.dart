@@ -3,8 +3,8 @@ import 'dart:math';
 
 import '../../commands/location_command.dart';
 import '../../commands/geolocation_command.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:geocoding/geocoding.dart';
 
 
 // import '../../models/Location.dart';

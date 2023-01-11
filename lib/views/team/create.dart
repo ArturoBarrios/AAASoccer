@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/team_command.dart';
 import '../../testing/seeding/team_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
+import '../../components/profile.dart';
 
 class TeamCreate extends StatefulWidget {
   @override
@@ -57,6 +58,26 @@ class _TeamCreateState extends State<TeamCreate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: new Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text("Find Soccer Near You")),
+        backgroundColor: Colors.orange.shade500,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Go to the next page',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Profile();
+                },
+              ));
+            },
+          ),
+        ],
+      ),
       body: Center(
           child: Column(children: [
         TextField(

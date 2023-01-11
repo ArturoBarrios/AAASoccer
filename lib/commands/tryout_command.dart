@@ -5,7 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import '../commands/geolocation_command.dart';
 import '../graphql/queries/tryouts.dart';
 
@@ -17,7 +17,7 @@ Future<Map<String, dynamic>> getTryoutsNearLocation() async{
     Map<String, dynamic> getTryoutsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
     try{
       print("my position");
-      Position myPosition = await GeoLocationCommand().determinePosition();
+      // Position myPosition = await GeoLocationCommand().determinePosition();
       http.Response response = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{

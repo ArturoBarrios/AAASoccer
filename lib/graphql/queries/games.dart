@@ -11,6 +11,7 @@ class GameQueries {
               event{
                   name        	
                   _id  
+                  type
                   eventUserOrganizers{                    
                       users{
                         data{

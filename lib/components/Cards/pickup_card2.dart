@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
@@ -7,14 +9,15 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../views/game/view.dart';
-import '../../assets/icons/plus_circle_outline.svg';
+import '../../assets/icons/plus.svg';
 
 class PickupCard2 extends StatefulWidget {
   const PickupCard2(
-      {Key? key, required this.eventObject, required this.svgImage})
+      {Key? key, required this.eventObject, required this.svgImage, required this.isMyEvent })
       : super(key: key);
   final Map<String, dynamic> eventObject;
   final Svg svgImage;
+  final bool isMyEvent;
   final double bevel = 10.0;
 
   @override
@@ -61,7 +64,7 @@ class _PickupCard2 extends State<PickupCard2> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PickupView();
+            return PickupView(isMyEvent: widget.isMyEvent);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -99,69 +102,79 @@ class _PickupCard2 extends State<PickupCard2> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.eventObject['event']['name'],
+                  //todo IDK you may have to change this.....
+                    text: widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.eventObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
-            GestureDetector(
-              onTap: () {
-                showAnimatedDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) {
-                    return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this event?',
-                      contentText: '',
-                      onPositiveClick: () {
-                        Navigator.of(context).pop();
-                        //delete event aaa
-                        print(widget.eventObject.toString());
-                        deletePickup(widget.eventObject);
+                  if(widget.isMyEvent)                                        
+                    GestureDetector(
+                      onTap: () {
+                        showAnimatedDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return ClassicGeneralDialogWidget(
+                              titleText: 'Are you sure you want to delete this event?',
+                              contentText: '',
+                              onPositiveClick: () {
+                                Navigator.of(context).pop();
+                                //delete event aaa
+                                print(widget.eventObject.toString());
+                                deletePickup(widget.eventObject);
+                              },
+                              onNegativeClick: () {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          },
+                          animationType: DialogTransitionType.slideFromBottom,
+                          curve: Curves.fastOutSlowIn,
+                          duration: Duration(seconds: 1),
+                        );
                       },
-                      onNegativeClick: () {
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  },
-                  animationType: DialogTransitionType.slideFromBottom,
-                  curve: Curves.fastOutSlowIn,
-                  duration: Duration(seconds: 1),
-                );
-              },
-              child: Container(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: Image(
-                    width: 20,
-                    height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                //send event request
-                print("send event request");
-                EventCommand().sendOrganizerEventRequest(widget.eventObject);
-                
-              },
-              child: Container(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: Image(
-                    width: 20,
-                    height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+                      child: Container(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: Image(
+                            width: 20,
+                            height: 20,
+                            image: SVGWidgets().deleteSVGImage(),
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Go to the next page',
+            onPressed: () {
+              //send event request
+              print("send event request");
+              EventCommand().sendOrganizerEventRequest(widget.eventObject);                
+            },
+          ),
+            // GestureDetector(
+            //   onTap: () {
+            //     //send event request
+            //     // print("send event request");
+            //     // EventCommand().sendOrganizerEventRequest(widget.eventObject);                
+            //   },
+            //   child: Container(
+            //     child: ClipRRect(
+            //       borderRadius: BorderRadius.circular(20.0),
+            //       child: Image(
+            //         width: 20,
+            //         height: 20,
+            //         image: SVGWidgets().plusCircleOutline(),
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ])),
     ));
   }

@@ -6,6 +6,7 @@ import '/models/events_model.dart';
 import '/models/games_model.dart';
 import '/models/requests_model.dart';
 import '/models/requests_page_model.dart';
+import '/models/friends_page_model.dart';
 import '/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -14,8 +15,9 @@ import '../commands/user_command.dart';
 import '../commands/player_command.dart';
 import '../commands/event_command.dart';
 import '../services/geolocation_services.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+import '../services/twilio_services.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:geocoding/geocoding.dart';
 
 
 
@@ -33,12 +35,16 @@ class BaseCommand {
   HomePageModel homePageModel = _mainContext.read();
   RequestsModel requestsModel = _mainContext.read();  
   RequestsPageModel requestsPageModel = _mainContext.read();  
-  // Services
-  UserService userService = _mainContext.read();
+  FriendsPageModel friendsPageModel = _mainContext.read();  
+  // Services  
   GeoLocationServices geoLocationServices = _mainContext.read();
+  // TwilioServices twilioServices = _mainContext.read();
   
 
-
+  // void configureTwilio(){
+  //   TwilioFlutter twilioFlutterClient = twilioServices.configureTwilio();
+  //   appModel.twilioClient = twilioFlutterClient;
+  // }
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
@@ -47,19 +53,19 @@ class BaseCommand {
     print("setupInitialAppConfigs");
     Map<String, dynamic> setupInitialAppConfigsResponse = {"success": false, "message": "Something went wrong with setting up initial app configs", "data": Map<String, dynamic>()};
     try{
-      Position userPosition = await geoLocationServices.determinePosition();
-      userModel.position = userPosition;
+      // Position userPosition = await geoLocationServices.determinePosition();
+      // userModel.position = userPosition;
       try {
         
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        userPosition.latitude,
-        userPosition.longitude,
-        localeIdentifier: 'en_US',
-      );
+      // List<Placemark> placemarks = await placemarkFromCoordinates(
+      //   userPosition.latitude,
+      //   userPosition.longitude,
+      //   localeIdentifier: 'en_US',
+      // );
 
-      Placemark place = placemarks[0];
-      print("place: ");
-      print(place);
+      // Placemark place = placemarks[0];
+      // print("place: ");
+      // print(place);
       
     } catch (e) {
       print(e);
@@ -67,9 +73,9 @@ class BaseCommand {
       
       setupInitialAppConfigsResponse["success"] = true;
       setupInitialAppConfigsResponse["message"] = "Setup initial app configs";
-      setupInitialAppConfigsResponse["data"]["position"] = userPosition;
+      // setupInitialAppConfigsResponse["data"]["position"] = userPosition;
       print("position: ");
-      print(userPosition);
+      // print(userPosition);
     }catch(e){
       print(e.toString());
     }
@@ -105,6 +111,7 @@ class BaseCommand {
           print(appModel.currentUser);
           // setUserId(user.id);
           // setUser(user);
+          //currently not being utilized
           EventCommand().setupMappedEvents();
           // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();          
           // if(getGamesNearLocationResp["success"]){
@@ -116,7 +123,7 @@ class BaseCommand {
             // List<dynamic> games = getGamesNearLocationResp["data"];    
             // homePageModel.selectedObjects = games;  
             // eventsModel.games = games;    
-            await EventCommand().setupEvents();
+            await EventCommand().setupEvents(user);
             
             print("Setup Events");
             // 

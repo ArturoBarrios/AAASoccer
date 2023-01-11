@@ -126,25 +126,39 @@ class HomePageModel extends ChangeNotifier {
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
       
-    },
-    Constants.TRAINING: {
-      "key": Constants.TRAINING,
+    },    
+    Constants.MYEVENTS: {
+      "key": Constants.MYEVENTS,
       "enabled": false,
-      "name": StringConstants.TRAININGSTITLE,
+      "name": StringConstants.MYEVENTSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },
-     Constants.PLAYER: {
+    Constants.FRIEND: {
+      "key": Constants.FRIEND,
+      "enabled": false,
+      "name": StringConstants.FRIENDSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    Constants.PLAYER: {
       "key": Constants.PLAYER,
       "enabled": false,
       "name": StringConstants.PLAYERSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },
-     Constants.TEAM: {
-      "key": Constants.TEAM,
+    Constants.TEAM: {
+    "key": Constants.TEAM,
+    "enabled": false,
+    "name": StringConstants.TEAMSTITLE,
+    "description": "",
+    "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    Constants.TRAINING: {
+      "key": Constants.TRAINING,
       "enabled": false,
-      "name": StringConstants.TEAMSTITLE,
+      "name": StringConstants.TRAININGSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },

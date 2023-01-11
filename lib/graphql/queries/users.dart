@@ -10,6 +10,42 @@ class UserQueries {
               username
               birthdate
               gender
+              events{
+                data{
+                  _id
+                  name
+                  isMainEvent
+                  type
+                }
+              }
+              friends{                
+                  _id
+                  name
+                  email                
+              }
+              teams{
+                data{
+                  _id
+                  name
+                }
+              }              
+              friendRequests{
+                data{
+                  _id
+                  status
+                  requestAttempts
+                  sender{
+                    _id
+                    name
+                    email
+                  }
+                  receiver{
+                    _id
+                    name
+                    email
+                  }
+                }
+              }
               eventRequestsToAccept{
                 data{
                   _id
@@ -20,7 +56,18 @@ class UserQueries {
                     name
                   }
                 }
-              }            
+              } 
+              teamRequestsToAccept{
+                data{
+                  _id
+                  status
+                  requestAttempts
+                  team{
+                    _id
+                    name
+                  }
+                }
+              }           
                                                
               
             

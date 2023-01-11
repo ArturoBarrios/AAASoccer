@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/foundation.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:twilio_flutter/twilio_flutter.dart';
 
 class AppModel extends ChangeNotifier {
 
@@ -16,6 +17,17 @@ class AppModel extends ChangeNotifier {
 
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
+  set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
+    _faunaClient = faunaClient;
+    notifyListeners();
+  }
+  
+  TwilioFlutter? _twilioClient = null;
+  TwilioFlutter get twilioClient => _twilioClient!;
+  set twilioClient(TwilioFlutter twilioClient) {
+    _twilioClient = twilioClient;
+    notifyListeners();
+  }
   
 
   Map<String, dynamic> _currentUser = {};
@@ -25,32 +37,28 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
   
-  bool _isSignedIn = false;
-  bool get isSignedIn => _isSignedIn;
 
-  bool _amplifyConfigured = false;
-  bool get amplifyConfigured => _amplifyConfigured;
+  
 
   bool _initialConditionsMet = false;
   bool get initialConditionsMet => _initialConditionsMet;
-  
-
   set initialConditionsMet(bool initialConditionsMet){
     _initialConditionsMet = initialConditionsMet;
     notifyListeners();
   }  
 
-  set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
-    _faunaClient = faunaClient;
-    notifyListeners();
-  }
 
+
+  bool _amplifyConfigured = false;
+  bool get amplifyConfigured => _amplifyConfigured;
   set amplifyConfigured(bool amplifyConfigured){
     _amplifyConfigured = amplifyConfigured;
     notifyListeners();
   }
 
 
+  bool _isSignedIn = false;
+  bool get isSignedIn => _isSignedIn;
   set isSignedIn(bool isSignedIn){
     _isSignedIn = isSignedIn;
     notifyListeners();
@@ -67,6 +75,20 @@ class AppModel extends ChangeNotifier {
   List get teams => _teams;
   set teams(List teams) {
     _teams = teams;
+    notifyListeners();
+  }
+  
+  List _friends = [];
+  List get friends => _friends;
+  set friends(List friends) {
+    _friends = friends;
+    notifyListeners();
+  }
+  
+  List _myEvents = [];
+  List get myEvents => _myEvents;
+  set myEvents(List myEvents) {
+    _myEvents = myEvents;
     notifyListeners();
   }
 }

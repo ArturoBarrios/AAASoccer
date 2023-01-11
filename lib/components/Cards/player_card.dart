@@ -24,21 +24,7 @@ void playerClicked() {
   print("Player Clicked");
 }
 
-Future<Map<String, dynamic>> addPlayer(dynamic friendObject) async {
-  print("addPlayer for friendObject: $friendObject");
-  Map<String, dynamic> addPlayerResp = {
-    "success": false,
-    "message": "Player added successfully"
-  };
-  Map<String, dynamic> addPlayerResponse = await UserCommand()
-      .sendFriendRequest(AppModel().currentUser['_id'], friendObject["user"]["_id"]);
-  print("addPlayerResponse: $addPlayerResponse");
-  if (addPlayerResponse["success"]) {
-    addPlayerResp["success"] = true;
-  }
 
-  return addPlayerResp;
-}
 
 class _PlayerCard extends State<PlayerCard> {
   final bool _isPressed = false;
@@ -102,41 +88,21 @@ class _PlayerCard extends State<PlayerCard> {
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.playerObject['description'],
-                    onPressed: () {
+                    onPressed: () {                      
                       print("inside container onPressed");
                     })),
             GestureDetector(
               onTap: () {
-                showAnimatedDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) {
-                    return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this player?',
-                      contentText: '',
-                      onPositiveClick: () {
-                        addPlayer(widget.playerObject);
-                       
-                      },
-                      onNegativeClick: () {
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  },
-                  animationType: DialogTransitionType.slideFromBottom,
-                  curve: Curves.fastOutSlowIn,
-                  duration: Duration(seconds: 1),
+                //potentially show dialogue
+                //with different request options
+                UserCommand().sendFriendRequest(                    
+                    widget.playerObject['user']
                 );
               },
               child: Container(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20.0),
-                  child: Image(
-                    width: 20,
-                    height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
-                    color: Colors.white,
-                  ),
+                  child: const Icon(Icons.rocket_launch_rounded)
                 ),
               ),
             ),
