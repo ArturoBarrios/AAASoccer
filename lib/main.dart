@@ -35,7 +35,7 @@ import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../components/bottom_nav.dart';
 import 'package:adapty_flutter/adapty_flutter.dart';
-// import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 // import 'package:twilio_flutter/twilio_flutter.dart'; 
 // import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -99,6 +99,7 @@ void main() async {
   }
 
   _permissionGranted = await location.hasPermission();
+  print("permissionGranted: "+_permissionGranted.toString());
   if (_permissionGranted == PermissionStatus.denied) {
     _permissionGranted = await location.requestPermission();
     if (_permissionGranted != PermissionStatus.granted) {
@@ -106,17 +107,18 @@ void main() async {
     }
   }
 
-  _locationData = await location.getLocation();
-  print("locationData: "+_locationData.latitude.toString() + _locationData.longitude.toString());
+  //this sometimes works and sometimes doesn't. Figure it out!
+  // _locationData = await location.getLocation();
+  // print("locationData: "+_locationData.latitude.toString() + _locationData.longitude.toString());
   //Remove this method to stop OneSignal Debugging 
-// OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
-// OneSignal.shared.setAppId("aeb22176-60a9-4077-b161-69381a79fa94");
+  OneSignal.shared.setAppId("aeb22176-60a9-4077-b161-69381a79fa94");
 
-// The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-// OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-    // print("Accepted permission: $accepted");
-// });
+  // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+  });
   runApp(MyApp(client: client));
 
 

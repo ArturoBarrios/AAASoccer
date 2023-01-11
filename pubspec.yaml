@@ -54,9 +54,9 @@ dependencies:
   flutter_animated_dialog: ^2.0.1  
   location: ^4.4.0
   adapty_flutter: ^2.2.0
-  # onesignal_flutter: ^3.4.2
-  # twilio_flutter: ^0.0.9
-  # firebase_core: ^2.4.1
+  onesignal_flutter: ^3.4.2
+  twilio_flutter: ^0.0.9
+  firebase_core: ^2.4.1
   
   
 
