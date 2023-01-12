@@ -1,3 +1,4 @@
+import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/models/events_model.dart';
 
 import 'base_command.dart';
@@ -16,6 +17,7 @@ import '../commands/training_command.dart';
 import '../commands/tryout_command.dart';
 import '../commands/tournament_command.dart';
 import '../commands/league_command.dart';
+import '../commands/notifications_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
 import '../graphql/mutations/users.dart';
@@ -56,14 +58,13 @@ class EventCommand extends BaseCommand {
     print("sendOrganizerEventRequest");
     Map<String, dynamic> sendOrganizerEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
     try {    
-       //create To    
-       
-      Map<String, dynamic> eventRequestInput = {
+            
+      Map<String, dynamic> sendOrganizerEventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
         "event_id": gameInput['event']['_id'],
       };           
-      print("eventRequestInput");
-      print(eventRequestInput);
+      print("sendOrganizerEventRequestInput");
+      print(sendOrganizerEventRequestInput);
         //useful for preventing spam(set max to 50 per day)
       //possible solution for creating EventRequest
         //create string with _ids and syntax and call in 
@@ -85,9 +86,15 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventMutations().sendEventRequest(eventRequestInput, organizersString, organizersString),//(fromInput, toInputs, gameInput),
+          'query': EventMutations().sendEventRequest(sendOrganizerEventRequestInput, organizersString, organizersString),//(fromInput, toInputs, gameInput),
         }),
       );
+
+      Map<String, dynamic> sendOrganizerRequestNotificationInput = {
+        "phone": appModel.currentUser['phone'],
+        "message": appModel.currentUser['name'] + " has sent you a request to join event"
+      };
+      NotificationsCommand().sendOrganizerRequestNotification(sendOrganizerRequestNotificationInput);
     
       print("response body: ");
       print(jsonDecode(response.body));

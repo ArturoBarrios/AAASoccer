@@ -39,7 +39,7 @@ class TwilioServices extends BaseCommand {
         print("appModel.twilioClient value");
         print(appModel.twilioClient);
 
-        SendSMS("12672136006", "Hello World!");
+        SendSMS("12672136006", "twilio messages work!");
         
 
       
@@ -52,10 +52,13 @@ class TwilioServices extends BaseCommand {
   }
 
   void SendSMS(String phoneNumber, String message){
+    print("SendSMS");
     appModel.twilioClient.sendSMS(
       toNumber : phoneNumber, 
       messageBody : message); 
   }
+
+  
 
 
 }

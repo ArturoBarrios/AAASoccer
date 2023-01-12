@@ -42,18 +42,13 @@ import 'firebase_options.dart';
 import 'package:location/location.dart';
 
 
+
+
 void main() async {
-
-  
-
 
   await dotenv.load(fileName: ".env");
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
-  
-    // await Firebase.initializeApp(
-    //   options: DefaultFirebaseOptions.currentPlatform,
-    // );
 
     await initHiveForFlutter();
     final HttpLink httpLink = HttpLink(
@@ -63,16 +58,8 @@ void main() async {
     final AuthLink authLink = AuthLink(
       getToken: () async => 'Bearer fnAEwyiZocACT1B4JJ2YkT2yPqdbIBgQz55x7a-0',
     );
-    Adapty().activate();
-    Adapty().setLogLevel(AdaptyLogLevel.verbose);
-    print("adapty set!!!!");
-    // try{
-    //   await Adapty().activate();
-    // } on AdaptyError catch (AdaptyError) {}
-    // catch(e){}
 
     final Link link = authLink.concat(httpLink);
-
     ValueNotifier<GraphQLClient> client = ValueNotifier(
       GraphQLClient(
         link: link,
@@ -82,8 +69,11 @@ void main() async {
     );
     print("graphQL client: ");
     print(client);
-  
+
   Location location = new Location();
+  //this sometimes works and sometimes doesn't. Figure it out!
+  // _locationData = await location.getLocation();
+  // print("locationData: "+_locationData.latitude.toString() + _locationData.longitude.toString());
 
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
@@ -107,9 +97,11 @@ void main() async {
     }
   }
 
-  //this sometimes works and sometimes doesn't. Figure it out!
-  // _locationData = await location.getLocation();
-  // print("locationData: "+_locationData.latitude.toString() + _locationData.longitude.toString());
+    // catch(e){}
+
+
+  
+
   //Remove this method to stop OneSignal Debugging 
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
@@ -119,6 +111,14 @@ void main() async {
   OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
       print("Accepted permission: $accepted");
   });
+   
+   
+    Adapty().activate();
+    Adapty().setLogLevel(AdaptyLogLevel.verbose);
+    print("adapty set!!!!");
+    // try{
+    //   await Adapty().activate();
+    // } on AdaptyError catch (AdaptyError) {}
   runApp(MyApp(client: client));
 
 
@@ -304,7 +304,7 @@ class _MyAppState extends State<MyApp> {
   //assumes you're signed in/up
   Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    TwilioServices().configureTwilio();    
+    await TwilioServices().configureTwilio();    
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if(otherConfigurationResp['success']){
       await BaseCommand().setupInitialAppModels(emailController.text.trim());      
