@@ -3,6 +3,7 @@ import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/Location.dart';
 import '../services/twilio_services.dart';
+import '../services/onesignal_service.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
@@ -19,7 +20,7 @@ class NotificationsCommand extends BaseCommand {
     try {
 
       TwilioServices().SendSMS(sendOrganizerRequestNotificationInput['phone'], sendOrganizerRequestNotificationInput['message']);
-
+      OneSignalService().sendPN();
 
       receiveRequestNotificationResponse["success"] = true;
       receiveRequestNotificationResponse["message"] = "Notification Sent!";      

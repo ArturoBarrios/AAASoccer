@@ -111,6 +111,7 @@ type OrganizerRequest {
 
 type User  {  
   userType: UserType
+  OSPID: String
   name: String
   phone: String
   email: String

@@ -16,6 +16,7 @@ import '../commands/player_command.dart';
 import '../commands/event_command.dart';
 import '../services/geolocation_services.dart';
 import '../services/twilio_services.dart';
+import '../services/onesignal_service.dart';
 // import 'package:geolocator/geolocator.dart';
 // import 'package:geocoding/geocoding.dart';
 
@@ -82,6 +83,19 @@ class BaseCommand {
     return setupInitialAppConfigsResponse;
   }
 
+  Future<Map<String, dynamic>> updateUserOSPID() async {
+    print("updateUserOSPID");
+    Map<String, dynamic> updateUserOSPIDResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    updateUserOSPIDResponse["success"] = true;
+
+    return updateUserOSPIDResponse;
+  }
+
   Future <Map<String, dynamic>> setupInitialAppModels(String email) async{
     print("setupInitialAppModels");
     Map<String, dynamic> resp = {"success": false, "message": "setup unsuccessfull", "data": null};
@@ -109,6 +123,10 @@ class BaseCommand {
           appModel.currentUser = user;
           print("app model user: ");
           print(appModel.currentUser);
+          //setup onesignal once you have user
+          OneSignalService().configureOneSignalUserDetails();
+
+
           // setUserId(user.id);
           // setUser(user);
           //currently not being utilized
@@ -125,7 +143,10 @@ class BaseCommand {
             // eventsModel.games = games;    
             await EventCommand().setupEvents(user);
             
+            
             print("Setup Events");
+
+            
             // 
           // }
          

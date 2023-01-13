@@ -10,6 +10,7 @@ class UserQueries {
               username
               birthdate
               gender
+              OSPID
               events{
                 data{
                   _id
