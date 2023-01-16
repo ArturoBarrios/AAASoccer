@@ -1,27 +1,23 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
-import '../../commands/event_command.dart';
+import '../../commands/requests_command.dart';
 import '../../views/game/view.dart';
 import '../../assets/icons/plus.svg';
 
-class PickupCard2 extends StatefulWidget {
-  const PickupCard2(
-      {Key? key, required this.eventObject, required this.svgImage, required this.isMyEvent })
+class EventRequestCard extends StatefulWidget {
+  const EventRequestCard(
+      {Key? key, required this.eventRequestObject, required this.svgImage})
       : super(key: key);
-  final Map<String, dynamic> eventObject;
+  final Map<String, dynamic> eventRequestObject;
   final Svg svgImage;
-  final bool isMyEvent;
   final double bevel = 10.0;
 
   @override
-  State<PickupCard2> createState() => _PickupCard2();
+  State<EventRequestCard> createState() => _EventRequestCard();
 }
 
 void pickupClicked() {
@@ -35,7 +31,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
     "message": "Pickup deleted successfully"
   };
   Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .deleteGame(gameObject["event"]["_id"], gameObject["_id"]);
+      .deleteGame(gameObject["friend"]["_id"], gameObject["_id"]);
   print("deletePickupResponse: $deletePickupResponse");
   if (deletePickupResponse["success"]) {
     deletePickupResp["success"] = true;
@@ -44,7 +40,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
-class _PickupCard2 extends State<PickupCard2> {
+class _EventRequestCard extends State<EventRequestCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
@@ -55,21 +51,13 @@ class _PickupCard2 extends State<PickupCard2> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
+  print("EventRequestCard Build()");
     print("widget name: ");
-    print(widget.eventObject.toString());
+    print(widget.eventRequestObject.toString());
     return Listener(
         child: GestureDetector(
       onTap: () {
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return PickupView(isMyEvent: widget.isMyEvent);
-          },
-          animationType: DialogTransitionType.slideFromBottom,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 1),
-        );
+        
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
@@ -102,79 +90,70 @@ class _PickupCard2 extends State<PickupCard2> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                  //todo IDK you may have to change this.....
-                    text: widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'],
+                    text: widget.eventRequestObject['event']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.eventObject['description'],
+                        "test subtitle", //widget.eventRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
-                  if(widget.isMyEvent)                                        
-                    GestureDetector(
-                      onTap: () {
-                        showAnimatedDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            return ClassicGeneralDialogWidget(
-                              titleText: 'Are you sure you want to delete this event?',
-                              contentText: '',
-                              onPositiveClick: () {
-                                Navigator.of(context).pop();
-                                //delete event aaa
-                                print(widget.eventObject.toString());
-                                deletePickup(widget.eventObject);
-                              },
-                              onNegativeClick: () {
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                          animationType: DialogTransitionType.slideFromBottom,
-                          curve: Curves.fastOutSlowIn,
-                          duration: Duration(seconds: 1),
-                        );
+            GestureDetector(
+              onTap: () {
+                showAnimatedDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) {
+                    return ClassicGeneralDialogWidget(
+                      titleText: 'Are you sure you want to delete this friend?',
+                      contentText: '',
+                      onPositiveClick: () {
+                        Navigator.of(context).pop();
+                        //delete friend aaa
+                        print(widget.eventRequestObject.toString());
+                        deletePickup(widget.eventRequestObject);
                       },
-                      child: Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Image(
-                            width: 20,
-                            height: 20,
-                            image: SVGWidgets().deleteSVGImage(),
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-            icon: const Icon(Icons.account_circle),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              //send event request
-              print("send event request for event: : ${widget.eventObject}");
-              EventCommand().sendOrganizerEventRequest(widget.eventObject);                
-            },
-          ),
-            // GestureDetector(
-            //   onTap: () {
-            //     //send event request
-            //     // print("send event request");
-            //     // EventCommand().sendOrganizerEventRequest(widget.eventObject);                
-            //   },
-            //   child: Container(
-            //     child: ClipRRect(
-            //       borderRadius: BorderRadius.circular(20.0),
-            //       child: Image(
-            //         width: 20,
-            //         height: 20,
-            //         image: SVGWidgets().plusCircleOutline(),
-            //         color: Colors.white,
-            //       ),
-            //     ),
-            //   ),
-            // ),
+                      onNegativeClick: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                  animationType: DialogTransitionType.slideFromBottom,
+                  curve: Curves.fastOutSlowIn,
+                  duration: Duration(seconds: 1),
+                );
+              },
+              child: Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Image(
+                    width: 20,
+                    height: 20,
+                    image: SVGWidgets().deleteSVGImage(),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                //send friend request
+                print("update friend request");
+                print(widget.eventRequestObject.toString());
+                RequestsCommand().updateEventRequests(widget.eventRequestObject);
+                
+              },
+              child: Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Image(
+                    width: 20,
+                    height: 20,
+                    image: SVGWidgets().getSoccerBallSVGImage(),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ])),
     ));
   }

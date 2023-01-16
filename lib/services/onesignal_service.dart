@@ -1,4 +1,5 @@
 import 'package:soccermadeeasy/commands/base_command.dart';
+
 import 'package:soccermadeeasy/models/app_model.dart';
 
 import '../amplifyconfiguration.dart';
@@ -30,13 +31,13 @@ class OneSignalService extends BaseCommand {
       OneSignal.shared.sendTag("name", appModel.currentUser['name'] );
 
       Map<String, dynamic> updateUserOSPIDResp = await updateUserOSPID();    
-        appModel.onesignalUserDetailsSetup = true;
 
       
         configureOneSignalUserDetailsResp["success"] =  true;
         configureOneSignalUserDetailsResp["message"] = "Twilio Configured";   
         
-
+        
+        appModel.onesignalUserDetailsSetup = true;
       
       
     } on Exception catch (e) {
@@ -46,23 +47,27 @@ class OneSignalService extends BaseCommand {
     return configureOneSignalUserDetailsResp;
   }
 
-  void sendPN() async {
-    // var deviceState = await OneSignal.shared.getDeviceState();
+  Future<void> sendPN(Map<String,dynamic> pNInput) async {
+    print("sendPNN");
+    var deviceState = await OneSignal.shared.getDeviceState();
+    print("OSPIDs: "+pNInput.toString());    
 
-    // if (deviceState == null || deviceState.userId == null){
-    //   print("if (deviceState == null || deviceState.userId == null)");
-    //   return;
-    // }
+    if (deviceState == null || deviceState.userId == null){
+      print("if (deviceState == null || deviceState.userId == null)");
+      return;
+    }
+    else{
+      print("go onnnn!");
+    }
 
-    var playerId = appModel.currentUser['OSPID']!;
 
     var imgUrlString =
         "http://cdn1-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-2.jpg";
 
     var notification = OSCreateNotification(
-        playerIds: [playerId],
-        content: "Penis has sent you a request for event E",
-        heading: "Test Notification",
+        playerIds: ["3a4086ef-4354-40d1-9573-41a3cc51ed83"],
+        content: pNInput['message'],
+        heading: "Hello World!",
         iosAttachments: {"id1": imgUrlString},
         bigPicture: imgUrlString,
         buttons: [
@@ -70,8 +75,8 @@ class OneSignalService extends BaseCommand {
           OSActionButton(text: "test2", id: "id2")
         ]);
 
-    var response = await OneSignal.shared.postNotification(notification);
-
+    // var response = await OneSignal.shared.postNotification(notification);
+    // print("sendPN response: "+response.toString());
     
   }
 

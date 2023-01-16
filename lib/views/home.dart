@@ -13,7 +13,6 @@ import '../components/Dialogues/animated_dialogue.dart';
 import '../components/profile.dart';
 import '../components/header.dart';
 //card widgets
-import '../components/Cards/pickup_card.dart';
 import '../components/Cards/pickup_card2.dart';
 import '../components/Cards/player_card.dart';
 import '../components/Cards/training_card.dart';

@@ -138,6 +138,7 @@ class EventMutations{
             }   
             sender{              
                 _id
+                OSPID
                 name          
                 email             
             }            

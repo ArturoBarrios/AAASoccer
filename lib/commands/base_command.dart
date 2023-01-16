@@ -17,6 +17,7 @@ import '../commands/event_command.dart';
 import '../services/geolocation_services.dart';
 import '../services/twilio_services.dart';
 import '../services/onesignal_service.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 // import 'package:geolocator/geolocator.dart';
 // import 'package:geocoding/geocoding.dart';
 
@@ -83,6 +84,7 @@ class BaseCommand {
     return setupInitialAppConfigsResponse;
   }
 
+  //get and set playerID
   Future<Map<String, dynamic>> updateUserOSPID() async {
     print("updateUserOSPID");
     Map<String, dynamic> updateUserOSPIDResponse = {
@@ -91,19 +93,45 @@ class BaseCommand {
       "data": null
     };
 
-    updateUserOSPIDResponse["success"] = true;
+    var deviceState = await OneSignal.shared.getDeviceState();
 
-    return updateUserOSPIDResponse;
+        //return if no deviceState is found
+        if (deviceState == null || deviceState.userId == null){
+          print("no deviceState found");
+          return updateUserOSPIDResponse;
+        }
+
+        else{
+          //coming out to null
+          print("deviceState found for userID: "+appModel.currentUser['_id']);
+          var playerId = deviceState.userId!;
+          Map<String,dynamic>userInput = {
+            'user_id': appModel.currentUser['_id'],
+            "OSPID": playerId
+          };
+          await UserCommand().updateUser(userInput);
+
+          updateUserOSPIDResponse["success"] = true;
+
+          return updateUserOSPIDResponse;
+        }
+
+            
+
+
   }
 
   Future <Map<String, dynamic>> setupInitialAppModels(String email) async{
     print("setupInitialAppModels");
     Map<String, dynamic> resp = {"success": false, "message": "setup unsuccessfull", "data": null};
     try{            
-      Map<String, dynamic> getUserResp = await UserCommand().getUser(email);     
-      if(getUserResp["success"] == true){
+      Map<String, dynamic> getUserInput = {
+        "email": email
+      };
+      Map<String, dynamic> getUserResp = await UserCommand().getUserByEmail(getUserInput);     
         print("getUserResp: ");
         print(getUserResp);
+      if(getUserResp["success"] == true){
         if(getUserResp["success"]){          
           dynamic user = getUserResp["data"];
           if(user==null){
@@ -124,13 +152,13 @@ class BaseCommand {
           print("app model user: ");
           print(appModel.currentUser);
           //setup onesignal once you have user
-          OneSignalService().configureOneSignalUserDetails();
+          await OneSignalService().configureOneSignalUserDetails();
 
 
           // setUserId(user.id);
           // setUser(user);
           //currently not being utilized
-          EventCommand().setupMappedEvents();
+          await EventCommand().setupMappedEvents();
           // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();          
           // if(getGamesNearLocationResp["success"]){
           //   print("games List: ");
