@@ -11,6 +11,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/geolocation_command.dart';
 // import 'package:geolocator/geolocator.dart';
 import '../graphql/queries/teams.dart';
+import '../commands/notifications_command.dart';
+import '../commands/user_command.dart';
 
 
 class TeamCommand extends BaseCommand {
@@ -63,8 +65,28 @@ Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
         //tos
       dynamic teamUserOrganizers = teamInput['teamUserOrganizers']['users']['data'];                 
       String organizersString = "";
+      print("get OSPIDs");
+      //populate list with onesignal player ids
+      List<String> OSPIDs = [];
+      List<String> phones = [];
       for (var i = 0; i < teamUserOrganizers.length; i++) {        
         String toUserId = teamUserOrganizers[i]['_id'];
+        Map<String, dynamic> organizerUserInput = {
+          "user_id": toUserId
+        };
+
+        Map<String, dynamic> getUserResp = await UserCommand().findUserById(organizerUserInput);
+        print("in for getUserResp: ");
+        print(getUserResp);
+        if(getUserResp["success"] == true){
+          Map<String,dynamic> user = getUserResp["data"];
+          print("user: "+user.toString());
+          if(user!=null){//it shouldn't be null here, risk for bug
+            OSPIDs.add(user['OSPID']);
+            phones.add(user['phone']);
+          }
+        }
+
         organizersString = organizersString + toUserId + ",";        
         //send onesignal notification
       }
@@ -86,6 +108,13 @@ Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
       print("response body: ");
       print(jsonDecode(response.body));
             
+      Map<String, dynamic> sendOrganizerRequestNotificationInput = {
+        "phones": phones,
+        "message": appModel.currentUser['name'] + " has sent you a request to join teamk",
+        "OSPIDs": OSPIDs
+      };
+      await NotificationsCommand().sendOrganizerRequestNotification(sendOrganizerRequestNotificationInput);
+
       sendTeamRequestResponse["success"] = true;
       sendTeamRequestResponse["message"] = "Event Request Created";      
       sendTeamRequestResponse["data"] = jsonDecode(response.body)['data']['CreateTeamRequest'];          

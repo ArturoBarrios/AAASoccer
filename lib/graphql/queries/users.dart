@@ -19,7 +19,8 @@ class UserQueries {
                   type
                 }
               }
-              friends{                
+              friends{    
+                            
                   _id
                   name
                   email                

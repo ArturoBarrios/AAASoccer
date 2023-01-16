@@ -16,6 +16,7 @@ import '../graphql/mutations/users.dart';
 import '../graphql/mutations/teams.dart';
 import '../graphql/mutations/events.dart';
 import '../graphql/queries/requests.dart';
+import '../graphql/queries/event_request.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
@@ -128,18 +129,28 @@ class RequestsCommand extends BaseCommand {
       Map<String, dynamic> eventInput = {
         "_id": eventRequestInput['event']['_id'],
       };
-
-
+      
       await UserCommand().addEvent(userInput, eventInput);
+      
+      //get sender information for push notification
+      Map<String, dynamic> findEventRequestResp = await findEventRequest(eventRequestInput);   
 
-      Map<String, dynamic> sender = jsonDecode(response.body)['data']['updateEventRequest']['sender'];
+      print("findEventRequestResp: " + findEventRequestResp.toString());  
+      if(findEventRequestResp['success'] == true){
+        // prepare notification data
+        print("prepare notification data");
+        Map<String, dynamic> sender = findEventRequestResp['data']['sender'];
+        print("sender: "+ sender.toString());
+        List<String> phones = [sender['phone']];
+        List<String> OSPIDs = [sender['OSPID']];
+        Map<String, dynamic> sendOrganizerRequestNotificationInput = {
+          "phones": phones,
+          "message": appModel.currentUser['name'] + " has accepted your request to join event",
+          "OSPIDs": OSPIDs
+        };
+        await NotificationsCommand().sendAcceptedRequestNotification(sendOrganizerRequestNotificationInput);
+      } 
 
-      Map<String, dynamic> sendOrganizerRequestNotificationInput = {
-        "phones": [appModel.currentUser['phone']],
-        "message": appModel.currentUser['name'] + " has accepted your request to join event",
-        "OSPIDs": [sender['OSPID']]
-      };
-      await NotificationsCommand().sendAcceptedRequestNotification(sendOrganizerRequestNotificationInput);
 
       //todo 
       //add check and revert entirely if adding event fails???            
@@ -194,6 +205,38 @@ class RequestsCommand extends BaseCommand {
 
   }
   
+  Future<Map<String, dynamic>> findEventRequest(Map<String, dynamic> eventRequestInput  ) async{
+      
+    print("findEventRequest()");
+    print("eventRequestInput: " + eventRequestInput.toString());
+
+
+    Map<String, dynamic> findEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
+    try{
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventRequestQueries().findEventRequest(eventRequestInput),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      findEventRequestResponse["success"] = true;
+      findEventRequestResponse["message"] = "Event Request Retrieved";
+      findEventRequestResponse["data"] = jsonDecode(response.body)['data']['findEventRequestByID'];
+
+      return findEventRequestResponse;
+    } catch (e) {
+      print("error in findEventRequest");
+      return findEventRequestResponse;
+    }        
+  }
+
   Future<Map<String, dynamic>> updateFriendRequests(Map<String, dynamic> friendRequestInput  ) async{
     print("updateFriendRequests");
     Map<String, dynamic> updateFriendRequestsResponse = {"success": false, "message": "Default Error", "data": null};

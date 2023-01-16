@@ -60,8 +60,8 @@ class _RequestsViewState extends State<RequestsView> {
       print(RequestsPageModel().initialConditionsMet);
       //right now the last is visible
       //todo fix this shit
-      RequestsCommand().updateTeamRequestsModel(teamRequests);
       RequestsCommand().updateFriendRequestsModel(friendRequests);
+      RequestsCommand().updateTeamRequestsModel(teamRequests);
       RequestsCommand().updateEventRequestsModel(eventRequests);
       print("initialConditionsMet: ");
       print(RequestsCommand().initialConditionsMet);     

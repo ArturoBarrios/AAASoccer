@@ -93,7 +93,6 @@ class EventCommand extends BaseCommand {
           }
         }
         
-
         organizersString = organizersString + toUserId + ",";        
 
         //send onesignal notification
