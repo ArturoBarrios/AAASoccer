@@ -1,9 +1,7 @@
-
-
 class UserMutations {
   String sendFriendRequest(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
-      String sendFriendRequestString = """
+    String sendFriendRequestString = """
       mutation {
         createFriendRequest(data: {    
           requestAttempts: 1, 
@@ -34,9 +32,90 @@ class UserMutations {
         """;
 
     return sendFriendRequestString;
-    } 
+  }
 
-    String addFriend(
+  String updateUser(Map<String, dynamic> userInput) {
+    String updateUserString = """      
+      mutation {
+        updateUser(id: ${userInput['user_id']},
+  				data: {            
+            OSPID: "${userInput['OSPID']}"                                                                                
+          }                      
+        ){
+          _id      
+              name        	
+              phone
+              email
+              username
+              birthdate
+              gender
+              OSPID
+              events{
+                data{
+                  _id
+                  name
+                  isMainEvent
+                  type
+                }
+              }
+              friends{                
+                  _id
+                  name
+                  email                
+              }
+              teams{
+                data{
+                  _id
+                  name
+                }
+              }              
+              friendRequests{
+                data{
+                  _id
+                  status
+                  requestAttempts
+                  sender{
+                    _id
+                    name
+                    email
+                  }
+                  receiver{
+                    _id
+                    name
+                    email
+                  }
+                }
+              }
+              eventRequestsToAccept{
+                data{
+                  _id
+                  status
+                  requestAttempts
+                  event{
+                    _id
+                    name
+                  }
+                }
+              } 
+              teamRequestsToAccept{
+                data{
+                  _id
+                  status
+                  requestAttempts
+                  team{
+                    _id
+                    name
+                  }
+                }
+              }                                          			
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
+  String addFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String addFriendString = """      
       mutation {
@@ -60,8 +139,8 @@ class UserMutations {
 
     return addFriendString;
   }
-    
-    String addEvent(
+
+  String addEvent(
       Map<String, dynamic> userInput, Map<String, dynamic> eventInput) {
     String addEventString = """      
       mutation {
@@ -100,8 +179,7 @@ class UserMutations {
     return addEventString;
   }
 
-
-    String addTeam(
+  String addTeam(
       Map<String, dynamic> userInput, Map<String, dynamic> teamInput) {
     String addTeamString = """      
       mutation {
@@ -139,10 +217,8 @@ class UserMutations {
     return addTeamString;
   }
 
-
-
-    String createTo(Map<String, dynamic> userInput) {
-      String createTo = """
+  String createTo(Map<String, dynamic> userInput) {
+    String createTo = """
         mutation {
           createTo(data: {                    
             user: {
@@ -158,12 +234,10 @@ class UserMutations {
           }
         """;
 
-      return createTo;
+    return createTo;
   }
 
-
-    String updateFriendRequest(
-      Map<String, dynamic> friendRequestInput) {
+  String updateFriendRequest(Map<String, dynamic> friendRequestInput) {
     String updateFriendRequestString = """      
       mutation {
         updateFriendRequest(id: ${friendRequestInput['_id']},
@@ -190,6 +264,4 @@ class UserMutations {
 
     return updateFriendRequestString;
   }
-
 }
-

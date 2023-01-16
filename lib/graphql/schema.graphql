@@ -1,4 +1,5 @@
 type Query {
+  
   allGames(pickup: Boolean): [Game!]  
   allTrainings: [Training!]  
   allTryouts: [Tryout!]  

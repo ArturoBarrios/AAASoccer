@@ -19,8 +19,8 @@ class NotificationsCommand extends BaseCommand {
     Map<String, dynamic> receiveRequestNotificationResponse = {"success": false, "message": "Default Error", "data": null};
     try {
 
-      TwilioServices().SendSMS(sendOrganizerRequestNotificationInput['phone'], sendOrganizerRequestNotificationInput['message']);
-      OneSignalService().sendPN();
+      await TwilioServices().SendSMS(sendOrganizerRequestNotificationInput['phones'], sendOrganizerRequestNotificationInput['message']);
+      await OneSignalService().sendPN(sendOrganizerRequestNotificationInput);
 
       receiveRequestNotificationResponse["success"] = true;
       receiveRequestNotificationResponse["message"] = "Notification Sent!";      
@@ -30,6 +30,24 @@ class NotificationsCommand extends BaseCommand {
     } on ApiException catch (e) {
       print('Mutation failed: $e');
       return receiveRequestNotificationResponse;
+    }
+  }
+
+ Future<Map<String, dynamic>> sendAcceptedRequestNotification(Map<String, dynamic> sendOrganizerRequestNotificationInput ) async{
+     print("sendAcceptedRequestNotification");
+    Map<String, dynamic> sendAcceptedRequestNotificationResponse = {"success": false, "message": "Default Error", "data": null};
+    try {
+      await TwilioServices().SendSMS(sendOrganizerRequestNotificationInput['phones'], sendOrganizerRequestNotificationInput['message']);
+      await OneSignalService().sendPN(sendOrganizerRequestNotificationInput);
+
+      sendAcceptedRequestNotificationResponse["success"] = true;
+      sendAcceptedRequestNotificationResponse["message"] = "Notification Sent!";      
+ 
+  
+      return sendAcceptedRequestNotificationResponse;    
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return sendAcceptedRequestNotificationResponse;
     }
   }
 

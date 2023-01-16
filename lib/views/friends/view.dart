@@ -37,7 +37,7 @@ class _FriendsViewState extends State<FriendsView> {
 
   void getRequestPageData() async {
     print("getRequestPageData");
-    Map<String, dynamic> getCurrentUserResp = await UserCommand().getCurrentUser();
+    Map<String, dynamic> getCurrentUserResp = await UserCommand().getCurrentUserByEmail();
     print("getCurrentUserRespResp: " + getCurrentUserResp.toString());
     if (getCurrentUserResp['success']) {
       List friends = getCurrentUserResp['data']['friends'];

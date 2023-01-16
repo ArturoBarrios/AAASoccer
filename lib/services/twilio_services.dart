@@ -51,11 +51,14 @@ class TwilioServices extends BaseCommand {
     return configureTwilioResp;
   }
 
-  void SendSMS(String phoneNumber, String message){
+  Future <void> SendSMS(List<String> phoneNumbers, String message) async{
     print("SendSMS");
-    appModel.twilioClient.sendSMS(
-      toNumber : phoneNumber, 
-      messageBody : message); 
+    for(int i = 0;i<phoneNumbers.length;i++){
+      // appModel.twilioClient.sendSMS(
+      //   toNumber : phoneNumbers[i], 
+      //   messageBody : message); 
+
+    }
   }
 
   

@@ -19,6 +19,7 @@ import '../graphql/queries/requests.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
+import '../commands/notifications_command.dart';
 
 class RequestsCommand extends BaseCommand {
 
@@ -42,7 +43,8 @@ class RequestsCommand extends BaseCommand {
           'query': RequestsQueries().getEventRequests(),
         }),
       );
-                                           
+
+                              
       print("response body: ");
       print(jsonDecode(response.body));
 
@@ -105,7 +107,7 @@ class RequestsCommand extends BaseCommand {
       eventRequestInput['acceptedBy_id'] = appModel.currentUser['_id'];          
       // ????
       // eventRequestInput['status'] = RequestStatus.ACCEPTED;
-       
+       print("eventRequestInput: " + eventRequestInput.toString());
       //check if from and to are the same
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -126,7 +128,19 @@ class RequestsCommand extends BaseCommand {
       Map<String, dynamic> eventInput = {
         "_id": eventRequestInput['event']['_id'],
       };
+
+
       await UserCommand().addEvent(userInput, eventInput);
+
+      Map<String, dynamic> sender = jsonDecode(response.body)['data']['updateEventRequest']['sender'];
+
+      Map<String, dynamic> sendOrganizerRequestNotificationInput = {
+        "phones": [appModel.currentUser['phone']],
+        "message": appModel.currentUser['name'] + " has accepted your request to join event",
+        "OSPIDs": [sender['OSPID']]
+      };
+      await NotificationsCommand().sendAcceptedRequestNotification(sendOrganizerRequestNotificationInput);
+
       //todo 
       //add check and revert entirely if adding event fails???            
       updateEventRequestResponse["success"] = true;
