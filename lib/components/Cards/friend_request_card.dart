@@ -139,7 +139,7 @@ class _FriendRequestCard extends State<FriendRequestCard> {
                 //send friend request
                 print("update friend request");
                 print(widget.toString());
-                RequestsCommand().updateFriendRequests(widget.friendRequestObject);
+                RequestsCommand().updateFriendRequest(widget.friendRequestObject);
                 
               },
               child: Container(

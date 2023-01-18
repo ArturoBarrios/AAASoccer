@@ -1,16 +1,17 @@
 class UserMutations {
+
   String sendFriendRequest(
-      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
+      Map<String, dynamic> sendFriendRequestInput) {
     String sendFriendRequestString = """
       mutation {
         createFriendRequest(data: {    
           requestAttempts: 1, 
           status: PENDING,
           sender: {
-            connect: "${userInput['_id']}"
+            connect: "${sendFriendRequestInput['sender_id']}"
           },  
           receiver: {
-            connect: "${friendInput['_id']}"
+            connect: "${sendFriendRequestInput['receiver_id']}"
             
           }                       
           }) {

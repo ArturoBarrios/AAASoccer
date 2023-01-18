@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import '../../components/profile.dart';
 
 class PlayerView extends StatefulWidget {
+  const PlayerView(
+      {Key? key, required this.playerObject})
+      : super(key: key);
+  final Map<String, dynamic> playerObject;
+  
   @override
   _PlayerViewState createState() => _PlayerViewState();
 }
@@ -25,6 +30,8 @@ class _PlayerViewState extends State<PlayerView> {
 
   @override
   Widget build(BuildContext context) {
+    print("PlayerView build()");
+    print("PlayerView widget.playerObject: " + widget.playerObject.toString());
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,

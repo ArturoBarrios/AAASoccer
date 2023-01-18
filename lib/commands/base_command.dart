@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import '/models/app_model.dart';
 import '/models/user_model.dart';
 import '/models/home_page_model.dart';
@@ -18,7 +19,7 @@ import '../services/geolocation_services.dart';
 import '../services/twilio_services.dart';
 import '../services/onesignal_service.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-// import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart';
 // import 'package:geocoding/geocoding.dart';
 
 
@@ -151,7 +152,12 @@ class BaseCommand {
           appModel.currentUser = user;
           print("app model user: ");
           print(appModel.currentUser);
-          //setup onesignal once you have user
+          //get location and update user location
+          Position userPosition = await GeoLocationCommand().determinePosition();
+          print("userPosition: "+userPosition.toString());          
+          appModel.currentUser['currentPosition'] = userPosition;
+          print("check appModel after setting userPosition: "+ appModel.currentUser['currentPosition'].toString());
+          //setup onesignal
           await OneSignalService().configureOneSignalUserDetails();
 
 

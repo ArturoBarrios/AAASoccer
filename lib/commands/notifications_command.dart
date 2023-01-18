@@ -37,6 +37,7 @@ class NotificationsCommand extends BaseCommand {
      print("sendAcceptedRequestNotification");
     Map<String, dynamic> sendAcceptedRequestNotificationResponse = {"success": false, "message": "Default Error", "data": null};
     try {
+      print("sendAcceptedRequestNotificationInput: $sendOrganizerRequestNotificationInput");
       await TwilioServices().SendSMS(sendOrganizerRequestNotificationInput['phones'], sendOrganizerRequestNotificationInput['message']);
       await OneSignalService().sendPN(sendOrganizerRequestNotificationInput);
 

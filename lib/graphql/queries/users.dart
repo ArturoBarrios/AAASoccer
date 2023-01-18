@@ -19,10 +19,11 @@ class UserQueries {
                   type
                 }
               }
-              friends{                
+              friends{                                
                   _id
                   name
-                  email                
+                  email   
+                  OSPID             
               }
               teams{
                 data{
@@ -102,7 +103,8 @@ class UserQueries {
               friends{                
                   _id
                   name
-                  email                
+                  email     
+                  OSPID           
               }
               teams{
                 data{

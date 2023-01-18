@@ -36,9 +36,9 @@ class _RequestsViewState extends State<RequestsView> {
       print("getRequestCard()");
       print("selectedKey: " + selectedKey);
       print("requestObject: " + requestObject.toString());      
+      // Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
       // Widget card = TeamRequestCard(teamRequestObject: requestObject, svgImage: svgImage);     
-      // Widget card = FriendRequestCard(friendRequestObject: requestObject, svgImage: svgImage);     
-      Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
+      Widget card = FriendRequestCard(friendRequestObject: requestObject, svgImage: svgImage);     
 
     return card;
   }
@@ -50,9 +50,9 @@ class _RequestsViewState extends State<RequestsView> {
     print("getEventRequestsResp: " + getRequestsResp.toString());
     
     if (getRequestsResp['success']) {
-      List friendRequests = getRequestsResp['data']['friendRequests']['data'];
       List eventRequests = getRequestsResp['data']['eventRequestsToAccept']['data'];
       List teamRequests = getRequestsResp['data']['teamRequestsToAccept']['data'];
+      List friendRequests = getRequestsResp['data']['friendRequests']['data'];
       print("EventRequests to set: ");
       print(eventRequests);
       print("TeamRequests to set: ");
@@ -60,9 +60,9 @@ class _RequestsViewState extends State<RequestsView> {
       print(RequestsPageModel().initialConditionsMet);
       //right now the last is visible
       //todo fix this shit
+      RequestsCommand().updateEventRequestsModel(eventRequests);
       RequestsCommand().updateTeamRequestsModel(teamRequests);
       RequestsCommand().updateFriendRequestsModel(friendRequests);
-      RequestsCommand().updateEventRequestsModel(eventRequests);
       print("initialConditionsMet: ");
       print(RequestsCommand().initialConditionsMet);     
       print("initialConditionsMet after: ");
