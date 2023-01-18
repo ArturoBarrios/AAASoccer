@@ -154,9 +154,11 @@ class BaseCommand {
           print(appModel.currentUser);
           //get location and update user location
           Position userPosition = await GeoLocationCommand().determinePosition();
-          print("userPosition: "+userPosition.toString());          
+          print("userPosition: "+userPosition.toString());                    
           appModel.currentUser['currentPosition'] = userPosition;
+          GeoLocationCommand().setUserAddress(userPosition.latitude, userPosition.longitude);
           print("check appModel after setting userPosition: "+ appModel.currentUser['currentPosition'].toString());
+
           //setup onesignal
           await OneSignalService().configureOneSignalUserDetails();
 

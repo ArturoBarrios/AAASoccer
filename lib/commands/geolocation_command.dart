@@ -6,7 +6,7 @@ import '../services/geolocation_services.dart';
 import 'package:vector_math/vector_math.dart';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
-// import 'package:geocoding/geocoding.dart';
+import 'package:geocoding/geocoding.dart';
 
 class GeoLocationCommand extends BaseCommand {
   Future <Position> determinePosition() async {
@@ -14,7 +14,20 @@ class GeoLocationCommand extends BaseCommand {
     return position;
   }
 
-  //test functions
+  Future <void> setUserAddress(double latitude, double longitude) async {
+    print("setUserAddress");
+    print("latitude: $latitude");
+    print("longitude: $longitude");
+    print("placemarkFromCoordinates");
+    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+    print("placemarks: " + placemarks.toString());
+
+
+  }
+  
+
+
+  /////////////////test functions
   Map<String, dynamic> getRandomPosition(double x0, double y0, int radius) {
     Map<String, dynamic> latLon = {"latitude": 0.0, "longitude": 0.0};
     Random random = new Random();

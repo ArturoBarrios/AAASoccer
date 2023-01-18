@@ -45,6 +45,23 @@ class GeoLocationServices {
   }
 
   
+  Future<void> findAddressFromCoordinates(String latitude, String longitude) async {
+    print("findAddressFromCoordinates()");
+
+  
+  
+  
+  
+    // // From coordinates
+    // final coordinates = new Coordinates(1.10, 45.50);
+    // addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    // first = addresses.first;
+    // print("${first.featureName} : ${first.addressLine}");
+
+
+  }
+
+  
 
   
 }
