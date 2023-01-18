@@ -45,6 +45,7 @@ class AppModel extends ChangeNotifier {
     _currentUser = currentUser;
     notifyListeners();
   }
+
   
 
   

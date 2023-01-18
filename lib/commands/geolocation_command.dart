@@ -5,14 +5,14 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import '../services/geolocation_services.dart';
 import 'package:vector_math/vector_math.dart';
 import 'dart:math';
-// import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart';
 // import 'package:geocoding/geocoding.dart';
 
 class GeoLocationCommand extends BaseCommand {
-  // Future <Position> determinePosition() async {
-  //   Position position = await GeoLocationServices().determinePosition();
-  //   return position;
-  // }
+  Future <Position> determinePosition() async {
+    Position position = await GeoLocationServices().determinePosition();
+    return position;
+  }
 
   //test functions
   Map<String, dynamic> getRandomPosition(double x0, double y0, int radius) {

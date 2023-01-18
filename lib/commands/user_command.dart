@@ -12,6 +12,7 @@ import '../graphql/mutations/users.dart';
 import '../graphql/mutations/teams.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../commands/notifications_command.dart';
 
 class UserCommand extends BaseCommand {
   Future<Map<String, dynamic>> updateUser(
@@ -89,6 +90,60 @@ class UserCommand extends BaseCommand {
   void setUserID() {
     // userModel.userID = userId;
   }
+
+  Future<Map<String, dynamic>> sendFriendRequest(dynamic friendInput  ) async{
+    print("sendFriendRequest");
+    Map<String, dynamic> sendFriendRequestResponse = {"success": false, "message": "Default Error", "data": null};
+    try {    
+      print("request for friend: "+ friendInput.toString());
+
+      Map<String, dynamic> sendFriendRequestInput = {
+        "sender_id": appModel.currentUser['_id'],
+        "receiver_id": friendInput['_id'],        
+      };           
+      print("sendFriendRequestInput");
+      print(sendFriendRequestInput);
+       
+      print("set OSPIDs and phones");
+      //populate list with onesignal player ids
+      List<String> OSPIDs = [];
+      List<String> phones = [];
+
+      OSPIDs.add(friendInput['OSPID']);
+      phones.add(friendInput['phone']);
+      
+      //create FriendRequest Object
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().sendFriendRequest(sendFriendRequestInput),
+        }),
+      );
+
+      print("responseee body: ");
+      print(jsonDecode(response.body));
+
+      //send friend request notifications
+      Map<String, dynamic> sendOrganizerRequestNotificationInput = {
+        "phones": phones,
+        "message": appModel.currentUser['name'] + " has sent you a friend request!",
+        "OSPIDs": OSPIDs
+      };
+      await NotificationsCommand().sendOrganizerRequestNotification(sendOrganizerRequestNotificationInput);
+    
+            
+      sendFriendRequestResponse["success"] = true;
+      sendFriendRequestResponse["message"] = "Friend Request Created";      
+      // sendFriendRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];          
+    } catch (e) {}
+
+    return sendFriendRequestResponse;
+  }
+  
 
   Future<Map<String, dynamic>> addEvent(
       Map<String, dynamic> userInput, Map<String, dynamic> eventInput) async {
@@ -192,45 +247,6 @@ class UserCommand extends BaseCommand {
     }
 
     return addFriendResponse;
-  }
-
-  Future<Map<String, dynamic>> sendFriendRequest(
-      Map<String, dynamic> receiverInput) async {
-    print("sendFriendRequest");
-    Map<String, dynamic> sendFriendRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    Map<String, dynamic> senderInput = {
-      "_id": appModel.currentUser['_id'],
-    };
-    print("senderInput");
-    print(senderInput);
-    print("receiverInput");
-    print(receiverInput);
-    try {
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query':
-              UserMutations().sendFriendRequest(senderInput, receiverInput),
-        }),
-      );
-
-      print("response body: ");
-      print(jsonDecode(response.body));
-
-      sendFriendRequestResponse["success"] = true;
-      sendFriendRequestResponse["message"] = "Player for Team Created";
-      sendFriendRequestResponse["data"] =
-          jsonDecode(response.body)['data']['CreateFriendRequest'];
-    } catch (e) {}
-    return sendFriendRequestResponse;
   }
 
   Future<Map<String, dynamic>> removeFriend(dynamic friendInput) async {

@@ -54,6 +54,8 @@ class EventCommand extends BaseCommand {
 
   
 
+
+
   Future<Map<String, dynamic>> sendOrganizerEventRequest(dynamic gameInput  ) async{
     print("sendOrganizerEventRequest");
     Map<String, dynamic> sendOrganizerEventRequestResponse = {"success": false, "message": "Default Error", "data": null};

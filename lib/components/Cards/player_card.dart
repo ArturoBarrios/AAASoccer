@@ -22,6 +22,7 @@ class PlayerCard extends StatefulWidget {
 
 void playerClicked() {
   print("Player Clicked");
+  
 }
 
 
@@ -37,6 +38,7 @@ class _PlayerCard extends State<PlayerCard> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
+    print("Player card: "+widget.playerObject.toString());
     print("widget name: ");
     print(widget.playerObject.toString());
     return Listener(
@@ -46,7 +48,7 @@ class _PlayerCard extends State<PlayerCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PlayerView();
+            return PlayerView(playerObject: widget.playerObject );
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
