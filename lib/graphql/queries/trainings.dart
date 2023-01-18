@@ -8,8 +8,15 @@ class TrainingQueries {
             data {      
               _id              
               event{
-                  name        	
-                  _id                  
+                name        	
+                _id                  
+                location{
+                  data{
+                    _id
+                    latitude
+                    longitude
+                  }
+                } 
               } 
             }
           }

@@ -7,13 +7,20 @@ class LeagueQueries {
           allLeagues {
             data {      
               _id              
-              numberOfTeams              
+              numberOfTeams                           
               events{
                 data{                  
                   name        	
                   _id
                   isMainEvent
-                  }                  
+                  location{
+                    data{
+                      _id
+                      latitude
+                      longitude
+                    }
+                  } 
+                }                  
               } 
             }
           }

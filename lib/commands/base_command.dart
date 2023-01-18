@@ -177,9 +177,10 @@ class BaseCommand {
           //,teams, players near me data. 
           //get location and update user location
           Position userPosition = await GeoLocationCommand().determinePosition();
+          appModel.currentPosition = userPosition;
           print("userPosition: "+userPosition.toString());                    
           appModel.currentUser['currentPosition'] = userPosition;
-          GeoLocationCommand().setUserAddress(userPosition.latitude, userPosition.longitude);
+          await GeoLocationCommand().setUserAddress(userPosition.latitude, userPosition.longitude);
           print("check appModel after setting userPosition: "+ appModel.currentUser['currentPosition'].toString());
           //assume you have the latest events
           Map<String, dynamic> findEventsNearPointResp = await EventCommand().findEventsNearPoint(eventsModel.events, 50);

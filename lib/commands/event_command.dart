@@ -56,12 +56,15 @@ class EventCommand extends BaseCommand {
     print("findEventsNearPoint()");
     Map<String, dynamic> findEventsNearPointResp = {"success": false, "message": "Default Error", "data": null};
     //iterate through events 
-    print("iterate through events");
-    events.entries.forEach((event) async {
-      double latitude = event['latitude'];
-      double longitude = event['longitude'];
+    print("iterate through events: "+events.toString());
+    events.forEach((event) async {
       print("event: "+event.toString());
+      print("event location check: "+ event['event']['location']['data'][0]['longitude'].toString());
+      double latitude = event['event']['location']['data'][0]['latitude'];
+      double longitude = event['event']['location']['data'][0]['longitude'];
+      
       double distanceFromUser = await GeoLocationCommand().getDistanceFromUser(latitude, longitude);
+      print("distanceFromUser: "+distanceFromUser.toString());
       if(distanceFromUser > distanceFrom){
         events.remove(event);
       }
@@ -295,6 +298,7 @@ class EventCommand extends BaseCommand {
       print("in if statement");
       print("games: "+games.toString());
       eventsModel.games = games;
+      eventsModel.events.addAll(games);
       homePageModel.selectedObjects = json.decode(json.encode(games));     
       print("length of games: "+games.length.toString());        
     }
@@ -303,7 +307,8 @@ class EventCommand extends BaseCommand {
       List<dynamic> leagues = getLeaguesNearLocationResp['data']; 
       print("in if statement");
       print("leagues: "+leagues.toString());
-      eventsModel.leagues = leagues;      
+      eventsModel.leagues = leagues;     
+      eventsModel.events.addAll(leagues); 
     } 
      Map<String, dynamic> getTournamentsNearLocationResp = await TournamentCommand().getTournamentsNearLocation();   
     if(getTournamentsNearLocationResp['success']){
@@ -311,27 +316,31 @@ class EventCommand extends BaseCommand {
       print("in if statement");
       print("tournaments: "+tournaments.toString());
       eventsModel.tournaments = tournaments;      
+      eventsModel.events.addAll(tournaments);
     }    
     Map<String, dynamic> getTrainingsNearLocationResp = await TrainingCommand().getTrainingsNearLocation();
     if(getTrainingsNearLocationResp['success']){
       List<dynamic> trainings = getTrainingsNearLocationResp['data'];
       print("trainings: ");
       print(trainings);
-      eventsModel.trainings = trainings;            
+      eventsModel.trainings = trainings;  
+      eventsModel.events.addAll(trainings);          
     }
     Map<String, dynamic> getTryoutsNearLocationResp = await TryoutCommand().getTryoutsNearLocation();
     if(getTryoutsNearLocationResp['success']){
       List<dynamic> tryouts = getTryoutsNearLocationResp['data'];
       print("tryouts: ");
       print(tryouts);
-      eventsModel.tryouts = tryouts;            
+      eventsModel.tryouts = tryouts;    
+      eventsModel.events.addAll(tryouts);        
     }
     Map<String, dynamic> getPlayersNearLocationResp = await PlayerCommand().getPlayersNearLocation();
     if(getPlayersNearLocationResp['success']){
       List<dynamic> players = getPlayersNearLocationResp['data'];
       print("players: ");
       print(players);
-      appModel.players = players;            
+      appModel.players = players;      
+      appModel.playersNearMe = players;      
     }
     Map<String, dynamic> getTeamsNearLocationResp = await TeamCommand().getTeamsNearLocation();
     if(getTeamsNearLocationResp['success']){

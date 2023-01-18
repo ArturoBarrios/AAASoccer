@@ -30,11 +30,25 @@ class EventsModel extends ChangeNotifier {
     _games = games;
     notifyListeners();
   }
+  
+  List<dynamic> _gamesNearMe = [];
+  List<dynamic> get gamesNearMe => _gamesNearMe;
+  set gamesNearMe(List<dynamic> gamesNearMe) {
+    _gamesNearMe = gamesNearMe;
+    notifyListeners();
+  }
 
   List _trainings = [];
   List get trainings => _trainings;
   set trainings(List trainings) {
     _trainings = trainings;
+    notifyListeners();
+  }
+  
+  List _trainingsNearMe = [];
+  List get trainingsNearMe => _trainingsNearMe;
+  set trainingsNearMe(List trainingsNearMe) {
+    _trainingsNearMe = trainingsNearMe;
     notifyListeners();
   }
 
@@ -45,6 +59,13 @@ class EventsModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  List _tryoutsNearMe = [];
+  List get tryoutsNearMe => _tryoutsNearMe;
+  set tryoutsNearMe(List tryoutsNearMe) {
+    _tryoutsNearMe = tryoutsNearMe;
+    notifyListeners();
+  }
+  
   List _tournaments = [];
   List get tournaments => _tournaments;
   set tournaments(List tournaments) {
@@ -52,10 +73,24 @@ class EventsModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  List _tournamentsNearMe = [];
+  List get tournamentsNearMe => _tournamentsNearMe;
+  set tournamentsNearMe(List tournamentsNearMe) {
+    _tournamentsNearMe = tournamentsNearMe;
+    notifyListeners();
+  }
+  
   List _leagues = [];
   List get leagues => _leagues;
   set leagues(List leagues) {
     _leagues = leagues;
+    notifyListeners();
+  }
+  
+  List _leaguesNearMe = [];
+  List get leaguesNearMe => _leaguesNearMe;
+  set leaguesNearMe(List leaguesNearMe) {
+    _leaguesNearMe = leaguesNearMe;
     notifyListeners();
   }
 
