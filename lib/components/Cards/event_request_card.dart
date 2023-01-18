@@ -8,16 +8,16 @@ import '../../commands/requests_command.dart';
 import '../../views/game/view.dart';
 import '../../assets/icons/plus.svg';
 
-class FriendRequestCard extends StatefulWidget {
-  const FriendRequestCard(
-      {Key? key, required this.friendRequestObject, required this.svgImage})
+class EventRequestCard extends StatefulWidget {
+  const EventRequestCard(
+      {Key? key, required this.eventRequestObject, required this.svgImage})
       : super(key: key);
-  final Map<String, dynamic> friendRequestObject;
+  final Map<String, dynamic> eventRequestObject;
   final Svg svgImage;
   final double bevel = 10.0;
 
   @override
-  State<FriendRequestCard> createState() => _FriendRequestCard();
+  State<EventRequestCard> createState() => _EventRequestCard();
 }
 
 void pickupClicked() {
@@ -40,7 +40,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
-class _FriendRequestCard extends State<FriendRequestCard> {
+class _EventRequestCard extends State<EventRequestCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
@@ -51,9 +51,9 @@ class _FriendRequestCard extends State<FriendRequestCard> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-  print("FriendRequestCard Build()");
+  print("EventRequestCard Build()");
     print("widget name: ");
-    print(widget.friendRequestObject.toString());
+    print(widget.eventRequestObject.toString());
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -90,10 +90,10 @@ class _FriendRequestCard extends State<FriendRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.friendRequestObject['sender']['name'],
+                    text: widget.eventRequestObject['event']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.friendRequestObject['description'],
+                        "test subtitle", //widget.eventRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -109,8 +109,8 @@ class _FriendRequestCard extends State<FriendRequestCard> {
                       onPositiveClick: () {
                         Navigator.of(context).pop();
                         //delete friend aaa
-                        print(widget.friendRequestObject.toString());
-                        deletePickup(widget.friendRequestObject);
+                        print(widget.eventRequestObject.toString());
+                        deletePickup(widget.eventRequestObject);
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();
@@ -138,8 +138,8 @@ class _FriendRequestCard extends State<FriendRequestCard> {
               onTap: () {
                 //send friend request
                 print("update friend request");
-                print(widget.toString());
-                RequestsCommand().updateFriendRequest(widget.friendRequestObject);
+                print(widget.eventRequestObject.toString());
+                RequestsCommand().updateEventRequests(widget.eventRequestObject);
                 
               },
               child: Container(
@@ -148,7 +148,7 @@ class _FriendRequestCard extends State<FriendRequestCard> {
                   child: Image(
                     width: 20,
                     height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
+                    image: SVGWidgets().getSoccerBallSVGImage(),
                     color: Colors.white,
                   ),
                 ),

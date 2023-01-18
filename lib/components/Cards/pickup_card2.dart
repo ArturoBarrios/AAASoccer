@@ -153,7 +153,7 @@ class _PickupCard2 extends State<PickupCard2> {
             tooltip: 'Go to the next page',
             onPressed: () {
               //send event request
-              print("send event request");
+              print("send event request for event: : ${widget.eventObject}");
               EventCommand().sendOrganizerEventRequest(widget.eventObject);                
             },
           ),

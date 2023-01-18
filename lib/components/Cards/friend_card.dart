@@ -60,7 +60,7 @@ class _FriendCard extends State<FriendCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PlayerView();
+            return PlayerView(playerObject: widget.friendObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -107,7 +107,7 @@ class _FriendCard extends State<FriendCard> {
                     })),            
             GestureDetector(
               onTap: () {
-                UserCommand().removeFriend(widget.friendObject);
+                // UserCommand().removeFriend(widget.friendObject);
                 // UserCommand().sendFriendRequest(widget.friendObject);
               },
               child: Container(

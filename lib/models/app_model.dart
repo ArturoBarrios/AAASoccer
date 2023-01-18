@@ -28,6 +28,15 @@ class AppModel extends ChangeNotifier {
     _twilioClient = twilioClient;
     notifyListeners();
   }
+
+  bool _onesignalUserDetailsSetup = false;
+  bool get onesignalUserDetailsSetup => _onesignalUserDetailsSetup;
+  set onesignalUserDetailsSetup(bool onesignalUserDetailsSetup){
+    _onesignalUserDetailsSetup = onesignalUserDetailsSetup;
+    notifyListeners();
+  } 
+  
+  
   
 
   Map<String, dynamic> _currentUser = {};
@@ -36,6 +45,7 @@ class AppModel extends ChangeNotifier {
     _currentUser = currentUser;
     notifyListeners();
   }
+
   
 
   

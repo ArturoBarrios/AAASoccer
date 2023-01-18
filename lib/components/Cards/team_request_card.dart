@@ -157,7 +157,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
                   child: Image(
                     width: 20,
                     height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
+                    image: SVGWidgets().getSoccerBallSVGImage(),
                     color: Colors.white,
                   ),
                 ),

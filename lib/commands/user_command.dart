@@ -12,47 +12,44 @@ import '../graphql/mutations/users.dart';
 import '../graphql/mutations/teams.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../commands/notifications_command.dart';
 
 class UserCommand extends BaseCommand {
-
-  Future<Map<String, dynamic>> createUser(
+  Future<Map<String, dynamic>> updateUser(
       Map<String, dynamic> userInput) async {
-    print("createUser");
-    Map<String, dynamic> createUserResponse = {
+    print("updateUser");
+    Map<String, dynamic> updateUserResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
     try {
-      print("location Input: ");
-      print(userInput);
-      final createDocument = Create(
-        Collection('User'),
-        Obj({
-          'data': {
-            'email': userInput['email'],
-            'name': userInput['name'],
-            'username': userInput['username'],
-            'phone': userInput['phone'],
-            'birthdate': userInput['birthdate'],
-            'gender': "test", //should be userInput['gender'];
-            'location': Ref(Collection("Location"),
-                userInput['location']['resource']['ref']['@ref']['id']),
-          }
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations()
+              .updateUser(userInput),
         }),
       );
 
-      final result = null; //await AppModel().faunaClient.query(createDocument);
-      print("result: ");
-      print(result.toJson());
-      createUserResponse["success"] = true;
-      createUserResponse["message"] = "User Created";
-      createUserResponse["data"] = result;
+      print("response body: ");
+      print(jsonDecode(response.body));
 
-      return createUserResponse;
+      Map<String, dynamic> user =
+          jsonDecode(response.body)['data']['updateUser'];
+
+      updateUserResponse["success"] = true;
+      updateUserResponse["message"] = "User Updated";
+      updateUserResponse["data"] = user;
+
+      return updateUserResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
-      return createUserResponse;
+      return updateUserResponse;
     }
   }
 
@@ -94,8 +91,62 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
-  Future<Map<String, dynamic>> addEvent(Map<String, dynamic> userInput, Map<String, dynamic> eventInput) async {
+  Future<Map<String, dynamic>> sendFriendRequest(dynamic friendInput  ) async{
+    print("sendFriendRequest");
+    Map<String, dynamic> sendFriendRequestResponse = {"success": false, "message": "Default Error", "data": null};
+    try {    
+      print("request for friend: "+ friendInput.toString());
+
+      Map<String, dynamic> sendFriendRequestInput = {
+        "sender_id": appModel.currentUser['_id'],
+        "receiver_id": friendInput['_id'],        
+      };           
+      print("sendFriendRequestInput");
+      print(sendFriendRequestInput);
+       
+      print("set OSPIDs and phones");
+      //populate list with onesignal player ids
+      List<String> OSPIDs = [];
+      List<String> phones = [];
+
+      OSPIDs.add(friendInput['OSPID']);
+      phones.add(friendInput['phone']);
+      
+      //create FriendRequest Object
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().sendFriendRequest(sendFriendRequestInput),
+        }),
+      );
+
+      print("responseee body: ");
+      print(jsonDecode(response.body));
+
+      //send friend request notifications
+      Map<String, dynamic> sendOrganizerRequestNotificationInput = {
+        "phones": phones,
+        "message": appModel.currentUser['name'] + " has sent you a friend request!",
+        "OSPIDs": OSPIDs
+      };
+      await NotificationsCommand().sendOrganizerRequestNotification(sendOrganizerRequestNotificationInput);
     
+            
+      sendFriendRequestResponse["success"] = true;
+      sendFriendRequestResponse["message"] = "Friend Request Created";      
+      // sendFriendRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];          
+    } catch (e) {}
+
+    return sendFriendRequestResponse;
+  }
+  
+
+  Future<Map<String, dynamic>> addEvent(
+      Map<String, dynamic> userInput, Map<String, dynamic> eventInput) async {
     print("addEvent");
     Map<String, dynamic> addEventResponse = {
       "success": false,
@@ -103,12 +154,11 @@ class UserCommand extends BaseCommand {
       "data": null
     };
 
-    try{
-
+    try {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -119,23 +169,19 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      
-      
       addEventResponse["success"] = true;
-      addEventResponse["message"] = "User added to Event";      
-      addEventResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
-
-    }catch(e){
+      addEventResponse["message"] = "User added to Event";
+      addEventResponse["data"] =
+          jsonDecode(response.body)['data']['updateUser'];
+    } catch (e) {
       print("error");
     }
 
-
     return addEventResponse;
-
   }
 
-  Future<Map<String, dynamic>> addTeam(Map<String, dynamic> userInput, Map<String, dynamic> teamInput) async {
-    
+  Future<Map<String, dynamic>> addTeam(
+      Map<String, dynamic> userInput, Map<String, dynamic> teamInput) async {
     print("addTeam");
     Map<String, dynamic> addTeamResponse = {
       "success": false,
@@ -143,12 +189,11 @@ class UserCommand extends BaseCommand {
       "data": null
     };
 
-    try{
-
+    try {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -159,24 +204,18 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      
-      
       addTeamResponse["success"] = true;
-      addTeamResponse["message"] = "Team added";      
+      addTeamResponse["message"] = "Team added";
       addTeamResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
-
-    }catch(e){
+    } catch (e) {
       print("error");
     }
 
-
     return addTeamResponse;
-
   }
 
-
-  Future<Map<String, dynamic>> addFriend(Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
-    
+  Future<Map<String, dynamic>> addFriend(
+      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
     print("addFriend");
     Map<String, dynamic> addFriendResponse = {
       "success": false,
@@ -184,12 +223,11 @@ class UserCommand extends BaseCommand {
       "data": null
     };
 
-    try{
-
+    try {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -200,62 +238,17 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      
-      
       addFriendResponse["success"] = true;
-      addFriendResponse["message"] = "Player for Team Created";      
-      addFriendResponse["data"] = jsonDecode(response.body)['data']['updateUser'];
-
-    }catch(e){
+      addFriendResponse["message"] = "Player for Team Created";
+      addFriendResponse["data"] =
+          jsonDecode(response.body)['data']['updateUser'];
+    } catch (e) {
       print("error");
     }
 
-
     return addFriendResponse;
-
   }
 
-
-  Future<Map<String, dynamic>> sendFriendRequest(Map<String, dynamic> receiverInput) async {
-    print("sendFriendRequest");
-    Map<String, dynamic> sendFriendRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    Map<String, dynamic> senderInput = {
-      "_id": appModel.currentUser['_id'],
-    };
-    print("senderInput");
-    print(senderInput);
-    print("receiverInput");
-    print(receiverInput);
-    try {      
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': UserMutations().sendFriendRequest(senderInput, receiverInput),
-        }),
-      );
-
-      print("response body: ");
-      print(jsonDecode(response.body));
-
-      
-      
-      sendFriendRequestResponse["success"] = true;
-      sendFriendRequestResponse["message"] = "Player for Team Created";      
-      sendFriendRequestResponse["data"] = jsonDecode(response.body)['data']['CreateFriendRequest'];
-    
-      
-    } catch (e) {}
-    return sendFriendRequestResponse;
-  }
-  
   Future<Map<String, dynamic>> removeFriend(dynamic friendInput) async {
     print("removeFriend");
     Map<String, dynamic> removeFriendResp = {
@@ -264,16 +257,13 @@ class UserCommand extends BaseCommand {
       "data": null
     };
 
-    try{
-
-    }catch (e) {}
+    try {} catch (e) {}
 
     return removeFriendResp;
-
   }
 
-  Future<Map<String, dynamic>> getCurrentUser() async {
-    print("getCurrentUser");
+  Future<Map<String, dynamic>> getCurrentUserByEmail() async {
+    print("getCurrentUserByEmail");
     Map<String, dynamic> getUserResp = {
       "success": false,
       "message": "no user found",
@@ -283,6 +273,9 @@ class UserCommand extends BaseCommand {
       String email = appModel.currentUser['email'];
       print("email: ");
       print(email);
+      Map<String, dynamic> userInput = {
+        "email": email
+      };
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -290,29 +283,62 @@ class UserCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserQueries().getUser(email),
+          'query': UserQueries().getUserByEmail(userInput),
         }),
       );
 
       print("response: ");
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['getUser'];    
+      final result = jsonDecode(response.body)['data']['getUser'];
       // if (result != null) {
-        getUserResp["success"] = true;
-        getUserResp["message"] = "user found";
-        getUserResp["data"] = result;
-      // }     
+      getUserResp["success"] = true;
+      getUserResp["message"] = "user found";
+      getUserResp["data"] = result;
+      // }
     } catch (e) {
       print('Query failed: $e');
     }
     return getUserResp;
   }
 
-  void updateFriendsPageModel(List<dynamic> friends){
-    friendsPageModel.selectedObjects = friends;    
+  Future<Map<String, dynamic>> getUserByEmail(Map<String, dynamic> userInput) async {
+    print("getUserByEmail");
+    Map<String, dynamic> getUserResp = {
+      "success": false,
+      "message": "no user found",
+      "data": null
+    };
+    try {      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserQueries().getUserByEmail(userInput),
+        }),
+      );
+
+      print("response: ");
+      print(jsonDecode(response.body));
+      final result = jsonDecode(response.body)['data']['getUser'];
+      // if (result != null) {
+      getUserResp["success"] = true;
+      getUserResp["message"] = "user found";
+      getUserResp["data"] = result;
+      // }
+    } catch (e) {
+      print('Query failed: $e');
+    }
+    return getUserResp;
   }
 
-  Future<Map<String, dynamic>> getUser(String email) async {
+  void updateFriendsPageModel(List<dynamic> friends) {
+    friendsPageModel.selectedObjects = friends;
+  }
+
+  Future<Map<String, dynamic>> findUserById(Map<String, dynamic> userInput) async {
     print("getUser");
     Map<String, dynamic> getUserResp = {
       "success": false,
@@ -320,8 +346,8 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
-      print("email: ");
-      print(email);
+      print("userInput: ");
+      print(userInput);
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -329,19 +355,19 @@ class UserCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserQueries().getUser(email),
+          'query': UserQueries().findUserByID(userInput),
         }),
       );
 
       print("response: ");
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['getUser'];    
+      final result = jsonDecode(response.body)['data']['findUserByID'];
       appModel.currentUser = result;
       // if (result != null) {
-        getUserResp["success"] = true;
-        getUserResp["message"] = "user found";
-        getUserResp["data"] = result;
-      // }     
+      getUserResp["success"] = true;
+      getUserResp["message"] = "user found";
+      getUserResp["data"] = result;
+      // }
     } catch (e) {
       print('Query failed: $e');
     }

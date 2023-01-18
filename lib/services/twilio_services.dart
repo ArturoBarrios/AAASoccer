@@ -21,9 +21,9 @@ class TwilioServices extends BaseCommand {
     Map<String, dynamic> configureTwilioResp = {"success": false, "message": "Default Error"};
     TwilioFlutter twilioFlutter; 
     twilioFlutter = TwilioFlutter(
-    accountSid : dotenv.env['TWILIOSID'].toString(),
-    authToken : dotenv.env['TWILIOAUTHTOKEN'].toString(),
-    twilioNumber : dotenv.env['TWILIOPHONE'].toString()
+      accountSid : dotenv.env['TWILIOSID'].toString(),
+      authToken : dotenv.env['TWILIOAUTHTOKEN'].toString(),
+      twilioNumber : dotenv.env['TWILIOPHONE'].toString()
     );
     try {
       // Add the following line to add Auth plugin to your app.
@@ -36,10 +36,10 @@ class TwilioServices extends BaseCommand {
       
         appModel.twilioClient = twilioFlutter;
 
-        print("appModel.twilioClient value");
-        print(appModel.twilioClient);
+        // print("appModel.twilioClient value");
+        // print(appModel.twilioClient);
 
-        SendSMS("12672136006", "Hello World!");
+        // SendSMS("12672136006", "twilio messages work!");
         
 
       
@@ -51,11 +51,19 @@ class TwilioServices extends BaseCommand {
     return configureTwilioResp;
   }
 
-  void SendSMS(String phoneNumber, String message){
-    appModel.twilioClient.sendSMS(
-      toNumber : phoneNumber, 
-      messageBody : message); 
+  Future <void> SendSMS(List<String> phoneNumbers, String message) async{
+    print("SendSMS");
+    for(int i = 0;i<phoneNumbers.length;i++){
+      appModel.twilioClient.sendSMS(
+        toNumber : phoneNumbers[i], 
+        messageBody : message); 
+
+    }
   }
+
+  
+
+  
 
 
 }

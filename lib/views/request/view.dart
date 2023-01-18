@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
+import 'package:soccermadeeasy/components/Cards/pickup_card2.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import '../../components/profile.dart';
 import '../../components/Cards/team_request_card.dart';
 import '../../components/Cards/friend_request_card.dart';
+import '../../components/Cards/event_request_card.dart';
 import '../../models/requests_model.dart';
 import '../../commands/requests_command.dart';
 import '../../graphql/queries/requests.dart';
@@ -34,6 +36,7 @@ class _RequestsViewState extends State<RequestsView> {
       print("getRequestCard()");
       print("selectedKey: " + selectedKey);
       print("requestObject: " + requestObject.toString());      
+      // Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
       // Widget card = TeamRequestCard(teamRequestObject: requestObject, svgImage: svgImage);     
       Widget card = FriendRequestCard(friendRequestObject: requestObject, svgImage: svgImage);     
 
@@ -43,13 +46,13 @@ class _RequestsViewState extends State<RequestsView> {
   void getRequestPageData() async{
     print("getRequestPageData()");        
     // Map<String, dynamic> getEventRequestsResp = await RequestsCommand().getEventRequests();
-    Map<String, dynamic> getRequestsResp = await UserCommand().getCurrentUser();
+    Map<String, dynamic> getRequestsResp = await UserCommand().getCurrentUserByEmail();
     print("getEventRequestsResp: " + getRequestsResp.toString());
     
     if (getRequestsResp['success']) {
-      List friendRequests = getRequestsResp['data']['friendRequests']['data'];
       List eventRequests = getRequestsResp['data']['eventRequestsToAccept']['data'];
       List teamRequests = getRequestsResp['data']['teamRequestsToAccept']['data'];
+      List friendRequests = getRequestsResp['data']['friendRequests']['data'];
       print("EventRequests to set: ");
       print(eventRequests);
       print("TeamRequests to set: ");
@@ -57,8 +60,8 @@ class _RequestsViewState extends State<RequestsView> {
       print(RequestsPageModel().initialConditionsMet);
       //right now the last is visible
       //todo fix this shit
-      RequestsCommand().updateTeamRequestsModel(teamRequests);
       RequestsCommand().updateEventRequestsModel(eventRequests);
+      RequestsCommand().updateTeamRequestsModel(teamRequests);
       RequestsCommand().updateFriendRequestsModel(friendRequests);
       print("initialConditionsMet: ");
       print(RequestsCommand().initialConditionsMet);     
