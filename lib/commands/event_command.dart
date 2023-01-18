@@ -1,3 +1,4 @@
+import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/models/events_model.dart';
 
@@ -50,6 +51,36 @@ class EventCommand extends BaseCommand {
     return sendPlayerEventRequestResponse;
 
   }
+
+  Future<Map<String, dynamic>> findEventsNearPoint(dynamic events, double distanceFrom  ) async{    
+    print("findEventsNearPoint()");
+    Map<String, dynamic> findEventsNearPointResp = {"success": false, "message": "Default Error", "data": null};
+    //iterate through events 
+    print("iterate through events");
+    events.entries.forEach((event) async {
+      double latitude = event['latitude'];
+      double longitude = event['longitude'];
+      print("event: "+event.toString());
+      double distanceFromUser = await GeoLocationCommand().getDistanceFromUser(latitude, longitude);
+      if(distanceFromUser > distanceFrom){
+        events.remove(event);
+      }
+      //set events in appModel
+      eventsModel.eventsNearMe = events;
+      print("eventsModel.eventsNearMe: " + eventsModel.eventsNearMe.toString());
+      
+      
+    });    
+    findEventsNearPointResp["success"] = true;
+    findEventsNearPointResp["message"] = "Events Near me Found";
+    findEventsNearPointResp["data"] = events;
+
+
+
+    return findEventsNearPointResp;
+  }  
+
+
 
 
   

@@ -152,11 +152,7 @@ class BaseCommand {
           appModel.currentUser = user;
           print("app model user: ");
           print(appModel.currentUser);
-          //get location and update user location
-          Position userPosition = await GeoLocationCommand().determinePosition();
-          print("userPosition: "+userPosition.toString());          
-          appModel.currentUser['currentPosition'] = userPosition;
-          print("check appModel after setting userPosition: "+ appModel.currentUser['currentPosition'].toString());
+
           //setup onesignal
           await OneSignalService().configureOneSignalUserDetails();
 
@@ -177,6 +173,23 @@ class BaseCommand {
             // eventsModel.games = games;    
             await EventCommand().setupEvents(user);
             
+          //setup events(league, tournament, tryout, training)
+          //,teams, players near me data. 
+          //get location and update user location
+          Position userPosition = await GeoLocationCommand().determinePosition();
+          print("userPosition: "+userPosition.toString());                    
+          appModel.currentUser['currentPosition'] = userPosition;
+          GeoLocationCommand().setUserAddress(userPosition.latitude, userPosition.longitude);
+          print("check appModel after setting userPosition: "+ appModel.currentUser['currentPosition'].toString());
+          //assume you have the latest events
+          Map<String, dynamic> findEventsNearPointResp = await EventCommand().findEventsNearPoint(eventsModel.events, 50);
+          print("findEventsNearPointResp: "+findEventsNearPointResp.toString());
+          if(findEventsNearPointResp["success"]){
+            dynamic eventsNearPoint = findEventsNearPointResp["data"];
+            print("eventsNearPoint: "+eventsNearPoint.toString());
+            eventsModel.eventsNearMe = eventsNearPoint;
+
+          }
             
             print("Setup Events");
 
