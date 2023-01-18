@@ -24,6 +24,15 @@ class GeoLocationCommand extends BaseCommand {
 
 
   }
+
+  Future<double> getDistanceFromUser(double latitude, double longitude) async {
+    print("getDistanceFromUser");
+    double distance = 0.0;
+    //todo: make sure user has a position
+    distance = await GeoLocationServices().calculateDistanceFromLocation(latitude, longitude);
+
+    return distance;
+  }
   
 
 
@@ -55,4 +64,6 @@ class GeoLocationCommand extends BaseCommand {
 
     return latLon;
   }
+
+
 }

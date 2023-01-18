@@ -16,6 +16,14 @@ class EventsModel extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  List _eventsNearMe = [];
+  List get eventsNearMe => _eventsNearMe;
+  set eventsNearMe(List eventsNearMe) {
+    _eventsNearMe = eventsNearMe;
+    notifyListeners();
+  }
+
   List<dynamic> _games = [];
   List<dynamic> get games => _games;
   set games(List<dynamic> games) {

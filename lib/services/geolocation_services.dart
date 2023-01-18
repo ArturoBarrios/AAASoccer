@@ -1,7 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 
 
-class GeoLocationServices {
+class GeoLocationServices {  
   // Determine the current position of the device.
   //
   // When the location services are not enabled or permissions
@@ -44,7 +44,25 @@ class GeoLocationServices {
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
   }
 
-  
+
+
+  //acos(sin(lat1)*sin(lat2)+cos(lat1)
+  //*cos(lat2)*cos(lon2-lon1))*6371 
+  Future<double> calculateDistanceFromLocation(double latitude, double longitude) async {
+    //assume we have a user location, 
+    //taken care of in GeolocationCommand.dart
+    print("calculateDistanceFromUserLocation()");
+    double response = 0;
+    
+
+
+    
+
+
+    return response;
+
+  }
+
   Future<void> findAddressFromCoordinates(String latitude, String longitude) async {
     print("findAddressFromCoordinates()");
 
