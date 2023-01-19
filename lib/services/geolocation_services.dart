@@ -43,14 +43,18 @@ class GeoLocationServices {
     // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
   }
-
-  Future<double> calculateDistanceFromLocation(double alatitude, double alongitude, double blatitude, double blongitude ) async {
+  
+  //returns distance in kilometers
+  Future<double> calculateDistanceInKMFromLocation(double alatitude, double alongitude, double blatitude, double blongitude ) async {
     //assume we have a user location, 
     //taken care of in GeolocationCommand.dart
-    print("calculateDistanceFromUserLocation()");   
+    print("calculateDistanceInKMFromLocation()");   
     double distanceInMeters = Geolocator.distanceBetween(alatitude, alongitude, blatitude, blongitude);
+    print("distanceInMeters: "+distanceInMeters.toString());
+    double distanceInKilometers = distanceInMeters/1000;
+    print("distanceInKilometers: "+distanceInKilometers.toString());
 
-    return distanceInMeters;
+    return distanceInKilometers;
   }
 
   Future<void> findAddressFromCoordinates(String latitude, String longitude) async {
