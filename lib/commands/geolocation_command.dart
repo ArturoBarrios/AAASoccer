@@ -28,8 +28,10 @@ class GeoLocationCommand extends BaseCommand {
   Future<double> getDistanceFromUser(double latitude, double longitude) async {
     print("getDistanceFromUser");
     double distance = 0.0;
+    print("currentUser: "+appModel.currentUser.toString());
+    print("vars: "+ latitude.toString()+" "+ longitude.toString()+" "+appModel.currentPosition.latitude.toString()+" "+appModel.currentPosition.longitude.toString());
     //todo: make sure user has a position
-    distance = await GeoLocationServices().calculateDistanceFromLocation(latitude, longitude);
+    distance = await GeoLocationServices().calculateDistanceFromLocation(latitude, longitude, appModel.currentPosition.latitude, appModel.currentPosition.longitude);
 
     return distance;
   }

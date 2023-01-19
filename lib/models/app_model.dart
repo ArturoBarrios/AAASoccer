@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 class AppModel extends ChangeNotifier {
 
@@ -46,9 +47,12 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  
-
-  
+  Position _currentPosition =  new Position(longitude: 0, latitude: 0, timestamp: null, accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0 );
+  Position get currentPosition => _currentPosition;
+  set currentPosition(Position currentPosition){
+    _currentPosition = currentPosition;
+    notifyListeners();
+  } 
 
   bool _initialConditionsMet = false;
   bool get initialConditionsMet => _initialConditionsMet;
@@ -78,6 +82,20 @@ class AppModel extends ChangeNotifier {
   List get players => _players;
   set players(List players) {
     _players = players;
+    notifyListeners();
+  }
+  
+  List _playersNearMe = [];
+  List get playersNearMe => _playersNearMe;
+  set playersNearMe(List playersNearMe) {
+    _playersNearMe = playersNearMe;
+    notifyListeners();
+  }
+
+  List _teamsNearMe = [];
+  List get teamsNearMe => _teamsNearMe;
+  set teamsNearMe(List teamsNearMe) {
+    _teamsNearMe = teamsNearMe;
     notifyListeners();
   }
 

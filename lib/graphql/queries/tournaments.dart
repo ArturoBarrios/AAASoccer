@@ -14,7 +14,14 @@ class TournamentQueries {
                   name        	
                   _id
                   isMainEvent
-                  }                  
+                  location{
+                    data{
+                      _id
+                      latitude
+                      longitude
+                    }
+                  } 
+                }                  
               } 
             }
           }

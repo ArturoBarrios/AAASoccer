@@ -9,7 +9,15 @@ class TryoutQueries {
               _id              
               event{
                   name        	
-                  _id                  
+                  _id     
+                  location{
+                    data{
+                      _id
+                      latitude
+                      longitude
+
+                    }
+                  }              
               } 
             }
           }

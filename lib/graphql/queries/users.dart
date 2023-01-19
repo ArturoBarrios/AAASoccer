@@ -11,6 +11,11 @@ class UserQueries {
               birthdate
               gender
               OSPID
+              location{
+                _id
+                latitude
+                longitude
+              }
               events{
                 data{
                   _id
@@ -92,6 +97,11 @@ class UserQueries {
               birthdate
               gender
               OSPID
+              location{
+                _id
+                latitude
+                longitude
+              }
               events{
                 data{
                   _id

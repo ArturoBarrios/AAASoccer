@@ -12,6 +12,13 @@ class GameQueries {
                   name        	
                   _id  
                   type
+                  location{
+                    data{
+                    _id
+                    latitude
+                    longitude
+                    }
+                  }
                   eventUserOrganizers{                    
                       users{
                         data{
