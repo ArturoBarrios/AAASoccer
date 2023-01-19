@@ -30,7 +30,7 @@ class GeoLocationCommand extends BaseCommand {
     double distance = 0.0;
     print("currentUser: "+appModel.currentUser.toString());
     print("vars: "+ latitude.toString()+" "+ longitude.toString()+" "+appModel.currentPosition.latitude.toString()+" "+appModel.currentPosition.longitude.toString());
-    //todo: make sure user has a position
+    ////todo: make sure user has a position
     distance = await GeoLocationServices().calculateDistanceInKMFromLocation(latitude, longitude, appModel.currentPosition.latitude, appModel.currentPosition.longitude);
 
     return distance;
