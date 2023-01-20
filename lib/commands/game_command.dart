@@ -52,7 +52,6 @@ class GameCommand extends BaseCommand {
 
     return getGamesNearLocationResp;
   }
-  //
 
     Map<String, dynamic> filterGames(List<dynamic> games){
     print("filterGames()");
