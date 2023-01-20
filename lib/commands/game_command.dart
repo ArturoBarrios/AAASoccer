@@ -53,6 +53,35 @@ class GameCommand extends BaseCommand {
     return getGamesNearLocationResp;
   }
 
+    Map<String, dynamic> filterGames(List<dynamic> games){
+    print("filterGames()");
+    print("games: "+games.toString());
+    Map<String, dynamic> filteredEventsResp = {
+      "archived": [],
+      "active": [],
+      "success": false,      
+    };
+    List<dynamic> archivedEvents = [];
+    List<dynamic> activeEvents = games;
+    print("before for loop");
+    for(int i = 0; i < games.length; i++){
+      print("check if event is archived");
+      if(games[i]['event']['archived']){
+        print("event archived!");
+        archivedEvents.add(games[i]);        
+        activeEvents.remove(games[i]);
+      }
+    }
+    print("after for loop");
+    
+    filteredEventsResp["archivedEvents"] = archivedEvents;
+    filteredEventsResp["activeEvents"] = activeEvents;
+    filteredEventsResp["success"] = true;
+  
+
+    return filteredEventsResp;
+  }
+
   Future<Map<String, dynamic>> createTo(Map<String, dynamic> userInput) async {
     print("createTo");
     Map<String, dynamic> createToResponse = {
