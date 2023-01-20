@@ -119,4 +119,11 @@ class AppModel extends ChangeNotifier {
     _myEvents = myEvents;
     notifyListeners();
   }
+  
+  List _myArchivedEvents = [];
+  List get myArchivedEvents => _myArchivedEvents;
+  set myArchivedEvents(List myArchivedEvents) {
+    _myArchivedEvents = myArchivedEvents;
+    notifyListeners();
+  }
 }

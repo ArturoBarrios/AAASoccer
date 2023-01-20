@@ -21,6 +21,7 @@ import '../services/onesignal_service.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 // import 'package:geocoding/geocoding.dart';
+import 'dart:convert';
 
 
 
@@ -157,21 +158,33 @@ class BaseCommand {
           await OneSignalService().configureOneSignalUserDetails();
 
 
-          // setUserId(user.id);
-          // setUser(user);
-          //currently not being utilized
+          
+          
           await EventCommand().setupMappedEvents();
-          // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();          
-          // if(getGamesNearLocationResp["success"]){
-          //   print("games List: ");
-          //   print(getGamesNearLocationResp["data"]);
-          //   print("success!");
-          //   print("type: ");
-          //   print(getGamesNearLocationResp["data"].runtimeType);
-            // List<dynamic> games = getGamesNearLocationResp["data"];    
-            // homePageModel.selectedObjects = games;  
-            // eventsModel.games = games;    
-            await EventCommand().setupEvents(user);
+          print("get friends and myEvents from currentUser object: ");
+          List<dynamic> friends = appModel.currentUser['friends'];
+          List<dynamic> myEvents = appModel.currentUser['events']['data'];
+          List<dynamic> myArchivedEvents = [];
+        List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
+          print("friendss: "+friends.toString());          
+          print("myEventss: "+myEvents.toString());
+          myEventsCopy.forEach((element) async {
+            print("myEvent: "+element.toString());
+            if(element['archived']){
+              print("archived");
+              myEvents.remove(element);
+              print("removed");
+              myArchivedEvents.add(element);
+              print("added");
+            }
+          });
+          print("setting appModel.myEvents, appModel.friends, and appModel.myArchivedEvents ");
+          // appModel.myEvents = myEvents;
+          // appModel.friends = friends;
+          // appModel.myArchivedEvents = myArchivedEvents;
+          print("set");
+
+          // await EventCommand().setupEvents(user);
             
           //setup events(league, tournament, tryout, training)
           //,teams, players near me data. 
