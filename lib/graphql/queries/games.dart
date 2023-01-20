@@ -12,6 +12,8 @@ class GameQueries {
                   name        	
                   _id  
                   type
+                  archived
+                  deleted    
                   location{
                     data{
                     _id
@@ -28,7 +30,9 @@ class GameQueries {
                       }    
                       event{                        
                           _id
-                          name                        
+                          name  
+                          archived
+                          deleted                      
                       }                
                   }
               }                         

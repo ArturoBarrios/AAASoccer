@@ -30,6 +30,13 @@ class EventsModel extends ChangeNotifier {
     _games = games;
     notifyListeners();
   }
+
+  List<dynamic> _archivedGames = [];
+  List<dynamic> get archivedGames => _archivedGames;
+  set archivedGames(List<dynamic> archivedGames) {
+    _archivedGames = archivedGames;
+    notifyListeners();
+  }
   
   List<dynamic> _gamesNearMe = [];
   List<dynamic> get gamesNearMe => _gamesNearMe;
