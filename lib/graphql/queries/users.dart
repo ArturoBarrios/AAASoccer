@@ -19,6 +19,8 @@ class UserQueries {
               events{
                 data{
                   _id
+                  archived
+                  deleted
                   name
                   isMainEvent
                   type
@@ -112,6 +114,8 @@ class UserQueries {
               events{
                 data{
                   _id
+                  archived
+                  deleted
                   name
                   isMainEvent
                   type

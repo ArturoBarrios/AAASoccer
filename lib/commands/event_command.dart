@@ -263,7 +263,8 @@ class EventCommand extends BaseCommand {
   //pass userInput to check if you have to refetch user
   //if dynamic null, refetch user
   Future<Map<String, dynamic>> setupEvents(dynamic user) async{
-    print("setupEvents()");
+    print("setupEvents()()");
+    print("user: "+ user.toString());
     Map<String,dynamic> setupEventsResp = {"success": false, "message": "Default Error", "data": []};
     if(user == null){
       print("user==null");
@@ -275,9 +276,11 @@ class EventCommand extends BaseCommand {
         };
 
         Map<String, dynamic> getUserResp = await UserCommand().getUserByEmail(userInput);             
+        print("getUserResp: "+getUserResp.toString());
         if(getUserResp['success']){
           List<dynamic> friends = getUserResp['data']['friends'];
           List<dynamic> myEvents = getUserResp['data']['events']['data'];
+
           print("friends: ");          
           print(friends);
           print("myEvents: ");
