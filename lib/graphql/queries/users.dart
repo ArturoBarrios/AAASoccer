@@ -22,7 +22,14 @@ class UserQueries {
                   name
                   isMainEvent
                   type
-                }
+                  games{
+                    data{
+                      _id
+                      pickup
+                    }
+                  }
+
+                }                
               }
               friends{                                
                   _id

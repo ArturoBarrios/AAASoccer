@@ -30,12 +30,12 @@ Future<Map<String, dynamic>> deleteTeam(dynamic gameObject) async {
     "success": false,
     "message": "Team deleted successfully"
   };
-  Map<String, dynamic> deleteTeamResponse = await GameCommand()
-      .deleteGame(gameObject["user"]["_id"], gameObject["_id"]);
-  print("deleteTeamResponse: $deleteTeamResponse");
-  if (deleteTeamResponse["success"]) {
-    deleteTeamResp["success"] = true;
-  }
+  // Map<String, dynamic> deleteTeamResponse = await GameCommand()
+  //     .deleteGame(gameObject["user"]["_id"], gameObject["_id"]);
+  // print("deleteTeamResponse: $deleteTeamResponse");
+  // if (deleteTeamResponse["success"]) {
+  //   deleteTeamResp["success"] = true;
+  // }
 
   return deleteTeamResp;
 }

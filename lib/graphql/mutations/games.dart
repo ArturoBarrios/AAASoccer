@@ -91,30 +91,38 @@ class GameMutations {
     return addPlayerToGame;
   }
 
-  String deleteGame(
-      String _id) {
-    String addPlayerToGame = """      
+  String archiveEventGame(
+      String event_id) {
+    String archiveEventString = """      
       mutation {
-        deleteGame(id: ${_id},
+        updateEvent(id: ${event_id},
+          data: {
+            archived: true
+               
+          }
   				                  
         ){
-            _id
-    				pickup            
-            event{
-              _id
-              location{
+            _id   
+            name
+            isMainEvent 				
+            location{
                 data{
                   _id
                   latitude
                   longitude
                 }
-              }
-            } 
+              } 
+              games{   
+                data{
+                  _id
+                  pickup
+                }
+              }                       
     			  
   }
 }
         """;
 
-    return addPlayerToGame;
+    return archiveEventString;
   }
 }

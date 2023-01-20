@@ -1,5 +1,5 @@
 type Query {
-
+  allEvents(type: EventType): [Event!]  
   allGames(pickup: Boolean): [Game!]  
   allTrainings: [Training!]  
   allTryouts: [Tryout!]  
@@ -187,8 +187,8 @@ type Game   {
 }
 
 type Event   {
-  name: String!
-  isMainEvent: Boolean!
+  name: String
+  isMainEvent: Boolean
   eventUserOrganizers: EventUserOrganizers
   price: Price
   # organization: Organization
@@ -216,7 +216,9 @@ type Event   {
   leagues: [League] @relation
   tournaments: [Tournament] @relation
   trainings: [Training] @relation 
-  wager: [Wager] @relation
+  wager: [Wager] @relation  
+  archived: Boolean
+  deleted: Boolean
 }
 
 type Team   {
@@ -228,6 +230,8 @@ type Team   {
   sponsors: [Sponsor] @relation
   location: Location  
   teamUserOrganizers: TeamUserOrganizers
+  archived: Boolean
+  deleted: Boolean
   
 }
 

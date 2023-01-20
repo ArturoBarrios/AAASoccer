@@ -182,9 +182,10 @@ class GameCommand extends BaseCommand {
     return addPlayerToGameResponse;
   }
 
-  Future<Map<String, dynamic>> deleteGame(String eventId, String gameId) async {
-    print("deleteGame");
-    Map<String, dynamic> deleteGameResponse = {
+   Future<Map<String, dynamic>> archiveGame(String eventId, String gameId) async {
+    print("archiveGame");
+    print("eventId: " + eventId);
+    Map<String, dynamic> archiveGameResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
@@ -196,19 +197,35 @@ class GameCommand extends BaseCommand {
         'Content-Type': 'application/json'
       },
       body: jsonEncode(<String, String>{
-        'query': GameMutations().deleteGame(gameId),
+        'query': GameMutations().archiveEventGame(eventId),
       }),
     );
 
     print("response body: ");
     print(jsonDecode(response.body));
 
-    deleteGameResponse["success"] = true;
-    deleteGameResponse["message"] = "Game Deleted";
-    deleteGameResponse["data"] =
-        jsonDecode(response.body)['data']['deleteGame'];
-    await EventCommand().deleteGame(jsonDecode(response.body), true);
+    //remove game from eventsModel.games
+    print("remove game from eventsModel.games");
+    var i = 0;
+    var found = false;
+    while(i < eventsModel.games.length-1 && !found){
+      if(eventsModel.games[i]['id'] == jsonDecode(response.body)['id']){
+        var removed = eventsModel.games.removeAt(i);        
+        print("removedGameObject: ");
+        print(removed);
+        found = true;
+      }            
+      i+=1;
+    }
+    print("length of games after archiving game: ");
+    print(eventsModel.games.length);    
 
-    return deleteGameResponse;
+    archiveGameResponse["success"] = true;
+    archiveGameResponse["message"] = "Game archived";
+    archiveGameResponse["data"] =
+        jsonDecode(response.body)['data']['updateGame'];
+    // await EventCommand().archiveGame(jsonDecode(response.body), true);
+
+    return archiveGameResponse;
   }
 }

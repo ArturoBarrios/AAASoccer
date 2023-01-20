@@ -385,9 +385,9 @@ class EventCommand extends BaseCommand {
 
   }
   
-  Future<Map<String, dynamic>>deleteGame(Map<String, dynamic> game, bool updateViewModelsBool) async{
-    Map<String,dynamic> deleteGameResp = {"success": false, "message": "Default Error", "data": []};
-    print("length of games before deleting game: ");
+  Future<Map<String, dynamic>>archiveGame(Map<String, dynamic> game, bool updateViewModelsBool) async{
+    Map<String,dynamic> archiveGameResp = {"success": false, "message": "Default Error", "data": []};
+    print("length of games before archiving game: ");
     print(eventsModel.games.length);    
     var i = 0;
     var found = false;
@@ -400,14 +400,14 @@ class EventCommand extends BaseCommand {
       }            
       i+=1;
     }
-    print("length of games after deleting game: ");
+    print("length of games after archiving game: ");
     print(eventsModel.games.length);    
     print("updateViewModelsBool: ");
     print(updateViewModelsBool);
     if(updateViewModelsBool)
       await updateViewModelsWithGame(game);
 
-    return deleteGameResp;
+    return archiveGameResp;
   }
 
   Future<Map<String, dynamic>>addGame(Map<String, dynamic> game, bool updateViewModelsBool) async{
