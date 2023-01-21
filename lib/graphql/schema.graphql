@@ -217,8 +217,8 @@ type Event   {
   tournaments: [Tournament] @relation
   trainings: [Training] @relation 
   wager: [Wager] @relation  
-  archived: Boolean
-  deleted: Boolean
+  archived: Boolean  @default(value: false)
+  deleted: Boolean  @default(value: false)
 }
 
 type Team   {

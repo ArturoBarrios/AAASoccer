@@ -24,12 +24,18 @@ void friendClicked() {
   print("Friend Clicked");
 }
 
-Future<Map<String, dynamic>> deleteFriend(dynamic gameObject) async {
-  print("deleteFriend for gameobject: $gameObject");
+Future<Map<String, dynamic>> removeFriend(dynamic friendObject) async {
+  print("removeFriend()");
   Map<String, dynamic> deleteFriendResp = {
     "success": false,
     "message": "Friend deleted successfully"
   };
+  Map<String, dynamic> removeFriendResp = await UserCommand().removeFriend(friendObject);
+  print("removeFriendResp: $removeFriendResp");
+  if (removeFriendResp["success"]) {
+    print("friend removed successfully");
+    deleteFriendResp["success"] = true;
+  }
   // Map<String, dynamic> deleteFriendResponse = await GameCommand()
   //     .deleteGame(gameObject["user"]["_id"], gameObject["_id"]);
   // print("deleteFriendResponse: $deleteFriendResponse");

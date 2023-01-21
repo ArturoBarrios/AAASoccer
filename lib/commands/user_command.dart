@@ -257,7 +257,14 @@ class UserCommand extends BaseCommand {
       "data": null
     };
 
-    try {} catch (e) {}
+
+
+    try {
+      print("removeFriend in try");
+
+    } catch (e) {
+      print("error");
+    }
 
     return removeFriendResp;
   }

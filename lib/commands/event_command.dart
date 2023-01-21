@@ -288,9 +288,7 @@ class EventCommand extends BaseCommand {
           appModel.friends = friends;   
           appModel.myEvents =  myEvents;       
         }
-
       }
-
     }
     //think of sorting friends by location
     //

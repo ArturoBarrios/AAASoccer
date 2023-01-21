@@ -60,7 +60,7 @@ class _TeamCard extends State<TeamCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TeamView();
+            return TeamView(teamObject: widget.teamObject,);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
