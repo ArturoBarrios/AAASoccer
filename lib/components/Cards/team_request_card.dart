@@ -61,7 +61,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TeamView();
+            return TeamView(teamObject: widget.teamRequestObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
