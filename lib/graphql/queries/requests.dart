@@ -26,6 +26,7 @@ class RequestsQueries {
               event{
                 name        	
                 _id  
+                type
                 eventUserOrganizers{                    
                   users{
                     data{

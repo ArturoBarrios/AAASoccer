@@ -19,6 +19,8 @@ class _TeamViewState extends State<TeamView> {
 
   @override
   Widget build(BuildContext context) {
+    print("build() in TeamView");
+    print("teamObject: "+widget.teamObject.toString());
     return Scaffold(
       body: Center(
           child: Column(children: [

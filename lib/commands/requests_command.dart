@@ -21,6 +21,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
 import '../commands/notifications_command.dart';
+import '../enums/RequestStatus.dart';
 
 class RequestsCommand extends BaseCommand {
 
@@ -99,6 +100,7 @@ class RequestsCommand extends BaseCommand {
     return getTeamRequestsResp;
   }
 
+  //eventRequestInput is basically Game, Tournament, League, Training, with attached event
   Future<Map<String, dynamic>> updateEventRequests(Map<String, dynamic> eventRequestInput  ) async{
     print("updateEventRequest");
     Map<String, dynamic> updateEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
@@ -129,8 +131,15 @@ class RequestsCommand extends BaseCommand {
       Map<String, dynamic> eventInput = {
         "_id": eventRequestInput['event']['_id'],
       };
+
       
       await UserCommand().addEvent(userInput, eventInput);
+
+      // add to my events if it's your event
+      if(eventRequestInput['status'] == RequestStatus.ACCEPTED){        
+        await EventCommand().addEventToMyEvents(eventRequestInput);        
+      }
+
       
       //send notification to sender)
       //get sender information for push notification

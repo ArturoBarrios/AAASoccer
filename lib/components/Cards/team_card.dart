@@ -51,6 +51,7 @@ class _TeamCard extends State<TeamCard> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
+    print("build() for TeamCard()");
     print("widget name: ");
     print(widget.teamObject.toString());
     return Listener(

@@ -136,7 +136,7 @@ class _EventRequestCard extends State<EventRequestCard> {
             ),
             GestureDetector(
               onTap: () {
-                //send friend request
+                //update friend request
                 print("update friend request");
                 print(widget.eventRequestObject.toString());
                 RequestsCommand().updateEventRequests(widget.eventRequestObject);
