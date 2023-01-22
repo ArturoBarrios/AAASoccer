@@ -24,7 +24,7 @@ import '../components/Cards/friend_card.dart';
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
-import '../models/EventType.dart';
+import '../enums/EventType.dart';
 //commands
 import '../commands/home_page_command.dart';
 import '../commands/tournament_command.dart';

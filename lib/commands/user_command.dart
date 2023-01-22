@@ -309,7 +309,7 @@ class UserCommand extends BaseCommand {
   }
 
   Future<Map<String, dynamic>> getUserByEmail(Map<String, dynamic> userInput) async {
-    print("getUserByEmail");
+    print("getUserByEmail()");
     Map<String, dynamic> getUserResp = {
       "success": false,
       "message": "no user found",

@@ -41,6 +41,7 @@ class GameCommand extends BaseCommand {
 
       print("response body: ");
       print(jsonDecode(response.body));
+      
 
       final result = jsonDecode(response.body)['data']['allGames']['data'];
       getGamesNearLocationResp["success"] = true;
@@ -62,11 +63,11 @@ class GameCommand extends BaseCommand {
       "success": false,      
     };
     List<dynamic> archivedEvents = [];
-    List<dynamic> activeEvents = games;
+    List<dynamic> activeEvents = json.decode(json.encode(games));
     print("before for loop");
     for(int i = 0; i < games.length; i++){
       print("check if event is archived");
-      if(games[i]['event']['archived']){
+      if(games[i]['event']['archived']!=false){
         print("event archived!");
         archivedEvents.add(games[i]);        
         activeEvents.remove(games[i]);

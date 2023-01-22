@@ -170,7 +170,7 @@ class BaseCommand {
           print("myEventss: "+myEvents.toString());
           myEventsCopy.forEach((element) async {
             print("myEvent: "+element.toString());
-            if(element['archived']){
+            if(element['archived']!=false){
               print("archived");
               myEvents.remove(element);
               print("removed");
@@ -184,7 +184,7 @@ class BaseCommand {
           // appModel.myArchivedEvents = myArchivedEvents;
           print("set");
 
-          // await EventCommand().setupEvents(user);
+          await EventCommand().setupEvents(user);
             
           //setup events(league, tournament, tryout, training)
           //,teams, players near me data. 

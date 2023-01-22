@@ -52,7 +52,7 @@ export 'AppSubscription.dart';
 export 'Chat.dart';
 export 'Coach.dart';
 export 'Event.dart';
-export 'EventType.dart';
+export '../enums/EventType.dart';
 export 'FieldPlayerOccupancySize.dart';
 export 'Game.dart';
 export 'GenderType.dart';
