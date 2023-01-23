@@ -370,12 +370,12 @@ class EventCommand extends BaseCommand {
       print("length of games: " + games.length.toString());
       //add games to eventsModel
       //filter out archived games
-      Map<String, dynamic> filteredGamesResp = GameCommand().filterGames(games);
+      Map<String, dynamic> filteredGamesResp = await GameCommand().filterGames(games);
 
       eventsModel.games = filteredGamesResp['activeEvents'];
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
       eventsModel.events.addAll(games);
-      homePageModel.selectedObjects = json.decode(json.encode(games));
+      homePageModel.selectedObjects = json.decode(json.encode(filteredGamesResp['activeEvents']));
       print("length of games: " + games.length.toString());
     }
     Map<String, dynamic> getLeaguesNearLocationResp =
@@ -505,6 +505,27 @@ class EventCommand extends BaseCommand {
     if (updateViewModelsBool) await updateViewModelsWithGame(game);
 
     return addGameResp;
+  }
+  
+  Future<Map<String, dynamic>> removeEvent(
+      Map<String, dynamic> event, bool updateViewModelsBool) async {
+    Map<String, dynamic> removeEventResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    
+
+    print("length of events before removing events: ");
+    print(eventsModel.events.length);
+    eventsModel.events.add(event);
+    print("length of games after removing game: ");
+    print(eventsModel.events.length);
+    print("updateViewModelsBool: ");
+    print(updateViewModelsBool);
+    // if (updateViewModelsBool) await removeEventFromViewModels(game);
+
+    return removeEventResp;
   }
 
   Future<Map<String, dynamic>> setupMappedEvents() async {

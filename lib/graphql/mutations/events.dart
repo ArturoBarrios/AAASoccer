@@ -38,6 +38,7 @@ class EventMutations{
 
     return addPlayerToEvent;
   }
+  
 
   String sendEventRequest(
       Map<String, dynamic> eventRequestInput, String organizersString, String receivers) {

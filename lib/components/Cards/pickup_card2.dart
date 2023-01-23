@@ -28,20 +28,35 @@ void pickupClicked() {
   print("Pickup Clicked");
 }
 
-Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
-  print("deletePickup for gameobject: $gameObject");
-  Map<String, dynamic> deletePickupResp = {
+Future<Map<String, dynamic>> archivePickup(dynamic gameObject) async {
+  print("archivePickup for gameobject: $gameObject");
+  Map<String, dynamic> archivePickupResp = {
     "success": false,
     "message": "Pickup deleted successfully"
   };
-  Map<String, dynamic> deletePickupResponse = await GameCommand()
+  Map<String, dynamic> archivePickupResponse = await GameCommand()
       .archiveGame(gameObject["_id"], gameObject["games"]["data"][0]["_id"]);
-  print("deletePickupResponse: $deletePickupResponse");
-  if (deletePickupResponse["success"]) {
-    deletePickupResp["success"] = true;
+  print("archivePickupResponse: $archivePickupResponse");
+  if (archivePickupResponse["success"]) {
+    archivePickupResp["success"] = true;
   }
 
-  return deletePickupResp;
+  return archivePickupResp;
+}
+Future<Map<String, dynamic>> removePickup(dynamic gameObject) async {
+  print("removePickup for gameobject: $gameObject");
+  Map<String, dynamic> removePickupResp = {
+    "success": false,
+    "message": "Pickup removed successfully"
+  };
+  Map<String, dynamic> removePickupRespResponse = await GameCommand()
+      .removeGame(gameObject["_id"], gameObject["games"]["data"][0]["_id"]);
+  print("removePickupRespResponse: $removePickupRespResponse");
+  if (removePickupRespResponse["success"]) {
+    removePickupRespResponse["success"] = true;
+  }
+
+  return removePickupRespResponse;
 }
 
 class _PickupCard2 extends State<PickupCard2> {
@@ -124,7 +139,7 @@ class _PickupCard2 extends State<PickupCard2> {
                                 Navigator.of(context).pop();
                                 //delete event aaa
                                 print(widget.eventObject.toString());
-                                deletePickup(widget.eventObject);
+                                removePickup(widget.eventObject);
                               },
                               onNegativeClick: () {
                                 Navigator.of(context).pop();
