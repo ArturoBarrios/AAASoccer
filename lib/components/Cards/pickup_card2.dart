@@ -106,7 +106,7 @@ class _PickupCard2 extends State<PickupCard2> {
                     text: widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.eventObject['description'],
+                        widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'], //widget.eventObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),

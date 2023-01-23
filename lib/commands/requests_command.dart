@@ -105,7 +105,7 @@ class RequestsCommand extends BaseCommand {
     print("updateEventRequest");
     Map<String, dynamic> updateEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
     try {         
-      print("user id before updateEventRequest: ");
+      print("user id before updateEventRequests: ");
       print(appModel.currentUser['_id']);          
       eventRequestInput['acceptedBy_id'] = appModel.currentUser['_id'];          
       // ????
@@ -125,19 +125,31 @@ class RequestsCommand extends BaseCommand {
     
       print("response body: ");
       print(jsonDecode(response.body));
+      dynamic updateEventRequest = jsonDecode(response.body)['data']['updateEventRequest'];
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
       };
+      print("a");
       Map<String, dynamic> eventInput = {
         "_id": eventRequestInput['event']['_id'],
       };
+      print("b");
 
       
-      await UserCommand().addEvent(userInput, eventInput);
-
+      print("updateEventRequest: "+updateEventRequest.toString());
+      print("updateEventRequest['status']: "+updateEventRequest['status'].toString());
+      print("RequestStatus.ACCEPTED:"+ RequestStatus.ACCEPTED.toString());
+      print("updateEventRequest['status'].toString() == RequestStatus.ACCEPTED.toString(): "+ (updateEventRequest['status'].toString() == RequestStatus.ACCEPTED.toString()).toString());
       // add to my events if it's your event
-      if(eventRequestInput['status'] == RequestStatus.ACCEPTED){        
-        await EventCommand().addEventToMyEvents(eventRequestInput);        
+      if(updateEventRequest['status'].toString() == "ACCEPTED"){ 
+        print("before UserCommand().addEvent()");
+        Map<String, dynamic> addEventResp = await UserCommand().addEvent(userInput, eventInput);        
+        print("addEventResp: " + addEventResp.toString());        
+        print("before EventCommand().addEvent()");
+        //get event       
+        Map<String, dynamic> addEventToMyEventsResp = await EventCommand().addEventToMyEvents(eventRequestInput);        
+        print("addEventToMyEventsResp: " + addEventToMyEventsResp.toString());
+
       }
 
       
