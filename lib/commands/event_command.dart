@@ -506,6 +506,27 @@ class EventCommand extends BaseCommand {
 
     return addGameResp;
   }
+  
+  Future<Map<String, dynamic>> removeEvent(
+      Map<String, dynamic> event, bool updateViewModelsBool) async {
+    Map<String, dynamic> removeEventResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    
+
+    print("length of events before removing events: ");
+    print(eventsModel.events.length);
+    eventsModel.events.add(event);
+    print("length of games after removing game: ");
+    print(eventsModel.events.length);
+    print("updateViewModelsBool: ");
+    print(updateViewModelsBool);
+    // if (updateViewModelsBool) await removeEventFromViewModels(game);
+
+    return removeEventResp;
+  }
 
   Future<Map<String, dynamic>> setupMappedEvents() async {
     Map<String, dynamic> setupMappedEventsResp = {

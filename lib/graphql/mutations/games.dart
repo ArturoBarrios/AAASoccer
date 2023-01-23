@@ -10,6 +10,7 @@ class GameMutations {
             {
               name: "${eventInput['name']}",
               type: GAME,
+              archived: false,
               isMainEvent: ${eventInput['isMainEvent']},
               eventUserOrganizers: {
                 create:
