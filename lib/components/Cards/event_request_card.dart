@@ -93,7 +93,7 @@ class _EventRequestCard extends State<EventRequestCard> {
                     text: widget.eventRequestObject['event']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.eventRequestObject['description'],
+                        widget.eventRequestObject['event']['name'], //widget.eventRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),

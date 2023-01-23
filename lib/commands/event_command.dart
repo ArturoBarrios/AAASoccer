@@ -24,7 +24,8 @@ import '../commands/league_command.dart';
 import '../commands/notifications_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
-import '../graphql/mutations/users.dart';
+import '../graphql/mutations/events.dart';
+import '../enums/RequestStatus.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './game_command.dart';
@@ -115,6 +116,7 @@ class EventCommand extends BaseCommand {
       bool isYourEvent = false;
       dynamic eventUserOrganizers =
           gameInput['event']['eventUserOrganizers']['users']['data'];
+      print("eventUserOrganizers: " + eventUserOrganizers.toString());
       String organizersString = "";
       print("get OSPIDs");
       //populate list with onesignal player ids
@@ -165,13 +167,20 @@ class EventCommand extends BaseCommand {
       print("responseee body: ");
       print(jsonDecode(response.body));
 
+      dynamic createEventRequest = jsonDecode(response.body)['data']['createEventRequest'];
+      print("createEventRequest: " + createEventRequest.toString());
       //check if it's from the same user
       //updateEventRequest if it is
       print("check if isYourEvent: "+ isYourEvent.toString());
       if(isYourEvent ){       
         print("isYourEvent");
         Map<String, dynamic> eventRequestInput = {
-          "_id": gameInput['event']['_id']
+          "_id": createEventRequest['_id'],
+          "status": RequestStatus.ACCEPTED.toString(),
+          "acceptedBy_id": appModel.currentUser['_id'],
+          "event": {
+            "_id": gameInput['event']['_id'],
+          }
         };
         //get event 
         await RequestsCommand().updateEventRequests(eventRequestInput);
@@ -230,8 +239,11 @@ class EventCommand extends BaseCommand {
       "message": "Default Error",
       "data": null
     };
+    print("before getEvent");
     dynamic event = getEvent(eventRequestInput['event']['_id']);
+    print("event: " + event.toString());
     appModel.myEvents.add(event);
+    addEventToMyEventsResponse["success"] = true;
 
     return addEventToMyEventsResponse;
   }
