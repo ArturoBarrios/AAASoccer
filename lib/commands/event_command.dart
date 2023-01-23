@@ -370,12 +370,12 @@ class EventCommand extends BaseCommand {
       print("length of games: " + games.length.toString());
       //add games to eventsModel
       //filter out archived games
-      Map<String, dynamic> filteredGamesResp = GameCommand().filterGames(games);
+      Map<String, dynamic> filteredGamesResp = await GameCommand().filterGames(games);
 
       eventsModel.games = filteredGamesResp['activeEvents'];
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
       eventsModel.events.addAll(games);
-      homePageModel.selectedObjects = json.decode(json.encode(games));
+      homePageModel.selectedObjects = json.decode(json.encode(filteredGamesResp['activeEvents']));
       print("length of games: " + games.length.toString());
     }
     Map<String, dynamic> getLeaguesNearLocationResp =

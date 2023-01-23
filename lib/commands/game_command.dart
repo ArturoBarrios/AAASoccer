@@ -63,17 +63,21 @@ class GameCommand extends BaseCommand {
       "success": false,      
     };
     List<dynamic> archivedEvents = [];
-    List<dynamic> activeEvents = json.decode(json.encode(games));
+    List<dynamic> activeEvents = [];
     print("before for loop");
     for(int i = 0; i < games.length; i++){
       print("check if event is archived");
       if(games[i]['event']['archived']!=false){
         print("event archived!");
-        archivedEvents.add(games[i]);        
-        activeEvents.remove(games[i]);
+        archivedEvents.add(games[i]);               
+      }
+      else{
+         activeEvents.add(games[i]);
       }
     }
     print("after for loop");
+    print("archivedEvents: "+archivedEvents.toString());
+    print("activeEvents: "+activeEvents.toString());
     
     filteredEventsResp["archivedEvents"] = archivedEvents;
     filteredEventsResp["activeEvents"] = activeEvents;

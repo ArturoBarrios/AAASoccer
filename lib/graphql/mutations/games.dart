@@ -104,6 +104,7 @@ class GameMutations {
         ){
             _id   
             name
+            archived
             isMainEvent 				
             location{
                 data{
