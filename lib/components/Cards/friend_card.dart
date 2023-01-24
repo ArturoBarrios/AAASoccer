@@ -26,6 +26,7 @@ void friendClicked() {
 
 Future<Map<String, dynamic>> removeFriend(dynamic friendObject) async {
   print("removeFriend()");
+  print("friendObject: $friendObject");
   Map<String, dynamic> deleteFriendResp = {
     "success": false,
     "message": "Friend deleted successfully"
@@ -36,12 +37,7 @@ Future<Map<String, dynamic>> removeFriend(dynamic friendObject) async {
     print("friend removed successfully");
     deleteFriendResp["success"] = true;
   }
-  // Map<String, dynamic> deleteFriendResponse = await GameCommand()
-  //     .deleteGame(gameObject["user"]["_id"], gameObject["_id"]);
-  // print("deleteFriendResponse: $deleteFriendResponse");
-  // if (deleteFriendResponse["success"]) {
-  //   deleteFriendResp["success"] = true;
-  // }
+  
 
   return deleteFriendResp;
 }
@@ -113,7 +109,7 @@ class _FriendCard extends State<FriendCard> {
                     })),            
             GestureDetector(
               onTap: () {
-                // UserCommand().removeFriend(widget.friendObject);
+                UserCommand().removeFriend(widget.friendObject);
                 // UserCommand().sendFriendRequest(widget.friendObject);
               },
               child: Container(
