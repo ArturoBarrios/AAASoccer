@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/league_command.dart';
 import '../../commands/event_command.dart';
+import '../../models/app_model.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
 
@@ -37,22 +38,22 @@ class _LeagueCreateState extends State<LeagueCreate> {
         "price": priceController.text.trim(),
         'isMainEvent': true,   
       };
-
-      // Map<String, dynamic> createdEvent =
-      //     await EventCommand().createEvent(createEventInput);
-      // print("createdEvent: ");
-      // print(createdEvent['data']);
-      // if (createdEvent['success']) {
-        Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-        Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      
+        // Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+        Map<String, dynamic> locationInput = {
+          "latitude": AppModel().currentPosition.latitude,
+          "longitude": AppModel().currentPosition.longitude
+        };//generateRandomLocation["data"]["randomLocation"];
         print("locationInputCheck: " + locationInput.toString());   
         Map<String, dynamic> createLeagueInput = {
-          "numberOfTeams": numberOfTeamsController.text.trim(),
+          "numberOfTeams": 2,
         };
         Map<String, dynamic> createdLeague =
             await LeagueCommand().createLeague(createLeagueInput, createEventInput, locationInput);
-
+        print("createdLeague: " + createdLeague.toString());
         if (createdLeague['success']) {
+          //update models that depend on league data
+          LeagueCommand().updateLeagueData(createdLeague['data']);
           createEventResponse['success'] = true;
         }
       // }
