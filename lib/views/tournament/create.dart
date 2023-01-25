@@ -1,6 +1,7 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/models/app_model.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/event_command.dart';
 import '../../testing/seeding/location_seeder.dart';
@@ -37,7 +38,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
       Map<String, dynamic> createEventInput = {
         "name": nameController.text.trim(),
         "price": priceController.text.trim(),
-        'isMainEvent': true,   
+        'isMainEvent': true,           
       };
 
       // Map<String, dynamic> createdEvent =
@@ -45,20 +46,23 @@ class _TournamentCreateState extends State<TournamentCreate> {
       // print("createdEvent: ");
       // print(createdEvent['data']);
       // if (createdEvent['success']) {
-        Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-        Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+        // Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+        Map<String, dynamic> locationInput = {"latitude": AppModel().currentPosition.latitude, "longitude": AppModel().currentPosition.longitude};//generateRandomLocation["data"]["randomLocation"];
         List<dynamic> groupPlayOptions = [true, false];
-        var rng = Random();
-        bool groupPlayOptionsRand = groupPlayOptions[rng.nextInt(groupPlayOptions.length)];
+        var rng = Random();        
         print("locationInputCheck: " + locationInput.toString());   
         Map<String, dynamic> createTournamentInput = {
-          "numberOfTeams": numberOfTeamsController.text.trim(),
-          "groupPlay": groupPlayOptionsRand,
+          "numberOfTeams": 2,
+          "groupPlay": false,
+
         };
         Map<String, dynamic> createdTournament =
             await TournamentCommand().createTournament(createTournamentInput, createEventInput, locationInput);
+        print("createdTournament: "+ createdTournament.toString());        
 
         if (createdTournament['success']) {
+          //update models that depend on tournament data
+          TournamentCommand().updateTournamentData(createdTournament['data']);
           createEventResponse['success'] = true;
         }
       // }
