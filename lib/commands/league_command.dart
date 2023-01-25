@@ -44,6 +44,11 @@ Map<String, dynamic> currateLeagueData(dynamic selectedObject)  {
   return currateLeagueDataResp;
 }
 
+void updateLeagueData(dynamic league){
+  print("updateLeagueData");
+  eventsModel.leagues.add(league);
+}
+
 Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     print("getLeaguesNearLocation");
     Map<String, dynamic> getLeaguesNearLocationResp = {

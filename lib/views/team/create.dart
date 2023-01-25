@@ -5,6 +5,7 @@ import '../../commands/team_command.dart';
 import '../../testing/seeding/team_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
+import '../../models/app_model.dart';
 
 class TeamCreate extends StatefulWidget {
   @override
@@ -29,7 +30,10 @@ class _TeamCreateState extends State<TeamCreate> {
     try {
       Map<String, dynamic> randomPickupData = TeamSeeder().getRandomTeamData();      
       Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-      Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+      Map<String, dynamic> locationInput = {
+        "latitude": AppModel().currentPosition.latitude,
+        "longitude": AppModel().currentPosition.longitude,
+      };
       print("locationInputCheck: " + locationInput.toString());                                  
      
       
@@ -42,11 +46,18 @@ class _TeamCreateState extends State<TeamCreate> {
           
           
         };
-        Map<String, dynamic> createdTeam = {"success": false};
-            await TeamCommand().createTeam(createTeamInput, locationInput);
+        Map<String, dynamic> createdTeamResp = await TeamCommand().createTeam(createTeamInput, locationInput);
 
-        if (createdTeam['success']) {
+          print("createdTeamResponse: " + createdTeamResp.toString());
+        if (createdTeamResp['success']) {
+          //now update view and app models that depend on this data
+          print("now update view and app models that depend on this data");
+          dynamic createdTeam = createdTeamResp['data'];
+          print("createdTeam: " + createdTeam.toString());
+          TeamCommand().updateModelsWithTeam(createdTeam);
+
           createEventResponse['success'] = true;
+
         }
       
       return createEventResponse;

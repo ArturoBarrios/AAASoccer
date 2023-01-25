@@ -13,6 +13,8 @@ import '../commands/geolocation_command.dart';
 import '../graphql/queries/teams.dart';
 import '../commands/notifications_command.dart';
 import '../commands/user_command.dart';
+import '../constants.dart';
+import '../graphql/mutations/users.dart';
 
 
 class TeamCommand extends BaseCommand {
@@ -126,6 +128,17 @@ Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
   
 
  
+  void updateModelsWithTeam(dynamic team){
+    print("updateModelsWithTeam");
+    print(team);
+    
+    appModel.teams.add(team);
+    appModel.myTeams.add(team);
+    if(homePageModel.selectedKey == Constants.TEAM){
+      homePageModel.selectedObjects.add(team);
+    }
+
+  }
 
 
  Future<Map<String, dynamic>> createTeam(Map<String, dynamic> teamInput, Map<String, dynamic> locationInput ) async{
@@ -164,6 +177,64 @@ Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
       return createTeamResponse;
     }
   }
+
+  Future<Map<String, dynamic>> removeTeam(String teamId) async {
+    print("removeTeam");
+    print("teamId: " + teamId);
+    Map<String, dynamic> removeTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    Map<String, dynamic> userInput = {
+      "_id": appModel.currentUser['_id'],
+    };
+    Map<String, dynamic> teamInput = {
+      "_id": teamId,    
+    };
+    
+
+
+    http.Response response = await http.post(
+      Uri.parse('https://graphql.fauna.com/graphql'),
+      headers: <String, String>{
+        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode(<String, String>{
+        'query': UserMutations().removeTeamFromUser(userInput, teamInput),
+      }),
+    );
+
+    print("response body: ");
+    print(jsonDecode(response.body));
+
+    //remove team from eventsModel.teams
+    print("remove team from appModel.teams: "+appModel.teams.toString());
+    var i = 0;
+    var found = false;
+    while(i < appModel.teams.length-1 && !found){
+      if(appModel.teams[i]['id'] == jsonDecode(response.body)['id']){
+        var removed = appModel.teams.removeAt(i);        
+        print("removedTeamObject: ");
+        print(removed);
+        found = true;
+      }            
+      i+=1;
+    }
+    print("length of teams after archiving team: ");
+    print(appModel.teams.length);    
+
+    removeTeamResponse["success"] = true;
+    removeTeamResponse["message"] = "Team Removed";
+    removeTeamResponse["data"] =
+        jsonDecode(response.body)['data']['updateTeam'];    
+
+    return removeTeamResponse;
+  }
+
+
+
 
   
 

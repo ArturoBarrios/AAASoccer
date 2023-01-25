@@ -45,6 +45,12 @@ Map<String, dynamic> currateTournamentData(dynamic selectedObject)  {
   return currateTournamentDataResp;
 }
 
+void updateTournamentData(dynamic tournament){
+  print("updateTournamentData");
+  eventsModel.tournaments.add(tournament);
+}
+
+
 
 Future<Map<String, dynamic>> getTournamentsNearLocation() async {
     print("getTournamentsNearLocation");
@@ -82,6 +88,8 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
   }
 
  Future<Map<String, dynamic>> createTournament(Map<String, dynamic> tournamentData, Map<String, dynamic> eventInput, Map<String, dynamic> locationInput) async{
+     print("createTournament");
+     print("tournamentData: "+tournamentData.toString());
      Map<String, dynamic> createTournamentResp = {
       "success": false,
       "message": "Something went wrong with creating game relationships",
@@ -106,8 +114,7 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
           'query': TournamentMutations().createTournament(tournamentData, eventInput, locationInput),
       }),
     );
-    print("createTournament response: ");    
-    print(jsonDecode(response.body));
+    print("createTournament response: "+jsonDecode(response.body).toString());        
     Map<String, dynamic> createdTournament = jsonDecode(response.body)['data']['createTournament'];      
     print("createdTournament: ");
     print(createdTournament);    

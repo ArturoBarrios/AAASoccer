@@ -106,6 +106,13 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  List _myTeams = [];
+  List get myTeams => _myTeams;
+  set myTeams(List myTeams) {
+    _myTeams = myTeams;
+    notifyListeners();
+  }
+  
   List _friends = [];
   List get friends => _friends;
   set friends(List friends) {

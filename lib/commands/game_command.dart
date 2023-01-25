@@ -168,13 +168,13 @@ class GameCommand extends BaseCommand {
       print(jsonDecode(response.body));
       Map<String, dynamic> createdGame =
           jsonDecode(response.body)['data']['createGame'];
+      await EventCommand().addGame(createdGame, true);
       // EventsModel().games.add(createdGame);
 
       createGameResponse["success"] = true;
       createGameResponse["message"] = "Game Created";
       createGameResponse["data"] =
           jsonDecode(response.body)['data']['createGame'];
-      await EventCommand().addGame(createdGame, true);
 
       return createGameResponse;
     } on Exception catch (e) {
@@ -314,8 +314,7 @@ class GameCommand extends BaseCommand {
     removeGameResponse["success"] = true;
     removeGameResponse["message"] = "Game Removed";
     removeGameResponse["data"] =
-        jsonDecode(response.body)['data']['updateGame'];
-    await EventCommand().archiveGame(jsonDecode(response.body), true);
+        jsonDecode(response.body)['data']['updateGame'];    
 
     return removeGameResponse;
   }
