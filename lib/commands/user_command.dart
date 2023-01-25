@@ -214,6 +214,8 @@ class UserCommand extends BaseCommand {
     return addTeamResponse;
   }
 
+  
+
   Future<Map<String, dynamic>> addFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
     print("addFriend");

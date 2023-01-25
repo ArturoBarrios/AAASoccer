@@ -304,6 +304,9 @@ class _Home extends State<Home> {
     
     context
         .select<EventsModel, List<dynamic>>((value) => value.games);
+   
+    context
+        .select<AppModel, List<dynamic>>((value) => value.teams);
 
     HomePageModel().enabledSelections2.forEach((k, v) => {
       context.select<HomePageModel, bool>((value) => value.enabledSelections2[k]['enabled'])
@@ -354,9 +357,9 @@ class _Home extends State<Home> {
                   children: [                    
                     Expanded(
                         child: Column(children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: SearchField(testText: testText)),
+                      // Padding(
+                      //     padding: EdgeInsets.all(10.0),
+                      //     child: SearchField(testText: testText)),
                       Expanded(
                           child: ListView.builder(
                               scrollDirection: Axis.horizontal,

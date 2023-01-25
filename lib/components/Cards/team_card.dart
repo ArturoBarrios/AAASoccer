@@ -24,14 +24,14 @@ void teamClicked() {
   print("Team Clicked");
 }
 
-Future<Map<String, dynamic>> deleteTeam(dynamic gameObject) async {
-  print("deleteTeam for gameobject: $gameObject");
+Future<Map<String, dynamic>> removeTeam(dynamic teamObject) async {
+  print("deleteTeam for gameobject: $teamObject");
   Map<String, dynamic> deleteTeamResp = {
     "success": false,
     "message": "Team deleted successfully"
   };
-  // Map<String, dynamic> deleteTeamResponse = await GameCommand()
-  //     .deleteGame(gameObject["user"]["_id"], gameObject["_id"]);
+  Map<String, dynamic> removeTeamResponse = await TeamCommand()
+      .removeTeam(teamObject["_id"]);
   // print("deleteTeamResponse: $deleteTeamResponse");
   // if (deleteTeamResponse["success"]) {
   //   deleteTeamResp["success"] = true;
@@ -116,6 +116,8 @@ class _TeamCard extends State<TeamCard> {
                       titleText: 'Are you sure you want to delete this team?',
                       contentText: '',
                       onPositiveClick: () {
+                        Navigator.of(context).pop();
+                        removeTeam(widget.teamObject);
                        
                       },
                       onNegativeClick: () {
