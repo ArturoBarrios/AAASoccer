@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../components/profile.dart';
+import '../../services/adapty_payment_service.dart';
 
 class PickupView extends StatefulWidget {
   const PickupView(
@@ -21,10 +22,14 @@ class _PickupViewState extends State<PickupView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
-  
-
 
   bool _isLoading = false;
+
+
+
+  void purchaseEvent() async{
+    await AdaptyPaymentService().makePurchase();
+  }
 
   void goBack(){
     Navigator.pop(context);
@@ -65,6 +70,11 @@ class _PickupViewState extends State<PickupView> {
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Home'),
         ),                
+        GestureDetector(
+            onTap: () {
+              purchaseEvent();
+            },
+            child: Text("Pay for Event")),
         GestureDetector(
             onTap: () {
               goBack();

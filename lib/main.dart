@@ -113,7 +113,7 @@ void main() async {
       print("Accepted permission: $accepted");
   });
    
-   
+  //  AdaptyService().configureAdapty();
     Adapty().activate();
     Adapty().setLogLevel(AdaptyLogLevel.verbose);
     print("adapty set!!!!");
