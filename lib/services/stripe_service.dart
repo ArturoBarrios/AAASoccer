@@ -10,7 +10,7 @@ import '../models/ModelProvider.dart';
 import '../commands/user_command.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';
-import 'package:flutter_stripe/flutter_stripe.dart'; 
+// import 'package:flutter_stripe/flutter_stripe.dart'; 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // Pay Plugin support
 // flutter_stripe fully supports the Pay 
@@ -35,40 +35,47 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class StripeServices extends BaseCommand {
 
-  Future<void> initPaymentSheet() async {
-    try {
-      // 1. create payment intent on the server
-      final data = await _createTestPaymentSheet();
+//   Future<void> initPaymentSheet() async {
+//     try {
+//       // 1. create payment intent on the server
+//       final data = await _createTestPaymentSheet();
 
-      // 2. initialize the payment sheet
-     await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          // Enable custom flow
-          customFlow: true,
-          // Main params
-          merchantDisplayName: 'Flutter Stripe Store Demo',
-          paymentIntentClientSecret: data['paymentIntent'],
-          // Customer keys
-          customerEphemeralKeySecret: data['ephemeralKey'],
-          customerId: data['customer'],
-          // Extra options
-          testEnv: true,
-          applePay: true,
-          googlePay: true,
-          style: ThemeMode.dark,
-          merchantCountryCode: 'DE',
-        ),
-      );
-      setState(() {
-        _ready = true;
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-      rethrow;
-    }
-}
+//       // 2. initialize the payment sheet
+//      await Stripe.instance.initPaymentSheet(
+//         paymentSheetParameters: SetupPaymentSheetParameters(
+//           // Enable custom flow
+//           customFlow: true,
+//           // Main params
+//           merchantDisplayName: 'Flutter Stripe Store Demo',
+//           paymentIntentClientSecret: data['paymentIntent'],
+//           // Customer keys
+//           customerEphemeralKeySecret: data['ephemeralKey'],
+//           customerId: data['customer'],
+//           // Extra options
+//           testEnv: true,
+//           applePay: true,
+//           googlePay: true,
+//           style: ThemeMode.dark,
+//           merchantCountryCode: 'DE',
+//         ),
+//       );
+//       setState(() {
+//         _ready = true;
+//       });
+//     } catch (e) {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(content: Text('Error: $e')),
+//       );
+//       rethrow;
+//     }
+// }
+
+
+
+  void createPaymentMethod() async {
+    // final paymentMethod =
+    //               await Stripe.instance.createPaymentMethod(PaymentMethodParams.card());
+  }
 
 
   Future<Map<String, dynamic>> configureStripe() async {

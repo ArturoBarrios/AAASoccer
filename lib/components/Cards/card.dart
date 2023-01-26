@@ -30,7 +30,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
     "message": "Pickup deleted successfully"
   };
   Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .deleteGame(gameObject["event"]["_id"], gameObject["_id"]);
+      .archiveGame(gameObject["event"]["_id"], gameObject["_id"]);
   print("deletePickupResponse: $deletePickupResponse");
   if (deletePickupResponse["success"]) {
     deletePickupResp["success"] = true;
