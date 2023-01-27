@@ -10,7 +10,7 @@ import '../models/ModelProvider.dart';
 import '../commands/user_command.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';
-// import 'package:flutter_stripe/flutter_stripe.dart'; 
+import 'package:flutter_stripe/flutter_stripe.dart'; 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // Pay Plugin support
 // flutter_stripe fully supports the Pay 
@@ -70,24 +70,103 @@ class StripeServices extends BaseCommand {
 //     }
 // }
 
+// Future<void> makePayment() async {
+//     try {
+//       //STEP 1: Create Payment Intent
+//       paymentIntent = await createPaymentIntent('100', 'USD');
+
+//       //STEP 2: Initialize Payment Sheet
+//       await Stripe.instance
+//           .initPaymentSheet(
+            
+//               paymentSheetParameters: SetupPaymentSheetParameters(
+//                   paymentIntentClientSecret: paymentIntent![
+//                       'client_secret'], //Gotten from payment intent
+//                   style: ThemeMode.light,
+//                   merchantDisplayName: 'Ikay'))
+//           .then((value) {});
+
+//       //STEP 3: Display Payment sheet
+//       displayPaymentSheet();
+//     } catch (err) {
+//       throw Exception(err);
+//     }
+//   }
 
 
-  void createPaymentMethod() async {
+// createPaymentIntent(String amount, String currency) async {
+//     try {
+//       //Request body
+//       Map<String, dynamic> body = {
+//         'amount': calculateAmount(amount),
+//         'currency': currency,
+//       };
+
+//       //Make post request to Stripe
+//       var response = await http.post(
+//         Uri.parse('https://api.stripe.com/v1/payment_intents'),
+//         headers: {
+//           'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET']}',
+//           'Content-Type': 'application/x-www-form-urlencoded'
+//         },
+//         body: body,
+//       );
+//       return json.decode(response.body);
+//     } catch (err) {
+//       throw Exception(err.toString());
+//     }
+//   }
+
+//   displayPaymentSheet() async {
+//     try {
+//       await Stripe.instance.presentPaymentSheet().then((value) {
+        
+//         //Clear paymentIntent variable after successful payment
+//         paymentIntent = null;
+      
+//       })
+//       .onError((error, stackTrace) {
+//         throw Exception(error);
+//       });
+//     } 
+//     on StripeException catch (e) {
+//     print('Error is:---> $e'); 
+//     } 
+//     catch (e) {
+//       print('$e');
+//     }
+//   }
+
+
+//   void addServerSideEndpoint(){
+
+//   }
+
+  Future<void> testPayment() async {
+    await createPaymentMethod();
+  }
+
+  
+
+  
+
+  Future<void> createPaymentMethod() async {
     // final paymentMethod =
     //               await Stripe.instance.createPaymentMethod(PaymentMethodParams.card());
   }
 
 
-  Future<Map<String, dynamic>> configureStripe() async {
-    print("configureStripe");
-    Map<String, dynamic> configureStripeResp = {"success": false, "message": "Default Error"};
+
+//   Future<Map<String, dynamic>> configureStripe() async {
+//     print("configureStripe");
+//     Map<String, dynamic> configureStripeResp = {"success": false, "message": "Default Error"};
     
-    try {
-      // Add the following line to add Auth plugin to your app.
+//     try {
+//       // Add the following line to add Auth plugin to your app.
       
     
-        configureStripeResp["success"] =  true;
-        configureStripeResp["message"] = "Stripe Configured";   
+//         configureStripeResp["success"] =  true;
+//         configureStripeResp["message"] = "Stripe Configured";   
         
         
       
@@ -95,12 +174,12 @@ class StripeServices extends BaseCommand {
 
       
       
-    } on Exception catch (e) {
-      print('An error occurred configuring Amplify: $e');
-    }
+//     } on Exception catch (e) {
+//       print('An error occurred configuring Amplify: $e');
+//     }
 
-    return configureStripeResp;
-  }
+//     return configureStripeResp;
+//   }
 
   
 

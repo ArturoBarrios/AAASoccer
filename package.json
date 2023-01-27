@@ -13,5 +13,8 @@
     "@graphql-cli/similar": "2.1.0",
     "@graphql-cli/validate": "2.1.0",
     "graphql-cli": "^4.1.1-alpha-c4d6521.0"
+  },
+  "dependencies": {
+    "stripe": "^11.8.0"
   }
 }

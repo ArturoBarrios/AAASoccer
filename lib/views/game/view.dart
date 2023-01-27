@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../components/profile.dart';
 import '../../services/adapty_payment_service.dart';
+import '../../components/payment_screen.dart';
+import '../../components/card_form_screen.dart';
 
 class PickupView extends StatefulWidget {
   const PickupView(
@@ -28,7 +30,11 @@ class _PickupViewState extends State<PickupView> {
 
 
   void purchaseEvent() async{
-    await AdaptyPaymentService().makePurchase();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CardFormScreen()),
+    );    
+    // await AdaptyPaymentService().makePurchase();
   }
 
   void goBack(){
@@ -58,8 +64,9 @@ class _PickupViewState extends State<PickupView> {
           ),
         ],
       ),
-      body: Center(
-          child: Column(children: [
+      body: 
+      Center(
+          child: Column(children: [            
         TextField(
           readOnly: !widget.isMyEvent,
           controller: nameController,
@@ -80,7 +87,7 @@ class _PickupViewState extends State<PickupView> {
               goBack();
             },
             child: Text("Back to Home")),
-      ])),
+      ])),      
     );
   }
 }

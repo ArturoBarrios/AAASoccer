@@ -41,7 +41,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'firebase_options.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'package:flutter_stripe/flutter_stripe.dart'; 
+import 'package:flutter_stripe/flutter_stripe.dart'; 
 
 
 
@@ -121,7 +121,10 @@ void main() async {
     // Adapty().setLogLevel(AdaptyLogLevel.verbose);
     // print("adapty set!!!!");
       print("set publishable key: "+dotenv.env['STRIPE_PUBLISHABLE_KEY']!);
-    //  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+      Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+      Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+      Stripe.urlScheme = 'flutterstripe';
+      await Stripe.instance.applySettings();
     // try{
     //   await Adapty().activate();
     // } on AdaptyError catch (AdaptyError) {}

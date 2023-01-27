@@ -2,6 +2,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/event_command.dart';
+import '../../components/payment_screen.dart';
 
 class EventCreate extends StatefulWidget {
   @override
