@@ -60,6 +60,8 @@ dependencies:
   geolocator: ^9.0.2
   geocoding: ^2.0.5
   flutter_stripe: ^7.0.0
+  flutter_bloc: ^8.1.1
+  equatable: ^2.0.5
 
   
   
