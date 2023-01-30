@@ -15,6 +15,7 @@ import '../models/User.dart';
 import '../commands/user_command.dart';
 import '../commands/player_command.dart';
 import '../commands/event_command.dart';
+import '../models/payment_model.dart';
 import '../services/geolocation_services.dart';
 import '../services/twilio_services.dart';
 import '../services/onesignal_service.dart';
@@ -33,6 +34,7 @@ void init(BuildContext c) => _mainContext = c;
 class BaseCommand {
   // Models
   UserModel userModel = _mainContext.read();
+  PaymentModel paymentModel = _mainContext.read();  
   AppModel appModel = _mainContext.read();
   EventsModel eventsModel = _mainContext.read();  
   GamesModel gamesModel = _mainContext.read();  

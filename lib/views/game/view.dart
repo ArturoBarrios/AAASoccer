@@ -59,7 +59,8 @@ class _PickupViewState extends State<PickupView> {
                 builder: (BuildContext context) {
                   return Profile();
                 },
-              ));
+              )
+              );
             },
           ),
         ],
@@ -79,7 +80,12 @@ class _PickupViewState extends State<PickupView> {
         ),                
         GestureDetector(
             onTap: () {
-              purchaseEvent();
+              // purchaseEvent();
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return CardFormScreen();
+                },
+              ));
             },
             child: Text("Pay for Event")),
         GestureDetector(
