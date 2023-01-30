@@ -28,7 +28,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   ) async{
     emit(state.copyWith(status: PaymentStatus.loading));
 
-    final paymentMethod = await Stripe.instance.createPaymentMethod(
+     final paymentMethod = await Stripe.instance.createPaymentMethod(
      params: PaymentMethodParams.card(
         paymentMethodData: 
           PaymentMethodData(billingDetails: event.billingDetails),

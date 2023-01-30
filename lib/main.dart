@@ -15,6 +15,7 @@ import 'commands/event_command.dart';
 import 'models/app_model.dart';
 import 'models/user_model.dart';
 import 'models/events_model.dart';
+import 'models/payment_model.dart';
 import 'models/requests_model.dart';
 import 'models/requests_page_model.dart';
 import 'models/friends_page_model.dart';
@@ -371,6 +372,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (c) => RequestsPageModel()),
           ChangeNotifierProvider(create: (c) => FriendsPageModel()),
           ChangeNotifierProvider(create: (c) => HomePageModel()),
+          ChangeNotifierProvider(create: (c) => PaymentModel()),
           Provider(create: (c) => FaunaDBServices()),          
           Provider(create: (c) => GeoLocationServices()),
           
