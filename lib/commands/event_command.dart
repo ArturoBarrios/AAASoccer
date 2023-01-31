@@ -124,7 +124,7 @@ class EventCommand extends BaseCommand {
       List<String> phones = [];
       for (var i = 0; i < eventUserOrganizers.length; i++) {
         String toUserId = eventUserOrganizers[i]['_id'];
-        if(appModel.currentUser['_id'] == toUserId){
+        if (appModel.currentUser['_id'] == toUserId) {
           isYourEvent = true;
         }
         Map<String, dynamic> organizerUserInput = {"user_id": toUserId};
@@ -167,12 +167,13 @@ class EventCommand extends BaseCommand {
       print("responseee body: ");
       print(jsonDecode(response.body));
 
-      dynamic createEventRequest = jsonDecode(response.body)['data']['createEventRequest'];
+      dynamic createEventRequest =
+          jsonDecode(response.body)['data']['createEventRequest'];
       print("createEventRequest: " + createEventRequest.toString());
       //check if it's from the same user
       //updateEventRequest if it is
-      print("check if isYourEvent: "+ isYourEvent.toString());
-      if(isYourEvent ){       
+      print("check if isYourEvent: " + isYourEvent.toString());
+      if (isYourEvent) {
         print("isYourEvent");
         Map<String, dynamic> eventRequestInput = {
           "_id": createEventRequest['_id'],
@@ -182,7 +183,7 @@ class EventCommand extends BaseCommand {
             "_id": gameInput['event']['_id'],
           }
         };
-        //get event 
+        //get event
         await RequestsCommand().updateEventRequests(eventRequestInput);
       }
 
@@ -194,8 +195,6 @@ class EventCommand extends BaseCommand {
       };
       await NotificationsCommand().sendOrganizerRequestNotification(
           sendOrganizerRequestNotificationInput);
-
-      
 
       sendOrganizerEventRequestResponse["success"] = true;
       sendOrganizerEventRequestResponse["message"] = "Event Request Created";
@@ -222,8 +221,7 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': GameQueries().getGame(
-              eventRequest['game_id']),
+          'query': GameQueries().getGame(eventRequest['game_id']),
         }),
       );
     }
@@ -347,9 +345,43 @@ class EventCommand extends BaseCommand {
     return getEventResp;
   }
 
-  //setupSelections() should be function name
-  //pass userInput to check if you have to refetch user
-  //if dynamic null, refetch user
+  Future<Map<String, dynamic>> createPrice(dynamic paymentInput, dynamic eventInput) async {
+    print("createPrice()");
+    Map<String, dynamic> createPriceResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations()
+              .createPrice(paymentInput, eventInput),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      Map<String, dynamic> createdPayment = jsonDecode(response.body)['data']['createPrice'];
+      print("createdPayment: " + createdPayment.toString());
+      createPriceResp["success"] = true;
+      createPriceResp["message"] = "Payment Created";
+      createPriceResp["data"] = createdPayment;
+
+      return createPriceResp;
+
+    } on Exception catch (e) {
+      print("Mutation failed: $e");
+      return createPriceResp;
+    }
+
+  }
+
   Future<Map<String, dynamic>> setupEvents(dynamic user) async {
     print("setupEvents()()");
     print("user: " + user.toString());
@@ -370,12 +402,14 @@ class EventCommand extends BaseCommand {
       print("length of games: " + games.length.toString());
       //add games to eventsModel
       //filter out archived games
-      Map<String, dynamic> filteredGamesResp = await GameCommand().filterGames(games);
+      Map<String, dynamic> filteredGamesResp =
+          await GameCommand().filterGames(games);
 
       eventsModel.games = filteredGamesResp['activeEvents'];
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
       eventsModel.events.addAll(games);
-      homePageModel.selectedObjects = json.decode(json.encode(filteredGamesResp['activeEvents']));
+      homePageModel.selectedObjects =
+          json.decode(json.encode(filteredGamesResp['activeEvents']));
       print("length of games: " + games.length.toString());
     }
     Map<String, dynamic> getLeaguesNearLocationResp =
@@ -506,7 +540,7 @@ class EventCommand extends BaseCommand {
 
     return addGameResp;
   }
-  
+
   Future<Map<String, dynamic>> removeEvent(
       Map<String, dynamic> event, bool updateViewModelsBool) async {
     Map<String, dynamic> removeEventResp = {
@@ -514,7 +548,6 @@ class EventCommand extends BaseCommand {
       "message": "Default Error",
       "data": []
     };
-    
 
     print("length of events before removing events: ");
     print(eventsModel.events.length);
