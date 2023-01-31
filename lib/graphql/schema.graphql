@@ -390,8 +390,7 @@ type Rating   {
   event: Event
 }
 
-type Price   {
-  id: ID!
-  amount: String
+type Price   {  
+  amount: String @default(value: "0")
   event: Event
 }

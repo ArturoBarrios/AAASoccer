@@ -35,7 +35,7 @@ Future<Map<String, dynamic>> archivePickup(dynamic gameObject) async {
     "message": "Pickup deleted successfully"
   };
   Map<String, dynamic> archivePickupResponse = await GameCommand()
-      .archiveGame(gameObject["_id"], gameObject["games"]["data"][0]["_id"]);
+      .archiveGame(gameObject['event']['_id'], gameObject["_id"]);
   print("archivePickupResponse: $archivePickupResponse");
   if (archivePickupResponse["success"]) {
     archivePickupResp["success"] = true;
@@ -125,7 +125,7 @@ class _PickupCard2 extends State<PickupCard2> {
                     onPressed: () {
                       print("inside container onPressed");
                     })),
-                  if(widget.isMyEvent)                                        
+                  // if(widget.isMyEvent)                                        
                     GestureDetector(
                       onTap: () {
                         showAnimatedDialog(
@@ -139,7 +139,8 @@ class _PickupCard2 extends State<PickupCard2> {
                                 Navigator.of(context).pop();
                                 //delete event aaa
                                 print(widget.eventObject.toString());
-                                removePickup(widget.eventObject);
+                                archivePickup(widget.eventObject);
+                                // removePickup(widget.eventObject);
                               },
                               onNegativeClick: () {
                                 Navigator.of(context).pop();

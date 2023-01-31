@@ -36,9 +36,11 @@ class _GameCreateState extends State<GameCreate> {
     };
     try {
       var rng = Random();
+      print("priceee: "+priceController.text.toString());
       Map<String, dynamic> eventInput = {        
         "name": "Pickup Game " + rng.nextInt(100000000).toString(),
         'isMainEvent': true,        
+        'price':  int.parse(priceController.text.toString())
       };
 
       Map<String, dynamic> randomPickupData = EventSeeder().getRandomPickupGameData();      

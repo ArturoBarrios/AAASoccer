@@ -9,9 +9,17 @@ class GameQueries {
               event{
                   name        	
                   _id  
-                  type
+                  type                  
                   archived
                   deleted    
+                  price{                    
+                    _id
+                    amount
+                    event{
+                      _id
+                      name                      
+                    }
+                  }
                   location{
                     data{
                     _id
@@ -55,6 +63,14 @@ class GameQueries {
                   type
                   archived
                   deleted    
+                  price{                    
+                    _id
+                    amount
+                    event{
+                      _id
+                      name                      
+                    }
+                  }
                   location{
                     data{
                     _id

@@ -147,36 +147,51 @@ class GameCommand extends BaseCommand {
       print("appModel.currentUser['_id']: ");
       print(appModel.currentUser['_id']);
       eventInput['type'] = EventType.GAME;
+      eventInput['price'] = eventInput['price']*100;
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
       };      
+        print("eventtttttttttt input: "+eventInput.toString());
+        http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
 
-      print("eventtttttttttt input: "+eventInput.toString());
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
+          body: jsonEncode(<String, String>{
+            'query':
+                GameMutations().createGame(gameInput, eventInput, locationInput, userInput),
+          }),
+        );
+        print("response body: ");
+        print(jsonDecode(response.body));
+        Map<String, dynamic> createdGame =
+            jsonDecode(response.body)['data']['createGame'];
+        await EventCommand().addGame(createdGame, true);
+        eventInput['_id'] = createdGame['event']['_id'];
+    //todo add error handling here, if game is not created, dont create price, etc
+      Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+      print("create price event input: "+ eventInput.toString());
+      print("create price input: " + paymentInput['price'].toString());
+      Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
+      print("createPaymentResp: "+createPriceResp.toString());
+      // if(createPriceResp['success']==true){        
+        print("Price created for game; in if data: "+createPriceResp['data'].toString());
+        dynamic payment = createPriceResp['data'];
+        
+        // EventsModel().games.add(createdGame);
 
-        body: jsonEncode(<String, String>{
-          'query':
-              GameMutations().createGame(gameInput, eventInput, locationInput, userInput),
-        }),
-      );
-      print("response body: ");
-      print(jsonDecode(response.body));
-      Map<String, dynamic> createdGame =
-          jsonDecode(response.body)['data']['createGame'];
-      await EventCommand().addGame(createdGame, true);
-      // EventsModel().games.add(createdGame);
+        createGameResponse["success"] = true;
+        createGameResponse["message"] = "Game Created";
+        createGameResponse["data"] =
+        jsonDecode(response.body)['data']['createGame'];
 
-      createGameResponse["success"] = true;
-      createGameResponse["message"] = "Game Created";
-      createGameResponse["data"] =
-          jsonDecode(response.body)['data']['createGame'];
+      // }
+        return createGameResponse;
+      
 
-      return createGameResponse;
+
     } on Exception catch (e) {
       print('Mutation failed: $e');
       return createGameResponse;

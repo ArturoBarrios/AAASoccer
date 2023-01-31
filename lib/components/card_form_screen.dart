@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
+import 'package:soccermadeeasy/models/app_model.dart';
 import '../services/stripe_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../enums/PaymentType.dart';
@@ -44,9 +45,11 @@ Widget paymentWidgetToShow(PaymentType status){
                       (controller.details.complete)
                         ? 
                         PaymentCommand().createPaymentIntent(
-                          const PaymentCreateIntent(
+                           PaymentCreateIntent(
                               billingDetails: BillingDetails(
-                                email: 'testingflutter@dev.com'
+                                email: 'soccerapp357@gmail.com',
+                                name: AppModel().currentUser['name'],
+                                phone: AppModel().currentUser['phone'],
                               ),
                               items: [
                                 {'id': 0},
