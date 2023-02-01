@@ -333,6 +333,28 @@ class _Home extends State<Home> {
         backgroundColor: Colors.orange.shade500,
         actions: <Widget>[
           IconButton(
+            icon: const Icon(Icons.notifications_active),
+            tooltip: 'Notifications',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Profile();
+                },
+              ));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.message),
+            tooltip: 'Messages',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Profile();
+                },
+              ));
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.account_circle),
             tooltip: 'Go to the next page',
             onPressed: () {
