@@ -7,6 +7,7 @@ import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../views/player/view.dart';
+import '../../views/send_player_request_view.dart';
 
 class FriendCard extends StatefulWidget {
   const FriendCard(
@@ -106,7 +107,32 @@ class _FriendCard extends State<FriendCard> {
                         "test subtitle", //widget.friendObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
-                    })),            
+                    })),  
+                GestureDetector(
+                  onTap: () {
+                    //potentially show dialogue
+                    //with different request options
+                    showAnimatedDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return SendPlayerRequestView(playerObject: widget.friendObject);
+                      },
+                      animationType: DialogTransitionType.scale,
+                      curve: Curves.fastOutSlowIn,
+                      duration: Duration(seconds: 1),
+                    );
+                    // UserCommand().sendFriendRequest(                    
+                    //     widget.playerObject['user']
+                    // );
+                  },
+                  child: Container(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: const Icon(Icons.rocket_launch_rounded)
+                    ),
+                  ),
+                ),          
             GestureDetector(
               onTap: () {
                 UserCommand().removeFriend(widget.friendObject);

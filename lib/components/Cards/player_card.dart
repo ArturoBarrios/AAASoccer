@@ -7,6 +7,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../models/app_model.dart';
 import '../../commands/user_command.dart';
 import '../../views/player/view.dart';
+import '../../views/send_player_request_view.dart';
 
 class PlayerCard extends StatefulWidget {
   const PlayerCard(
@@ -97,9 +98,19 @@ class _PlayerCard extends State<PlayerCard> {
               onTap: () {
                 //potentially show dialogue
                 //with different request options
-                UserCommand().sendFriendRequest(                    
-                    widget.playerObject['user']
+                showAnimatedDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) {
+                    return SendPlayerRequestView(playerObject: widget.playerObject);
+                  },
+                  animationType: DialogTransitionType.scale,
+                  curve: Curves.fastOutSlowIn,
+                  duration: Duration(seconds: 1),
                 );
+                // UserCommand().sendFriendRequest(                    
+                //     widget.playerObject['user']
+                // );
               },
               child: Container(
                 child: ClipRRect(

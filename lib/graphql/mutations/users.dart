@@ -220,14 +220,11 @@ class UserMutations {
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String removeGameString = """      
       mutation {
-        updateUser(id: ${userInput['_id']},
-  				data: {            
+        updateUser(id: ${userInput['_id']},  				         
             friends: {
               disconnect: 
-                "${friendInput['_id']}"                                                                                 
-              
-            }             
-          }                      
+                "${friendInput['_id']}"                                                                                               
+            }                                           
         ){
          _id      
               name        	

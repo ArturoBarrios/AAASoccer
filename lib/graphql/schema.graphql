@@ -344,24 +344,23 @@ type Image   {
 }
 
 type GifContent   {
-  id: ID!
+  gifUrl: String
 }
 
 type TextContent   {
-  id: ID!
+  textContent: String
 }
 
-type Message   {
-  id: ID!
-  text: String
-  gif: String
-  image: String
-  chat: String
+type Message   {  
+  textObject: TextContent
+  gifObject: GifContent
+  imageObject: Image
+  chatObject: Chat #belongs to chat
 }
 
 type Chat   {
   id: ID!
-  messages: String
+  messages: Message @relation #has many messages
 }
 
 type AppSubscription   {
