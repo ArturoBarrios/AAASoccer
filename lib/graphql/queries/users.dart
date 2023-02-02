@@ -44,7 +44,18 @@ class UserQueries {
                   _id
                   name
                 }
-              }              
+              } 
+              sentMessages{
+                data{
+                  _id
+                }
+                
+              }      
+              chats{
+                data{
+                  _id
+                }
+              }                 
               friendRequests{
                 data{
                   _id
@@ -132,7 +143,29 @@ class UserQueries {
                   _id
                   name
                 }
-              }              
+              }     
+              sentMessages{
+                data{
+                  _id
+                }
+                
+              }      
+              chats{
+                data{
+                  _id
+                }
+              }    
+              sentMessages{
+                data{
+                  _id
+                }
+                
+              }      
+              chats{
+                data{
+                  _id
+                }
+              }    
               friendRequests{
                 data{
                   _id
@@ -217,7 +250,18 @@ class UserQueries {
                   _id
                   name
                 }
-              }              
+              }      
+              sentMessages{
+                data{
+                  _id
+                }
+                
+              }      
+              chats{
+                data{
+                  _id
+                }
+              }            
               friendRequests{
                 data{
                   _id
