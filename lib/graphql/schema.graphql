@@ -111,6 +111,7 @@ type OrganizerRequest {
 
 
 type User  {  
+  customerId: String
   userType: UserType
   OSPID: String
   name: String
@@ -133,7 +134,7 @@ type User  {
   last_updated: Int
   images: [Image] @relation
   events: [Event] @relation    
-  eventUserOrganizers: [EventUserOrganizers] @relation  
+  eventUserOrganizers: [EventUserOrganizers] @relation   
   teamUserOrganizers: [TeamUserOrganizers] @relation  
   eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
   eventRequestsAcceptedBy: [EventRequest] @relation(name: "event_requests_acceptedBy")
@@ -144,6 +145,8 @@ type User  {
   teamRequestsToAccept: [TeamRequest] @relation(name: "team_requests_to_accept")
   teamRequestsSent: [TeamRequest] @relation(name: "team_requests_sent")
   teamRequestsAccepted: [TeamRequest] @relation(name: "team_requests_acceptedBy")
+  chats: [Chat] @relation
+  sentMessages: [Message] @relation
 
 }
 
@@ -351,16 +354,17 @@ type TextContent   {
   textContent: String
 }
 
-type Message   {  
+type Message {  
+  chatObject: Chat #belongs to chat
   textObject: TextContent
   gifObject: GifContent
   imageObject: Image
-  chatObject: Chat #belongs to chat
+  sender: User  
 }
 
-type Chat   {
-  id: ID!
+type Chat  {  
   messages: Message @relation #has many messages
+  users: [User] @relation
 }
 
 type AppSubscription   {

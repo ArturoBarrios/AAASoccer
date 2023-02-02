@@ -25,6 +25,8 @@ import '../components/Cards/friend_card.dart';
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
 import '../enums/EventType.dart';
+//views
+import '../views/chat/view.dart';
 //commands
 import '../commands/home_page_command.dart';
 import '../commands/tournament_command.dart';
@@ -139,25 +141,26 @@ class _Home extends State<Home> {
   List eventsList = [];
   List eventsEnabledList = [];
 
+  //pretty sure this is obsolete now
   void _firstLoad() async {
-    setState(() {
-      _isFirstLoadRunning = true;
-    });
-    try {
-      final res =
-          await http.get(Uri.parse("$_baseUrl?_page=$_page&_limit=$_limit"));
-      setState(() {
-        getEventCards();
-        // _posts = json.decode(res.body);
-      });
-    } catch (err) {
-      print("error");
-      print(err);
-    }
+    // setState(() {
+    //   _isFirstLoadRunning = true;
+    // });
+    // try {
+    //   final res =
+    //       await http.get(Uri.parse("$_baseUrl?_page=$_page&_limit=$_limit"));
+    //   setState(() {
+    //     getEventCards();
+    //     // _posts = json.decode(res.body);
+    //   });
+    // } catch (err) {
+    //   print("error");
+    //   print(err);
+    // }
 
-    setState(() {
-      _isFirstLoadRunning = false;
-    });
+    // setState(() {
+    //   _isFirstLoadRunning = false;
+    // });
   }
 
   // The controller for the ListView
@@ -338,7 +341,7 @@ class _Home extends State<Home> {
             onPressed: () {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
-                  return Profile();
+                  return ChatView();
                 },
               ));
             },
@@ -349,7 +352,7 @@ class _Home extends State<Home> {
             onPressed: () {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
-                  return Profile();
+                  return ChatView();
                 },
               ));
             },
