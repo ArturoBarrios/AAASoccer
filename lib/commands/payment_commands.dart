@@ -41,8 +41,7 @@ class PaymentCommand extends BaseCommand {
         currency: 'usd', 
         items: event.items,
       );
-      print("paymentIntentResults: " + paymentIntentResults.toString());
-
+      print("paymentIntentResults: " + paymentIntentResults.toString());      
 
       if(paymentIntentResults['error'] != null) {
         paymentModel.status = PaymentType.failure;        
@@ -104,7 +103,11 @@ class PaymentCommand extends BaseCommand {
          'email': "a@a.com",
           'amount': "1000",
         });
+        
+
       print("return value: "+ response.toString());
+      // get customerId from response
+      
       return json.decode(response.body);
 
     } on FormatException catch(e) {

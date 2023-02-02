@@ -18,7 +18,29 @@ class CardFormScreen extends StatefulWidget {
 }
 
 class _CardFormScreen extends State<CardFormScreen> {
+void createPaymentIntent()async {
+  print("createPaymentIntent");
+  Map<String, dynamic> createPaymentIntentResp = await PaymentCommand().createPaymentIntent(
+                           PaymentCreateIntent(
+                              billingDetails: BillingDetails(
+                                email: 'soccerapp357@gmail.com',
+                                name: AppModel().currentUser['name'],
+                                phone: AppModel().currentUser['phone'],
+                              ),
+                              items: [
+                                {'id': 0},
+                                {'id': 1}
+                              ],
+                            ),                        
+                  );
 
+  print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
+  if(createPaymentIntentResp['success']){
+    //add customer
+  }
+
+
+}
 Widget paymentWidgetToShow(PaymentType status){
   print("PaymentType status to show: "+status.name);
   CardFormEditController controller = CardFormEditController(
@@ -32,7 +54,7 @@ Widget paymentWidgetToShow(PaymentType status){
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Card Form', 
+                    'Card Formm', 
                     style: Theme.of(context).textTheme.headline5
                   ),
                   const SizedBox(height: 20),
@@ -44,19 +66,8 @@ Widget paymentWidgetToShow(PaymentType status){
                     onPressed: () {
                       (controller.details.complete)
                         ? 
-                        PaymentCommand().createPaymentIntent(
-                           PaymentCreateIntent(
-                              billingDetails: BillingDetails(
-                                email: 'soccerapp357@gmail.com',
-                                name: AppModel().currentUser['name'],
-                                phone: AppModel().currentUser['phone'],
-                              ),
-                              items: [
-                                {'id': 0},
-                                {'id': 1}
-                              ],
-                            ),                        
-                  )
+                        createPaymentIntent()
+                        
                    
 
                         // context.read<PaymentBloc>().add(
