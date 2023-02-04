@@ -6,10 +6,11 @@ import '../../components/card_form_screen.dart';
 
 class PickupView extends StatefulWidget {
   const PickupView(
-    {Key? key, required this.isMyEvent })
+    {Key? key, required this.isMyEvent, required this.game })
     : super(key: key);
 
     final bool isMyEvent;
+    final dynamic game;
 
 
   @override
@@ -32,7 +33,7 @@ class _PickupViewState extends State<PickupView> {
   void purchaseEvent() async{
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CardFormScreen()),
+      MaterialPageRoute(builder: (context) => CardFormScreen(priceObject: widget.game['event'])),
     );    
     // await AdaptyPaymentService().makePurchase();
   }
@@ -83,7 +84,10 @@ class _PickupViewState extends State<PickupView> {
               // purchaseEvent();
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
-                  return CardFormScreen();
+                  return CardFormScreen(priceObject: 
+                  widget.game['event']!=null ?
+                   widget.game['event']['price'] : 
+                   widget.game['price'] );
                 },
               ));
             },

@@ -28,13 +28,6 @@ class _ChatViewState extends State<ChatView> {
 
 
 
-  void purchaseEvent() async{
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CardFormScreen()),
-    );    
-    // await AdaptyPaymentService().makePurchase();
-  }
 
   void goBack(){
     Navigator.pop(context);

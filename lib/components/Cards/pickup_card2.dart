@@ -13,9 +13,9 @@ import '../../assets/icons/plus.svg';
 
 class PickupCard2 extends StatefulWidget {
   const PickupCard2(
-      {Key? key, required this.eventObject, required this.svgImage, required this.isMyEvent })
+      {Key? key, required this.gameObject, required this.svgImage, required this.isMyEvent })
       : super(key: key);
-  final Map<String, dynamic> eventObject;
+  final Map<String, dynamic> gameObject;
   final Svg svgImage;
   final bool isMyEvent;
   final double bevel = 10.0;
@@ -70,8 +70,8 @@ class _PickupCard2 extends State<PickupCard2> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-    print("widget name: ");
-    print(widget.eventObject.toString());
+    print("widget nameeeeee: ");
+    print(widget.gameObject.toString());
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -79,7 +79,7 @@ class _PickupCard2 extends State<PickupCard2> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PickupView(isMyEvent: widget.isMyEvent);
+            return PickupView(isMyEvent: widget.isMyEvent, game: widget.gameObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -118,10 +118,11 @@ class _PickupCard2 extends State<PickupCard2> {
             Container(
                 child: InnerNeumorphicCardFb1(
                   //todo IDK you may have to change this.....
-                    text: widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'],
+                    text: widget.gameObject['event']['name'], //widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'],
                     svgImage: widget.svgImage,
-                    subtitle:
-                        widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'], //widget.eventObject['description'],
+                    subtitle: widget.gameObject['event']['name']
+                        //widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'], //widget.eventObject['description'],
+                        ,
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -138,8 +139,8 @@ class _PickupCard2 extends State<PickupCard2> {
                               onPositiveClick: () {
                                 Navigator.of(context).pop();
                                 //delete event aaa
-                                print(widget.eventObject.toString());
-                                archivePickup(widget.eventObject);
+                                print(widget.gameObject.toString());
+                                archivePickup(widget.gameObject);
                                 // removePickup(widget.eventObject);
                               },
                               onNegativeClick: () {
@@ -169,8 +170,8 @@ class _PickupCard2 extends State<PickupCard2> {
             tooltip: 'Go to the next page',
             onPressed: () {
               //send event request
-              print("send event request for event: : ${widget.eventObject}");
-              EventCommand().sendOrganizerEventRequest(widget.eventObject);                
+              print("send event request for event: : ${widget.gameObject}");
+              EventCommand().sendOrganizerEventRequest(widget.gameObject['event']);                
             },
           ),
             // GestureDetector(

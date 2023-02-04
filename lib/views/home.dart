@@ -248,10 +248,10 @@ class _Home extends State<Home> {
     print("selectedObject: " + selectedObject.toString());
 
     
-    Widget card = PickupCard2(eventObject: selectedObject, svgImage: svgImage, isMyEvent: false);
+    Widget card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: false);
 
     if(selectedKey==Constants.PICKUP){
-      card = PickupCard2(eventObject: selectedObject, svgImage: svgImage, isMyEvent: false);
+      card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: false);
     }
     else if(selectedKey==Constants.TRAINING){
       card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage);
@@ -283,7 +283,7 @@ class _Home extends State<Home> {
       print("testing EventType.GAME===Game.type ");
     print(EventType.GAME.name.toString()==selectedObject['type'].toString());          
       if(selectedObject['type'].toString() == EventType.GAME.name.toString()){
-        card = PickupCard2(eventObject: selectedObject, svgImage: svgImage, isMyEvent: true);
+        card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: true);
       }
     }
 

@@ -12,9 +12,14 @@ import '../commands/payment_commands.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
-  @override
-  _CardFormScreen createState() => _CardFormScreen();
+  const CardFormScreen(
+    {Key? key, required this.priceObject})
+    : super(key: key);
+
+    final dynamic priceObject;  
   
+    @override
+    _CardFormScreen createState() => _CardFormScreen();  
 }
 
 class _CardFormScreen extends State<CardFormScreen> {
@@ -121,7 +126,12 @@ Widget paymentWidgetToShow(PaymentType status){
 
 }
 
-
+@override
+  void initState() {
+    super.initState();
+    print("card form screen initState()");
+    print("widget.priceObject: "+widget.priceObject.toString());
+  }
 
 
  
