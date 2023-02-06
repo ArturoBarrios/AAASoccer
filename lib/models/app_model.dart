@@ -36,6 +36,7 @@ class AppModel extends ChangeNotifier {
     _onesignalUserDetailsSetup = onesignalUserDetailsSetup;
     notifyListeners();
   } 
+    
   
   
   

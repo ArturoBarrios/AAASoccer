@@ -84,10 +84,10 @@ class _PickupViewState extends State<PickupView> {
               // purchaseEvent();
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
-                  return CardFormScreen(priceObject: 
-                  widget.game['event']!=null ?
-                   widget.game['event']['price'] : 
-                   widget.game['price'] );
+                  return CardFormScreen(
+                    priceObject:                   
+                      widget.game['event']['price'] 
+                   );
                 },
               ));
             },

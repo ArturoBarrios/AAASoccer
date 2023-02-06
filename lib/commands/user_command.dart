@@ -52,6 +52,47 @@ class UserCommand extends BaseCommand {
       return updateUserResponse;
     }
   }
+  
+  Future<Map<String, dynamic>> createUserCustomer(
+      Map<String, dynamic> userInput,
+      Map<String, dynamic> stripeCustomerInput
+      ) async {
+    print("createUserCustomer");
+    print("userInput: "+userInput.toString());
+    Map<String, dynamic> updateUserResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations()
+              .createUserStripeCustomer(userInput, stripeCustomerInput),
+        }),
+      );   
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      Map<String, dynamic> user =
+          jsonDecode(response.body)['data']['createStripeCustomer'];
+
+      updateUserResponse["success"] = true;
+      updateUserResponse["message"] = "User Updated";
+      updateUserResponse["data"] = user;
+
+      return updateUserResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return updateUserResponse;
+    }
+  }
 
   Future<Map<String, dynamic>> updateUserLogin(String email) async {
     Map<String, dynamic> updateUserResponse = {

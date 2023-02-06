@@ -23,8 +23,10 @@ class CardFormScreen extends StatefulWidget {
 }
 
 class _CardFormScreen extends State<CardFormScreen> {
+
 void createPaymentIntent()async {
   print("createPaymentIntent");
+  print("priceObject in CardFormScreen: "+widget.priceObject.toString());  
   Map<String, dynamic> createPaymentIntentResp = await PaymentCommand().createPaymentIntent(
                            PaymentCreateIntent(
                               billingDetails: BillingDetails(
@@ -35,13 +37,17 @@ void createPaymentIntent()async {
                               items: [
                                 {'id': 0},
                                 {'id': 1}
-                              ],
-                            ),                        
+                              ]
+                            ),          
+                            widget.priceObject                                     
                   );
 
   print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
   if(createPaymentIntentResp['success']){
-    //add customer
+    //move on to next screen
+    print("move on to next screen");
+    Navigator.pop(context);
+
   }
 
 
