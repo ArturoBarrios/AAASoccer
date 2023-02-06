@@ -3,6 +3,7 @@ import '../../components/profile.dart';
 import '../../services/adapty_payment_service.dart';
 import '../../components/payment_screen.dart';
 import '../../components/card_form_screen.dart';
+import '../../views/chat/create.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class ChatView extends StatefulWidget {
@@ -89,7 +90,7 @@ class _ChatViewState extends State<ChatView> {
                 context: context,
                 barrierDismissible: true,
                 builder: (BuildContext context) {
-                  return Profile();
+                  return ChatCreate();
                 },
                 animationType: DialogTransitionType.slideFromBottom,
                 curve: Curves.fastOutSlowIn,
