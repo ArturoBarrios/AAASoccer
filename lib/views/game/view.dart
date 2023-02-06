@@ -91,7 +91,7 @@ class _PickupViewState extends State<PickupView> {
                 },
               ));
             },
-            child: Text("Pay for Event")),
+            child: Text("Join Event")),
         GestureDetector(
             onTap: () {
               goBack();

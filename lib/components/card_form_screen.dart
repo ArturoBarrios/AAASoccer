@@ -137,6 +137,8 @@ Widget paymentWidgetToShow(PaymentType status){
     super.initState();
     print("card form screen initState()");
     print("widget.priceObject: "+widget.priceObject.toString());
+    //todo check if customer exists, if so show credit card options. 
+    
   }
 
 
