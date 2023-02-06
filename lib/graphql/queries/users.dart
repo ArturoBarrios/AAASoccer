@@ -6,9 +6,9 @@ class UserQueries {
               _id      
               name        	
               phone
-              email
+              email              
               username
-              birthdate
+              birthdate              
               gender
               OSPID
               location{
@@ -32,6 +32,12 @@ class UserQueries {
                   }
 
                 }                
+              }
+              stripeCustomers{
+                data{
+                  _id
+                  customerId
+                }
               }
               friends{                                
                   _id
@@ -114,7 +120,7 @@ class UserQueries {
               phone
               email
               username
-              birthdate
+              birthdate              
               gender
               OSPID
               location{
@@ -137,6 +143,12 @@ class UserQueries {
                   name
                   email     
                   OSPID           
+              }
+              stripeCustomers{
+                data{
+                  _id
+                  customerId
+                }
               }
               teams{
                 data{

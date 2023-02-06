@@ -108,10 +108,13 @@ type OrganizerRequest {
   requestAttempts: Int @default(value: 0)
 }
 
-
+type StripeCustomer {
+  customerId: String
+  user: User
+}
 
 type User  {  
-  customerId: String
+  stripeCustomers: [StripeCustomer] @relation
   userType: UserType
   OSPID: String
   name: String

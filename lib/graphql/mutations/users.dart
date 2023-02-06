@@ -33,6 +33,35 @@ class UserMutations {
     return sendFriendRequestString;
   }
 
+
+
+
+ 
+  String createUserStripeCustomer(Map<String, dynamic> userInput, Map<String, dynamic> customerInput) {
+    String updateUserString = """      
+      mutation {
+        createStripeCustomer(data: {
+          customerId: "${customerInput['customerId']}", 
+          user: {
+            connect: "${userInput['_id']}"            
+          } 
+          }) {
+            _id
+            customerId
+    				user{
+              _id
+              name
+              email
+            }
+            
+          }   
+        }
+        """;
+
+    return updateUserString;
+  }
+
+
   String updateUser(Map<String, dynamic> userInput) {
     String updateUserString = """      
       mutation {
@@ -138,6 +167,8 @@ class UserMutations {
 
     return addFriendString;
   }
+
+
 
   String addEvent(
       Map<String, dynamic> userInput, Map<String, dynamic> eventInput) {

@@ -12,14 +12,21 @@ import '../commands/payment_commands.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
-  @override
-  _CardFormScreen createState() => _CardFormScreen();
+  const CardFormScreen(
+    {Key? key, required this.priceObject})
+    : super(key: key);
+
+    final dynamic priceObject;  
   
+    @override
+    _CardFormScreen createState() => _CardFormScreen();  
 }
 
 class _CardFormScreen extends State<CardFormScreen> {
+
 void createPaymentIntent()async {
   print("createPaymentIntent");
+  print("priceObject in CardFormScreen: "+widget.priceObject.toString());  
   Map<String, dynamic> createPaymentIntentResp = await PaymentCommand().createPaymentIntent(
                            PaymentCreateIntent(
                               billingDetails: BillingDetails(
@@ -30,13 +37,17 @@ void createPaymentIntent()async {
                               items: [
                                 {'id': 0},
                                 {'id': 1}
-                              ],
-                            ),                        
+                              ]
+                            ),          
+                            widget.priceObject                                     
                   );
 
   print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
   if(createPaymentIntentResp['success']){
-    //add customer
+    //move on to next screen
+    print("move on to next screen");
+    Navigator.pop(context);
+
   }
 
 
@@ -121,7 +132,12 @@ Widget paymentWidgetToShow(PaymentType status){
 
 }
 
-
+@override
+  void initState() {
+    super.initState();
+    print("card form screen initState()");
+    print("widget.priceObject: "+widget.priceObject.toString());
+  }
 
 
  
