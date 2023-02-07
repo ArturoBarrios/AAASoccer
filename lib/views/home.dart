@@ -283,7 +283,10 @@ class _Home extends State<Home> {
       print("testing EventType.GAME===Game.type ");
     print(EventType.GAME.name.toString()==selectedObject['type'].toString());          
       if(selectedObject['type'].toString() == EventType.GAME.name.toString()){
-        card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: true);
+        //get game object first
+        dynamic gameObject = selectedObject['games']['data'][0];        
+        gameObject['event'] = selectedObject;
+        card = PickupCard2(gameObject: gameObject, svgImage: svgImage, isMyEvent: true);
       }
     }
 

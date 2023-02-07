@@ -127,8 +127,7 @@ class GameCommand extends BaseCommand {
       return createToResponse;
     }    
 
-  }
-
+  }  
 
 //create
   Future<Map<String, dynamic>> createGame(
