@@ -11,6 +11,7 @@ class GameQueries {
                   _id  
                   type                  
                   archived
+                  isMainEvent
                   deleted    
                   price{                    
                     _id

@@ -1,8 +1,11 @@
+import 'dart:math';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/training_command.dart';
 import '../../commands/event_command.dart';
+import '../../testing/seeding/event_seeder.dart';
+import '../../components/headers.dart';
 
 class TrainingCreate extends StatefulWidget {
   @override
@@ -30,38 +33,26 @@ class _TrainingCreateState extends State<TrainingCreate> {
       "message": "Default Error"
     };
     try {
-      Map<String, dynamic> createEventInput = {
-        "name": nameController.text.trim(),
-        "price": priceController.text.trim(),
-        "location": locationController.text.trim(),
-        "images": imagesController.text.trim(),
-        "type": "EventType.TRAINING",
+      var rng = Random();
+       Map<String, dynamic> eventInput = {        
+        "name": "Training " + rng.nextInt(100000000).toString(),
+        'isMainEvent': true,        
+        'price':  "10"//int.parse(priceController.text.toString())
       };
 
-      Map<String, dynamic> createdEvent =
-          await EventCommand().createEvent(createEventInput);
-    print("createdEvent: ");
-    print(createdEvent['data']);
-      if (createdEvent['success']) {
-        Map<String, dynamic> createTrainingInput = {
-          
-          
-          "trainingEventId": createdEvent['data'].id
-        };
-        Map<String, dynamic> eventInput = {
+      Map<String, dynamic> randomPickupData = EventSeeder().getRandomTrainingData();      
+      Map<String, dynamic> locationInput = {
+        "latitude": 39.9526,
+        "longitude": 75.1652,
+      };
+      print("locationInputCheck: " + locationInput.toString());  
 
-        };
-        Map<String, dynamic> createdTraining = {
-          "success": false,
-          "message": "Default Error"
-        };            
-
-        if (createdTraining['success']) {
-          createEventResponse['success'] = true;
-        }
-      }
+      Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(randomPickupData, eventInput, locationInput);                                      
+      print("createTrainingResp: "+ createTrainingResp.toString());
+                    
       return createEventResponse;
-    } on ApiException catch (e) {
+      }
+       on ApiException catch (e) {
       return createEventResponse;
     }
   }
@@ -69,6 +60,7 @@ class _TrainingCreateState extends State<TrainingCreate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: Headers().getMainHeader(context),
       body: Center(
           child: Column(children: [
         TextField(

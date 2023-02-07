@@ -14,6 +14,7 @@ import '../graphql/queries/games.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
+import '../../commands/payment_commands.dart';
 import '../../models/types_models.dart';
 
 class GameCommand extends BaseCommand {
@@ -175,11 +176,6 @@ class GameCommand extends BaseCommand {
       print("create price input: " + paymentInput['price'].toString());
       Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
       print("createPaymentResp: "+createPriceResp.toString());
-      // if(createPriceResp['success']==true){        
-        print("Price created for game; in if data: "+createPriceResp['data'].toString());
-        dynamic payment = createPriceResp['data'];
-        
-        // EventsModel().games.add(createdGame);
 
         createGameResponse["success"] = true;
         createGameResponse["message"] = "Game Created";

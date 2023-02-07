@@ -100,6 +100,7 @@ class PaymentCommand extends BaseCommand {
     return createPaymentIntentResp;
 
   }
+  
 
   bool doesCustomerExist(String customerId){
     print("checkIfCustomerExists");
@@ -190,8 +191,11 @@ class PaymentCommand extends BaseCommand {
         Uri.parse(
             'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest'),
         body: {    
-         'email': appModel.currentUser['email'],
+          'email': appModel.currentUser['email'],
           'amount': priceInput['amount'],
+          'paymentMethodId': paymentMethodId,
+          
+          
         
         });
         
@@ -208,6 +212,32 @@ class PaymentCommand extends BaseCommand {
       return {};
     }
   }
+
+  Future<Map<String, dynamic>> createPrice(dynamic eventInput) async{
+    
+    Map<String, dynamic> createPriceResp = {
+      "success": false,
+      "message": "",
+      "data": null
+    };    
+
+    try{
+        Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+      print("create price event input: "+ eventInput.toString());
+      print("create price input: " + paymentInput['price'].toString());
+      Map<String, dynamic> createPrice = await EventCommand().createPrice(paymentInput, eventInput);
+      print("createPrice resp: "+createPrice.toString());
+      createPriceResp['data'] = createPrice['data'];
+
+      return createPriceResp;
+    } on Exception catch (e) {
+      print('Mutation failed: $e'); 
+      return createPriceResp; 
+    }
+    
+  }
+
+
 
 
 }

@@ -20,7 +20,8 @@ class _LeagueViewState extends State<LeagueView> {
 
   void goBack(){
     Navigator.pop(context);
-  }
+  }  
+
 
   @override
   Widget build(BuildContext context) {

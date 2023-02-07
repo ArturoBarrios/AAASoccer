@@ -11,7 +11,7 @@ import '../components/select_icon_button.dart';
 import '../components/search_field.dart';
 import '../components/Dialogues/animated_dialogue.dart';
 import '../components/profile.dart';
-import '../components/header.dart';
+import '../components/headers.dart';
 //card widgets
 import '../components/Cards/pickup_card2.dart';
 import '../components/Cards/player_card.dart';
@@ -21,6 +21,7 @@ import '../components/Cards/tournament_card.dart';
 import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
 import '../components/Cards/friend_card.dart';
+
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
@@ -331,48 +332,7 @@ class _Home extends State<Home> {
       print("selectedKey in build: " + selectedKey);
 
     return (Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: new Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Text("Find Soccer Near You")),
-        backgroundColor: Colors.orange.shade500,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.notifications_active),
-            tooltip: 'Notifications',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return ChatView();
-                },
-              ));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.message),
-            tooltip: 'Messages',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return ChatView();
-                },
-              ));
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return Profile();
-                },
-              ));
-            },
-          ),
-        ],
-      ),
+      appBar: Headers().getMainHeader(context),
       body: 
       // _isFirstLoadRunning
       //     ? const Center(

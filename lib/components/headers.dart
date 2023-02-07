@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import '../components/profile.dart';
+import '../../views/chat/view.dart';
 
-class Header extends StatefulWidget {
-  const Header({Key? key}) : super(key: key);
+class Headers extends StatefulWidget {
+  const Headers({Key? key}) : super(key: key);
 
   @override
-  State<Header> createState() => _Header();
+  State<Headers> createState() => _Headers();
 
 
-  
-}
-
-AppBar getHeader(){
+AppBar getMainHeader(BuildContext context){
   AppBar appBar = AppBar(
         centerTitle: false,
         title: new Padding(
@@ -20,14 +18,36 @@ AppBar getHeader(){
         backgroundColor: Colors.orange.shade500,
         actions: <Widget>[
           IconButton(
+            icon: const Icon(Icons.notifications_active),
+            tooltip: 'Notifications',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return ChatView();
+                },
+              ));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.message),
+            tooltip: 'Messages',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return ChatView();
+                },
+              ));
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.account_circle),
             tooltip: 'Go to the next page',
             onPressed: () {
-              // Navigator.push(context, MaterialPageRoute<void>(
-              //   builder: (BuildContext context) {
-              //     return Profile();
-              //   },
-              // ));
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Profile();
+                },
+              ));
             },
           ),
         ],
@@ -35,8 +55,11 @@ AppBar getHeader(){
 
       return appBar;
 }
+  
+}
 
-class _Header extends State<Header> {
+
+class _Headers extends State<Headers> {
   void onTapMenu(){
 
   }

@@ -31,8 +31,12 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
         //Creates a new payment intent with amount passed in from the client
         const paymentIntent = await stripe.paymentIntents.create({
             amount: parseInt(req.body.amount),
-            currency: "usd",
+            confirm: true,
+            currency: "usd",//todo: use currency
             customer: customerId,
+            payment_method_types: ['card'],
+            payment_method: req.body.paymentMethodId,
+            use_stripe_sdk: true,            
             
         })
 

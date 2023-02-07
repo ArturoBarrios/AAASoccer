@@ -1,5 +1,5 @@
 class TrainingMutations{
-  String createTraining(Map<String, dynamic> trainingInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput) {
+  String createTraining(Map<String, dynamic> trainingInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
     String createTraining = """
       mutation {
         createTraining(data: {                    
@@ -7,30 +7,66 @@ class TrainingMutations{
             create: 
             {
               name: "${eventInput['name']}",
-              isMainEvent: ${eventInput ['isMainEvent']},
+              type: TRAINING,
+              archived: false,
+              isMainEvent:true,
+              eventUserOrganizers: {
+                create:
+                  {
+                    users: {
+                      connect:[                        
+                          "${userInput['_id']}"                   
+                      ]
+                    }                    
+                  }                                     
+              },                    
               location: {
                 create: 
                 {
                   latitude: ${locationInput['latitude']},
-                  longitude: ${locationInput ['longitude']},
+                  longitude: ${locationInput['longitude']},
                 }
               }
             }
-          } 
-          }) {
+          }
+        }) {
             _id                       
-            event{
-              _id
-              name
-              isMainEvent
-              location{
-                data{
-                  _id
-                  latitude
-                  longitude
+           event{
+                  name        	
+                  _id  
+                  type                  
+                  archived
+                  deleted    
+                  price{                    
+                    _id
+                    amount
+                    event{
+                      _id
+                      name                      
+                    }
+                  }
+                  location{
+                    data{
+                    _id
+                    latitude
+                    longitude
+                    }
+                  }
+                  eventUserOrganizers{                    
+                      users{
+                        data{
+                          _id
+                          name
+                        }
+                      }    
+                      event{                        
+                          _id
+                          name  
+                          archived
+                          deleted                      
+                      }                
+                    }
                 }
-              }     
-            } 
           }   
         }
         """;

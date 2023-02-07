@@ -68,8 +68,8 @@ class GameMutations {
                           archived
                           deleted                      
                       }                
-                  }
-              }  
+                    }
+                }  
 
             
           }   

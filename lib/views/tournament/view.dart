@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
 class TournamentView extends StatefulWidget {
+  const TournamentView(
+    {Key? key, required this.isMyEvent, required this.tournament })
+    : super(key: key);
+
+  final bool isMyEvent;
+  final dynamic tournament;
+
   @override
   _TournamentViewState createState() => _TournamentViewState();
 }
@@ -24,6 +31,7 @@ class _TournamentViewState extends State<TournamentView> {
 
   @override
   Widget build(BuildContext context) {
+    print("TournamentView build() widget.tournament: "+ widget.tournament.toString());
     return Scaffold(
       body: Center(
           child: Column(children: [
