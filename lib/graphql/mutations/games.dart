@@ -32,21 +32,46 @@ class GameMutations {
             }
           } 
           }) {
-            _id
-            pickup            
-            event{
-              _id
-              name
-              type
-              isMainEvent
-              location{
-                data{
-                  _id
-                  latitude
-                  longitude
-                }
-              }     
-            } 
+             _id
+              pickup
+              event{
+                  name        	
+                  _id  
+                  type                  
+                  archived
+                  deleted    
+                  price{                    
+                    _id
+                    amount
+                    event{
+                      _id
+                      name                      
+                    }
+                  }
+                  location{
+                    data{
+                    _id
+                    latitude
+                    longitude
+                    }
+                  }
+                  eventUserOrganizers{                    
+                      users{
+                        data{
+                          _id
+                          name
+                        }
+                      }    
+                      event{                        
+                          _id
+                          name  
+                          archived
+                          deleted                      
+                      }                
+                  }
+              }  
+
+            
           }   
         }
         """;
