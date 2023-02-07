@@ -48,14 +48,16 @@ class PaymentCommand extends BaseCommand {
       if(paymentIntentResults['error'] != null) {
         paymentModel.status = PaymentType.failure;        
       }
-
+      print("paymentIntentResults['requiresAction']: "+ paymentIntentResults['requiresAction'].toString());
       if(paymentIntentResults['clientSecret'] != null &&
         paymentIntentResults['requiresAction'] == null){
+        print("doesn't requires action!");
         paymentModel.status = PaymentType.success;                
       }
 
       if(paymentIntentResults['clientSecret'] != null &&
       paymentIntentResults['requiresAction'] == true){
+        print("requires action!");
         final String clientSecret = paymentIntentResults['clientSecret'];
         PaymentConfirmIntent(clientSecret: clientSecret);        
       }
@@ -63,12 +65,17 @@ class PaymentCommand extends BaseCommand {
       //create Payment and StripeCustomer objects
       if(paymentIntentResults['success'] && 
         paymentIntentResults['customer'] != null){
+          //
+
+
+          // _onPaymentConfirmIntent(event)
           Map<String, dynamic> userInput = {
             '_id': appModel.currentUser['_id'],
           };
           
           Map<String, dynamic> stripeCustomerInput = {
             'customerId': paymentIntentResults['customer'],
+            'ephemeralKey': paymentIntentResults['ephemeralKey'],
           };
           print("check if customer exists: " + paymentIntentResults['customer'].toString());
           if(!doesCustomerExist(paymentIntentResults['customer'])){
@@ -76,6 +83,8 @@ class PaymentCommand extends BaseCommand {
             Map<String, dynamic> createUserCustomerResp = await UserCommand().createUserCustomer(userInput, stripeCustomerInput);
             print("createUserCustomerResp: " + createUserCustomerResp.toString());
           }
+
+          UserCommand().addEvent(userInput, priceInput['event']);
 
 
         }
@@ -108,7 +117,48 @@ class PaymentCommand extends BaseCommand {
   }
 
   
- 
+ void _onPaymentConfirmIntentId(
+    PaymentConfirmIntent event
+  ) async {
+    try{
+      final paymentIntent = await Stripe.instance.handleNextAction(event.clientSecret);
+
+      if(paymentIntent.status == PaymentIntentsStatus.RequiresConfirmation){
+        Map<String, dynamic> results = await _callPayEndpointIntentId(
+          paymentIntentId: paymentIntent.id,
+        );
+        if(results['error'] != null){
+        
+        }else{
+        
+        }
+
+      }
+
+    } on Exception catch (e) {
+      print('Mutation failed: $e');  
+    }
+
+  }
+
+  Future<Map<String, dynamic>> _callPayEndpointIntentId({
+    required String paymentIntentId
+  }) async {
+    final url = Uri.parse("https://us-central1-soccer-app-a9060.cloudfunctions.net/StripePayEndpointIntentId");
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(
+        {
+          'paymentIntentId': paymentIntentId,
+        }
+      )
+    );
+    return json.decode(response.body);
+  }
+
+
+
 
   Future<Map<String, dynamic>> _callPayEndpointMethodId({
     required bool useStripeSdk,
@@ -126,8 +176,7 @@ class PaymentCommand extends BaseCommand {
       print("priceInput: " + priceInput.toString());
       final url = Uri.parse("https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest");
       // final response = await http.post(
-      //   url,
-      //   headers: {'Content-Type': 'application/json'},
+      //   url,        
       //   body: 
       //     {
       //       'useStripeSdk': useStripeSdk,
@@ -140,17 +189,18 @@ class PaymentCommand extends BaseCommand {
       final response = await http.post(
         Uri.parse(
             'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest'),
-        body: {          
+        body: {    
          'email': appModel.currentUser['email'],
           'amount': priceInput['amount'],
-        //  'email': "a@a.com",
-          // 'amount': "1000",
+        
         });
         
 
       print("return value: "+ response.toString());
       // get customerId from response
       
+      
+
       return json.decode(response.body);
 
     } on FormatException catch(e) {
