@@ -328,7 +328,7 @@ type Tournament   {
   # event: Event
   events: [Event] @relation
   numberOfTeams: Int
-  # eligibleEventTypes: [EventType] @relation
+  # eligibleEventTypes: [EventType] @relation  
 }
 
 type Training   {  

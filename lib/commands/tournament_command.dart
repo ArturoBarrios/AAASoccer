@@ -128,7 +128,8 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
           Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
           Map<String, dynamic> eventInput = {
             "name": "Game: ${bergerTable[i][k]['game']}",
-            "isMainEvent": false
+            "isMainEvent": false,
+            "price": 200,
           };
           Map<String, dynamic> gameInput = {
             "pickup": false,
