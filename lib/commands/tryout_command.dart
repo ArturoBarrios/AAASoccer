@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:geolocator/geolocator.dart';
 import '../commands/geolocation_command.dart';
 import '../graphql/queries/tryouts.dart';
+import '../commands/event_command.dart';
 
 class TryoutCommand extends BaseCommand {
 
@@ -51,12 +52,17 @@ Future<Map<String, dynamic>> getTryoutsNearLocation() async{
       Map<String, dynamic> tryoutInput,
       Map<String, dynamic> eventInput, Map<String, dynamic> locationInput) async {
     print("createTryout");
+    print("tryoutInput: "+tryoutInput.toString());
+    print("eventInput: "+eventInput.toString());
     Map<String, dynamic> createTryoutResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
     try {
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };   
      
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -65,12 +71,23 @@ Future<Map<String, dynamic>> getTryoutsNearLocation() async{
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': TryoutMutations().createTryout(tryoutInput, eventInput, locationInput),
+          'query': TryoutMutations().createTryout(tryoutInput, eventInput, locationInput, userInput),
         }),
       );
 
       print("response body: ");
       print(jsonDecode(response.body));
+      Map<String, dynamic> createdTryout =
+            jsonDecode(response.body)['data']['createTryout'];
+      await EventCommand().addGame(createdTryout, true);
+
+
+      eventInput['_id'] = createdTryout['event']['_id'];
+      Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+      print("create price event input: "+ eventInput.toString());
+      print("create price input: " + paymentInput['price'].toString());
+      Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
+      print("createPaymentResp: "+createPriceResp.toString());
         
         createTryoutResponse["success"] = true;
         createTryoutResponse["message"] = "Game Created";

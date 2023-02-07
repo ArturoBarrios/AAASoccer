@@ -35,7 +35,7 @@ class _TournamentCard extends State<TournamentCard> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-    print("widget name: ");
+    print("tournament_card widget name: ");
     print(widget.tournamentObject.toString());
     return Listener(
         child: GestureDetector(
@@ -44,7 +44,7 @@ class _TournamentCard extends State<TournamentCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TournamentView();
+            return TournamentView(isMyEvent: false, tournament: widget.tournamentObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

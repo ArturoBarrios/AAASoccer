@@ -45,7 +45,7 @@ class _TrainingCard extends State<TrainingCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TrainingView();
+            return TrainingView(isMyEvent: false, training: widget.trainingObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

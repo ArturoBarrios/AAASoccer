@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../components/headers.dart';
 
 class TrainingView extends StatefulWidget {
+  const TrainingView(
+    {Key? key, required this.isMyEvent, required this.training })
+    : super(key: key);
+
+    final bool isMyEvent;
+    final dynamic training;
+
   @override
   _TrainingViewState createState() => _TrainingViewState();
 }
@@ -24,7 +32,10 @@ class _TrainingViewState extends State<TrainingView> {
 
   @override
   Widget build(BuildContext context) {
+    print("TrainingView build() widget.training: "+ widget.training.toString());
+
     return Scaffold(
+      appBar: Headers().getMainHeader(context),
       body: Center(
           child: Column(children: [
         TextField(
