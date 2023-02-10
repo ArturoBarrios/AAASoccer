@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../models/friends_page_model.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
+import '../../components/headers.dart';
 
 class FriendsView extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _FriendsViewState extends State<FriendsView> {
     Map<String, dynamic> getCurrentUserResp = await UserCommand().getCurrentUserByEmail();
     print("getCurrentUserRespResp: " + getCurrentUserResp.toString());
     if (getCurrentUserResp['success']) {
-      List friends = getCurrentUserResp['data']['friends'];
+      List friends = getCurrentUserResp['data']['friends']['data'];
       UserCommand().updateFriendsPageModel(friends);
     }
     Map<String, dynamic> getPlayersNearLocationResp = await PlayerCommand().getPlayersNearLocation();
@@ -75,26 +76,7 @@ class _FriendsViewState extends State<FriendsView> {
         .select<FriendsPageModel, String>((value) => value.selectedKey);
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: new Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Text("Find Soccer Near You")),
-        backgroundColor: Colors.orange.shade500,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return Profile();
-                },
-              ));
-            },
-          ),
-        ],
-      ),
+      appBar: Headers().getMainHeader(context),
       body: 
       Stack(children: <Widget>[
               Column(

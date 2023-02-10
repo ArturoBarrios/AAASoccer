@@ -48,11 +48,16 @@ class UserQueries {
                   type
                 }
               }
-              friends{                                
+              friends{   
+                data{
                   _id
-                  name
-                  email   
-                  OSPID             
+                  user{
+                    _id
+                    name
+                    email   
+                    OSPID                
+                  }                  
+                }                  
               }
               teams{
                 data{

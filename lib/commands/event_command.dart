@@ -469,8 +469,8 @@ class EventCommand extends BaseCommand {
     //currentUser is setup by this point. Either from login,
     // or getting user again at top of function
     print("friends: ");
-    print(appModel.currentUser['friends']);
-    appModel.friends = appModel.currentUser['friends'];
+    print(appModel.currentUser['friends']['data']);
+    appModel.friends = appModel.currentUser['friends']['data'];
     appModel.myEvents = appModel.currentUser['events']['data'];
 
     return setupEventsResp;

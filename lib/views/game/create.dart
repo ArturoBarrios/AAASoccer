@@ -3,11 +3,13 @@ import 'dart:math';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import '../../components//address_search.dart';
 import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
+
 
 class GameCreate extends StatefulWidget {
   @override
@@ -106,8 +108,18 @@ class _GameCreateState extends State<GameCreate> {
           decoration: new InputDecoration.collapsed(hintText: 'Home'),
         ),
         TextField(
+          controller: locationController,
+          decoration: new InputDecoration.collapsed(hintText: 'Location'),
+          onTap: () async {
+            showSearch(
+              context: context,
+              delegate: AddressSearch(),
+            );
+          }
+        ),
+        TextField(
           controller: awayteamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Away'),
+          decoration: new InputDecoration.collapsed(hintText: 'Away'),          
         ),
         TextField(
           controller: isPickupController,
@@ -128,10 +140,6 @@ class _GameCreateState extends State<GameCreate> {
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),
-        ),
-        TextField(
-          controller: locationController,
-          decoration: new InputDecoration.collapsed(hintText: 'Location'),
         ),
         TextField(
           controller: imagesController,

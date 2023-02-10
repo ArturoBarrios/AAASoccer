@@ -302,12 +302,11 @@ class UserCommand extends BaseCommand {
 
     try {
       print("removeFriend in try");
+      print("friendInput: "+ friendInput.toString());
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id']
       };
-      Map<String, dynamic> eventInput = {
-        "_id": friendInput['_id']
-      };
+     
 
       http.Response response = await http.post(
       Uri.parse('https://graphql.fauna.com/graphql'),
@@ -316,7 +315,7 @@ class UserCommand extends BaseCommand {
         'Content-Type': 'application/json'
       },
       body: jsonEncode(<String, String>{
-        'query': UserMutations().removeFriend(userInput, eventInput),
+        'query': UserMutations().removeFriend(userInput, friendInput),
       }),
     );
 

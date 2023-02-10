@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../components/profile.dart';
-import '../../services/adapty_payment_service.dart';
 import '../../components/payment_screen.dart';
 import '../../components/card_form_screen.dart';
 

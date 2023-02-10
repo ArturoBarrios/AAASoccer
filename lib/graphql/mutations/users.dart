@@ -86,10 +86,16 @@ class UserMutations {
                   type
                 }
               }
-              friends{                
+              friends{   
+                data{
                   _id
-                  name
-                  email                
+                  user{
+                    _id
+                    name
+                    email   
+                    OSPID                
+                  }                  
+                }                  
               }
               teams{
                 data{
@@ -143,30 +149,67 @@ class UserMutations {
     return updateUserString;
   }
 
+//   String addFriend(
+//       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
+//     String addFriendString = """      
+//       mutation {
+//         updateUser(id: ${userInput['_id']},
+//   				data: {            
+//             friends:   {
+//               connect: [
+//                 ${friendInput['_id']}                                                                                 
+//               ]
+
+//             }           
+//           }                      
+//         ){
+//         _id
+//         name
+//         email
+//         friends{   
+//                 data{
+//                   user{
+//                     _id
+//                     name
+//                     email   
+//                     OSPID                
+//                   }                  
+//                 }                  
+//               }                                     			
+//   }
+// }
+//         """;
+
+//     return addFriendString;
+//   }
+  
   String addFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String addFriendString = """      
       mutation {
-        updateUser(id: ${userInput['_id']},
+       createUserLink(
   				data: {            
-            friends:              
-              ${friendInput['_id']}                                                                                 
+            user:   {              
+              connect: 
+                 ${userInput['_id']}                                                                                                                                                                                              
+            }           
           }                      
         ){
         _id
-        name
-        email
-        friends{          
-            _id
-            name
-            email          
-        }                                        			
+    		user{
+          _id
+          name
+          email
+          OSPID
+        }        
   }
 }
         """;
 
     return addFriendString;
   }
+
+  
 
 
 
@@ -251,96 +294,16 @@ class UserMutations {
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String removeGameString = """      
       mutation {
-        updateUser(id: ${userInput['_id']},  				         
-            friends: {
-              disconnect: 
-                "${friendInput['_id']}"                                                                                               
-            }                                           
-        ){
-         _id      
-              name        	
-              phone
-              email
-              username
-              birthdate
-              gender
-              OSPID
-              location{
-                _id
-                latitude
-                longitude
-              }
-              events{
-                data{
-                  _id
-                  archived
-                  deleted
-                  name
-                  isMainEvent
-                  type
-                  games{
-                    data{
-                      _id
-                      pickup
-                    }
-                  }
+        deleteUserLink(id: "${friendInput['_id']}",         
+          
+          
+          ) {
+             _id
+             
 
-                }                
-              }
-              friends{                                
-                  _id
-                  name
-                  email   
-                  OSPID             
-              }
-              teams{
-                data{
-                  _id
-                  name
-                }
-              }              
-              friendRequests{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                  receiver{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }
-              eventRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  event{
-                    _id
-                    name
-                  }
-                }
-              } 
-              teamRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  team{
-                    _id
-                    name
-                  }
-                }
-              }           
-                                              			
-  }
-}
+            
+          }   
+        }
         """;
 
     return removeGameString;
@@ -389,11 +352,16 @@ class UserMutations {
 
                 }                
               }
-              friends{                                
+             friends{   
+                data{
                   _id
-                  name
-                  email   
-                  OSPID             
+                  user{
+                    _id
+                    name
+                    email   
+                    OSPID                
+                  }                  
+                }                  
               }
               teams{
                 data{
@@ -473,10 +441,16 @@ class UserMutations {
                   type
                 }
               }
-              friends{                
+             friends{   
+                data{
                   _id
-                  name
-                  email                
+                  user{
+                    _id
+                    name
+                    email   
+                    OSPID                
+                  }                  
+                }                  
               }
               teams{
                 data{
