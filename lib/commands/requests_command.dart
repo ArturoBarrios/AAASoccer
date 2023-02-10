@@ -371,25 +371,35 @@ class RequestsCommand extends BaseCommand {
       Map<String, dynamic> friendInput = {
         "_id": friendRequestInput['sender']['_id'],
       };      
-      await UserCommand().addFriend(userInput, friendInput);
+      Map<String, dynamic> createUserLink = await UserCommand().addFriend(userInput, friendInput);
+      print("createUserLink: " + createUserLink.toString());
+      if(createUserLink['success']){
+        //add friend
+        dynamic newFriend = createUserLink['data']['user'];
+        appModel.currentUser['friends'].add(newFriend);
+        //get sender information for push notification
+        Map<String, dynamic> findFriendRequestResp = await findFriendRequest(friendRequestInput);   
+        print("findFriendRequestResp: " + findFriendRequestResp.toString());  
+        if(findFriendRequestResp['success'] == true){
+          // prepare notification data
+          print("prepare notification data");
+          Map<String, dynamic> sender = findFriendRequestResp['data']['sender'];
+          print("sender: "+ sender.toString());
+          List<String> phones = [sender['phone']];
+          List<String> OSPIDs = [sender['OSPID']];
+          Map<String, dynamic> sendSenderRequestNotificationInput = {
+            "phones": phones,
+            "message": appModel.currentUser['name'] + " has accepted your friend request",
+            "OSPIDs": OSPIDs
+          };
+          await NotificationsCommand().sendAcceptedRequestNotification(sendSenderRequestNotificationInput);
+        } 
 
-       //get sender information for push notification
-      Map<String, dynamic> findFriendRequestResp = await findFriendRequest(friendRequestInput);   
-      print("findFriendRequestResp: " + findFriendRequestResp.toString());  
-      if(findFriendRequestResp['success'] == true){
-        // prepare notification data
-        print("prepare notification data");
-        Map<String, dynamic> sender = findFriendRequestResp['data']['sender'];
-        print("sender: "+ sender.toString());
-        List<String> phones = [sender['phone']];
-        List<String> OSPIDs = [sender['OSPID']];
-        Map<String, dynamic> sendSenderRequestNotificationInput = {
-          "phones": phones,
-          "message": appModel.currentUser['name'] + " has accepted your friend request",
-          "OSPIDs": OSPIDs
-        };
-        await NotificationsCommand().sendAcceptedRequestNotification(sendSenderRequestNotificationInput);
-      } 
+      }
+
+
+
+
     
 
 

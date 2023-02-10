@@ -281,10 +281,15 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
+      print("update currentUser friends");
+      print("currentUser: " + appModel.currentUser.toString());
+
+            
+
       addFriendResponse["success"] = true;
       addFriendResponse["message"] = "Player for Team Created";
       addFriendResponse["data"] =
-          jsonDecode(response.body)['data']['updateUser'];
+          jsonDecode(response.body)['data']['createUserLink'];
     } catch (e) {
       print("error");
     }
@@ -318,6 +323,18 @@ class UserCommand extends BaseCommand {
         'query': UserMutations().removeFriend(userInput, friendInput),
       }),
     );
+
+    //find the friend in the currentUser friends list
+    dynamic friends = appModel.currentUser['friends']['data'];
+    print("friends: " + friends.toString());
+    for(int i = 0; i < friends.length; i++){
+      print("friends[i]['user']: " + friends[i]['user'].toString());      
+      if(friends[i]['user'] == friendInput['user']['_id']){
+        print("found friend");
+        friends.removeAt(i);
+        break;
+      }
+    }
 
     print("response body: ");
     print(jsonDecode(response.body));

@@ -294,7 +294,7 @@ class UserMutations {
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String removeGameString = """      
       mutation {
-        deleteUserLink(id: "${friendInput['_id']}",         
+        deleteUserLink(id: "${friendInput['user']['_id']}",         
           
           
           ) {
