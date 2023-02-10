@@ -281,10 +281,15 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
+      print("update currentUser friends");
+      print("currentUser: " + appModel.currentUser.toString());
+
+            
+
       addFriendResponse["success"] = true;
       addFriendResponse["message"] = "Player for Team Created";
       addFriendResponse["data"] =
-          jsonDecode(response.body)['data']['updateUser'];
+          jsonDecode(response.body)['data']['createUserLink'];
     } catch (e) {
       print("error");
     }
@@ -302,12 +307,11 @@ class UserCommand extends BaseCommand {
 
     try {
       print("removeFriend in try");
+      print("friendInput: "+ friendInput.toString());
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id']
       };
-      Map<String, dynamic> eventInput = {
-        "_id": friendInput['_id']
-      };
+     
 
       http.Response response = await http.post(
       Uri.parse('https://graphql.fauna.com/graphql'),
@@ -316,9 +320,21 @@ class UserCommand extends BaseCommand {
         'Content-Type': 'application/json'
       },
       body: jsonEncode(<String, String>{
-        'query': UserMutations().removeFriend(userInput, eventInput),
+        'query': UserMutations().removeFriend(userInput, friendInput),
       }),
     );
+
+    //find the friend in the currentUser friends list
+    dynamic friends = appModel.currentUser['friends']['data'];
+    print("friends: " + friends.toString());
+    for(int i = 0; i < friends.length; i++){
+      print("friends[i]['user']: " + friends[i]['user'].toString());      
+      if(friends[i]['user'] == friendInput['user']['_id']){
+        print("found friend");
+        friends.removeAt(i);
+        break;
+      }
+    }
 
     print("response body: ");
     print(jsonDecode(response.body));

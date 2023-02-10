@@ -101,7 +101,7 @@ class _FriendCard extends State<FriendCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.friendObject['name'],
+                    text: widget.friendObject['user']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.friendObject['description'],

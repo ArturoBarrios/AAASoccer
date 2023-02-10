@@ -182,7 +182,7 @@ class BaseCommand {
           
           await EventCommand().setupMappedEvents();
           print("get friends and myEvents from currentUser object: ");
-          List<dynamic> friends = appModel.currentUser['friends'];
+          List<dynamic> friends = appModel.currentUser['friends']['data'];
           List<dynamic> myEvents = appModel.currentUser['events']['data'];
           List<dynamic> myArchivedEvents = [];
         List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));

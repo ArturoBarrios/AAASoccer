@@ -35,7 +35,6 @@ import 'package:gql_http_link/gql_http_link.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../components/bottom_nav.dart';
-import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 // import 'package:twilio_flutter/twilio_flutter.dart'; 
 // import 'package:firebase_core/firebase_core.dart';
@@ -116,11 +115,7 @@ void main() async {
   OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
       print("Accepted permission: $accepted");
   });
-   
-  //  AdaptyService().configureAdapty();
-    // Adapty().activate();
-    // Adapty().setLogLevel(AdaptyLogLevel.verbose);
-    // print("adapty set!!!!");
+     
       print("set publishable key: "+dotenv.env['STRIPE_PUBLISHABLE_KEY']!);
       Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
       Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';

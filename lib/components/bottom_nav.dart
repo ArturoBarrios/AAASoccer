@@ -66,7 +66,7 @@ class _BottomNav extends State<BottomNav> {
     // TournamentCommand().bergerTable(14);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TrainingCreate()),
+      MaterialPageRoute(builder: (context) => GameCreate()),
     );
     // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
@@ -171,7 +171,7 @@ class _BottomNav extends State<BottomNav> {
                   }),
               IconBottomBar(
                   text: "Friends",
-                  icon: Icons.person_add_outlined,
+                  icon: Icons.history,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(

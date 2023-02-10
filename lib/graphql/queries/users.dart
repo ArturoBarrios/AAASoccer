@@ -39,11 +39,16 @@ class UserQueries {
                   customerId
                 }
               }
-              friends{                                
+              friends{   
+                data{
                   _id
-                  name
-                  email   
-                  OSPID             
+                  user{
+                    _id
+                    name
+                    email   
+                    OSPID                
+                  }                  
+                }                  
               }
               teams{
                 data{
@@ -138,11 +143,16 @@ class UserQueries {
                   type
                 }
               }
-              friends{                
+              friends{   
+                data{
                   _id
-                  name
-                  email     
-                  OSPID           
+                  user{
+                    _id
+                    name
+                    email   
+                    OSPID                
+                  }                  
+                }                  
               }
               stripeCustomers{
                 data{
@@ -252,10 +262,16 @@ class UserQueries {
                   type
                 }
               }
-              friends{                
+              friends{   
+                data{
                   _id
-                  name
-                  email                
+                  user{
+                    _id
+                    name
+                    email   
+                    OSPID                
+                  }                  
+                }                  
               }
               teams{
                 data{
