@@ -73,11 +73,19 @@ enum UserType{
   REF
 }
 
+enum RequestType{
+  FRIENDREQUEST
+  EVENTREQUEST
+  TEAMREQUEST
+
+}
+
 type FriendRequest {
   sender: User
   receiver: User @relation(name: "friend_requests")
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
+  requestType: RequestType @default(value: FRIENDREQUEST)
 }
 
 
@@ -89,7 +97,8 @@ type EventRequest {
   receivers: [User!] @relation(name: "event_requests_to_accept")  
   event: Event!  
   status: RequestStatus @default(value: PENDING)
-  requestAttempts: Int @default(value: 0)
+  requestAttempts: Int @default(value: 0)  
+  requestType: RequestType @default(value: EVENTREQUEST)
 }
 
 # event request will be sent to team organizers
@@ -101,6 +110,7 @@ type TeamRequest {
   team: Team!  
   status: RequestStatus @default(value: PENDING)
   requestAttempts: Int @default(value: 0)
+  requestType: RequestType @default(value: TEAMREQUEST)
 }
 
 

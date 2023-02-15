@@ -98,6 +98,7 @@ String sendTeamRequest(
         createTeamRequest(data: {    
           requestAttempts: 1, 
           status: PENDING,
+          requestType: TEAMREQUEST,
           organizers: {
             connect: [
               $organizersString
@@ -135,7 +136,8 @@ String sendTeamRequest(
             sender{              
                 _id
                 name
-                email              
+                email     
+                phone         
             }   
             acceptedBy{              
                 _id

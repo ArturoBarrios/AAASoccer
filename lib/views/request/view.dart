@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../../components/Loading/loading_screen.dart';
+import '../../enums/EventRequestType.dart';
 
 class RequestsView extends StatefulWidget {
   @override
@@ -36,11 +37,20 @@ class _RequestsViewState extends State<RequestsView> {
       print("getRequestCard()");
       print("selectedKey: " + selectedKey);
       print("requestObject: " + requestObject.toString());      
-      Widget card = FriendRequestCard(friendRequestObject: requestObject, svgImage: svgImage);     
-      // Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
-      // Widget card = TeamRequestCard(teamRequestObject: requestObject, svgImage: svgImage);     
+      
+      if(requestObject['requestType'].toString() == EventRequestType.FRIENDREQUEST.name){
+        Widget card = FriendRequestCard(friendRequestObject: requestObject, svgImage: svgImage);             
+        return card;
+      }
+      else if(requestObject['requestType'].toString() == EventRequestType.EVENTREQUEST.name){
+        Widget card = EventRequestCard(eventRequestObject: requestObject, svgImage: svgImage);     
+        return card;
+      }
+      else{
+        Widget card = TeamRequestCard(teamRequestObject: requestObject, svgImage: svgImage);     
+        return card;
 
-    return card;
+      }    
   }
 
   void getRequestPageData() async{
@@ -63,8 +73,8 @@ class _RequestsViewState extends State<RequestsView> {
       RequestsCommand().updateTeamRequestsModel(teamRequests);
       RequestsCommand().updateEventRequestsModel(eventRequests);
       RequestsCommand().updateFriendRequestsModel(friendRequests);
-      List updateWith = [];
-      updateWith.addAll([eventRequests, teamRequests, friendRequests]);
+      List updateWith = [friendRequests, eventRequests, teamRequests].expand((x) => x).toList();
+      print("updateWith: "+updateWith.toString());      
       RequestsCommand().updateRequestsPageSelectedModel(updateWith);
       
       print("initialConditionsMet: ");

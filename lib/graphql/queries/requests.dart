@@ -9,6 +9,7 @@ class RequestsQueries {
               _id
               status
               requestAttempts
+              requestType
               organizers{
                 data{
                   _id
@@ -53,6 +54,7 @@ class RequestsQueries {
               _id
               status
               requestAttempts
+              requestType
               organizers{
                 data{
                   _id
@@ -106,7 +108,8 @@ class RequestsQueries {
             data {      
               _id
               status
-              requestAttempts              
+              requestAttempts       
+              requestType       
               receiver{                
                 _id
                 email

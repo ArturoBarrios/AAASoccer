@@ -90,10 +90,10 @@ class _EventRequestCard extends State<EventRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.eventRequestObject['event']['name'],
+                    text: "Event Request("+widget.eventRequestObject['event']['name']+")",
                     svgImage: widget.svgImage,
                     subtitle:
-                        widget.eventRequestObject['event']['name'], //widget.eventRequestObject['description'],
+                        "sent by "+widget.eventRequestObject['sender']['name'], //widget.eventRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -183,12 +183,12 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            Image(
-              width: MediaQuery.of(context).size.width * .4,
-              height: MediaQuery.of(context).size.height * .1,
-              image: svgImage,
-              color: Colors.white,
-            ),
+            // Image(
+            //   width: MediaQuery.of(context).size.width * .4,
+            //   height: MediaQuery.of(context).size.height * .1,
+            //   image: svgImage,
+            //   color: Colors.white,
+            // ),
             // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
             const Spacer(),
             Text(text,
