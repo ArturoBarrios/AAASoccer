@@ -13,6 +13,8 @@ type Query {
   AllGamesByID(ids: [ID]):[ID] @resolver
 }
 
+
+
 enum EventType {
   TRYOUT
   GAME
@@ -20,6 +22,7 @@ enum EventType {
   TOURNAMENT
   TRAINING
 }
+
 
 enum SurfaceType {
   TURFPOOR
@@ -404,3 +407,4 @@ type Price   {
   amount: String @default(value: "0")
   event: Event
 }
+

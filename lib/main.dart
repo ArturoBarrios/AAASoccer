@@ -294,7 +294,7 @@ class _MyAppState extends State<MyApp> {
       print(createPlayerResp);
       
       AppModel().currentUser = createPlayerResp['data'];
-
+      print("AppModel().currentUser: " + AppModel().currentUser.toString());
         
       await startLoadToHomeTransition();
     } on AuthException catch (e) {

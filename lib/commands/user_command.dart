@@ -15,6 +15,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/notifications_command.dart';
 
 class UserCommand extends BaseCommand {
+
+  Map<String, dynamic> getAppModelUser() {
+    print("getAppModelUser");
+    print("appMOdel.currentUser: " + appModel.currentUser.toString());
+
+    return appModel.currentUser;
+
+  }
+
   Future<Map<String, dynamic>> updateUser(
       Map<String, dynamic> userInput) async {
     print("updateUser");

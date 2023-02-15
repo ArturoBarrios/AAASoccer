@@ -80,15 +80,19 @@ class _PickupViewState extends State<PickupView> {
         ),                
         GestureDetector(
             onTap: () {
-              // purchaseEvent();
+              widget.game['event']['price'] == 0 ? 
+              //free game
+              print("hi")
+              :                        
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
                   return CardFormScreen(
                     priceObject:                   
                       widget.game['event']['price'] 
                    );
-                },
-              ));
+                }));
+            
+              
             },
             child: Text("Join Event")),
         GestureDetector(

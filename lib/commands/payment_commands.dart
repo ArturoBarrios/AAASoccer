@@ -84,7 +84,7 @@ class PaymentCommand extends BaseCommand {
             print("createUserCustomerResp: " + createUserCustomerResp.toString());
           }
 
-          UserCommand().addEvent(userInput, priceInput['event']);
+          // UserCommand().addEvent(userInput, priceInput['event']);
 
 
         }

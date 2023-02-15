@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../enums/PaymentType.dart';
 import '../models/payment_model.dart';
 import '../commands/payment_commands.dart';
+import '../commands/user_command.dart';
 
 
 // // // // // // // // // // // // // // //
@@ -16,23 +17,27 @@ class CardFormScreen extends StatefulWidget {
     {Key? key, required this.priceObject})
     : super(key: key);
 
-    final dynamic priceObject;  
+    final dynamic priceObject;      
   
     @override
     _CardFormScreen createState() => _CardFormScreen();  
 }
 
 class _CardFormScreen extends State<CardFormScreen> {
+  
 
-void createPaymentIntent()async {
+void createPaymentIntent() async {
+  Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
+  print("currentUser: "+currentUser.toString());
   print("createPaymentIntent");
-  print("priceObject in CardFormScreen: "+widget.priceObject.toString());  
+  print("priceObject in CardFormScreen: "+widget.priceObject.toString());    
+  
   Map<String, dynamic> createPaymentIntentResp = await PaymentCommand().createPaymentIntent(
                            PaymentCreateIntent(
                               billingDetails: BillingDetails(
                                 email: 'soccerapp357@gmail.com',
-                                name: AppModel().currentUser['name'],
-                                phone: AppModel().currentUser['phone'],
+                                name: currentUser['name'],
+                                phone: currentUser['phone'],
                               ),
                               items: [
                                 {'id': 0},
@@ -43,8 +48,18 @@ void createPaymentIntent()async {
                   );
 
   print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
-  if(createPaymentIntentResp['success']){
+  if(createPaymentIntentResp['success'] || widget.priceObject['amount'] == '0'){
+    print("if(createPaymentIntentResp['success'] || widget.priceObject['amount'] == '0')");
+    print("now addEvent");
     //move on to next screen
+     Map<String, dynamic> userInput = {
+        '_id': currentUser['_id'],
+      };
+    print("currentUser:" + currentUser.toString());
+    print("userInput: "+userInput.toString());
+    print("widget.priceObject: "+widget.priceObject.toString());
+
+    await UserCommand().addEvent(userInput, widget.priceObject);
     print("move on to next screen");
     Navigator.pop(context);
 

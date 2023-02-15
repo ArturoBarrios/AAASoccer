@@ -2,7 +2,7 @@
   "providers": [
     "awscloudformation"
   ],
-  "projectName": "AAASoccer",
+  "projectName": "SoccerApp",
   "version": "3.1",
   "frontend": "flutter",
   "flutter": {

@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import '../commands/base_command.dart';
 import 'package:flutter/material.dart';
 
 // Change color here
@@ -26,7 +26,7 @@ class _ProfileState extends State<Profile> {
               new Align(alignment: Alignment.centerLeft,
                child: 
             IconButton(icon: const Icon(Icons.arrow_back),
-            tooltip: 'Go to the next page',
+            tooltip: 'Go back',
             onPressed: () {
               Navigator.pop(context);             
             },
@@ -184,6 +184,19 @@ class _ProfileState extends State<Profile> {
                     name:"Runner-up of Voting Cup",value: "#3", tooltip: "Yesterday", date: "02/22/2019"),
                     InfoDetailListTile(
                     name:"Victory is super close", value:"🔥", tooltip: "Yesterday",date: "02/22/2019"),
+                    Container(  
+                      margin: EdgeInsets.all(25),  
+                      child: ElevatedButton(
+                  onPressed: () {
+                    BaseCommand().signOut();
+                  },
+                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                  style: ElevatedButton.styleFrom(
+                      elevation: 12.0,
+                      textStyle: const TextStyle(color: Colors.white)),
+                  child: const Text('Sign Out'),
+                ),
+                    ),  
                    
               ],
             )

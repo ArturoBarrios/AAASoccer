@@ -108,7 +108,7 @@ class AmplifyAuthService {
     return configureAmplifyResp;
   }
 
-   void signOut() async {
+   Future<void> signOut() async {
     try {
       await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
       //base_command set initial app models to reflect signout
