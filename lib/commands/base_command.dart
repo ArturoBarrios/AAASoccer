@@ -21,6 +21,7 @@ import '../services/twilio_services.dart';
 import '../services/onesignal_service.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import '../services/amplify_auth_service.dart';
 // import 'package:geocoding/geocoding.dart';
 import 'dart:convert';
 
@@ -71,6 +72,10 @@ class BaseCommand {
     Map<String, dynamic> reloadUserResponse = {"success": false, "message": "Something went wrong with reloading user data", "data": null};
 
     return reloadUserResponse;
+  }
+
+  void signOut() async{
+    await AmplifyAuthService().signOut();
   }
 
   Future <Map<String, dynamic>> setupInitialAppConfigs() async{
