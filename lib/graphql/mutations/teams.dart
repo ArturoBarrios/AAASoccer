@@ -98,6 +98,7 @@ String sendTeamRequest(
         createTeamRequest(data: {    
           requestAttempts: 1, 
           status: PENDING,
+          requestType: TEAMREQUEST,
           organizers: {
             connect: [
               $organizersString

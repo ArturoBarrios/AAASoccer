@@ -7,6 +7,7 @@ class UserMutations {
         createFriendRequest(data: {    
           requestAttempts: 1, 
           status: PENDING,
+          requestType: FRIENDREQUEST,
           sender: {
             connect: "${sendFriendRequestInput['sender_id']}"
           },  

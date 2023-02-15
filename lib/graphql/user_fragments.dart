@@ -71,6 +71,7 @@ class UserFragments{
                   _id
                   status
                   requestAttempts
+                  requestType
                   sender{
                     _id
                     name
@@ -88,6 +89,7 @@ class UserFragments{
                   _id
                   status
                   requestAttempts
+                  requestType
                   event{
                     _id
                     name
@@ -99,6 +101,7 @@ class UserFragments{
                   _id
                   status
                   requestAttempts
+                  requestType
                   team{
                     _id
                     name

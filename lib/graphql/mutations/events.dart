@@ -46,7 +46,8 @@ class EventMutations {
         createEventRequest(
           data: {    
             status: PENDING,
-            requestAttempts: 1,                     
+            requestAttempts: 1,    
+            requestType: EVENTREQUEST,                 
             organizers: {
               connect: [
                 $organizersString
