@@ -171,7 +171,7 @@ class _PickupCard2 extends State<PickupCard2> {
             onPressed: () {
               //send event request
               print("send event request for event: : ${widget.gameObject}");
-              EventCommand().sendOrganizerEventRequest(widget.gameObject['event']);                
+              EventCommand().sendOrganizerEventRequest(widget.gameObject);                
             },
           ),
             // GestureDetector(

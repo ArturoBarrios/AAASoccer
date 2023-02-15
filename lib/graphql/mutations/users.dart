@@ -22,12 +22,14 @@ class UserMutations {
             sender{
               _id
               email
-              name              
+              name   
+              phone           
             }   
             receiver{              
               _id
               email
-              name              
+              name 
+              phone             
             }            
           }   
         }

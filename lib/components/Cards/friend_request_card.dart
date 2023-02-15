@@ -90,10 +90,10 @@ class _FriendRequestCard extends State<FriendRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.friendRequestObject['sender']['name'],
+                    text: "Friend Request",
                     svgImage: widget.svgImage,
                     subtitle:
-                        "test subtitle", //widget.friendRequestObject['description'],
+                        "sent by hitler", //widget.friendRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -179,16 +179,16 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: 150,
-        height: 150,
+        height: 200,
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            Image(
-              width: MediaQuery.of(context).size.width * .4,
-              height: MediaQuery.of(context).size.height * .1,
-              image: svgImage,
-              color: Colors.white,
-            ),
+            // Image(
+            //   width: MediaQuery.of(context).size.width * .4,
+            //   height: MediaQuery.of(context).size.height * .1,
+            //   image: svgImage,
+            //   color: Colors.white,
+            // ),
             // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
             const Spacer(),
             Text(text,

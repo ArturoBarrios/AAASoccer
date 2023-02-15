@@ -95,14 +95,14 @@ class EventCommand extends BaseCommand {
 
   Future<Map<String, dynamic>> sendOrganizerEventRequest(
       dynamic gameInput) async {
-    print("sendOrganizerEventRequest");
+    print("sendOrganizerEventRequestttt");
     Map<String, dynamic> sendOrganizerEventRequestResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
     try {
-      print("request for event: " + gameInput['event']['_id']);
+      print("request for event: " + gameInput.toString());
       Map<String, dynamic> sendOrganizerEventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
         "event_id": gameInput['event']['_id'],
@@ -125,6 +125,7 @@ class EventCommand extends BaseCommand {
       for (var i = 0; i < eventUserOrganizers.length; i++) {
         String toUserId = eventUserOrganizers[i]['_id'];
         if (appModel.currentUser['_id'] == toUserId) {
+          print("is your event!");
           isYourEvent = true;
         }
         Map<String, dynamic> organizerUserInput = {"user_id": toUserId};

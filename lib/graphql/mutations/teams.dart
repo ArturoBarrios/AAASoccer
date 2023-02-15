@@ -136,7 +136,8 @@ String sendTeamRequest(
             sender{              
                 _id
                 name
-                email              
+                email     
+                phone         
             }   
             acceptedBy{              
                 _id
