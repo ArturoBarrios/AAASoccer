@@ -94,6 +94,11 @@ class UserFragments{
                     _id
                     name
                   }
+                  sender{
+                    _id
+                    name
+                    email
+                  }
                 }
               } 
               teamRequestsToAccept{
@@ -105,6 +110,11 @@ class UserFragments{
                   team{
                     _id
                     name
+                  }
+                  sender{
+                    _id
+                    name
+                    email
                   }
                 }
               }   

@@ -90,10 +90,10 @@ class _EventRequestCard extends State<EventRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: "request for event("+widget.eventRequestObject['event']['name']+")",
+                    text: "Event Request("+widget.eventRequestObject['event']['name']+")",
                     svgImage: widget.svgImage,
                     subtitle:
-                        widget.eventRequestObject['event']['name'], //widget.eventRequestObject['description'],
+                        "sent by "+widget.eventRequestObject['sender']['name'], //widget.eventRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),

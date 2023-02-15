@@ -93,7 +93,7 @@ class _FriendRequestCard extends State<FriendRequestCard> {
                     text: "Friend Request",
                     svgImage: widget.svgImage,
                     subtitle:
-                        "sent by hitler", //widget.friendRequestObject['description'],
+                        "sent by "+widget.friendRequestObject['sender']['name'].toString(), //widget.friendRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),

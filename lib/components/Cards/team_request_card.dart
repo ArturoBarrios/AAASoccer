@@ -99,11 +99,10 @@ class _TeamRequestCard extends State<TeamRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.teamRequestObject['team']['name'],
+                    text: ("join team("+widget.teamRequestObject['name'].toString()+")"),
                     svgImage: widget.svgImage,
                     subtitle:
-                        ("join team("+
-                        widget.teamRequestObject['team']['name'].toString()+")")
+                        "sent by "+widget.teamRequestObject['sender']['name'].toString()
                         , //widget.teamRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
