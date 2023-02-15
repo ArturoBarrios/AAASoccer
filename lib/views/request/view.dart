@@ -63,6 +63,10 @@ class _RequestsViewState extends State<RequestsView> {
       RequestsCommand().updateTeamRequestsModel(teamRequests);
       RequestsCommand().updateEventRequestsModel(eventRequests);
       RequestsCommand().updateFriendRequestsModel(friendRequests);
+      List updateWith = [];
+      updateWith.addAll([eventRequests, teamRequests, friendRequests]);
+      RequestsCommand().updateRequestsPageSelectedModel(updateWith);
+      
       print("initialConditionsMet: ");
       print(RequestsCommand().initialConditionsMet);     
       print("initialConditionsMet after: ");

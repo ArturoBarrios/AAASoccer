@@ -427,7 +427,7 @@ class RequestsCommand extends BaseCommand {
     print("updateEventRequestsModel before set eventRequests");
     print(requestsModel.eventRequests);
     requestsModel.eventRequests = eventRequests;
-    requestsPageModel.selectedObjects = eventRequests;
+    // requestsPageModel.selectedObjects = eventRequests;
     print("updateEventRequestsModel after set eventRequests");
     print(requestsModel.eventRequests);
 
@@ -437,6 +437,25 @@ class RequestsCommand extends BaseCommand {
 
   }
 
+  Map<String, dynamic> updateRequestsPageSelectedModel(List eventRequests){
+    print("updateRequestsPageSelectedModel()");
+    print("eventRequests: "+ eventRequests.toString());
+    Map<String, dynamic> updateRequestsPageSelectedModelResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    print("selectedObjects before set: "+ requestsPageModel.selectedObjects.toString());
+    requestsPageModel.selectedObjects = eventRequests;
+    print("selectedObjects after set: "+ requestsPageModel.selectedObjects.toString());
+    
+    updateRequestsPageSelectedModelResp["success"] = true;
+    updateRequestsPageSelectedModelResp["message"] = "requestsPageModel.selectedObjects updated";
+    updateRequestsPageSelectedModelResp["data"] = requestsPageModel.selectedObjects;
+
+    return updateRequestsPageSelectedModelResp;
+  }
   Map<String, dynamic> updateTeamRequestsModel(List eventRequests){
     print("updateTeamRequestsModel");
     print(eventRequests);
@@ -451,11 +470,12 @@ class RequestsCommand extends BaseCommand {
     print("updateTeamRequestsModel before set eventRequests");
     print(requestsModel.eventRequests);
     requestsModel.eventRequests = eventRequests;
-    requestsPageModel.selectedObjects = eventRequests;
+    // requestsPageModel.selectedObjects = eventRequests;
     print("updateTeamRequestsModel after set eventRequests");
     print(requestsModel.eventRequests);
 
     updateTeamRequestsModelResp["success"] = true;
+    
 
 
 
@@ -477,7 +497,7 @@ class RequestsCommand extends BaseCommand {
     print("updateFriendRequestsModel before set eventRequests");
     print(requestsModel.friendRequests);
     requestsModel.friendRequests = friendRequests;
-    requestsPageModel.selectedObjects = friendRequests;
+    // requestsPageModel.selectedObjects = friendRequests;
     print("updateFriendRequestsModel after set eventRequests");
     print(requestsModel.eventRequests);
 

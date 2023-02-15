@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
+import 'package:soccermadeeasy/models/Payment.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import '../services/stripe_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import '../enums/PaymentType.dart';
 import '../models/payment_model.dart';
 import '../commands/payment_commands.dart';
 import '../commands/user_command.dart';
+import '../views/home.dart';
 
 
 // // // // // // // // // // // // // // //
@@ -59,9 +61,10 @@ void createPaymentIntent() async {
     print("userInput: "+userInput.toString());
     print("widget.priceObject: "+widget.priceObject.toString());
 
-    await UserCommand().addEvent(userInput, widget.priceObject);
+    await UserCommand().addEvent(userInput, widget.priceObject['event']);
+    UserCommand().updatePaymentStatus(PaymentType.success);
     print("move on to next screen");
-    Navigator.pop(context);
+    // Navigator.pop(context);
 
   }
 
@@ -119,8 +122,8 @@ Widget paymentWidgetToShow(PaymentType status){
                 ]
               )
             );
-          }
-          if( status == PaymentStatus.success){
+          }          
+          if( status.name == PaymentStatus.success.name){
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -131,10 +134,14 @@ Widget paymentWidgetToShow(PaymentType status){
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // context.read<PaymentBloc>().add(PaymentStart());
-
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => Home()),
+                    // );
+                    Navigator.pop(context);
+                    Navigator.pop(context);
                   },
-                  child: const Text('Back to Home')
+                  child: const Text('Go Home')
                 ),
               ],
             );
@@ -171,7 +178,7 @@ Widget paymentWidgetToShow(PaymentType status){
      return Scaffold(
       appBar: AppBar(),
       body:       
-        paymentWidgetToShow(PaymentModel().status)
+        paymentWidgetToShow(status)
         // PaymentModel().status == PaymentStatus.initial?
 
       

@@ -13,6 +13,7 @@ import '../graphql/mutations/teams.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/notifications_command.dart';
+import '../enums/PaymentType.dart';
 
 class UserCommand extends BaseCommand {
 
@@ -21,6 +22,15 @@ class UserCommand extends BaseCommand {
     print("appMOdel.currentUser: " + appModel.currentUser.toString());
 
     return appModel.currentUser;
+
+  }
+
+  void updatePaymentStatus(PaymentType status) {
+    print("updatePaymentStatus");
+    print("paymentModel.status before....: " + paymentModel.status.toString());
+    paymentModel.status = status;
+    print("paymentModel.status after....: " + paymentModel.status.toString());
+
 
   }
 
@@ -203,6 +213,7 @@ class UserCommand extends BaseCommand {
       "message": "Default Error",
       "data": null
     };
+    
 
     try {
       http.Response response = await http.post(
