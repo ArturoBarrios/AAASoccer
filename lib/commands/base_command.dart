@@ -24,6 +24,7 @@ import 'package:geolocator/geolocator.dart';
 import '../services/amplify_auth_service.dart';
 // import 'package:geocoding/geocoding.dart';
 import 'dart:convert';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 
 
@@ -182,7 +183,7 @@ class BaseCommand {
           //setup onesignal
           await OneSignalService().configureOneSignalUserDetails();
 
-
+          print("testing some shit out!");
           
           
           await EventCommand().setupMappedEvents();

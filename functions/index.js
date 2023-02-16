@@ -1,6 +1,28 @@
 const functions = require("firebase-functions");
 const stripe = require('stripe')("sk_test_51M6l0pDUXwYENeT4BaAfVT8ewp4Ujzb4NyD8ebB0F0s14xujWNb1MESrqqrSbtKBIm6MdnE0odAHc1IBqEyS97aH00Kzayd323") //functions.config().stripe.testKey
 
+const generateResponse = function (intent) {
+    switch (intent.status) {
+        case 'requires_action': 
+            return {
+                clientSecret: intent.clientSecret,
+                requiresAction: true,
+                status: intent.status
+            };
+            case 'requires_payment_method':
+                return {
+                    'error': 'Your card was denied, please provide a new payment method',
+                };
+            case 'succeeded':
+                console.log("Payment succeeded");
+                return {
+                    clientSecret: intent.clientSecret, status: intent.status
+                };            
+    }
+    return {error: 'Failed'};
+}
+
+
 exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) => {
     try {
         let customerId;
@@ -36,8 +58,13 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
             customer: customerId,
             payment_method_types: ['card'],
             payment_method: req.body.paymentMethodId,
-            use_stripe_sdk: true,            
+            use_stripe_sdk: true,   
+            confirmation_method: 'manual',         
             
+        })
+
+        const intent = await stripe.setupIntents.create({
+            customer: customerId
         })
 
         res.status(200).send({
@@ -45,6 +72,7 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
             ephemeralKey: ephemeralKey.secret,
             customer: customerId,
             success: true,
+            setupIntent: intent,
         })
         
     } catch (error) {
@@ -133,20 +161,20 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
 //     }
 // });
 
-// //return payment intent
-// exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) => {
-//     const { paymentIntentId } = req.body;
-//     try{
-//         if(paymentIntentId){
-//             const intent = await stripe.paymentIntents.confirm(paymentIntentId);
-//             return res.send(generateResponse(intent));
-//         }
-//         return res.sendStatus(400);
-//     } catch (e) {
-//         return res.send({ error: e.message })
-//     }
+//return payment intent
+exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) => {
+    const { paymentIntentId } = req.body;
+    try{
+        if(paymentIntentId){
+            const intent = await stripe.paymentIntents.confirm(paymentIntentId);
+            return res.send(generateResponse(intent));
+        }
+        return res.sendStatus(400);
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
 
-// });
+});
 
 
 
