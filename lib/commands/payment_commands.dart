@@ -36,6 +36,8 @@ class PaymentCommand extends BaseCommand {
         ),
       );
 
+      print("paymentMethod: " + paymentMethod.toString());
+
       final paymentIntentResults = await _callPayEndpointMethodId(
         useStripeSdk: true,
         paymentMethodId: paymentMethod.id,
@@ -44,11 +46,13 @@ class PaymentCommand extends BaseCommand {
         priceInput: priceInput
       );
       print("paymentIntentResults: " + paymentIntentResults.toString());      
+      print("intent: " + paymentIntentResults['intent'].toString());
 
       if(paymentIntentResults['error'] != null) {
         paymentModel.status = PaymentType.failure;        
       }
       print("paymentIntentResults['requiresAction']: "+ paymentIntentResults['requiresAction'].toString());
+      print("paymentIntentResults['clientSecret']: "+ paymentIntentResults['clientSecret'].toString());
       if(paymentIntentResults['clientSecret'] != null &&
         paymentIntentResults['requiresAction'] == null){
         print("doesn't requires action!");
@@ -59,7 +63,7 @@ class PaymentCommand extends BaseCommand {
       paymentIntentResults['requiresAction'] == true){
         print("requires action!");
         final String clientSecret = paymentIntentResults['clientSecret'];
-        PaymentConfirmIntent(clientSecret: clientSecret);        
+        _onPaymentConfirmIntentId(clientSecret);        
       }
 
       //create Payment and StripeCustomer objects
@@ -119,10 +123,10 @@ class PaymentCommand extends BaseCommand {
 
   
  void _onPaymentConfirmIntentId(
-    PaymentConfirmIntent event
+    String clientSecret
   ) async {
     try{
-      final paymentIntent = await Stripe.instance.handleNextAction(event.clientSecret);
+      final paymentIntent = await Stripe.instance.handleNextAction(clientSecret);
 
       if(paymentIntent.status == PaymentIntentsStatus.RequiresConfirmation){
         Map<String, dynamic> results = await _callPayEndpointIntentId(
@@ -175,18 +179,17 @@ class PaymentCommand extends BaseCommand {
       print("currency: " + currency);
       print("items: " + items.toString());
       print("priceInput: " + priceInput.toString());
-      final url = Uri.parse("https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest");
+      // final url = Uri.parse("https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePayEndpointMethodId");
       // final response = await http.post(
-      //   url,        
-      //   body: 
-      //     {
-      //       'useStripeSdk': useStripeSdk,
+      //   Uri.parse(
+      //     'https://us-central1-soccer-app-a9060.cloudfunctions.net/StripePayEndpointMethodId'),      
+      //   body: {
+      //       'useStripeSdk': true,
       //       'paymentMethodId': paymentMethodId,
-      //       'currency': currency,
-      //       'items': items,
-      //     }
+      //       'currency': currency,            
+      //       'amount': 1000,          
         
-      // );
+      //     });
       final response = await http.post(
         Uri.parse(
             'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest'),
@@ -212,6 +215,8 @@ class PaymentCommand extends BaseCommand {
       return {};
     }
   }
+  
+
 
   Future<Map<String, dynamic>> createPrice(dynamic eventInput) async{
     
