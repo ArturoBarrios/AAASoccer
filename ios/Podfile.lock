@@ -67,7 +67,7 @@ PODS:
     - AWSCore (~> 2.27.0)
   - connectivity_plus (0.0.1):
     - Flutter
-    - ReachabilitySwift
+    - Reachability
   - Firebase/CoreOnly (10.3.0):
     - FirebaseCore (= 10.3.0)
   - firebase_core (2.5.0):
@@ -113,11 +113,13 @@ PODS:
     - OneSignalXCFramework/OneSignalOutcomes
   - OneSignalXCFramework/OneSignalOutcomes (3.12.3):
     - OneSignalXCFramework/OneSignalCore
+  - package_info_plus (0.4.5):
+    - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.1.1)
-  - ReachabilitySwift (5.0.0)
+  - Reachability (3.2)
   - SQLite.swift (0.13.2):
     - SQLite.swift/standard (= 0.13.2)
   - SQLite.swift/standard (0.13.2)
@@ -176,6 +178,7 @@ DEPENDENCIES:
   - location (from `.symlinks/plugins/location/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - OneSignalXCFramework (< 4.0, >= 3.4.3)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
 
@@ -198,7 +201,7 @@ SPEC REPOS:
     - ObjectMapper
     - OneSignalXCFramework
     - PromisesObjC
-    - ReachabilitySwift
+    - Reachability
     - SQLite.swift
     - Starscream
     - Stripe
@@ -239,6 +242,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/location/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/ios"
   stripe_ios:
@@ -259,7 +264,7 @@ SPEC CHECKSUMS:
   AWSCore: c67277201b6aca10e4cf24638eadaa67c85ebf03
   AWSMobileClient: 6f60d1fb6373e21aaada443dd4d4bf087158614d
   AWSPluginsCore: 120cfa265293694921b6595fe00d1cb5ab558847
-  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
+  connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
   firebase_core: f95c8bbe65213d406d592573ad42a12d64849cb8
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
@@ -274,9 +279,10 @@ SPEC CHECKSUMS:
   ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
   onesignal_flutter: e01b19b76406d2f303edabe36da8dc747443d679
   OneSignalXCFramework: 75844c29607ca95e6176f6f21257b4382c7fdbfb
+  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SQLite.swift: 4fc2be46c36392e3b87afe6fe7f1801c1daa07ef
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
   Stripe: ff389e265eeffb891b871b62b2fa644e30e69338

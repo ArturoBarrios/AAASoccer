@@ -10,6 +10,8 @@
         android:icon="@mipmap/ic_launcher">
         <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
         <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBvHFkoQb6Zo9z0_asEod7bzCekNXWrNhA"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
