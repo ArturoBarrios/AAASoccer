@@ -78,13 +78,6 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
 
 
         res.status(200).send(resp);
-        // res.status(200).send({
-        //     paymentIntent: paymentIntent,
-        //     ephemeralKey: ephemeralKey.secret,
-        //     customer: customerId,
-        //     success: true,
-        //     setupIntent: intent,
-        // })
         
     } catch (error) {
         res.status(404).send({ success: false, error: error.message })

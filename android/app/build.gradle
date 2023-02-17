@@ -29,7 +29,11 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 33
+    ///////////////////////////////////////////////////
+    compileSdkVersion 31    
+    ///////////////////////////////////////////////////
+    //was previously set to 33
+    //before adding google_maps_flutter or whatever it was called
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
