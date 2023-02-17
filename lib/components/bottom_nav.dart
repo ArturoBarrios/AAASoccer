@@ -27,6 +27,9 @@ import '../models/home_page_model.dart';
 import '../services/amplify_auth_service.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../models/home_page_model.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -64,10 +67,17 @@ class _BottomNav extends State<BottomNav> {
 
   void testFunction() async {
     // TournamentCommand().bergerTable(14);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GameCreate()),
-    );
+   final prediction =  PlacesAutocomplete.show(
+            context: context,
+            apiKey: "AIzaSyBVwwhIMyju-8G_lJ_8G6i_KzE0Pn2wf2E",
+            mode: Mode.fullscreen, // Mode.overlay
+            language: "en",
+            components: [Component(Component.country, "pk")]);
+
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => GameCreate()),
+    // );
     // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
