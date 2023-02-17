@@ -61,19 +61,23 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
             use_stripe_sdk: true,   
             confirmation_method: 'manual',         
             
-        })
+        });
 
-        const intent = await stripe.setupIntents.create({
-            customer: customerId
-        })
+        var resp =  generateResponse(paymentIntent);
 
-        res.status(200).send({
-            paymentIntent: paymentIntent.client_secret,
-            ephemeralKey: ephemeralKey.secret,
-            customer: customerId,
-            success: true,
-            setupIntent: intent,
-        })
+
+        // const intent = await stripe.setupIntents.create({
+        //     customer: customerId
+        // })        
+
+        resp['ephemeralKey'] = ephemeralKey.secret;
+        resp['customer'] = customerId;
+        resp['success'] = true;
+        resp['intent'] = paymentIntent;
+        resp['clientSecret'] = paymentIntent.client_secret,
+
+
+        res.status(200).send(resp);
         
     } catch (error) {
         res.status(404).send({ success: false, error: error.message })
@@ -131,35 +135,35 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
 //     return error;
 // }
 
-// //payment intent
-// exports.StripePayEndpointMethodId = functions.https.onRequest(async(req, res) => {
-//     const { paymentMethodId, items, currency, useStripeSdk, } =  req.body;    
-//     const orderAmount = calculateOrderAmount(items);    
-    
+//payment intent
+exports.StripePayEndpointMethodId = functions.https.onRequest(async(req, res) => {
+        
+    try{
+        // console.log("paymentMethodId: "+paymentMethodId);
+        if(paymentMethodId){
+            //create a new PaymentIntent
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: parseInt(req.body.amount),
+                confirm: true,
+                currency: "usd",//todo: use currency
+                customer: customerId,
+                payment_method_types: ['card'],
+                payment_method: req.body.paymentMethodId,
+                use_stripe_sdk: true,   
+                confirmation_method: 'manual',         
+                
+            });
+            
+            return res.send(generateResponse(paymentIntent));
+        }
+        return res.status(400).send({success: false, error: error.message });
 
-//     try{
-//         if(paymentMethodId){
-//             //create a new PaymentIntent
-//             const params = {
-//                 amount: orderAmount, 
-//                 confirm: true,
-//                 confirmation_method: 'manual',
-//                 currency: currency,
-//                 payment_method: paymentMethodId,
-//                 use_stripe_sdk: useStripeSdk,
-//             }
-//             const intent = await stripe.paymentIntents.create(params);
-//             console.log('Intent: ', intent);
-//             return res.send(generateResponse(intent));
-//         }
-//         return res.sendStatus(400 );
+    }catch(e){
+        print("index.js erorrrrrr: "+e.toString());
+        return res.send({ error: e.message })
 
-//     }catch(e){
-//         print("index.js erorrrrrr: "+e.toString());
-//         return res.send({ error: e.message })
-
-//     }
-// });
+    }
+});
 
 //return payment intent
 exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) => {
