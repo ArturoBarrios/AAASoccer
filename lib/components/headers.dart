@@ -11,6 +11,7 @@ class Headers extends StatefulWidget {
 
 AppBar getMainHeader(BuildContext context){
   AppBar appBar = AppBar(
+        elevation: 2,
         centerTitle: false,
         title: new Padding(
             padding: const EdgeInsets.only(left: 20.0),
