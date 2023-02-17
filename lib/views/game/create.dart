@@ -49,7 +49,7 @@ class _GameCreateState extends State<GameCreate> {
       // Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
       Map<String, dynamic> locationInput = {
         "latitude": 39.9526,
-        "longitude": 75.1652,
+        "longitude": -75.1652,
       };
       // Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
       print("locationInputCheck: " + locationInput.toString());                                  

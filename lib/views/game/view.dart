@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import '../../components/profile.dart';
 import '../../components/payment_screen.dart';
@@ -63,7 +65,7 @@ class _PickupViewState extends State<PickupView> {
     print("initState");
     print("game: "+widget.game.toString());
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
-    _isLoading = true;
+    _isLoading = false;
   }
 
   @override
@@ -77,12 +79,22 @@ class _PickupViewState extends State<PickupView> {
         colorSchemeSeed: Colors.green[700],
       ),
       home: Scaffold(
-        appBar: Headers().getMainHeader(context),
+        appBar: Headers().getBackHeader(context),
         body: 
-        !_isLoading ? 
+        _isLoading ? 
         Text("Loading...")
         :
-        MyMapPage()
+        Center(
+          child: Container(
+            margin: const EdgeInsets.all(10.0),
+            color: Colors.amber[600],
+            width: MediaQuery.of(context).size.width-
+                    (MediaQuery.of(context).size.width*.1),//10% padding
+            height: 200.0,
+            child: MyMapPage(latitude: widget.game['event']['location']['data'][0]['latitude'], longitude: widget.game['event']['location']['data'][0]['longitude'])
+          ),
+        )
+        // MyMapPage()
         )
     );
           
@@ -136,13 +148,19 @@ class _PickupViewState extends State<PickupView> {
 }
 
 class MyMapPage extends StatefulWidget {
+  const MyMapPage(
+    {Key? key, required this.latitude, required this.longitude })
+    : super(key: key);
+
+    final double latitude;
+    final double longitude;
+  
   @override
   State<MyMapPage> createState() => MapPageState();
 }
  
 class MapPageState extends State<MyMapPage> {
-  Completer<GoogleMapController> _controller = Completer();
- 
+  Completer<GoogleMapController> _controller = Completer(); 
   static const CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(
       32.776665,
@@ -150,13 +168,27 @@ class MapPageState extends State<MyMapPage> {
     ),
     zoom: 10.0,
   );
+
+  CameraPosition getCameraPosition(double latitude, double longitude){
+    print("getCameraPosition: "+latitude.toString()+", "+longitude.toString());
+    CameraPosition cameraPosition = CameraPosition(
+      target: LatLng(
+        latitude,
+        longitude,
+      ),
+      zoom: 10.0,
+    );
+
+    return cameraPosition;
+
+  }
  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition: initialCameraPosition,
+        initialCameraPosition: getCameraPosition(widget.latitude, widget.longitude),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
