@@ -67,17 +67,17 @@ class _BottomNav extends State<BottomNav> {
 
   void testFunction() async {
     // TournamentCommand().bergerTable(14);
-  //  final prediction =  PlacesAutocomplete.show(
-  //           context: context,
-  //           apiKey: "AIzaSyBVwwhIMyju-8G_lJ_8G6i_KzE0Pn2wf2E",
-  //           mode: Mode.fullscreen, // Mode.overlay
-  //           language: "en",
-  //           components: [Component(Component.country, "usa")]);
+   final prediction =  PlacesAutocomplete.show(
+            context: context,
+            apiKey: "AIzaSyDTdSXb1X7vFTDvwBQhcVDY6DOMiLcjQuM",
+            mode: Mode.fullscreen, // Mode.overlay
+            language: "en",
+            components: [Component(Component.country, "usa")]);
 
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => GameCreate()),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GameCreate()),
+    );
     // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();

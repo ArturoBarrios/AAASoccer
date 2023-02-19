@@ -162,6 +162,8 @@ PODS:
     - StripeCore (= 23.1.1)
   - SwiftFormat/CLI (0.50.8)
   - SwiftLint (0.50.3)
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - amplify_api_ios (from `.symlinks/plugins/amplify_api_ios/ios`)
@@ -181,6 +183,7 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -248,6 +251,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/ios"
   stripe_ios:
     :path: ".symlinks/plugins/stripe_ios/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   Amplify: 010d6a71db20812d9e3062db1fe827393d01e584
@@ -296,6 +301,7 @@ SPEC CHECKSUMS:
   StripeUICore: 149ba9dda3f48dff829d2ebb2e3d455bc59dc0ed
   SwiftFormat: 16f04fcde066f40004f51e26bc95bc14dc377d6f
   SwiftLint: 77f7cb2b9bb81ab4a12fcc86448ba3f11afa50c6
+  url_launcher_ios: fb12c43172927bb5cf75aeebd073f883801f1993
 
 PODFILE CHECKSUM: 189f4315f704f49d8687a645a03ebc1cdf30e9a2
 

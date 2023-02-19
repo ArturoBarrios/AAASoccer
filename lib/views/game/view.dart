@@ -3,10 +3,12 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import '../../components/profile.dart';
 import '../../components/payment_screen.dart';
+import '../../commands/location_command.dart';
 import '../../components/card_form_screen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../components/headers.dart';
 import 'dart:async';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class PickupView extends StatefulWidget {
@@ -163,8 +165,8 @@ class MapPageState extends State<MyMapPage> {
   Completer<GoogleMapController> _controller = Completer(); 
   static const CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(
-      32.776665,
-      -96.796989,
+      0,
+      0,
     ),
     zoom: 10.0,
   );
@@ -182,6 +184,7 @@ class MapPageState extends State<MyMapPage> {
     return cameraPosition;
 
   }
+  
  
   @override
   Widget build(BuildContext context) {
@@ -192,6 +195,7 @@ class MapPageState extends State<MyMapPage> {
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
+        onTap:(argument) => LocationCommand().openMap(widget.latitude, widget.longitude),
       ),
     );
   }

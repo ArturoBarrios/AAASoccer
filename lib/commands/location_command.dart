@@ -9,6 +9,7 @@ import '../models/app_model.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class LocationCommand extends BaseCommand {
@@ -29,6 +30,15 @@ class LocationCommand extends BaseCommand {
 //     }
 //     return _predictionList;
 //   }
+
+  Future<void> openMap(double latitude, double longitude) async{
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunchUrl(Uri.parse(googleUrl))) {
+      await launchUrl(Uri.parse(googleUrl));
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
   
 
  Future<Map<String, dynamic>> createLocation(Map<String, dynamic> locationInput ) async{
