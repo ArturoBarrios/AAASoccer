@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../components//address_search.dart';
 import '../../commands/game_command.dart';
+import '../../commands/location_command.dart';
 import '../../commands/event_command.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
@@ -110,13 +111,18 @@ class _GameCreateState extends State<GameCreate> {
         TextField(
           controller: locationController,
           decoration: new InputDecoration.collapsed(hintText: 'Location'),
-          onTap: () async {
-            showSearch(
-              context: context,
-              delegate: AddressSearch(),
-            );
-          }
-        ),
+          // onTap: () async {
+          //   showSearch(
+          //     context: context,
+          //     delegate: AddressSearch(),
+          //   );
+          // },
+          onChanged: (value) => {
+            LocationCommand().place_api_autocomplete(value),
+          } ),
+            
+          
+        
         TextField(
           controller: awayteamController,
           decoration: new InputDecoration.collapsed(hintText: 'Away'),          
