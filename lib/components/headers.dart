@@ -11,6 +11,7 @@ class Headers extends StatefulWidget {
 
 AppBar getMainHeader(BuildContext context){
   AppBar appBar = AppBar(
+        elevation: 2,
         centerTitle: false,
         title: new Padding(
             padding: const EdgeInsets.only(left: 20.0),
@@ -55,8 +56,37 @@ AppBar getMainHeader(BuildContext context){
 
       return appBar;
 }
+
+AppBar getBackHeader(BuildContext context){
+  AppBar appBar = AppBar(
+        elevation: 2,
+        centerTitle: false,
+        title: new Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: 
+             IconButton(
+                icon: const Icon(Icons.keyboard_backspace_sharp),
+                tooltip: 'Notifications',
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+        backgroundColor: Colors.orange.shade500,
+        actions: <Widget>[
+        
+        ],
+      );
+
+      return appBar;
+
+}
+  
+
   
 }
+
+
 
 
 class _Headers extends State<Headers> {
