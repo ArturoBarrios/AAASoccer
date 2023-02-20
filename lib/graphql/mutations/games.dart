@@ -1,4 +1,63 @@
-class GameMutations {
+class GameMutations {  
+  String partiallyUpdateGameEvent(Map<String, dynamic> gameInput) {
+    String updateGame = """
+      mutation {
+        partialUpdateEvent(id: "${gameInput['event']['_id']}" ,
+          data: {              
+            name: "Arturo's soccerrr",          
+          }) {
+             name        	
+                  _id  
+                  type                  
+                  archived
+                  deleted    
+                  price{                    
+                    _id
+                    amount
+                    event{
+                      _id
+                      name                      
+                    }
+                  }
+                  location{
+                    data{
+                    _id
+                    latitude
+                    longitude
+                    }
+                  }
+                  eventUserOrganizers{                    
+                      users{
+                        data{
+                          _id
+                          name
+                        }
+                      }    
+                      event{                        
+                          _id
+                          name  
+                          archived
+                          deleted                      
+                      }                
+                    }
+            
+            
+    				
+                 
+          } 
+      partialUpdateGame(id: "356945639882359373" ,
+          data: {              
+            homegoals: 1,          
+          }) {
+    					_id
+    					homegoals
+  }
+        }
+        """;
+
+    return updateGame;
+  }
+
   String createGame(Map<String, dynamic> gameInput,
       Map<String, dynamic> eventInput, Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
     String createGame = """

@@ -15,6 +15,7 @@ import '../commands/player_command.dart';
 import '../enums/EventType.dart';
 import '../graphql/queries/games.dart';
 import '../commands/user_command.dart';
+import '../graphql/mutations/games.dart';
 import '../commands/team_command.dart';
 import '../commands/training_command.dart';
 import '../commands/requests_command.dart';
@@ -44,6 +45,41 @@ class EventCommand extends BaseCommand {
     } on ApiException catch (e) {
       print('Mutation failed: $e');
       return createEventResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> partiallyUpdateGame(
+  dynamic gameEventInput ) async {
+    print("partiallyUpdateGame");
+    print("gameInput: " + gameEventInput.toString());
+    Map<String, dynamic> partiallyUpdateGameResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query':
+              GameMutations().partiallyUpdateGameEvent(gameEventInput),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+
+      return partiallyUpdateGameResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return partiallyUpdateGameResponse;
+
+
     }
   }
 
@@ -345,6 +381,19 @@ class EventCommand extends BaseCommand {
     }
 
     return getEventResp;
+  }
+
+  bool isMyEvent(dynamic event){
+    bool resp = false;
+    dynamic eventUserOrganizers = event['eventUserOrganizers']['users']['data'];
+
+    for(int i = 0; i<eventUserOrganizers.length; i++){
+      if(eventUserOrganizers[i]['_id'] == appModel.currentUser['_id']){
+        resp = true;
+      }
+    }
+
+    return resp;
   }
 
   Future<Map<String, dynamic>> createPrice(dynamic paymentInput, dynamic eventInput) async {

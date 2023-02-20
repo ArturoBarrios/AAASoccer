@@ -31,6 +31,23 @@ class LocationCommand extends BaseCommand {
 //     return _predictionList;
 //   }
 
+   Future<void> place_api_autocomplete(String searchText) async{        
+        print("place_api_autocomplete()");
+        try{
+            String autocompleteUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input='+searchText.toString()+'&key='+'AIzaSyDTdSXb1X7vFTDvwBQhcVDY6DOMiLcjQuM';
+            http.Response response = await http.get(
+            Uri.parse(autocompleteUrl),
+            headers: <String, String>{          
+              'Content-Type': 'application/json'
+            },        
+          );
+          print("Response: "+response.body.toString());
+
+        } catch(e){
+          print(e);
+        }
+    }
+
   Future<void> openMap(double latitude, double longitude) async{
     String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
     if (await canLaunchUrl(Uri.parse(googleUrl))) {

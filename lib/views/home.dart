@@ -31,6 +31,7 @@ import '../views/chat/view.dart';
 //commands
 import '../commands/home_page_command.dart';
 import '../commands/tournament_command.dart';
+import '../commands/event_command.dart';
 import '../commands/league_command.dart';
 import '../components/Buttons/seed_data_button.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
@@ -241,18 +242,19 @@ class _Home extends State<Home> {
   void dispose() {
     _selectEventController.removeListener(_loadMore);
     super.dispose();
-  }
+  }  
 
   Widget getCard(String selectedKey, dynamic selectedObject, Svg svgImage){
     print("getCard()");
     print("selectedKey: " + selectedKey);
     print("selectedObject: " + selectedObject.toString());
+    bool isMyEvent = EventCommand().isMyEvent(selectedObject['event']);
 
     
-    Widget card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: false);
+    Widget card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
 
     if(selectedKey==Constants.PICKUP){
-      card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: false);
+      card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     }
     else if(selectedKey==Constants.TRAINING){
       card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage);
