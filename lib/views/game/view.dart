@@ -98,52 +98,7 @@ class _PickupViewState extends State<PickupView> {
         )
         // MyMapPage()
         )
-    );
-          
-      
-      // Center(
-      //     child: Column(children: [     
-      //       GoogleMap(
-      //     onMapCreated: _onMapCreated,
-      //     initialCameraPosition: CameraPosition(
-      //       target: _center,
-      //       zoom: 11.0,
-      //     ),
-      //   ),      
-      //   TextField(
-      //     readOnly: !widget.isMyEvent,
-      //     controller: nameController,
-      //     decoration: new InputDecoration.collapsed(hintText: 'Name'),
-      //   ),
-      //   TextField(
-      //     readOnly: !widget.isMyEvent,
-      //     controller: nameController,
-      //     decoration: new InputDecoration.collapsed(hintText: 'Home'),
-      //   ),                
-      //   GestureDetector(
-      //       onTap: () {
-      //         widget.game['event']['price'] == 0 ? 
-      //         //free game
-      //         print("hi")
-      //         :                        
-      //         Navigator.push(context, MaterialPageRoute<void>(
-      //           builder: (BuildContext context) {
-      //             return CardFormScreen(
-      //               priceObject:                   
-      //                 widget.game['event']['price'] 
-      //              );
-      //           }));
-            
-              
-      //       },
-      //       child: Text("Join Event")),
-      //   GestureDetector(
-      //       onTap: () {
-      //         goBack();
-      //       },
-      //       child: Text("Back to Home")),
-      // ])),      
-    
+    );      
   }
 
   

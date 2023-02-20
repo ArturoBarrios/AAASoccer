@@ -9,6 +9,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../views/game/view.dart';
+import '../../views/game/update.dart';
 import '../../assets/icons/plus.svg';
 
 class PickupCard2 extends StatefulWidget {
@@ -70,8 +71,10 @@ class _PickupCard2 extends State<PickupCard2> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-    print("widget nameeeeee: ");
-    print(widget.gameObject.toString());
+    print("widget: ");
+    print("widget.gameObject.toString(): "+widget.gameObject.toString());
+    print("widget.isMyEvent.toString(): "+widget.isMyEvent.toString());
+    
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -79,11 +82,14 @@ class _PickupCard2 extends State<PickupCard2> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PickupView(isMyEvent: widget.isMyEvent, game: widget.gameObject);
+            return widget.isMyEvent ? 
+              GameUpdate(game: widget.gameObject)
+              :
+              PickupView(isMyEvent: widget.isMyEvent, game: widget.gameObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 1),
+          duration: Duration(seconds: 0),
         );
       },
       child: AnimatedContainer(
