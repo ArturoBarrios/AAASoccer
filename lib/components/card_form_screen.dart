@@ -154,8 +154,18 @@ Widget paymentWidgetToShow(PaymentType status){
 
 }
 
+
+
+Future<void> addNewCard() async {
+  
+}
+
 Future<void> getCustomerDetails() async {
   await PaymentCommand().getCustomerDetails();
+}
+
+Future<void> getCustomerPaymentMethods() async {
+  await PaymentCommand().getCustomerPaymentMethods();
 }
 
 @override
@@ -167,7 +177,11 @@ Future<void> getCustomerDetails() async {
     //foreach customer, get payment methods
 
     //todo check if customer exists, if so show credit card options. 
-    getCustomerDetails();
+    dynamic customerResponse = getCustomerDetails();
+    print("customerResponse: "+customerResponse.toString());
+    if(customerResponse['success']){
+      //allow adding new card button
+    }
     
   }
 
@@ -185,8 +199,29 @@ Future<void> getCustomerDetails() async {
     Widget child;
      return Scaffold(
       appBar: AppBar(),
-      body:       
-        paymentWidgetToShow(status)
+      body:   
+        Center(
+          child: Column(children: [
+            GestureDetector(
+                        onTap: () {
+                          print("Add New Card pressed");
+                          addNewCard();
+                        },
+                        child: Text("Add New Card pressed"),
+                      ),
+            paymentWidgetToShow(status)
+
+            ])) 
+
+
+
+
+
+
+
+
+
+
         // PaymentModel().status == PaymentStatus.initial?
 
       

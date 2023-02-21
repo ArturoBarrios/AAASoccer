@@ -26,7 +26,7 @@ const generateResponse = function (intent) {
 exports.getCustomerDetails = functions.https.onRequest(async (req, res) => {
     try{
         const customer = await stripe.customers.retrieve(
-            req.header.customerId
+            "cus_NGKoZHDE8OUAUC"
           );
 
         res.status(200).send({ success: true, customer: customer });

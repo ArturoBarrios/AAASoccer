@@ -28,7 +28,7 @@ class PaymentCommand extends BaseCommand {
 
     try{
       // final url = Uri.parse("https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails");
-      final response = await http.get(
+      final getCustomerResult = await http.get(
         Uri.parse(
           'https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails'),      
          headers: {
@@ -36,8 +36,8 @@ class PaymentCommand extends BaseCommand {
 
          }
           );
-      print("response: " + response.toString());
-      return json.decode(response.body);
+      print("response: " + json.decode(getCustomerResult.body).toString());
+      return json.decode(getCustomerResult.body);
 
     } catch (e) {
       print("getCustomers error: " + e.toString());
@@ -207,20 +207,10 @@ class PaymentCommand extends BaseCommand {
       print("currency: " + currency);
       print("items: " + items.toString());
       print("priceInput: " + priceInput.toString());
-      // final url = Uri.parse("https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePayEndpointMethodId");
-      // final response = await http.post(
-      //   Uri.parse(
-      //     'https://us-central1-soccer-app-a9060.cloudfunctions.net/StripePayEndpointMethodId'),      
-      //   body: {
-      //       'useStripeSdk': true,
-      //       'paymentMethodId': paymentMethodId,
-      //       'currency': currency,            
-      //       'amount': 1000,          
-        
-      //     });
+
       final response = await http.post(
         Uri.parse(
-            'https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails'),
+            'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest'),
         body: {    
           'email': appModel.currentUser['email'],
           'amount': priceInput['amount'],
@@ -230,11 +220,7 @@ class PaymentCommand extends BaseCommand {
         
         });
         
-
-      print("return value: "+ response.toString());
-      // get customerId from response
-      
-      
+      print("return value: "+ response.toString());                  
 
       return json.decode(response.body);
 
