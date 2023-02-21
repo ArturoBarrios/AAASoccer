@@ -57,6 +57,15 @@ class EventCommand extends BaseCommand {
       "message": "Default Error",
       "data": null
     };
+  // Map<String, dynamic> gameEventInput = {
+  //   'game': {
+  //     '_id': gameInput['_id'],
+  //     'name': 'Something Random'
+  //   },
+  //   'event': {
+  //     '_id': gameInput['event']['_id'],
+  //   },
+  // };
 
     try{
       http.Response response = await http.post(

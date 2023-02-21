@@ -20,6 +20,34 @@ import '../blocs/payment/payment_bloc.dart';
 
 class PaymentCommand extends BaseCommand {
   
+  Future<Map<String, dynamic>> getCustomerDetails(    
+  ) async{
+    print("getCustomerDetailssss");
+    print("appModel.currentUser['stripeCustomers']['data'][0]['customerId']: " + appModel.currentUser['stripeCustomers']['data'][0]['customerId'].toString());
+    Map<String, dynamic> getCustomersResp = {"success": false, "message": "Default Error", "data": null};
+
+    try{
+      // final url = Uri.parse("https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails");
+      final response = await http.get(
+        Uri.parse(
+          'https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails'),      
+         headers: {
+          'customerId': appModel.currentUser['stripeCustomers']['data'][0]['customerId'].toString(),
+
+         }
+          );
+      print("response: " + response.toString());
+      return json.decode(response.body);
+
+    } catch (e) {
+      print("getCustomers error: " + e.toString());
+      getCustomersResp['message'] = e.toString();
+      return getCustomersResp;
+    }
+
+  }
+
+
   Future<Map<String, dynamic>> createPaymentIntent(
     PaymentCreateIntent event, dynamic priceInput
 
@@ -192,7 +220,7 @@ class PaymentCommand extends BaseCommand {
       //     });
       final response = await http.post(
         Uri.parse(
-            'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest'),
+            'https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails'),
         body: {    
           'email': appModel.currentUser['email'],
           'amount': priceInput['amount'],

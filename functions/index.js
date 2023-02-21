@@ -23,6 +23,20 @@ const generateResponse = function (intent) {
 }
 
 
+exports.getCustomerDetails = functions.https.onRequest(async (req, res) => {
+    try{
+        const customer = await stripe.customers.retrieve(
+            req.header.customerId
+          );
+
+        res.status(200).send({ success: true, customer: customer });
+
+    } catch (error) {
+        res.status(404).send({ success: false, error: error.message })
+    }
+});
+
+
 exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) => {
     try {
         let customerId;

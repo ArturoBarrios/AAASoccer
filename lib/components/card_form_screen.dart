@@ -83,7 +83,7 @@ Widget paymentWidgetToShow(PaymentType status){
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Card Formm', 
+                    'Card Form', 
                     style: Theme.of(context).textTheme.headline5
                   ),
                   const SizedBox(height: 20),
@@ -154,12 +154,20 @@ Widget paymentWidgetToShow(PaymentType status){
 
 }
 
+Future<void> getCustomerDetails() async {
+  await PaymentCommand().getCustomerDetails();
+}
+
 @override
   void initState() {
     super.initState();
     print("card form screen initState()");
     print("widget.priceObject: "+widget.priceObject.toString());
+    //get customers associated with email
+    //foreach customer, get payment methods
+
     //todo check if customer exists, if so show credit card options. 
+    getCustomerDetails();
     
   }
 
