@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import '../../components/profile.dart';
@@ -52,6 +53,20 @@ class _GameUpdateState extends State<GameUpdate> {
   }
 
   void partiallyUpdateEvent(dynamic gameObject) async{
+    Map<String, dynamic> gameEventInput = {
+    'game': {
+      '_id': gameObject['_id'],
+      'dataToUpdate': {
+        'name': 'Something Random'
+      }
+    },
+    'event': {
+      '_id': gameObject['event']['_id'],
+      'dataToUpdate': jsonEncode({
+        'homegoals': 5
+      })
+    },
+  };
     await EventCommand().partiallyUpdateGame(gameObject);
   }
 
@@ -108,7 +123,14 @@ class _GameUpdateState extends State<GameUpdate> {
                           partiallyUpdateEvent(widget.game);
                         },
                         child: Text("Update Game"),
-                      )
+                      ),
+                      GestureDetector(
+                    onTap: () {
+                      print("onTap Join Game");
+                      purchaseEvent();
+                    },
+                    child: Text("Join Game"),
+                  )
                   
                     ]),
                   

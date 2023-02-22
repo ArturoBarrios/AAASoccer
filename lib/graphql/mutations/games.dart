@@ -1,11 +1,14 @@
+import 'dart:convert';
+
 class GameMutations {  
-  String partiallyUpdateGameEvent(Map<String, dynamic> gameInput) {
+  String partiallyUpdateGameEvent(Map<String, dynamic> gameEventInput) {
     String updateGame = """
       mutation {
-        partialUpdateEvent(id: "${gameInput['event']['_id']}" ,
-          data: {              
-            name: "Arturo's soccerrr",          
-          }) {
+        partialUpdateEvent(id: "${gameEventInput['event']['_id']}" ,
+          data:  {             
+            ${gameEventInput['event']['data']}    
+            }
+          ) {
              name        	
                   _id  
                   type                  
@@ -45,9 +48,9 @@ class GameMutations {
     				
                  
           } 
-      partialUpdateGame(id: "356945639882359373" ,
+      partialUpdateGame(id: "${gameEventInput['game']['_id']}" ,
           data: {              
-            homegoals: 1,          
+            ${gameEventInput['game']['data']}            
           }) {
     					_id
     					homegoals

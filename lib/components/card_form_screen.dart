@@ -61,7 +61,7 @@ void createPaymentIntent() async {
     print("userInput: "+userInput.toString());
     print("widget.priceObject: "+widget.priceObject.toString());
 
-    await UserCommand().addEvent(userInput, widget.priceObject['event']);
+    await UserCommand().addEvent(userInput, widget.priceObject);
     UserCommand().updatePaymentStatus(PaymentType.success);
     print("move on to next screen");
     // Navigator.pop(context);
@@ -83,7 +83,7 @@ Widget paymentWidgetToShow(PaymentType status){
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Card Formm', 
+                    'Card Form', 
                     style: Theme.of(context).textTheme.headline5
                   ),
                   const SizedBox(height: 20),
@@ -154,12 +154,35 @@ Widget paymentWidgetToShow(PaymentType status){
 
 }
 
+
+
+Future<void> addNewCard() async {
+  
+}
+
+Future<void> getCustomerDetails() async {
+  await PaymentCommand().getCustomerDetails();
+}
+
+Future<void> getCustomerPaymentMethods() async {
+  
+  await PaymentCommand().getCustomerPaymentMethods();
+}
+
 @override
   void initState() {
     super.initState();
     print("card form screen initState()");
     print("widget.priceObject: "+widget.priceObject.toString());
+    //get customers associated with email
+    //foreach customer, get payment methods
+
     //todo check if customer exists, if so show credit card options. 
+    dynamic customerResponse = getCustomerPaymentMethods();
+    // print("customerResponse: "+customerResponse.toString());
+    // if(customerResponse['success']){
+    //   //allow adding new card button
+    // }
     
   }
 
@@ -177,8 +200,29 @@ Widget paymentWidgetToShow(PaymentType status){
     Widget child;
      return Scaffold(
       appBar: AppBar(),
-      body:       
-        paymentWidgetToShow(status)
+      body:   
+        Center(
+          child: Column(children: [
+            GestureDetector(
+                        onTap: () {
+                          print("Add New Card pressed");
+                          addNewCard();
+                        },
+                        child: Text("Add New Card pressed"),
+                      ),
+            paymentWidgetToShow(status)
+
+            ])) 
+
+
+
+
+
+
+
+
+
+
         // PaymentModel().status == PaymentStatus.initial?
 
       

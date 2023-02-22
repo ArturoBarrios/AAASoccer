@@ -10,15 +10,12 @@ import '../../components/headers.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class PickupView extends StatefulWidget {
-  const PickupView(
-    {Key? key, required this.isMyEvent, required this.game })
-    : super(key: key);
+  const PickupView({Key? key, required this.isMyEvent, required this.game})
+      : super(key: key);
 
-    final bool isMyEvent;
-    final dynamic game;
-
+  final bool isMyEvent;
+  final dynamic game;
 
   @override
   _PickupViewState createState() => _PickupViewState();
@@ -32,31 +29,30 @@ class _PickupViewState extends State<PickupView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
-  
+
   bool _isLoading = true;
   late LatLng _center = LatLng(45.521563, -122.677433);
   late GoogleMapController mapController;
-
-
-
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  LatLng latLng(lat, lon){
+  LatLng latLng(lat, lon) {
     return LatLng(lat, lon);
   }
 
-  void purchaseEvent() async{
+  void purchaseEvent() async {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CardFormScreen(priceObject: widget.game['event'])),
-    );    
+      MaterialPageRoute(
+          builder: (context) =>
+              CardFormScreen(priceObject: widget.game['event'])),
+    );
     // await AdaptyPaymentService().makePurchase();
   }
 
-  void goBack(){
+  void goBack() {
     Navigator.pop(context);
   }
 
@@ -65,7 +61,7 @@ class _PickupViewState extends State<PickupView> {
     super.initState();
 
     print("initState");
-    print("game: "+widget.game.toString());
+    print("game: " + widget.game.toString());
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
     _isLoading = false;
   }
@@ -73,51 +69,55 @@ class _PickupViewState extends State<PickupView> {
   @override
   Widget build(BuildContext context) {
     print("build()");
-    print("game: "+widget.game.toString());    
-    return 
-    MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true, 
-        colorSchemeSeed: Colors.green[700],
-      ),
-      home: Scaffold(
-        appBar: Headers().getBackHeader(context),
-        body: 
-        _isLoading ? 
-        Text("Loading...")
-        :
-        Center(
-          child: Container(
-            margin: const EdgeInsets.all(10.0),
-            color: Colors.amber[600],
-            width: MediaQuery.of(context).size.width-
-                    (MediaQuery.of(context).size.width*.1),//10% padding
-            height: 200.0,
-            child: MyMapPage(latitude: widget.game['event']['location']['data'][0]['latitude'], longitude: widget.game['event']['location']['data'][0]['longitude'])
-          ),
-        )
-        // MyMapPage()
-        )
-    );      
+    print("game: " + widget.game.toString());
+    return MaterialApp(
+        theme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: Colors.green[700],
+        ),
+        home: Scaffold(
+          appBar: Headers().getBackHeader(context),
+          body: _isLoading
+              ? Text("Loading...")
+              : Center(
+                  child: Column(children: [
+                  Container(
+                      margin: const EdgeInsets.all(10.0),
+                      color: Colors.amber[600],
+                      width: MediaQuery.of(context).size.width -
+                          (MediaQuery.of(context).size.width *
+                              .1), //10% padding
+                      height: 200.0,
+                      child: MyMapPage(
+                          latitude: widget.game['event']['location']['data'][0]
+                              ['latitude'],
+                          longitude: widget.game['event']['location']['data'][0]
+                              ['longitude'])),
+                  GestureDetector(
+                    onTap: () {
+                      print("onTap Join Game");
+                      purchaseEvent();
+                    },
+                    child: Text("Join Game"),
+                  )
+                ])),
+        ));
   }
-
-  
 }
 
 class MyMapPage extends StatefulWidget {
-  const MyMapPage(
-    {Key? key, required this.latitude, required this.longitude })
-    : super(key: key);
+  const MyMapPage({Key? key, required this.latitude, required this.longitude})
+      : super(key: key);
 
-    final double latitude;
-    final double longitude;
-  
+  final double latitude;
+  final double longitude;
+
   @override
   State<MyMapPage> createState() => MapPageState();
 }
- 
+
 class MapPageState extends State<MyMapPage> {
-  Completer<GoogleMapController> _controller = Completer(); 
+  Completer<GoogleMapController> _controller = Completer();
   static const CameraPosition initialCameraPosition = CameraPosition(
     target: LatLng(
       0,
@@ -126,8 +126,11 @@ class MapPageState extends State<MyMapPage> {
     zoom: 10.0,
   );
 
-  CameraPosition getCameraPosition(double latitude, double longitude){
-    print("getCameraPosition: "+latitude.toString()+", "+longitude.toString());
+  CameraPosition getCameraPosition(double latitude, double longitude) {
+    print("getCameraPosition: " +
+        latitude.toString() +
+        ", " +
+        longitude.toString());
     CameraPosition cameraPosition = CameraPosition(
       target: LatLng(
         latitude,
@@ -137,20 +140,20 @@ class MapPageState extends State<MyMapPage> {
     );
 
     return cameraPosition;
-
   }
-  
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition: getCameraPosition(widget.latitude, widget.longitude),
+        initialCameraPosition:
+            getCameraPosition(widget.latitude, widget.longitude),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-        onTap:(argument) => LocationCommand().openMap(widget.latitude, widget.longitude),
+        onTap: (argument) =>
+            LocationCommand().openMap(widget.latitude, widget.longitude),
       ),
     );
   }

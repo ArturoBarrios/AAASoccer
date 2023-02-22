@@ -1,4 +1,4 @@
-import '../user_fragments.dart';
+import '../fragments/user_fragments.dart';
 
 class UserMutations {
   String sendFriendRequest(Map<String, dynamic> sendFriendRequestInput) {

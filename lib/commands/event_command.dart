@@ -48,6 +48,32 @@ class EventCommand extends BaseCommand {
     }
   }
 
+  String getProcessedGameInput(dynamic gameInput){
+    print("getProcessedGameInput");
+    print("gameInput: " + gameInput.toString());
+    
+    String processedGameInput = """
+    """;
+    processedGameInput = """
+      homegoals: 1,  
+    """;
+
+    return processedGameInput;
+
+  }
+  
+  String getProcessedEventInput(dynamic eventInput){
+    print("getProcessedEventInput");
+    print("eventInput: " + eventInput.toString());
+    String processedEventInput = """
+    """;
+    processedEventInput = """
+      name: "test"
+    """;
+
+    return processedEventInput;
+  }
+
   Future<Map<String, dynamic>> partiallyUpdateGame(
   dynamic gameEventInput ) async {
     print("partiallyUpdateGame");
@@ -58,6 +84,20 @@ class EventCommand extends BaseCommand {
       "data": null
     };
 
+  Map<String, dynamic> processedGameEventInput = {
+    'game': {
+      '_id': gameEventInput['_id'],
+      'data': getProcessedGameInput(gameEventInput),
+      'name': 'Something Random'
+    },
+    'event': {
+      '_id': gameEventInput['event']['_id'],
+      'data': getProcessedEventInput(gameEventInput['event'])
+    },
+  };
+
+  String test = "name: \"Something Random\"";
+
     try{
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -67,7 +107,7 @@ class EventCommand extends BaseCommand {
         },
         body: jsonEncode(<String, String>{
           'query':
-              GameMutations().partiallyUpdateGameEvent(gameEventInput),
+              GameMutations().partiallyUpdateGameEvent(processedGameEventInput),
         }),
       );
       print("response body: ");

@@ -1,4 +1,4 @@
-import '../user_fragments.dart';
+import '../fragments/user_fragments.dart';
 
 class UserQueries {
   String getUserByEmail(Map<String, dynamic> userInput ){
