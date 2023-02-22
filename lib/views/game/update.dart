@@ -67,7 +67,7 @@ class _GameUpdateState extends State<GameUpdate> {
       })
     },
   };
-    await EventCommand().partiallyUpdateGame(gameEventInput);
+    await EventCommand().partiallyUpdateGame(gameObject);
   }
 
   void goBack() {

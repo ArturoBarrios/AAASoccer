@@ -26,10 +26,52 @@ const generateResponse = function (intent) {
 exports.getCustomerDetails = functions.https.onRequest(async (req, res) => {
     try{
         const customer = await stripe.customers.retrieve(
+            req.query.customerId
+          );
+
+        res.status(200).send({ success: true, customer: customer });
+
+    } catch (error) {
+        res.status(404).send({ success: false, error: error.message })
+    }
+});
+
+exports.listPaymentMethods = functions.https.onRequest(async (req, res) => {
+    try{
+        const paymentMethods = await stripe.paymentMethods.list({
+            customer: req.query.customerId,
+            type: 'card',
+          });
+
+        res.status(200).send({ success: true, paymentMethods: paymentMethods });
+
+    } catch (error) {
+        res.status(404).send({ success: false, error: error.message })
+    }
+});
+
+exports.getCustomerDetails = functions.https.onRequest(async (req, res) => {
+    try{
+        const customer = await stripe.customers.retrieve(
             "cus_NGKoZHDE8OUAUC"
           );
 
         res.status(200).send({ success: true, customer: customer });
+
+    } catch (error) {
+        res.status(404).send({ success: false, error: error.message })
+    }
+});
+
+
+exports.stripeAttachPaymentMethod = functions.https.onRequest(async (req, res) => {
+    try{
+        const paymentMethod = await stripe.paymentMethods.attach(
+            req.body.paymentMethodId,
+            {customer: req.body.customerId}
+        );       
+    
+        res.status(200).send({ success: true, paymentMethod: paymentMethod });
 
     } catch (error) {
         res.status(404).send({ success: false, error: error.message })
@@ -73,16 +115,14 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
             payment_method_types: ['card'],
             payment_method: req.body.paymentMethodId,
             use_stripe_sdk: true,   
-            confirmation_method: 'manual',         
+            confirmation_method: 'manual',  
+            setup_future_usage: 'off_session'       
             
         });
 
         var resp =  generateResponse(paymentIntent);
 
-
-        // const intent = await stripe.setupIntents.create({
-        //     customer: customerId
-        // })        
+        
 
         resp['ephemeralKey'] = ephemeralKey.secret;
         resp['customer'] = customerId;
@@ -99,55 +139,7 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
 });
 
 
-// // Create and deploy your first functions
-// // https://firebase.google.com/docs/functions/get-started
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
 
-
-// const functions = require("firebase-functions");
-// const stripe = require('stripe')("sk_test_51M6l0pDUXwYENeT4BaAfVT8ewp4Ujzb4NyD8ebB0F0s14xujWNb1MESrqqrSbtKBIm6MdnE0odAHc1IBqEyS97aH00Kzayd323") //
-
-// const calculateOrderAmount = (items) => {
-//     prices = [];
-//     catalog = [
-//         { 'id': '0', 'price': 2.99 },
-//         { 'id': '1', 'price': 3.99 },
-//         { 'id': '2', 'price': 4.99 },
-//         { 'id': '3', 'price': 5.99 },
-//         { 'id': '4', 'price': 6.99 },
-//     ];
-
-//     items.forEach(item => {
-//         price = catalog.find(x => x.id == item.id).price;
-//         prices.push(price);
-//     });
-
-//     return parseInt(prices.reduce((a, b) => a + b, 0) * 100);
-// }
-
-// const generateResponse = function (intent) {
-//     switch (intent.status) {
-//         case 'requires_action':
-//             return {
-//                 clientSecret: intent.clientSecret,
-//                 requiresAction: true,
-//                 status: intent.status
-//             };
-//         case 'requires_payment_method':
-//             console.log("Payment Failed");
-//             return {
-//                 'error': 'Your card was denied, please provide a new payment method'
-//             };
-//         case 'succeeded':
-//             console.log("Payment Succeeded");
-//             return {clientSecret: intent.clientSecret, status: intent.status}
-//     }
-//     return error;
-// }
 
 //payment intent
 exports.StripePayEndpointMethodId = functions.https.onRequest(async(req, res) => {
