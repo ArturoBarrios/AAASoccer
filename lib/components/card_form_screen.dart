@@ -11,7 +11,7 @@ import '../models/payment_model.dart';
 import '../commands/payment_commands.dart';
 import '../commands/user_command.dart';
 import '../views/home.dart';
-
+import 'dart:async';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
@@ -26,7 +26,7 @@ class CardFormScreen extends StatefulWidget {
 }
 
 class _CardFormScreen extends State<CardFormScreen> {
-  
+  bool isLoading = true;
 
 void createPaymentIntent() async {
   Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
@@ -165,13 +165,19 @@ Future<void> getCustomerDetails() async {
 }
 
 Future<void> getCustomerPaymentMethods() async {
-  
   await PaymentCommand().getCustomerPaymentMethods();
+  setState(() {
+    var timer = Timer(Duration(milliseconds: 500), () => print('done'));
+
+    timer.cancel();
+    isLoading = false;
+  });
 }
 
 @override
   void initState() {
     super.initState();
+    isLoading = true;
     print("card form screen initState()");
     print("widget.priceObject: "+widget.priceObject.toString());
     //get customers associated with email
@@ -197,10 +203,14 @@ Future<void> getCustomerPaymentMethods() async {
      CardFieldInputDetails _cardFieldInputDetails = context
         .select<PaymentModel, CardFieldInputDetails>((value) => value.cardFieldInputDetails);
 
+      // bool isLoading =
+      //   context.select<CardFormScreen, bool>((value) => value.isLoading);
+
     Widget child;
      return Scaffold(
       appBar: AppBar(),
       body:   
+        !isLoading ? 
         Center(
           child: Column(children: [
             GestureDetector(
@@ -208,11 +218,13 @@ Future<void> getCustomerPaymentMethods() async {
                           print("Add New Card pressed");
                           addNewCard();
                         },
-                        child: Text("Add New Card pressed"),
+                        child: Text("Add New Card"),
                       ),
             paymentWidgetToShow(status)
 
             ])) 
+            :
+            Center(child: CircularProgressIndicator())
 
 
 

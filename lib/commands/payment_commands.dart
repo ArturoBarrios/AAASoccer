@@ -29,25 +29,26 @@ class PaymentCommand extends BaseCommand {
       return getCustomerPaymentMethodsResultResp;
     }
     try{
-
+      Map<String, String> queryParams = {
+        'customerId': appModel.currentUser['stripeCustomers']['data'][0]['customerId'].toString(),        
+      };
+      final uri =
+        Uri.https("us-central1-soccer-app-a9060.cloudfunctions.net", '/listPaymentMethods', queryParams);
+      
       final listPaymentMethodsResp = await http.get(
-        Uri.parse(
-          'https://us-central1-soccer-app-a9060.cloudfunctions.net/listPaymentMethods'),      
-         headers: {
-          'customerId': appModel.currentUser['stripeCustomers']['data'][0]['customerId'].toString(),
-
-         }
-          );
+        uri 
+      );
       print("response: " + json.decode(listPaymentMethodsResp.body).toString());
       return json.decode(listPaymentMethodsResp.body);
 
     } catch (e) {
-      print("getCustomers error: " + e.toString());
+      print("getCustomerPaymentMethods error: " + e.toString());
       getCustomerPaymentMethodsResultResp['message'] = e.toString();
       return getCustomerPaymentMethodsResultResp;
     }
 
   }
+
 
   Future<Map<String, dynamic>> getCustomerDetails(    
   ) async{
@@ -61,7 +62,7 @@ class PaymentCommand extends BaseCommand {
       };
       // var endpointUrl = "https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails";
       final uri =
-        Uri.https('https://us-central1-soccer-app-a9060.cloudfunctions.net', '/getCustomerDetails', queryParams);
+        Uri.https('us-central1-soccer-app-a9060.cloudfunctions.net', '/getCustomerDetails', queryParams);
       final getCustomerResult = await http.get(
         uri
       );
