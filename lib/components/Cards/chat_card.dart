@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import '../../svg_widgets.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/app_model.dart';
-import '../../commands/user_command.dart';
-import '../../views/chat/view.dart';
+// import 'package:auto_size_text/auto_size_text.dart';
+// // import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+// import '../../svg_widgets.dart';
+// import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+// import '../../models/app_model.dart';
+import '../../../commands/chat_command.dart';
+// import '../../views/chat/view.dart';
 
 class ChatCard extends StatefulWidget {
   const ChatCard(
-      {Key? key, required this.chatObject, required this.svgImage})
+      {Key? key, required this.chatObject})
       : super(key: key);
-  final Map<String, dynamic> chatObject;
-  final Svg svgImage;
-  final double bevel = 10.0;
+  final Map<String, dynamic> chatObject;  
 
   @override
   State<ChatCard> createState() => _ChatCard();
@@ -24,6 +22,27 @@ void chatClicked() {
   print("Chat Clicked");
 }
 
+void removeChat(dynamic chatObject) async{
+  print("removeChat for chatObject: $chatObject");
+  dynamic deleteChatIterableInput = [
+    {"dataType": "iterableDisconnect",
+    "data": chatObject['users']['data'],
+    "_id": chatObject['_id']
+    }
+  ];
+  await ChatCommand().removeChat(chatObject);
+}
+
+void archiveChat(dynamic chatObject) async{
+  print("archiveChat for chatObject: $chatObject");
+  dynamic archiveChatIterableInput = [
+    {"dataType": "normal",
+    "data": chatObject['archived'],
+    "_id": chatObject['_id']
+    }
+  ];
+  await ChatCommand().archiveChat(chatObject);
+}
 
 class _ChatCard extends State<ChatCard> {
   final bool _isPressed = false;
@@ -38,153 +57,44 @@ class _ChatCard extends State<ChatCard> {
   Widget build(BuildContext context) {
     print("widget name: ");
     print(widget.chatObject.toString());
-    return Listener(
-        child: GestureDetector(
-      onTap: () {
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return ChatView();
-          },
-          animationType: DialogTransitionType.slideFromBottom,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 1),
-        );
-      },
-      child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: EdgeInsets.all(12.5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0 * 1),
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  color,
-                  color,
-                  color,
-                  color,
-                ],
-                stops: const [
-                  0.0,
-                  .3,
-                  .6,
-                  1.0,
-                ]),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 10.0,
-                offset: -Offset(10.0 / 2, 10.0 / 2),
-                color: Colors.white,
-              ),
-            ],
-          ),
-          child: Row(children: [
-            Container(
-                child: InnerNeumorphicCardFb1(
-                    text: widget.chatObject['']['name'],
-                    svgImage: widget.svgImage,
-                    subtitle:
-                        "test subtitle", //widget.chatObject['description'],
-                    onPressed: () {
-                      print("inside container onPressed");
-                    })),
-            GestureDetector(
-              onTap: () {
-                showAnimatedDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) {
-                    return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this chat?',
-                      contentText: '',
-                      onPositiveClick: () {                        
-                       
-                      },
-                      onNegativeClick: () {
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  },
-                  animationType: DialogTransitionType.slideFromBottom,
-                  curve: Curves.fastOutSlowIn,
-                  duration: Duration(seconds: 1),
-                );
-              },
-              child: Container(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: Image(
-                    width: 20,
-                    height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ])),
-    ));
-  }
-}
-
-class InnerNeumorphicCardFb1 extends StatelessWidget {
-  final String text;
-  final Svg svgImage;
-  final String subtitle;
-  final Function() onPressed;
-
-  const InnerNeumorphicCardFb1(
-      {required this.text,
-      required this.svgImage,
-      required this.subtitle,
-      required this.onPressed,
-      Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 150,
-        height: 150,
-        padding: const EdgeInsets.all(15.0),
+    return 
+    Card(
         child: Column(
-          children: [
-            Image(
-              width: MediaQuery.of(context).size.width * .4,
-              height: MediaQuery.of(context).size.height * .1,
-              image: svgImage,
-              color: Colors.white,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+             ListTile(
+              leading: Icon(Icons.album),
+              title: Text(widget.chatObject["name"]),
+              subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
             ),
-            // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
-            const Spacer(),
-            Text(text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                )),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12),
-            ),
-            const SizedBox(
-              height: 10,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                TextButton(
+                  child: const Text('REMOVE'),
+                  onPressed: () {
+                    print("Remove Clicked");
+                    removeChat(widget.chatObject);
+                  },
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  child: const Text('ARCHIVE'),
+                  onPressed: () {
+                    print("Remove Clicked");
+                    removeChat(widget.chatObject);
+                  },
+                ),
+                const SizedBox(width: 8),
+              ],
             ),
           ],
         ),
-      ),
-    );
+      );
   }
+
 }
+
+
+
+

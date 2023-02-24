@@ -383,8 +383,10 @@ type Message {
 }
 
 type Chat  {  
+  name: String
   messages: Message @relation #has many messages
   users: [User] @relation
+  archived: Boolean @default(value: false)
 }
 
 type AppSubscription   {

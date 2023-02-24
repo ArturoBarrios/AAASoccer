@@ -83,39 +83,6 @@ class UserMutations {
     return updateUserString;
   }
 
-//   String addFriend(
-//       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
-//     String addFriendString = """      
-//       mutation {
-//         updateUser(id: ${userInput['_id']},
-//   				data: {            
-//             friends:   {
-//               connect: [
-//                 ${friendInput['_id']}                                                                                 
-//               ]
-
-//             }           
-//           }                      
-//         ){
-//         _id
-//         name
-//         email
-//         friends{   
-//                 data{
-//                   user{
-//                     _id
-//                     name
-//                     email   
-//                     OSPID                
-//                   }                  
-//                 }                  
-//               }                                     			
-//   }
-// }
-//         """;
-
-//     return addFriendString;
-//   }
   
   String addFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
