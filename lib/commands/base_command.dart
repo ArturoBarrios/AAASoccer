@@ -134,7 +134,7 @@ class BaseCommand {
           print("deviceState found for userID: "+appModel.currentUser['_id']);
           var playerId = deviceState.userId!;
           Map<String,dynamic>userInput = {
-            'user_id': appModel.currentUser['_id'],
+            '_id': appModel.currentUser['_id'],
             "OSPID": playerId
           };
           await UserCommand().updateUser(userInput);

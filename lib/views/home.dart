@@ -21,6 +21,7 @@ import '../components/Cards/tournament_card.dart';
 import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
 import '../components/Cards/friend_card.dart';
+import '../components/footers.dart';
 
 //models
 import '../models/home_page_model.dart';
@@ -334,6 +335,7 @@ class _Home extends State<Home> {
       print("selectedKey in build: " + selectedKey);
 
     return (Scaffold(
+      
       appBar: Headers().getMainHeader(context),
       body: 
       // _isFirstLoadRunning
@@ -408,7 +410,7 @@ class _Home extends State<Home> {
                     // ),
                   ])
             ]),
-      bottomNavigationBar: const BottomNav(),
+      bottomNavigationBar: const Footers().getMainBottomNav(context),
     ));
   }
 }

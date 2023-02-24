@@ -1,82 +1,20 @@
 import 'package:flutter/material.dart';
+import '../components/profile.dart';
+import '../views/chats/view.dart';
 import '../views/request/view.dart';
 import '../views/friends/view.dart';
 import '../components/history.dart';
 import '../services/amplify_auth_service.dart';
 
-
-class BottomNav extends StatefulWidget {
-  const BottomNav({Key? key}) : super(key: key);
-
-  @override
-  State<BottomNav> createState() => _BottomNav();
-}
-
-class _BottomNav extends State<BottomNav> {
-  final orangeColor = const Color(0xffFF8527);
-  
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
-
-  // void _onItemTapped(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //   });
-  // }
-  //testing methods(I know, what an amazing place to test models) :)
-
-  void testFunction() async {
-    // TournamentCommand().bergerTable(14);
-  //  final prediction =  PlacesAutocomplete.show(
-  //           context: context,
-  //           apiKey: "AIzaSyDTdSXb1X7vFTDvwBQhcVDY6DOMiLcjQuM",
-  //           mode: Mode.fullscreen, // Mode.overlay
-  //           language: "en",
-  //           components: [Component(Component.country, "usa")]);
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => GameCreate()),
-    // );
-    AmplifyAuthService().signOut();
-    // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
-    //  await DatabaseSeeder().run();
-    // print("test text updated");
-    // HomePageCommand().testUpdateText();
-
-    // print(HomePageModel().testText);
-    // Map<String,dynamic> userInput = {
-    //   "name": "Arturo",
-    //   "phone": "1234567890",
-    //   "email": "email",
-    //   "username": "username",
-    //   "birthdate": "birthdate",
-
-    // };
-    // PlayerCommand().createPlayer(userInput, {}, false);
-  }
-
-  List<int>? selectedIndexes;
+class Footers extends StatefulWidget {
+  const Footers({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    int selectIndex = 0;
-    String testText = "test";
-    return BottomAppBar(
+  State<Footers> createState() => _Footers();
+
+
+BottomAppBar getMainBottomNav(BuildContext context){
+  BottomAppBar bottomAppBar = BottomAppBar(
       color: Colors.white,
       child: SizedBox(
         height: 56,
@@ -107,7 +45,7 @@ class _BottomNav extends State<BottomNav> {
                   icon: Icons.add_outlined,
                   selected: false,                  
                   onPressed: () async {
-                     testFunction();
+                    
                 //     int? index = await showAnimatedDialog<int>(
                 //       context: context,
                 //       barrierDismissible: true,
@@ -169,65 +107,39 @@ class _BottomNav extends State<BottomNav> {
         ),
       ),
     );
-  }
-  //   double height = MediaQuery.of(context).size.height * .06;
-  //   double width = MediaQuery.of(context).size.width * .06;
-  //   final ButtonStyle buttonStyle = ButtonStyle(
-  //     backgroundColor: MaterialStateProperty.all(Colors.green),
-  //     fixedSize: MaterialStateProperty.all( Size(40, height)),
-  //     shape: MaterialStateProperty.all(CircleBorder()),
-  //   );
-  //   return SizedBox(
-  //       height: MediaQuery.of(context).size.height * .1,
-  //       width: MediaQuery.of(context).size.width,
-  //       child: Stack(children: <Widget>[
-  //         Container(
-  //           height: MediaQuery.of(context).size.height * .1,
-  //           width: MediaQuery.of(context).size.width,
-  //           alignment: Alignment.bottomLeft,
-  //           child: BottomNavigationBar(
-  //             items: const <BottomNavigationBarItem>[
-  //               BottomNavigationBarItem(
-  //                 icon: Icon(Icons.home),
-  //                 label: 'Home',
-  //               ),
-  //               // BottomNavigationBarItem(
-  //               //   icon: Icon(Icons.business),
-  //               //   label: 'Event History',
-  //               // ),
-  //               BottomNavigationBarItem(
-  //                 icon: Icon(Icons.school),
-  //                 label: 'Wagers',
-  //               ),
-  //             ],
-  //             currentIndex: _selectedIndex,
-  //             selectedItemColor: Colors.amber[800],
-  //             onTap: _onItemTapped,
-  //           ),
-  //         ),
-  //         Container(
-  //           margin: EdgeInsets.only(
-  //               bottom: MediaQuery.of(context).size.height * .04),
-  //           child: Align(
-  //             alignment: Alignment.center,
-  //             child: ElevatedButton(
-  //               style: buttonStyle,
-  //               onPressed: () {
-  //                 testFunction();
-  //                 //uncomment
-  //                 // Navigator.push(
-  //                 //   context,
-  //                 //   MaterialPageRoute(
-  //                 //       builder: (context) =>  WagerCreate()),
-  //                 // );
-  //               },
-  //               child: Text('+'),
-  //             ),
-  //           ),
-  //         )
-  //       ]));
-  // }
+
+      return bottomAppBar;
 }
+
+BottomNavigationBar getChatBottomNav(BuildContext context){
+  BottomNavigationBar bottomAppBar = BottomNavigationBar(
+        selectedItemColor: Colors.red,
+        unselectedItemColor: Colors.grey.shade600,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+        type: BottomNavigationBarType.fixed,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: "Chats",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group_work),
+            label: "Channels", 
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_box),
+            label: "Profile"
+          ),
+        ],
+      );
+
+      return bottomAppBar;
+}
+  
+}
+
+
 
 class IconBottomBar extends StatelessWidget {
   const IconBottomBar(
@@ -290,3 +202,40 @@ class IconBottomBar2 extends StatelessWidget {
     );
   }
 }
+
+
+
+
+class _Footers extends State<Footers> {
+  void onTapMenu(){
+
+  }
+  final title="Jefferson";
+  final upperTitle = "Welcome back,";
+  
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+        centerTitle: false,
+        title: new Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text("Find Soccer Near You")),
+        backgroundColor: Colors.orange.shade500,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Go to the next page',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Profile();
+                },
+              ));
+            },
+          ),
+        ],
+      );
+  }
+}
+
+

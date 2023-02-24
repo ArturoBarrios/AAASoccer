@@ -204,7 +204,7 @@ class EventCommand extends BaseCommand {
           print("is your event!");
           isYourEvent = true;
         }
-        Map<String, dynamic> organizerUserInput = {"user_id": toUserId};
+        Map<String, dynamic> organizerUserInput = {"_id": toUserId};
 
         Map<String, dynamic> getUserResp =
             await UserCommand().findUserById(organizerUserInput);

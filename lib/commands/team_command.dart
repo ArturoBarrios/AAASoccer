@@ -74,7 +74,7 @@ Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
       for (var i = 0; i < teamUserOrganizers.length; i++) {        
         String toUserId = teamUserOrganizers[i]['_id'];
         Map<String, dynamic> organizerUserInput = {
-          "user_id": toUserId
+          "_id": toUserId
         };
 
         Map<String, dynamic> getUserResp = await UserCommand().findUserById(organizerUserInput);
