@@ -110,8 +110,36 @@ BottomAppBar getMainBottomNav(BuildContext context){
 
       return bottomAppBar;
 }
+
+BottomNavigationBar getChatBottomNav(BuildContext context){
+  BottomNavigationBar bottomAppBar = BottomNavigationBar(
+        selectedItemColor: Colors.red,
+        unselectedItemColor: Colors.grey.shade600,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+        type: BottomNavigationBarType.fixed,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: "Chats",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group_work),
+            label: "Channels", 
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_box),
+            label: "Profile"
+          ),
+        ],
+      );
+
+      return bottomAppBar;
+}
   
 }
+
+
 
 class IconBottomBar extends StatelessWidget {
   const IconBottomBar(

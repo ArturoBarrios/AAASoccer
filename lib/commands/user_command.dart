@@ -443,6 +443,44 @@ class UserCommand extends BaseCommand {
     friendsPageModel.selectedObjects = friends;
   }
 
+
+
+  Future<Map<String, dynamic>> findMyUserById() async {
+    print("getUser");
+    Map<String, dynamic> getUserResp = {
+      "success": false,
+      "message": "no user found",
+      "data": null
+    };
+    try {
+      print("appModel.currentUser: "+ appModel.currentUser.toString());
+      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserQueries().findUserByID(appModel.currentUser),
+        }),
+      );
+
+      print("response: ");
+      print(jsonDecode(response.body));
+      final result = jsonDecode(response.body)['data']['findUserByID'];
+      appModel.currentUser = result;
+      // if (result != null) {
+      getUserResp["success"] = true;
+      getUserResp["message"] = "user found";
+      getUserResp["data"] = result;
+      // }
+    } catch (e) {
+      print('Query failed: $e');
+    }
+    return getUserResp;
+  }
+  
   Future<Map<String, dynamic>> findUserById(Map<String, dynamic> userInput) async {
     print("getUser");
     Map<String, dynamic> getUserResp = {

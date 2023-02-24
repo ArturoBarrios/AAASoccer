@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../components/profile.dart';
-import '../../components/payment_screen.dart';
+import '../../components/footers.dart';
+import '../../components/headers.dart';
+import '../../components/search_bar.dart';
+import '../../commands/user_command.dart';
+import '../../components/conversation_list.dart';
 import '../../components/card_form_screen.dart';
 import '../../components/Cards/chat_card.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -33,6 +37,10 @@ class _ChatsViewState extends State<ChatsView> {
 
   void _firstLoad() async {
     print("first load");
+    //get user chats    
+
+    await UserCommand().findMyUserById();
+
   }
 
   @override
@@ -44,76 +52,36 @@ class _ChatsViewState extends State<ChatsView> {
 
   @override
   Widget build(BuildContext context) {
+    print("build() in chats view.dart page");
     List chats = context.select<UserModel, List>((value) => value.chats);
+    print("chats: "+ chats.toString());
 
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          title: new Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Text("Find Soccer Near You")),
-          backgroundColor: Colors.orange.shade500,
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.account_circle),
-              tooltip: 'Go to the next page',
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute<void>(
-                  builder: (BuildContext context) {
-                    return Profile();
-                  },
-                ));
+      body: SafeArea(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+            Headers().getChatHeader(context),
+            SearchBar(),
+            ListView.builder(
+              itemCount: chats.length,
+              shrinkWrap: true,
+              padding: EdgeInsets.only(top: 16),
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return ConversationList(
+                  chatObject: chats[index],
+                  name: "Name",//chats[index].name,
+                  messageText: "messageText", //chats[index].messageText,
+                  imageUrl: "imageUrl",//chats[index].imageURL,
+                  time: "time",//chats[index].time,
+                  isMessageRead: (index == 0 || index == 3) ? true : false,
+                );
               },
             ),
-          ],
-        ),
-        body: Stack(children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container( height: 200,
-              child: Expanded(
-                child: 
-                  Container(
-                    height: 100,
-                    child:
-                    ListView.builder(
-                      controller: _selectEventController,
-                      itemCount: chats.length,
-                      itemBuilder: (_, index) => ChatCard(chatObject: chats[index])
-                    ),
-
-                  )
-              ),
-              
-              ),
-              //list view
-
-              Center(
-                  child: Column(children: [
-               
-                GestureDetector(
-            onTap: () {
-               showAnimatedDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return ChatCreate();
-                      },
-                      animationType: DialogTransitionType.slideFromBottom,
-                      curve: Curves.fastOutSlowIn,
-                      duration: Duration(seconds: 1),
-                    );
-            },
-            child: Text("Create Chat")),
-                GestureDetector(
-                    onTap: () {
-                      goBack();
-                    },
-                    child: Text("Back to Home")),
-              ])),
-            ],
-          ),
-        ]));
+            
+          ])),
+      bottomNavigationBar: Footers().getChatBottomNav(context),
+    );
   }
 }

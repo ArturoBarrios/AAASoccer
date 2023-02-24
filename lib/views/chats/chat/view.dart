@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 // import '../../models/user_model.dart';
 import 'package:provider/provider.dart';
+import '../../../components/headers.dart';
 // import 'create.dart';
 
 class ChatView extends StatefulWidget {
@@ -47,6 +48,9 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {    
 
-    return Text("this is a chat screen");
+    return Scaffold(
+      appBar: Headers().getChatDetailHeader(context),
+      body: Container(),
+    );
   }
 }

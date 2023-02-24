@@ -19,7 +19,7 @@ class UserQueries {
   String findUserByID(Map<String, dynamic> userInput ){
     String getUser = """
       query getUser {
-            findUserByID(id: "${userInput['user_id']}") {      
+            findUserByID(id: "${userInput['_id']}") {      
              ${UserFragments().fullUser()}                                                                                    
           }
         }

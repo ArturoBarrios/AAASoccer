@@ -70,7 +70,7 @@ class UserMutations {
   String updateUser(Map<String, dynamic> userInput) {
     String updateUserString = """      
       mutation {
-        updateUser(id: ${userInput['user_id']},
+        updateUser(id: ${userInput['_id']},
   				data: {            
             OSPID: "${userInput['OSPID']}"                                                                                
           }                      
