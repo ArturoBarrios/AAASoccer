@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 // import '../../models/app_model.dart';
 import '../../../commands/chat_command.dart';
-// import '../../views/chat/view.dart';
+import '../../../views/chats/chat/view.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class ChatCard extends StatefulWidget {
   const ChatCard(
@@ -59,7 +60,30 @@ class _ChatCard extends State<ChatCard> {
     print(widget.chatObject.toString());
     return 
     Card(
-        child: Column(
+      
+        child: 
+        
+        
+        
+        Listener(
+        child: GestureDetector(
+      onTap: () {
+        showAnimatedDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return 
+              ChatView(chatObject: widget.chatObject);
+              
+              
+          },
+          animationType: DialogTransitionType.slideFromLeft,
+          curve: Curves.fastOutSlowIn,
+          duration: Duration(seconds: 0),
+        );
+      },
+      child:
+        Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
              ListTile(
@@ -90,6 +114,13 @@ class _ChatCard extends State<ChatCard> {
             ),
           ],
         ),
+
+        ))
+
+
+
+
+
       );
   }
 

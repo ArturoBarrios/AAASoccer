@@ -71,7 +71,7 @@ class _ChatsViewState extends State<ChatsView> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container( height: 100,
+              Container( height: 200,
               child: Expanded(
                 child: 
                   Container(
