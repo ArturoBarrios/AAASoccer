@@ -66,38 +66,39 @@ class AmplifyAuthService {
   static Future<Map<String, dynamic>> configureAmplify() async {
     print("configureAmplify");
     Map<String, dynamic> configureAmplifyResp = {"success": false, "message": "Default Error"};
-    await Amplify.addPlugin(AmplifyAuthCognito());
-    await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
+    /////////////////////////addback in when shortcode is ready
+    // await Amplify.addPlugin(AmplifyAuthCognito());
+    // await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
     // Add the following lines to your app initialization to add the DataStore plugin
-    AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance);
-    await Amplify.addPlugin(datastorePlugin);
+    // AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance);
+    // await Amplify.addPlugin(datastorePlugin);
     try {
       // Add the following line to add Auth plugin to your app.
       
       // call Amplify.configure to use the initialized categories in your app
-      await Amplify.configure(amplifyconfig);
-      print("amplify configured");
-      Map<String, dynamic> authSessionRes = await fetchUserAuthSession();
+      // await Amplify.configure(amplifyconfig);
+      // print("amplify configured");
+      // Map<String, dynamic> authSessionRes = await fetchUserAuthSession();
 
-      if(authSessionRes["data"].isSignedIn){
-        print("isSignedIn!!!!");
-        List<AuthUserAttribute> userAttributes = await Amplify.Auth.fetchUserAttributes();
-        int indexOfEmail = userAttributes.indexWhere((f) => f.userAttributeKey.key == "email");
+      // if(authSessionRes["data"].isSignedIn){
+      //   print("isSignedIn!!!!");
+      //   List<AuthUserAttribute> userAttributes = await Amplify.Auth.fetchUserAttributes();
+      //   int indexOfEmail = userAttributes.indexWhere((f) => f.userAttributeKey.key == "email");
         
-        print("indexOfEmail: ");
-        print(indexOfEmail);
-        String email = userAttributes[indexOfEmail].value;
-        print("email");
-        print(email);
-        UserModel().userEmail = email;
-        print("authSessionRes: "+authSessionRes.toString());
-        print("amplify configured end of function!");
-        configureAmplifyResp["success"] =  true;
-        configureAmplifyResp["message"] = "isSignedIn";
-        configureAmplifyResp["data"] = authSessionRes["data"];    
-        configureAmplifyResp["email"] = email;    
-        // AppModel().isSignedIn = true;
-      }
+      //   print("indexOfEmail: ");
+      //   print(indexOfEmail);
+      //   String email = userAttributes[indexOfEmail].value;
+      //   print("email");
+      //   print(email);
+        UserModel().userEmail = 'a@a.com';        
+      //   print("authSessionRes: "+authSessionRes.toString());
+      //   print("amplify configured end of function!");
+      //   configureAmplifyResp["success"] =  true;
+      //   configureAmplifyResp["message"] = "isSignedIn";
+      //   configureAmplifyResp["data"] = authSessionRes["data"];    
+      //   configureAmplifyResp["email"] = email;    
+      
+      // }
       AppModel().amplifyConfigured = true;
       
       
@@ -134,7 +135,7 @@ class AmplifyAuthService {
     Map<CognitoUserAttributeKey, String> userAttributes = {
       CognitoUserAttributeKey.name: usernameController.text.trim(),
       CognitoUserAttributeKey.email: emailController.text.trim(),
-      CognitoUserAttributeKey.preferredUsername: usernameController.text.trim(),
+      // CognitoUserAttributeKey.preferredUsername: usernameController.text.trim(),
       // Note: phone_number requires country code
       CognitoUserAttributeKey.phoneNumber: '+1' + phoneController.text.trim(),
       CognitoUserAttributeKey.birthdate: birthdateController.text.trim(),

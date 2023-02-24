@@ -29,6 +29,13 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List _chats = [];
+  List get chats => _chats;
+  set chats(List chats) {
+    _chats = chats;
+    notifyListeners();
+  }
+
 
 
 

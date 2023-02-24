@@ -87,8 +87,7 @@ class EventCommand extends BaseCommand {
   Map<String, dynamic> processedGameEventInput = {
     'game': {
       '_id': gameEventInput['_id'],
-      'data': getProcessedGameInput(gameEventInput),
-      'name': 'Something Random'
+      'data': getProcessedGameInput(gameEventInput),      
     },
     'event': {
       '_id': gameEventInput['event']['_id'],

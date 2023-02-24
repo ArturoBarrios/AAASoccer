@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/profile.dart';
-import '../../views/chat/view.dart';
+import '../views/chats/view.dart';
 
 class Headers extends StatefulWidget {
   const Headers({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ AppBar getMainHeader(BuildContext context){
             onPressed: () {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
-                  return ChatView();
+                  return ChatsView();
                 },
               ));
             },
@@ -35,7 +35,7 @@ AppBar getMainHeader(BuildContext context){
             onPressed: () {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
-                  return ChatView();
+                  return ChatsView();
                 },
               ));
             },

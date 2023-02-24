@@ -179,6 +179,8 @@ class BaseCommand {
           appModel.currentUser = user;
           print("app model user: ");
           print(appModel.currentUser);
+          print("user['chats']['data']: "+user['chats']['data'].toString());
+          userModel.chats = user['chats']['data'];
 
           //setup onesignal
           await OneSignalService().configureOneSignalUserDetails();
@@ -289,6 +291,23 @@ class BaseCommand {
 
   void setIsSigned(bool signedIn){
     appModel.isSignedIn = signedIn;
+  }
+
+  //expects list of user objects with ids
+  String formDisconnectUserIdsString(List<dynamic> users){
+    print("formDisconnectUserIdsString");
+
+    String disconnectUserIdsString = "";
+    for(int i = 0; i < users.length; i++){
+      disconnectUserIdsString += """
+          "${users[i]['id']}\n"        
+      """;
+      if(i < users.length - 1){
+        disconnectUserIdsString += ",";
+      }
+    }
+    print("disconnectUserIdsString: " + disconnectUserIdsString);
+    return disconnectUserIdsString;
   }
   
 

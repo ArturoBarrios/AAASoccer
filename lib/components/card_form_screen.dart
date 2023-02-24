@@ -1,17 +1,20 @@
 import 'dart:ui';
-import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
 import 'package:soccermadeeasy/models/Payment.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
-import '../services/stripe_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../enums/PaymentType.dart';
 import '../models/payment_model.dart';
+import '../components/Cards/payment_card.dart';
+import '../components/my_painter.dart';
 import '../commands/payment_commands.dart';
 import '../commands/user_command.dart';
 import '../views/home.dart';
-
+import 'dart:async';
+import 'package:flip_card/flip_card.dart';
+import 'package:flip_card/flip_card_controller.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
@@ -26,7 +29,11 @@ class CardFormScreen extends StatefulWidget {
 }
 
 class _CardFormScreen extends State<CardFormScreen> {
-  
+  bool isLoading = true;
+  bool showCardForm = true;
+  List paymentMethods = [];
+  late ScrollController _selectPaymentController = ScrollController();
+  final FlipCardController flipCardController = FlipCardController();
 
 void createPaymentIntent() async {
   Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
@@ -156,34 +163,50 @@ Widget paymentWidgetToShow(PaymentType status){
 
 
 
-Future<void> addNewCard() async {
-  
-}
 
 Future<void> getCustomerDetails() async {
   await PaymentCommand().getCustomerDetails();
 }
 
 Future<void> getCustomerPaymentMethods() async {
+  Map<String, dynamic> getCustomerPaymentMethodsResp = await PaymentCommand().getCustomerPaymentMethods();
+  print("getCustomerPaymentMethodsResp: "+getCustomerPaymentMethodsResp.toString());
+  int numberOfPaymentMethods = getCustomerPaymentMethodsResp['paymentMethods']['data'].length;
+  print("numberOfPaymentMethods: "+numberOfPaymentMethods.toString());
   
-  await PaymentCommand().getCustomerPaymentMethods();
+  setState(() {
+    
+    var timer = Timer(Duration(milliseconds: 500), () => print('timer done'));
+
+    timer.cancel();
+    isLoading = false;
+    paymentMethods = getCustomerPaymentMethodsResp['paymentMethods']['data'];
+  });
 }
 
 @override
   void initState() {
     super.initState();
+    isLoading = true;
     print("card form screen initState()");
-    print("widget.priceObject: "+widget.priceObject.toString());
+    print("widget.priceObject: "+ widget.priceObject.toString());
     //get customers associated with email
     //foreach customer, get payment methods
 
     //todo check if customer exists, if so show credit card options. 
     dynamic customerResponse = getCustomerPaymentMethods();
+    
     // print("customerResponse: "+customerResponse.toString());
     // if(customerResponse['success']){
     //   //allow adding new card button
     // }
     
+  }
+
+  void toggleShowCardForm(){
+    setState(() {
+      showCardForm = !showCardForm;
+    });
   }
 
 
@@ -196,23 +219,96 @@ Future<void> getCustomerPaymentMethods() async {
      
      CardFieldInputDetails _cardFieldInputDetails = context
         .select<PaymentModel, CardFieldInputDetails>((value) => value.cardFieldInputDetails);
+      
 
     Widget child;
      return Scaffold(
       appBar: AppBar(),
       body:   
+        !isLoading ? 
         Center(
           child: Column(children: [
+            //list view
+            Expanded(
+              child: ListView.builder(
+                controller: _selectPaymentController,
+                itemCount: paymentMethods.length,
+                itemBuilder: (_, index) => 
+                FlipCard(
+                  fill: Fill.fillFront,
+                  direction: FlipDirection.HORIZONTAL,
+                  controller: flipCardController,
+                  onFlip: () {
+                    print('Flip');
+                  },
+                  flipOnTouch: false,
+                  onFlipDone: (isFront) {
+                    print('isFront: $isFront');
+                  },
+                  front: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: buildCreditCard(
+                    color: Colors.red,
+                    cardNumber: "4242 4242 4242 4242",
+                    cardHolder: "Arturo Barrios",
+                    cardExpiration: "12/24",
+                  ),
+                  ),
+                  back: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child:  
+                      Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const ListTile(
+              leading: Icon(Icons.album),
+              title: Text('The Enchanted Nightingale'),
+              subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                TextButton(
+                  child: const Text('BUY TICKETS'),
+                  onPressed: () {/* ... */},
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  child: const Text('LISTEN'),
+                  onPressed: () {/* ... */},
+                ),
+                const SizedBox(width: 8),
+              ],
+            ),
+          ],
+        ),
+      ),
+
+
+
+
+
+                  )
+
+                ),
+
+                  
+                ),
+            ),   
             GestureDetector(
                         onTap: () {
                           print("Add New Card pressed");
-                          addNewCard();
+                          toggleShowCardForm();                          
                         },
-                        child: Text("Add New Card pressed"),
+                        child: Text("Add New Card"),
                       ),
-            paymentWidgetToShow(status)
+                      if(showCardForm) 
+                        paymentWidgetToShow(status)  
 
             ])) 
+            :
+            Center(child: CircularProgressIndicator())
 
 
 

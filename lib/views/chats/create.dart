@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../components/profile.dart';
-import '../../components/payment_screen.dart';
-import '../../components/card_form_screen.dart';
-import '../../views/chat/create.dart';
+import '../../commands/chat_command.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
-class ChatView extends StatefulWidget {
-  const ChatView(
+class ChatCreate extends StatefulWidget {
+  const ChatCreate(
     {Key? key })
     : super(key: key);    
 
 
   @override
-  _ChatViewState createState() => _ChatViewState();
+  _ChatCreateState createState() => _ChatCreateState();
 }
 
-class _ChatViewState extends State<ChatView> {
+class _ChatCreateState extends State<ChatCreate> {
   final nameController = TextEditingController();
   final imageController = TextEditingController();
   final secondaryNameController = TextEditingController();
@@ -37,6 +35,16 @@ class _ChatViewState extends State<ChatView> {
     print("first load");
   }
 
+  void createChat() async {
+    print("create chat");
+    dynamic chatInput = {
+      "name": nameController.text.toString(),      
+    };
+    Map<String, dynamic> createChatResp = await ChatCommand().createChat(chatInput);
+    print("createChatResp: $createChatResp");
+
+  }
+
   @override
   void initState() {
     print("chat/view.dart init state");
@@ -51,7 +59,7 @@ class _ChatViewState extends State<ChatView> {
         centerTitle: false,
         title: new Padding(
             padding: const EdgeInsets.only(left: 20.0),
-            child: Text("Find Soccer Near You")),
+            child: Text("Create Chat")),
         backgroundColor: Colors.orange.shade500,
         actions: <Widget>[
           IconButton(
@@ -72,7 +80,7 @@ class _ChatViewState extends State<ChatView> {
       Center(
           child: Column(children: [            
         TextField(
-          readOnly: true,
+          readOnly: false,
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Name'),
         ),
@@ -85,16 +93,7 @@ class _ChatViewState extends State<ChatView> {
             icon: const Icon(Icons.mark_chat_unread_rounded),
             tooltip: 'Chat',
             onPressed: () {
-              showAnimatedDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (BuildContext context) {
-                  return ChatCreate();
-                },
-                animationType: DialogTransitionType.slideFromBottom,
-                curve: Curves.fastOutSlowIn,
-                duration: Duration(seconds: 1),
-              );
+              createChat();
             },
           ),
         GestureDetector(

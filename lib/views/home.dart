@@ -27,7 +27,7 @@ import '../models/home_page_model.dart';
 import '../models/app_model.dart';
 import '../enums/EventType.dart';
 //views
-import '../views/chat/view.dart';
+import 'chats/view.dart';
 //commands
 import '../commands/home_page_command.dart';
 import '../commands/tournament_command.dart';

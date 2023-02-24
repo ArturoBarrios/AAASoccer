@@ -70,6 +70,19 @@ class UserFragments{
               chats{
                 data{
                   _id
+                  name
+                  messages{
+                    _id
+                  }
+                  users{
+                    data{
+                      _id
+                      name
+                      email
+                    }
+                  }
+                                   
+                  
                 }
               }                 
               friendRequests{

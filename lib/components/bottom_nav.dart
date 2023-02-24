@@ -74,11 +74,11 @@ class _BottomNav extends State<BottomNav> {
   //           language: "en",
   //           components: [Component(Component.country, "usa")]);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GameCreate()),
-    );
-    // AmplifyAuthService().signOut();
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => GameCreate()),
+    // );
+    AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
     // print("test text updated");
