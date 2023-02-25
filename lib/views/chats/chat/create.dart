@@ -7,19 +7,18 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 // import '../../models/user_model.dart';
 import 'package:provider/provider.dart';
 import '../../../components/headers.dart';
-import '../../../components/bottom_text_box.dart';
+import '../../../commands/chat_command.dart';
 // import 'create.dart';
 
-class ChatView extends StatefulWidget {
-  const ChatView({Key? key, required this.chatObject}) 
-    : super(key: key);
-  final Map<String, dynamic> chatObject;  
+class ChatCreate extends StatefulWidget {
+  const ChatCreate({Key? key}) 
+    : super(key: key);  
 
   @override
-  _ChatViewState createState() => _ChatViewState();
+  _ChatCreateState createState() => _ChatCreateState();
 }
 
-class _ChatViewState extends State<ChatView> {
+class _ChatCreateState extends State<ChatCreate> {
   final nameController = TextEditingController();
   final imageController = TextEditingController();
   final secondaryNameController = TextEditingController();
@@ -39,9 +38,20 @@ class _ChatViewState extends State<ChatView> {
     print("first load");
   }
 
+  void createChat() async {
+    print("create chat");
+    dynamic chatInput = {
+      "name": nameController.text.toString(),      
+    };
+    Map<String, dynamic> createChatResp = await ChatCommand().createChat(chatInput);
+    print("createChatResp: $createChatResp");
+
+  }
+
+
   @override
   void initState() {
-    print("chat/view.dart init state");
+    print("chat/create.dart init state");
     super.initState();
     _firstLoad();
   }
@@ -50,9 +60,15 @@ class _ChatViewState extends State<ChatView> {
   Widget build(BuildContext context) {    
 
     return Scaffold(
-      appBar: Headers().getChatDetailHeader(context),
-      body: BottomTextBox(),
-      
+      appBar: Headers().getCreateChatDetailHeader(context),
+      body: Container(
+        child:  GestureDetector(
+            onTap: () {
+              createChat();
+            },
+            child: Text("Create Chat"))
+
+      ),
     );
   }
 }
