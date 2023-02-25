@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/profile.dart';
 import '../views/chats/view.dart';
+import '../views/chats/chat/create.dart';
 
 class Headers extends StatefulWidget {
   const Headers({Key? key}) : super(key: key);
@@ -63,17 +64,23 @@ class Headers extends StatefulWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
+                    IconButton(
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.arrow_back,color: Colors.black,),
+                    ),
                     Text(
                       "Conversations",
                       style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),                    
                     GestureDetector(
                         onTap: () {
                           print("Add New Chat Pressed");
                           Navigator.push(context, MaterialPageRoute<void>(
                             builder: (BuildContext context) {
-                              return ChatsView();
+                              return ChatCreate();
                             },
                           ));
                         },
@@ -108,6 +115,48 @@ class Headers extends StatefulWidget {
               ),
             );
           
+  }
+
+  AppBar getCreateChatDetailHeader(BuildContext context) {
+    AppBar appBar = AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        flexibleSpace: SafeArea(
+          child: Container(
+            padding: EdgeInsets.only(right: 16),
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back,color: Colors.black,),
+                ),
+                SizedBox(width: 2,),
+                // CircleAvatar(
+                //   backgroundImage: NetworkImage("<https://randomuser.me/api/portraits/men/5.jpg>"),
+                //   maxRadius: 20,
+                // ),
+                SizedBox(width: 12,),
+                // Expanded(
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: <Widget>[
+                //       Text("Kriss Benwat",style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600),),
+                //       SizedBox(height: 6,),
+                //       Text("Online",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
+                //     ],
+                //   ),
+                // ),
+                // Icon(Icons.settings,color: Colors.black54,),
+              ],
+            ),
+          ),
+        ),
+      );
+    return appBar;
   }
 
   AppBar getChatDetailHeader(BuildContext context) {
