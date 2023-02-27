@@ -1,4 +1,5 @@
 import '../fragments/user_fragments.dart';
+import '../fragments/chat_fragments.dart';
 
 class ChatMutations {
   String createChat(Map<String, dynamic> chatInput) {
@@ -30,12 +31,43 @@ class ChatMutations {
     return createChatString;
   }
   
+  String createTextMessage(Map<String, dynamic> messageInput) {
+    String createTextMessageString = """
+     mutation {
+      createMessage(
+        data: {
+          chatObject:{
+            connect: ${messageInput['chat_id']}
+          }
+          textObject: {
+            create:{
+              content: "${messageInput['content']}"
+            }
+          }
+          sender: {
+            connect: ${messageInput['sender_id']}
+          }
+        }
+    )
+      {
+        _id
+        messageType
+        ${ChatFragments().chatObject()}
+        
+        
+        }
+      }
+    """;
+
+    return createTextMessageString;
+  }
+  
   String deleteChat(Map<String, dynamic> chatInput) {
     String createChatString = """
       mutation {
       deleteChat(id: ${chatInput['_id']})
-      {
-        _id        
+      {        
+        ${ChatFragments().chatObject()}      
       }  
     }
     """;
@@ -51,14 +83,7 @@ class ChatMutations {
          ${chatInput['chatData']}
         })
         {
-          _id
-          users{
-            data{
-              _id
-              email
-              name
-            }
-          }
+          ${ChatFragments().chatObject()}
         }  
       }
     """;

@@ -17,7 +17,7 @@ import '../enums/PaymentType.dart';
 
 class UserCommand extends BaseCommand {
 
-  Map<String, dynamic> getAppModelUser() {
+  dynamic getAppModelUser() {
     print("getAppModelUser");
     print("appMOdel.currentUser: " + appModel.currentUser.toString());
 

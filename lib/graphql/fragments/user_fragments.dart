@@ -1,7 +1,8 @@
+import 'chat_fragments.dart';
 class UserFragments{
 
   String fullUser(){
-     String FullUserReturn = r'''
+     String FullUserReturn = """
        _id      
               name        	
               phone
@@ -69,22 +70,10 @@ class UserFragments{
               }      
               chats{
                 data{
-                  _id
-                  name
-                  messages{
-                    _id
-                  }
-                  users{
-                    data{
-                      _id
-                      name
-                      email
-                    }
-                  }
-                                   
-                  
+                  ${ChatFragments().chatObject()}               
+
                 }
-              }                 
+              }
               friendRequests{
                 data{
                   _id
@@ -137,7 +126,7 @@ class UserFragments{
                   }
                 }
               }   
-    ''';
+    """;
 
     return FullUserReturn;
 

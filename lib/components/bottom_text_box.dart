@@ -8,23 +8,21 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../../components/headers.dart';
 import '../../../commands/chat_command.dart';
+import '../../../commands/user_command.dart';
 // import 'create.dart';
 
 class BottomTextBox extends StatefulWidget {
-  const BottomTextBox({Key? key}) : super(key: key);
+  const BottomTextBox({Key? key, required this.chatObject}) 
+    : super(key: key);
+  final Map<String, dynamic> chatObject;  
 
   @override
   _BottomTextBoxState createState() => _BottomTextBoxState();
 }
 
 class _BottomTextBoxState extends State<BottomTextBox> {
-  final nameController = TextEditingController();
-  final imageController = TextEditingController();
-  final secondaryNameController = TextEditingController();
-  final addressController = TextEditingController();
-  final surfaceController = TextEditingController();
-  final fieldSizeController = TextEditingController();
-  final privateController = TextEditingController();
+  final messageController = TextEditingController();
+
 
   bool _isLoading = false;
   late ScrollController _selectEventController = ScrollController();
@@ -37,13 +35,16 @@ class _BottomTextBoxState extends State<BottomTextBox> {
     print("first load");
   }
 
-  void createChat() async {
+  void sendMessage() async {
     print("create chat");
-    dynamic chatInput = {
-      "name": nameController.text.toString(),
+    dynamic currentUser = UserCommand().getAppModelUser();
+    dynamic messageInput = {
+      "content": messageController.text.toString(),
+      "chat_id": widget.chatObject['_id'],
+      "sender_id": currentUser['_id'],
     };
     Map<String, dynamic> createChatResp =
-        await ChatCommand().createChat(chatInput);
+        await ChatCommand().createText(messageInput);
     print("createChatResp: $createChatResp");
   }
 
@@ -56,8 +57,8 @@ class _BottomTextBoxState extends State<BottomTextBox> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+    return 
+      Stack(
         children: <Widget>[
           Align(
             alignment: Alignment.bottomLeft,
@@ -89,6 +90,7 @@ class _BottomTextBoxState extends State<BottomTextBox> {
                   ),
                   Expanded(
                     child: TextField(
+                      controller: messageController,
                       decoration: InputDecoration(
                           hintText: "Write message...",
                           hintStyle: TextStyle(color: Colors.black54),
@@ -99,7 +101,10 @@ class _BottomTextBoxState extends State<BottomTextBox> {
                     width: 15,
                   ),
                   FloatingActionButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      print("send message button pressed");
+                      sendMessage();
+                    },
                     child: Icon(
                       Icons.send,
                       color: Colors.white,
@@ -113,7 +118,7 @@ class _BottomTextBoxState extends State<BottomTextBox> {
             ),
           ),
         ],
-      ),
-    );
+      );
+    
   }
 }
