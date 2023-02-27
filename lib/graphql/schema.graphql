@@ -23,6 +23,13 @@ enum EventType {
   TRAINING
 }
 
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+}
+
 
 enum SurfaceType {
   TURFPOOR
@@ -166,7 +173,9 @@ type User  {
   teamRequestsSent: [TeamRequest] @relation(name: "team_requests_sent")
   teamRequestsAccepted: [TeamRequest] @relation(name: "team_requests_acceptedBy")
   chats: [Chat] @relation
-  sentMessages: [Message] @relation
+  sentMessages: [Message] @relation(name: "messages_sent")
+  messagesDirectedForMe: [Message] @relation(name: "messages_for")
+
 
 }
 
@@ -371,7 +380,7 @@ type GifContent   {
 }
 
 type TextContent   {
-  textContent: String
+  content: String
 }
 
 type Message {  
@@ -379,12 +388,14 @@ type Message {
   textObject: TextContent
   gifObject: GifContent
   imageObject: Image
-  sender: User  
+  sender: User @relation(name: "messages_sent") 
+  messageType: MessageType
+  for: [User] @relation(name: "messages_for")
 }
 
 type Chat  {  
   name: String
-  messages: Message @relation #has many messages
+  messages: [Message] @relation #has many messages
   users: [User] @relation
   archived: Boolean @default(value: false)
 }

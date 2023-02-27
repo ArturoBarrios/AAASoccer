@@ -46,6 +46,37 @@ class ChatCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> createText(
+      Map<String, dynamic> chatInput) async {
+    print("removeChat");
+    Map<String, dynamic> removeChatResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      chatInput['user_id'] = appModel.currentUser['_id'];
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': ChatMutations().createTextMessage(chatInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      return removeChatResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return removeChatResponse;
+    }
+  }
+
   Future<Map<String, dynamic>> removeChat(
       Map<String, dynamic> chatInput) async {
     print("removeChat");
