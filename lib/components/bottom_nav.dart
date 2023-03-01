@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../views/request/view.dart';
 import '../views/friends/view.dart';
 import '../components/history.dart';
@@ -32,12 +33,10 @@ class _BottomNav extends State<BottomNav> {
     ),
   ];
 
-  // void _onItemTapped(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //   });
-  // }
-  //testing methods(I know, what an amazing place to test models) :)
+  void _onItemTapped(int index) {
+    
+  }
+ 
 
   void testFunction() async {
     // TournamentCommand().bergerTable(14);
@@ -107,33 +106,34 @@ class _BottomNav extends State<BottomNav> {
                   icon: Icons.add_outlined,
                   selected: false,                  
                   onPressed: () async {
-                     testFunction();
-                //     int? index = await showAnimatedDialog<int>(
-                //       context: context,
-                //       barrierDismissible: true,
-                //       builder: (BuildContext context) {
-                //         return ClassicListDialogWidget<dynamic>(
-                //             selectedIndex: selectIndex,
-                //             titleText: 'Title',
-                //             listType: ListType.singleSelect,
-                //             onPositiveClick: () {
-                //               print("onPositiveClick: "+ selectIndex.toString());
-                //             },
-                //             activeColor: Colors.green,
-                //             dataList: 
-                //             // ['1', '2', '3', '4']
-                //             List.generate(
-                //         20,
-                //         (index) {
-                //           return index;
-                //         },
-                //       ),
+                    print("onPressed!");
+                    //  testFunction();
+                    int? index = await showAnimatedDialog<int>(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return ClassicListDialogWidget<dynamic>(
+                            selectedIndex: selectIndex,
+                            titleText: 'Title',
+                            listType: ListType.singleSelect,
+                            onPositiveClick: () {
+                              print("onPositiveClick: "+ selectIndex.toString());
+                            },
+                            activeColor: Colors.green,
+                            dataList: 
+                            ['Create Game', 'Create', '3', '4']
+                      //       List.generate(
+                      //   20,
+                      //   (index) {
+                      //     return index;
+                      //   },
+                      // ),
                             
-                //             );
-                //       },
-                //       animationType: DialogTransitionType.size,
-                //       curve: Curves.linear,
-                //     );
+                            );
+                      },
+                      animationType: DialogTransitionType.size,
+                      curve: Curves.linear,
+                    );
                     
 
                 // print('selectIndex:$index');

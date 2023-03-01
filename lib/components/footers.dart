@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../components/profile.dart';
-import '../views/chats/view.dart';
-import '../views/request/view.dart';
+import '../views/game/create.dart';
+import '../views/tournament/create.dart';
+import '../views/league/create.dart';
+import '../views/training/create.dart';
+import '../views/tryout/create.dart';
 import '../views/friends/view.dart';
+import '../views/request/view.dart';
 import '../components/history.dart';
 import '../services/amplify_auth_service.dart';
+
 
 class Footers extends StatefulWidget {
   const Footers({Key? key}) : super(key: key);
@@ -14,6 +20,58 @@ class Footers extends StatefulWidget {
 
 
 BottomAppBar getMainBottomNav(BuildContext context){
+  int selectIndex = 0;
+  List pages = [
+    "Pickup Game",
+    "Tournament",
+    "League",
+    "Training", 
+    "Tryout"
+
+  ];
+
+  void goToPage(int selectedIndex){
+    print("goToPage: "+ selectedIndex.toString());
+    switch (selectedIndex) {
+      case 0:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return GameCreate();            
+          },
+        ));
+        break;
+      case 1:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return TournamentCreate();
+          },
+        ));
+        break;
+      case 2:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return LeagueCreate();
+          },
+        ));
+        break;
+      case 3:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return TrainingCreate();
+          },
+        ));
+        break;
+      case 4:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return TryoutCreate();
+          },
+        ));
+        break;      
+      default:
+    }
+  }
+
   BottomAppBar bottomAppBar = BottomAppBar(
       color: Colors.white,
       child: SizedBox(
@@ -45,36 +103,64 @@ BottomAppBar getMainBottomNav(BuildContext context){
                   icon: Icons.add_outlined,
                   selected: false,                  
                   onPressed: () async {
-                    
-                //     int? index = await showAnimatedDialog<int>(
-                //       context: context,
-                //       barrierDismissible: true,
-                //       builder: (BuildContext context) {
-                //         return ClassicListDialogWidget<dynamic>(
-                //             selectedIndex: selectIndex,
-                //             titleText: 'Title',
-                //             listType: ListType.singleSelect,
-                //             onPositiveClick: () {
-                //               print("onPositiveClick: "+ selectIndex.toString());
-                //             },
-                //             activeColor: Colors.green,
-                //             dataList: 
-                //             // ['1', '2', '3', '4']
-                //             List.generate(
-                //         20,
-                //         (index) {
-                //           return index;
-                //         },
-                //       ),
-                            
-                //             );
-                //       },
-                //       animationType: DialogTransitionType.size,
-                //       curve: Curves.linear,
-                //     );
-                    
+                  //    print("pressed");
+                  //     showAnimatedDialog(
+                  // context: context,
+                  // barrierDismissible: true,
+                  // builder: (BuildContext context) {
+                  //   return SingleChildScrollView(
+                  //       child: ListBody(
+                  //     children: <Widget>[
+                        
+                  //       Container(
+                  //         padding: EdgeInsets.all(10.0),
+                  //         width: 200.0,
+                  //         child: Text(
+                  //           "Title"
+                  //         ),
+                  //       ),
+                  //       Container(
+                  //         padding: EdgeInsets.all(10.0),
+                  //         width: 200.0,
+                  //         child: FlutterLogo(
+                  //           size: 150.0,
+                  //         ),
+                  //       ),
 
-                // print('selectIndex:$index');
+                  //     ],
+                  //   ));
+                  // });
+                    int? index = await showAnimatedDialog<int>(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return ClassicListDialogWidget<dynamic>(
+                            selectedIndex: selectIndex,
+                            titleText: 'Title',
+                            listType: ListType.single,
+                            // onPositiveClick: () {                              
+                            //   print("onPositiveClick: "+ selectIndex.toString());
+                            //   goToPage(selectIndex);
+                            // },                            
+                            
+                            activeColor: Colors.green,
+                            dataList: 
+                              pages
+                        //     List.generate(
+                        // 20,
+                        // (index) {
+                        //   return index;
+                        // },
+                      // ),
+                            
+                            );
+                      },
+                      animationType: DialogTransitionType.size,
+                      curve: Curves.linear,
+                    );
+                    
+                print('selectIndex:$index');
+                goToPage(selectIndex);
                 // setState(() {
                 //   this.singleSelectedIndexText = '${selectIndex ?? ''}';
                 // });

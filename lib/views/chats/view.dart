@@ -69,10 +69,12 @@ class _ChatsViewState extends State<ChatsView> {
               padding: EdgeInsets.only(top: 16),
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
+                 dynamic messages = chats[index]['messages']['data'];
+                 String messageContent = messages.length>0 ? messages[(messages.length)-1]['textObject']['content'] : "No Messages Yet";
                 return ConversationList(
                   chatObject: chats[index],
-                  name: "Name",//chats[index].name,
-                  messageText: "messageText", //chats[index].messageText,
+                  name: chats[index]['name'],
+                  messageText: messageContent,
                   imageUrl: "imageUrl",//chats[index].imageURL,
                   time: "time",//chats[index].time,
                   isMessageRead: (index == 0 || index == 3) ? true : false,

@@ -100,11 +100,11 @@ class _ChatViewState extends State<ChatView> {
           
           child:          
            Align(
-        // alignment: (chatUsers[index]['messageType'] == "receiver"?Alignment.topLeft:Alignment.topRight),
+        alignment: (messages[index]['sender']['_id'] != user['_id']?Alignment.topLeft:Alignment.topRight),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            // color: (chatUsers[index]['messageType']  == "receiver"?Colors.grey.shade200:Colors.blue[200]),
+            color: (messages[index]['sender']['_id']  != user['_id']?Colors.grey.shade200:Colors.blue[200]),
           ),
           padding: EdgeInsets.all(16),
           child: Text(messages[index]['textObject']['content'], style: TextStyle(fontSize: 15),),
