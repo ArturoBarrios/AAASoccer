@@ -11,6 +11,7 @@ import '../../commands/event_command.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
+import '../../views/home.dart';
 
 
 class GameCreate extends StatefulWidget {
@@ -32,7 +33,7 @@ class _GameCreateState extends State<GameCreate> {
 
   bool _isLoading = false;
 
-  Future<Map<String, dynamic>> createPickupGame() async {
+  Future<void> createPickupGame() async {
     print("createGame");
     Map<String, dynamic> createPickupGameResponse = {
       "success": false,
@@ -42,7 +43,7 @@ class _GameCreateState extends State<GameCreate> {
       var rng = Random();
       print("priceee: "+priceController.text.toString());
       Map<String, dynamic> eventInput = {        
-        "name": "Pickup Game " + rng.nextInt(100000000).toString(),
+        "name": nameController.text.toString(),
         'isMainEvent': true,        
         'price':  int.parse(priceController.text.toString())
       };
@@ -51,24 +52,27 @@ class _GameCreateState extends State<GameCreate> {
       // Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
       Map<String, dynamic> locationInput = {
         "latitude": 39.9526,
-        "longitude": -75.1652,
+        "longitude": 75.1652,
       };
       // Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
-      print("locationInputCheck: " + locationInput.toString());                                  
+      print("locationInputCheaheck: " + locationInput.toString());                                  
 
       Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput, locationInput);      
       print("createPickupGameResp: ");
       print(createPickupGameResp['data']);
-      // if (createPickupGameResp['success']) {
-      //   Map<String, dynamic> pickupGame = createPickupGameResp['data'];
-      //   Map<String, dynamic> event = pickupGame['event'];             
-      //   Navigator.pop(context);
+      if (createPickupGameResp['success']) {
+        Map<String, dynamic> pickupGame = createPickupGameResp['data'];
+        Map<String, dynamic> event = pickupGame['event'];             
+        Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
        
-      // }      
-      return createPickupGameResponse;
-    } on ApiException catch (e) {
+      }      
 
-      return createPickupGameResponse;
+
+    } on ApiException catch (e) {
+      
     }
   }
 
@@ -151,7 +155,7 @@ class _GameCreateState extends State<GameCreate> {
             onTap: () {
               createPickupGame();
             },
-            child: Text("tap me")),
+            child: Text("Create")),
         GestureDetector(
             onTap: () {
               goBack();

@@ -61,7 +61,7 @@ class HomePageCommand extends BaseCommand {
       }
       else if(homePageModel.selectedKey==Constants.PLAYER){
         print("check players: ");
-        print(appModel.players);
+        print("appModel.players.length: "+appModel.players.length.toString());
         homePageModel.selectedObjects = appModel.players;
       }      
       else if(homePageModel.selectedKey==Constants.TRAINING){

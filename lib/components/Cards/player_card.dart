@@ -87,7 +87,7 @@ class _PlayerCard extends State<PlayerCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.playerObject['user']['name'],
+                    text: "test",//widget.playerObject['user']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.playerObject['description'],
