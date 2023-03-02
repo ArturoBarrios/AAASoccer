@@ -40,6 +40,10 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
+Future<void> updateFriendRequest(dynamic friendRequestObject) async {
+  await RequestsCommand().updateFriendRequest(friendRequestObject);
+}
+
 class _FriendRequestCard extends State<FriendRequestCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
@@ -134,26 +138,34 @@ class _FriendRequestCard extends State<FriendRequestCard> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                //send friend request
-                print("update friend request");
-                print(widget.toString());
-                RequestsCommand().updateFriendRequest(widget.friendRequestObject);
+            IconButton(
+          icon: const Icon(Icons.notifications_active),
+          tooltip: 'Notifications',
+          onPressed: () {
+            print(widget.toString());
+            updateFriendRequest(widget.friendRequestObject);            
+          },
+        ),
+            // GestureDetector(
+            //   onTap: () {
+            //     //send friend request
+            //     print("update friend request");
+            //     print(widget.toString());
+            //     RequestsCommand().updateFriendRequest(widget.friendRequestObject);
                 
-              },
-              child: Container(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: Image(
-                    width: 20,
-                    height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            //   },
+            //   child: Container(
+            //     child: ClipRRect(
+            //       borderRadius: BorderRadius.circular(20.0),
+            //       child: Image(
+            //         width: 20,
+            //         height: 20,
+            //         image: SVGWidgets().deleteSVGImage(),
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ])),
     ));
   }
