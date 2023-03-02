@@ -249,12 +249,12 @@ class _Home extends State<Home> {
     print("getCard()");
     print("selectedKey: " + selectedKey);
     print("selectedObject: " + selectedObject.toString());
-    bool isMyEvent = EventCommand().isMyEvent(selectedObject['event']);
 
     
-    Widget card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+    Widget card = Text("null");//PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
 
     if(selectedKey==Constants.PICKUP){
+    bool isMyEvent = EventCommand().isMyEvent(selectedObject['event']);
       card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     }
     else if(selectedKey==Constants.TRAINING){
@@ -409,6 +409,7 @@ class _Home extends State<Home> {
                               },
                                   )),
                     ])),
+                    Text("selectedObjects.length: " + selectedObjects.length.toString()),
 
                     //list view
                     Expanded(

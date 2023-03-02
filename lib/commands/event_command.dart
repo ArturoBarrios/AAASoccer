@@ -578,6 +578,7 @@ class EventCommand extends BaseCommand {
     print("length of events modeL games: ");
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
+    // homePageModel.selectedObjects = [];
     homePageModel.selectedObjects = List.from(eventsModel.games);
 
     return updateViewModelsWithGameResp;

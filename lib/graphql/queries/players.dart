@@ -1,4 +1,4 @@
-class UserQueries {
+class PlayerQueries {
   String getPlayer(String id)
    {
       String getPlayer = """

@@ -29,7 +29,7 @@ class PlayerCommand extends BaseCommand {
             'Content-Type': 'application/json'
           },
           body: jsonEncode(<String, String>{
-            'query': UserQueries().getPlayers(),
+            'query': PlayerQueries().getPlayers(),
           }),
         );
 

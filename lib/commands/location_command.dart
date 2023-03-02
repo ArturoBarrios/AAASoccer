@@ -31,8 +31,9 @@ class LocationCommand extends BaseCommand {
 //     return _predictionList;
 //   }
 
-   Future<void> place_api_autocomplete(String searchText) async{        
+   Future<Map<String, dynamic>> place_api_autocomplete(String searchText) async{        
         print("place_api_autocomplete()");
+        Map<String, dynamic> responseMap = {"success": false, "message": "Default", "data": null};
         try{
             String autocompleteUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input='+searchText.toString()+'&key='+'AIzaSyDTdSXb1X7vFTDvwBQhcVDY6DOMiLcjQuM';
             http.Response response = await http.get(
@@ -41,10 +42,14 @@ class LocationCommand extends BaseCommand {
               'Content-Type': 'application/json'
             },        
           );
-          print("Response: "+response.body.toString());
-
+          // print("Response: "+jsonDecode(response.body));
+          responseMap["success"] = true;
+          responseMap["message"] = "Success";
+          responseMap["data"] = jsonDecode(response.body)["predictions"];
+          return responseMap;
         } catch(e){
           print(e);
+          return responseMap;
         }
     }
 
