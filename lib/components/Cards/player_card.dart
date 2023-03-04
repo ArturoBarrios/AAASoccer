@@ -87,7 +87,7 @@ class _PlayerCard extends State<PlayerCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: "test",//widget.playerObject['user']['name'],
+                    text: widget.playerObject['user']['email'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.playerObject['description'],
@@ -148,12 +148,12 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            Image(
-              width: MediaQuery.of(context).size.width * .4,
-              height: MediaQuery.of(context).size.height * .1,
-              image: svgImage,
-              color: Colors.white,
-            ),
+            // Image(
+            //   width: MediaQuery.of(context).size.width * .4,
+            //   height: MediaQuery.of(context).size.height * .1,
+            //   image: svgImage,
+            //   color: Colors.white,
+            // ),
             // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
             const Spacer(),
             Text(text,
