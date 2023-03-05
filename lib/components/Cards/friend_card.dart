@@ -63,7 +63,7 @@ class _FriendCard extends State<FriendCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PlayerView(playerObject: widget.friendObject);
+            return PlayerView(userPlayerObject: widget.friendObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -101,7 +101,7 @@ class _FriendCard extends State<FriendCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.friendObject['user']['name'],
+                    text: widget.friendObject['user']['email'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.friendObject['description'],
@@ -174,12 +174,12 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            Image(
-              width: MediaQuery.of(context).size.width * .4,
-              height: MediaQuery.of(context).size.height * .1,
-              image: svgImage,
-              color: Colors.white,
-            ),
+            // Image(
+            //   width: MediaQuery.of(context).size.width * .4,
+            //   height: MediaQuery.of(context).size.height * .1,
+            //   image: svgImage,
+            //   color: Colors.white,
+            // ),
             // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
             const Spacer(),
             Text(text,

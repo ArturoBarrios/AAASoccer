@@ -29,7 +29,7 @@ class PlayerCommand extends BaseCommand {
             'Content-Type': 'application/json'
           },
           body: jsonEncode(<String, String>{
-            'query': PlayerQueries().getPlayers(),
+            'query': PlayerQueries().getUserPlayers(),
           }),
         );
 
@@ -37,7 +37,7 @@ class PlayerCommand extends BaseCommand {
         print(jsonDecode(response.body));
 
 
-      final result = jsonDecode(response.body)['data']['allPlayers']['data'];
+      final result = jsonDecode(response.body)['data']['allUsers']['data'];
       appModel.players = result;  
       getTrainingsNearLocationResp["success"] = true;
       getTrainingsNearLocationResp["message"] = "Games Retrieved";

@@ -27,6 +27,18 @@ class UserQueries {
   
     return getUser;
   }
+  
+  String findUserPlayerByID(Map<String, dynamic> userInput ){
+    String getUser = """
+      query getUser {
+            findUserByID(id: "${userInput['_id']}") {      
+             ${UserFragments().playerUser()}                                                                                    
+          }
+        }
+    """;
+  
+    return getUser;
+  }
 
  String removeEventFromUser(
       Map<String, dynamic> eventInput, Map<String, dynamic> userInput ) {

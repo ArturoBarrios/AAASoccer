@@ -3,9 +3,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../commands/game_command.dart';
+import '../../commands/user_command.dart';
 import '../../commands/requests_command.dart';
-import '../../views/game/view.dart';
+import '../../views/player/view.dart';
 import '../../assets/icons/plus.svg';
 
 class FriendRequestCard extends StatefulWidget {
@@ -96,10 +96,12 @@ class _FriendRequestCard extends State<FriendRequestCard> {
                 child: InnerNeumorphicCardFb1(
                     text: "Friend Request",
                     svgImage: widget.svgImage,
+                    friendRequestObject: widget.friendRequestObject,
                     subtitle:
-                        "sent by "+widget.friendRequestObject['sender']['name'].toString(), //widget.friendRequestObject['description'],
+                        "sent by "+widget.friendRequestObject['sender']['email'].toString(), //widget.friendRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
+
                     })),
             GestureDetector(
               onTap: () {
@@ -145,27 +147,7 @@ class _FriendRequestCard extends State<FriendRequestCard> {
             print(widget.toString());
             updateFriendRequest(widget.friendRequestObject);            
           },
-        ),
-            // GestureDetector(
-            //   onTap: () {
-            //     //send friend request
-            //     print("update friend request");
-            //     print(widget.toString());
-            //     RequestsCommand().updateFriendRequest(widget.friendRequestObject);
-                
-            //   },
-            //   child: Container(
-            //     child: ClipRRect(
-            //       borderRadius: BorderRadius.circular(20.0),
-            //       child: Image(
-            //         width: 20,
-            //         height: 20,
-            //         image: SVGWidgets().deleteSVGImage(),
-            //         color: Colors.white,
-            //       ),
-            //     ),
-            //   ),
-            // ),
+        ),          
           ])),
     ));
   }
@@ -175,18 +157,40 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
   final String text;
   final Svg svgImage;
   final String subtitle;
+  final dynamic friendRequestObject;
   final Function() onPressed;
+  
 
   const InnerNeumorphicCardFb1(
       {required this.text,
       required this.svgImage,
       required this.subtitle,
       required this.onPressed,
+      required this.friendRequestObject,
       Key? key})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
+    Future<void> viewPlayerProfile() async{
+      print("viewPlayerProfile");
+      print(friendRequestObject.toString());
+      Map<String, dynamic> findMyUserByIdResp = await UserCommand().findUserPlayerById(friendRequestObject['sender']);
+      print(findMyUserByIdResp.toString());
+      dynamic playerObject = findMyUserByIdResp['user'];
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PlayerView(
+            userPlayerObject: friendRequestObject['sender'],
+          ),
+        ),
+      );
+      
+
+    }
     return GestureDetector(
       onTap: onPressed,
       child: Container(
@@ -213,13 +217,25 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12),
+            GestureDetector(
+              onTap: () {
+                print("view player profile");
+                viewPlayerProfile();
+              },
+              child: 
+              Container(
+                width:100,
+                height: 20,
+                child: Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12),
+                ),
+
+                )
             ),
             const SizedBox(
               height: 10,
