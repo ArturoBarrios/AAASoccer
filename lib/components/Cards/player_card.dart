@@ -49,7 +49,7 @@ class _PlayerCard extends State<PlayerCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PlayerView(playerObject: widget.playerObject );
+            return PlayerView(userPlayerObject: widget.playerObject );
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

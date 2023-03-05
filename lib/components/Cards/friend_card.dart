@@ -63,7 +63,7 @@ class _FriendCard extends State<FriendCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PlayerView(playerObject: widget.friendObject);
+            return PlayerView(userPlayerObject: widget.friendObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

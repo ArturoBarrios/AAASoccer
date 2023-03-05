@@ -3,9 +3,9 @@ import '../../components/profile.dart';
 
 class PlayerView extends StatefulWidget {
   const PlayerView(
-      {Key? key, required this.playerObject})
+      {Key? key, required this.userPlayerObject})
       : super(key: key);
-  final Map<String, dynamic> playerObject;
+  final Map<String, dynamic> userPlayerObject;
   
   @override
   _PlayerViewState createState() => _PlayerViewState();
@@ -31,7 +31,7 @@ class _PlayerViewState extends State<PlayerView> {
   @override
   Widget build(BuildContext context) {
     print("PlayerView build()");
-    print("PlayerView widget.playerObject: " + widget.playerObject.toString());
+    print("PlayerView widget.playerObject: " + widget.userPlayerObject.toString());
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
