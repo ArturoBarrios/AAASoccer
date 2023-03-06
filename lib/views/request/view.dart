@@ -92,10 +92,19 @@ class _RequestsViewState extends State<RequestsView> {
 
   }
 
-  
+  void requestTypeTapped(String requestType){
+    setState(() {
+      selectedRequestType = requestType;      
+    });
+
+  }
 
   
 
+  late ScrollController _selectRequestTypeController = ScrollController();
+  String selectedRequestType = "Received";
+  final Color color = Colors.grey.shade200;    
+    final Color selectedColor = Colors.orange.shade500;    
 
   @override
   void initState() {
@@ -109,7 +118,11 @@ class _RequestsViewState extends State<RequestsView> {
 
   @override
   Widget build(BuildContext context) {
-
+final double cardWidth = MediaQuery.of(context).size.width * .4;
+  final double cardHeight = MediaQuery.of(context).size.height * .1;
+  final double cardImageWidth = cardWidth * .5;
+  final double cardImageHeight = cardHeight * .5;
+  final double bevel = 10.0;  
     bool initialConditionsMet =
         context.select<RequestsPageModel, bool>((value) => value.initialConditionsMet);
     
@@ -118,6 +131,11 @@ class _RequestsViewState extends State<RequestsView> {
 
     String selectedKey = context
         .select<RequestsPageModel, String>((value) => value.selectedKey);
+
+    List requestTypes = [
+      "Sent",
+      "Received",
+    ];
 
     print("selectedObjects to build:: " + selectedObjects.toString());
 
@@ -154,10 +172,117 @@ class _RequestsViewState extends State<RequestsView> {
             )
           ) 
           :
+
        Stack(children: <Widget>[
               Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [  
+                    Expanded(
+                        child: Column(children: <Widget>[
+                      // Padding(
+                      //     padding: EdgeInsets.all(10.0),
+                      //     child: SearchField(testText: testText)),
+                      Expanded(
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              controller: _selectRequestTypeController,
+                              itemCount: requestTypes.length,                                       
+                              itemBuilder: (_, index){                               
+                                return 
+                                  Card(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 10),
+                                      child: 
+                                        Listener(
+      
+      child: GestureDetector(
+        onTap: () {
+          print("onTap EventType");          
+          requestTypeTapped(requestTypes[index]);
+
+        },
+        child: AnimatedContainer(   
+                 
+          duration: const Duration(milliseconds: 150),
+          padding: EdgeInsets.all(12.5),
+          decoration: BoxDecoration(            
+            borderRadius: BorderRadius.circular(10.0 * 1),
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  requestTypes[index]==selectedRequestType ? selectedColor : color,
+                  requestTypes[index]==selectedRequestType ? selectedColor : color,
+                  requestTypes[index]==selectedRequestType ? selectedColor : color,
+                  requestTypes[index]==selectedRequestType ? selectedColor : color,                  
+                ],
+                stops: const [
+                  0.0,
+                  .3,
+                  .6,
+                  1.0,
+                ]),
+            boxShadow: false
+                ? null
+                : [
+                    BoxShadow(
+                      blurRadius: 10.0,
+                      offset: -Offset(10.0/2, 10.0/2),
+                      color: Colors.white,
+                    ),
+                    BoxShadow(
+                      blurRadius: bevel,
+                      offset: Offset(10.0/2, 10.0/2),
+                      color: Colors.black,
+                    )
+                  ],
+          ),
+          child: Container(
+              child: 
+              Container(
+        width: cardWidth,
+        height: cardHeight,
+        padding: const EdgeInsets.all(15.0),
+       
+        child: Column(
+          children: [
+            Image(          
+          width: cardImageWidth,
+          height: cardImageHeight,                          
+          image: svgImage,
+          color: Colors.white,
+              ),
+            const Spacer(),
+            Text(requestTypes[index],
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                )),
+           
+            Text(
+              "",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 12),
+            ),
+            
+          ],
+        ),
+      ),
+                  )),
+
+                  )
+                  
+    ),
+
+                                );
+                              },
+                                  )),
+                    ])),
                      //list view
                     Expanded(
                       child: ListView.builder(

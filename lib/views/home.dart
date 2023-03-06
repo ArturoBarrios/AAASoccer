@@ -22,6 +22,7 @@ import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
 import '../components/Cards/friend_card.dart';
 import '../components/footers.dart';
+import '../components/side_navs.dart';
 
 //models
 import '../models/home_page_model.dart';
@@ -342,36 +343,7 @@ class _Home extends State<Home> {
         width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
         child:
           Drawer(
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                ),
-                child: Text('Drawer Header'),
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.home,
-                ),
-                title: const Text('Page 1'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.train,
-                ),
-                title: const Text('Page 2'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
+          child: SideNavs().getMainSideNav(context)
         ),
 
       ),

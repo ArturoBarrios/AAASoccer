@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/profile.dart';
 import '../views/chats/view.dart';
+import '../views/home.dart';
 import '../views/chats/chat/create.dart';
 
 class Headers extends StatefulWidget {
@@ -9,48 +10,54 @@ class Headers extends StatefulWidget {
   @override
   State<Headers> createState() => _Headers();
 
+void goHome(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
+  }
   AppBar getMainHeader(BuildContext context) {
     AppBar appBar = AppBar(
-      elevation: 2,
+    elevation: 2,
       centerTitle: false,
       title: new Padding(
           padding: const EdgeInsets.only(left: 20.0),
           child: Text("Find Soccer Near You")),
       backgroundColor: Colors.orange.shade500,
       actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.notifications_active),
-          tooltip: 'Notifications',
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return ChatsView();
-              },
-            ));
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.message),
-          tooltip: 'Messages',
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return ChatsView();
-              },
-            ));
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.account_circle),
-          tooltip: 'Go to the next page',
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return Profile();
-              },
-            ));
-          },
-        ),
+        // IconButton(
+        //   icon: const Icon(Icons.notifications_active),
+        //   tooltip: 'Notifications',
+        //   onPressed: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return ChatsView();
+        //       },
+        //     ));
+        //   },
+        // ),
+        // IconButton(
+        //   icon: const Icon(Icons.message),
+        //   tooltip: 'Messages',
+        //   onPressed: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return ChatsView();
+        //       },
+        //     ));
+        //   },
+        // ),
+        // IconButton(
+        //   icon: const Icon(Icons.account_circle),
+        //   tooltip: 'Go to the next page',
+        //   onPressed: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return Profile();
+        //       },
+        //     ));
+        //   },
+        // ),
       ],
     );
     return appBar;
@@ -174,6 +181,12 @@ class Headers extends StatefulWidget {
                     Navigator.pop(context);
                   },
                   icon: Icon(Icons.arrow_back,color: Colors.black,),
+                ),
+                IconButton(
+                  onPressed: (){
+                    goHome(context);
+                  },
+                  icon: Icon(Icons.home,color: Colors.black,),
                 ),
                 SizedBox(width: 2,),
                 CircleAvatar(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../components/Loading/loading_screen.dart';
-// import '../../components/profile.dart';
+import '../../../views/home.dart';
 // import '../../components/payment_screen.dart';
 // import '../../components/card_form_screen.dart';
 import '../../../commands/user_command.dart';
@@ -45,6 +45,8 @@ class _ChatViewState extends State<ChatView> {
   void goBack() {
     Navigator.pop(context);
   }
+
+  
 
   void _firstLoad() async {
     print("first load for chat data");
