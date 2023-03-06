@@ -23,11 +23,11 @@ class PlayerQueries {
             allUsers {
               data {      
                 _id              
-                user{
+              
                   ${(UserFragments().playerUser())}
                     
                    
-                    }
+                    
                   }
                 }
               }

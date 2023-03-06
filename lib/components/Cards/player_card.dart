@@ -87,7 +87,7 @@ class _PlayerCard extends State<PlayerCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.playerObject['user']['email'],
+                    text: widget.playerObject['email'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.playerObject['description'],
@@ -109,7 +109,7 @@ class _PlayerCard extends State<PlayerCard> {
                 //   duration: Duration(seconds: 1),
                 // );
                 UserCommand().sendFriendRequest(                    
-                    widget.playerObject['user']
+                    widget.playerObject
                 );
               },
               child: Container(
