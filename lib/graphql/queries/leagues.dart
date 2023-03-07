@@ -1,3 +1,4 @@
+import '../fragments/event_fragments.dart';
 
 class LeagueQueries {
    String getLeagues()
@@ -10,35 +11,7 @@ class LeagueQueries {
               numberOfTeams                           
               events{
                 data{                  
-                  name        	
-                  _id  
-                  isMainEvent
-                  type                  
-                  archived
-                  deleted    
-                  price{                    
-                    _id
-                    amount
-                    event{
-                      _id
-                      name                      
-                    }
-                  }
-                  location{
-                    data{
-                    _id
-                    latitude
-                    longitude
-                    }
-                  }
-                  eventUserOrganizers{                    
-                      users{
-                        data{
-                          _id
-                          name
-                        }
-                      }                                    
-                  }
+                  ${EventFragments().fullEvent()}
                 }                  
               } 
             }

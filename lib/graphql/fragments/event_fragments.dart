@@ -1,126 +1,46 @@
-class UserFragments{
+class EventFragments{
 
-  String fullUser(){
-     String FullUserReturn = r'''
-       _id      
-              name        	
-              phone
-              email              
-              username
-              birthdate              
-              gender
-              OSPID
-              location{
-                _id
-                latitude
-                longitude
-              }
-              events{
-                data{
-                  _id
+  String fullEvent(){
+     String fullEventReturn = r'''
+       name        	
+                  _id  
+                  type                  
                   archived
-                  deleted
-                  name
                   isMainEvent
-                  type
-                  games{
-                    data{
+                  deleted    
+                  price{                    
+                    _id
+                    amount
+                    event{
                       _id
-                      pickup
+                      name                      
                     }
                   }
-
-                }                
-              }
-              stripeCustomers{
-                data{
-                  _id
-                  customerId
-                }
-              }
-              friends{   
-                data{
-                  _id
-                  user{
+                  location{
+                    data{
                     _id
-                    name
-                    email   
-                    OSPID                
-                  }                  
-                }                  
-              }
-              teams{
-                data{
-                  _id
-                  name
-                }
-              } 
-              sentMessages{
-                data{
-                  _id
-                }
-                
-              }      
-              chats{
-                data{
-                  _id
-                }
-              }                 
-              friendRequests{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  sender{
-                    _id
-                    name
-                    email
+                    latitude
+                    longitude
+                    }
                   }
-                  receiver{
-                    _id
-                    name
-                    email
+                  userParticipants{     
+                    data{
+                      _id
+                      event{                        
+                        _id
+                        name
+                      }
+                      user{
+                        _id
+                        name
+                        userType
+                      }
+                    }                                        
+                                 
                   }
-                }
-              }
-              eventRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  event{
-                    _id
-                    name
-                  }
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                }
-              } 
-              teamRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  team{
-                    _id
-                    name
-                  }
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }   
     ''';
 
-    return FullUserReturn;
+    return fullEventReturn;
 
   }
 }

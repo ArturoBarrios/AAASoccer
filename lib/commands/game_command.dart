@@ -86,49 +86,7 @@ class GameCommand extends BaseCommand {
   
 
     return filteredEventsResp;
-  }
-
-  Future<Map<String, dynamic>> createTo(Map<String, dynamic> userInput) async {
-    print("createTo");
-    Map<String, dynamic> createToResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-
-    try {
-      Map<String, dynamic> userInput = {
-        "_id": appModel.currentUser['_id'],
-      };     
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query':
-              UserMutations().createTo(userInput),
-        }),
-      );
-      print("response body: ");
-      print(jsonDecode(response.body));
-      Map<String, dynamic> createTo =
-          jsonDecode(response.body)['data']['createTo'];      
-
-      createToResponse["success"] = true;
-      createToResponse["message"] = "To Created";
-      createToResponse["data"] =
-          jsonDecode(response.body)['data']['createTo'];
-      await EventCommand().addGame(createTo, true);
-
-      return createToResponse;
-    } on Exception catch (e) {
-      print('Mutation failed: $e');
-      return createToResponse;
-    }    
-
-  }  
+  } 
 
 //create
   Future<Map<String, dynamic>> createGame(

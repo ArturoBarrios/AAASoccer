@@ -10,6 +10,7 @@ import '../views/friends/view.dart';
 import '../views/request/view.dart';
 import '../components/history.dart';
 import '../services/amplify_auth_service.dart';
+import '../views/camera.dart';
 
 
 class Footers extends StatefulWidget {
@@ -31,6 +32,10 @@ BottomAppBar getMainBottomNav(BuildContext context){
   ];
 
   void goToPage(int selectedIndex){
+    //  Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => CameraApp()),
+    // );
     print("goToPage: "+ selectedIndex.toString());
     switch (selectedIndex) {
       case 0:

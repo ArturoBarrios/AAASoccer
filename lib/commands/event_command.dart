@@ -32,6 +32,44 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './game_command.dart';
 
 class EventCommand extends BaseCommand {
+  Future<Map<String, dynamic>> notifyEventParticipants(dynamic notifyEventParticipantInput
+  ) async {
+    Map<String, dynamic> notifyEventParticipantsResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    print("notifyEventParticipants()");
+    print("notifyEventParticipantInput: " + notifyEventParticipantInput.toString());
+    try{
+      notifyEventParticipantInput['userParticipants']['data'].
+      forEach((userParticipantObject) async {
+        print("userParticipantObject: " + userParticipantObject.toString());
+        if (notifyEventParticipantInput['sendToUserType']==userParticipantObject['user']['userType'].toString()){
+          List<String> phones = [];
+          List<String> OSPIDs = [];
+          phones.add(userParticipantObject['user']['phone']);
+          OSPIDs.add(userParticipantObject['user']['OSPID']);
+            Map<String, dynamic> sendUserParticipantsNotificationsInput = {
+              "phones": phones,                        
+              "OSPIDs": OSPIDs,
+              "message": notifyEventParticipantInput['message'],
+            };            
+            await NotificationsCommand().sendUserParticipantsNotifications(sendUserParticipantsNotificationsInput);
+        }
+      });
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return notifyEventParticipantsResponse;
+    }
+
+
+    return notifyEventParticipantsResponse;
+  }
+
+
+
+
   Future<Map<String, dynamic>> createEvent(
       Map<String, dynamic> eventInput) async {
     print("createEvent");
@@ -191,7 +229,7 @@ class EventCommand extends BaseCommand {
       //tos
       bool isYourEvent = false;
       dynamic eventUserOrganizers =
-          gameInput['event']['eventUserOrganizers']['users']['data'];
+          gameInput['event']['userParticipants']['data'];
       print("eventUserOrganizers: " + eventUserOrganizers.toString());
       String organizersString = "";
       print("get OSPIDs");
@@ -424,10 +462,10 @@ class EventCommand extends BaseCommand {
 
   bool isMyEvent(dynamic event){
     bool resp = false;
-    dynamic eventUserOrganizers = event['eventUserOrganizers']['users']['data'];
+    dynamic userParticipants = event['userParticipants']['data'];
 
-    for(int i = 0; i<eventUserOrganizers.length; i++){
-      if(eventUserOrganizers[i]['_id'] == appModel.currentUser['_id']){
+    for(int i = 0; i<userParticipants.length; i++){
+      if(userParticipants[i]['user']['id'] == appModel.currentUser['_id']){
         resp = true;
       }
     }

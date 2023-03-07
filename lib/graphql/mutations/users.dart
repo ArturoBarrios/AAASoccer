@@ -405,26 +405,6 @@ class UserMutations {
     return addPlayerToEvent;
   }
 
-  String createTo(Map<String, dynamic> userInput) {
-    String createTo = """
-        mutation {
-          createTo(data: {                    
-            user: {
-              connect: ${userInput['_id']}                                    
-            }
-            }) {
-              _id
-              user{
-                _id
-                name           
-              }   
-            }
-          }
-        """;
-
-    return createTo;
-  }
-
   String updateFriendRequest(Map<String, dynamic> friendRequestInput) {
     String updateFriendRequestString = """      
       mutation {
