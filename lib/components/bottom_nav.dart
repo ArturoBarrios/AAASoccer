@@ -5,7 +5,6 @@ import '../views/friends/view.dart';
 import '../components/history.dart';
 import '../services/amplify_auth_service.dart';
 
-
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
 
@@ -49,9 +48,9 @@ class _BottomNav extends State<BottomNav> {
 
     // Navigator.push(
     //   context,
-    //   MaterialPageRoute(builder: (context) => GameCreate()),
+    //   MaterialPageRoute(builder: (context) => CameraApp()),
     // );
-    AmplifyAuthService().signOut();
+    // AmplifyAuthService().signOut();
     // Map<String, dynamic> getGamesNearLocationResp = await GameCommand().getGamesNearLocation();
     //  await DatabaseSeeder().run();
     // print("test text updated");
@@ -107,39 +106,30 @@ class _BottomNav extends State<BottomNav> {
                   selected: false,                  
                   onPressed: () async {
                     print("onPressed!");
-                    //  testFunction();
-                    int? index = await showAnimatedDialog<int>(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return ClassicListDialogWidget<dynamic>(
-                            selectedIndex: selectIndex,
-                            titleText: 'Title',
-                            listType: ListType.singleSelect,
-                            onPositiveClick: () {
-                              print("onPositiveClick: "+ selectIndex.toString());
-                            },
-                            activeColor: Colors.green,
-                            dataList: 
-                            ['Create Game', 'Create', '3', '4']
-                      //       List.generate(
-                      //   20,
-                      //   (index) {
-                      //     return index;
-                      //   },
-                      // ),
+                     testFunction();
+                    // int? index = await showAnimatedDialog<int>(
+                    //   context: context,
+                    //   barrierDismissible: true,
+                    //   builder: (BuildContext context) {
+                    //     return ClassicListDialogWidget<dynamic>(
+                    //         selectedIndex: selectIndex,
+                    //         titleText: 'Title',
+                    //         listType: ListType.singleSelect,
+                    //         onPositiveClick: () {
+                    //           print("onPositiveClick: "+ selectIndex.toString());
+                    //         },
+                    //         activeColor: Colors.green,
+                    //         dataList: 
+                    //         ['Create Game', 'Create', '3', '4']
                             
-                            );
-                      },
-                      animationType: DialogTransitionType.size,
-                      curve: Curves.linear,
-                    );
+                    //         );
+                    //   },
+                    //   animationType: DialogTransitionType.size,
+                    //   curve: Curves.linear,
+                    // );
                     
 
-                // print('selectIndex:$index');
-                // setState(() {
-                //   this.singleSelectedIndexText = '${selectIndex ?? ''}';
-                // });
+
                   }
                   ),
               IconBottomBar(

@@ -17,6 +17,17 @@ class SideNavs extends StatefulWidget {
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: [
+        //        IconButton(
+        //   icon: const Icon(Icons.account_circle),
+        //   tooltip: 'Go to the next page',
+        //   onPressed: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return Profile();
+        //       },
+        //     ));
+        //   },
+        // ),        
                GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute<void>(
@@ -30,7 +41,10 @@ class SideNavs extends StatefulWidget {
                 decoration: BoxDecoration(
                   color: Colors.orange,
                 ),
-                child: Text('Drawer Header'),
+                child: CircleAvatar(
+                    backgroundImage: NetworkImage("https://gravatar.com/avatar/e6cf5837b1cd1d93ef847af222b7c42e?s=400&d=robohash&r=x"),
+                    maxRadius: 5,
+                  ),
               )),
               ListTile(
                 leading: Icon(

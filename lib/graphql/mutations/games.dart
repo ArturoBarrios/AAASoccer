@@ -74,13 +74,17 @@ class GameMutations {
               type: GAME,
               archived: false,
               isMainEvent: ${eventInput['isMainEvent']},
-              eventUserOrganizers: {
+              userParticipants: {
                 create:
                   {
-                    users: {
-                      connect:[                        
+                    user: {
+                      connect:                   
                           "${userInput['_id']}"                       
-                      ]
+                      event: {
+                        connect:                   
+                            "${eventInput['_id']}"
+                      }
+                      roles: "{ORGANIZER, PLAYER}"
                     }                    
                   }                                     
               },                    

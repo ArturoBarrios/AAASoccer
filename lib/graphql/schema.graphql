@@ -15,6 +15,15 @@ type Query {
 
 
 
+enum RoleType {
+  COACH
+  PLAYER
+  REFERREE
+  ORGANIZER
+  VOLUNTEER
+  SPONSOR
+}
+
 enum EventType {
   TRYOUT
   GAME
@@ -160,7 +169,7 @@ type User  {
   last_login: Int
   last_updated: Int
   images: [Image] @relation
-  events: [Event] @relation    
+  events: [Event] @relation      
   eventUserOrganizers: [EventUserOrganizers] @relation   
   teamUserOrganizers: [TeamUserOrganizers] @relation  
   eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
@@ -200,6 +209,12 @@ type EventUserOrganizers {
   users: [User]! @relation
 }
 
+type EventUserParticipant {
+  event: Event
+  user: User! @relation
+  roles: String
+}
+
 type TeamUserOrganizers {
   team: Team
   users: [User]! @relation
@@ -221,6 +236,7 @@ type Game   {
 type Event   {
   name: String
   isMainEvent: Boolean
+  userParticipants: [EventUserParticipant] @relation
   eventUserOrganizers: EventUserOrganizers
   price: Price
   # organization: Organization

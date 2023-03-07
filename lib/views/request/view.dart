@@ -3,6 +3,7 @@ import 'package:soccermadeeasy/commands/user_command.dart';
 import 'package:soccermadeeasy/components/Cards/pickup_card2.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import '../../components/profile.dart';
+import '../../components/headers.dart';
 import '../../components/Cards/team_request_card.dart';
 import '../../components/Cards/friend_request_card.dart';
 import '../../components/Cards/event_request_card.dart';
@@ -140,26 +141,7 @@ final double cardWidth = MediaQuery.of(context).size.width * .4;
     print("selectedObjects to build:: " + selectedObjects.toString());
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: new Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Text("Find Soccer Near You")),
-        backgroundColor: Colors.orange.shade500,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return Profile();
-                },
-              ));
-            },
-          ),
-        ],
-      ),
+      appBar: Headers().getBackHeader(context),
       body: initialConditionsMet == false ? 
       Container(
             height: double.infinity,

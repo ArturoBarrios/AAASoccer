@@ -32,6 +32,22 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './game_command.dart';
 
 class EventCommand extends BaseCommand {
+  Future<Map<String, dynamic>> notifyEventParticipants(dynamic eventInput) async {
+    Map<String, dynamic> notifyEventParticipantsResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    print("notifyEventParticipants()");
+    print("eventInput: " + eventInput.toString());
+    
+
+    return notifyEventParticipantsResponse;
+  }
+
+
+
+
   Future<Map<String, dynamic>> createEvent(
       Map<String, dynamic> eventInput) async {
     print("createEvent");
@@ -191,7 +207,7 @@ class EventCommand extends BaseCommand {
       //tos
       bool isYourEvent = false;
       dynamic eventUserOrganizers =
-          gameInput['event']['eventUserOrganizers']['users']['data'];
+          gameInput['event']['userParticipants']['data'];
       print("eventUserOrganizers: " + eventUserOrganizers.toString());
       String organizersString = "";
       print("get OSPIDs");
@@ -424,10 +440,10 @@ class EventCommand extends BaseCommand {
 
   bool isMyEvent(dynamic event){
     bool resp = false;
-    dynamic eventUserOrganizers = event['eventUserOrganizers']['users']['data'];
+    dynamic userParticipants = event['userParticipants']['data'];
 
-    for(int i = 0; i<eventUserOrganizers.length; i++){
-      if(eventUserOrganizers[i]['_id'] == appModel.currentUser['_id']){
+    for(int i = 0; i<userParticipants.length; i++){
+      if(userParticipants[i]['user']['id'] == appModel.currentUser['_id']){
         resp = true;
       }
     }

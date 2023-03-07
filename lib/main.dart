@@ -1,6 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:camera/camera.dart';
 import 'package:soccermadeeasy/components/Dialogues/animated_dialogue.dart';
 import 'package:soccermadeeasy/models/home_page_model.dart';
 
@@ -100,9 +101,7 @@ void main() async {
     if (_permissionGranted != PermissionStatus.granted) {
       
     }
-  }
-
-    // catch(e){}
+  }   
 
 
   
@@ -222,7 +221,16 @@ class _MyAppState extends State<MyApp> {
     AppModel().amplifyConfigured = true;
     Commands.BaseCommand().setIsSigned(true);
     await Commands.BaseCommand().setupInitialAppConfigs();
+ //camera
+    // Ensure that plugin services are initialized so that `availableCameras()`
+    // can be called before `runApp()`
+    await WidgetsFlutterBinding.ensureInitialized();
 
+    // Obtain a list of the available cameras on the device.
+    final cameras = await availableCameras();
+    print("cameras: " + cameras.toString());
+    // Get a specific camera from the list of available cameras.
+    // final firstCamera = cameras.first;
     return otherConfigurationsResp;
     
   }
