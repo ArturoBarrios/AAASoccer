@@ -33,6 +33,7 @@ class EventFragments{
                       user{
                         _id
                         name
+                        userType
                       }
                     }                                        
                                  

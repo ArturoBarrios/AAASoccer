@@ -32,15 +32,37 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './game_command.dart';
 
 class EventCommand extends BaseCommand {
-  Future<Map<String, dynamic>> notifyEventParticipants(dynamic eventInput) async {
+  Future<Map<String, dynamic>> notifyEventParticipants(dynamic notifyEventParticipantInput
+  ) async {
     Map<String, dynamic> notifyEventParticipantsResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
     print("notifyEventParticipants()");
-    print("eventInput: " + eventInput.toString());
-    
+    print("notifyEventParticipantInput: " + notifyEventParticipantInput.toString());
+    try{
+      notifyEventParticipantInput['userParticipants']['data'].
+      forEach((userParticipantObject) async {
+        print("userParticipantObject: " + userParticipantObject.toString());
+        if (notifyEventParticipantInput['sendToUserType']==userParticipantObject['user']['userType'].toString()){
+          List<String> phones = [];
+          List<String> OSPIDs = [];
+          phones.add(userParticipantObject['user']['phone']);
+          OSPIDs.add(userParticipantObject['user']['OSPID']);
+            Map<String, dynamic> sendUserParticipantsNotificationsInput = {
+              "phones": phones,                        
+              "OSPIDs": OSPIDs,
+              "message": notifyEventParticipantInput['message'],
+            };            
+            await NotificationsCommand().sendUserParticipantsNotifications(sendUserParticipantsNotificationsInput);
+        }
+      });
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return notifyEventParticipantsResponse;
+    }
+
 
     return notifyEventParticipantsResponse;
   }

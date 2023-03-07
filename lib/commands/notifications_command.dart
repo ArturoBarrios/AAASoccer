@@ -14,6 +14,25 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NotificationsCommand extends BaseCommand {
 
+ Future<Map<String, dynamic>> sendUserParticipantsNotifications(Map<String, dynamic> sendUserParticipantsNotificationsInput) async{
+     print("sendOrganizerRequestNotification");
+    Map<String, dynamic> receiveRequestNotificationResponse = {"success": false, "message": "Default Error", "data": null};
+    try {
+
+      await TwilioServices().SendSMS(sendUserParticipantsNotificationsInput['phones'], sendUserParticipantsNotificationsInput['message']);
+      await OneSignalService().sendPN(sendUserParticipantsNotificationsInput);
+
+      receiveRequestNotificationResponse["success"] = true;
+      receiveRequestNotificationResponse["message"] = "Notification Sent!";      
+ 
+  
+      return receiveRequestNotificationResponse;    
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return receiveRequestNotificationResponse;
+    }
+  }
+
  Future<Map<String, dynamic>> sendOrganizerRequestNotification(Map<String, dynamic> sendOrganizerRequestNotificationInput ) async{
      print("sendOrganizerRequestNotification");
     Map<String, dynamic> receiveRequestNotificationResponse = {"success": false, "message": "Default Error", "data": null};

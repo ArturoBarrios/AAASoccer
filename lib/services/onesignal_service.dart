@@ -65,7 +65,7 @@ class OneSignalService extends BaseCommand {
         "http://cdn1-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-2.jpg";
 
     var notification = OSCreateNotification(
-        playerIds: ["3a4086ef-4354-40d1-9573-41a3cc51ed83"],
+        playerIds: pNInput['OSPIDs'],//["3a4086ef-4354-40d1-9573-41a3cc51ed83"],
         content: pNInput['message'],
         heading: "Hello World!",
         iosAttachments: {"id1": imgUrlString},
