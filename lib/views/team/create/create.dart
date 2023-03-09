@@ -1,11 +1,11 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
-import '../../commands/team_command.dart';
-import '../../testing/seeding/team_seeder.dart';
-import '../../testing/seeding/location_seeder.dart';
-import '../../components/profile.dart';
-import '../../models/app_model.dart';
+import '../../../commands/team_command.dart';
+import '../../../testing/seeding/team_seeder.dart';
+import '../../../testing/seeding/location_seeder.dart';
+import '../../../components/profile.dart';
+import '../../../models/app_model.dart';
 
 class TeamCreate extends StatefulWidget {
   @override
@@ -17,6 +17,8 @@ class _TeamCreateState extends State<TeamCreate> {
   final colorController = TextEditingController();
   final logoController = TextEditingController();
   final imagesController = TextEditingController();
+  int createTeamCurrentStep = 0;
+  final createTeamTotalSteps = 3;
   
 
   bool _isLoading = false;

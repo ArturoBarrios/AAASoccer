@@ -10,6 +10,21 @@
       "StackName": "amplify-soccerapp-staging-04528",
       "StackId": "arn:aws:cloudformation:us-east-1:704053890558:stack/amplify-soccerapp-staging-04528/9aeba670-7b48-11ed-9b6c-0af22443bfd3",
       "AmplifyAppId": "d3j6ze5fxredf0"
+    },
+    "categories": {
+      "function": {
+        "soccerapp78c5364b": {},
+        "soccerappcffe289a": {
+          "deploymentBucketName": "amplify-soccerapp-staging-04528-deployment",
+          "s3Key": "amplify-builds/soccerappcffe289a-4a686872724c3542575a-build.zip"
+        }
+      },
+      "auth": {
+        "soccerapp": {}
+      },
+      "api": {
+        "api": {}
+      }
     }
   }
 }

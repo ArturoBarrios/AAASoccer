@@ -1,1 +1,43 @@
-{}
+{
+  "api": {
+    "api": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "soccerappcffe289a"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "function": {
+    "soccerappcffe289a": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_soccerappcffe289a_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "soccerappcffe289a"
+        }
+      ]
+    },
+    "AMPLIFY_function_soccerappcffe289a_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "soccerappcffe289a"
+        }
+      ]
+    }
+  }
+}

@@ -216,3 +216,18 @@ exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) =
 
 
 
+exports.uploadImageToAWS = functions.https.onRequest(async (req, res) => {    
+    try{
+        
+        return res.sendStatus(400);
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
+
+});
+
+
+
+
+
+

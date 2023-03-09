@@ -10,7 +10,7 @@ import '../views/league/create.dart';
 import '../views/tournament/create.dart';
 import '../views/training/create.dart';
 import '../views/tryout/create.dart';
-import '../views/team/create.dart';
+import '../views/team/create/create.dart';
 
 
 class HomePageModel extends ChangeNotifier {
