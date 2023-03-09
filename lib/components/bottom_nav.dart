@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../views/request/view.dart';
 import '../views/friends/view.dart';
+import '../views/camera.dart';
 import '../components/history.dart';
 import '../services/amplify_auth_service.dart';
 

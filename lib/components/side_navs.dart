@@ -4,7 +4,7 @@ import '../components/profile.dart';
 import '../views/chats/view.dart';
 import '../views/friends/view.dart';
 import '../views/home.dart';
-import '../views/chats/view.dart';
+import '../views/images/my_images.dart';
 
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);
@@ -94,6 +94,19 @@ class SideNavs extends StatefulWidget {
                   Navigator.push(context, MaterialPageRoute<void>(
                     builder: (BuildContext context) {
                       return RequestsView();
+                    },
+                  ));
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.image_sharp,
+                ),
+                title: const Text('My Images'),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
+                      return MyImagesView();
                     },
                   ));
                 },

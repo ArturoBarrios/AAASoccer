@@ -96,6 +96,8 @@ enum RequestType{
 
 }
 
+
+
 type FriendRequest {
   sender: User
   receiver: User @relation(name: "friend_requests")

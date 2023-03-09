@@ -1,63 +1,68 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
-late List<CameraDescription> _cameras;
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  _cameras = await availableCameras();
-  runApp(const CameraApp());
-}
-
-/// CameraApp is the Main Application.
 class CameraApp extends StatefulWidget {
-  /// Default Constructor
-  const CameraApp({Key? key});
+  const CameraApp({Key? key}) : super(key: key);
 
   @override
-  State<CameraApp> createState() => _CameraAppState();
+  State<CameraApp> createState() => _CameraApp();
 }
 
-class _CameraAppState extends State<CameraApp> {
-  late CameraController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = CameraController(_cameras[0], ResolutionPreset.max);
-    controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    }).catchError((Object e) {
-      if (e is CameraException) {
-        switch (e.code) {
-          case 'CameraAccessDenied':
-            // Handle access errors here.
-            break;
-          default:
-            // Handle other errors here.
-            break;
-        }
-      }
-    });
+class _CameraApp extends State<CameraApp> {
+  File? image;
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      final imageTemp = File(image.path);
+      setState(() => this.image = imageTemp);
+      print("imageTemp: "+imageTemp.toString());
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
   }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+  
+  Future captureImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (image == null) return;
+      final imageTemp = File(image.path);
+      setState(() => this.image = imageTemp);
+      print("imageTemp: "+imageTemp.toString());
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!controller.value.isInitialized) {
-      return Container();
-    }
-    return MaterialApp(
-      home: CameraPreview(controller),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("Image Picker Example"),
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              MaterialButton(
+                  color: Colors.blue,
+                  child: const Text("Pick Image from Gallery",
+                      style: TextStyle(
+                          color: Colors.white70, fontWeight: FontWeight.bold)),
+                  onPressed: () {
+                    pickImage();
+                  }),
+              MaterialButton(
+                  color: Colors.blue,
+                  child: const Text("Pick Image from Camera",
+                      style: TextStyle(
+                          color: Colors.white70, fontWeight: FontWeight.bold)),
+                  onPressed: () {
+                    captureImage();
+                  }),
+            ],
+          ),
+        ));
   }
 }
