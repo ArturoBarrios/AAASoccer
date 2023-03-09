@@ -226,6 +226,32 @@ exports.uploadImageToAWS = functions.https.onRequest(async (req, res) => {
 
 });
 
+exports.getSignedUrl = functions.https.onRequest(async (req, res) => {    
+    try{
+        var cfsign = require('aws-cloudfront-sign');
+        const AWS = require('aws-sdk');
+        const fs = require('fs');
+
+        var signingParams = {
+            keypairId: process.env.PUBLIC_KEY,
+            privateKeyString: process.env.PRIVATE_KEY,
+            expireTime: 1426625464599
+        }
+
+        // Generating a signed URL
+        var signedUrl = cfsign.getSignedUrl(
+        'http://example.cloudfront.net/path/to/s3/object', 
+        signingParams
+        );
+        return res.sendStatus(400);
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
+
+});
+
+
+
 
 
 

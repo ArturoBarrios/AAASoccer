@@ -45,7 +45,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_stripe/flutter_stripe.dart'; 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-
+import '../views/onboarding.dart';
 
 
 void main() async {
@@ -644,7 +644,7 @@ class AppScaffold extends StatelessWidget {
               LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
             )
           ) 
-          : Home(),
+          : IntroductionPage(),
       // body: currentUser != "" ?  Home() : LoginPage(),
     );
   }
