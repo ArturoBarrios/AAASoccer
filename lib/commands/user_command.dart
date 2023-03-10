@@ -130,25 +130,45 @@ class UserCommand extends BaseCommand {
     return updateUserResponse;
   }
 
-  Future<Map<String, dynamic>> updateUserStatus(
-      String email, String newUserStatus) async {
-    Map<String, dynamic> updateUserResponse = {
-      "success": false,
-      "message": "Default Error"
-    };
-    try {
-      User oldUser = (await Amplify.DataStore.query(User.classType,
-          where: User.EMAIL.eq(email)))[0];
 
-      User newUser = oldUser.copyWith(status: newUserStatus);
-      await Amplify.DataStore.save(newUser);
-      updateUserResponse["success"] = true;
-    } catch (e) {}
-    return updateUserResponse;
-  }
 
   void setUserID() {
     // userModel.userID = userId;
+  }
+
+  Future<Map<String, dynamic>> partialUpdateUser(dynamic processedUserInput) async{
+    print("partialUpdateUser");
+    print("processedUserInput: "+ processedUserInput.toString());
+    Map<String, dynamic> partialUpdateUserResponse = {"success": false, "message": "Default Error", "data": null};
+
+    try{      
+       http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().partialUserUpdate(processedUserInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+      partialUpdateUserResponse["success"] = true;
+      partialUpdateUserResponse["message"] = "User Updated";
+      partialUpdateUserResponse["data"] = jsonDecode(response.body)['data']['partialUpdateUser'];
+      //todo update appModel.currentUser
+      appModel.currentUser = partialUpdateUserResponse["data"];
+      print("appModel.currentUser: "+appModel.currentUser.toString());
+
+      return partialUpdateUserResponse;
+
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return partialUpdateUserResponse;
+    }
+
   }
 
   Future<Map<String, dynamic>> sendFriendRequest(dynamic friendInput  ) async{

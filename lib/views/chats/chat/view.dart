@@ -58,7 +58,7 @@ class _ChatViewState extends State<ChatView> {
       _isLoading = false;      
     });
    
-  }
+  }  
 
   @override
   void initState() {

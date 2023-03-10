@@ -5,6 +5,7 @@ import '../models/Location.dart';
 import '../services/twilio_services.dart';
 import '../services/onesignal_service.dart';
 import '../graphql/mutations/chat.dart';
+import '../graphql/queries/chat.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
@@ -15,9 +16,19 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChatCommand extends BaseCommand {
 
-  Future<Map<String, dynamic>> createChat(
-      Map<String, dynamic> chatInput) async {
+  int getIndexOfChat(String chatId){
+    int indexOfChat = 0;
+    for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {
+      if (appModel.currentUser['chats']['data'][i]['_id'] == chatId) {
+        indexOfChat = i;
+      }
+    }
+    return indexOfChat;
+  }
+
+  Future<Map<String, dynamic>> createChat(dynamic chatInput) async {
     print("removeChat");
+    print("chatInput: $chatInput");
     Map<String, dynamic> removeChatResponse = {
       "success": false,
       "message": "Default Error",
@@ -39,6 +50,8 @@ class ChatCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
+
+
       return removeChatResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
@@ -48,7 +61,8 @@ class ChatCommand extends BaseCommand {
 
   Future<Map<String, dynamic>> createText(
       Map<String, dynamic> chatInput) async {
-    print("removeChat");
+    print("createText");
+    print("chatInput: $chatInput");
     Map<String, dynamic> removeChatResponse = {
       "success": false,
       "message": "Default Error",
@@ -67,9 +81,20 @@ class ChatCommand extends BaseCommand {
         }),
       );
 
+      
+
       print("response body: ");
       print(jsonDecode(response.body));
 
+      //refetch messages in user
+      //(maybe don't get full user)
+      int indexOfChat = getIndexOfChat(chatInput['chat_id']);
+      Map<String, dynamic> getchatInput = {
+        "_id": appModel.currentUser['chats']['data'][indexOfChat]['_id']
+      };
+      Map<String, dynamic> getChatResponse = await findChatById(getchatInput);
+      appModel.currentUser['chats']['data'][indexOfChat] =
+          getChatResponse['data']['findChatByID'];
       return removeChatResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
@@ -79,7 +104,7 @@ class ChatCommand extends BaseCommand {
 
   Future<Map<String, dynamic>> removeChat(
       Map<String, dynamic> chatInput) async {
-    print("removeChat");
+    print("removeChat for real");
     Map<String, dynamic> removeChatResponse = {
       "success": false,
       "message": "Default Error",
@@ -153,6 +178,42 @@ class ChatCommand extends BaseCommand {
 
     return processedChatInput;
   }
+
+  Future<Map<String, dynamic>> findChatById(Map<String, dynamic> chatInput) async {
+    print("getChat");
+    Map<String, dynamic> getChatResp = {
+      "success": false,
+      "message": "no chat found",
+      "data": null
+    };
+    try {
+      print("chatInput: ");
+      print(chatInput);
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': ChatQueries().findChatByID(chatInput),
+        }),
+      );
+
+      print("response: ");
+      print(jsonDecode(response.body));
+      final result = jsonDecode(response.body)['data']['findChatByID'];
+      // if (result != null) {
+      getChatResp["success"] = true;
+      getChatResp["message"] = "chat found";
+      getChatResp["data"] = result;
+      // }
+    } catch (e) {
+      print('Query failed: $e');
+    }
+    return getChatResp;
+  }
+
   
   
 

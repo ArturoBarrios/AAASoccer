@@ -34,16 +34,7 @@ void removeChat(dynamic chatObject) async{
   await ChatCommand().removeChat(chatObject);
 }
 
-void archiveChat(dynamic chatObject) async{
-  print("archiveChat for chatObject: $chatObject");
-  dynamic archiveChatIterableInput = [
-    {"dataType": "normal",
-    "data": chatObject['archived'],
-    "_id": chatObject['_id']
-    }
-  ];
-  await ChatCommand().archiveChat(chatObject);
-}
+
 
 class _ChatCard extends State<ChatCard> {
   final bool _isPressed = false;

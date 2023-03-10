@@ -58,16 +58,6 @@ class BaseCommand {
     homePageModel.testText = "testingggggg";
   }
 
-  
-
-  // Future <Map<String, dynamic>> reloadData() async{
-  //   print("reloadData");
-  //   Map<String, dynamic> reloadDataResponse = {"success": false, "message": "Something went wrong with reloading data", "data": Map<String, dynamic>()};
-
-  //   return reloadDataResponse;
-  // }
-
-
   Future <Map<String, dynamic>> reloadUser() async{
     print("reloadUser");
     Map<String, dynamic> reloadUserResponse = {"success": false, "message": "Something went wrong with reloading user data", "data": null};

@@ -341,10 +341,7 @@ class _MyAppState extends State<MyApp> {
       final user = await Amplify.Auth.getCurrentUser();
       print("getCurrentUser: ");
       print(user);
-      await UserCommand()
-          .updateUserStatus(emailController.text.trim(), "confirmed");
-
-      // });
+      
     } on AuthException catch (e) {
       print("confirmSignInError");
       print(e);
@@ -644,7 +641,7 @@ class AppScaffold extends StatelessWidget {
               LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
             )
           ) 
-          : IntroductionPage(),
+          : Home(),
       // body: currentUser != "" ?  Home() : LoginPage(),
     );
   }
