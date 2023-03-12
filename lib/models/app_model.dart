@@ -84,7 +84,7 @@ class AppModel extends ChangeNotifier {
   set players(List players) {
     _players = players;
     notifyListeners();
-  }
+  }  
   
   List _playersNearMe = [];
   List get playersNearMe => _playersNearMe;

@@ -1,6 +1,5 @@
 const functions = require("firebase-functions");
 const stripe = require('stripe')("sk_test_51M6l0pDUXwYENeT4BaAfVT8ewp4Ujzb4NyD8ebB0F0s14xujWNb1MESrqqrSbtKBIm6MdnE0odAHc1IBqEyS97aH00Kzayd323") //functions.config().stripe.testKey
-
 const generateResponse = function (intent) {
     switch (intent.status) {
         case 'requires_action': 
@@ -225,25 +224,40 @@ exports.uploadImageToAWS = functions.https.onRequest(async (req, res) => {
     }
 
 });
-
+// usage
+/**
+ * async function returnThumbnail(thumbnail_key) {
+  return await getFileUrl(thumbnail_key, "my_bucket", 3600);
+} 
+ */
 exports.getSignedUrl = functions.https.onRequest(async (req, res) => {    
     try{
-        var cfsign = require('aws-cloudfront-sign');
-        const AWS = require('aws-sdk');
-        const fs = require('fs');
-
-        var signingParams = {
-            keypairId: process.env.PUBLIC_KEY,
-            privateKeyString: process.env.PRIVATE_KEY,
-            expireTime: 1426625464599
+        const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+        const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+        // Create the config obj with credentials
+        // Always use environment variables or config files
+        // Don't hardcode your keys into code
+        const config = {
+          credentials: {
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+          },
+          region: "us-west-2",
+        };
+        // Instantiate a new s3 client
+        const client = new S3Client(config);
+        
+        async function getSignedFileUrl(fileName, bucket, expiresIn) {
+          // Instantiate the GetObject command,
+          // a.k.a. specific the bucket and key
+          const command = new GetObjectCommand({
+            Bucket: bucket,
+            Key: fileName,
+          });
+        
+          // await the signed URL and return it
+          return await getSignedUrl(client, command, { expiresIn });
         }
-
-        // Generating a signed URL
-        var signedUrl = cfsign.getSignedUrl(
-        'http://example.cloudfront.net/path/to/s3/object', 
-        signingParams
-        );
-        return res.sendStatus(400);
     } catch (e) {
         return res.send({ error: e.message })
     }

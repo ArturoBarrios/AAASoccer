@@ -9,10 +9,11 @@ import '../graphql/queries/chat.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
-import '../models/app_model.dart';
+import '../models/chat_page_model.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../commands/user_command.dart';
 
 class ChatCommand extends BaseCommand {
 
@@ -24,6 +25,15 @@ class ChatCommand extends BaseCommand {
       }
     }
     return indexOfChat;
+  }
+
+  Future<void> setChatMessages(dynamic chat, int index) async {
+    print("setChatMessages");
+    //get updated chat first?????
+    dynamic findMyUser = await UserCommand().findMyUserById();
+    dynamic user = findMyUser['data'];
+    chatPageModel.messages = user['chats']['data'][index]['messages']['data'];
+
   }
 
   Future<Map<String, dynamic>> createChat(dynamic chatInput) async {
@@ -63,7 +73,7 @@ class ChatCommand extends BaseCommand {
       Map<String, dynamic> chatInput) async {
     print("createText");
     print("chatInput: $chatInput");
-    Map<String, dynamic> removeChatResponse = {
+    Map<String, dynamic> createTextResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
@@ -89,16 +99,33 @@ class ChatCommand extends BaseCommand {
       //refetch messages in user
       //(maybe don't get full user)
       int indexOfChat = getIndexOfChat(chatInput['chat_id']);
+      print("indexOfChat: $indexOfChat");
       Map<String, dynamic> getchatInput = {
         "_id": appModel.currentUser['chats']['data'][indexOfChat]['_id']
       };
-      Map<String, dynamic> getChatResponse = await findChatById(getchatInput);
-      appModel.currentUser['chats']['data'][indexOfChat] =
-          getChatResponse['data']['findChatByID'];
-      return removeChatResponse;
+      print("getchatInput: $getchatInput");
+      Map<String, dynamic> findChatByIdResponse = await findChatById(getchatInput);
+      print("findChatByIdResponse: $findChatByIdResponse");
+      dynamic chat = findChatByIdResponse['data'];
+      print("chat: $chat");
+      appModel.currentUser['chats']['data']
+        [indexOfChat] = chat;        
+      
+      userModel.chats[indexOfChat] = chat;
+
+      print("chat test length before: "+chatPageModel.messages.length.toString());
+      chatPageModel.messages.add(
+       chat['messages']['data'][indexOfChat]
+      );
+      print("chat test length after: "+chatPageModel.messages.length.toString());
+      
+      createTextResponse['success'] = true;
+      createTextResponse['message'] = "Text Created";  
+
+      return createTextResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
-      return removeChatResponse;
+      return createTextResponse;
     }
   }
 

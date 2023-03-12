@@ -34,6 +34,9 @@ class UserModel extends ChangeNotifier {
   set chats(List chats) {
     _chats = chats;
     notifyListeners();
+    print("chats updated in user_model");
+    print("chats new length: " + chats.length.toString());
+    // chats[0]['messages']['data'];
   }
 
 

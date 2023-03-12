@@ -5,6 +5,7 @@ import '/models/user_model.dart';
 import '/models/home_page_model.dart';
 import '/models/events_model.dart';
 import '/models/games_model.dart';
+import '/models/chat_page_model.dart';
 import '/models/requests_model.dart';
 import '/models/requests_page_model.dart';
 import '/models/friends_page_model.dart';
@@ -44,6 +45,7 @@ class BaseCommand {
   RequestsModel requestsModel = _mainContext.read();  
   RequestsPageModel requestsPageModel = _mainContext.read();  
   FriendsPageModel friendsPageModel = _mainContext.read();  
+  ChatPageModel chatPageModel = _mainContext.read();  
   // Services  
   GeoLocationServices geoLocationServices = _mainContext.read();
   // TwilioServices twilioServices = _mainContext.read();
@@ -53,6 +55,7 @@ class BaseCommand {
   //   TwilioFlutter twilioFlutterClient = twilioServices.configureTwilio();
   //   appModel.twilioClient = twilioFlutterClient;
   // }
+
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
