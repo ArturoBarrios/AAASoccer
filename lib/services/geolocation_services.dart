@@ -69,9 +69,11 @@ class GeoLocationServices {
     // addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
     // first = addresses.first;
     // print("${first.featureName} : ${first.addressLine}");
-
+    
 
   }
+
+  
 
   
 

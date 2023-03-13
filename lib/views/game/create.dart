@@ -12,7 +12,7 @@ import '../../testing/seeding/event_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
 import '../../views/home.dart';
-
+import 'package:geocoder/geocoder.dart';
 
 class GameCreate extends StatefulWidget {
   @override
@@ -29,9 +29,24 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final locationController = TextEditingController();
+  Coordinates coordinates = new Coordinates(0, 0);
   final imagesController = TextEditingController();
 
   bool _isLoading = false;
+
+
+  void chooseAddress(String chosenAddress) async {
+    print("chooseAddress");
+    locationController.text = chosenAddress;
+    List<Address> addresses = await Geocoder.local.findAddressesFromQuery(chosenAddress);
+    Address address = addresses.first;
+    print("address: " + address.toString());
+    coordinates = address.coordinates;
+    print("coordinates: " + coordinates.toString());
+    coordinates.latitude;
+    coordinates.longitude;
+    // LocationCommand().translateAddressToLocation(location);
+  }
 
   Future<void> createPickupGame() async {
     print("createGame");
@@ -41,47 +56,45 @@ class _GameCreateState extends State<GameCreate> {
     };
     try {
       var rng = Random();
-      print("priceee: "+priceController.text.toString());
-      Map<String, dynamic> eventInput = {        
+      print("priceee: " + priceController.text.toString());
+      Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
-        'isMainEvent': true,        
-        'price':  int.parse(priceController.text.toString())
+        'isMainEvent': true,
+        'price': int.parse(priceController.text.toString())
       };
 
-      Map<String, dynamic> randomPickupData = EventSeeder().getRandomPickupGameData();      
+      Map<String, dynamic> randomPickupData =
+          EventSeeder().getRandomPickupGameData();
       // Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
       Map<String, dynamic> locationInput = {
-        "latitude": 39.9526,
-        "longitude": 75.1652,
+        "latitude": coordinates.latitude,
+        "longitude": coordinates.longitude,
       };
       // Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
-      print("locationInputCheaheck: " + locationInput.toString());                                  
+      print("locationInputCheaheck: " + locationInput.toString());
 
-      Map<String, dynamic> createPickupGameResp = await GameCommand().createGame(randomPickupData, eventInput, locationInput);      
+      Map<String, dynamic> createPickupGameResp = await GameCommand()
+          .createGame(randomPickupData, eventInput, locationInput);
       print("createPickupGameResp: ");
       print(createPickupGameResp['data']);
       if (createPickupGameResp['success']) {
         Map<String, dynamic> pickupGame = createPickupGameResp['data'];
-        Map<String, dynamic> event = pickupGame['event'];             
+        Map<String, dynamic> event = pickupGame['event'];
         Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Home()),
-    );
-       
-      }      
-
-
-    } on ApiException catch (e) {
-      
-    }
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+      }
+    } on ApiException catch (e) {}
   }
 
-  void goBack(){
+  void goBack() {
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -115,17 +128,16 @@ class _GameCreateState extends State<GameCreate> {
         ),
         // TextField(
         //   controller: locationController,
-        //   decoration: new InputDecoration.collapsed(hintText: 'Location'),        
+        //   decoration: new InputDecoration.collapsed(hintText: 'Location'),
         //   onChanged: (value) async => {
         //     await LocationCommand().place_api_autocomplete(value),
         //   }),
 
-        LocationSearchBar(locationController: locationController),
-          
-        
+        LocationSearchBar(chooseAddress: chooseAddress,),
+
         TextField(
           controller: awayteamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Away'),          
+          decoration: new InputDecoration.collapsed(hintText: 'Away'),
         ),
         TextField(
           controller: isPickupController,

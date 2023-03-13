@@ -33,49 +33,49 @@ BottomAppBar getMainBottomNav(BuildContext context){
   ];
 
   void goToPage(int selectedIndex){
-     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CameraApp()),
-    );
-    // print("goToPage: "+ selectedIndex.toString());
-    // switch (selectedIndex) {
-    //   case 0:
-    //     Navigator.push(context, MaterialPageRoute<void>(
-    //       builder: (BuildContext context) {
-    //         return GameCreate();            
-    //       },
-    //     ));
-    //     break;
-    //   case 1:
-    //     Navigator.push(context, MaterialPageRoute<void>(
-    //       builder: (BuildContext context) {
-    //         return TournamentCreate();
-    //       },
-    //     ));
-    //     break;
-    //   case 2:
-    //     Navigator.push(context, MaterialPageRoute<void>(
-    //       builder: (BuildContext context) {
-    //         return LeagueCreate();
-    //       },
-    //     ));
-    //     break;
-    //   case 3:
-    //     Navigator.push(context, MaterialPageRoute<void>(
-    //       builder: (BuildContext context) {
-    //         return TrainingCreate();
-    //       },
-    //     ));
-    //     break;
-    //   case 4:
-    //     Navigator.push(context, MaterialPageRoute<void>(
-    //       builder: (BuildContext context) {
-    //         return TryoutCreate();
-    //       },
-    //     ));
-    //     break;      
-    //   default:
-    // }
+    //  Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => CameraApp()),
+    // );
+    print("goToPage: "+ selectedIndex.toString());
+    switch (selectedIndex) {
+      case 0:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return GameCreate();            
+          },
+        ));
+        break;
+      case 1:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return TournamentCreate();
+          },
+        ));
+        break;
+      case 2:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return LeagueCreate();
+          },
+        ));
+        break;
+      case 3:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return TrainingCreate();
+          },
+        ));
+        break;
+      case 4:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return TryoutCreate();
+          },
+        ));
+        break;      
+      default:
+    }
   }
 
   BottomAppBar bottomAppBar = BottomAppBar(
