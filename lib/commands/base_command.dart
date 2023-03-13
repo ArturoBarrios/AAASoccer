@@ -5,6 +5,7 @@ import '/models/user_model.dart';
 import '/models/home_page_model.dart';
 import '/models/events_model.dart';
 import '/models/games_model.dart';
+import '/models/chat_page_model.dart';
 import '/models/requests_model.dart';
 import '/models/requests_page_model.dart';
 import '/models/friends_page_model.dart';
@@ -44,6 +45,7 @@ class BaseCommand {
   RequestsModel requestsModel = _mainContext.read();  
   RequestsPageModel requestsPageModel = _mainContext.read();  
   FriendsPageModel friendsPageModel = _mainContext.read();  
+  ChatPageModel chatPageModel = _mainContext.read();  
   // Services  
   GeoLocationServices geoLocationServices = _mainContext.read();
   // TwilioServices twilioServices = _mainContext.read();
@@ -54,19 +56,10 @@ class BaseCommand {
   //   appModel.twilioClient = twilioFlutterClient;
   // }
 
+
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
   }
-
-  
-
-  // Future <Map<String, dynamic>> reloadData() async{
-  //   print("reloadData");
-  //   Map<String, dynamic> reloadDataResponse = {"success": false, "message": "Something went wrong with reloading data", "data": Map<String, dynamic>()};
-
-  //   return reloadDataResponse;
-  // }
-
 
   Future <Map<String, dynamic>> reloadUser() async{
     print("reloadUser");

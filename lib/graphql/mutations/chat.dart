@@ -52,7 +52,9 @@ class ChatMutations {
       {
         _id
         messageType
-        ${ChatFragments().chatObject()}
+        chatObject{
+          ${ChatFragments().chatObject()}
+        }
         
         
         }

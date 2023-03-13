@@ -1,6 +1,22 @@
 import '../fragments/user_fragments.dart';
 
 class UserMutations {
+  String partialUserUpdate(Map<String, dynamic> userInput) {
+    String updateUserString = """
+      mutation {
+        partialUpdateUser(id: ${userInput['user']['_id']}, 
+        data:{
+         ${userInput['user']['dataToUpdate']}
+        })
+        {
+          ${UserFragments().fullUser()}
+        }  
+      }
+    """;
+
+    return updateUserString;
+  }
+
   String sendFriendRequest(Map<String, dynamic> sendFriendRequestInput) {
     String sendFriendRequestString = """
       mutation {

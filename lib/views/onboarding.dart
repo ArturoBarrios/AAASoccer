@@ -1,14 +1,40 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 import 'home.dart';
+import '../commands/user_command.dart';
 
 class IntroductionPage extends StatelessWidget {
   const IntroductionPage({Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
     
+    void updateUserOnboarding() async {
+      print("updateUserOnboarding");
+      dynamic userObjectResp = await UserCommand().findMyUserById();      
+      dynamic userObject = userObjectResp['data'];
+      print("userObject: $userObject");
+      Map<String, dynamic> partialUserInput = {
+        'user': {
+          '_id': userObject['_id'],
+          'dataToUpdate': jsonEncode({ 
+            'onboarded': true
+          })
+        },    
+    };
+      await UserCommand().partialUpdateUser(partialUserInput);
+
+      Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return Home();
+              },
+            ),
+          );
+    }
 
     return Scaffold(
       appBar: AppBar(),
@@ -38,14 +64,7 @@ class IntroductionPage extends StatelessWidget {
           ),
         ],
         onDone: () {
-          
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                return Home();
-              },
-            ),
-          );
+          // updateUserOnboarding();          
         },
         skip: const Icon(Icons.skip_next),
         next: const Icon(Icons.forward),

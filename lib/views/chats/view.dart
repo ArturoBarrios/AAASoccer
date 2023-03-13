@@ -6,9 +6,9 @@ import '../../components/search_bar.dart';
 import '../../commands/user_command.dart';
 import '../../components/conversation_list.dart';
 import '../../components/card_form_screen.dart';
-import '../../components/Cards/chat_card.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../models/user_model.dart';
+import '../../models/chat_page_model.dart';
 import 'package:provider/provider.dart';
 import 'create.dart';
 
@@ -55,7 +55,7 @@ class _ChatsViewState extends State<ChatsView> {
     print("build() in chats view.dart page");
     List chats = context.select<UserModel, List>((value) => value.chats);
     print("chats: "+ chats.toString());
-
+    int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
     return Scaffold(
       body: SafeArea(
           child: Column(
@@ -68,10 +68,12 @@ class _ChatsViewState extends State<ChatsView> {
               shrinkWrap: true,
               padding: EdgeInsets.only(top: 16),
               physics: NeverScrollableScrollPhysics(),
+              
               itemBuilder: (context, index) {
                  dynamic messages = chats[index]['messages']['data'];
                  String messageContent = messages.length>0 ? messages[(messages.length)-1]['textObject']['content'] : "No Messages Yet";
                 return ConversationList(
+                  index: index,
                   chatObject: chats[index],
                   name: chats[index]['name'],
                   messageText: messageContent,

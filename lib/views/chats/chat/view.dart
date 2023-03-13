@@ -5,7 +5,7 @@ import '../../../views/home.dart';
 // import '../../components/card_form_screen.dart';
 import '../../../commands/user_command.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../../models/app_model.dart';
+import '../../../models/chat_page_model.dart';
 import 'package:provider/provider.dart';
 import '../../../components/headers.dart';
 import '../../../components/conversation_list.dart';
@@ -13,9 +13,10 @@ import '../../../components/bottom_text_box.dart';
 // import 'create.dart';
 
 class ChatView extends StatefulWidget {
-  const ChatView({Key? key, required this.chatObject}) 
+  const ChatView({Key? key, required this.index, required this.chatObject}) 
     : super(key: key);
   final Map<String, dynamic> chatObject;  
+  final int index;
 
   @override
   _ChatViewState createState() => _ChatViewState();
@@ -28,7 +29,7 @@ class _ChatViewState extends State<ChatView> {
   final addressController = TextEditingController();
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
-  final privateController = TextEditingController();
+  final privateController = TextEditingController();  
 
   dynamic user = {};
   
@@ -38,9 +39,9 @@ class _ChatViewState extends State<ChatView> {
   ];
 
   bool _isLoading = true;
-  late ScrollController _selectEventController = ScrollController();
+  late ScrollController scrollController = ScrollController();
 
-  dynamic messages = [];
+  dynamic chatMessages = [];
 
   void goBack() {
     Navigator.pop(context);
@@ -48,17 +49,21 @@ class _ChatViewState extends State<ChatView> {
 
   
 
-  void _firstLoad() async {
+  Future<void> _firstLoad() async {
     print("first load for chat data");
+      dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
+      print("findMyUserByIdResp: $findMyUserByIdResp");
+      dynamic newUser = findMyUserByIdResp['data'];
     setState(() {
-      user = UserCommand().getAppModelUser();
-      // print("user: $user");
-      //update chat if needed(here???)
-      messages = widget.chatObject['messages']['data'];//chatUsers
-      _isLoading = false;      
+      user = newUser;
+      
+      
+      _isLoading = false;  
     });
+     
    
   }
+  
 
   @override
   void initState() {
@@ -71,7 +76,12 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {    
+    
+    List messages = context
+        .select<ChatPageModel, List<dynamic>>((value) => value.messages);
 
+    int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
+    print("build() messages: $messages");
     return Scaffold(
       appBar: Headers().getChatDetailHeader(context),
       body:
@@ -89,13 +99,19 @@ class _ChatViewState extends State<ChatView> {
           :
 
       Stack(
-        children: <Widget>[
+        
+        children: 
+        
+        <Widget>[
+          Text("messagesLength: $messagesLength"),
+          Expanded(child:
           ListView.builder(
+            controller: scrollController,
   itemCount: messages.length,
   shrinkWrap: true,
   padding: EdgeInsets.only(top: 10,bottom: 10),
-  physics: NeverScrollableScrollPhysics(),
-  itemBuilder: (context, index){
+  physics: AlwaysScrollableScrollPhysics(),
+  itemBuilder: (_, index){
     return 
     Container(
       padding: EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
@@ -117,9 +133,13 @@ class _ChatViewState extends State<ChatView> {
       
 
   }
-          )   ,
+          )),
+
+
+
       BottomTextBox(chatObject: widget.chatObject,),
     ]
+    
     ),
       
       

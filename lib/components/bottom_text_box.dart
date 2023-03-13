@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // import '../../components/card_form_screen.dart';
 // import '../../components/Cards/chat_card.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-// import '../../models/user_model.dart';
+import '../../models/chat_page_model.dart';
 import 'package:provider/provider.dart';
 import '../../../components/headers.dart';
 import '../../../commands/chat_command.dart';
@@ -36,16 +36,19 @@ class _BottomTextBoxState extends State<BottomTextBox> {
   }
 
   void sendMessage() async {
-    print("create chat");
+    print("send message");
     dynamic currentUser = UserCommand().getAppModelUser();
     dynamic messageInput = {
       "content": messageController.text.toString(),
       "chat_id": widget.chatObject['_id'],
       "sender_id": currentUser['_id'],
     };
-    Map<String, dynamic> createChatResp =
+    Map<String, dynamic> sendMessageResp =
         await ChatCommand().createText(messageInput);
-    print("createChatResp: $createChatResp");
+    setState(() {
+      
+    });
+    print("createTextResp: $sendMessageResp");
   }
 
   @override
@@ -57,9 +60,11 @@ class _BottomTextBoxState extends State<BottomTextBox> {
 
   @override
   Widget build(BuildContext context) {
+    int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
     return 
       Stack(
         children: <Widget>[
+          
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
@@ -69,6 +74,7 @@ class _BottomTextBoxState extends State<BottomTextBox> {
               color: Colors.white,
               child: Row(
                 children: <Widget>[
+                  Text("messagesLength: $messagesLength"),
                   GestureDetector(
                     onTap: () {},
                     child: Container(

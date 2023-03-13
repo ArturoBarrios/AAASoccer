@@ -186,7 +186,7 @@ type User  {
   chats: [Chat] @relation
   sentMessages: [Message] @relation(name: "messages_sent")
   messagesDirectedForMe: [Message] @relation(name: "messages_for")
-
+  onboarded: Boolean @default(value: false)
 
 }
 

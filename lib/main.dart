@@ -14,6 +14,7 @@ import 'commands/user_command.dart';
 import 'commands/player_command.dart';
 import 'commands/event_command.dart';
 import 'models/app_model.dart';
+import 'models/chat_page_model.dart';
 import 'models/user_model.dart';
 import 'models/events_model.dart';
 import 'models/payment_model.dart';
@@ -341,10 +342,7 @@ class _MyAppState extends State<MyApp> {
       final user = await Amplify.Auth.getCurrentUser();
       print("getCurrentUser: ");
       print(user);
-      await UserCommand()
-          .updateUserStatus(emailController.text.trim(), "confirmed");
-
-      // });
+      
     } on AuthException catch (e) {
       print("confirmSignInError");
       print(e);
@@ -370,6 +368,7 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (c) => RequestsModel()),
           ChangeNotifierProvider(create: (c) => RequestsPageModel()),
           ChangeNotifierProvider(create: (c) => FriendsPageModel()),
+          ChangeNotifierProvider(create: (c) => ChatPageModel()),
           ChangeNotifierProvider(create: (c) => HomePageModel()),
           ChangeNotifierProvider(create: (c) => PaymentModel()),
           Provider(create: (c) => FaunaDBServices()),          
@@ -644,7 +643,7 @@ class AppScaffold extends StatelessWidget {
               LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
             )
           ) 
-          : IntroductionPage(),
+          : Home(),
       // body: currentUser != "" ?  Home() : LoginPage(),
     );
   }

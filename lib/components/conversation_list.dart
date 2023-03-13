@@ -1,27 +1,46 @@
 import 'package:flutter/material.dart';
 import '../views/chats/chat/view.dart';
+import '../commands/chat_command.dart';
 
 class ConversationList extends StatefulWidget{
+  int index;
   dynamic chatObject;
   String name;
   String messageText;
   String imageUrl;
   String time;
   bool isMessageRead;
-  ConversationList({required this.chatObject,required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead});
+  ConversationList({required this.index, required this.chatObject,required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead});
   @override
   _ConversationListState createState() => _ConversationListState();
 }
 
 class _ConversationListState extends State<ConversationList> {
+  
+  Future<void> setChatMessages() async{
+    print("setChatMessages");
+    await ChatCommand().setChatMessages(widget.chatObject, widget.index);    
+  }
+
+  void goToChat() async{
+    await setChatMessages();
+    // ignore: use_build_context_synchronously
+    Navigator.push(context, MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return ChatView(index: widget.index,chatObject: widget.chatObject);
+      },
+    ));
+    // Navigator.push(context, MaterialPageRoute(builder: (context){
+    //    return ChatView(index: widget.index,chatObject: widget.chatObject);
+    // }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context){
-          return ChatView(chatObject: widget.chatObject);
-        }));
+        goToChat();
       },
       child: Container(
         padding: EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),
