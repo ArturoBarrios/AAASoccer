@@ -27,6 +27,7 @@ import '../components/side_navs.dart';
 //models
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
+import '../models/chat_page_model.dart';
 import '../enums/EventType.dart';
 //views
 //commands
@@ -299,6 +300,7 @@ class _Home extends State<Home> {
   }
   @override
   Widget build(BuildContext context) {
+    int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
     print("buildDDDDDD");
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
@@ -380,7 +382,7 @@ class _Home extends State<Home> {
                               },
                                   )),
                     ])),
-                    Text("selectedObjects.length: " + selectedObjects.length.toString()),
+                    Text("messagesLength.length: " + messagesLength.toString()),
 
                     //list view
                     Expanded(

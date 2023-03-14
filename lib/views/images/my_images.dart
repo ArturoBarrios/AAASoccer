@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../components/headers.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
+import '../../commands/images_command.dart';
 
 class MyImagesView extends StatefulWidget {
   const MyImagesView({Key? key})
@@ -24,7 +25,10 @@ class _MyImagesViewState extends State<MyImagesView> {
   bool _isLoading = true;
   
 
- 
+ void getImage() async{
+  print("getImage");
+  Map<String, dynamic> imageResp = await ImagesCommand().getImages();
+ }
 
   void goBack() {
     Navigator.pop(context);
@@ -52,6 +56,11 @@ class _MyImagesViewState extends State<MyImagesView> {
               ? Text("Loading...")
               : Center(
                   child: Column(children: [
+                    GestureDetector(
+                    onTap: () {
+                      getImage();
+                    },
+                    child:
                   Container(
                       margin: const EdgeInsets.all(10.0),
                       color: Colors.amber[600],
@@ -60,7 +69,7 @@ class _MyImagesViewState extends State<MyImagesView> {
                               .1), //10% padding
                       height: 200.0,
                       child:Text("my images")
-                              ),
+                              )),
                   
                 ])),
         ));

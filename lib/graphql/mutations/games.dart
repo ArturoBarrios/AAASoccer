@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../fragments/event_fragments.dart';
 
 class GameMutations {  
   String partiallyUpdateGameEvent(Map<String, dynamic> gameEventInput) {
@@ -79,13 +80,10 @@ class GameMutations {
                   {
                     user: {
                       connect:                   
-                          "${userInput['_id']}"                       
-                      event: {
-                        connect:                   
-                            "${eventInput['_id']}"
-                      }
+                          "${userInput['_id']}"    
+                      }                                         
                       roles: "{ORGANIZER, PLAYER}"
-                    }                    
+                                       
                   }                                     
               },                    
               location: {
@@ -101,42 +99,8 @@ class GameMutations {
              _id
               pickup
               event{
-                  name        	
-                  _id  
-                  type                  
-                  archived
-                  deleted    
-                  price{                    
-                    _id
-                    amount
-                    event{
-                      _id
-                      name                      
-                    }
-                  }
-                  location{
-                    data{
-                    _id
-                    latitude
-                    longitude
-                    }
-                  }
-                  eventUserOrganizers{                    
-                      users{
-                        data{
-                          _id
-                          name
-                        }
-                      }    
-                      event{                        
-                          _id
-                          name  
-                          archived
-                          deleted                      
-                      }                
-                    }
-                }  
-
+                   ${EventFragments().fullEvent()}
+            }
             
           }   
         }

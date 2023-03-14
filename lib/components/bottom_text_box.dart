@@ -53,8 +53,8 @@ class _BottomTextBoxState extends State<BottomTextBox> {
 
   @override
   void initState() {
-    print("chat/create.dart init state");
     super.initState();
+    print("bottom_text_box.dart init state");
     _firstLoad();
   }
 

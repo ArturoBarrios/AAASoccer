@@ -12,9 +12,9 @@ class ChatPageModel extends ChangeNotifier {
   set messages(List messages) {
     _messages = messages;
     messagesLength = messages.length;
-    notifyListeners();
     print("messages updated in chat_page_model");
     print("chat_page_model messages length after update: " + messages.length.toString());
+    notifyListeners();
 
   }  
   
@@ -22,9 +22,10 @@ class ChatPageModel extends ChangeNotifier {
   int get messagesLength => _messagesLength;
   set messagesLength(int messagesLength) {
     _messagesLength = messagesLength;
-    notifyListeners();
     print("messagesLength updated in chat_page_model");
     print("chat_page_model messagesLength after update: " + messages.length.toString());
+    notifyListeners();
+    
 
   }  
   

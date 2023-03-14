@@ -1,5 +1,9 @@
+
+
 const functions = require("firebase-functions");
 const stripe = require('stripe')("sk_test_51M6l0pDUXwYENeT4BaAfVT8ewp4Ujzb4NyD8ebB0F0s14xujWNb1MESrqqrSbtKBIm6MdnE0odAHc1IBqEyS97aH00Kzayd323") //functions.config().stripe.testKey
+
+
 const generateResponse = function (intent) {
     switch (intent.status) {
         case 'requires_action': 
@@ -230,34 +234,47 @@ exports.uploadImageToAWS = functions.https.onRequest(async (req, res) => {
   return await getFileUrl(thumbnail_key, "my_bucket", 3600);
 } 
  */
-exports.getSignedUrl = functions.https.onRequest(async (req, res) => {    
+exports.getImages = functions.https.onRequest(async (req, res) => {    
     try{
-        const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-        const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
-        // Create the config obj with credentials
-        // Always use environment variables or config files
-        // Don't hardcode your keys into code
-        const config = {
-          credentials: {
-            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-          },
-          region: "us-west-2",
-        };
-        // Instantiate a new s3 client
-        const client = new S3Client(config);
+        require("dotenv").config();
+        const {getSignedUrl} = require('@aws-sdk/cloudfront-signer');
+        var signedUrl = await getSignedUrl({
+            url: "https://d3pq1muv3j21qh.cloudfront.net"+
+                "/soccerimages/Screenshot 2023-03-07 at 7.52.32 PM.png",
+            dateLessThan: new Date(Date.now() + 1000 *60 * 60 *24),
+            privateKey: "E17GQLGL0SH6YG",//process.env.CLOUDFRONT_KEY_PAIR_ID,
+            keyPairId: process.env.CLOUDFRONT_PRIVATE_KEY
+        });
+
+        return res.send({ success: true, signedUrl: signedUrl });
+
+        // const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+        // const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+        // // Create the config obj with credentials
+        // // Always use environment variables or config files
+        // // Don't hardcode your keys into code
+        // const config = {
+        //   credentials: {
+        //     accessKeyId: "AKIA2H3HBZX7IWWRFIRF",//process.env.AWS_ACCESS_KEY_ID,
+        //     secretAccessKey: "GUas/zg3q/TWjgo+J62CjPMolyCmbBqwwS4Hyl2E",//process.env.AWS_SECRET_ACCESS_KEY,
+        //   },
+        //   region: "us-east-1",
+        // };
+
+        // // Instantiate a new s3 client
+        // const client = new S3Client(config);
         
-        async function getSignedFileUrl(fileName, bucket, expiresIn) {
-          // Instantiate the GetObject command,
-          // a.k.a. specific the bucket and key
-          const command = new GetObjectCommand({
-            Bucket: bucket,
-            Key: fileName,
-          });
+                
+        //   // Instantiate the GetObject command,
+        //   // a.k.a. specific the bucket and key
+        //   const command = new GetObjectCommand({
+        //     Bucket: "soccerimages",
+        //     Key: "Screenshot 2023-03-07 at 7.52.32 PM.png",
+        //   });
         
-          // await the signed URL and return it
-          return await getSignedUrl(client, command, { expiresIn });
-        }
+        //   // await the signed URL and return it
+        //   return await getSignedUrl(client, command, { expiresIn: 3600 });
+        
     } catch (e) {
         return res.send({ error: e.message })
     }

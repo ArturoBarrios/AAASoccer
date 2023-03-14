@@ -63,6 +63,7 @@ class _ChatsViewState extends State<ChatsView> {
               children: <Widget>[
             Headers().getChatHeader(context),
             SearchBar(),
+            Text("Chats: " + messagesLength.toString()),
             ListView.builder(
               itemCount: chats.length,
               shrinkWrap: true,

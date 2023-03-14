@@ -213,7 +213,7 @@ type EventUserOrganizers {
 
 type EventUserParticipant {
   event: Event
-  user: User! @relation
+  user: User
   roles: String
 }
 
