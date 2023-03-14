@@ -12,7 +12,7 @@ import '../views/camera.dart';
 import '../components/history.dart';
 import '../services/amplify_auth_service.dart';
 import '../views/camera.dart';
-
+import '../views/chats/view.dart';
 
 class Footers extends StatefulWidget {
   const Footers({Key? key}) : super(key: key);
@@ -174,12 +174,12 @@ BottomAppBar getMainBottomNav(BuildContext context){
                   ),
               IconBottomBar(
                   text: "Cart",
-                  icon: Icons.local_grocery_store_outlined,
+                  icon: Icons.chat,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return RequestsView();
+                        return ChatsView();
                       },
                     ));
                   }),

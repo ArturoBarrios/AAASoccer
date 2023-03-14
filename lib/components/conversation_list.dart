@@ -3,16 +3,21 @@ import '../views/chats/chat/view.dart';
 import '../commands/chat_command.dart';
 
 class ConversationList extends StatefulWidget{
-  int index;
-  dynamic chatObject;
-  String name;
-  String messageText;
-  String imageUrl;
-  String time;
-  bool isMessageRead;
-  ConversationList({required this.index, required this.chatObject,required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead});
+  ConversationList(
+    {
+      Key? key,
+      required this.index, required this.chatObject,required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead
+    }
+    ) : super(key: key);
   @override
   _ConversationListState createState() => _ConversationListState();
+  final int index;
+  final dynamic chatObject;
+  final String name;
+  final String messageText;
+  final String imageUrl;
+  final String time;
+  final bool isMessageRead;
 }
 
 class _ConversationListState extends State<ConversationList> {

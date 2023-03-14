@@ -32,7 +32,7 @@ class ChatCommand extends BaseCommand {
     //get updated chat first?????
     dynamic findMyUser = await UserCommand().findMyUserById();
     dynamic user = findMyUser['data'];
-    chatPageModel.messages = user['chats']['data'][index]['messages']['data'];
+    chatPageModel.messages = user['chats']['data'][index]['messages']['data'];    
 
   }
 

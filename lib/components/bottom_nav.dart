@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:soccermadeeasy/views/chats/chat/view.dart';
 import '../views/request/view.dart';
 import '../views/friends/view.dart';
 import '../views/camera.dart';
 import '../components/history.dart';
 import '../services/amplify_auth_service.dart';
+import '../views/chats/view.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -134,13 +136,13 @@ class _BottomNav extends State<BottomNav> {
                   }
                   ),
               IconBottomBar(
-                  text: "Cart",
-                  icon: Icons.local_grocery_store_outlined,
+                  text: "Chat",
+                  icon: Icons.chat,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return RequestsView();
+                        return ChatsView();
                       },
                     ));
                   }),
