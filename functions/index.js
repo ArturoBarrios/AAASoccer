@@ -320,9 +320,33 @@ exports.uploadImage = functions.https.onRequest(async (req, res) => {
 
 });
 
-app.post('/uploadImage', (req, res) => {
-    console.log("uploadImage");
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+const { uploadFile } = require('./s3');
+
+app.post('/uploadImage',upload.single('image'), async (req, res) => {
+    try{
+        // const S3 = require('aws-sdk/clients/s3');
+        // const fs  = require('fs');
+        // require("dotenv").config();
+        console.log("uploadImage startedd");
+        const file = req.file;        
+        console.log(file);
+        
+        const result = await uploadFile(file);
+        console.log(result);
+         res.send({ success: true, uploadParamsRes: result });
+        
+
+
+        // return res.send({ success: true, uploadParamsRes: uploadParamsResp });
+        
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
 });
+
+
 
 
 
