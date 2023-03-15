@@ -2,7 +2,9 @@
 
 const functions = require("firebase-functions");
 const stripe = require('stripe')("sk_test_51M6l0pDUXwYENeT4BaAfVT8ewp4Ujzb4NyD8ebB0F0s14xujWNb1MESrqqrSbtKBIm6MdnE0odAHc1IBqEyS97aH00Kzayd323") //functions.config().stripe.testKey
-
+const express = require('express');
+const app = express();
+app.listen(3000, () => console.log('Server started on port 3000'));
 
 const generateResponse = function (intent) {
     switch (intent.status) {
@@ -228,10 +230,36 @@ exports.uploadImageToAWS = functions.https.onRequest(async (req, res) => {
     }
 
 });
-// usage
+
+
 /**
- * async function returnThumbnail(thumbnail_key) {
-  return await getFileUrl(thumbnail_key, "my_bucket", 3600);
+ * 
+ * get an image
+} 
+ */
+exports.getImage = functions.https.onRequest(async (req, res) => {    
+    try{
+        require("dotenv").config();
+        const {getSignedUrl} = require('@aws-sdk/cloudfront-signer');
+        var signedUrl = await getSignedUrl({
+            url: "https://d3pq1muv3j21qh.cloudfront.net"+
+                "/soccerimages/Screenshot 2023-03-07 at 7.52.32 PM.png",
+            dateLessThan: new Date(Date.now() + 1000 *60 * 60 *24),
+            privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
+            keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID
+        });
+
+        return res.send({ success: true, signedUrl: signedUrl });
+
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
+
+});
+
+/**
+ * 
+ * get images
 } 
  */
 exports.getImages = functions.https.onRequest(async (req, res) => {    
@@ -242,44 +270,60 @@ exports.getImages = functions.https.onRequest(async (req, res) => {
             url: "https://d3pq1muv3j21qh.cloudfront.net"+
                 "/soccerimages/Screenshot 2023-03-07 at 7.52.32 PM.png",
             dateLessThan: new Date(Date.now() + 1000 *60 * 60 *24),
-            privateKey: "E17GQLGL0SH6YG",//process.env.CLOUDFRONT_KEY_PAIR_ID,
-            keyPairId: process.env.CLOUDFRONT_PRIVATE_KEY
+            privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
+            keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID
         });
 
         return res.send({ success: true, signedUrl: signedUrl });
 
-        // const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-        // const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
-        // // Create the config obj with credentials
-        // // Always use environment variables or config files
-        // // Don't hardcode your keys into code
-        // const config = {
-        //   credentials: {
-        //     accessKeyId: "AKIA2H3HBZX7IWWRFIRF",//process.env.AWS_ACCESS_KEY_ID,
-        //     secretAccessKey: "GUas/zg3q/TWjgo+J62CjPMolyCmbBqwwS4Hyl2E",//process.env.AWS_SECRET_ACCESS_KEY,
-        //   },
-        //   region: "us-east-1",
-        // };
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
 
-        // // Instantiate a new s3 client
-        // const client = new S3Client(config);
+});
+
+/**
+ * 
+ * upload an image
+} 
+ */
+exports.uploadImage = functions.https.onRequest(async (req, res) => {    
+    try{
+        console.log("uploadImage started");
+        require("dotenv").config();
+        const S3 = require('aws-sdk/clients/s3');
+        const fs  = require('fs');
+
+        var filestream = fs.createReadStream(req.file);
         
-                
-        //   // Instantiate the GetObject command,
-        //   // a.k.a. specific the bucket and key
-        //   const command = new GetObjectCommand({
-        //     Bucket: "soccerimages",
-        //     Key: "Screenshot 2023-03-07 at 7.52.32 PM.png",
-        //   });
         
-        //   // await the signed URL and return it
-        //   return await getSignedUrl(client, command, { expiresIn: 3600 });
+        const s3 = new S3({
+            region: process.env.AWS_BUCKET_REGION,
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+            
+        });
+
+        const uploadParams = {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Body: filestream,
+            Key: req.file.originalname
+        }
+        
+        var uploadParamsResp = await s3.upload(uploadParams);
+
+        return res.send({ success: true, uploadParamsRes: uploadParamsResp });
         
     } catch (e) {
         return res.send({ error: e.message })
     }
 
 });
+
+app.post('/uploadImage', (req, res) => {
+    console.log("uploadImage");
+});
+
 
 
 
