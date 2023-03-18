@@ -1,6 +1,9 @@
 import 'dart:ui';
 import '../commands/base_command.dart';
 import 'package:flutter/material.dart';
+import '../views/camera.dart';
+import '../commands/images_command.dart';
+
 
 // Change color here
 const primaryColor = Color(0xff4338CA);
@@ -15,6 +18,11 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
+    
+    void pickImage() async {
+      await ImagesCommand().pickImage();      
+    }
+
     return  Scaffold(
       body: ListView(
         physics: NeverScrollableScrollPhysics(),
@@ -32,6 +40,12 @@ class _ProfileState extends State<Profile> {
             },
           )),                
         // new Align(alignment: Alignment.centerLeft, child: new Text("left")),
+                GestureDetector(
+                  onTap: () {
+                    pickImage();                    
+                  },
+                  child: 
+                
                 Hero(
                       tag: "profile",
                 child: Stack(
@@ -88,7 +102,7 @@ class _ProfileState extends State<Profile> {
                       ),
                     
                   ],
-                ),),
+                ),)),
                 SizedBox(height: 25.0),
                 Text(
                   'Roboh Dash',
