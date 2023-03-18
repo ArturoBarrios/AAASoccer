@@ -27,6 +27,11 @@ class ChatCommand extends BaseCommand {
     return indexOfChat;
   }
 
+  void updateMessagesLengthTest() {
+    print("updateMessagesLengthTest");
+    chatPageModel.messagesLength += 1;
+  }
+
   Future<void> setChatMessages(dynamic chat, int index) async {
     print("setChatMessages");
     //get updated chat first?????
@@ -114,9 +119,12 @@ class ChatCommand extends BaseCommand {
       userModel.chats[indexOfChat] = chat;
 
       print("chat test length before: "+chatPageModel.messages.length.toString());
-      chatPageModel.messages.add(
-       chat['messages']['data'][indexOfChat]
-      );
+      // chatPageModel.messages.add(
+      //  chat['messages']['data'][chat['messages']['data'].length-1]
+      // );
+      chatPageModel.messages = chat['messages']['data'];
+      
+      chatPageModel.messagesLength = chat['messages']['data'].length;
       print("chat test length after: "+chatPageModel.messages.length.toString());
       
       createTextResponse['success'] = true;

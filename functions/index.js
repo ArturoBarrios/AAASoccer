@@ -243,7 +243,7 @@ exports.getImage = functions.https.onRequest(async (req, res) => {
         const {getSignedUrl} = require('@aws-sdk/cloudfront-signer');
         var signedUrl = await getSignedUrl({
             url: "https://d3pq1muv3j21qh.cloudfront.net"+
-                "/soccerimages/Screenshot 2023-03-07 at 7.52.32 PM.png",
+                "/soccerimages/" + req.body.imageName,
             dateLessThan: new Date(Date.now() + 1000 *60 * 60 *24),
             privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
             keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID
@@ -345,6 +345,8 @@ app.post('/uploadImage',upload.single('image'), async (req, res) => {
         return res.send({ error: e.message })
     }
 });
+
+
 
 
 

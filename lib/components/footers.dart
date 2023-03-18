@@ -7,11 +7,8 @@ import '../views/league/create.dart';
 import '../views/training/create.dart';
 import '../views/tryout/create.dart';
 import '../views/friends/view.dart';
-import '../views/request/view.dart';
-import '../views/camera.dart';
+import '../commands/chat_command.dart';
 import '../components/history.dart';
-import '../services/amplify_auth_service.dart';
-import '../views/camera.dart';
 import '../views/chats/view.dart';
 
 class Footers extends StatefulWidget {
@@ -78,6 +75,12 @@ BottomAppBar getMainBottomNav(BuildContext context){
     }
   }
 
+  void updateMessagesLengthTest(){
+    print("updateMessagesLengthTest");
+    ChatCommand().updateMessagesLengthTest();
+
+  }
+
   BottomAppBar bottomAppBar = BottomAppBar(
       color: Colors.white,
       child: SizedBox(
@@ -108,34 +111,8 @@ BottomAppBar getMainBottomNav(BuildContext context){
                   text: "Add",
                   icon: Icons.add_outlined,
                   selected: false,                  
-                  onPressed: () async {
-                  //    print("pressed");
-                  //     showAnimatedDialog(
-                  // context: context,
-                  // barrierDismissible: true,
-                  // builder: (BuildContext context) {
-                  //   return SingleChildScrollView(
-                  //       child: ListBody(
-                  //     children: <Widget>[
-                        
-                  //       Container(
-                  //         padding: EdgeInsets.all(10.0),
-                  //         width: 200.0,
-                  //         child: Text(
-                  //           "Title"
-                  //         ),
-                  //       ),
-                  //       Container(
-                  //         padding: EdgeInsets.all(10.0),
-                  //         width: 200.0,
-                  //         child: FlutterLogo(
-                  //           size: 150.0,
-                  //         ),
-                  //       ),
-
-                  //     ],
-                  //   ));
-                  // });
+                  onPressed: () async {   
+                               
                     int? index = await showAnimatedDialog<int>(
                       context: context,
                       barrierDismissible: true,
@@ -151,14 +128,7 @@ BottomAppBar getMainBottomNav(BuildContext context){
                             
                             activeColor: Colors.green,
                             dataList: 
-                              pages
-                        //     List.generate(
-                        // 20,
-                        // (index) {
-                        //   return index;
-                        // },
-                      // ),
-                            
+                              pages                            
                             );
                       },
                       animationType: DialogTransitionType.size,
@@ -166,10 +136,7 @@ BottomAppBar getMainBottomNav(BuildContext context){
                     );
                     
                 print('selectIndex:$index');
-                goToPage(selectIndex);
-                // setState(() {
-                //   this.singleSelectedIndexText = '${selectIndex ?? ''}';
-                // });
+                goToPage(selectIndex);                
                   }
                   ),
               IconBottomBar(
@@ -204,6 +171,12 @@ BottomAppBar getMainBottomNav(BuildContext context){
 }
 
 BottomNavigationBar getChatBottomNav(BuildContext context){
+  void updateMessagesLengthTest(){
+    print("updateMessagesLengthTest");
+    ChatCommand().updateMessagesLengthTest();
+
+  }
+  
   BottomNavigationBar bottomAppBar = BottomNavigationBar(
         selectedItemColor: Colors.red,
         unselectedItemColor: Colors.grey.shade600,
@@ -216,7 +189,15 @@ BottomNavigationBar getChatBottomNav(BuildContext context){
             label: "Chats",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.group_work),
+            icon: 
+              GestureDetector(
+                child: Icon(Icons.group_work),
+                onTap: () {
+                  print("onTap");
+                  updateMessagesLengthTest();
+                },
+                
+              ),
             label: "Channels", 
           ),
           BottomNavigationBarItem(

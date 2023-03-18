@@ -28,7 +28,7 @@ class HomePageCommand extends BaseCommand {
     print("eventTypeTapped");
     print(key);
     print(homePageModel.enabledSelections2[key]['enabled']);
-    HomePageModel().enabledSelections2.forEach((k, v) => {
+    homePageModel.enabledSelections2.forEach((k, v) => {
       homePageModel.enabledSelections2[k]['enabled'] = false
     });
     homePageModel.enabledSelections2[key]['enabled'] = !homePageModel.enabledSelections2[key]['enabled'];

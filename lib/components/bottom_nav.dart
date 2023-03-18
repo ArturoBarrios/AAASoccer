@@ -9,7 +9,8 @@ import '../services/amplify_auth_service.dart';
 import '../views/chats/view.dart';
 
 class BottomNav extends StatefulWidget {
-  const BottomNav({Key? key}) : super(key: key);
+  final Function() testFunction;
+  const BottomNav({Key? key, required this.testFunction}) : super(key: key);
 
   @override
   State<BottomNav> createState() => _BottomNav();

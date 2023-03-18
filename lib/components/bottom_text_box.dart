@@ -37,6 +37,7 @@ class _BottomTextBoxState extends State<BottomTextBox> {
 
   void sendMessage() async {
     print("send message");
+    print("messageController.text: " + messageController.text.toString());
     dynamic currentUser = UserCommand().getAppModelUser();
     dynamic messageInput = {
       "content": messageController.text.toString(),
@@ -46,7 +47,7 @@ class _BottomTextBoxState extends State<BottomTextBox> {
     Map<String, dynamic> sendMessageResp =
         await ChatCommand().createText(messageInput);
     setState(() {
-      
+      messageController.text = "";
     });
     print("createTextResp: $sendMessageResp");
   }

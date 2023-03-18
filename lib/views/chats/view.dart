@@ -86,7 +86,7 @@ class _ChatsViewState extends State<ChatsView> {
             ),
             
           ])),
-      bottomNavigationBar: Footers().getChatBottomNav(context),
+      bottomNavigationBar: const Footers().getChatBottomNav(context),
     );
   }
 }
