@@ -54,8 +54,8 @@ class _ChatsViewState extends State<ChatsView> {
   Widget build(BuildContext context) {
     print("build() in chats view.dart page");
     List chats = context.select<UserModel, List>((value) => value.chats);
-    print("chats: "+ chats.toString());
-    int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
+    // print("chats: "+ chats.toString());
+    // int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
     return Scaffold(
       body: SafeArea(
           child: Column(
@@ -63,7 +63,7 @@ class _ChatsViewState extends State<ChatsView> {
               children: <Widget>[
             Headers().getChatHeader(context),
             SearchBar(),
-            Text("Chats: " + messagesLength.toString()),
+            // Text("Chats: " + messagesLength.toString()),
             ListView.builder(
               itemCount: chats.length,
               shrinkWrap: true,

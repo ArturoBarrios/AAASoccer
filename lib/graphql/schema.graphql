@@ -8,8 +8,7 @@ type Query {
   allUsers: [User!]
   allPlayers: [Player!]
   allTeams: [Team!]
-  getUser(email: String): User
-  allEventRequests: [EventRequest]  
+  getUser(email: String): User  
   AllGamesByID(ids: [ID]):[ID] @resolver
 }
 
@@ -96,48 +95,55 @@ enum RequestType{
 
 }
 
-
-
-type FriendRequest {
-  sender: User
-  receiver: User @relation(name: "friend_requests")
-  status: RequestStatus @default(value: PENDING)
-  requestAttempts: Int @default(value: 0)
-  requestType: RequestType @default(value: FRIENDREQUEST)
+type Request{
+  type: RequestType
+  sender: User @relation(name: "requests_sent")
+  receivers: [User] @relation(name: "request_receivers")
+  status: RequestStatus
+  requestAttempts: Int
+  
 }
 
-
-# event request will be sent to event organizers
-type EventRequest {
-  organizers: [User!] @relation(name: "event_requests_organizers")  
-  sender: User @relation(name: "event_requests_sent")
-  acceptedBy: User @relation(name: "event_requests_acceptedBy")
-  receivers: [User!] @relation(name: "event_requests_to_accept")  
-  event: Event!  
-  status: RequestStatus @default(value: PENDING)
-  requestAttempts: Int @default(value: 0)  
-  requestType: RequestType @default(value: EVENTREQUEST)
-}
-
-# event request will be sent to team organizers
-type TeamRequest {
-  organizers: [User!] @relation(name: "team_requests_organizers")  
-  sender: User @relation(name: "team_requests_sent")
-  acceptedBy: User @relation(name: "team_requests_acceptedBy")
-  receivers: [User!] @relation(name: "team_requests_to_accept")  
-  team: Team!  
-  status: RequestStatus @default(value: PENDING)
-  requestAttempts: Int @default(value: 0)
-  requestType: RequestType @default(value: TEAMREQUEST)
-}
+# type FriendRequest {
+#   sender: User
+#   receiver: User @relation(name: "friend_requests")
+#   status: RequestStatus @default(value: PENDING)
+#   requestAttempts: Int @default(value: 0)
+#   requestType: RequestType @default(value: FRIENDREQUEST)
+# }
 
 
-type OrganizerRequest {
-  from: User!
-  to: User!
-  status: RequestStatus @default(value: PENDING)
-  requestAttempts: Int @default(value: 0)
-}
+# # event request will be sent to event organizers
+# type EventRequest {
+#   organizers: [User!] @relation(name: "event_requests_organizers")  
+#   sender: User @relation(name: "event_requests_sent")
+#   acceptedBy: User @relation(name: "event_requests_acceptedBy")
+#   receivers: [User!] @relation(name: "event_requests_to_accept")  
+#   event: Event!  
+#   status: RequestStatus @default(value: PENDING)
+#   requestAttempts: Int @default(value: 0)  
+#   requestType: RequestType @default(value: EVENTREQUEST)
+# }
+
+# # event request will be sent to team organizers
+# type TeamRequest {
+#   organizers: [User!] @relation(name: "team_requests_organizers")  
+#   sender: User @relation(name: "team_requests_sent")
+#   acceptedBy: User @relation(name: "team_requests_acceptedBy")
+#   receivers: [User!] @relation(name: "team_requests_to_accept")  
+#   team: Team!  
+#   status: RequestStatus @default(value: PENDING)
+#   requestAttempts: Int @default(value: 0)
+#   requestType: RequestType @default(value: TEAMREQUEST)
+# }
+
+
+# type OrganizerRequest {
+#   from: User!
+#   to: User!
+#   status: RequestStatus @default(value: PENDING)
+#   requestAttempts: Int @default(value: 0)
+# }
 
 type StripeCustomer {
   customerId: String
@@ -174,15 +180,17 @@ type User  {
   events: [Event] @relation      
   eventUserOrganizers: [EventUserOrganizers] @relation   
   teamUserOrganizers: [TeamUserOrganizers] @relation  
-  eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
-  eventRequestsAcceptedBy: [EventRequest] @relation(name: "event_requests_acceptedBy")
-  eventRequestsOrganizers: [EventRequest] @relation(name: "event_requests_organizers")
-  eventRequestsToAccept: [EventRequest] @relation(name: "event_requests_to_accept")
-  friendRequests: [FriendRequest] @relation(name: "friend_requests")
-  teamRequests: [TeamRequest] @relation(name: "team_requests_organizers")
-  teamRequestsToAccept: [TeamRequest] @relation(name: "team_requests_to_accept")
-  teamRequestsSent: [TeamRequest] @relation(name: "team_requests_sent")
-  teamRequestsAccepted: [TeamRequest] @relation(name: "team_requests_acceptedBy")
+  # eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
+  # eventRequestsAcceptedBy: [EventRequest] @relation(name: "event_requests_acceptedBy")
+  # eventRequestsOrganizers: [EventRequest] @relation(name: "event_requests_organizers")
+  # eventRequestsToAccept: [EventRequest] @relation(name: "event_requests_to_accept")
+  # friendRequests: [FriendRequest] @relation(name: "friend_requests")
+  # teamRequests: [TeamRequest] @relation(name: "team_requests_organizers")
+  # teamRequestsToAccept: [TeamRequest] @relation(name: "team_requests_to_accept")
+  # teamRequestsSent: [TeamRequest] @relation(name: "team_requests_sent")
+  # teamRequestsAccepted: [TeamRequest] @relation(name: "team_requests_acceptedBy")
+  requests: [Request]  @relation(name: "requests_sent")
+  requestsReceived: [Request] @relation(name: "request_receivers")
   chats: [Chat] @relation
   sentMessages: [Message] @relation(name: "messages_sent")
   messagesDirectedForMe: [Message] @relation(name: "messages_for")

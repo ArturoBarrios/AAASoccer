@@ -16,8 +16,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/user_command.dart';
 
 class ChatCommand extends BaseCommand {
-
-  int getIndexOfChat(String chatId){
+  int getIndexOfChat(String chatId) {
     int indexOfChat = 0;
     for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {
       if (appModel.currentUser['chats']['data'][i]['_id'] == chatId) {
@@ -37,8 +36,7 @@ class ChatCommand extends BaseCommand {
     //get updated chat first?????
     dynamic findMyUser = await UserCommand().findMyUserById();
     dynamic user = findMyUser['data'];
-    chatPageModel.messages = user['chats']['data'][index]['messages']['data'];    
-
+    chatPageModel.messages = user['chats']['data'][index]['messages']['data'];
   }
 
   Future<Map<String, dynamic>> createChat(dynamic chatInput) async {
@@ -64,8 +62,6 @@ class ChatCommand extends BaseCommand {
 
       print("response body: ");
       print(jsonDecode(response.body));
-
-
 
       return removeChatResponse;
     } on ApiException catch (e) {
@@ -96,8 +92,6 @@ class ChatCommand extends BaseCommand {
         }),
       );
 
-      
-
       print("response body: ");
       print(jsonDecode(response.body));
 
@@ -109,26 +103,26 @@ class ChatCommand extends BaseCommand {
         "_id": appModel.currentUser['chats']['data'][indexOfChat]['_id']
       };
       print("getchatInput: $getchatInput");
-      Map<String, dynamic> findChatByIdResponse = await findChatById(getchatInput);
+      Map<String, dynamic> findChatByIdResponse =
+          await findChatById(getchatInput);
       print("findChatByIdResponse: $findChatByIdResponse");
       dynamic chat = findChatByIdResponse['data'];
       print("chat: $chat");
-      appModel.currentUser['chats']['data']
-        [indexOfChat] = chat;        
-      
+      appModel.currentUser['chats']['data'][indexOfChat] = chat;
+
       userModel.chats[indexOfChat] = chat;
 
-      print("chat test length before: "+chatPageModel.messages.length.toString());
-      // chatPageModel.messages.add(
-      //  chat['messages']['data'][chat['messages']['data'].length-1]
-      // );
+      print("chat test length before: " +
+          chatPageModel.messages.length.toString());
+
       chatPageModel.messages = chat['messages']['data'];
-      
+
       chatPageModel.messagesLength = chat['messages']['data'].length;
-      print("chat test length after: "+chatPageModel.messages.length.toString());
-      
+      print("chat test length after: " +
+          chatPageModel.messages.length.toString());
+
       createTextResponse['success'] = true;
-      createTextResponse['message'] = "Text Created";  
+      createTextResponse['message'] = "Text Created";
 
       return createTextResponse;
     } on ApiException catch (e) {
@@ -178,22 +172,23 @@ class ChatCommand extends BaseCommand {
     "_id": chatObject['_id']
     }
  */
-  String getProcessedChatInput(dynamic chatInput){
+  String getProcessedChatInput(dynamic chatInput) {
     print("getProcessedChatInput");
     print("chatInput: " + chatInput.toString());
     String processedChatInput = """
     """;
     //iterate over chatInput
-    for(int i = 0;i<chatInput.length;i++){
-      switch(chatInput[i]['dataType']){
+    for (int i = 0; i < chatInput.length; i++) {
+      switch (chatInput[i]['dataType']) {
         case 'normal':
           processedChatInput += """
             archived: true   
           """;
           processedChatInput += "\n";
           break;
-        case 'iterableDisconnect':          
-          String formDisconnectUserIdsString = this.formDisconnectUserIdsString(chatInput['users']);
+        case 'iterableDisconnect':
+          String formDisconnectUserIdsString =
+              this.formDisconnectUserIdsString(chatInput['users']);
           processedChatInput += """
             users: {
               disconnect: [
@@ -203,9 +198,8 @@ class ChatCommand extends BaseCommand {
           """;
           processedChatInput += "\n";
 
-          break;        
+          break;
       }
-
     }
     processedChatInput = """
       archived: true      
@@ -214,7 +208,8 @@ class ChatCommand extends BaseCommand {
     return processedChatInput;
   }
 
-  Future<Map<String, dynamic>> findChatById(Map<String, dynamic> chatInput) async {
+  Future<Map<String, dynamic>> findChatById(
+      Map<String, dynamic> chatInput) async {
     print("getChat");
     Map<String, dynamic> getChatResp = {
       "success": false,
@@ -249,9 +244,6 @@ class ChatCommand extends BaseCommand {
     return getChatResp;
   }
 
-  
-  
-
   // chatInput = [
   //  chat data types to process: [normal, iterableDisconnect, iterableConnect]
   // ]
@@ -267,8 +259,8 @@ class ChatCommand extends BaseCommand {
       Map<String, dynamic> processedChatInput = {
         'chat': {
           '_id': chatInput['_id'],
-          'data': getProcessedChatInput(chatInput),          
-        },        
+          'data': getProcessedChatInput(chatInput),
+        },
       };
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),

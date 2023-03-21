@@ -61,9 +61,10 @@ class _RequestsViewState extends State<RequestsView> {
     print("getEventRequestsResp: " + getRequestsResp.toString());
     
     if (getRequestsResp['success']) {
-      List eventRequests = getRequestsResp['data']['eventRequestsToAccept']['data'];
-      List teamRequests = getRequestsResp['data']['teamRequestsToAccept']['data'];
+      List eventRequests = getRequestsResp['data']['eventRequests']['data'];
+      List teamRequests = getRequestsResp['data']['teamRequests']['data'];
       List friendRequests = getRequestsResp['data']['friendRequests']['data'];
+      
       print("EventRequests to set: ");
       print(eventRequests);
       print("TeamRequests to set: ");
@@ -71,9 +72,9 @@ class _RequestsViewState extends State<RequestsView> {
       print(RequestsPageModel().initialConditionsMet);
       //right now the last is visible
       //todo fix this shit
-      RequestsCommand().updateTeamRequestsModel(teamRequests);
-      RequestsCommand().updateEventRequestsModel(eventRequests);
-      RequestsCommand().updateFriendRequestsModel(friendRequests);
+      teamRequests = RequestsCommand().updateTeamRequestsModel(teamRequests, 'RECIEVED')['data'];
+      // RequestsCommand().updateEventRequestsModel(eventRequests);
+      // RequestsCommand().updateFriendRequestsModel(friendRequests);
       List updateWith = [friendRequests, eventRequests, teamRequests].expand((x) => x).toList();
       print("updateWith: "+updateWith.toString());      
       RequestsCommand().updateRequestsPageSelectedModel(updateWith);
@@ -95,7 +96,8 @@ class _RequestsViewState extends State<RequestsView> {
 
   void requestTypeTapped(String requestType){
     setState(() {
-      selectedRequestType = requestType;      
+      selectedRequestType = requestType;    
+      RequestsCommand().updatedSelectedRequests(requestType);
     });
 
   }
@@ -134,8 +136,8 @@ final double cardWidth = MediaQuery.of(context).size.width * .4;
         .select<RequestsPageModel, String>((value) => value.selectedKey);
 
     List requestTypes = [
-      "Sent",
-      "Received",
+      "SENT",
+      "RECIEVED",
     ];
 
     print("selectedObjects to build:: " + selectedObjects.toString());

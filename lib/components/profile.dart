@@ -20,7 +20,10 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     
     void pickImage() async {
-      await ImagesCommand().pickImage();      
+      // await ImagesCommand().pickImage();  
+      //testing out getting image from cloudfront
+      await ImagesCommand().getImage();
+      //add image to user profile    
     }
 
     return  Scaffold(

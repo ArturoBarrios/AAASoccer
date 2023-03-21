@@ -61,7 +61,7 @@ class _BottomTextBoxState extends State<BottomTextBox> {
 
   @override
   Widget build(BuildContext context) {
-    int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
+    // int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
     return 
       Stack(
         children: <Widget>[
@@ -75,7 +75,7 @@ class _BottomTextBoxState extends State<BottomTextBox> {
               color: Colors.white,
               child: Row(
                 children: <Widget>[
-                  Text("messagesLength: $messagesLength"),
+                  // Text("messagesLength: $messagesLength"),
                   GestureDetector(
                     onTap: () {},
                     child: Container(
