@@ -8,6 +8,7 @@ import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
+import '../../models/app_model.dart';
 import '../../views/game/view.dart';
 import '../../views/game/update.dart';
 import '../../assets/icons/plus.svg';
@@ -60,6 +61,12 @@ Future<Map<String, dynamic>> removePickup(dynamic gameObject) async {
   return removePickupRespResponse;
 }
 
+void sendEventRequest(dynamic gameObject) async {  
+  print("send event request for event: :"+gameObject.toString());
+
+  await EventCommand().sendOrganizerEventRequest(gameObject);                
+}
+
 class _PickupCard2 extends State<PickupCard2> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
@@ -70,7 +77,7 @@ class _PickupCard2 extends State<PickupCard2> {
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     print("widget: ");
     print("widget.gameObject.toString(): "+widget.gameObject.toString());
     print("widget.isMyEvent.toString(): "+widget.isMyEvent.toString());
@@ -172,12 +179,11 @@ class _PickupCard2 extends State<PickupCard2> {
                       ),
                     ),
                     IconButton(
-            icon: const Icon(Icons.account_circle),
+            icon: const Icon(Icons.send),
             tooltip: 'Go to the next page',
             onPressed: () {
               //send event request
-              print("send event request for event: : ${widget.gameObject}");
-              EventCommand().sendOrganizerEventRequest(widget.gameObject);                
+              sendEventRequest(widget.gameObject);              
             },
           ),
             // GestureDetector(

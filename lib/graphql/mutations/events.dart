@@ -105,6 +105,40 @@ class EventMutations {
     return createEventRequest;
   }
 
+  String sendEventRequestV2(Map<String, dynamic> eventRequestInput
+    ) {
+    String createEventRequest = """
+      mutation {
+        createRequest(data:{
+        type: EVENTREQUEST
+        sender: "$eventRequestInput['sender_id']"  
+        receivers: {
+            connect: [
+              "$eventRequestInput['receivers']"
+            ]
+          }     
+        }){
+          _id
+          type
+          sender{
+            _id
+            name
+            email
+          }
+          receivers{
+            data{
+              _id
+              name
+              email
+            }
+          }
+        }  
+      }
+        """;
+
+    return createEventRequest;
+  }
+
   String updateEventRequest(Map<String, dynamic> eventRequestInput) {
     String updateEventRequest = """
       mutation {
@@ -157,9 +191,9 @@ class EventMutations {
   }
 
   String createPrice(
-      Map<String, dynamic> paymentInput,
-      Map<String, dynamic> eventInput,
-      ) {
+    Map<String, dynamic> paymentInput,
+    Map<String, dynamic> eventInput,
+  ) {
     String createPrice = """
      mutation {
         createPrice(data: {      

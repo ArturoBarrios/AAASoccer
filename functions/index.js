@@ -351,8 +351,11 @@ app.get('/images', async (req, res) => {
         console.log("images/:key startedd");   
         require("dotenv").config();
         const {getSignedUrl} = require('@aws-sdk/cloudfront-signer');
+        console.log("process.env.CLOUDFRONT_PRIVATE_KEY: "+process.env.CLOUDFRONT_PRIVATE_KEY);
+        console.log("process.env.CLOUDFRONT_KEY_PAIR_ID: "+process.env.CLOUDFRONT_KEY_PAIR_ID);
         var signedUrl = await getSignedUrl({
-            url: "https://d3pq1muv3j21qh.cloudfront.net"+"/soccerimages/Screenshot 2023-03-19 at 4.07.05 PM.png",
+            
+            url: "https://d3pq1muv3j21qh.cloudfront.net/"+"testagain.png",
             dateLessThan: new Date(Date.now() + 1000 *60 * 60 *24),
             privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
             keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID
@@ -366,6 +369,7 @@ app.get('/images', async (req, res) => {
         // const readStream = await getFileStream(key);
         // console.log("readStream: "+readStream);
         // readStream.pipe(res);
+        console.log("signedUrl: "+signedUrl);
         res.send({ success: true, signedUrl: signedUrl });
         // res.send({ success: true, signedUrl: readStream });
 

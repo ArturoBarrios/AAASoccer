@@ -99,8 +99,10 @@ type Request{
   type: RequestType
   sender: User @relation(name: "requests_sent")
   receivers: [User] @relation(name: "request_receivers")
+  acceptedBy: User @relation(name: "request_acceptedBy")
   status: RequestStatus
   requestAttempts: Int
+  fromOrganizer: Boolean
   
 }
 
@@ -191,6 +193,7 @@ type User  {
   # teamRequestsAccepted: [TeamRequest] @relation(name: "team_requests_acceptedBy")
   requests: [Request]  @relation(name: "requests_sent")
   requestsReceived: [Request] @relation(name: "request_receivers")
+  requestsAccepted: [Request] @relation(name: "request_acceptedBy")
   chats: [Chat] @relation
   sentMessages: [Message] @relation(name: "messages_sent")
   messagesDirectedForMe: [Message] @relation(name: "messages_for")
