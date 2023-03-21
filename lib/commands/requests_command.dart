@@ -25,6 +25,22 @@ import '../enums/RequestStatus.dart';
 
 class RequestsCommand extends BaseCommand {
 
+
+  Future<void> updatedSelectedRequests(String requestType) async{
+    print("updatedSelectedRequests");
+    print("requestType: " + requestType);
+    if(requestType=="SENT"){
+      print("sent");
+
+      
+    }
+    else{
+
+    requestsPageModel.selectedObjects = [];
+    }
+
+  }
+
   Future<Map<String, dynamic>> getEventRequests() async {
 
     print("getEventRequests");
@@ -193,8 +209,7 @@ class RequestsCommand extends BaseCommand {
       print(appModel.currentUser['_id']);          
       teamRequestInput['acceptedBy_id'] = appModel.currentUser['_id'];          
       // ????
-      // eventRequestInput['status'] = RequestStatus.ACCEPTED;
-       
+      // eventRequestInput['status'] = RequestStatus.ACCEPTED;       
       //check if from and to are the same
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -437,9 +452,9 @@ class RequestsCommand extends BaseCommand {
 
   }
 
-  Map<String, dynamic> updateRequestsPageSelectedModel(List eventRequests){
+  Map<String, dynamic> updateRequestsPageSelectedModel(List requests){
     print("updateRequestsPageSelectedModel()");
-    print("eventRequests: "+ eventRequests.toString());
+    print("requests: "+ requests.toString());
     Map<String, dynamic> updateRequestsPageSelectedModelResp = {
       "success": false,
       "message": "Default Error",
@@ -447,7 +462,7 @@ class RequestsCommand extends BaseCommand {
     };
 
     print("selectedObjects before set: "+ requestsPageModel.selectedObjects.toString());
-    requestsPageModel.selectedObjects = eventRequests;
+    requestsPageModel.selectedObjects = requests;
     print("selectedObjects after set: "+ requestsPageModel.selectedObjects.toString());
     
     updateRequestsPageSelectedModelResp["success"] = true;
@@ -456,26 +471,40 @@ class RequestsCommand extends BaseCommand {
 
     return updateRequestsPageSelectedModelResp;
   }
-  Map<String, dynamic> updateTeamRequestsModel(List eventRequests){
+  Map<String, dynamic> updateTeamRequestsModel(List teamRequests, String requestType){
     print("updateTeamRequestsModel");
-    print(eventRequests);
+    print(teamRequests);
     Map<String, dynamic> updateTeamRequestsModelResp = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
 
-    print("updateTeamRequestsModel eventRequests to set: ");
-    print(eventRequests);
-    print("updateTeamRequestsModel before set eventRequests");
-    print(requestsModel.eventRequests);
-    requestsModel.eventRequests = eventRequests;
-    // requestsPageModel.selectedObjects = eventRequests;
-    print("updateTeamRequestsModel after set eventRequests");
-    print(requestsModel.eventRequests);
+    print("updateTeamRequestsModel teamRequests to set: ");
+    print(teamRequests);
+    print("updateTeamRequestsModel before set teamRequests");
+    print(requestsModel.teamRequests);
+    List teamRequestsToShow = [];
+    //loop through teamRequests
+    requestsModel.teamRequests.forEach((teamRequests) {
+      if(requestType=="RECIEVED"){
+        if(teamRequests['sender']['_id'] != appModel.currentUser['_id']){
+          teamRequestsToShow.add(teamRequests);
+        }
+
+      }
+      else{
+        if(teamRequests['sender']['_id'] == appModel.currentUser['_id']){
+          teamRequestsToShow.add(teamRequests);
+        }
+      }
+    });
+    requestsModel.teamRequests = teamRequestsToShow;
+    // requestsPageModel.selectedObjects = eventRequests;    
+    print("updated requestsModel.teamRequests: "+requestsModel.teamRequests.toString());
 
     updateTeamRequestsModelResp["success"] = true;
-    
+    updateTeamRequestsModelResp['data'] = requestsModel.teamRequests;
 
 
 

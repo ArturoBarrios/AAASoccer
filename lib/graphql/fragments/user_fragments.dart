@@ -74,58 +74,6 @@ class UserFragments{
 
                 }
               }
-              friendRequests{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                  receiver{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }
-              eventRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  event{
-                    _id
-                    name
-                  }
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                }
-              } 
-              teamRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  team{
-                    _id
-                    name
-                  }
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }   
     """;
 
     return FullUserReturn;
@@ -208,58 +156,6 @@ class UserFragments{
 
                 }
               }
-              friendRequests{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                  receiver{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }
-              eventRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  event{
-                    _id
-                    name
-                  }
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                }
-              } 
-              teamRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  requestType
-                  team{
-                    _id
-                    name
-                  }
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }   
     """;
 
     return FullUserReturn;

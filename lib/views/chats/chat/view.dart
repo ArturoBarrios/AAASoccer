@@ -72,8 +72,8 @@ class _ChatViewState extends State<ChatView> {
     List messages =
         context.select<ChatPageModel, List>((value) => value.messages);
 
-    int messagesLength =
-        context.select<ChatPageModel, int>((value) => value.messagesLength);
+    // int messagesLength =
+    //     context.select<ChatPageModel, int>((value) => value.messagesLength);
     print("build() messages: $messages");
     return Scaffold(
       appBar: Headers().getChatDetailHeader(context),
@@ -90,7 +90,7 @@ class _ChatViewState extends State<ChatView> {
                           defaultDotColor: Colors.black,
                           numDots: 10)))
           : Stack(children: <Widget>[
-              Text("messagesLength: $messagesLength"),
+              // Text("messagesLength: $messagesLength"),
               Expanded(
                   child: ListView.builder(
                       controller: scrollController,

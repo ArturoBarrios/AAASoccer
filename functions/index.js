@@ -322,7 +322,7 @@ exports.uploadImage = functions.https.onRequest(async (req, res) => {
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
-const { uploadFile } = require('./s3');
+const { uploadFile, getFileStream, getCloudfrontSignedUrl } = require('./s3');
 
 app.post('/uploadImage',upload.single('image'), async (req, res) => {
     try{
@@ -338,12 +338,51 @@ app.post('/uploadImage',upload.single('image'), async (req, res) => {
          res.send({ success: true, uploadParamsRes: result });
         
 
-
         // return res.send({ success: true, uploadParamsRes: uploadParamsResp });
         
     } catch (e) {
         return res.send({ error: e.message })
     }
+});
+
+app.get('/images', async (req, res) => {
+
+    try{     
+        console.log("images/:key startedd");   
+        require("dotenv").config();
+        const {getSignedUrl} = require('@aws-sdk/cloudfront-signer');
+        console.log("process.env.CLOUDFRONT_PRIVATE_KEY: "+process.env.CLOUDFRONT_PRIVATE_KEY);
+        console.log("process.env.CLOUDFRONT_KEY_PAIR_ID: "+process.env.CLOUDFRONT_KEY_PAIR_ID);
+        var signedUrl = await getSignedUrl({
+            
+            url: "https://d3pq1muv3j21qh.cloudfront.net/"+"testagain.png",
+            dateLessThan: new Date(Date.now() + 1000 *60 * 60 *24),
+            privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
+            keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID
+        });
+        // var signedUrl =  getCloudfrontSignedUrl(
+        //      "https://d3pq1muv3j21qh.cloudfront.net"+
+        //         "/soccerimages/a4bb26e8858385882be2168d99531090",            
+        // );
+        // console.log("signedUrl: "+signedUrl);
+        // const key = "a4bb26e8858385882be2168d99531090";
+        // const readStream = await getFileStream(key);
+        // console.log("readStream: "+readStream);
+        // readStream.pipe(res);
+        console.log("signedUrl: "+signedUrl);
+        res.send({ success: true, signedUrl: signedUrl });
+        // res.send({ success: true, signedUrl: readStream });
+
+
+        
+
+        // return res.send({ success: true, signedUrl: signedUrl });
+
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
+    
+
 });
 
 
