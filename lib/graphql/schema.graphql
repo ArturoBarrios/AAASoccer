@@ -95,7 +95,7 @@ enum RequestType{
 
 }
 
-type Request{
+type Request {
   type: RequestType
   sender: User @relation(name: "requests_sent")
   receivers: [User] @relation(name: "request_receivers")
