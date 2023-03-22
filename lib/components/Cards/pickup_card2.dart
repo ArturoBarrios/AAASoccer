@@ -178,14 +178,17 @@ class _PickupCard2 extends State<PickupCard2> {
                         ),
                       ),
                     ),
+                    !widget.isMyEvent ? 
                     IconButton(
-            icon: const Icon(Icons.send),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              //send event request
-              sendEventRequest(widget.gameObject);              
-            },
-          ),
+                      icon: const Icon(Icons.send),
+                      tooltip: 'Go to the next page',
+                      onPressed: () {
+                        //send event request
+                        sendEventRequest(widget.gameObject);              
+                      },
+                    ) : 
+                    Text("Join Game")
+                    ,
             // GestureDetector(
             //   onTap: () {
             //     //send event request

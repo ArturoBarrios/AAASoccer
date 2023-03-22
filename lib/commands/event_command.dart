@@ -469,12 +469,14 @@ class EventCommand extends BaseCommand {
 
   bool isMyEvent(dynamic event){
     print("isMyEvent()");
+
     bool resp = false;
     dynamic userParticipants = event['userParticipants']['data'];
-
+    print("userParticipants: " + userParticipants.toString());
     for(int i = 0; i<userParticipants.length; i++){
-      if(userParticipants[i]['user']['id'] == appModel.currentUser['_id']){
+      if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']){
         resp = true;
+        print("isMyEvent() = true");
       }
     }
 

@@ -48,19 +48,20 @@ class GameQueries {
                     longitude
                     }
                   }
-                  eventUserOrganizers{                    
-                      users{
-                        data{
-                          _id
-                          name
-                        }
-                      }    
+                  userParticipants{
+                    data{
+                      _id
+                      roles
                       event{                        
-                          _id
-                          name  
-                          archived
-                          deleted                      
-                      }                
+                        _id
+                        name
+                      }
+                      user{
+                        _id
+                        name
+                        userType
+                      }                      
+                    }
                   }
               } 
             }
