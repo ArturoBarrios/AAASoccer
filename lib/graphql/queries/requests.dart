@@ -3,19 +3,13 @@ class RequestsQueries {
    String getEventRequests()
    {
       String getEventRequests = """
-        query GetEventRequests {
-          allEventRequests {
+        query GetRequests {
+          allRequests {
             data {      
               _id
               status
               requestAttempts
-              requestType
-              organizers{
-                data{
-                  _id
-                  name
-                }
-              }             
+              fromOrganizer              
               sender{
                 _id
                 name
@@ -24,19 +18,12 @@ class RequestsQueries {
                 _id
                 name
               }
-              event{
-                name        	
-                _id  
-                type
-                eventUserOrganizers{                    
-                  users{
-                    data{
-                      _id
-                      name
-                    }
-                  }                          
+              receivers{
+                data{
+                  _id
+                  name
                 }
-              }                         
+              }                      
             }
           }
         }
