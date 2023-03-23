@@ -42,9 +42,10 @@ class ImagesCommand extends BaseCommand {
       final uri = Uri.parse("http://localhost:3000/images");
 
       final getSignedUrlResponse = await http.get(uri);
-      print("response: " + json.decode(getSignedUrlResponse.body).toString());
+      print("response: " + json.decode(getSignedUrlResponse.body)['signedUrl'].toString());
 
       getImageResponse['success'] = true;
+      getImageResponse['signedUrl'] = json.decode(getSignedUrlResponse.body)['signedUrl'];
       return getImageResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
