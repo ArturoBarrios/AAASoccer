@@ -335,7 +335,7 @@ app.post('/uploadImage',upload.single('image'), async (req, res) => {
         
         const result = await uploadFile(file);
         console.log(result);
-        res.send({ success: true, uploadParamsRes: result });
+        res.send({ success: true, data: result });
         
 
         // return res.send({ success: true, uploadParamsRes: uploadParamsResp });

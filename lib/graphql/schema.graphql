@@ -392,16 +392,18 @@ type Training   {
 }
 
 
-type Image   {
-  id: ID!
+type Image   {  
+  isMainImage: Boolean
+  public: Boolean
   url: String
+  key: String
   user: User
   event: Event
   team: Team
   location: Location
   organization: Organization
   attachedModelType: ModelType
-  sponsor: Sponsor  
+  sponsor: Sponsor    
 }
 
 type GifContent   {

@@ -16,6 +16,9 @@ class AppModel extends ChangeNotifier {
 
   // FaunaClient get faunaClient => _faunaClient;
 
+
+
+
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
   set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {

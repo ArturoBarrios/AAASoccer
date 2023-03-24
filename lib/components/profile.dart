@@ -20,9 +20,18 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     
     void pickImage() async {
-      // await ImagesCommand().pickImage();  
+      Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true);  
+      print("pickImageResp: " + pickImageResp.toString());
+      dynamic data = pickImageResp['data'];
+      String key = data['key'];
+      Map<String, dynamic> imageInput = {
+        "isMainImage": true,
+        "key": key,  
+        "public": true,      
+      };
+      ImagesCommand().storeImageInDatabase(imageInput);
       //testing out getting image from cloudfront
-      await ImagesCommand().getImage();
+      // await ImagesCommand().getImage();
       //add image to user profile    
     }
 
