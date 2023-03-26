@@ -5,7 +5,8 @@ import '../views/chats/view.dart';
 import '../views/friends/view.dart';
 import '../views/home.dart';
 import '../views/images/my_images.dart';
-
+import '../models/user_model.dart';
+import 'package:provider/provider.dart';
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);
 
@@ -13,6 +14,8 @@ class SideNavs extends StatefulWidget {
   State<SideNavs> createState() => _SideNavs();
 
   ListView getMainSideNav(BuildContext context) {
+    String profileImageUrl = context.
+      select<UserModel, String>((value) => value.profileImageUrl);
     ListView appBar = ListView(
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
@@ -26,12 +29,12 @@ class SideNavs extends StatefulWidget {
                   ));
                 },
                 child:
-              const DrawerHeader(
+               DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.orange,
                 ),
                 child: CircleAvatar(
-                    backgroundImage: NetworkImage("https://gravatar.com/avatar/e6cf5837b1cd1d93ef847af222b7c42e?s=400&d=robohash&r=x"),
+                    backgroundImage: NetworkImage(profileImageUrl),
                     maxRadius: 5,
                   ),
               )),
