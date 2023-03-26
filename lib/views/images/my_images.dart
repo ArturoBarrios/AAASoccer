@@ -27,7 +27,7 @@ class _MyImagesViewState extends State<MyImagesView> {
 
  void getImage() async{
   print("getImage");
-  Map<String, dynamic> imageResp = await ImagesCommand().getImages();
+  // Map<String, dynamic> imageResp = await ImagesCommand().getImages();
  }
 
   void goBack() {

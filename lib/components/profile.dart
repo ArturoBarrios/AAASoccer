@@ -1,8 +1,9 @@
 import 'dart:ui';
 import '../commands/base_command.dart';
+import '../models/user_model.dart';
 import 'package:flutter/material.dart';
-import '../views/camera.dart';
 import '../commands/images_command.dart';
+import 'package:provider/provider.dart';
 
 
 // Change color here
@@ -16,13 +17,52 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+    String profileImageUrl = "";
+    
+    // void getProfileImage() {
+    //   print("profileImage()");
+    //   // profileImageUrl = BaseCommand().getProfileUrl();
+    //   print("profileImage: " + profileImageUrl);
+    // }
+
+    @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // getProfileImage();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    
+    String profileImageUrl = context.
+      select<UserModel, String>((value) => value.profileImageUrl);
+
+
     void pickImage() async {
-      // await ImagesCommand().pickImage();  
+      Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true);  
+      print("pickImageResp: " + pickImageResp.toString());
+      dynamic data = pickImageResp['data'];
+      print("data: " + data.toString());
+      String key = data['key'];
+      print("keyyyyyy: " + key.toString());
+      String s3bucket = data['Bucket'];
+      Map<String, dynamic> imageInput = {
+        "isMainImage": true,
+        "key": key,  
+        "public": true,  
+        "s3bucket": s3bucket    
+      };
+
+      await ImagesCommand().removeProfileTagFromImage();
+      await ImagesCommand().storeImageInDatabase(imageInput);
+      await ImagesCommand().getAndSetUserProfileImage();
+      
+      
+      //place image as profile picture
+
       //testing out getting image from cloudfront
-      await ImagesCommand().getImage();
+      // await ImagesCommand().getImage();
       //add image to user profile    
     }
 
@@ -100,7 +140,7 @@ class _ProfileState extends State<Profile> {
                               borderRadius: BorderRadius.circular(62.5),
                               image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: NetworkImage("https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"))),
+                                  image: NetworkImage(profileImageUrl))),
                         ),
                       ),
                     

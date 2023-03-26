@@ -16,18 +16,7 @@ class SideNavs extends StatefulWidget {
     ListView appBar = ListView(
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
-            children: [
-        //        IconButton(
-        //   icon: const Icon(Icons.account_circle),
-        //   tooltip: 'Go to the next page',
-        //   onPressed: () {
-        //     Navigator.push(context, MaterialPageRoute<void>(
-        //       builder: (BuildContext context) {
-        //         return Profile();
-        //       },
-        //     ));
-        //   },
-        // ),        
+            children: [     
                GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute<void>(
@@ -138,11 +127,11 @@ class _SideNavs extends State<SideNavs> {
           icon: const Icon(Icons.account_circle),
           tooltip: 'Go to the next page',
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return Profile();
-              },
-            ));
+            // Navigator.push(context, MaterialPageRoute<void>(
+            //   builder: (BuildContext context) {
+            //     return Profile();
+            //   },
+            // ));
           },
         ),
       ],

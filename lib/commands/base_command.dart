@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import '/models/app_model.dart';
+import 'package:flutter/material.dart';
 import '/models/user_model.dart';
 import '/models/home_page_model.dart';
 import '/models/events_model.dart';
@@ -16,6 +16,7 @@ import '../models/User.dart';
 import '../commands/user_command.dart';
 import '../commands/player_command.dart';
 import '../commands/event_command.dart';
+import '../commands/images_command.dart';
 import '../models/payment_model.dart';
 import '../services/geolocation_services.dart';
 import '../services/twilio_services.dart';
@@ -60,6 +61,38 @@ class BaseCommand {
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
   }
+
+  //will load profile, team, and other user images
+  Future<Map<String, dynamic>> loadUserImagesFromAWS() async{
+    print("loadUserImagesFromAWS()");
+    Map<String, dynamic> loadUserImagesResponse = {
+      "success": false,
+      "message": "Something went wrong with loading user images",
+      "data": null
+    };
+
+    try{
+      await ImagesCommand().getAndSetUserProfileImage();      
+
+      return loadUserImagesResponse;
+    } catch(e){
+      print("loadUserImages error: ");
+      print(e);
+      return loadUserImagesResponse;
+    }
+  }
+
+  String getProfileUrl(){
+    return userModel.profileImageUrl;
+  }
+
+  // Future<String> getProfileImage() async{
+  //   String profileImageURL = "";
+  //   String signedUrl = await ImagesCommand().getUserProfileImage();
+    
+
+  //   return profileImageURL;
+  // }
 
   Future <Map<String, dynamic>> reloadUser() async{
     print("reloadUser");
@@ -180,13 +213,13 @@ class BaseCommand {
 
           print("testing some shit out!");
           
-          
+          await loadUserImagesFromAWS();
           await EventCommand().setupMappedEvents();
           print("get friends and myEvents from currentUser object: ");
           List<dynamic> friends = appModel.currentUser['friends']['data'];
           List<dynamic> myEvents = appModel.currentUser['events']['data'];
           List<dynamic> myArchivedEvents = [];
-        List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
+          List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
           print("friendss: "+friends.toString());          
           print("myEventss: "+myEvents.toString());
           myEventsCopy.forEach((element) async {

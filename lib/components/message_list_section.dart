@@ -46,7 +46,7 @@ class _MessageListSectionState extends State<MessageListSection> {
     print("chat/view.dart init state");
     super.initState();
     _firstLoad();
-    messages = AppModel().currentUser
+    // messages = AppModel().currentUser
   }
 
   @override
