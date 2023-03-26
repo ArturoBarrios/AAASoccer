@@ -93,7 +93,7 @@ class _ProfileState extends State<Profile> {
                       tag: "profile",
                 child: Stack(
                   alignment: AlignmentDirectional.center,
-                  children: <Widget>[
+                  children: <Widget>[                    
                     Container(
                         child: Container(
                             height: 190.0,

@@ -10,7 +10,14 @@ class UserModel extends ChangeNotifier {
   List<String> get userPosts => _userPosts;
   String userID = "";
   String userEmail = "";
-  String profileImageUrl = "";
+
+
+  String _profileImageUrl = "";
+  String get profileImageUrl => _profileImageUrl;
+  set profileImageUrl(String profileImageUrl) {
+    _profileImageUrl = profileImageUrl;
+    notifyListeners();
+  }
 
   bool _userSetup = false;
   bool get userSetup => _userSetup;
