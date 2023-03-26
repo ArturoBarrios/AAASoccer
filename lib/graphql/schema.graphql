@@ -403,7 +403,8 @@ type Image   {
   location: Location
   organization: Organization
   attachedModelType: ModelType
-  sponsor: Sponsor    
+  sponsor: Sponsor   
+  s3bucket: String 
 }
 
 type GifContent   {

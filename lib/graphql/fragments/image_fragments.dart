@@ -5,6 +5,7 @@ class ImageFragments{
           _id  
           url
           key
+          isMainImage
           user{
             _id
             name

@@ -9,15 +9,6 @@ import 'package:geolocator/geolocator.dart';
 class AppModel extends ChangeNotifier {
 
   
-  // FaunaClient _faunaClient = FaunaClient(FaunaConfig.build(
-  //     secret: 'fnAEvcFslGACTyx_6wrw7CVbXYEYrgGj34EfXpFN',
-  //     domain: 'db.fauna.com'
-  //   ));
-
-  // FaunaClient get faunaClient => _faunaClient;
-
-
-
 
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;

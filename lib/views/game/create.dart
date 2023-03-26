@@ -107,11 +107,11 @@ class _GameCreateState extends State<GameCreate> {
             icon: const Icon(Icons.account_circle),
             tooltip: 'Go to the next page',
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return Profile();
-                },
-              ));
+              // Navigator.push(context, MaterialPageRoute<void>(
+              //   builder: (BuildContext context) {
+              //     return Profile();
+              //   },
+              // ));
             },
           ),
         ],

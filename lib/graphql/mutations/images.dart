@@ -6,9 +6,13 @@ class ImageMutations {
     String createImage = """
       mutation {
         createImage(data: {            
-              isMainImage: "${imageInput['isMainImage']}",
+              isMainImage: ${imageInput['isMainImage']},
+              public: ${imageInput['public']},
               key: "${imageInput['key']}",
-              user: "${imageInput['user']}", 
+              s3bucket: "${imageInput['s3bucket']}",
+              user: {
+                connect: "${imageInput['user_id']}", 
+              },
           }) 
           {
               ${ImageFragments().fullImage()}
@@ -18,4 +22,21 @@ class ImageMutations {
 
     return createImage;
   }
+
+  String partialImageUpdate(Map<String, dynamic> imageInput) {
+    String updateImageString = """
+      mutation {
+        partialUpdateImage(id: "${imageInput['image']['_id']}", 
+        data:{
+         isMainImage: false 
+        }
+        ){
+          ${ImageFragments().fullImage()}
+        }  
+      }
+    """;
+
+    return updateImageString;
+  }
+
 }

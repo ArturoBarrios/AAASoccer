@@ -353,9 +353,8 @@ app.get('/images', async (req, res) => {
         const {getSignedUrl} = require('@aws-sdk/cloudfront-signer');
         console.log("process.env.CLOUDFRONT_PRIVATE_KEY: "+process.env.CLOUDFRONT_PRIVATE_KEY);
         console.log("process.env.CLOUDFRONT_KEY_PAIR_ID: "+process.env.CLOUDFRONT_KEY_PAIR_ID);
-        var signedUrl = await getSignedUrl({
-            
-            url: "https://d3pq1muv3j21qh.cloudfront.net/"+"92b91c1fb572518cc9393687d9b17301",//"https://d3pq1muv3j21qh.cloudfront.net/"+"testagain.png",
+        var signedUrl = await getSignedUrl({            
+            url: "https://d3pq1muv3j21qh.cloudfront.net/"+req.query.key, //"https://d3pq1muv3j21qh.cloudfront.net/"+"674c1b503cbfd75264d32971ef4deafe",
             dateLessThan: new Date(Date.now() + 1000 *60 * 60 *24),
             privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
             keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID

@@ -10,20 +10,10 @@ class UserModel extends ChangeNotifier {
   List<String> get userPosts => _userPosts;
   String userID = "";
   String userEmail = "";
-  // User user = User();
-  
-  
-  // dynamic _position = null;
-  // Position get position => _position;
+  String profileImageUrl = "";
 
   bool _userSetup = false;
   bool get userSetup => _userSetup;
-
-  // set position(Position position) {
-  //   _position = position;
-  //   notifyListeners();
-  // }
-
   set userSetup(bool userSetup) {
     _userSetup = userSetup;
     notifyListeners();
@@ -36,7 +26,6 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
     print("chats updated in user_model");
     print("chats new length: " + chats.length.toString());
-    // chats[0]['messages']['data'];
   }
 
 

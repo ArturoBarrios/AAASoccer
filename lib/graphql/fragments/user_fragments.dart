@@ -1,4 +1,6 @@
 import 'chat_fragments.dart';
+import 'image_fragments.dart';
+
 class UserFragments{
 
   String fullUser(){
@@ -11,6 +13,11 @@ class UserFragments{
               birthdate              
               gender
               OSPID
+              images{
+                data{
+                  ${ImageFragments().fullImage()}
+                }
+              }
               location{
                 _id
                 latitude
