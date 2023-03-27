@@ -28,6 +28,7 @@ class _RequestsViewState extends State<RequestsView> {
 
 
   bool _isLoading = false;
+
   late ScrollController _selectEventController = ScrollController();
 
   void goBack(){
@@ -54,50 +55,15 @@ class _RequestsViewState extends State<RequestsView> {
       }    
   }
 
-  void getRequestPageData() async{
-    print("getRequestPageData()");        
-    // Map<String, dynamic> getEventRequestsResp = await RequestsCommand().getEventRequests();
-    Map<String, dynamic> getRequestsResp = await UserCommand().getCurrentUserByEmail();
-    print("getEventRequestsResp: " + getRequestsResp['data']['requestsSent'].toString());
-    
-    if (getRequestsResp['success']) {
-      List eventRequests = getRequestsResp['data']['eventRequests']['data'];
-      List teamRequests = getRequestsResp['data']['teamRequests']['data'];
-      List friendRequests = getRequestsResp['data']['friendRequests']['data'];
-      
-      print("EventRequests to set: ");
-      print(eventRequests);
-      print("TeamRequests to set: ");
-      print(teamRequests);
-      print(RequestsPageModel().initialConditionsMet);
-      //right now the last is visible
-      //todo fix this shit
-      teamRequests = RequestsCommand().updateTeamRequestsModel(teamRequests, 'RECIEVED')['data'];
-      // RequestsCommand().updateEventRequestsModel(eventRequests);
-      // RequestsCommand().updateFriendRequestsModel(friendRequests);
-      List updateWith = [friendRequests, eventRequests, teamRequests].expand((x) => x).toList();
-      print("updateWith: "+updateWith.toString());      
-      RequestsCommand().updateRequestsPageSelectedModel(updateWith);
-      
-      print("initialConditionsMet: ");
-      print(RequestsCommand().initialConditionsMet);     
-      print("initialConditionsMet after: ");
-      print(RequestsPageModel().initialConditionsMet);
-      print("done");
-    }    
 
-    setState(() {
-      
-    });
-    
-    
-
-  }
 
   void requestTypeTapped(String requestType){
     setState(() {
-      selectedRequestType = requestType;    
-      RequestsCommand().updatedSelectedRequests(requestType);
+      selectedRequestType = requestType;  
+      
+        RequestsCommand().updatedSelectedRequests(requestType);
+
+        
     });
 
   }
@@ -105,17 +71,16 @@ class _RequestsViewState extends State<RequestsView> {
   
 
   late ScrollController _selectRequestTypeController = ScrollController();
-  String selectedRequestType = "Received";
+  String selectedRequestType = "RECEIVED";
   final Color color = Colors.grey.shade200;    
     final Color selectedColor = Colors.orange.shade500;    
 
   @override
   void initState() {
     print("init state");
-    super.initState();    
-    //avoid multiple loads??    
-    
-    getRequestPageData();    
+    super.initState();        
+    requestTypeTapped(selectedRequestType);    
+
   }
     
 
@@ -137,7 +102,7 @@ final double cardWidth = MediaQuery.of(context).size.width * .4;
 
     List requestTypes = [
       "SENT",
-      "RECIEVED",
+      "RECEIVED",
     ];
 
     print("selectedObjects to build:: " + selectedObjects.toString());

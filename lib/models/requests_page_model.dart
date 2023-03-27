@@ -15,7 +15,7 @@ import '../views/team/create/create.dart';
 
 class RequestsPageModel extends ChangeNotifier {
 
-  String _selectedKey = Constants.PICKUP;
+  String _selectedKey = "SENT";
   String get selectedKey => _selectedKey;
   set selectedKey(String selectedKey){
     _selectedKey = selectedKey;
@@ -28,6 +28,7 @@ class RequestsPageModel extends ChangeNotifier {
     _initialConditionsMet = initialConditionsMet;
     notifyListeners();
   }  
+  
 
   List _selectedObjects = [];
   List get selectedObjects => _selectedObjects;

@@ -206,6 +206,8 @@ class EventCommand extends BaseCommand {
     return findEventsNearPointResp;
   }
 
+  
+
   //send organizer event request
   Future<Map<String, dynamic>> sendOrganizerEventRequest(
       dynamic gameInput, String role) async {
