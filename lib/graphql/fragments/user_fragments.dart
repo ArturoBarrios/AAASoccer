@@ -40,6 +40,35 @@ class UserFragments{
 
                 }                
               }
+              requestsReceived{
+                data{
+                  _id
+                  type
+                  status
+                  requestAttempts
+                  fromOrganizer
+                  sender{
+                    _id
+                    name
+                    email
+                    OSPID
+                  }
+                  receivers{
+                    data{
+                      _id
+                      name
+                      email
+                      OSPID
+                    }
+                  }
+                  acceptedBy{
+                    _id
+                    name
+                    email
+                    OSPID
+                  }                  
+                }
+              }
               requestsSent{
                 data{
                   _id

@@ -7,6 +7,20 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 
 class RequestsModel extends ChangeNotifier {
     
+  List _requestsSent = [];
+  List get requestsSent => _requestsSent;
+  set requestsSent(List requestsSent) {
+    _requestsSent = requestsSent;
+    notifyListeners();
+  }
+  
+  List _requestsReceived = [];
+  List get requestsReceived => _requestsReceived;
+  set requestsReceived(List requestsReceived) {
+    _requestsReceived = requestsReceived;
+    notifyListeners();
+  }
+
   List _eventRequests = [];
   List get eventRequests => _eventRequests;
   set eventRequests(List eventRequests) {

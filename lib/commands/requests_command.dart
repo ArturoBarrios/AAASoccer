@@ -26,17 +26,28 @@ import '../enums/RequestStatus.dart';
 class RequestsCommand extends BaseCommand {
 
 
+  //gets most up to date user model and assigns
+  //requests appropriately
   Future<void> updatedSelectedRequests(String requestType) async{
     print("updatedSelectedRequests");
     print("requestType: " + requestType);
-    if(requestType=="SENT"){
-      print("sent");
-
-      
-    }
-    else{
-
-    requestsPageModel.selectedObjects = [];
+    Map<String, dynamic> getRequestsResp = await UserCommand().getCurrentUserByEmail();    
+    
+    if (getRequestsResp['success']) {
+      // UserCommand().updateUserModelWithUser(getRequestsResp['data']);
+      List requestsSent = getRequestsResp['data']['requestsSent']['data'];
+      List requestsReceived = getRequestsResp['data']['requestsReceived']['data'];
+      print("requestsSent: " + requestsSent.toString());
+      print("requestsReceived: " + requestsReceived.toString());
+      requestsModel.requestsSent = requestsSent;
+      requestsModel.requestsReceived = requestsReceived;      
+      if(requestType=="SENT"){
+        print("sent");
+        requestsPageModel.selectedObjects = requestsSent;        
+      }
+      else{
+        requestsPageModel.selectedObjects = requestsReceived;;              
+      }
     }
 
   }

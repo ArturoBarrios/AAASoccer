@@ -387,6 +387,12 @@ class UserCommand extends BaseCommand {
     return removeFriendResp;
   }
 
+  void updateUserModelWithUser(dynamic user){
+    print("updateUserModelWithUser");
+    appModel.currentUser = user;
+    print("appModel.currentUser: " + appModel.currentUser.toString());
+  }
+
   Future<Map<String, dynamic>> getCurrentUserByEmail() async {
     print("getCurrentUserByEmail");
     Map<String, dynamic> getUserResp = {
