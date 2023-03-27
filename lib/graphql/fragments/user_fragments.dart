@@ -40,7 +40,7 @@ class UserFragments{
 
                 }                
               }
-              requests{
+              requestsSent{
                 data{
                   _id
                   type
@@ -66,8 +66,7 @@ class UserFragments{
                     name
                     email
                     OSPID
-                  }
-                  
+                  }                  
                 }
               }
               stripeCustomers{

@@ -525,7 +525,7 @@ class UserCommand extends BaseCommand {
       print("response: ");
       print(jsonDecode(response.body));
       final result = jsonDecode(response.body)['data']['findUserByID'];
-      appModel.currentUser = result;
+      // appModel.currentUser = result;
       // if (result != null) {
       getUserResp["success"] = true;
       getUserResp["message"] = "user found";

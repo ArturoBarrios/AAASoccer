@@ -61,10 +61,10 @@ Future<Map<String, dynamic>> removePickup(dynamic gameObject) async {
   return removePickupRespResponse;
 }
 
-void sendEventRequest(dynamic gameObject) async {  
+Future<void> sendEventRequest(dynamic gameObject) async {  
   print("send event request for event: :"+gameObject.toString());
 
-  await EventCommand().sendOrganizerEventRequest(gameObject);                
+  await EventCommand().sendOrganizerEventRequest(gameObject, "PLAYER");                
 }
 
 class _PickupCard2 extends State<PickupCard2> {

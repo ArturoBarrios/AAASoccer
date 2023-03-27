@@ -255,6 +255,7 @@ class _Home extends State<Home> {
     Widget card = Text("null");//PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
 
     if(selectedKey==Constants.PICKUP){
+      print("selected pickup: "+ selectedObject.toString());
     bool isMyEvent = EventCommand().isMyEvent(selectedObject['event']);
       card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     }

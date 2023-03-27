@@ -103,6 +103,8 @@ type Request {
   status: RequestStatus
   requestAttempts: Int
   fromOrganizer: Boolean
+  event: Event
+  forRole: String
   
 }
 
@@ -191,7 +193,7 @@ type User  {
   # teamRequestsToAccept: [TeamRequest] @relation(name: "team_requests_to_accept")
   # teamRequestsSent: [TeamRequest] @relation(name: "team_requests_sent")
   # teamRequestsAccepted: [TeamRequest] @relation(name: "team_requests_acceptedBy")
-  requests: [Request]  @relation(name: "requests_sent")
+  requestsSent: [Request]  @relation(name: "requests_sent")
   requestsReceived: [Request] @relation(name: "request_receivers")
   requestsAccepted: [Request] @relation(name: "request_acceptedBy")
   chats: [Chat] @relation
@@ -250,8 +252,9 @@ type Event   {
   name: String
   isMainEvent: Boolean
   userParticipants: [EventUserParticipant] @relation
-  eventUserOrganizers: EventUserOrganizers
+  # eventUserOrganizers: EventUserOrganizers
   price: Price
+  request: [Request] @relation
   # organization: Organization
   #need org to create events? nah. allow user to create events,
   #if user has orgs, they can select which org to create event for                

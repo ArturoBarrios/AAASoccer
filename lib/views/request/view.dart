@@ -58,7 +58,7 @@ class _RequestsViewState extends State<RequestsView> {
     print("getRequestPageData()");        
     // Map<String, dynamic> getEventRequestsResp = await RequestsCommand().getEventRequests();
     Map<String, dynamic> getRequestsResp = await UserCommand().getCurrentUserByEmail();
-    print("getEventRequestsResp: " + getRequestsResp.toString());
+    print("getEventRequestsResp: " + getRequestsResp['data']['requestsSent'].toString());
     
     if (getRequestsResp['success']) {
       List eventRequests = getRequestsResp['data']['eventRequests']['data'];

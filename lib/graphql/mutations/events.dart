@@ -43,38 +43,26 @@ class EventMutations {
       String organizersString, String receivers) {
     String createEventRequest = """
       mutation {
-        createEventRequest(
+        createRequest(
           data: {    
             status: PENDING,
-            requestAttempts: 1,    
-            requestType: EVENTREQUEST,                 
-            organizers: {
-              connect: [
-                $organizersString
-              ]
-            }
+            requestAttempts: 1,                                           
             receivers: {
               connect: [
-                $receivers
+                ${eventRequestInput['receivers']}
               ]
             }
             sender: {
-              connect: "${eventRequestInput['sender_id']}"           
+              connect: ${eventRequestInput['sender_id']}           
             },                                    
             event: {
-              connect: "${eventRequestInput['event_id']}"                       
-            }                       
+              connect: ${eventRequestInput['event_id']}                       
+            } 
+            forRole: ${eventRequestInput['forRole']}                      
           }) {
               _id
             status
-            requestAttempts
-            organizers{
-              data{
-                _id
-                email
-                name
-              }
-            }
+            requestAttempts            
             receivers{
               data{
                 _id
@@ -109,31 +97,51 @@ class EventMutations {
     ) {
     String createEventRequest = """
       mutation {
-        createRequest(data:{
-        type: EVENTREQUEST
-        sender: "$eventRequestInput['sender_id']"  
-        receivers: {
-            connect: [
-              "$eventRequestInput['receivers']"
-            ]
-          }     
-        }){
-          _id
-          type
-          sender{
-            _id
-            name
-            email
-          }
-          receivers{
-            data{
-              _id
-              name
-              email
+        createRequest(
+          data: {    
+            status: PENDING,
+            requestAttempts: 1,                                           
+            receivers: {
+              connect: [
+                ${eventRequestInput['receivers']}
+              ]
             }
-          }
-        }  
-      }
+            sender: {
+              connect: ${eventRequestInput['sender_id']}           
+            },                                    
+            event: {
+              connect: ${eventRequestInput['event_id']}                       
+            } 
+            forRole: "${eventRequestInput['forRole']}"                      
+          }) {
+              _id
+            status
+            requestAttempts            
+            receivers{
+              data{
+                _id
+                email
+                name
+              }
+            }
+            sender{                            
+              _id
+              email
+              name              
+            }   
+            acceptedBy{              
+                _id
+                email
+                name              
+            }                                  
+            event{              
+                _id
+                name              
+            }            
+    				
+                 
+          }   
+        }
         """;
 
     return createEventRequest;
