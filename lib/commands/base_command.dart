@@ -62,6 +62,14 @@ class BaseCommand {
     homePageModel.testText = "testingggggg";
   }
 
+  //"{"test1", "test2", "test3"}
+  List<String> parseWords(String inputString) {
+  // Remove curly braces and split string into individual words
+  List<String> words = inputString.replaceAll('{', '').replaceAll('}', '').split(', ');
+
+  return words;
+}
+
   //will load profile, team, and other user images
   Future<Map<String, dynamic>> loadUserImagesFromAWS() async{
     print("loadUserImagesFromAWS()");

@@ -206,8 +206,9 @@ class EventCommand extends BaseCommand {
     return findEventsNearPointResp;
   }
 
+  //send organizer event request
   Future<Map<String, dynamic>> sendOrganizerEventRequest(
-      dynamic gameInput) async {
+      dynamic gameInput, String role) async {
     
     print("sendOrganizerEventRequestttt");
     Map<String, dynamic> sendOrganizerEventRequestResponse = {
@@ -220,53 +221,52 @@ class EventCommand extends BaseCommand {
       Map<String, dynamic> sendOrganizerEventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
         "event_id": gameInput['event']['_id'],
-        "fromOrganizer": false
+        "fromOrganizer": false,
+        "forRole": role,
       };
       print("sendOrganizerEventRequestInput");
       print(sendOrganizerEventRequestInput);
       
 
       bool isYourEvent = false;
-      dynamic eventUserOrganizers =
+      dynamic userParticipants =
           gameInput['event']['userParticipants']['data'];
-      print("eventUserOrganizers: " + eventUserOrganizers.toString());
+      
+      print("userParticipants: " + userParticipants.toString());
       String organizersString = "";
       String receiver = "";
       print("get OSPIDs");
       //populate list with onesignal player ids
       List<String> OSPIDs = [];
       List<String> phones = [];
-      for (var i = 0; i < eventUserOrganizers.length; i++) {
-        String toUserId = eventUserOrganizers[i]['_id'];
-        // if (appModel.currentUser['_id'] == toUserId) {
-        //   print("is your event!");
-        //   isYourEvent = true;                    
-        // }
-        Map<String, dynamic> organizerUserInput = {"_id": toUserId};
+      for (var i = 0; i < userParticipants.length; i++) {
+        String toUserId = userParticipants[i]['_id'];
+        List<String> roles = BaseCommand().parseWords(userParticipants[i]['roles']);
+        print("roles: " + roles.toString());
+        if(roles.contains("ORGANIZER")){
+          organizersString += toUserId + ",";
+          Map<String, dynamic> organizerUserInput = {"_id": toUserId};
 
-        Map<String, dynamic> getUserResp =
-            await UserCommand().findUserById(organizerUserInput);
-        print("in for getUserResp: ");
-        print(getUserResp);
-        if (getUserResp["success"] == true) {
-          Map<String, dynamic> user = getUserResp["data"];
-          print("user: " + user.toString());
-          if (user != null) {
-            //it shouldn't be null here, risk for bug
-            OSPIDs.add(user['OSPID']);
-            phones.add(user['phone']);
+          Map<String, dynamic> getUserResp =
+              await UserCommand().findUserById(organizerUserInput);
+          print("in for getUserResp: ");
+          print(getUserResp);
+          if (getUserResp["success"] == true) {
+            Map<String, dynamic> user = getUserResp["data"];
+            print("user: " + user.toString());
+            if (user != null) {
+              //it shouldn't be null here, risk for bug
+              OSPIDs.add(user['OSPID']);
+              phones.add(user['phone']);
+            }
           }
         }
 
-        organizersString += toUserId + ",";
-      }
-      
-      
-        sendOrganizerEventRequestInput['receivers'] 
+        
+      }      
+      sendOrganizerEventRequestInput['receivers'] 
           = organizersString;
       
-
-
 
       print("organizersString");
       print(organizersString);
@@ -287,26 +287,10 @@ class EventCommand extends BaseCommand {
       print(jsonDecode(response.body));
 
       dynamic createEventRequest =
-          jsonDecode(response.body)['data']['createEventRequest'];
+          jsonDecode(response.body)['data']['createRequest'];
       print("createEventRequest: " + createEventRequest.toString());
-      //check if it's from the same user
-      //updateEventRequest if it is
-      //not needed if client checks for this
-      // print("check if isYourEvent: " + isYourEvent.toString());
-      // if (isYourEvent) {
-      //   print("isYourEvent");
-      //   Map<String, dynamic> eventRequestInput = {
-      //     "_id": createEventRequest['_id'],
-      //     "status": RequestStatus.ACCEPTED.toString(),
-      //     "acceptedBy_id": appModel.currentUser['_id'],
-      //     "event": {
-      //       "_id": gameInput['event']['_id'],
-      //     }
-      //   };
-      //   //get event
-      //   await RequestsCommand().updateEventRequests(eventRequestInput);
-      // }
 
+      //send notification to organizer(s)
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
         "message": appModel.currentUser['name'] +
@@ -318,7 +302,7 @@ class EventCommand extends BaseCommand {
 
       sendOrganizerEventRequestResponse["success"] = true;
       sendOrganizerEventRequestResponse["message"] = "Event Request Created";
-      // sendOrganizerEventRequestResponse["data"] = jsonDecode(response.body)['data']['CreateEventRequest'];
+      sendOrganizerEventRequestResponse["data"] = jsonDecode(response.body)['data']['createRequest'];
     } catch (e) {}
 
     return sendOrganizerEventRequestResponse;
