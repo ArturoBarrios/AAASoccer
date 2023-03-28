@@ -70,13 +70,9 @@ class _PickupViewState extends State<PickupView> {
   Widget build(BuildContext context) {
     print("build()");
     print("game: " + widget.game.toString());
-    return MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          colorSchemeSeed: Colors.green[700],
-        ),
-        home: Scaffold(
-          appBar: Headers().getBackHeader(context),
+    return Scaffold(
+        
+          appBar: Headers().getBackHeader(context, "View Game"),
           body: _isLoading
               ? Text("Loading...")
               : Center(
@@ -101,7 +97,7 @@ class _PickupViewState extends State<PickupView> {
                     child: Text("Join Game"),
                   )
                 ])),
-        ));
+        );
   }
 }
 

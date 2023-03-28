@@ -104,7 +104,7 @@ class _RequestsViewState extends State<RequestsView> {
     print("selectedObjects to build:: " + selectedObjects.toString());
 
     return Scaffold(
-        appBar: Headers().getBackHeader(context),
+        appBar: Headers().getBackHeader(context, "Requests"),
         body: Stack(children: <Widget>[
           Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             Expanded(

@@ -88,13 +88,9 @@ class _GameUpdateState extends State<GameUpdate> {
   Widget build(BuildContext context) {
     print("game build()");
     print("game: " + widget.game.toString());
-    return MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          colorSchemeSeed: Colors.green[700],
-        ),
-        home: Scaffold(
-            appBar: Headers().getBackHeader(context),
+    return 
+        Scaffold(
+            appBar: Headers().getBackHeader(context, "Update Game"),
             body: _isLoading
                 ? Text("Loading...")
                 : Center(
@@ -112,7 +108,8 @@ class _GameUpdateState extends State<GameUpdate> {
                             (MediaQuery.of(context).size.width *
                                 .1), //10% padding
                         height: 200.0,
-                        child: MyMapPage(
+                        child: 
+                        MyMapPage(
                             latitude: widget.game['event']['location']['data']
                                 [0]['latitude'],
                             longitude: widget.game['event']['location']['data']
@@ -136,7 +133,7 @@ class _GameUpdateState extends State<GameUpdate> {
                   
                   )
             // MyMapPage()
-            ));
+            );
   }
 }
 

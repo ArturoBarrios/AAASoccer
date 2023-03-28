@@ -215,12 +215,12 @@ void goHome(BuildContext context) {
     return appBar;
   }
 
-  AppBar getBackHeader(BuildContext context) {
+  AppBar getBackHeader(BuildContext context, String title) {
     AppBar appBar = AppBar(
       elevation: 2,
       centerTitle: false,
       title: 
-      Text("Requests"),
+      Text(title),
       backgroundColor: Colors.orange.shade500,
       actions: <Widget>[],
     );
