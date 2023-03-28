@@ -1,35 +1,26 @@
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/notifications_command.dart';
+import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/models/events_model.dart';
 
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/Event.dart';
-import '../models/app_model.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
-import '../models/app_model.dart';
 import '../commands/game_command.dart';
 import '../commands/player_command.dart';
 import '../enums/EventType.dart';
 import '../graphql/queries/games.dart';
 import '../commands/user_command.dart';
 import '../graphql/mutations/games.dart';
+import '../graphql/mutations/requests.dart';
 import '../commands/team_command.dart';
 import '../commands/training_command.dart';
-import '../commands/requests_command.dart';
 import '../commands/tryout_command.dart';
 import '../commands/tournament_command.dart';
 import '../commands/league_command.dart';
-import '../commands/notifications_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
-import '../graphql/mutations/events.dart';
-import '../enums/RequestStatus.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import './game_command.dart';
 
 class EventCommand extends BaseCommand {
   Future<Map<String, dynamic>> notifyEventParticipants(dynamic notifyEventParticipantInput
@@ -208,6 +199,8 @@ class EventCommand extends BaseCommand {
 
   
 
+  
+
   //send organizer event request
   Future<Map<String, dynamic>> sendOrganizerEventRequest(
       dynamic gameInput, String role) async {
@@ -225,6 +218,7 @@ class EventCommand extends BaseCommand {
         "event_id": gameInput['event']['_id'],
         "fromOrganizer": false,
         "forRole": role,
+        "type": Constants.EVENTREQUEST.toString()
       };
       print("sendOrganizerEventRequestInput");
       print(sendOrganizerEventRequestInput);
@@ -280,7 +274,7 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventMutations().sendEventRequestV2(
+          'query': RequestMutations().sendEventRequestV2(
               sendOrganizerEventRequestInput), //(fromInput, toInputs, gameInput),
         }),
       );

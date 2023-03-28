@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
 import 'package:soccermadeeasy/components/Cards/pickup_card2.dart';
+import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import '../../components/profile.dart';
 import '../../components/headers.dart';
@@ -38,14 +39,18 @@ class _RequestsViewState extends State<RequestsView> {
     print("getRequestCard()");
     print("selectedKey: " + selectedKey);
     print("requestObject: " + requestObject.toString());
+    print("requestObject['type'].toString(): " +
+        requestObject['type'].toString());
+    print("Constants.EVENTREQUEST.toString(): " +
+        Constants.EVENTREQUEST.toString());
 
-    if (requestObject['requestType'].toString() ==
-        EventRequestType.FRIENDREQUEST.name) {
+    if (requestObject['type'].toString() ==
+        Constants.FRIENDREQUEST.toString()) {
       Widget card = FriendRequestCard(
           friendRequestObject: requestObject, svgImage: svgImage);
       return card;
-    } else if (requestObject['requestType'].toString() ==
-        EventRequestType.EVENTREQUEST.name) {
+    } else if (requestObject['type'].toString() ==
+        Constants.EVENTREQUEST.toString()) {
       Widget card = EventRequestCard(
           eventRequestObject: requestObject, svgImage: svgImage);
       return card;
@@ -223,7 +228,9 @@ class _RequestsViewState extends State<RequestsView> {
                                   currentDotColor: Colors.white,
                                   defaultDotColor: Colors.black,
                                   numDots: 10)))
-                  : ListView.builder(
+                  : 
+                  selectedObjects.length>0 ? 
+                  ListView.builder(
                       controller: _selectEventController,
                       itemCount: selectedObjects.length,
                       itemBuilder: (_, index) => Card(
@@ -236,7 +243,9 @@ class _RequestsViewState extends State<RequestsView> {
                             // PickupCard2(
                             //     eventObject: selectedObjects[index],
                             //     svgImage: svgImage),
-                          )),
+                          )) :
+                          Text("No Requests Yet")
+                          
             ),
           ]),
         ]));

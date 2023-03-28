@@ -1,22 +1,13 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'base_command.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
-import '../models/app_model.dart';
 import '../commands/event_command.dart';
 import '../commands/user_command.dart';
-import '../models/events_model.dart';
-import '../models/requests_page_model.dart';
-import '../models/requests_model.dart';
-import '../commands/geolocation_command.dart';
-// import 'package:geolocator/geolocator.dart';
 import '../graphql/mutations/games.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/mutations/teams.dart';
-import '../graphql/mutations/events.dart';
 import '../graphql/queries/requests.dart';
-import '../graphql/queries/requests.dart';
+import '../graphql/mutations/requests.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
@@ -146,7 +137,7 @@ class RequestsCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventMutations().updateEventRequest(eventRequestInput),//(fromInput, toInputs, gameInput),
+          'query': RequestMutations().updateRequest(eventRequestInput),//(fromInput, toInputs, gameInput),
         }),
       );
     

@@ -1,3 +1,4 @@
+import '../fragments/request_fragments.dart';
 
 class RequestsQueries {
    String getEventRequests()
@@ -6,24 +7,7 @@ class RequestsQueries {
         query GetRequests {
           allRequests {
             data {      
-              _id
-              status
-              requestAttempts
-              fromOrganizer              
-              sender{
-                _id
-                name
-              }
-              acceptedBy{
-                _id
-                name
-              }
-              receivers{
-                data{
-                  _id
-                  name
-                }
-              }                      
+              ${RequestFragments().fullRequest()}   
             }
           }
         }
