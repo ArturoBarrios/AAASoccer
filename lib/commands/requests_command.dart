@@ -143,7 +143,7 @@ class RequestsCommand extends BaseCommand {
     
       print("response body: ");
       print(jsonDecode(response.body));
-      dynamic updateEventRequest = jsonDecode(response.body)['data']['updateEventRequest'];
+      dynamic updateEventRequest = jsonDecode(response.body)['data']['updateRequest'];
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
       };
@@ -196,7 +196,7 @@ class RequestsCommand extends BaseCommand {
       //add check and revert entirely if adding event fails???            
       updateEventRequestResponse["success"] = true;
       updateEventRequestResponse["message"] = "Event Request Created";      
-      updateEventRequestResponse["data"] = jsonDecode(response.body)['data']['updateEventRequest'];          
+      updateEventRequestResponse["data"] = jsonDecode(response.body)['data']['updateRequest'];          
     } catch (e) {}
 
     return updateEventRequestResponse;
