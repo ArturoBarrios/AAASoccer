@@ -219,16 +219,8 @@ void goHome(BuildContext context) {
     AppBar appBar = AppBar(
       elevation: 2,
       centerTitle: false,
-      title: new Padding(
-        padding: const EdgeInsets.only(left: 20.0),
-        child: IconButton(
-          icon: const Icon(Icons.keyboard_backspace_sharp),
-          tooltip: 'Notifications',
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      title: 
+      Text("Requests"),
       backgroundColor: Colors.orange.shade500,
       actions: <Widget>[],
     );
