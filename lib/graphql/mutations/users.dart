@@ -1,4 +1,5 @@
 import '../fragments/user_fragments.dart';
+import '../fragments/event_fragments.dart';
 
 class UserMutations {
   String partialUserUpdate(Map<String, dynamic> userInput) {
@@ -148,18 +149,7 @@ class UserMutations {
         email
         events{      
           data{    
-            _id
-            name   
-            isMainEvent    
-            eventUserOrganizers{
-              users{
-                data{
-                  _id
-                  name
-                  email
-                }
-              }
-            }             
+           ${EventFragments().fullEvent()}
           }
         }                                        			
   }

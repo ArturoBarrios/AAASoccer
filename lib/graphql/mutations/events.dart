@@ -93,62 +93,10 @@ class EventMutations {
     return createEventRequest;
   }
 
-  String sendEventRequestV2(Map<String, dynamic> eventRequestInput
-    ) {
-    String createEventRequest = """
-      mutation {
-        createRequest(
-          data: {    
-            status: PENDING,
-            requestAttempts: 1,                                           
-            receivers: {
-              connect: [
-                ${eventRequestInput['receivers']}
-              ]
-            }
-            sender: {
-              connect: ${eventRequestInput['sender_id']}           
-            },                                    
-            event: {
-              connect: ${eventRequestInput['event_id']}                       
-            } 
-            forRole: "${eventRequestInput['forRole']}"                      
-          }) {
-              _id
-            status
-            requestAttempts            
-            receivers{
-              data{
-                _id
-                email
-                name
-              }
-            }
-            sender{                            
-              _id
-              email
-              name              
-            }   
-            acceptedBy{              
-                _id
-                email
-                name              
-            }                                  
-            event{              
-                _id
-                name              
-            }            
-    				
-                 
-          }   
-        }
-        """;
+  
 
-    return createEventRequest;
-  }
-
-  String updateEventRequest(Map<String, dynamic> eventRequestInput) {
-    String updateEventRequest = """
+  String updateRequest(Map<String, dynamic> eventRequestInput) {
+    String updateRequest = """
       mutation {
         updateEventRequest(id: ${eventRequestInput['_id']},
           data: {              
@@ -195,7 +143,7 @@ class EventMutations {
         }
         """;
 
-    return updateEventRequest;
+    return updateRequest;
   }
 
   String createPrice(

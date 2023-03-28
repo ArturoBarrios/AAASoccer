@@ -1,5 +1,6 @@
 import 'chat_fragments.dart';
 import 'image_fragments.dart';
+import 'request_fragments.dart';
 
 class UserFragments{
 
@@ -31,6 +32,13 @@ class UserFragments{
                   name
                   isMainEvent
                   type
+                  location{
+                    data{
+                      _id
+                      latitude
+                      longitude
+                    }
+                  }
                   games{
                     data{
                       _id
@@ -42,60 +50,12 @@ class UserFragments{
               }
               requestsReceived{
                 data{
-                  _id
-                  type
-                  status
-                  requestAttempts
-                  fromOrganizer
-                  sender{
-                    _id
-                    name
-                    email
-                    OSPID
-                  }
-                  receivers{
-                    data{
-                      _id
-                      name
-                      email
-                      OSPID
-                    }
-                  }
-                  acceptedBy{
-                    _id
-                    name
-                    email
-                    OSPID
-                  }                  
+                  ${RequestFragments().fullRequest()}              
                 }
               }
               requestsSent{
                 data{
-                  _id
-                  type
-                  status
-                  requestAttempts
-                  fromOrganizer
-                  sender{
-                    _id
-                    name
-                    email
-                    OSPID
-                  }
-                  receivers{
-                    data{
-                      _id
-                      name
-                      email
-                      OSPID
-                    }
-                  }
-                  acceptedBy{
-                    _id
-                    name
-                    email
-                    OSPID
-                  }                  
+                  ${RequestFragments().fullRequest()}   
                 }
               }
               stripeCustomers{

@@ -48,7 +48,6 @@ import '../components/Dialogues/dialogue_scale.dart';
 class Home extends StatefulWidget {
   @override
   _Home createState() => _Home();
-  
 }
 
 class _Home extends State<Home> {
@@ -62,8 +61,6 @@ class _Home extends State<Home> {
   Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
 
   String test = "";
-
-
 
   Map<String, dynamic> events = {
     StringConstants.PICKUPGAMESTITLE: [
@@ -188,7 +185,7 @@ class _Home extends State<Home> {
 
         final List fetchedPosts = json.decode(res.body);
         if (fetchedPosts.isNotEmpty) {
-          setState(() {            
+          setState(() {
             getEventCards();
           });
         } else {
@@ -214,7 +211,7 @@ class _Home extends State<Home> {
   List getEventCards() {
     // print("getEventCards");
     //   HomePageModel().enabledSelections.forEach((object) {
-    //     print("valueeeee: " + object.toString()); 
+    //     print("valueeeee: " + object.toString());
     //     //if event enabled
     //     if (object['enabled']) {
     //       events.forEach((k, eventMap) => {
@@ -227,15 +224,15 @@ class _Home extends State<Home> {
     //           });
     //     }
     //   });
-      // print("event widgets length: ");
-      // print(eventsList.length);
-      return eventsList;
+    // print("event widgets length: ");
+    // print(eventsList.length);
+    return eventsList;
   }
 
   @override
   void initState() {
     print("init state");
-    super.initState();    
+    super.initState();
     _firstLoad();
     _selectEventController = ScrollController()..addListener(_loadMore);
   }
@@ -244,192 +241,171 @@ class _Home extends State<Home> {
   void dispose() {
     _selectEventController.removeListener(_loadMore);
     super.dispose();
-  }  
+  }
 
-  Widget getCard(String selectedKey, dynamic selectedObject, Svg svgImage){
+  Widget getCard(String selectedKey, dynamic selectedObject, Svg svgImage) {
     print("getCard()");
     print("selectedKey: " + selectedKey);
     print("selectedObject: " + selectedObject.toString());
 
-    
-    Widget card = Text("null");//PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+    Widget card = Text(
+        "null"); //PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
 
-    if(selectedKey==Constants.PICKUP){
-      print("selected pickup: "+ selectedObject.toString());
-    bool isMyEvent = EventCommand().isMyEvent(selectedObject['event']);
-      card = PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
-    }
-    else if(selectedKey==Constants.TRAINING){
+    if (selectedKey == Constants.PICKUP) {
+      print("selected pickup: " + selectedObject.toString());
+      bool isMyEvent = EventCommand().isMyEvent(selectedObject['event']);
+      card = PickupCard2(
+          gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+    } else if (selectedKey == Constants.TRAINING) {
       card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage);
-    }
-    else if(selectedKey==Constants.TRYOUT){
+    } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
       card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage);
-    }
-    else if(selectedKey==Constants.TOURNAMENT){
+    } else if (selectedKey == Constants.TOURNAMENT) {
       //process tournament data for card
       TournamentCommand().currateTournamentData(selectedObject);
-      card = TournamentCard(tournamentObject: selectedObject, svgImage: svgImage);
-    }
-    else if(selectedKey==Constants.LEAGUE){
+      card =
+          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage);
+    } else if (selectedKey == Constants.LEAGUE) {
       //process league data for card
       LeagueCommand().currateLeagueData(selectedObject);
       card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage);
-    }
-    else if(selectedKey==Constants.PLAYER){
+    } else if (selectedKey == Constants.PLAYER) {
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
-    }
-    else if(selectedKey==Constants.TEAM){
+    } else if (selectedKey == Constants.TEAM) {
       card = TeamCard(teamObject: selectedObject, svgImage: svgImage);
-    }
-    else if(selectedKey==Constants.FRIEND){
+    } else if (selectedKey == Constants.FRIEND) {
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
-    }
-    else if(selectedKey==Constants.MYEVENTS){
+    } else if (selectedKey == Constants.MYEVENTS) {
       print("testing EventType.GAME===Game.type ");
-    print(EventType.GAME.name.toString()==selectedObject['type'].toString());          
-      if(selectedObject['type'].toString() == EventType.GAME.name.toString()){
+      print(
+          EventType.GAME.name.toString() == selectedObject['type'].toString());
+      if (selectedObject['type'].toString() == EventType.GAME.name.toString()) {
         //get game object first
-        dynamic gameObject = selectedObject['games']['data'][0];        
+        dynamic gameObject = selectedObject['games']['data'][0];
         gameObject['event'] = selectedObject;
-        card = PickupCard2(gameObject: gameObject, svgImage: svgImage, isMyEvent: true);
+        card = PickupCard2(
+            gameObject: gameObject, svgImage: svgImage, isMyEvent: true);
       }
     }
-
 
     return card;
   }
 
-  void testFunction(){
+  void testFunction() {
     print("testFunction");
-
   }
 
   @override
   Widget build(BuildContext context) {
-    int messagesLength = context.
-      select<ChatPageModel, int>((value) => value.messagesLength);
+    int messagesLength =
+        context.select<ChatPageModel, int>((value) => value.messagesLength);
     print("buildDDDDDD");
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
-    
-    String selectedKey = context
-        .select<HomePageModel, String>((value) => value.selectedKey);
 
-    List selectedObjects = context
-        .select<HomePageModel, List>((value) => value.selectedObjects);
-       
-    Map<String, dynamic> enabledSelections2 = context
-        .select<HomePageModel, Map<String, dynamic>>((value) => value.enabledSelections2);
-    
-    context
-        .select<EventsModel, List<dynamic>>((value) => value.games);
-   
-    context
-        .select<AppModel, List<dynamic>>((value) => value.teams);
+    String selectedKey =
+        context.select<HomePageModel, String>((value) => value.selectedKey);
+
+    List selectedObjects =
+        context.select<HomePageModel, List>((value) => value.selectedObjects);
+
+    Map<String, dynamic> enabledSelections2 =
+        context.select<HomePageModel, Map<String, dynamic>>(
+            (value) => value.enabledSelections2);
+
+    context.select<EventsModel, List<dynamic>>((value) => value.games);
+
+    context.select<AppModel, List<dynamic>>((value) => value.teams);
 
     HomePageModel().enabledSelections2.forEach((k, v) => {
-      context.select<HomePageModel, bool>((value) => value.enabledSelections2[k]['enabled'])
-      
-    });
+          context.select<HomePageModel, bool>(
+              (value) => value.enabledSelections2[k]['enabled'])
+        });
 
     Map<String, dynamic> createEventTypes = HomePageModel().createEventTypes;
 
-  
     String testText =
         context.select<HomePageModel, String>((value) => value.testText);
 
     //events
     List games = context.select<EventsModel, List>((value) => value.games);
 
-      print("selectedKey in build: " + selectedKey);
+    print("selectedKey in build: " + selectedKey);
 
     return (Scaffold(
-      
       appBar: Headers().getMainHeader(context),
-      drawer: 
-      Container(
+      drawer: Container(
         width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
-        child:
-          Drawer(
-          child: SideNavs().getMainSideNav(context)
-        ),
-
+        child: Drawer(child: SideNavs().getMainSideNav(context)),
       ),
-      body: 
-      // _isFirstLoadRunning
-      //     ? const Center(
-      //         child: const CircularProgressIndicator(),
-      //       )
-      //     : 
+      body:
+          // _isFirstLoadRunning
+          //     ? const Center(
+          //         child: const CircularProgressIndicator(),
+          //       )
+          //     :
           Stack(children: <Widget>[
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [                    
-                    Expanded(
-                        child: Column(children: <Widget>[
-                      // Padding(
-                      //     padding: EdgeInsets.all(10.0),
-                      //     child: SearchField(testText: testText)),
-                      Expanded(
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              controller: _selectEventTypeController,
-                              itemCount: enabledSelections2.length,                                       
-                              itemBuilder: (_, index){
-                                String key = enabledSelections2.keys.elementAt(index);
-                                return 
-                                  Card(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 10),
-                                      child: SelectIconButton(
-                                          eventObject: enabledSelections2[key],
-                                          svgImage: svgImage,
-                                          index: index),
-                                );
-                              },
-                                  )),
-                    ])),
-                    Text("messagesLength.length: " + messagesLength.toString()),
+        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Expanded(
+              child: Column(children: <Widget>[
+            // Padding(
+            //     padding: EdgeInsets.all(10.0),
+            //     child: SearchField(testText: testText)),
+            Expanded(
+                child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: _selectEventTypeController,
+              itemCount: enabledSelections2.length,
+              itemBuilder: (_, index) {
+                String key = enabledSelections2.keys.elementAt(index);
+                return Card(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  child: SelectIconButton(
+                      eventObject: enabledSelections2[key],
+                      svgImage: svgImage,
+                      index: index),
+                );
+              },
+            )),
+          ])),
+          //list view
+          Expanded(
+            child: ListView.builder(
+                controller: _selectEventController,
+                itemCount: selectedObjects.length,
+                itemBuilder: (_, index) => Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 10),
+                      child: getCard(
+                          selectedKey, selectedObjects[index], svgImage),
+                      // PickupCard2(
+                      //     eventObject: selectedObjects[index],
+                      //     svgImage: svgImage),
+                    )),
+          ),
 
-                    //list view
-                    Expanded(
-                      child: ListView.builder(
-                          controller: _selectEventController,
-                          itemCount: selectedObjects.length,
-                          itemBuilder: (_, index) => Card(
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 10),
-                                child:    
-                                  getCard(selectedKey, selectedObjects[index], svgImage),                              
-                                  // PickupCard2(
-                                  //     eventObject: selectedObjects[index],
-                                  //     svgImage: svgImage),
-                                                   
-                              )),
-                    ),                   
-                    
+          // when the _loadMore function is running
+          // if (_isLoadMoreRunning == true)
+          //   const Padding(
+          //     padding: EdgeInsets.only(top: 0, bottom: 0),
+          //     child: Center(
+          //       child: CircularProgressIndicator(),
+          //     ),
+          //   ),
 
-                    // when the _loadMore function is running
-                    // if (_isLoadMoreRunning == true)
-                    //   const Padding(
-                    //     padding: EdgeInsets.only(top: 0, bottom: 0),
-                    //     child: Center(
-                    //       child: CircularProgressIndicator(),
-                    //     ),
-                    //   ),
-
-                    // When nothing else to load
-                    // if (_hasNextPage == false)
-                    // Container(
-                    //   padding: const EdgeInsets.only(top: 30, bottom: 40),
-                    //   color: Colors.amber,
-                    //   child: const Center(
-                    //     child: Text('You have fetched all of the content'),
-                    //   ),
-                    // ),
-                  ])
-            ]),
+          // When nothing else to load
+          // if (_hasNextPage == false)
+          // Container(
+          //   padding: const EdgeInsets.only(top: 30, bottom: 40),
+          //   color: Colors.amber,
+          //   child: const Center(
+          //     child: Text('You have fetched all of the content'),
+          //   ),
+          // ),
+        ])
+      ]),
       bottomNavigationBar: const Footers().getMainBottomNav(context),
     ));
   }

@@ -45,13 +45,9 @@ class _MyImagesViewState extends State<MyImagesView> {
   @override
   Widget build(BuildContext context) {
     print("build()");    
-    return MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          colorSchemeSeed: Colors.green[700],
-        ),
-        home: Scaffold(
-          appBar: Headers().getBackHeader(context),
+    return Scaffold(
+        
+          appBar: Headers().getBackHeader(context, "My Images"),
           body: _isLoading
               ? Text("Loading...")
               : Center(
@@ -72,7 +68,7 @@ class _MyImagesViewState extends State<MyImagesView> {
                               )),
                   
                 ])),
-        ));
+        );
   }
 }
 
