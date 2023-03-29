@@ -20,7 +20,8 @@
         }
       },
       "auth": {
-        "soccerapp": {}
+        "soccerapp": {},
+        "SoccerApp": {}
       },
       "api": {
         "api": {}
