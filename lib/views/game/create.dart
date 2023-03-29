@@ -13,6 +13,8 @@ import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
 import '../../views/home.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
 
 class GameCreate extends StatefulWidget {
   @override
@@ -29,6 +31,8 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final locationController = TextEditingController();
+  DateTime startTime = "";
+  DateTime endTime = "";
   Coordinates coordinates = new Coordinates(0, 0);
   final imagesController = TextEditingController();
 
@@ -46,6 +50,18 @@ class _GameCreateState extends State<GameCreate> {
     coordinates.latitude;
     coordinates.longitude;
     // LocationCommand().translateAddressToLocation(location);
+  }
+
+  void setStartTime(DateTime time) {
+    setState(() {
+      startTime = time;
+    });
+  }
+
+  void setEndTime(DateTime time) {
+    setState(() {
+      endTime = time;
+    });
   }
 
   Future<void> createPickupGame() async {
@@ -163,6 +179,38 @@ class _GameCreateState extends State<GameCreate> {
           controller: imagesController,
           decoration: new InputDecoration.collapsed(hintText: 'Images'),
         ),
+        TextButton(
+    onPressed: () {
+        DatePicker.showDatePicker(context,
+                              showTitleActions: true,
+                              minTime: DateTime(2018, 3, 5),
+                              maxTime: DateTime(2019, 6, 7), onChanged: (date) {
+                            print('change $date');
+                          }, onConfirm: (date) {
+                            print('confirm $date');
+                            setStartTime(date)
+                          }, currentTime: DateTime.now(), locale: LocaleType.en);
+    },
+    child: Text(
+        'start time',
+        style: TextStyle(color: Colors.blue),
+    )),
+        TextButton(
+    onPressed: () {
+        DatePicker.showDatePicker(context,
+                              showTitleActions: true,
+                              minTime: DateTime(2018, 3, 5),
+                              maxTime: DateTime(2019, 6, 7), onChanged: (date) {
+                            print('change $date');
+                          }, onConfirm: (date) {
+                            print('confirm $date');
+                            setEndTime(date)
+                          }, currentTime: DateTime.now(), locale: LocaleType.en);
+    },
+    child: Text(
+        'end time',
+        style: TextStyle(color: Colors.blue),
+    )),
         GestureDetector(
             onTap: () {
               createPickupGame();

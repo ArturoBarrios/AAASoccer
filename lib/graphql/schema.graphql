@@ -285,6 +285,8 @@ type Event   {
   wager: [Wager] @relation  
   archived: Boolean  @default(value: false)
   deleted: Boolean  @default(value: false)
+  startTime: String
+  endTime: String
 }
 
 type Team   {
