@@ -1,7 +1,24 @@
-class EventFragments{
+class EventFragments {
+  String eventGameFragment() {
+    String eventGame = r'''
+      _id
+                  archived
+                  deleted
+                  name
+                  isMainEvent
+                  type
+                  games{
+                    data{
+                      _id
+                      pickup
+                    }
+                  }
+     ''';
+    return eventGame;
+  }
 
-  String fullEvent(){
-     String fullEventReturn = r'''
+  String fullEvent() {
+    String fullEventReturn = r'''
        name        	
                   _id  
                   type                  
@@ -42,6 +59,5 @@ class EventFragments{
     ''';
 
     return fullEventReturn;
-
   }
 }

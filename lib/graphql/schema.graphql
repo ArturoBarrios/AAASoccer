@@ -7,9 +7,11 @@ type Query {
   allTournaments: [Tournament!]  
   allUsers: [User!]
   allPlayers: [Player!]
+  allRequests: [Request!]
   allTeams: [Team!]
   getUser(email: String): User  
   AllGamesByID(ids: [ID]):[ID] @resolver
+  AllEventsByID(ids: [ID]):[ID] @resolver
 }
 
 

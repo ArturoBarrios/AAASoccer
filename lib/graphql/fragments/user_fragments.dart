@@ -1,6 +1,7 @@
 import 'chat_fragments.dart';
 import 'image_fragments.dart';
 import 'request_fragments.dart';
+import 'event_fragments.dart';
 
 class UserFragments{
 
@@ -26,25 +27,7 @@ class UserFragments{
               }
               events{
                 data{
-                  _id
-                  archived
-                  deleted
-                  name
-                  isMainEvent
-                  type
-                  location{
-                    data{
-                      _id
-                      latitude
-                      longitude
-                    }
-                  }
-                  games{
-                    data{
-                      _id
-                      pickup
-                    }
-                  }
+                  ${EventFragments().eventGameFragment()}               
 
                 }                
               }
@@ -125,19 +108,7 @@ class UserFragments{
               }
               events{
                 data{
-                  _id
-                  archived
-                  deleted
-                  name
-                  isMainEvent
-                  type
-                  games{
-                    data{
-                      _id
-                      pickup
-                    }
-                  }
-
+                  ${EventFragments().fullEvent()}               
                 }                
               }
               stripeCustomers{

@@ -197,23 +197,39 @@ class UserMutations {
     return addTeamString;
   }
 
-  String removeFriend(
-      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
-    String removeGameString = """      
-      mutation {
-        deleteUserLink(id: "${friendInput['user']['_id']}",         
+  // String removeFriend(
+  //     Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
+  //   String removeGameString = """      
+  //     mutation {
+  //       deleteUserLink(id: "${friendInput['user']['_id']}",         
           
           
-          ) {
-             _id
+  //         ) {
+  //            _id
              
 
             
-          }   
+  //         }   
+  //       }
+  //       """;
+
+  //   return removeGameString;
+  // }
+
+   String removeFriend(
+      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
+    String addFriendString = """      
+      mutation {
+        deleteUser(id: "${friendInput['user']['_id']}") {
+          _id
+          name
+          email
+          OSPID
         }
+      }
         """;
 
-    return removeGameString;
+    return addFriendString;
   }
 
   String removeGame(

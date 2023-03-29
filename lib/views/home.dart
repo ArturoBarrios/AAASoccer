@@ -278,8 +278,7 @@ class _Home extends State<Home> {
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.MYEVENTS) {
       print("testing EventType.GAME===Game.type ");
-      print(
-          EventType.GAME.name.toString() == selectedObject['type'].toString());
+      print(EventType.GAME.name.toString() == selectedObject['type'].toString());
       if (selectedObject['type'].toString() == EventType.GAME.name.toString()) {
         //get game object first
         dynamic gameObject = selectedObject['games']['data'][0];
@@ -316,20 +315,15 @@ class _Home extends State<Home> {
 
     context.select<EventsModel, List<dynamic>>((value) => value.games);
 
+    context.select<AppModel, List<dynamic>>((value) => value.myEvents);
+
     context.select<AppModel, List<dynamic>>((value) => value.teams);
 
     HomePageModel().enabledSelections2.forEach((k, v) => {
           context.select<HomePageModel, bool>(
               (value) => value.enabledSelections2[k]['enabled'])
         });
-
-    Map<String, dynamic> createEventTypes = HomePageModel().createEventTypes;
-
-    String testText =
-        context.select<HomePageModel, String>((value) => value.testText);
-
-    //events
-    List games = context.select<EventsModel, List>((value) => value.games);
+    
 
     print("selectedKey in build: " + selectedKey);
 
