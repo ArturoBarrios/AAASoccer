@@ -15,7 +15,8 @@ class RequestFragments {
             sender{                            
               _id
               email
-              name              
+              name    
+              phone          
             }   
             acceptedBy{              
                 _id
@@ -24,7 +25,12 @@ class RequestFragments {
             }                                  
             event{              
                 _id
-                name              
+                name  
+                games{
+                  data{
+                    _id                   
+                  }
+                }            
             }                				                          
     ''';
 

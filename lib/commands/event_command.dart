@@ -197,7 +197,7 @@ class EventCommand extends BaseCommand {
     return findEventsNearPointResp;
   }
 
-  
+
 
   
 
@@ -306,16 +306,16 @@ class EventCommand extends BaseCommand {
 
 
 
-  Future<Map<String, dynamic>> getEvent(
+  Future<Map<String, dynamic>> getEventGame(
       Map<String, dynamic> eventRequest) async {
-    print("getEvent()");
+    print("getGameEvent()");
+    print("eventRequest: " + eventRequest.toString());
     Map<String, dynamic> getEventResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
-    //get event
-    if (eventRequest['event']['EventType'] == EventType.GAME) {
+    
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -323,10 +323,18 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': GameQueries().getGame(eventRequest['game_id']),
+          'query': GameQueries().getEventGame(eventRequest['_id']),
         }),
       );
-    }
+
+      print("response: "+ response.body);
+      dynamic game = jsonDecode(response.body)['data']['findEventByID'];
+      print("game: " + game.toString());
+      
+      getEventResponse["success"] = true;
+      getEventResponse["message"] = "Event Found";
+      getEventResponse["data"] = game;
+    
 
     return getEventResponse;
   }
@@ -340,10 +348,18 @@ class EventCommand extends BaseCommand {
       "data": null
     };
     print("before getEvent");
-    dynamic event = getEvent(eventRequestInput['event']['_id']);
-    print("event: " + event.toString());
-    appModel.myEvents.add(event);
-    addEventToMyEventsResponse["success"] = true;
+    print("eventRequestInput: " + eventRequestInput.toString());
+    dynamic getEventGameResp = await getEventGame(eventRequestInput['event']);
+    print("getGameEventResp: " + getEventGameResp.toString());
+    if(getEventGameResp['success']){
+      dynamic eventGame = getEventGameResp['data'];
+      print("event: " + getEventGameResp.toString());
+      print("before appModel.myEvents: " + appModel.myEvents.toString());
+      appModel.myEvents.add(eventGame);
+      
+      print("after appModel.myEvents: " + appModel.myEvents.toString());
+      addEventToMyEventsResponse["success"] = true;
+    }
 
     return addEventToMyEventsResponse;
   }

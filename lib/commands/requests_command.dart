@@ -173,13 +173,13 @@ class RequestsCommand extends BaseCommand {
       
       //send notification to sender)
       //get sender information for push notification
-      Map<String, dynamic> findEventRequestResp = await findEventRequest(eventRequestInput);   
+      // Map<String, dynamic> findEventRequestResp = await findEventRequest(eventRequestInput);   
 
-      print("findEventRequestResp: " + findEventRequestResp.toString());  
-      if(findEventRequestResp['success'] == true){
+      // print("findEventRequestResp: " + findEventRequestResp.toString());  
+      // if(findEventRequestResp['success'] == true){
         // prepare notification data
         print("prepare notification data");
-        Map<String, dynamic> sender = findEventRequestResp['data']['sender'];
+        Map<String, dynamic> sender = eventRequestInput['sender'];
         print("sender: "+ sender.toString());
         List<String> phones = [sender['phone']];
         List<String> OSPIDs = [sender['OSPID']];
@@ -189,7 +189,7 @@ class RequestsCommand extends BaseCommand {
           "OSPIDs": OSPIDs
         };
         await NotificationsCommand().sendAcceptedRequestNotification(sendOrganizerRequestNotificationInput);
-      } 
+      // }  
 
 
       //todo 
