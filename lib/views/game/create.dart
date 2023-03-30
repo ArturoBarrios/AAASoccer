@@ -31,8 +31,8 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final locationController = TextEditingController();
-  DateTime startTime = "";
-  DateTime endTime = "";
+  DateTime startTime = new DateTime.now();
+  DateTime endTime = new DateTime.now();
   Coordinates coordinates = new Coordinates(0, 0);
   final imagesController = TextEditingController();
 
@@ -188,7 +188,7 @@ class _GameCreateState extends State<GameCreate> {
                             print('change $date');
                           }, onConfirm: (date) {
                             print('confirm $date');
-                            setStartTime(date)
+                            setStartTime(date);
                           }, currentTime: DateTime.now(), locale: LocaleType.en);
     },
     child: Text(
@@ -196,21 +196,19 @@ class _GameCreateState extends State<GameCreate> {
         style: TextStyle(color: Colors.blue),
     )),
         TextButton(
-    onPressed: () {
-        DatePicker.showDatePicker(context,
-                              showTitleActions: true,
-                              minTime: DateTime(2018, 3, 5),
-                              maxTime: DateTime(2019, 6, 7), onChanged: (date) {
-                            print('change $date');
-                          }, onConfirm: (date) {
-                            print('confirm $date');
-                            setEndTime(date)
-                          }, currentTime: DateTime.now(), locale: LocaleType.en);
-    },
-    child: Text(
-        'end time',
-        style: TextStyle(color: Colors.blue),
-    )),
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context, showTitleActions: true,
+                      onChanged: (date) {
+                    print('change $date in time zone ' +
+                        date.timeZoneOffset.inHours.toString());
+                  }, onConfirm: (date) {
+                    print('confirm $date');
+                  }, currentTime: DateTime(2023, 3, 29, 12, 0, 0));
+                },
+                child: Text(
+                  'show date time picker (English-America)',
+                  style: TextStyle(color: Colors.blue),
+                )),
         GestureDetector(
             onTap: () {
               createPickupGame();

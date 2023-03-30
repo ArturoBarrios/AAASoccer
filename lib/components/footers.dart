@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:soccermadeeasy/views/request/view.dart';
 import '../components/profile.dart';
 import '../views/game/create.dart';
 import '../views/tournament/create.dart';
@@ -151,13 +152,13 @@ BottomAppBar getMainBottomNav(BuildContext context){
                     ));
                   }),
               IconBottomBar(
-                  text: "Friends",
-                  icon: Icons.history,
+                  text: "Requests",
+                  icon: Icons.notifications_active_rounded,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return History();
+                        return RequestsView();
                       },
                     ));
                   })

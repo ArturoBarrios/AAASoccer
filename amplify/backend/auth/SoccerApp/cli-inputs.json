@@ -8,10 +8,9 @@
     "autoVerifiedAttributes": [
       "phone_number"
     ],
-    "mfaConfiguration": "ON",
+    "mfaConfiguration": "OPTIONAL",
     "mfaTypes": [
-      "SMS Text Message",
-      "TOTP"
+      "SMS Text Message"
     ],
     "smsAuthenticationMessage": "Your login code is {####}",
     "smsVerificationMessage": "Verification code: {####}",

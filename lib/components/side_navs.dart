@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/history.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
 import '../components/profile.dart';
 import '../views/chats/view.dart';
@@ -99,6 +100,19 @@ class SideNavs extends StatefulWidget {
                   Navigator.push(context, MaterialPageRoute<void>(
                     builder: (BuildContext context) {
                       return MyImagesView();
+                    },
+                  ));
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.history,
+                ),
+                title: const Text('History'),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
+                      return History();
                     },
                   ));
                 },
