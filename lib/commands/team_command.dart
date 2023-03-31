@@ -6,6 +6,7 @@ import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/teams.dart';
+import '../graphql/mutations/requests.dart';
 import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/geolocation_command.dart';
@@ -53,10 +54,16 @@ class TeamCommand extends BaseCommand {
 
   }    
 
-Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
+Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput, String role  ) async{
     print("sendTeamRequest");
     Map<String, dynamic> sendTeamRequestResponse = {"success": false, "message": "Default Error", "data": null};
-    try {          
+    try {         
+      Map<String, dynamic> sendOrganizerTeamRequestInput = {
+        "sender_id": appModel.currentUser['_id'],
+        "event_id": teamInput['_id'],        
+        "forRole": role,
+        "type": Constants.TEAMREQUEST.toString()
+      }; 
       teamInput["sender_id"] = appModel.currentUser['_id'];  
              
       print("teamRequestInput");
@@ -65,33 +72,35 @@ Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
       //possible solution for creating EventRequest
         //create string with _ids and syntax and call in 
         //tos
-      dynamic teamUserOrganizers = teamInput['teamUserOrganizers']['users']['data'];                 
+      dynamic userParticipants = teamInput['teamParticipants']['data'];                 
+      print("teamParticipants");
       String organizersString = "";
       print("get OSPIDs");
       //populate list with onesignal player ids
       List<String> OSPIDs = [];
       List<String> phones = [];
-      for (var i = 0; i < teamUserOrganizers.length; i++) {        
-        String toUserId = teamUserOrganizers[i]['_id'];
-        Map<String, dynamic> organizerUserInput = {
-          "_id": toUserId
-        };
-
-        Map<String, dynamic> getUserResp = await UserCommand().findUserById(organizerUserInput);
-        print("in for getUserResp: ");
-        print(getUserResp);
-        if(getUserResp["success"] == true){
-          Map<String,dynamic> user = getUserResp["data"];
-          print("user: "+user.toString());
-          if(user!=null){//it shouldn't be null here, risk for bug
-            OSPIDs.add(user['OSPID']);
-            phones.add(user['phone']);
-          }
+      for (var i = 0; i < userParticipants.length; i++) {        
+        String toUserId = userParticipants[i]['_id'];
+        List<String> roles = BaseCommand().parseWords(userParticipants[i]['roles']);
+        print("roles: "+roles.toString());
+        if(roles.contains("ORGANIZER")){
+          organizersString += toUserId + ",";
+          Map<String, dynamic> organizerUserInput = {"_id": toUserId};
+          Map<String, dynamic> getUserResp = await UserCommand().findUserById(organizerUserInput);
+          print("in for getUserResp: ");
+          print(getUserResp);
+          if(getUserResp["success"] == true){
+            Map<String,dynamic> user = getUserResp["data"];
+            print("user: "+user.toString());
+            if(user!=null){//it shouldn't be null here, risk for bug
+              OSPIDs.add(user['OSPID']);
+              phones.add(user['phone']);
+            }
+          }          
         }
-
-        organizersString = organizersString + toUserId + ",";        
-        //send onesignal notification
       }
+      sendOrganizerTeamRequestInput['receivers'] = organizersString;
+      
       print("organizersString");
       print(organizersString);
       print("time to goooo");
@@ -103,13 +112,15 @@ Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput  ) async{
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': TeamMutations().sendTeamRequest(teamInput, organizersString, organizersString),//(fromInput, toInputs, gameInput),
+          'query': RequestMutations().sendTeamRequest(sendOrganizerTeamRequestInput)
         }),
       );
     
       print("response body: ");
       print(jsonDecode(response.body));
-            
+
+      dynamic createTeamRequest = jsonDecode(response.body)['data']['createTeamRequest'];
+                  
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
         "message": appModel.currentUser['name'] + " has sent you a request to join teamk",

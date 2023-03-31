@@ -29,9 +29,7 @@ class _TeamCreateState extends State<TeamCreate> {
       "success": false,
       "message": "Default Error"
     };
-    try {
-      Map<String, dynamic> randomPickupData = TeamSeeder().getRandomTeamData();      
-      Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+    try {      
       Map<String, dynamic> locationInput = {
         "latitude": AppModel().currentPosition.latitude,
         "longitude": AppModel().currentPosition.longitude,
