@@ -166,10 +166,10 @@ class _MyAppState extends State<MyApp> {
     print("configureAmplifyResp: ");
     print(configureAmplifyResp);
      
-    //  if (configureAmplifyResp['message'] == "isSignedIn") {
-      // emailController.text = configureAmplifyResp['email'];      
+     if (configureAmplifyResp['message'] == "isSignedIn") {
+      emailController.text = configureAmplifyResp['email'];      
       await startLoadToHomeTransition();   
-    // }    
+    }    
   }
 
   Future configureGraphQL() async{
@@ -248,9 +248,9 @@ class _MyAppState extends State<MyApp> {
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);      
       //should probably make sure you're actually signed in
       //assumes you are atm
-
       UserModel().userEmail = emailController.text.trim();
       await startLoadToHomeTransition();
+
       setState(() {});
     } on AuthException catch (e) {
       print("SigninException: ");

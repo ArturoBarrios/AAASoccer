@@ -75,6 +75,8 @@ class GameMutations {
               type: GAME,
               archived: false,
               isMainEvent: ${eventInput['isMainEvent']},
+              startTime: "${eventInput['startTime']}",
+              endTime: "${eventInput['endTime']}",
               userParticipants: {
                 create:
                   {

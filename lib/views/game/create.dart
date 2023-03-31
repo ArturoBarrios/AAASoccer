@@ -13,6 +13,8 @@ import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
 import '../../views/home.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
 
 class GameCreate extends StatefulWidget {
   @override
@@ -29,6 +31,10 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final locationController = TextEditingController();
+  DateTime startTime = new DateTime.now();
+  DateTime endTime = new DateTime.now();
+  String startTimestamp = "";
+  String endTimestamp = "";
   Coordinates coordinates = new Coordinates(0, 0);
   final imagesController = TextEditingController();
 
@@ -48,6 +54,24 @@ class _GameCreateState extends State<GameCreate> {
     // LocationCommand().translateAddressToLocation(location);
   }
 
+  void setStartTime(DateTime time) {
+    setState(() {
+      startTime = time;
+      startTimestamp = time.millisecondsSinceEpoch.toString();
+      print("setStartTime: " + time.toString());
+      print("setStartTime: " + startTimestamp.toString());
+    });
+  }
+
+  void setEndTime(DateTime time) {
+    setState(() {
+      endTime = time;
+      endTimestamp = time.millisecondsSinceEpoch.toString();
+      print("setEndTime: " + time.toString());
+      print("setEndTime: " + endTimestamp.toString());
+    });
+  }
+
   Future<void> createPickupGame() async {
     print("createGame");
     Map<String, dynamic> createPickupGameResponse = {
@@ -60,7 +84,9 @@ class _GameCreateState extends State<GameCreate> {
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
         'isMainEvent': true,
-        'price': int.parse(priceController.text.toString())
+        'price': int.parse(priceController.text.toString()),
+        'startTime': startTimestamp,
+        'endTime': endTimestamp,
       };
 
       Map<String, dynamic> randomPickupData =
@@ -163,6 +189,36 @@ class _GameCreateState extends State<GameCreate> {
           controller: imagesController,
           decoration: new InputDecoration.collapsed(hintText: 'Images'),
         ),
+        TextButton(
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context, showTitleActions: true,
+                      onChanged: (date) {
+                    print('change $date in time zone ' +
+                        date.timeZoneOffset.inHours.toString());
+                  }, onConfirm: (date) {
+                    print('confirm $date');
+                    setStartTime(date);
+                  }, currentTime: DateTime(2023, 3, 29, 12, 0, 0));
+                },
+                child: Text(
+                  'show date time picker',
+                  style: TextStyle(color: Colors.blue),
+                )),
+        TextButton(
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context, showTitleActions: true,
+                      onChanged: (date) {
+                    print('change $date in time zone ' +
+                        date.timeZoneOffset.inHours.toString());
+                  }, onConfirm: (date) {
+                    print('confirm $date');
+                    setEndTime(date);
+                  }, currentTime: DateTime(2023, 3, 29, 12, 0, 0));
+                },
+                child: Text(
+                  'show date time picker',
+                  style: TextStyle(color: Colors.blue),
+                )),
         GestureDetector(
             onTap: () {
               createPickupGame();

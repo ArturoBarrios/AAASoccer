@@ -70,6 +70,7 @@ dependencies:
   dots_indicator: ^2.1.0
   introduction_screen: ^3.1.6
   geocoder: ^0.2.1
+  flutter_datetime_picker: ^1.5.1
   
 
   

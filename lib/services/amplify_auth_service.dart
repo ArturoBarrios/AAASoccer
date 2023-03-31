@@ -125,6 +125,8 @@ class AmplifyAuthService {
       password: passwordController.text.trim(),
     );
 
+    print("signIn res: " + res.toString());
+
     //
 
     return res;
