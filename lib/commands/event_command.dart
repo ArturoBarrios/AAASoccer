@@ -588,6 +588,8 @@ class EventCommand extends BaseCommand {
       List<dynamic> players = getPlayersNearLocationResp['data'];
       print("players: ");
       print(players);
+      //remove the current user from the list
+      players.removeWhere((element) => element['_id'] == user['_id']);
       appModel.players = players;
       appModel.playersNearMe = players;
     }
