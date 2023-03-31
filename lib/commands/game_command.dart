@@ -88,7 +88,7 @@ class GameCommand extends BaseCommand {
     return filteredEventsResp;
   } 
 
-//create
+  //create
   Future<Map<String, dynamic>> createGame(
       Map<String, dynamic> gameInput,
       Map<String, dynamic> eventInput,
@@ -128,20 +128,20 @@ class GameCommand extends BaseCommand {
             jsonDecode(response.body)['data']['createGame'];
         await EventCommand().addGame(createdGame, true);
         eventInput['_id'] = createdGame['event']['_id'];
-    //todo add error handling here, if game is not created, dont create price, etc
-      Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
-      print("create price event input: "+ eventInput.toString());
-      print("create price input: " + paymentInput['price'].toString());
-      Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
-      print("createPaymentResp: "+createPriceResp.toString());
+        //todo add error handling here, if game is not created, dont create price, etc
+        Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+        print("create price event input: "+ eventInput.toString());
+        print("create price input: " + paymentInput['price'].toString());
+        Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
+        print("createPaymentResp: "+createPriceResp.toString());
 
-        createGameResponse["success"] = true;
-        createGameResponse["message"] = "Game Created";
-        createGameResponse["data"] =
-        jsonDecode(response.body)['data']['createGame'];
+          createGameResponse["success"] = true;
+          createGameResponse["message"] = "Game Created";
+          createGameResponse["data"] =
+          jsonDecode(response.body)['data']['createGame'];
 
-      // }
-        return createGameResponse;
+        // }
+          return createGameResponse;
       
 
 

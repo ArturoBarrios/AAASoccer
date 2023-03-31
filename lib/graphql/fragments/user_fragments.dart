@@ -25,6 +25,15 @@ class UserFragments{
                 latitude
                 longitude
               }
+              eventUserParticipants{
+                data{
+                  _id
+                  event{
+                    ${EventFragments().eventGameFragment()}  
+                  }
+                  roles
+                }
+              }
               events{
                 data{
                   ${EventFragments().eventGameFragment()}               

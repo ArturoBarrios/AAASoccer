@@ -605,7 +605,7 @@ class EventCommand extends BaseCommand {
     print("friends: ");
     print(appModel.currentUser['friends']['data']);
     appModel.friends = appModel.currentUser['friends']['data'];
-    appModel.myEvents = appModel.currentUser['events']['data'];
+    appModel.myEvents = appModel.currentUser['eventUserParticipants']['data'];
 
     return setupEventsResp;
   }

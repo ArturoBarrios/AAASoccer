@@ -33,6 +33,8 @@ class _GameCreateState extends State<GameCreate> {
   final locationController = TextEditingController();
   DateTime startTime = new DateTime.now();
   DateTime endTime = new DateTime.now();
+  String startTimestamp = "";
+  String endTimestamp = "";
   Coordinates coordinates = new Coordinates(0, 0);
   final imagesController = TextEditingController();
 
@@ -55,12 +57,18 @@ class _GameCreateState extends State<GameCreate> {
   void setStartTime(DateTime time) {
     setState(() {
       startTime = time;
+      startTimestamp = time.millisecondsSinceEpoch.toString();
+      print("setStartTime: " + time.toString());
+      print("setStartTime: " + startTimestamp.toString());
     });
   }
 
   void setEndTime(DateTime time) {
     setState(() {
       endTime = time;
+      endTimestamp = time.millisecondsSinceEpoch.toString();
+      print("setEndTime: " + time.toString());
+      print("setEndTime: " + endTimestamp.toString());
     });
   }
 
@@ -76,7 +84,9 @@ class _GameCreateState extends State<GameCreate> {
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
         'isMainEvent': true,
-        'price': int.parse(priceController.text.toString())
+        'price': int.parse(priceController.text.toString()),
+        'startTime': startTimestamp,
+        'endTime': endTimestamp,
       };
 
       Map<String, dynamic> randomPickupData =
@@ -180,21 +190,20 @@ class _GameCreateState extends State<GameCreate> {
           decoration: new InputDecoration.collapsed(hintText: 'Images'),
         ),
         TextButton(
-    onPressed: () {
-        DatePicker.showDatePicker(context,
-                              showTitleActions: true,
-                              minTime: DateTime(2018, 3, 5),
-                              maxTime: DateTime(2019, 6, 7), onChanged: (date) {
-                            print('change $date');
-                          }, onConfirm: (date) {
-                            print('confirm $date');
-                            setStartTime(date);
-                          }, currentTime: DateTime.now(), locale: LocaleType.en);
-    },
-    child: Text(
-        'start time',
-        style: TextStyle(color: Colors.blue),
-    )),
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context, showTitleActions: true,
+                      onChanged: (date) {
+                    print('change $date in time zone ' +
+                        date.timeZoneOffset.inHours.toString());
+                  }, onConfirm: (date) {
+                    print('confirm $date');
+                    setStartTime(date);
+                  }, currentTime: DateTime(2023, 3, 29, 12, 0, 0));
+                },
+                child: Text(
+                  'show date time picker',
+                  style: TextStyle(color: Colors.blue),
+                )),
         TextButton(
                 onPressed: () {
                   DatePicker.showDateTimePicker(context, showTitleActions: true,
@@ -203,10 +212,11 @@ class _GameCreateState extends State<GameCreate> {
                         date.timeZoneOffset.inHours.toString());
                   }, onConfirm: (date) {
                     print('confirm $date');
+                    setEndTime(date);
                   }, currentTime: DateTime(2023, 3, 29, 12, 0, 0));
                 },
                 child: Text(
-                  'show date time picker (English-America)',
+                  'show date time picker',
                   style: TextStyle(color: Colors.blue),
                 )),
         GestureDetector(

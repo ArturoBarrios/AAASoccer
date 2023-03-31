@@ -184,6 +184,7 @@ type User  {
   last_updated: Int
   images: [Image] @relation
   events: [Event] @relation      
+  eventUserParticipants: [EventUserParticipant] @relation   
   eventUserOrganizers: [EventUserOrganizers] @relation   
   teamUserOrganizers: [TeamUserOrganizers] @relation  
   # eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
