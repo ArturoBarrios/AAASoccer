@@ -260,7 +260,7 @@ class _Home extends State<Home> {
       card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
-      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage);
+      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, isMyEvent: false);
     } else if (selectedKey == Constants.TOURNAMENT) {
       //process tournament data for card
       TournamentCommand().currateTournamentData(selectedObject);

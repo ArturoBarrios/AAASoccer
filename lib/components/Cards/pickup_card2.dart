@@ -189,24 +189,6 @@ class _PickupCard2 extends State<PickupCard2> {
                     ) : 
                     Text("Join Game")
                     ,
-            // GestureDetector(
-            //   onTap: () {
-            //     //send event request
-            //     // print("send event request");
-            //     // EventCommand().sendOrganizerEventRequest(widget.eventObject);                
-            //   },
-            //   child: Container(
-            //     child: ClipRRect(
-            //       borderRadius: BorderRadius.circular(20.0),
-            //       child: Image(
-            //         width: 20,
-            //         height: 20,
-            //         image: SVGWidgets().plusCircleOutline(),
-            //         color: Colors.white,
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ])),
     ));
   }

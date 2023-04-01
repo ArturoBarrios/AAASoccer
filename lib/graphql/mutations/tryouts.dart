@@ -1,3 +1,5 @@
+import '../fragments/event_fragments.dart';
+
 class TryoutMutations{
   String createTryout(Map<String, dynamic> tryoutInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
     String createTryout = """
@@ -10,16 +12,17 @@ class TryoutMutations{
               type: TRAINING,
               archived: false,
               isMainEvent:true,
-              eventUserOrganizers: {
+              userParticipants: {
                 create:
                   {
-                    users: {
-                      connect:[                        
-                          "${userInput['_id']}"                   
-                      ]
-                    }                    
+                    user: {
+                      connect:                   
+                          "${userInput['_id']}"    
+                      }                                         
+                      roles: "{ORGANIZER, PLAYER}"
+                                       
                   }                                     
-              },                    
+              },              
               location: {
                 create: 
                 {
@@ -30,45 +33,12 @@ class TryoutMutations{
             }
           }
         }) {
-            _id                       
-           event{
-                  name        	
-                  _id  
-                  type                  
-                  archived
-                  deleted    
-                  price{                    
-                    _id
-                    amount
-                    event{
-                      _id
-                      name                      
-                    }
-                  }
-                  location{
-                    data{
-                    _id
-                    latitude
-                    longitude
-                    }
-                  }
-                  eventUserOrganizers{                    
-                      users{
-                        data{
-                          _id
-                          name
-                        }
-                      }    
-                      event{                        
-                          _id
-                          name  
-                          archived
-                          deleted                      
-                      }                
-                    }
-                }
-          }   
-        }
+          _id
+          event{
+            ${EventFragments().fullEvent()}
+          }
+        }   
+      }
         """;
 
     return createTryout;

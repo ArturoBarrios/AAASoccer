@@ -236,7 +236,7 @@ class EventCommand extends BaseCommand {
       List<String> OSPIDs = [];
       List<String> phones = [];
       for (var i = 0; i < userParticipants.length; i++) {
-        String toUserId = userParticipants[i]['_id'];
+        String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles = BaseCommand().parseWords(userParticipants[i]['roles']);
         print("roles: " + roles.toString());
         if(roles.contains("ORGANIZER")){
@@ -626,8 +626,29 @@ class EventCommand extends BaseCommand {
     print("length of homePageModel selectedObjects: ");
     // homePageModel.selectedObjects = [];
     homePageModel.selectedObjects = List.from(eventsModel.games);
-
+    if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){
+      homePageModel.selectedObjects = List.from(eventsModel.games);
+    }
     return updateViewModelsWithGameResp;
+  }
+  
+  Future<Map<String, dynamic>> updateViewModelsWithTryout(
+      Map<String, dynamic> game) async {
+    print("updateViewModelsWithTryout()");
+    Map<String, dynamic> updateViewModelsWithTryoutResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of events modeL tryouts: ");
+    print(eventsModel.tryouts.length);
+    print("length of homePageModel selectedObjects: ");
+    // homePageModel.selectedObjects = [];
+    if(homePageModel.selectedKey.toString() == Constants.TRYOUT.toString()){
+      homePageModel.selectedObjects = List.from(eventsModel.tryouts);
+    }
+
+    return updateViewModelsWithTryoutResp;
   }
 
   Future<Map<String, dynamic>> archiveGame(
@@ -676,6 +697,26 @@ class EventCommand extends BaseCommand {
     if (updateViewModelsBool) await updateViewModelsWithGame(game);
 
     return addGameResp;
+  }
+  
+  Future<Map<String, dynamic>> addTryout(
+      Map<String, dynamic> tryout, bool updateViewModelsBool) async {
+    print("addTryout()");
+    Map<String, dynamic> addTryoutResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of games before adding tryout: ");
+    print(eventsModel.tryouts.length);
+    eventsModel.tryouts.add(tryout);
+    print("length of tryouts after adding game: ");
+    print(eventsModel.tryouts.length);
+    print("updateViewModelsBool: ");
+    print(updateViewModelsBool);
+    if (updateViewModelsBool) await updateViewModelsWithTryout(tryout);
+
+    return addTryoutResp;
   }
 
   Future<Map<String, dynamic>> removeEvent(

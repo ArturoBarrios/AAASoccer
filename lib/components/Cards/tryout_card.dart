@@ -5,16 +5,17 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../models/app_model.dart';
-import '../../commands/user_command.dart';
+import '../../commands/event_command.dart';
 import '../../views/tryout/view.dart';
 
 class TryoutCard extends StatefulWidget {
   const TryoutCard(
-      {Key? key, required this.tryoutObject, required this.svgImage})
+      {Key? key, required this.tryoutObject, required this.svgImage, required this.isMyEvent})
       : super(key: key);
   final Map<String, dynamic> tryoutObject;
   final Svg svgImage;
   final double bevel = 10.0;
+  final bool isMyEvent;
 
   @override
   State<TryoutCard> createState() => _TryoutCard();
@@ -22,6 +23,12 @@ class TryoutCard extends StatefulWidget {
 
 void tryoutClicked() {
   print("Tryout Clicked");
+}
+
+Future<void> sendEventRequest(dynamic tryoutObject) async {  
+  print("send event request for event: :"+tryoutObject.toString());
+
+  await EventCommand().sendOrganizerEventRequest(tryoutObject, "PLAYER");                
 }
 
 
@@ -124,6 +131,17 @@ class _TryoutCard extends State<TryoutCard> {
                 ),
               ),
             ),
+            !widget.isMyEvent ? 
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      tooltip: 'Go to the next page',
+                      onPressed: () {
+                        //send event request
+                        sendEventRequest(widget.tryoutObject);              
+                      },
+                    ) : 
+                    Text("Join Game")
+                    ,
           ])),
     ));
   }
