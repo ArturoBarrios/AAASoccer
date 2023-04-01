@@ -7,6 +7,7 @@ import '../views/tournament/create.dart';
 import '../views/league/create.dart';
 import '../views/training/create.dart';
 import '../views/tryout/create.dart';
+import '../views/team/create/create.dart';
 import '../views/friends/view.dart';
 import '../commands/chat_command.dart';
 import '../components/history.dart';
@@ -23,6 +24,7 @@ BottomAppBar getMainBottomNav(BuildContext context){
   int selectIndex = 0;
   List pages = [
     "Pickup Game",
+    "Team",
     "Tournament",
     "League",
     "Training", 
@@ -47,25 +49,32 @@ BottomAppBar getMainBottomNav(BuildContext context){
       case 1:
         Navigator.push(context, MaterialPageRoute<void>(
           builder: (BuildContext context) {
-            return TournamentCreate();
+            return TeamCreate();            
           },
         ));
         break;
       case 2:
         Navigator.push(context, MaterialPageRoute<void>(
           builder: (BuildContext context) {
-            return LeagueCreate();
+            return TournamentCreate();
           },
         ));
         break;
       case 3:
         Navigator.push(context, MaterialPageRoute<void>(
           builder: (BuildContext context) {
-            return TrainingCreate();
+            return LeagueCreate();
           },
         ));
         break;
       case 4:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return TrainingCreate();
+          },
+        ));
+        break;
+      case 5:
         Navigator.push(context, MaterialPageRoute<void>(
           builder: (BuildContext context) {
             return TryoutCreate();
@@ -137,7 +146,7 @@ BottomAppBar getMainBottomNav(BuildContext context){
                     );
                     
                 print('selectIndex:$index');
-                goToPage(selectIndex);                
+                goToPage(index!);                
                   }
                   ),
               IconBottomBar(

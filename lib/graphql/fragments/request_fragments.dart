@@ -31,6 +31,10 @@ class RequestFragments {
                     _id                   
                   }
                 }            
+              }
+            team{
+              _id
+              name
             }                				                          
     ''';
 

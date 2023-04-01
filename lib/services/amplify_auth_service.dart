@@ -90,7 +90,7 @@ class AmplifyAuthService {
         String email = userAttributes[indexOfEmail].value;
         print("email");
         print(email);
-        UserModel().userEmail = 'a@a.com';        
+        UserModel().userEmail = email;        
         print("authSessionRes: "+authSessionRes.toString());
         print("amplify configured end of function!");
         configureAmplifyResp["success"] =  true;

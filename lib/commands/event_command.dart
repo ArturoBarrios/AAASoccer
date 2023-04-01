@@ -274,7 +274,7 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': RequestMutations().sendEventRequestV2(
+          'query': RequestMutations().sendEventRequest(
               sendOrganizerEventRequestInput), //(fromInput, toInputs, gameInput),
         }),
       );

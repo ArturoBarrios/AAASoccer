@@ -76,6 +76,7 @@ enum ModelType {
 enum UserAccountStatus{
   UNCOMFIRMED
   CONFIRMED
+  INACTIVE
   BANNED
 }
 
@@ -106,7 +107,10 @@ type Request {
   requestAttempts: Int
   fromOrganizer: Boolean
   event: Event
+  team: Team
   forRole: String
+  sentAt: Int
+  acceptedAt: Int
   
 }
 
@@ -233,6 +237,12 @@ type EventUserParticipant {
   roles: String
 }
 
+type TeamUserParticipant {
+  team: Team
+  user: User
+  roles: String
+}
+
 type TeamUserOrganizers {
   team: Team
   users: [User]! @relation
@@ -299,8 +309,11 @@ type Team   {
   sponsors: [Sponsor] @relation
   location: Location  
   teamUserOrganizers: TeamUserOrganizers
+  userParticipants: [TeamUserParticipant] @relation
   archived: Boolean
   deleted: Boolean
+  createdAt: Int
+  request: [Request] @relation
   
 }
 
@@ -326,6 +339,7 @@ type Payment   {
   id: ID!
   amount: String
   event: Event
+  paidAt: Int
 }
 
 # orgs can have many suborgs

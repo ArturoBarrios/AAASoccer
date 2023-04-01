@@ -1,7 +1,7 @@
 import '../fragments/request_fragments.dart';
 
 class RequestMutations {
-  String sendEventRequestV2(Map<String, dynamic> eventRequestInput
+  String sendEventRequest(Map<String, dynamic> eventRequestInput
     ) {
     String createEventRequest = """
       mutation {
@@ -9,12 +9,12 @@ class RequestMutations {
           data: {    
             status: PENDING,
             requestAttempts: 1,                                           
+            type: EVENTREQUEST,
             receivers: {
               connect: [
                 ${eventRequestInput['receivers']}
               ]
             }
-            type: EVENTREQUEST,
             sender: {
               connect: ${eventRequestInput['sender_id']}           
             },                                    
@@ -33,14 +33,14 @@ class RequestMutations {
     return createEventRequest;
   }
 
-  String updateRequest(Map<String, dynamic> eventRequestInput) {
+  String updateRequest(Map<String, dynamic> requestInput) {
     String updateRequest = """
       mutation {
-        updateRequest(id: ${eventRequestInput['_id']},
+        updateRequest(id: ${requestInput['_id']},
           data: {              
           status: ACCEPTED,
           acceptedBy: {
-           	connect: "${eventRequestInput['acceptedBy_id']}"           
+           	connect: "${requestInput['acceptedBy_id']}"           
           },                                                  
           }) {
               ${RequestFragments().fullRequest()}    				
@@ -51,5 +51,35 @@ class RequestMutations {
 
     return updateRequest;
   }
+
+
+  String sendTeamRequest(
+      Map<String, dynamic> teamRequestInput) {
+      String sendTeamRequestString = """
+      mutation {
+        createRequest(data: {    
+          status: PENDING,
+          requestAttempts: 1, 
+          type: TEAMREQUEST,         
+          receivers: {
+              connect: [
+                ${teamRequestInput['receivers']}
+              ]
+            }
+          sender: {
+            connect: "${teamRequestInput['sender_id']}"            
+          },  
+          team: {
+            connect: "${teamRequestInput['team_id']}"            
+          }   
+          forRole: "${teamRequestInput['forRole']}"                                        
+          }) {
+            ${RequestFragments().fullRequest()}        
+          }   
+        }
+        """;
+
+    return sendTeamRequestString;
+    }
 
 }
