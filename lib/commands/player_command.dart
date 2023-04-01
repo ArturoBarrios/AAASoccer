@@ -39,7 +39,7 @@ class PlayerCommand extends BaseCommand {
 
       final result = jsonDecode(response.body)['data']['allUsers']['data'];
       //remove the current user from the list
-      result.removeWhere((element) => element['id'] == AppModel().currentUser['id']);
+      result.removeWhere((element) => element['_id'] == appModel.currentUser['_id']);
       appModel.players = result;  
       
       getTrainingsNearLocationResp["success"] = true;

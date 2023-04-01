@@ -8,7 +8,19 @@ class TeamFragments {
               _id
               latitude
               longitude
-            }              				                          
+            }    
+            userParticipants{
+              data{
+                user{
+                  _id
+                  name
+                  email
+                  phone
+                }
+                roles
+              }
+            } 
+
     ''';
 
     return fullTeamReturn;

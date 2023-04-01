@@ -309,7 +309,7 @@ type Team   {
   sponsors: [Sponsor] @relation
   location: Location  
   teamUserOrganizers: TeamUserOrganizers
-  userParticipants: TeamUserParticipant
+  userParticipants: [TeamUserParticipant] @relation
   archived: Boolean
   deleted: Boolean
   createdAt: Int

@@ -313,7 +313,7 @@ class _MyAppState extends State<MyApp> {
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if(otherConfigurationResp['success']){
       /////////////////////////addback in when shortcode is ready
-      await BaseCommand().setupInitialAppModels('a@a.com');      
+      await BaseCommand().setupInitialAppModels(emailController.text.trim());      
       // await BaseCommand().setupInitialAppModels(emailController.text.trim());      
       BaseCommand().initialConditionsMet();
       print("initialConditionsMett");

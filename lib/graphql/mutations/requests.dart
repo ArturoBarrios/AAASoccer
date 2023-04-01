@@ -70,7 +70,7 @@ class RequestMutations {
             connect: "${teamRequestInput['sender_id']}"            
           },  
           team: {
-            connect: "${teamRequestInput['_id']}"            
+            connect: "${teamRequestInput['team_id']}"            
           }   
           forRole: "${teamRequestInput['forRole']}"                                        
           }) {

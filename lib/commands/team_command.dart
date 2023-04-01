@@ -54,13 +54,13 @@ class TeamCommand extends BaseCommand {
 
   }    
 
-Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput, String role  ) async{
+Future<Map<String, dynamic>> sendOrganizerTeamRequest(dynamic teamInput, String role  ) async{
     print("sendTeamRequest");
     Map<String, dynamic> sendTeamRequestResponse = {"success": false, "message": "Default Error", "data": null};
     try {         
       Map<String, dynamic> sendOrganizerTeamRequestInput = {
         "sender_id": appModel.currentUser['_id'],
-        "event_id": teamInput['_id'],        
+        "team_id": teamInput['_id'],        
         "forRole": role,
         "type": Constants.TEAMREQUEST.toString()
       }; 
@@ -72,15 +72,16 @@ Future<Map<String, dynamic>> sendTeamRequest(dynamic teamInput, String role  ) a
       //possible solution for creating EventRequest
         //create string with _ids and syntax and call in 
         //tos
-      dynamic userParticipants = teamInput['teamParticipants']['data'];                 
+      dynamic userParticipants = teamInput['userParticipants']['data'];                 
       print("teamParticipants");
+      print(userParticipants);
       String organizersString = "";
       print("get OSPIDs");
       //populate list with onesignal player ids
       List<String> OSPIDs = [];
       List<String> phones = [];
       for (var i = 0; i < userParticipants.length; i++) {        
-        String toUserId = userParticipants[i]['_id'];
+        String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles = BaseCommand().parseWords(userParticipants[i]['roles']);
         print("roles: "+roles.toString());
         if(roles.contains("ORGANIZER")){

@@ -119,7 +119,7 @@ class RequestsCommand extends BaseCommand {
   }
 
   //eventRequestInput is basically Game, Tournament, League, Training, with attached event
-  Future<Map<String, dynamic>> updateEventRequests(Map<String, dynamic> eventRequestInput  ) async{
+  Future<Map<String, dynamic>> updateEventRequests(Map<String, dynamic> eventRequestInput) async{
     print("updateEventRequest");
     Map<String, dynamic> updateEventRequestResponse = {"success": false, "message": "Default Error", "data": null};
     try {         
@@ -205,6 +205,7 @@ class RequestsCommand extends BaseCommand {
 
   Future<Map<String, dynamic>> updateTeamRequests(Map<String, dynamic> teamRequestInput  ) async{
     print("updateTeamRequests");
+    print("teamRequestInput: " + teamRequestInput.toString());
     Map<String, dynamic> updateTeamRequestsResponse = {"success": false, "message": "Default Error", "data": null};
     try {         
       print("user id before updateTeamRequests: ");
@@ -220,38 +221,41 @@ class RequestsCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': TeamMutations().updateTeamRequest(teamRequestInput),//(fromInput, toInputs, gameInput),
+          'query': RequestMutations().updateRequest(teamRequestInput),//(fromInput, toInputs, gameInput),
         }),
       );      
     
       print("response body: ");
       print(jsonDecode(response.body));
-
+      dynamic updateTeamRequest = jsonDecode(response.body)['data']['updateRequest'];
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
       };
       Map<String, dynamic> teamInput = {
         "_id": teamRequestInput['team']['_id'],
       };
-      await UserCommand().addTeam(userInput, teamInput);    
+      if(updateTeamRequest['status'].toString() == "ACCEPTED"){
+        await UserCommand().addTeam(userInput, teamInput);    
+      }
 
       //get sender information for push notification
-      Map<String, dynamic> findTeamRequestResp = await findTeamRequest(teamRequestInput);   
-      print("findTeamRequestResp: " + findTeamRequestResp.toString());  
-      if(findTeamRequestResp['success'] == true){
+      // Map<String, dynamic> findTeamRequestResp = await findTeamRequest(teamRequestInput);   
+      // print("findTeamRequestResp: " + findTeamRequestResp.toString());  
+      // if(findTeamRequestResp['success'] == true){
         // prepare notification data
         print("prepare notification data");
-        Map<String, dynamic> sender = findTeamRequestResp['data']['sender'];
+        dynamic sender = teamRequestInput['sender'];        
         print("sender: "+ sender.toString());
+        // Map<String, dynamic> sender = findTeamRequestResp['data']['sender'];
         List<String> phones = [sender['phone']];
         List<String> OSPIDs = [sender['OSPID']];
         Map<String, dynamic> sendOrganizerRequestNotificationInput = {
           "phones": phones,
-          "message": appModel.currentUser['name'] + " has accepted your request to join team",
+          "message": appModel.currentUser['name'] + " has accepted your request to join "+ teamRequestInput['team']['name'],
           "OSPIDs": OSPIDs
         };
         await NotificationsCommand().sendAcceptedRequestNotification(sendOrganizerRequestNotificationInput);
-      } 
+      // } 
 
       updateTeamRequestsResponse["success"] = true;
       updateTeamRequestsResponse["message"] = "Event Request Created";      

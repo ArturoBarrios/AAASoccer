@@ -144,7 +144,8 @@ class _TeamCard extends State<TeamCard> {
             ),
             GestureDetector(
               onTap: () {
-                TeamCommand().sendTeamRequest(widget.teamObject);
+
+                TeamCommand().sendOrganizerTeamRequest(widget.teamObject, "PLAYER");
               },
               child: Container(
                 child: ClipRRect(
