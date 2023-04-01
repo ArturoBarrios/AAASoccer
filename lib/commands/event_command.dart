@@ -289,7 +289,7 @@ class EventCommand extends BaseCommand {
       //send notification to organizer(s)
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['name'] +
+        "message": appModel.currentUser['username'] +
             " has sent you a request to join event",
         "OSPIDs": OSPIDs
       };

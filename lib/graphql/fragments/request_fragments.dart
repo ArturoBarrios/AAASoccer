@@ -9,13 +9,13 @@ class RequestFragments {
               data{
                 _id
                 email
-                name
+                username
               }
             }
             sender{                            
               _id
               email
-              name    
+              username    
               phone          
             }   
             acceptedBy{              

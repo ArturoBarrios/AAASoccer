@@ -45,7 +45,7 @@ void createPaymentIntent() async {
                            PaymentCreateIntent(
                               billingDetails: BillingDetails(
                                 email: 'soccerapp357@gmail.com',
-                                name: currentUser['name'],
+                                name: currentUser['username'],
                                 phone: currentUser['phone'],
                               ),
                               items: [

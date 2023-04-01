@@ -102,7 +102,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
                     text: ("join team("+widget.teamRequestObject['name'].toString()+")"),
                     svgImage: widget.svgImage,
                     subtitle:
-                        "sent by "+widget.teamRequestObject['sender']['name'].toString()
+                        "sent by "+widget.teamRequestObject['sender']['username'].toString()
                         , //widget.teamRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");

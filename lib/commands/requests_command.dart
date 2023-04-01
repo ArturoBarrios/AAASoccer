@@ -185,7 +185,7 @@ class RequestsCommand extends BaseCommand {
         List<String> OSPIDs = [sender['OSPID']];
         Map<String, dynamic> sendOrganizerRequestNotificationInput = {
           "phones": phones,
-          "message": appModel.currentUser['name'] + " has accepted your request to join event",
+          "message": appModel.currentUser['username'] + " has accepted your request to join event",
           "OSPIDs": OSPIDs
         };
         await NotificationsCommand().sendAcceptedRequestNotification(sendOrganizerRequestNotificationInput);
@@ -251,7 +251,7 @@ class RequestsCommand extends BaseCommand {
         List<String> OSPIDs = [sender['OSPID']];
         Map<String, dynamic> sendOrganizerRequestNotificationInput = {
           "phones": phones,
-          "message": appModel.currentUser['name'] + " has accepted your request to join "+ teamRequestInput['team']['name'],
+          "message": appModel.currentUser['username'] + " has accepted your request to join "+ teamRequestInput['team']['name'],
           "OSPIDs": OSPIDs
         };
         await NotificationsCommand().sendAcceptedRequestNotification(sendOrganizerRequestNotificationInput);
@@ -410,7 +410,7 @@ class RequestsCommand extends BaseCommand {
           List<String> OSPIDs = [sender['OSPID']];
           Map<String, dynamic> sendSenderRequestNotificationInput = {
             "phones": phones,
-            "message": appModel.currentUser['name'] + " has accepted your friend request",
+            "message": appModel.currentUser['username'] + " has accepted your friend request",
             "OSPIDs": OSPIDs
           };
           await NotificationsCommand().sendAcceptedRequestNotification(sendSenderRequestNotificationInput);
