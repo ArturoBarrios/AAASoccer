@@ -41,16 +41,20 @@ class _RequestsViewState extends State<RequestsView> {
     print("requestObject: " + requestObject.toString());
     print("requestObject['type'].toString(): " +
         requestObject['type'].toString());    
-
+    
     if (requestObject['type'].toString() ==
         Constants.FRIENDREQUEST.toString()) {
       Widget card = FriendRequestCard(
           friendRequestObject: requestObject, svgImage: svgImage);
       return card;
-    } else if (requestObject['type'].toString() ==
-        Constants.GAMEREQUEST.toString()) {
+    } else if (requestObject['type'].toString() == Constants.GAMEREQUEST.toString() || 
+        requestObject['type'].toString() == Constants.TOURNAMENTREQUEST.toString() ||
+        requestObject['type'].toString() == Constants.LEAGUEREQUEST.toString() ||
+        requestObject['type'].toString() == Constants.TRAININGREQUEST.toString() ||
+        requestObject['type'].toString() == Constants.TRYOUTREQUEST.toString()        
+        ) {
       Widget card = EventRequestCard(
-          eventRequestObject: requestObject, svgImage: svgImage);
+          eventRequestObject: requestObject, svgImage: svgImage, type: requestObject['type']);
       return card;
     } else {
       Widget card =

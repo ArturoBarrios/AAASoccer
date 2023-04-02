@@ -10,11 +10,11 @@ import '../../assets/icons/plus.svg';
 
 class EventRequestCard extends StatefulWidget {
   const EventRequestCard(
-      {Key? key, required this.eventRequestObject, required this.svgImage})
+      {Key? key, required this.eventRequestObject, required this.svgImage, required this.type })
       : super(key: key);
   final Map<String, dynamic> eventRequestObject;
-  final Svg svgImage;
-  final double bevel = 10.0;
+  final Svg svgImage;  
+  final String type;
 
   @override
   State<EventRequestCard> createState() => _EventRequestCard();
@@ -54,6 +54,7 @@ class _EventRequestCard extends State<EventRequestCard> {
   print("EventRequestCard Build()");
     print("widget name: ");
     print(widget.eventRequestObject.toString());
+    String typeProcessed = widget.type[0].toUpperCase() + widget.type.substring(1, (widget.type.length-7)).toLowerCase();
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -90,7 +91,7 @@ class _EventRequestCard extends State<EventRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: "Event Request("+widget.eventRequestObject['event']['name']+")",
+                    text: typeProcessed +" Request("+widget.eventRequestObject['event']['name']+")",
                     svgImage: widget.svgImage,
                     subtitle:
                         "sent by "+widget.eventRequestObject['sender']['username'], //widget.eventRequestObject['description'],
@@ -135,9 +136,7 @@ class _EventRequestCard extends State<EventRequestCard> {
               ),
             ),
             GestureDetector(
-              onTap: () {
-                //update friend request
-                print("update friend request");
+              onTap: () {                
                 print(widget.eventRequestObject.toString());
                 RequestsCommand().updateEventRequests(widget.eventRequestObject);
                 
