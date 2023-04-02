@@ -11,7 +11,7 @@ import '../../commands/event_command.dart';
 import '../../models/app_model.dart';
 import '../../views/game/view.dart';
 import '../../views/game/update.dart';
-import '../../assets/icons/plus.svg';
+import 'package:soccermadeeasy/constants.dart';
 
 class PickupCard2 extends StatefulWidget {
   const PickupCard2(
@@ -64,7 +64,7 @@ Future<Map<String, dynamic>> removePickup(dynamic gameObject) async {
 Future<void> sendEventRequest(dynamic gameObject) async {  
   print("send event request for event: :"+gameObject.toString());
 
-  await EventCommand().sendOrganizerEventRequest(gameObject, "PLAYER");                
+  await EventCommand().sendOrganizerEventRequest(gameObject, "PLAYER", Constants.GAMEREQUEST.toString());                
 }
 
 class _PickupCard2 extends State<PickupCard2> {

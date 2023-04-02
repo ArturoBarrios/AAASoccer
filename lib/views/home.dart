@@ -265,7 +265,7 @@ class _Home extends State<Home> {
       //process tournament data for card
       TournamentCommand().currateTournamentData(selectedObject);
       card =
-          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage);
+          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage, isMyEvent: false);
     } else if (selectedKey == Constants.LEAGUE) {
       //process league data for card
       LeagueCommand().currateLeagueData(selectedObject);

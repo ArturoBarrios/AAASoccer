@@ -7,6 +7,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../models/app_model.dart';
 import '../../commands/event_command.dart';
 import '../../views/tryout/view.dart';
+import 'package:soccermadeeasy/constants.dart';
 
 class TryoutCard extends StatefulWidget {
   const TryoutCard(
@@ -28,7 +29,7 @@ void tryoutClicked() {
 Future<void> sendEventRequest(dynamic tryoutObject) async {  
   print("send event request for event: :"+tryoutObject.toString());
 
-  await EventCommand().sendOrganizerEventRequest(tryoutObject, "PLAYER");                
+  await EventCommand().sendOrganizerEventRequest(tryoutObject, "PLAYER", Constants.TRYOUTREQUEST.toString());                
 }
 
 

@@ -10,6 +10,17 @@ class TournamentMutations{
             {
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput ['isMainEvent']},
+              userParticipants: {
+                create:
+                  {
+                    user: {
+                      connect:                   
+                          "${eventInput['user_id']}"    
+                      }                                         
+                      roles: "{ORGANIZER, PLAYER}"
+                                       
+                  }                                     
+              },      
               location: {
                 create: 
                 {
