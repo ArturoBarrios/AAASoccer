@@ -5,16 +5,17 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../models/app_model.dart';
-import '../../commands/user_command.dart';
+import '../../commands/event_command.dart';
 import '../../views/training/view.dart';
 
 class TrainingCard extends StatefulWidget {
   const TrainingCard(
-      {Key? key, required this.trainingObject, required this.svgImage})
+      {Key? key, required this.trainingObject, required this.svgImage, required this.isMyEvent})
       : super(key: key);
   final Map<String, dynamic> trainingObject;
   final Svg svgImage;
   final double bevel = 10.0;
+  final bool isMyEvent;
 
   @override
   State<TrainingCard> createState() => _TrainingCard();
@@ -22,6 +23,12 @@ class TrainingCard extends StatefulWidget {
 
 void trainingClicked() {
   print("Training Clicked");
+}
+
+Future<void> sendEventRequest(dynamic trainingObject) async {  
+  print("send event request for event: :"+trainingObject.toString());
+
+  await EventCommand().sendOrganizerEventRequest(trainingObject, "PLAYER");                
 }
 
 
@@ -124,6 +131,16 @@ class _TrainingCard extends State<TrainingCard> {
                 ),
               ),
             ),
+            !widget.isMyEvent ? 
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      tooltip: 'Go to the next page',
+                      onPressed: () {
+                        //send event request
+                        sendEventRequest(widget.trainingObject);              
+                      },
+                    ) : 
+                    Text("Join Game"),
           ])),
     ));
   }

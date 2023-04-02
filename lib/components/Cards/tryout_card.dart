@@ -140,8 +140,7 @@ class _TryoutCard extends State<TryoutCard> {
                         sendEventRequest(widget.tryoutObject);              
                       },
                     ) : 
-                    Text("Join Game")
-                    ,
+                    Text("Join Game"),
           ])),
     ));
   }

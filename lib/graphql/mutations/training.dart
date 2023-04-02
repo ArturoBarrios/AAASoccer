@@ -1,3 +1,5 @@
+import '../fragments/event_fragments.dart';
+
 class TrainingMutations{
   String createTraining(Map<String, dynamic> trainingInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
     String createTraining = """
@@ -10,14 +12,15 @@ class TrainingMutations{
               type: TRAINING,
               archived: false,
               isMainEvent:true,
-              eventUserOrganizers: {
+               userParticipants: {
                 create:
                   {
-                    users: {
-                      connect:[                        
-                          "${userInput['_id']}"                   
-                      ]
-                    }                    
+                    user: {
+                      connect:                   
+                          "${userInput['_id']}"    
+                      }                                         
+                      roles: "{ORGANIZER, PLAYER}"
+                                       
                   }                                     
               },                    
               location: {
@@ -32,41 +35,8 @@ class TrainingMutations{
         }) {
             _id                       
            event{
-                  name        	
-                  _id  
-                  type                  
-                  archived
-                  deleted    
-                  price{                    
-                    _id
-                    amount
-                    event{
-                      _id
-                      name                      
-                    }
-                  }
-                  location{
-                    data{
-                    _id
-                    latitude
-                    longitude
-                    }
-                  }
-                  eventUserOrganizers{                    
-                      users{
-                        data{
-                          _id
-                          name
-                        }
-                      }    
-                      event{                        
-                          _id
-                          name  
-                          archived
-                          deleted                      
-                      }                
-                    }
-                }
+              ${EventFragments().fullEvent()}
+            }
           }   
         }
         """;
