@@ -93,8 +93,11 @@ enum UserType{
 
 enum RequestType{
   FRIENDREQUEST
-  EVENTREQUEST
+  GAMEREQUEST
   TEAMREQUEST
+  TOURNAMENTREQUEST
+  LEAGUEREQUEST
+  TRAININGREQUEST
 
 }
 
@@ -290,7 +293,7 @@ type Event   {
   #can have many events but not the other way around
   # tournament: Tournament 
   tryouts: [Tryout] @relation
-  leagues: [League] @relation
+  leagues: [League]  @relation
   tournaments: [Tournament] @relation
   trainings: [Training] @relation 
   wager: [Wager] @relation  
@@ -310,7 +313,7 @@ type Team   {
   location: Location  
   teamUserOrganizers: TeamUserOrganizers
   userParticipants: [TeamUserParticipant] @relation
-  archived: Boolean
+  status: String
   deleted: Boolean
   createdAt: Int
   request: [Request] @relation
@@ -385,7 +388,6 @@ type Wager   {
 
 
 type Tryout   {  
-  game: String
   # event: Event
   event: Event
   #tryout can have a pickup game

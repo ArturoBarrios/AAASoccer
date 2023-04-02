@@ -9,8 +9,12 @@ class Constants {
   static final String PLAYER = "8";
   static final String FRIEND = "9";
   static final String MYEVENTS = "10";
-  static final String EVENTREQUEST = "EVENTREQUEST";
-  static final String FRIENDREQUEST = "12";
-  static final String TEAMREQUEST = "13";
+  static final String GAMEREQUEST = "GAMEREQUEST";
+  static final String TOURNAMENTREQUEST = "TOURNAMENTREQUEST";
+  static final String LEAGUEREQUEST = "LEAGUEREQUEST";
+  static final String TRYOUTREQUEST = "TRYOUTREQUEST";
+  static final String TRAININGREQUEST = "TRAININGREQUEST";
+  static final String FRIENDREQUEST = "FRIENDREQUEST";
+  static final String TEAMREQUEST = "TEAMREQUEST";
   
 }

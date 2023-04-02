@@ -28,7 +28,7 @@ class OneSignalService extends BaseCommand {
       print("phone number to set: "+appModel.currentUser['phone']);
       // Pass in phone number provided by customer
       OneSignal.shared.setSMSNumber(smsNumber: "1"+appModel.currentUser['phone']);
-      OneSignal.shared.sendTag("name", appModel.currentUser['name'] );
+      OneSignal.shared.sendTag("username", appModel.currentUser['username'] );
 
       Map<String, dynamic> updateUserOSPIDResp = await updateUserOSPID();    
 

@@ -124,7 +124,7 @@ Future<Map<String, dynamic>> sendOrganizerTeamRequest(dynamic teamInput, String 
                   
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['name'] + " has sent you a request to join teamk",
+        "message": appModel.currentUser['username'] + " has sent you a request to join teamk",
         "OSPIDs": OSPIDs
       };
       await NotificationsCommand().sendOrganizerRequestNotification(sendOrganizerRequestNotificationInput);

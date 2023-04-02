@@ -40,9 +40,7 @@ class _RequestsViewState extends State<RequestsView> {
     print("selectedKey: " + selectedKey);
     print("requestObject: " + requestObject.toString());
     print("requestObject['type'].toString(): " +
-        requestObject['type'].toString());
-    print("Constants.EVENTREQUEST.toString(): " +
-        Constants.EVENTREQUEST.toString());
+        requestObject['type'].toString());    
 
     if (requestObject['type'].toString() ==
         Constants.FRIENDREQUEST.toString()) {
@@ -50,7 +48,7 @@ class _RequestsViewState extends State<RequestsView> {
           friendRequestObject: requestObject, svgImage: svgImage);
       return card;
     } else if (requestObject['type'].toString() ==
-        Constants.EVENTREQUEST.toString()) {
+        Constants.GAMEREQUEST.toString()) {
       Widget card = EventRequestCard(
           eventRequestObject: requestObject, svgImage: svgImage);
       return card;

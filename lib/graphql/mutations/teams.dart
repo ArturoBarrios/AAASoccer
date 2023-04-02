@@ -7,6 +7,7 @@ class TeamMutations {
         createTeam(data: {
           name: "${teamInput['name']}",
           color: "${teamInput['color']}",          
+          status: "ACTIVE"
           userParticipants: {
                 create:
                   {

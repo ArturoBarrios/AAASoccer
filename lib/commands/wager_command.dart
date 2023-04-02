@@ -10,7 +10,7 @@ class WagerCommand extends BaseCommand {
      print("createWager");
     Map<String, dynamic> createWagerResponse = {"success": false, "message": "Default Error"};
     try {
-      Wager wager = Wager(name: userInput['name'], amount: userInput['amount'], private: userInput['private']);
+      Wager wager = Wager(name: userInput['username'], amount: userInput['amount'], private: userInput['private']);
       final request = ModelMutations.create(wager);
       print("request");
       final response = await Amplify.API.mutate(request: request).response;

@@ -96,6 +96,7 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
       "data": null,
     };
 
+    eventInput['user_id'] = appModel.currentUser['_id'];
     var rng = Random();
 
     List<dynamic> numberOfTeamsOptions = [2,4,8,16,32];

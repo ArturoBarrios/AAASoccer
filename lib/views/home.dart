@@ -257,15 +257,15 @@ class _Home extends State<Home> {
       card = PickupCard2(
           gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     } else if (selectedKey == Constants.TRAINING) {
-      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage);
+      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage, isMyEvent: false);
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
-      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage);
+      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, isMyEvent: false);
     } else if (selectedKey == Constants.TOURNAMENT) {
       //process tournament data for card
       TournamentCommand().currateTournamentData(selectedObject);
       card =
-          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage);
+          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage, isMyEvent: false);
     } else if (selectedKey == Constants.LEAGUE) {
       //process league data for card
       LeagueCommand().currateLeagueData(selectedObject);

@@ -9,7 +9,7 @@ class RequestMutations {
           data: {    
             status: PENDING,
             requestAttempts: 1,                                           
-            type: EVENTREQUEST,
+            type: ${eventRequestInput['type']},
             receivers: {
               connect: [
                 ${eventRequestInput['receivers']}

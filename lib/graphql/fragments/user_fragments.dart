@@ -61,7 +61,7 @@ class UserFragments{
                   _id
                   user{
                     _id
-                    name
+                    username
                     email   
                     OSPID                
                   }                  

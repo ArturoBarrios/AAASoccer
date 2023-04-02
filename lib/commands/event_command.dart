@@ -202,8 +202,8 @@ class EventCommand extends BaseCommand {
   
 
   //send organizer event request
-  Future<Map<String, dynamic>> sendOrganizerEventRequest(
-      dynamic gameInput, String role) async {
+  Future<Map<String, dynamic>> sendOrganizerTournamentRequest(
+      dynamic tournamentInput, String role) async {
     
     print("sendOrganizerEventRequestttt");
     Map<String, dynamic> sendOrganizerEventRequestResponse = {
@@ -212,13 +212,15 @@ class EventCommand extends BaseCommand {
       "data": null      
     };
     try {
-      print("request for event: " + gameInput.toString());
+      print("request for tournament: " + tournamentInput.toString());
+      dynamic mainEvent = tournamentInput['events']['data'][0];
+      print("mainEvent: " + mainEvent.toString());
       Map<String, dynamic> sendOrganizerEventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
-        "event_id": gameInput['event']['_id'],
+        "event_id": mainEvent['_id'],
         "fromOrganizer": false,
         "forRole": role,
-        "type": Constants.EVENTREQUEST.toString()
+        "type": Constants.TOURNAMENTREQUEST.toString()
       };
       print("sendOrganizerEventRequestInput");
       print(sendOrganizerEventRequestInput);
@@ -226,7 +228,7 @@ class EventCommand extends BaseCommand {
 
       bool isYourEvent = false;
       dynamic userParticipants =
-          gameInput['event']['userParticipants']['data'];
+          mainEvent['userParticipants']['data'];
       
       print("userParticipants: " + userParticipants.toString());
       String organizersString = "";
@@ -236,7 +238,7 @@ class EventCommand extends BaseCommand {
       List<String> OSPIDs = [];
       List<String> phones = [];
       for (var i = 0; i < userParticipants.length; i++) {
-        String toUserId = userParticipants[i]['_id'];
+        String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles = BaseCommand().parseWords(userParticipants[i]['roles']);
         print("roles: " + roles.toString());
         if(roles.contains("ORGANIZER")){
@@ -289,7 +291,110 @@ class EventCommand extends BaseCommand {
       //send notification to organizer(s)
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['name'] +
+        "message": appModel.currentUser['username'] +
+            " has sent you a request to join event",
+        "OSPIDs": OSPIDs
+      };
+      await NotificationsCommand().sendOrganizerRequestNotification(
+          sendOrganizerRequestNotificationInput);
+
+      sendOrganizerEventRequestResponse["success"] = true;
+      sendOrganizerEventRequestResponse["message"] = "Event Request Created";
+      sendOrganizerEventRequestResponse["data"] = jsonDecode(response.body)['data']['createRequest'];
+    } catch (e) {}
+
+    return sendOrganizerEventRequestResponse;
+  }
+
+  //send organizer event request
+  Future<Map<String, dynamic>> sendOrganizerEventRequest(
+      dynamic gameInput, String role, type) async {
+    
+    print("sendOrganizerEventRequestttt");
+    Map<String, dynamic> sendOrganizerEventRequestResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null      
+    };
+    try {
+      print("request for event: " + gameInput.toString());
+      Map<String, dynamic> sendOrganizerEventRequestInput = {
+        "sender_id": appModel.currentUser['_id'],
+        "event_id": gameInput['event']['_id'],
+        "fromOrganizer": false,
+        "forRole": role,
+        "type": type
+      };
+      print("sendOrganizerEventRequestInput");
+      print(sendOrganizerEventRequestInput);
+      
+
+      bool isYourEvent = false;
+      dynamic userParticipants =
+          gameInput['event']['userParticipants']['data'];
+      
+      print("userParticipants: " + userParticipants.toString());
+      String organizersString = "";
+      String receiver = "";
+      print("get OSPIDs");
+      //populate list with onesignal player ids
+      List<String> OSPIDs = [];
+      List<String> phones = [];
+      for (var i = 0; i < userParticipants.length; i++) {
+        String toUserId = userParticipants[i]['user']['_id'];
+        List<String> roles = BaseCommand().parseWords(userParticipants[i]['roles']);
+        print("roles: " + roles.toString());
+        if(roles.contains("ORGANIZER")){
+          organizersString += toUserId + ",";
+          Map<String, dynamic> organizerUserInput = {"_id": toUserId};
+
+          Map<String, dynamic> getUserResp =
+              await UserCommand().findUserById(organizerUserInput);
+          print("in for getUserResp: ");
+          print(getUserResp);
+          if (getUserResp["success"] == true) {
+            Map<String, dynamic> user = getUserResp["data"];
+            print("user: " + user.toString());
+            if (user != null) {
+              //it shouldn't be null here, risk for bug
+              OSPIDs.add(user['OSPID']);
+              phones.add(user['phone']);
+            }
+          }
+        }
+
+        
+      }      
+      sendOrganizerEventRequestInput['receivers'] 
+          = organizersString;
+      
+
+      print("organizersString");
+      print(organizersString);
+      //check if from and to are the same
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': RequestMutations().sendEventRequest(
+              sendOrganizerEventRequestInput), //(fromInput, toInputs, gameInput),
+        }),
+      );
+
+      print("responseee body: ");
+      print(jsonDecode(response.body));
+
+      dynamic createEventRequest =
+          jsonDecode(response.body)['data']['createRequest'];
+      print("createEventRequest: " + createEventRequest.toString());
+
+      //send notification to organizer(s)
+      Map<String, dynamic> sendOrganizerRequestNotificationInput = {
+        "phones": phones,
+        "message": appModel.currentUser['username'] +
             " has sent you a request to join event",
         "OSPIDs": OSPIDs
       };
@@ -626,8 +731,29 @@ class EventCommand extends BaseCommand {
     print("length of homePageModel selectedObjects: ");
     // homePageModel.selectedObjects = [];
     homePageModel.selectedObjects = List.from(eventsModel.games);
-
+    if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){
+      homePageModel.selectedObjects = List.from(eventsModel.games);
+    }
     return updateViewModelsWithGameResp;
+  }
+  
+  Future<Map<String, dynamic>> updateViewModelsWithTryout(
+      Map<String, dynamic> game) async {
+    print("updateViewModelsWithTryout()");
+    Map<String, dynamic> updateViewModelsWithTryoutResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of events modeL tryouts: ");
+    print(eventsModel.tryouts.length);
+    print("length of homePageModel selectedObjects: ");
+    // homePageModel.selectedObjects = [];
+    if(homePageModel.selectedKey.toString() == Constants.TRYOUT.toString()){
+      homePageModel.selectedObjects = List.from(eventsModel.tryouts);
+    }
+
+    return updateViewModelsWithTryoutResp;
   }
 
   Future<Map<String, dynamic>> archiveGame(
@@ -676,6 +802,26 @@ class EventCommand extends BaseCommand {
     if (updateViewModelsBool) await updateViewModelsWithGame(game);
 
     return addGameResp;
+  }
+  
+  Future<Map<String, dynamic>> addTryout(
+      Map<String, dynamic> tryout, bool updateViewModelsBool) async {
+    print("addTryout()");
+    Map<String, dynamic> addTryoutResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of games before adding tryout: ");
+    print(eventsModel.tryouts.length);
+    eventsModel.tryouts.add(tryout);
+    print("length of tryouts after adding game: ");
+    print(eventsModel.tryouts.length);
+    print("updateViewModelsBool: ");
+    print(updateViewModelsBool);
+    if (updateViewModelsBool) await updateViewModelsWithTryout(tryout);
+
+    return addTryoutResp;
   }
 
   Future<Map<String, dynamic>> removeEvent(

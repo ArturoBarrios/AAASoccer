@@ -198,6 +198,7 @@ class BaseCommand {
           dynamic user = getUserResp["data"];
           if(user==null){
             Map<String, dynamic> userInput = {
+              "name": "no name",
               "email": email,
               "username": "username",
               "phone": "2672136006",

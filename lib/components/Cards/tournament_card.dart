@@ -5,16 +5,17 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../models/app_model.dart';
-import '../../commands/user_command.dart';
+import '../../commands/event_command.dart';
 import '../../views/tournament/view.dart';
 
 class TournamentCard extends StatefulWidget {
   const TournamentCard(
-      {Key? key, required this.tournamentObject, required this.svgImage})
+      {Key? key, required this.tournamentObject, required this.svgImage, required this.isMyEvent})
       : super(key: key);
   final Map<String, dynamic> tournamentObject;
   final Svg svgImage;
   final double bevel = 10.0;
+  final bool isMyEvent;
 
   @override
   State<TournamentCard> createState() => _TournamentCard();
@@ -22,6 +23,12 @@ class TournamentCard extends StatefulWidget {
 
 void tournamentClicked() {
   print("Tournament Clicked");
+}
+
+Future<void> sendEventRequest(dynamic tournamentObject) async {  
+  print("send event request for event: :"+tournamentObject.toString());
+
+  await EventCommand().sendOrganizerTournamentRequest(tournamentObject, "PLAYER");                
 }
 
 class _TournamentCard extends State<TournamentCard> {
@@ -123,6 +130,16 @@ class _TournamentCard extends State<TournamentCard> {
                 ),
               ),
             ),
+            !widget.isMyEvent ? 
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      tooltip: 'Go to the next page',
+                      onPressed: () {
+                        //send event request
+                        sendEventRequest(widget.tournamentObject);              
+                      },
+                    ) : 
+                    Text("Join Game"),
           ])),
     ));
   }
