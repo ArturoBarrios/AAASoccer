@@ -4,10 +4,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/app_model.dart';
+import '../../models/user_model.dart';
 import '../../commands/user_command.dart';
 import '../../views/player/view.dart';
-import '../../views/send_player_request_view.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:soccermadeeasy/constants.dart';
 
 class PlayerCard extends StatefulWidget {
   const PlayerCard(
@@ -23,10 +24,7 @@ class PlayerCard extends StatefulWidget {
 
 void playerClicked() {
   print("Player Clicked");
-  
 }
-
-
 
 class _PlayerCard extends State<PlayerCard> {
   final bool _isPressed = false;
@@ -37,11 +35,55 @@ class _PlayerCard extends State<PlayerCard> {
       textStyle: const TextStyle(fontSize: 20));
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
+    int selectIndex = 0;
+    int chosenRequestType = 0;
+    List requestUserTypes = [
+      Constants.PLAYER.toString(),
+      Constants.ORGANIZER.toString(),
+      Constants.MANAGER.toString(),
+      Constants.MAINCOACH.toString(),
+      Constants.ASSISTANTCOACH.toString(),
+      Constants.REF.toString(),
+    ];
+
+    List myEventsToChooseFrom = [];
+    List myTeamsToChooseFrom = [];
+    List choices = [];
+
+    void setupEventsToChooseFrom() {
+      print("setupEventsToChooseFrom");
+      List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
+      myEventsToChooseFrom = myEvents;
+    }
+
+    void setupTeamsToChooseFrom() {
+      print("setupTeamsToChooseFrom");
+      List<dynamic> myTeams = UserCommand().getAppModelMyTeams();
+      myTeamsToChooseFrom = myTeams;
+    }
+
+    void setupChoices() {
+      setupEventsToChooseFrom();
+      setupTeamsToChooseFrom();
+      //set choices to be the list of myEventsToChooseFrom and myEventsToChooseFrom
+      choices = [...myEventsToChooseFrom, ...myTeamsToChooseFrom];
+      print("choices: " + choices.toString());
+    }
+
+    List<int>? selectedIndexes;
+
+    eventTeamsSelected(List<int>? indexes) {
+      print("eventTeamsSelected: " + indexes.toString());
+      selectedIndexes = indexes;
+    }
+    
   @override
   Widget build(BuildContext context) {
-    print("Player card: "+widget.playerObject.toString());
+    print("Player card: " + widget.playerObject.toString());
     print("widget name: ");
     print(widget.playerObject.toString());
+    setupChoices();
+
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -49,7 +91,7 @@ class _PlayerCard extends State<PlayerCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PlayerView(userPlayerObject: widget.playerObject );
+            return PlayerView(userPlayerObject: widget.playerObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -91,32 +133,68 @@ class _PlayerCard extends State<PlayerCard> {
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.playerObject['description'],
-                    onPressed: () {                      
+                    onPressed: () {
                       print("inside container onPressed");
                     })),
             GestureDetector(
               onTap: () {
                 //potentially show dialogue
                 //with different request options
-                // showAnimatedDialog(
-                //   context: context,
-                //   barrierDismissible: true,
-                //   builder: (BuildContext context) {
-                //     return SendPlayerRequestView(playerObject: widget.playerObject);
-                //   },
-                //   animationType: DialogTransitionType.scale,
-                //   curve: Curves.fastOutSlowIn,
-                //   duration: Duration(seconds: 1),
-                // );
-                UserCommand().sendFriendRequest(                    
-                    widget.playerObject
-                );
+                UserCommand().sendFriendRequest(widget.playerObject);
               },
               child: Container(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: const Icon(Icons.rocket_launch_rounded)
-                ),
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: const Icon(Icons.person_add_alt_1)),
+              ),
+            ),
+            GestureDetector(
+              onTap: () async {
+                List<int>? indexes = await showAnimatedDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) {
+                    return ClassicListDialogWidget<dynamic>(
+                        selectedIndexes: selectedIndexes,
+                        titleText: 'Choose Event/Team',
+                        positiveText: "Next",
+                        listType: ListType.multiSelect,                                                                                                    
+                          // showAnimatedDialog<int>(
+                          //   context: context,
+                          //   barrierDismissible: true,
+                          //   builder: (BuildContext context) {
+                          //     return ClassicListDialogWidget<dynamic>(
+                          //         selectedIndex: selectIndex,
+                          //         titleText: 'Choose User Type',
+                          //         positiveText: "Send Request",
+                          //         listType: ListType.multiSelect,
+                          //         onPositiveClick: () {
+                          //           // chosenRequestType = requestUserTypes[index!];
+                          //           print("Choose User Type: " + selectIndex.toString());
+                          //           // sendPlayerRequest();
+                          //         },
+                          //         activeColor: Colors.green,
+                          //         dataList: requestUserTypes);
+                          //   },
+                          //   animationType: DialogTransitionType.size,
+                          //   curve: Curves.linear,
+                          // );
+
+                        
+                        activeColor: Colors.green,
+                        dataList: choices);
+                  },
+                  animationType: DialogTransitionType.size,
+                  curve: Curves.linear,
+                );
+                selectedIndexes = indexes ?? selectedIndexes;
+                print('selectedIndex:${selectedIndexes?.toString()}');
+                eventTeamsSelected(selectedIndexes);
+              },
+              child: Container(
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: const Icon(Icons.send)),
               ),
             ),
           ])),

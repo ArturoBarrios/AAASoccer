@@ -2,6 +2,7 @@ import 'chat_fragments.dart';
 import 'image_fragments.dart';
 import 'request_fragments.dart';
 import 'event_fragments.dart';
+import 'team_fragments.dart';
 
 class UserFragments{
 
@@ -30,6 +31,15 @@ class UserFragments{
                   _id
                   event{
                     ${EventFragments().eventGameFragment()}  
+                  }
+                  roles
+                }
+              }
+              teamUserParticipants{
+                data{
+                  _id
+                  team{
+                    ${TeamFragments().fullTeam()}  
                   }
                   roles
                 }

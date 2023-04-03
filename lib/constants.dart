@@ -6,9 +6,9 @@ class Constants {
   static final String TRYOUT = "5";
   static final String TRAINING = "6";
   static final String WAGER = "7";
-  static final String PLAYER = "8";
   static final String FRIEND = "9";
   static final String MYEVENTS = "10";
+  //request type
   static final String GAMEREQUEST = "GAMEREQUEST";
   static final String TOURNAMENTREQUEST = "TOURNAMENTREQUEST";
   static final String LEAGUEREQUEST = "LEAGUEREQUEST";
@@ -16,5 +16,13 @@ class Constants {
   static final String TRAININGREQUEST = "TRAININGREQUEST";
   static final String FRIENDREQUEST = "FRIENDREQUEST";
   static final String TEAMREQUEST = "TEAMREQUEST";
+  //user type
+  static final String PLAYER = "PLAYER";
+  static final String ORGANIZER = "ORGANIZER";
+  static final String MANAGER = "MANAGER";
+  static final String MAINCOACH = "MAINCOACH";
+  static final String ASSISTANTCOACH = "ASSISTANTCOACH";
+  static final String REF = "REF";
+  
   
 }

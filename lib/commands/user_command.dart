@@ -25,6 +25,19 @@ class UserCommand extends BaseCommand {
 
   }
 
+  List<dynamic> getAppModelMyEvents(){
+    print("getAppModelMyEvents");
+    print("appModel.myEvents: " + appModel.myEvents.toString());
+    return appModel.myEvents;
+  }
+
+  //get myTeams
+  List<dynamic> getAppModelMyTeams(){
+    print("getAppModelMyTeams");
+    print("appModel.myTeams: " + appModel.myTeams.toString());
+    return appModel.myTeams;
+  }
+
   void updatePaymentStatus(PaymentType status) {
     print("updatePaymentStatus");
     print("paymentModel.status before....: " + paymentModel.status.toString());

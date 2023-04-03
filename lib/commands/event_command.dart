@@ -621,9 +621,26 @@ class EventCommand extends BaseCommand {
 
   }
 
-  Future<Map<String, dynamic>> setupEvents(dynamic user) async {
+  
+
+  Future<void> setupTeamsFromCurrentUser(dynamic user) async {
+    print("setupTeamsFromUser()");
+    Map<String, dynamic> getTeamsNearLocationResp =
+        await TeamCommand().getTeamsNearLocation();
+    if (getTeamsNearLocationResp['success']) {
+      List<dynamic> teams = getTeamsNearLocationResp['data'];
+      print("teams: ");
+      print(teams);
+      appModel.teams = teams;
+    }
+
+    appModel.myTeams = user['teamUserParticipants']['data'];
+
+  }
+
+  Future<Map<String, dynamic>> setupEventsFromCurrentUser(dynamic user) async {
     print("setupEvents()()");
-    print("user: " + user.toString());
+    
     Map<String, dynamic> setupEventsResp = {
       "success": false,
       "message": "Default Error",
@@ -694,18 +711,11 @@ class EventCommand extends BaseCommand {
       print("players: ");
       print(players);
       //remove the current user from the list
-      players.removeWhere((element) => element['_id'] == user['_id']);
+      players.removeWhere((element) => element['_id'] == appModel.currentUser['_id']);
       appModel.players = players;
       appModel.playersNearMe = players;
     }
-    Map<String, dynamic> getTeamsNearLocationResp =
-        await TeamCommand().getTeamsNearLocation();
-    if (getTeamsNearLocationResp['success']) {
-      List<dynamic> teams = getTeamsNearLocationResp['data'];
-      print("teams: ");
-      print(teams);
-      appModel.teams = teams;
-    }
+    
 
     //currentUser is setup by this point. Either from login,
     // or getting user again at top of function

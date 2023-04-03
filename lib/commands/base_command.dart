@@ -15,6 +15,7 @@ import 'package:amplify_api/amplify_api.dart';
 import '../models/User.dart';
 import '../commands/user_command.dart';
 import '../commands/player_command.dart';
+import '../commands/team_command.dart';
 import '../commands/event_command.dart';
 import '../commands/images_command.dart';
 import '../models/payment_model.dart';
@@ -224,9 +225,10 @@ class BaseCommand {
           
           await loadUserImagesFromAWS();
           await EventCommand().setupMappedEvents();
-          print("get friends and myEvents from currentUser object: ");
+          print("get friends and myEvents from currentUser object: " +appModel.currentUser.toString());
           List<dynamic> friends = appModel.currentUser['friends']['data'];
           List<dynamic> myEvents = appModel.currentUser['eventUserParticipants']['data'];
+          List<dynamic> myTeams = appModel.currentUser['teamUserParticipants']['data'];
           List<dynamic> myArchivedEvents = [];
           List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
           print("friendss: "+friends.toString());          
@@ -247,7 +249,8 @@ class BaseCommand {
           // appModel.myArchivedEvents = myArchivedEvents;
           print("set");
 
-          await EventCommand().setupEvents(user);
+          await EventCommand().setupEventsFromCurrentUser(appModel.currentUser);
+          await EventCommand().setupTeamsFromCurrentUser(appModel.currentUser);
             
           //setup events(league, tournament, tryout, training)
           //,teams, players near me data. 
