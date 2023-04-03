@@ -87,7 +87,10 @@ enum RequestStatus{
 }
 enum UserType{
   PLAYER
-  COACH
+  ORGANIZER
+  MANAGER
+  MAINCOACH
+  ASSISTANTCOACH
   REF
 }
 
@@ -192,8 +195,7 @@ type User  {
   images: [Image] @relation
   events: [Event] @relation      
   eventUserParticipants: [EventUserParticipant] @relation   
-  eventUserOrganizers: [EventUserOrganizers] @relation   
-  teamUserOrganizers: [TeamUserOrganizers] @relation  
+  teamUserParticipants: [TeamUserParticipant] @relation  
   # eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
   # eventRequestsAcceptedBy: [EventRequest] @relation(name: "event_requests_acceptedBy")
   # eventRequestsOrganizers: [EventRequest] @relation(name: "event_requests_organizers")
@@ -229,11 +231,6 @@ type Player   {
   # games: [Game] @relation  
 }
 
-type EventUserOrganizers {
-  event: Event
-  users: [User]! @relation
-}
-
 type EventUserParticipant {
   event: Event
   user: User
@@ -244,11 +241,6 @@ type TeamUserParticipant {
   team: Team
   user: User
   roles: String
-}
-
-type TeamUserOrganizers {
-  team: Team
-  users: [User]! @relation
 }
 
 type Game   {
@@ -310,8 +302,7 @@ type Team   {
   images: [Image] @relation
   users: [User] @relation    
   sponsors: [Sponsor] @relation
-  location: Location  
-  teamUserOrganizers: TeamUserOrganizers
+  location: Location    
   userParticipants: [TeamUserParticipant] @relation
   status: String
   deleted: Boolean
