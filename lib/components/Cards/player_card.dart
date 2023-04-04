@@ -70,11 +70,27 @@ class _PlayerCard extends State<PlayerCard> {
       print("choices: " + choices.toString());
     }
 
-    List<int>? selectedIndexes;
+    
+
+    List<int>? selectedEventTeamIndexes;
+    List<int>? selectedRequestTypeIndexes;
+    List<dynamic> selectedEventTeamObjects = [];
 
     eventTeamsSelected(List<int>? indexes) {
       print("eventTeamsSelected: " + indexes.toString());
-      selectedIndexes = indexes;
+      selectedEventTeamIndexes = indexes;
+    }
+
+    requestTypeSelected(List<int>? indexes) {
+      print("requestTypeSelected: " + indexes.toString());
+      selectedRequestTypeIndexes = indexes;
+      sendPlayersEventRequest();
+
+    }
+    sendPlayersEventRequest(){
+      print("sendPlayersEventRequest");
+      List<dynamic> players = [widget.playerObject];
+      EventCommand().sendPlayerEventRequest(players, );
     }
     
   @override
@@ -155,7 +171,7 @@ class _PlayerCard extends State<PlayerCard> {
                   barrierDismissible: true,
                   builder: (BuildContext context) {
                     return ClassicListDialogWidget<dynamic>(
-                        selectedIndexes: selectedIndexes,
+                        selectedIndexes: selectedEventTeamIndexes,
                         titleText: 'Choose Event/Team',
                         positiveText: "Next",
                         listType: ListType.multiSelect,                                                                                                    
@@ -178,7 +194,7 @@ class _PlayerCard extends State<PlayerCard> {
                           //   },
                           //   animationType: DialogTransitionType.size,
                           //   curve: Curves.linear,
-                          // );
+                          // );                          
 
                         
                         activeColor: Colors.green,
@@ -187,9 +203,35 @@ class _PlayerCard extends State<PlayerCard> {
                   animationType: DialogTransitionType.size,
                   curve: Curves.linear,
                 );
-                selectedIndexes = indexes ?? selectedIndexes;
-                print('selectedIndex:${selectedIndexes?.toString()}');
-                eventTeamsSelected(selectedIndexes);
+                selectedEventTeamIndexes = indexes ?? selectedEventTeamIndexes;
+                print('selectedIndex:${selectedEventTeamIndexes?.toString()}');
+                eventTeamsSelected(selectedEventTeamIndexes);
+
+                if(selectedEventTeamIndexes!.isNotEmpty){
+                  
+                   List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return ClassicListDialogWidget<dynamic>(
+                                  selectedIndexes: selectedRequestTypeIndexes,
+                                  titleText: 'Choose User Type',
+                                  positiveText: "Send Request",
+                                  listType: ListType.multiSelect,
+                                  
+                                  activeColor: Colors.green,
+                                  dataList: requestUserTypes);
+                            },
+                            animationType: DialogTransitionType.size,
+                            curve: Curves.linear,
+                          );
+
+                        selectedRequestTypeIndexes = requestIndexes ?? selectedRequestTypeIndexes;
+                        print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                        eventTeamsSelected(selectedRequestTypeIndexes);
+
+                
+                }
               },
               child: Container(
                 child: ClipRRect(
