@@ -151,17 +151,6 @@ class EventCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> sendPlayerEventRequest(
-      Map<String, dynamic> gameInput) async {
-    print("sendPlayerEventRequest");
-    Map<String, dynamic> sendPlayerEventRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-
-    return sendPlayerEventRequestResponse;
-  }
 
   Future<Map<String, dynamic>> findEventsNearPoint(
       dynamic events, double distanceFrom) async {
@@ -305,6 +294,45 @@ class EventCommand extends BaseCommand {
 
     return sendOrganizerEventRequestResponse;
   }
+
+  //send player event request
+  Future<Map<String, dynamic>> sendPlayerEventRequest(
+      List<dynamic> playersObject,dynamic eventObject, List<String> roles) async {
+
+    print("sendPlayerEventRequest");
+    Map<String, dynamic> sendPlayerEventRequestResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+      print("event: " + eventObject.toString());
+      print("roles: " + roles.toString());
+
+      Map<String, dynamic> sendOrganizerEventRequestInput = {
+        "sender_id": appModel.currentUser['_id'],
+        "event_id": eventObject['event']['_id'],        
+        "forRole": roles,
+        "type": eventObject['event']['type']
+      };
+
+      print("sendOrganizerEventRequestInput: "+sendOrganizerEventRequestInput.toString());
+
+
+
+
+      return sendPlayerEventRequestResponse;
+    } catch(e){
+      print("error in sendPlayerEventRequest: " + e.toString());
+      return sendPlayerEventRequestResponse;
+    }
+
+
+    
+
+  }
+
 
   //send organizer event request
   Future<Map<String, dynamic>> sendOrganizerEventRequest(
