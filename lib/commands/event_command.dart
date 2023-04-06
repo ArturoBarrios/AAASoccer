@@ -297,7 +297,7 @@ class EventCommand extends BaseCommand {
 
   //send player event request
   Future<Map<String, dynamic>> sendPlayerEventRequest(
-      List<dynamic> playersObject,dynamic eventObject, List<String> roles) async {
+      List<dynamic> playerObject,dynamic eventObject, List<String> roles) async {
 
     print("sendPlayerEventRequest");
     Map<String, dynamic> sendPlayerEventRequestResponse = {
@@ -310,16 +310,46 @@ class EventCommand extends BaseCommand {
       print("event: " + eventObject.toString());
       print("roles: " + roles.toString());
 
-      Map<String, dynamic> sendOrganizerEventRequestInput = {
+      Map<String, dynamic> sendPlayerEventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
         "event_id": eventObject['event']['_id'],        
         "forRole": roles,
         "type": eventObject['event']['type']
       };
 
-      print("sendOrganizerEventRequestInput: "+sendOrganizerEventRequestInput.toString());
+      print("sendOrganizerEventRequestInput: "+sendPlayerEventRequestInput.toString());
 
+      List<String> OSPIDs = [playerObject[0]['user']['OSPID']];
+      List<String> phones = [playerObject[0]['user']['phone']];
 
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': RequestMutations().sendEventRequest(
+              sendPlayerEventRequestInput), //(fromInput, toInputs, gameInput),
+        }),
+      );
+
+      print("responseee body: ");
+      print(jsonDecode(response.body));
+
+       Map<String, dynamic> sendPlayerRequestNotificationInput = {
+        "phones": phones,
+        "message": appModel.currentUser['username'] +
+            " has sent you a request to join their event",
+        "OSPIDs": OSPIDs
+      };
+
+      await NotificationsCommand().sendOrganizerRequestNotification(
+          sendPlayerRequestNotificationInput);
+
+      sendPlayerEventRequestResponse["success"] = true;
+      sendPlayerEventRequestResponse["message"] = "Event Request Created";
+      sendPlayerEventRequestResponse["data"] = jsonDecode(response.body)['data']['createRequest'];
 
 
       return sendPlayerEventRequestResponse;
@@ -414,10 +444,6 @@ class EventCommand extends BaseCommand {
 
       print("responseee body: ");
       print(jsonDecode(response.body));
-
-      dynamic createEventRequest =
-          jsonDecode(response.body)['data']['createRequest'];
-      print("createEventRequest: " + createEventRequest.toString());
 
       //send notification to organizer(s)
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
