@@ -3,7 +3,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../models/user_model.dart';
 import '../../commands/user_command.dart';
 import '../../views/player/view.dart';
@@ -90,7 +89,7 @@ class _PlayerCard extends State<PlayerCard> {
     sendPlayersEventRequest(){
       print("sendPlayersEventRequest");
       List<dynamic> players = [widget.playerObject];
-      EventCommand().sendPlayerEventRequest(players, );
+      // EventCommand().sendPlayerEventRequest(players, );
     }
     
   @override
