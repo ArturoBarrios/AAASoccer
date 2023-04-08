@@ -41,11 +41,16 @@ class _RequestsViewState extends State<RequestsView> {
     print("requestObject: " + requestObject.toString());
     print("requestObject['type'].toString(): " +
         requestObject['type'].toString());    
-    
+    dynamic user = UserCommand().getAppModelUser();
+    bool didSendRequest = user['_id'] == requestObject['sender']['_id'];    
     if (requestObject['type'].toString() ==
         Constants.FRIENDREQUEST.toString()) {
       Widget card = FriendRequestCard(
-          friendRequestObject: requestObject, svgImage: svgImage);
+          friendRequestObject: requestObject, 
+          svgImage: svgImage,
+          didSendRequest: didSendRequest,
+
+          );
       return card;
     } else if (requestObject['type'].toString() == Constants.GAMEREQUEST.toString() || 
         requestObject['type'].toString() == Constants.TOURNAMENTREQUEST.toString() ||
@@ -54,11 +59,18 @@ class _RequestsViewState extends State<RequestsView> {
         requestObject['type'].toString() == Constants.TRYOUTREQUEST.toString()        
         ) {
       Widget card = EventRequestCard(
-          eventRequestObject: requestObject, svgImage: svgImage, type: requestObject['type']);
+          eventRequestObject: requestObject, 
+          svgImage: svgImage,
+          type: requestObject['type'],
+          didSendRequest: didSendRequest,          
+      );
       return card;
     } else {
       Widget card =
-          TeamRequestCard(teamRequestObject: requestObject, svgImage: svgImage);
+          TeamRequestCard(teamRequestObject: requestObject, 
+          svgImage: svgImage,
+          didSendRequest: didSendRequest,
+          );
       return card;
     }
   }
