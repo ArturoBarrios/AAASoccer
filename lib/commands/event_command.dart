@@ -295,9 +295,9 @@ class EventCommand extends BaseCommand {
     return sendOrganizerEventRequestResponse;
   }
 
-  //send player event request
-  Future<Map<String, dynamic>> sendPlayerEventRequest(
-      List<dynamic> playerObject,dynamic eventObject, List<String> roles) async {
+  //send player event requests
+  Future<Map<String, dynamic>> sendPlayerEventRequests(
+      dynamic userPlayerObject,List<dynamic> eventsObject, List<String> roles) async {
 
     print("sendPlayerEventRequest");
     Map<String, dynamic> sendPlayerEventRequestResponse = {
@@ -307,49 +307,57 @@ class EventCommand extends BaseCommand {
     };
 
     try{
-      print("event: " + eventObject.toString());
+      print("userPlayerObject: " + userPlayerObject.toString());
+      print("events: " + eventsObject.toString());
       print("roles: " + roles.toString());
 
-      Map<String, dynamic> sendPlayerEventRequestInput = {
-        "sender_id": appModel.currentUser['_id'],
-        "event_id": eventObject['event']['_id'],        
-        "forRole": roles,
-        "type": eventObject['event']['type']
-      };
+      //loop through events
+      for(int i = 0;i<eventsObject.length;i++){
+        for(int j = 0;j<roles.length;j++){
+          Map<String, dynamic> sendPlayerEventRequestInput = {
+            "sender_id": appModel.currentUser['_id'],
+            "event_id": eventsObject[i]['event']['_id'],        
+            "forRole": roles[j],
+            "type": eventsObject[i]['event']['type'],
+            "receivers": userPlayerObject['_id']
 
-      print("sendOrganizerEventRequestInput: "+sendPlayerEventRequestInput.toString());
+          };
 
-      List<String> OSPIDs = [playerObject[0]['user']['OSPID']];
-      List<String> phones = [playerObject[0]['user']['phone']];
+          print("sendOrganizerEventRequestInput: "+sendPlayerEventRequestInput.toString());
 
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': RequestMutations().sendEventRequest(
-              sendPlayerEventRequestInput), //(fromInput, toInputs, gameInput),
-        }),
-      );
+          List<String> OSPIDs = [userPlayerObject['OSPID']];
+          List<String> phones = [userPlayerObject['phone']];
 
-      print("responseee body: ");
-      print(jsonDecode(response.body));
+          http.Response response = await http.post(
+            Uri.parse('https://graphql.fauna.com/graphql'),
+            headers: <String, String>{
+              'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+              'Content-Type': 'application/json'
+            },
+            body: jsonEncode(<String, String>{
+              'query': RequestMutations().sendEventRequest(
+                  sendPlayerEventRequestInput), //(fromInput, toInputs, gameInput),
+            }),
+          );
 
-       Map<String, dynamic> sendPlayerRequestNotificationInput = {
-        "phones": phones,
-        "message": appModel.currentUser['username'] +
-            " has sent you a request to join their event",
-        "OSPIDs": OSPIDs
-      };
+          print("responseee body: ");
+          print(jsonDecode(response.body));
 
-      await NotificationsCommand().sendOrganizerRequestNotification(
-          sendPlayerRequestNotificationInput);
+          Map<String, dynamic> sendPlayerRequestNotificationInput = {
+            "phones": phones,
+            "message": appModel.currentUser['username'] +
+                " has sent you a request to join their event",
+            "OSPIDs": OSPIDs
+          };
+
+          await NotificationsCommand().sendOrganizerRequestNotification(
+              sendPlayerRequestNotificationInput);        
+        }
+
+      }
 
       sendPlayerEventRequestResponse["success"] = true;
-      sendPlayerEventRequestResponse["message"] = "Event Request Created";
-      sendPlayerEventRequestResponse["data"] = jsonDecode(response.body)['data']['createRequest'];
+      sendPlayerEventRequestResponse["message"] = "Event Requests Created";      
 
 
       return sendPlayerEventRequestResponse;

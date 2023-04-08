@@ -10,11 +10,14 @@ import '../../assets/icons/plus.svg';
 
 class TeamRequestCard extends StatefulWidget {
   const TeamRequestCard(
-      {Key? key, required this.teamRequestObject, required this.svgImage})
+      {Key? key, required this.teamRequestObject, 
+      required this.svgImage,
+      required this.didSendRequest
+      })
       : super(key: key);
   final Map<String, dynamic> teamRequestObject;
   final Svg svgImage;
-  final double bevel = 10.0;
+  final bool didSendRequest;  
 
   @override
   State<TeamRequestCard> createState() => _TeamRequestCard();

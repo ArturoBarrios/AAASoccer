@@ -10,11 +10,14 @@ import '../../assets/icons/plus.svg';
 
 class FriendRequestCard extends StatefulWidget {
   const FriendRequestCard(
-      {Key? key, required this.friendRequestObject, required this.svgImage})
+      {Key? key, required this.friendRequestObject, 
+      required this.svgImage,
+      required this.didSendRequest
+      })
       : super(key: key);
   final Map<String, dynamic> friendRequestObject;
   final Svg svgImage;
-  final double bevel = 10.0;
+  final bool didSendRequest;
 
   @override
   State<FriendRequestCard> createState() => _FriendRequestCard();

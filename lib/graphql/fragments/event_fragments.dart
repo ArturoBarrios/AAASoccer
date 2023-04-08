@@ -7,6 +7,13 @@ class EventFragments {
                   name
                   isMainEvent
                   type
+                  location{
+                    data{
+                    _id
+                    latitude
+                    longitude
+                    }
+                  }
                   games{
                     data{
                       _id

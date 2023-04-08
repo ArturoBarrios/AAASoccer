@@ -70,6 +70,82 @@ class TeamCommand extends BaseCommand {
     return getTrainingsNearLocationResp;
   }
 
+  //send player event requests
+  Future<Map<String, dynamic>> sendPlayerTeamRequests(
+      dynamic userPlayerObject,List<dynamic> teamsObject, List<String> roles) async {
+
+    print("sendPlayerEventRequest");
+    Map<String, dynamic> sendPlayerTeamRequestsResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+      print("userPlayerObject: " + userPlayerObject.toString());
+      print("teams: " + teamsObject.toString());
+      print("roles: " + roles.toString());
+
+      //loop through events
+      for(int i = 0;i<teamsObject.length;i++){
+        for(int j = 0;j<roles.length;j++){
+          Map<String, dynamic> sendPlayerTeamRequestInput = {
+            "sender_id": appModel.currentUser['_id'],
+            "team_id": teamsObject[i]['_id'],            
+            "forRole": roles[j],
+            "type": Constants.TEAMREQUEST.toString(),
+            "receivers": userPlayerObject['_id']
+
+          };
+
+          print("sendOrganizerEventRequestInput: "+sendPlayerTeamRequestInput.toString());
+
+          List<String> OSPIDs = [userPlayerObject['OSPID']];
+          List<String> phones = [userPlayerObject['phone']];
+
+          http.Response response = await http.post(
+            Uri.parse('https://graphql.fauna.com/graphql'),
+            headers: <String, String>{
+              'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+              'Content-Type': 'application/json'
+            },
+            body: jsonEncode(<String, String>{
+              'query': RequestMutations().sendTeamRequest(
+                  sendPlayerTeamRequestInput), //(fromInput, toInputs, gameInput),
+            }),
+          );
+
+          print("responseee body: ");
+          print(jsonDecode(response.body));
+
+          Map<String, dynamic> sendPlayerRequestNotificationInput = {
+            "phones": phones,
+            "message": appModel.currentUser['username'] +
+            " has sent you a request to join team",
+            "OSPIDs": OSPIDs
+          };
+
+          await NotificationsCommand().sendOrganizerRequestNotification(
+              sendPlayerRequestNotificationInput);        
+        }
+
+      }
+
+      sendPlayerTeamRequestsResponse["success"] = true;
+      sendPlayerTeamRequestsResponse["message"] = "Event Requests Created";      
+
+
+      return sendPlayerTeamRequestsResponse;
+    } catch(e){
+      print("error in sendPlayerEventRequest: " + e.toString());
+      return sendPlayerTeamRequestsResponse;
+    }
+
+
+    
+
+  }
+
   Future<Map<String, dynamic>> sendOrganizerTeamRequest(
       dynamic teamInput, String role) async {
     print("sendTeamRequest");
@@ -151,7 +227,7 @@ class TeamCommand extends BaseCommand {
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
         "message": appModel.currentUser['username'] +
-            " has sent you a request to join teamk",
+            " has sent you a request to join team",
         "OSPIDs": OSPIDs
       };
       await NotificationsCommand().sendOrganizerRequestNotification(

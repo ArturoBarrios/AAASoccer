@@ -10,11 +10,16 @@ import '../../assets/icons/plus.svg';
 
 class EventRequestCard extends StatefulWidget {
   const EventRequestCard(
-      {Key? key, required this.eventRequestObject, required this.svgImage, required this.type })
+      {Key? key, required this.eventRequestObject, 
+      required this.svgImage, 
+      required this.type,
+      required this.didSendRequest
+      })
       : super(key: key);
   final Map<String, dynamic> eventRequestObject;
   final Svg svgImage;  
   final String type;
+  final bool didSendRequest;
 
   @override
   State<EventRequestCard> createState() => _EventRequestCard();
@@ -94,7 +99,10 @@ class _EventRequestCard extends State<EventRequestCard> {
                     text: typeProcessed +" Request("+widget.eventRequestObject['event']['name']+")",
                     svgImage: widget.svgImage,
                     subtitle:
-                        "sent by "+widget.eventRequestObject['sender']['username'], //widget.eventRequestObject['description'],
+                      widget.didSendRequest ? 
+                        "sent to "+widget.eventRequestObject['receivers']['data'][0]['username'].toString()
+                        : "sent by "+ widget.eventRequestObject['sender']['username'].toString()
+                        ,                        
                     onPressed: () {
                       print("inside container onPressed");
                     })),
