@@ -7,6 +7,8 @@ class EventFragments {
                   name
                   isMainEvent
                   type
+                  startTime
+                  endTime
                   location{
                     data{
                     _id
@@ -31,7 +33,9 @@ class EventFragments {
                   type                  
                   archived
                   isMainEvent
-                  deleted    
+                  deleted  
+                  startTime
+                  endTime  
                   price{                    
                     _id
                     amount

@@ -31,6 +31,7 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final locationController = TextEditingController();
+  bool startTimeSet = false;
   DateTime startTime = new DateTime.now();
   DateTime endTime = new DateTime.now();
   String startTimestamp = "";
@@ -39,6 +40,10 @@ class _GameCreateState extends State<GameCreate> {
   final imagesController = TextEditingController();
 
   bool _isLoading = false;
+
+  
+  DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
+  DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(DateTime.now().add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
 
 
   void chooseAddress(String chosenAddress) async {
@@ -60,6 +65,8 @@ class _GameCreateState extends State<GameCreate> {
       startTimestamp = time.millisecondsSinceEpoch.toString();
       print("setStartTime: " + time.toString());
       print("setStartTime: " + startTimestamp.toString());
+      twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(time.add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
+      startTimeSet = true;
     });
   }
 
@@ -198,7 +205,7 @@ class _GameCreateState extends State<GameCreate> {
                   }, onConfirm: (date) {
                     print('confirm $date');
                     setStartTime(date);
-                  }, currentTime: DateTime(2023, 3, 29, 12, 0, 0));
+                  }, currentTime: !startTimeSet ? rightNow : startTime);
                 },
                 child: Text(
                   'show date time picker',
@@ -213,7 +220,7 @@ class _GameCreateState extends State<GameCreate> {
                   }, onConfirm: (date) {
                     print('confirm $date');
                     setEndTime(date);
-                  }, currentTime: DateTime(2023, 3, 29, 12, 0, 0));
+                  }, currentTime: twoHoursFromStart);
                 },
                 child: Text(
                   'show date time picker',

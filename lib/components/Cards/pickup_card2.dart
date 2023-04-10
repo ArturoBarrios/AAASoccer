@@ -341,12 +341,7 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            Image(
-              width: MediaQuery.of(context).size.width * .4,
-              height: MediaQuery.of(context).size.height * .1,
-              image: svgImage,
-              color: Colors.white,
-            ),
+            
             // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
             const Spacer(),
             Text(text,

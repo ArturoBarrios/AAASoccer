@@ -68,7 +68,15 @@ class GameCommand extends BaseCommand {
     print("before for loop");
     for(int i = 0; i < games.length; i++){
       print("check if event is archived");
-      if(games[i]['event']['archived']!=false){
+      print("DateTime.parse(games[i]['event']['endTime']: "+games[i]['event']['endTime'].toString());
+      String millisecondsString = games[i]['event']['endTime'].toString();
+      DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
+      //if game is marked as archived or
+      //active but time is past
+      print("dateTime: "+dateTime.toString());
+      if(games[i]['event']['archived']!=false
+        || (dateTime.isBefore(DateTime.now()))
+      ){
         print("event archived!");
         archivedEvents.add(games[i]);               
       }
