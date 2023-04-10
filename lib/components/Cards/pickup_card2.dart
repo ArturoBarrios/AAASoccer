@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:soccermadeeasy/commands/base_command.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
-import '../../models/app_model.dart';
+import '../../commands/player_command.dart';
 import '../../views/game/view.dart';
 import '../../views/game/update.dart';
 import 'package:soccermadeeasy/constants.dart';
@@ -68,6 +69,61 @@ Future<void> sendEventRequest(dynamic gameObject) async {
 }
 
 class _PickupCard2 extends State<PickupCard2> {
+  int selectIndex = 0;  
+  int chosenRequestType = 0;
+  List requestUserTypes = [
+    Constants.PLAYER.toString(),
+    Constants.ORGANIZER.toString(),
+    Constants.MANAGER.toString(),
+    Constants.MAINCOACH.toString(),
+    Constants.ASSISTANTCOACH.toString(),
+    Constants.REF.toString(),
+  ];
+  List playerList = [];
+  List playersSelectedList = [];
+  List<int>? selectedPlayerIndexes;
+  List<int>? selectedRequestTypeIndexes;
+  List<String> selectedRequestTypeObjects = [];
+
+  void setupPlayerList() {
+    print("setupPlayerList");
+    playerList = PlayerCommand().getAppModelPlayersNearMe();
+  }
+
+  void playersSelected(List<int> selectedIndexes) {
+    print("playersSelected: $selectedIndexes");
+    selectedPlayerIndexes = selectedIndexes;
+    playersSelectedList = [];
+    for (int i = 0; i < selectedIndexes.length; i++) {
+      playersSelectedList.add(playerList[selectedIndexes[i]]);
+    }    
+  }
+
+  requestTypeSelected(List<int>? indexes) {
+      print("requestTypeSelected: " + indexes.toString());
+      selectedRequestTypeIndexes = indexes;
+       for(int i = 0; i < indexes!.length; i++){
+          selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
+        }
+      sendPlayersEventRequest();
+
+    }
+
+    Future<void> sendPlayersEventRequest() async{
+      print("sendPlayersEventRequest");            
+      print("selectedRequestTypeObjects.length: " + selectedRequestTypeObjects.length.toString());      
+      print("playersSelectedList.length: " + playersSelectedList.length.toString());
+      print("selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+      print("send player event request");
+      for(int i = 0; i< playersSelectedList.length;i++){
+        await EventCommand().sendPlayerEventRequests(playersSelectedList[i],[widget.gameObject], selectedRequestTypeObjects);
+      }
+      
+    }
+
+
+
+
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
@@ -81,7 +137,8 @@ class _PickupCard2 extends State<PickupCard2> {
     print("widget: ");
     print("widget.gameObject.toString(): "+widget.gameObject.toString());
     print("widget.isMyEvent.toString(): "+widget.isMyEvent.toString());
-    
+    setupPlayerList();
+
     return Listener(
         child: GestureDetector(
       onTap: () {
@@ -128,6 +185,7 @@ class _PickupCard2 extends State<PickupCard2> {
             ],
           ),
           child: Row(children: [
+            
             Container(
                 child: InnerNeumorphicCardFb1(
                   //todo IDK you may have to change this.....
@@ -139,7 +197,8 @@ class _PickupCard2 extends State<PickupCard2> {
                     onPressed: () {
                       print("inside container onPressed");
                     })),
-                  // if(widget.isMyEvent)                                        
+                  
+                                                
                     GestureDetector(
                       onTap: () {
                         showAnimatedDialog(
@@ -189,6 +248,70 @@ class _PickupCard2 extends State<PickupCard2> {
                     ) : 
                     Text("Join Game")
                     ,
+
+                    widget.isMyEvent ? 
+                    Container(
+                    height:20,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child:         GestureDetector(
+          onTap: () async {
+            print("onTap: ");
+            
+            List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return ClassicListDialogWidget<dynamic>(
+                    selectedIndexes: selectedPlayerIndexes,
+                    titleText: 'Choose Players',
+                    listType: ListType.multiSelect,
+                    positiveText: "Next",
+                    // onPositiveClick: () async{
+                    //   print("onPositiveClick: " );
+                    //   print("selectIndex: " + index.toString());
+                    //   //navigation add
+                     
+                    // },
+                    activeColor: Colors.green,
+                    dataList: playerList);
+              },
+              animationType: DialogTransitionType.size,
+              curve: Curves.linear,
+            );
+            selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
+            print('selectedIndex:${selectedPlayerIndexes?.toString()}');
+            playersSelected(selectedPlayerIndexes!);
+            
+            if(playersSelectedList.length > 0){
+              List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return ClassicListDialogWidget<dynamic>(
+                                  selectedIndexes: selectedRequestTypeIndexes,
+                                  titleText: 'Choose User Type',
+                                  positiveText: "Send Request",
+                                  listType: ListType.multiSelect,
+                                  
+                                  activeColor: Colors.green,
+                                  dataList: requestUserTypes);
+                            },
+                            animationType: DialogTransitionType.size,
+                            curve: Curves.linear,
+                          );
+
+                        selectedRequestTypeIndexes = requestIndexes ?? selectedRequestTypeIndexes;
+                        print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                        requestTypeSelected(selectedRequestTypeIndexes);
+            }
+          },
+
+
+          child: Text("Invite Players")
+                  ),
+                ),
+          ) : Container(),
           ])),
     ));
   }

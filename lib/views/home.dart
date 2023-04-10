@@ -35,6 +35,8 @@ import '../commands/home_page_command.dart';
 import '../commands/tournament_command.dart';
 import '../commands/event_command.dart';
 import '../commands/league_command.dart';
+import '../commands/team_command.dart';
+import '../commands/user_command.dart';
 import '../components/Buttons/seed_data_button.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -43,7 +45,7 @@ import 'dart:convert';
 import '../strings.dart';
 import '../constants.dart';
 import '../models/events_model.dart';
-import '../components/Dialogues/dialogue_scale.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -51,6 +53,86 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  List<String> teamEventList = ["Team", "Event"];
+  int selectIndex = 0;
+  String eventTeamChosen = "";
+  List myEventsToChooseFrom = [];
+  List choices = [];
+  List myTeamsToChooseFrom = [];
+  List<int>? selectedEventTeamIndexes;
+  List<dynamic> selectedEventTeamObjects = [];
+  List<int>? selectedRequestTypeIndexes;
+  List<String> selectedRequestTypeObjects = [];
+  List<dynamic> userObjectSelections = [];
+  List requestUserTypes = [
+    Constants.PLAYER.toString(),
+    Constants.ORGANIZER.toString(),
+    Constants.MANAGER.toString(),
+    Constants.MAINCOACH.toString(),
+    Constants.ASSISTANTCOACH.toString(),
+    Constants.REF.toString(),
+  ];
+  void setupEventTeamToChoose(int index) {
+    eventTeamChosen = teamEventList[index];
+    if (eventTeamChosen == "Event") {
+      setupEventsToChooseFrom();
+    } else {
+      setupTeamsToChooseFrom();
+    }
+  }
+ 
+  void setupEventsToChooseFrom() {
+    print("setupEventsToChooseFrom");
+    List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
+    myEventsToChooseFrom = myEvents;
+    choices = myEventsToChooseFrom;
+  }
+
+  void setupTeamsToChooseFrom() {
+    print("setupTeamsToChooseFrom");
+    List<dynamic> myTeams = UserCommand().getAppModelMyTeams();
+    myTeamsToChooseFrom = myTeams;
+    choices = myTeamsToChooseFrom;
+  }
+
+  eventTeamsSelected(List<int>? indexes) {    
+    print("eventTeamsSelected: " + indexes.toString());
+    selectedEventTeamObjects = [];
+    selectedEventTeamIndexes = indexes;
+    for(int i = 0; i < indexes!.length; i++){
+      selectedEventTeamObjects.add(choices[indexes[i]]);
+    }
+    print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
+  }
+  requestTypesSelected(List<int>? indexes) async {
+    print("requestTypesSelected: " + indexes.toString());    
+    selectedRequestTypeIndexes = indexes;
+    for(int i = 0; i < indexes!.length; i++){
+      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
+    }
+    await sendPlayerRequests();
+  }
+
+  Future<void> sendPlayerRequests() async{
+    print("sendPlayerRequests");
+    print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
+    print("selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    for(int i = 0; i<userObjectSelections.length;i++){
+      if(eventTeamChosen == "Event"){
+        print("send player event request");
+        await EventCommand().sendPlayerEventRequests(userObjectSelections[i],selectedEventTeamObjects, selectedRequestTypeObjects);
+      }
+      else{
+        print("send player team request");
+        await TeamCommand().sendPlayerTeamRequests(userObjectSelections[i],selectedEventTeamObjects, selectedRequestTypeObjects);
+      }
+
+    }
+  }
+
+
+
+
   final cardsMap = <Map>[
     {"key": 0, "opened": false},
     {"key": 1, "opened": false},
@@ -308,6 +390,9 @@ class _Home extends State<Home> {
 
     List selectedObjects =
         context.select<HomePageModel, List>((value) => value.selectedObjects);
+    
+     userObjectSelections =
+        context.select<HomePageModel, List>((value) => value.userObjectSelections);
 
     Map<String, dynamic> enabledSelections2 =
         context.select<HomePageModel, Map<String, dynamic>>(
@@ -323,6 +408,8 @@ class _Home extends State<Home> {
           context.select<HomePageModel, bool>(
               (value) => value.enabledSelections2[k]['enabled'])
         });
+
+    
     
 
     print("selectedKey in build: " + selectedKey);
@@ -334,15 +421,13 @@ class _Home extends State<Home> {
         child: Drawer(child: SideNavs().getMainSideNav(context)),
       ),
       body:
-          // _isFirstLoadRunning
-          //     ? const Center(
-          //         child: const CircularProgressIndicator(),
-          //       )
-          //     :
+          
           Stack(children: <Widget>[
-        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [          
+          
           Expanded(
               child: Column(children: <Widget>[
+                
             // Padding(
             //     padding: EdgeInsets.all(10.0),
             //     child: SearchField(testText: testText)),
@@ -364,6 +449,86 @@ class _Home extends State<Home> {
               },
             )),
           ])),
+          userObjectSelections.isNotEmpty ?           
+          GestureDetector(
+              onTap: () async{
+                int? index = await showAnimatedDialog<int>(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return ClassicListDialogWidget<dynamic>(
+                    selectedIndex: selectIndex,
+                    titleText: 'Title',
+                    listType: ListType.singleSelect,
+                    positiveText: "Next",                    
+                    activeColor: Colors.green,
+                    dataList: teamEventList);
+              },
+              animationType: DialogTransitionType.size,
+              curve: Curves.linear,
+            );
+              print("index: " + index.toString());
+              setupEventTeamToChoose(index!);
+              if (eventTeamChosen != "") {
+              List<int>? indexes = await showAnimatedDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) {
+                  return ClassicListDialogWidget<dynamic>(
+                      selectedIndexes: selectedEventTeamIndexes,
+                      titleText: 'Choose Players',
+                      positiveText: "Next",
+                      listType: ListType.multiSelect,
+                      activeColor: Colors.green,
+                      dataList: choices);
+                },
+                animationType: DialogTransitionType.size,
+                curve: Curves.linear,
+              );
+              selectedEventTeamIndexes = indexes ?? selectedEventTeamIndexes;
+              print('selectedIndex:${selectedEventTeamIndexes?.toString()}');
+              eventTeamsSelected(selectedEventTeamIndexes);
+            }
+            if (selectedEventTeamIndexes!.isNotEmpty) {
+              List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) {
+                  return ClassicListDialogWidget<dynamic>(
+                      selectedIndexes: selectedRequestTypeIndexes,
+                      titleText: 'Choose User Type',
+                      positiveText: "Send Request",
+                      listType: ListType.multiSelect,
+                      onNegativeClick: () {
+                        print("onNegativeClick");
+                        selectedEventTeamIndexes = [];
+                        //pop
+                        Navigator.pop(context);
+                      },
+                      activeColor: Colors.green,
+                      dataList: requestUserTypes);
+                },
+                animationType: DialogTransitionType.size,
+                curve: Curves.linear,
+              );
+
+              selectedRequestTypeIndexes =
+                  requestIndexes ?? selectedRequestTypeIndexes;
+              print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+              requestTypesSelected(selectedRequestTypeIndexes);
+            }
+              },
+            child: Container(
+              width: 200,
+              height: 50,
+              color: Colors.blue,
+              child: Center(child: Text("Send Event/Team Request")),
+            
+            )
+          )
+          : 
+          Container()
+          ,
           //list view
           Expanded(
             child: ListView.builder(
@@ -378,26 +543,7 @@ class _Home extends State<Home> {
                       //     eventObject: selectedObjects[index],
                       //     svgImage: svgImage),
                     )),
-          ),
-
-          // when the _loadMore function is running
-          // if (_isLoadMoreRunning == true)
-          //   const Padding(
-          //     padding: EdgeInsets.only(top: 0, bottom: 0),
-          //     child: Center(
-          //       child: CircularProgressIndicator(),
-          //     ),
-          //   ),
-
-          // When nothing else to load
-          // if (_hasNextPage == false)
-          // Container(
-          //   padding: const EdgeInsets.only(top: 30, bottom: 40),
-          //   color: Colors.amber,
-          //   child: const Center(
-          //     child: Text('You have fetched all of the content'),
-          //   ),
-          // ),
+          ),      
         ])
       ]),
       bottomNavigationBar: const Footers().getMainBottomNav(context),

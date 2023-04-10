@@ -313,7 +313,10 @@ class EventCommand extends BaseCommand {
 
       //loop through events
       for(int i = 0;i<eventsObject.length;i++){
+        print("loop through events");
         for(int j = 0;j<roles.length;j++){
+          print("loop through roles");
+          print("roles[j]: " + roles[j]);          
           Map<String, dynamic> sendPlayerEventRequestInput = {
             "sender_id": appModel.currentUser['_id'],
             "event_id": eventsObject[i]['event']['_id'],        

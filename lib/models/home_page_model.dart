@@ -15,6 +15,8 @@ import '../views/team/create/create.dart';
 
 class HomePageModel extends ChangeNotifier {
 
+
+
   String _testText = "";
   String get testText => _testText;
   set testText(String text) {
@@ -197,6 +199,14 @@ class HomePageModel extends ChangeNotifier {
   set selectedObjects(List selectedObjects){
     print("set selected objects!");
     _selectedObjects = selectedObjects;
+    notifyListeners();
+  }
+  
+  List _userObjectSelections = [];
+  List get userObjectSelections => _userObjectSelections;
+  set userObjectSelections(List userObjectSelections){
+    print("set selected objects!");
+    _userObjectSelections = userObjectSelections;
     notifyListeners();
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import '../../models/user_model.dart';
 import '../../commands/user_command.dart';
+import '../../commands/home_page_command.dart';
 import '../../views/player/view.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/constants.dart';
@@ -34,70 +35,22 @@ class _PlayerCard extends State<PlayerCard> {
       textStyle: const TextStyle(fontSize: 20));
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
-    int selectIndex = 0;
-    int chosenRequestType = 0;
-    List requestUserTypes = [
-      Constants.PLAYER.toString(),
-      Constants.ORGANIZER.toString(),
-      Constants.MANAGER.toString(),
-      Constants.MAINCOACH.toString(),
-      Constants.ASSISTANTCOACH.toString(),
-      Constants.REF.toString(),
-    ];
 
-    List myEventsToChooseFrom = [];
-    List myTeamsToChooseFrom = [];
-    List choices = [];
+  addPlayerToObjectSelection() {
+    print("addPlayerToSelectedList");
+    HomePageCommand().addPlayerToObjectSelection(widget.playerObject);
+  }
 
-    void setupEventsToChooseFrom() {
-      print("setupEventsToChooseFrom");
-      List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
-      myEventsToChooseFrom = myEvents;
-    }
+  removePlayerToObjectSelection() {
+    print("removePlayerToSelectedList");
+    HomePageCommand().removePlayerToObjectSelection(widget.playerObject);
+  }
 
-    void setupTeamsToChooseFrom() {
-      print("setupTeamsToChooseFrom");
-      List<dynamic> myTeams = UserCommand().getAppModelMyTeams();
-      myTeamsToChooseFrom = myTeams;
-    }
-
-    void setupChoices() {
-      setupEventsToChooseFrom();
-      setupTeamsToChooseFrom();
-      //set choices to be the list of myEventsToChooseFrom and myEventsToChooseFrom
-      choices = [...myEventsToChooseFrom, ...myTeamsToChooseFrom];
-      print("choices: " + choices.toString());
-    }
-
-    
-
-    List<int>? selectedEventTeamIndexes;
-    List<int>? selectedRequestTypeIndexes;
-    List<dynamic> selectedEventTeamObjects = [];
-
-    eventTeamsSelected(List<int>? indexes) {
-      print("eventTeamsSelected: " + indexes.toString());
-      selectedEventTeamIndexes = indexes;
-    }
-
-    requestTypeSelected(List<int>? indexes) {
-      print("requestTypeSelected: " + indexes.toString());
-      selectedRequestTypeIndexes = indexes;
-      sendPlayersEventRequest();
-
-    }
-    sendPlayersEventRequest(){
-      print("sendPlayersEventRequest");
-      List<dynamic> players = [widget.playerObject];
-      // EventCommand().sendPlayerEventRequest(players, );
-    }
-    
   @override
   Widget build(BuildContext context) {
     print("Player card: " + widget.playerObject.toString());
     print("widget name: ");
     print(widget.playerObject.toString());
-    setupChoices();
 
     return Listener(
         child: GestureDetector(
@@ -114,131 +67,72 @@ class _PlayerCard extends State<PlayerCard> {
         );
       },
       child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: EdgeInsets.all(12.5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0 * 1),
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  color,
-                  color,
-                  color,
-                  color,
-                ],
-                stops: const [
-                  0.0,
-                  .3,
-                  .6,
-                  1.0,
-                ]),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 10.0,
-                offset: -Offset(10.0 / 2, 10.0 / 2),
-                color: Colors.white,
-              ),
+        duration: const Duration(milliseconds: 150),
+        padding: EdgeInsets.all(12.5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0 * 1),
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                color,
+                color,
+                color,
+                color,
+              ],
+              stops: const [
+                0.0,
+                .3,
+                .6,
+                1.0,
+              ]),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10.0,
+              offset: -Offset(10.0 / 2, 10.0 / 2),
+              color: Colors.white,
+            ),
+          ],
+        ),
+        child: Row(children: [
+          Container(
+              child: InnerNeumorphicCardFb1(
+                  text: widget.playerObject['email'],
+                  svgImage: widget.svgImage,
+                  subtitle:
+                      "test subtitle", //widget.playerObject['description'],
+                  onPressed: () {
+                    print("inside container onPressed");
+                  })),
+          //add column
+          Column(
+            children: [
+              GestureDetector(
+                  child: Text("Add to Selection"),
+                  onTap: () {
+                    addPlayerToObjectSelection();
+                  }),
+              GestureDetector(
+                  child: Text("Remove to Selection"),
+                  onTap: () {
+                    removePlayerToObjectSelection();
+                  }),
             ],
           ),
-          child: Row(children: [
-            Container(
-                child: InnerNeumorphicCardFb1(
-                    text: widget.playerObject['email'],
-                    svgImage: widget.svgImage,
-                    subtitle:
-                        "test subtitle", //widget.playerObject['description'],
-                    onPressed: () {
-                      print("inside container onPressed");
-                    })),
-            GestureDetector(
-              onTap: () {
-                //potentially show dialogue
-                //with different request options
-                UserCommand().sendFriendRequest(widget.playerObject);
-              },
-              child: Container(
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: const Icon(Icons.person_add_alt_1)),
-              ),
+          GestureDetector(
+            onTap: () {
+              //potentially show dialogue
+              //with different request options
+              UserCommand().sendFriendRequest(widget.playerObject);
+            },
+            child: Container(
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: const Icon(Icons.person_add_alt_1)),
             ),
-            GestureDetector(
-              onTap: () async {
-                List<int>? indexes = await showAnimatedDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) {
-                    return ClassicListDialogWidget<dynamic>(
-                        selectedIndexes: selectedEventTeamIndexes,
-                        titleText: 'Choose Event/Team',
-                        positiveText: "Next",
-                        listType: ListType.multiSelect,                                                                                                    
-                          // showAnimatedDialog<int>(
-                          //   context: context,
-                          //   barrierDismissible: true,
-                          //   builder: (BuildContext context) {
-                          //     return ClassicListDialogWidget<dynamic>(
-                          //         selectedIndex: selectIndex,
-                          //         titleText: 'Choose User Type',
-                          //         positiveText: "Send Request",
-                          //         listType: ListType.multiSelect,
-                          //         onPositiveClick: () {
-                          //           // chosenRequestType = requestUserTypes[index!];
-                          //           print("Choose User Type: " + selectIndex.toString());
-                          //           // sendPlayerRequest();
-                          //         },
-                          //         activeColor: Colors.green,
-                          //         dataList: requestUserTypes);
-                          //   },
-                          //   animationType: DialogTransitionType.size,
-                          //   curve: Curves.linear,
-                          // );                          
-
-                        
-                        activeColor: Colors.green,
-                        dataList: choices);
-                  },
-                  animationType: DialogTransitionType.size,
-                  curve: Curves.linear,
-                );
-                selectedEventTeamIndexes = indexes ?? selectedEventTeamIndexes;
-                print('selectedIndex:${selectedEventTeamIndexes?.toString()}');
-                eventTeamsSelected(selectedEventTeamIndexes);
-
-                if(selectedEventTeamIndexes!.isNotEmpty){
-                  
-                   List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) {
-                              return ClassicListDialogWidget<dynamic>(
-                                  selectedIndexes: selectedRequestTypeIndexes,
-                                  titleText: 'Choose User Type',
-                                  positiveText: "Send Request",
-                                  listType: ListType.multiSelect,
-                                  
-                                  activeColor: Colors.green,
-                                  dataList: requestUserTypes);
-                            },
-                            animationType: DialogTransitionType.size,
-                            curve: Curves.linear,
-                          );
-
-                        selectedRequestTypeIndexes = requestIndexes ?? selectedRequestTypeIndexes;
-                        print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                        eventTeamsSelected(selectedRequestTypeIndexes);
-
-                
-                }
-              },
-              child: Container(
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: const Icon(Icons.send)),
-              ),
-            ),
-          ])),
+          ),
+        ]),
+      ),
     ));
   }
 }
