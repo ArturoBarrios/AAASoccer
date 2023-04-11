@@ -104,8 +104,7 @@ class _PickupCard2 extends State<PickupCard2> {
       selectedRequestTypeIndexes = indexes;
        for(int i = 0; i < indexes!.length; i++){
           selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
-        }
-      sendPlayersEventRequest();
+        }      
 
     }
 
@@ -120,6 +119,19 @@ class _PickupCard2 extends State<PickupCard2> {
       }
       
     }
+
+    Future<void> sendEventRequest() async {
+    print("sendEventRequest");
+    print("selectedRequestTypeObjects.length: " +
+        selectedRequestTypeObjects.length.toString());    
+    print(
+        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    print("send player event request");
+    for(int i = 0;i<selectedRequestTypeObjects.length;i++){
+      await EventCommand().sendOrganizerEventRequest(widget.gameObject, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+    }
+    
+  }
 
 
 
@@ -238,15 +250,52 @@ class _PickupCard2 extends State<PickupCard2> {
                       ),
                     ),
                     !widget.isMyEvent ? 
-                    IconButton(
-                      icon: const Icon(Icons.send),
-                      tooltip: 'Go to the next page',
-                      onPressed: () {
-                        //send event request
-                        sendEventRequest(widget.gameObject);              
+                    // IconButton(
+                    //   icon: const Icon(Icons.send),
+                    //   tooltip: 'Go to the next page',
+                    //   onPressed: () {
+                    //     //send event request
+                    //     sendEventRequest(widget.gameObject);              
+                    //   },
+                    // ) 
+                    Container(
+                height: 20,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: GestureDetector(
+                      onTap: () async {
+                        print("onTap: ");
+                        List<int>? requestIndexes =
+                            await showAnimatedDialog<dynamic>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            
+
+                            return ClassicListDialogWidget<dynamic>(
+                                selectedIndexes: selectedRequestTypeIndexes,
+                                titleText: 'Choose User Type',
+                                positiveText: "Send Request",
+                                listType: ListType.multiSelect,
+                                activeColor: Colors.green,
+                                dataList: requestUserTypes);
+                          },
+                          animationType: DialogTransitionType.size,
+                          curve: Curves.linear,
+                        );
+
+                        selectedRequestTypeIndexes =
+                            requestIndexes ?? selectedRequestTypeIndexes;
+                        print(
+                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                        await requestTypeSelected(selectedRequestTypeIndexes);
+                        await sendEventRequest();
                       },
-                    ) : 
-                    Text("Join Game")
+                      child: Text("Send Request")),
+                ),
+              )
+                    : 
+                    Text("Join Your Game")
                     ,
 
                     widget.isMyEvent ? 
@@ -304,6 +353,7 @@ class _PickupCard2 extends State<PickupCard2> {
                         selectedRequestTypeIndexes = requestIndexes ?? selectedRequestTypeIndexes;
                         print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
                         requestTypeSelected(selectedRequestTypeIndexes);
+                        sendEventRequest();
             }
           },
 

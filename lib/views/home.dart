@@ -351,7 +351,7 @@ class _Home extends State<Home> {
     } else if (selectedKey == Constants.LEAGUE) {
       //process league data for card
       LeagueCommand().currateLeagueData(selectedObject);
-      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage);
+      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage, isMyEvent: false);
     } else if (selectedKey == Constants.PLAYER) {
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {

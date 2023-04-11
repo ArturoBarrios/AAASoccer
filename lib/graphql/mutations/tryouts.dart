@@ -12,6 +12,8 @@ class TryoutMutations{
               type: TRAINING,
               archived: false,
               isMainEvent:true,
+              startTime: "${eventInput['startTime']}",
+              endTime: "${eventInput['endTime']}",
               userParticipants: {
                 create:
                   {
