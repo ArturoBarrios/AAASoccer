@@ -71,6 +71,12 @@ class BaseCommand {
   return words;
 }
 
+void nukeData(){
+  //remove all data
+  appModel.currentUser = {};
+
+}
+
   //will load profile, team, and other user images
   Future<Map<String, dynamic>> loadUserImagesFromAWS() async{
     print("loadUserImagesFromAWS()");
@@ -111,6 +117,7 @@ class BaseCommand {
   }
 
   void signOut() async{
+    BaseCommand().nukeData();
     await AmplifyAuthService().signOut();
   }
 
@@ -232,17 +239,27 @@ class BaseCommand {
           List<dynamic> myArchivedEvents = [];
           List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
           print("friendss: "+friends.toString());          
-          print("myEventss: "+myEvents.toString());
-          myEventsCopy.forEach((element) async {
-            print("myEvent: "+element.toString());
-            if(element['archived']!=false){
-              print("archived");
-              myEvents.remove(element);
-              print("removed");
-              myArchivedEvents.add(element);
-              print("added");
-            }
-          });
+          // print("myEventss: "+myEvents.toString());
+          // for(int i = 0;i<myEventsCopy.length;i++){
+          //   dynamic myEventCopy = myEventsCopy[i];
+          //   String millisecondsString = myEventCopy[i]['event']['endTime'].toString();
+          //   DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
+          //   print("myEvent: "+myEventCopy.toString());
+          //   if(myEventCopy['archived'] ||
+          //       (dateTime.isBefore(DateTime.now())
+          //     )
+          //   ){
+          //     print("archived");
+          //     myEvents.remove(myEventCopy);
+          //     print("removed");
+          //     myArchivedEvents.add(myEventCopy);
+          //     print("added");
+          //   }
+
+          // }
+          // print("myEvents2: "+myEvents.toString());
+          
+          
           print("setting appModel.myEvents, appModel.friends, and appModel.myArchivedEvents ");
           // appModel.myEvents = myEvents;
           // appModel.friends = friends;
@@ -299,6 +316,13 @@ class BaseCommand {
 
     return resp;
   
+  }
+
+  DateTime dateTimeFromMilliseconds(String millisecondsString){
+    int millisecondsSinceEpoch = int.parse(millisecondsString);
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+
+    return dateTime;
   }
   
   Future<Map<String, dynamic>> purgeProfile(Map<String, dynamic> data) async{

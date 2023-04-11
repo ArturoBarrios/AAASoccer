@@ -8,7 +8,9 @@ import 'package:geolocator/geolocator.dart';
 
 class AppModel extends ChangeNotifier {
 
-  
+  void nukeModelData(){
+    
+  }
 
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;

@@ -10,11 +10,12 @@ import '../../views/league/view.dart';
 
 class LeagueCard extends StatefulWidget {
   const LeagueCard(
-      {Key? key, required this.leagueObject, required this.svgImage})
+      {Key? key, required this.leagueObject, required this.svgImage, required this.isMyEvent })
       : super(key: key);
   final Map<String, dynamic> leagueObject;
   final Svg svgImage;
   final double bevel = 10.0;
+  final bool isMyEvent;
 
   @override
   State<LeagueCard> createState() => _LeagueCard();
@@ -45,7 +46,7 @@ class _LeagueCard extends State<LeagueCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return LeagueView();
+            return LeagueView(isMyEvent: widget.isMyEvent, league: widget.leagueObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

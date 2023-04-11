@@ -65,14 +65,6 @@ class _PlayerViewState extends State<PlayerView> {
     choices = myTeamsToChooseFrom;
   }
 
-  // void setupChoices() {
-  //   setupEventsToChooseFrom();
-  //   setupTeamsToChooseFrom();
-  //   //set choices to be the list of myEventsToChooseFrom and myEventsToChooseFrom
-  //   choices = [...myEventsToChooseFrom, ...myTeamsToChooseFrom];
-  //   print("choices: " + choices.toString());
-  // }
-
   List<String> teamEventList = ["Team", "Event"];
   List<int>? selectedEventTeamIndexes;
   List<int>? selectedRequestTypeIndexes;

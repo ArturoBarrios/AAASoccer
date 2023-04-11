@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import '../../commands/event_command.dart';
 import '../../components/headers.dart';
+import '../../constants.dart';
 
 class TrainingView extends StatefulWidget {
   const TrainingView(
@@ -30,6 +33,38 @@ class _TrainingViewState extends State<TrainingView> {
     Navigator.pop(context);
   }
 
+  List<int>? selectedRequestTypeIndexes;
+  List requestUserTypes = [
+    Constants.PLAYER.toString(),
+    Constants.ORGANIZER.toString(),
+    Constants.MANAGER.toString(),
+    Constants.MAINCOACH.toString(),
+    Constants.ASSISTANTCOACH.toString(),
+    Constants.REF.toString(),
+  ];  
+  List<String> selectedRequestTypeObjects = [];
+
+  requestTypeSelected(List<int>? indexes) {
+    print("requestTypeSelected: " + indexes.toString());
+    selectedRequestTypeIndexes = indexes;
+    for (int i = 0; i < indexes!.length; i++) {
+      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
+    }    
+  }
+
+  Future<void> sendEventRequest() async {
+    print("sendEventRequest");
+    print("selectedRequestTypeObjects.length: " +
+        selectedRequestTypeObjects.length.toString());    
+    print(
+        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    print("send player event request");
+    for(int i = 0;i<selectedRequestTypeObjects.length;i++){
+      await EventCommand().sendOrganizerEventRequest(widget.training, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+    }
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     print("TrainingView build() widget.training: "+ widget.training.toString());
@@ -38,52 +73,43 @@ class _TrainingViewState extends State<TrainingView> {
       appBar: Headers().getMainHeader(context),
       body: Center(
           child: Column(children: [
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Name'),
-        ),
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Away'),
-        ),
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Training'),
-        ),
-        TextField(
-          controller: surfaceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Surface'),
-        ),
-        TextField(
-          controller: fieldSizeController,
-          decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
-        ),
-        TextField(
-          controller: privateController,
-          decoration: new InputDecoration.collapsed(hintText: 'Private'),
-        ),
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Price'),
-        ),
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Location'),
-        ),
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Images'),
-        ),
+            !widget.isMyEvent ? 
+            Container(
+                height: 20,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: GestureDetector(
+                      onTap: () async {
+                        print("onTap: ");
+                        List<int>? requestIndexes =
+                            await showAnimatedDialog<dynamic>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return ClassicListDialogWidget<dynamic>(
+                                selectedIndexes: selectedRequestTypeIndexes,
+                                titleText: 'Choose User Type',
+                                positiveText: "Send Request",
+                                listType: ListType.multiSelect,
+                                activeColor: Colors.green,
+                                dataList: requestUserTypes);
+                          },
+                          animationType: DialogTransitionType.size,
+                          curve: Curves.linear,
+                        );
+
+                        selectedRequestTypeIndexes =
+                            requestIndexes ?? selectedRequestTypeIndexes;
+                        print(
+                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                        await requestTypeSelected(selectedRequestTypeIndexes);
+                        await sendEventRequest();
+                      },
+                      child: Text("Send Request")),
+                ),
+              ) :
+              Container(),
         
-        GestureDetector(
-            onTap: () {
-              goBack();
-            },
-            child: Text("Back to Home")),
       ])),
     );
   }

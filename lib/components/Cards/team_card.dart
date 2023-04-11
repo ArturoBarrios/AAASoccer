@@ -10,11 +10,14 @@ import '../../views/team/view.dart';
 
 class TeamCard extends StatefulWidget {
   const TeamCard(
-      {Key? key, required this.teamObject, required this.svgImage})
+      {Key? key, required this.teamObject, required this.svgImage,
+        required this.isMyTeam
+      })
       : super(key: key);
   final Map<String, dynamic> teamObject;
   final Svg svgImage;
   final double bevel = 10.0;
+  final bool isMyTeam;
 
   @override
   State<TeamCard> createState() => _TeamCard();
@@ -61,7 +64,7 @@ class _TeamCard extends State<TeamCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TeamView(teamObject: widget.teamObject,);
+            return TeamView(teamObject: widget.teamObject, isMyTeam: widget.isMyTeam);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

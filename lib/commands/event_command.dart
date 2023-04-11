@@ -313,7 +313,10 @@ class EventCommand extends BaseCommand {
 
       //loop through events
       for(int i = 0;i<eventsObject.length;i++){
+        print("loop through events");
         for(int j = 0;j<roles.length;j++){
+          print("loop through roles");
+          print("roles[j]: " + roles[j]);          
           Map<String, dynamic> sendPlayerEventRequestInput = {
             "sender_id": appModel.currentUser['_id'],
             "event_id": eventsObject[i]['event']['_id'],        
@@ -637,7 +640,7 @@ class EventCommand extends BaseCommand {
     dynamic userParticipants = event['userParticipants']['data'];
     print("userParticipants: " + userParticipants.toString());
     for(int i = 0; i<userParticipants.length; i++){
-      if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']){
+      if(userParticipants[i]['_id'] == appModel.currentUser['_id']){
         resp = true;
         print("isMyEvent() = true");
       }
@@ -784,6 +787,22 @@ class EventCommand extends BaseCommand {
     print("friends: ");
     print(appModel.currentUser['friends']['data']);
     appModel.friends = appModel.currentUser['friends']['data'];
+    List<dynamic> allMyEvents = appModel.currentUser['eventUserParticipants']['data'];
+    print("allMyEvents: "+allMyEvents.toString());
+    List myEvents = allMyEvents;
+    List myArchivedEvents = [];
+    //filter out archived events
+    for(int i = 0; i < allMyEvents.length; i++){
+      String millisecondsString = allMyEvents[i]['event']['endTime'].toString();
+      DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
+      // print("myEvent: "+allMyEvents.toString());
+      if(allMyEvents[i]['archived'] == true||
+        dateTime.isBefore(DateTime.now())      
+      ){
+        myArchivedEvents.add(allMyEvents[i]);
+        myEvents.remove(allMyEvents[i]);
+      }
+    }
     appModel.myEvents = appModel.currentUser['eventUserParticipants']['data'];
 
     return setupEventsResp;

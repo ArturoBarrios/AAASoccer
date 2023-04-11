@@ -37,6 +37,24 @@ class HomePageCommand extends BaseCommand {
     
   }
 
+  void addPlayerToObjectSelection(dynamic object){
+    print("addPlayerToObjectSelection");
+    if(!homePageModel.userObjectSelections.contains(object)){
+      homePageModel.userObjectSelections.add(object);    
+    }
+    print("homePageModel.userObjectSelections: "+homePageModel.userObjectSelections.toString());      
+  }
+  
+  void removePlayerToObjectSelection(dynamic object){
+    print("removePlayerToObjectSelection");
+    print(object);
+    if(homePageModel.userObjectSelections.contains(object)){
+      homePageModel.userObjectSelections.remove(object);    
+    }
+    print("homePageModel.userObjectSelections: "+homePageModel.userObjectSelections.toString());
+    
+  }
+
   void toggleEvent(int index){
   }
 

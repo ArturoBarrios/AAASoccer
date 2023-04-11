@@ -1,5 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import '../../commands/tournament_command.dart';
@@ -28,6 +29,34 @@ class _TournamentCreateState extends State<TournamentCreate> {
 
   bool _isLoading = false;
 
+  String startTimestamp = "";
+  String endTimestamp = "";
+  bool startTimeSet = false;
+  DateTime startTime = new DateTime.now();
+  DateTime endTime = new DateTime.now();
+  DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
+  DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(DateTime.now().add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);  
+
+  void setStartTime(DateTime time) {
+    setState(() {
+      startTime = time;
+      startTimestamp = time.millisecondsSinceEpoch.toString();
+      print("setStartTime: " + time.toString());
+      print("setStartTime: " + startTimestamp.toString());
+      twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(time.add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
+      startTimeSet = true;
+    });
+  }
+
+  void setEndTime(DateTime time) {
+    setState(() {
+      endTime = time;
+      endTimestamp = time.millisecondsSinceEpoch.toString();
+      print("setEndTime: " + time.toString());
+      print("setEndTime: " + endTimestamp.toString());
+    });
+  }
+
   Future<Map<String, dynamic>> createTournament() async {
     print("createTournament");
     Map<String, dynamic> createEventResponse = {
@@ -39,14 +68,10 @@ class _TournamentCreateState extends State<TournamentCreate> {
         "name": nameController.text.trim(),
         "price": priceController.text.trim(),
         'isMainEvent': true,           
+        'startTime': startTimestamp,
+        'endTime': endTimestamp,
       };
-
-      // Map<String, dynamic> createdEvent =
-      //     await EventCommand().createEvent(createEventInput);
-      // print("createdEvent: ");
-      // print(createdEvent['data']);
-      // if (createdEvent['success']) {
-        // Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+      
         Map<String, dynamic> locationInput = {"latitude": AppModel().currentPosition.latitude, "longitude": AppModel().currentPosition.longitude};//generateRandomLocation["data"]["randomLocation"];
         List<dynamic> groupPlayOptions = [true, false];
         var rng = Random();        
@@ -109,22 +134,36 @@ class _TournamentCreateState extends State<TournamentCreate> {
           controller: numberOfTeamsController,
           decoration: new InputDecoration.collapsed(hintText: 'Number of Teams'),
         ),
-        TextField(
-          controller: groupPlayController,
-          decoration: new InputDecoration.collapsed(hintText: 'Group Play?'),
-        ),
-        TextField(
-          controller: surfaceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Surface'),
-        ),
-        TextField(
-          controller: fieldSizeController,
-          decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
-        ),
-        TextField(
-          controller: privateController,
-          decoration: new InputDecoration.collapsed(hintText: 'Private'),
-        ),
+        TextButton(
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context, showTitleActions: true,
+                      onChanged: (date) {
+                    print('change $date in time zone ' +
+                        date.timeZoneOffset.inHours.toString());
+                  }, onConfirm: (date) {
+                    print('confirm $date');
+                    setStartTime(date);
+                  }, currentTime: !startTimeSet ? rightNow : startTime);
+                },
+                child: Text(
+                  'show date time picker',
+                  style: TextStyle(color: Colors.blue),
+                )),
+        TextButton(
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context, showTitleActions: true,
+                      onChanged: (date) {
+                    print('change $date in time zone ' +
+                        date.timeZoneOffset.inHours.toString());
+                  }, onConfirm: (date) {
+                    print('confirm $date');
+                    setEndTime(date);
+                  }, currentTime: twoHoursFromStart);
+                },
+                child: Text(
+                  'show date time picker',
+                  style: TextStyle(color: Colors.blue),
+                )),
         TextField(
           controller: locationController,
           decoration: new InputDecoration.collapsed(hintText: 'Location'),

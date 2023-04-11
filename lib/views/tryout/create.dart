@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/tryout_command.dart';
 import '../../commands/event_command.dart';
@@ -27,7 +28,38 @@ class _TryoutCreateState extends State<TryoutCreate> {
 
   bool _isLoading = false;
 
-  
+  String startTimestamp = "";
+  String endTimestamp = "";
+  bool startTimeSet = false;
+  DateTime startTime = new DateTime.now();
+  DateTime endTime = new DateTime.now();
+  DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
+  DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(
+      DateTime.now().add(Duration(hours: 2)).millisecondsSinceEpoch ~/
+          1000 *
+          1000);
+
+  void setStartTime(DateTime time) {
+    setState(() {
+      startTime = time;
+      startTimestamp = time.millisecondsSinceEpoch.toString();
+      print("setStartTime: " + time.toString());
+      print("setStartTime: " + startTimestamp.toString());
+      twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(
+          time.add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
+      startTimeSet = true;
+    });
+  }
+
+  void setEndTime(DateTime time) {
+    setState(() {
+      endTime = time;
+      endTimestamp = time.millisecondsSinceEpoch.toString();
+      print("setEndTime: " + time.toString());
+      print("setEndTime: " + endTimestamp.toString());
+    });
+  }
 
   Future<Map<String, dynamic>> createTryout() async {
     print("createGame");
@@ -37,25 +69,28 @@ class _TryoutCreateState extends State<TryoutCreate> {
     };
     try {
       var rng = Random();
-       Map<String, dynamic> eventInput = {        
-        "name": "Tryout " + rng.nextInt(100000000).toString(),
-        'isMainEvent': true,        
-        'price':  "10"//int.parse(priceController.text.toString())
+      Map<String, dynamic> eventInput = {
+        "name": nameController.text.toString(),
+        'isMainEvent': true,
+        'price': priceController.text.toString(),
+        'startTime': startTimestamp,
+        'endTime': endTimestamp,
       };
 
-      Map<String, dynamic> randomPickupData = EventSeeder().getRandomTryoutData();      
+      Map<String, dynamic> randomPickupData =
+          EventSeeder().getRandomTryoutData();
       Map<String, dynamic> locationInput = {
         "latitude": 39.9526,
         "longitude": 75.1652,
       };
-      print("locationInputCheck: " + locationInput.toString());  
+      print("locationInputCheck: " + locationInput.toString());
 
-      Map<String, dynamic> createTryoutResp = await TryoutCommand().createTryout(randomPickupData, eventInput, locationInput);                                      
-      print("createTryoutResp: "+ createTryoutResp.toString());
-                    
+      Map<String, dynamic> createTryoutResp = await TryoutCommand()
+          .createTryout(randomPickupData, eventInput, locationInput);
+      print("createTryoutResp: " + createTryoutResp.toString());
+
       return createEventResponse;
-      }
-       on ApiException catch (e) {
+    } on ApiException catch (e) {
       return createEventResponse;
     }
   }
@@ -82,18 +117,36 @@ class _TryoutCreateState extends State<TryoutCreate> {
           controller: isPickupController,
           decoration: new InputDecoration.collapsed(hintText: 'Pickup'),
         ),
-        TextField(
-          controller: surfaceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Surface'),
-        ),
-        TextField(
-          controller: fieldSizeController,
-          decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
-        ),
-        TextField(
-          controller: privateController,
-          decoration: new InputDecoration.collapsed(hintText: 'Private'),
-        ),
+        TextButton(
+            onPressed: () {
+              DatePicker.showDateTimePicker(context, showTitleActions: true,
+                  onChanged: (date) {
+                print('change $date in time zone ' +
+                    date.timeZoneOffset.inHours.toString());
+              }, onConfirm: (date) {
+                print('confirm $date');
+                setStartTime(date);
+              }, currentTime: !startTimeSet ? rightNow : startTime);
+            },
+            child: Text(
+              'show date time picker',
+              style: TextStyle(color: Colors.blue),
+            )),
+        TextButton(
+            onPressed: () {
+              DatePicker.showDateTimePicker(context, showTitleActions: true,
+                  onChanged: (date) {
+                print('change $date in time zone ' +
+                    date.timeZoneOffset.inHours.toString());
+              }, onConfirm: (date) {
+                print('confirm $date');
+                setEndTime(date);
+              }, currentTime: twoHoursFromStart);
+            },
+            child: Text(
+              'show date time picker',
+              style: TextStyle(color: Colors.blue),
+            )),
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),

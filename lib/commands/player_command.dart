@@ -16,46 +16,57 @@ import '../graphql/queries/players.dart';
 
 class PlayerCommand extends BaseCommand {
 
-   Future<Map<String, dynamic>> getPlayersNearLocation() async{
-      print("getPlayersNearLocation");
-    Map<String, dynamic> getTrainingsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
-    try{
+  List<dynamic> getAppModelPlayersNearMe() {
+    print("getAppModelPlayersNearMe");
+    print("appModel.playersNearMe: "+appModel.playersNearMe.toString());
+    return appModel.playersNearMe;
+  }
+
+  Future<Map<String, dynamic>> getPlayersNearLocation() async {
+    print("getPlayersNearLocation");
+    Map<String, dynamic> getTrainingsNearLocationResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
       print("my position");
       // Position myPosition = await GeoLocationCommand().determinePosition();
       http.Response response = await http.post(
-          Uri.parse('https://graphql.fauna.com/graphql'),
-          headers: <String, String>{
-            'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
-            'Content-Type': 'application/json'
-          },
-          body: jsonEncode(<String, String>{
-            'query': PlayerQueries().getUserPlayers(),
-          }),
-        );
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': PlayerQueries().getUserPlayers(),
+        }),
+      );
 
-        print("response body: ");
-        print(jsonDecode(response.body));
-
+      print("response body: ");
+      print(jsonDecode(response.body));
 
       final result = jsonDecode(response.body)['data']['allUsers']['data'];
       //remove the current user from the list
-      result.removeWhere((element) => element['_id'] == appModel.currentUser['_id']);
-      appModel.players = result;  
-      
+      result.removeWhere(
+          (element) => element['_id'] == appModel.currentUser['_id']);
+      appModel.players = result;
+
       getTrainingsNearLocationResp["success"] = true;
       getTrainingsNearLocationResp["message"] = "Games Retrieved";
       getTrainingsNearLocationResp["data"] = result;
-      
     } on Exception catch (e) {
-      print('Mutation failed: $e');  
+      print('Mutation failed: $e');
     }
 
     return getTrainingsNearLocationResp;
-
   }
 
-  Future<Map<String, dynamic>> createPlayer(Map<String, dynamic> userInput,
-      Map<String, dynamic> playerInput, Map<String, dynamic> locationInput, bool withTeam) async {
+  Future<Map<String, dynamic>> createPlayer(
+      Map<String, dynamic> userInput,
+      Map<String, dynamic> playerInput,
+      Map<String, dynamic> locationInput,
+      bool withTeam) async {
     print("createPlayer");
     Map<String, dynamic> createPlayerResponse = {
       "success": false,
@@ -66,32 +77,34 @@ class PlayerCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': PlayerMutations().createPlayer(userInput, playerInput, locationInput),
+          'query': PlayerMutations()
+              .createPlayer(userInput, playerInput, locationInput),
         }),
       );
 
       print("response body: ");
       print(jsonDecode(response.body));
 
-      Map<String, dynamic> player = jsonDecode(response.body)['data']['createPlayer'];
-      Map<String, dynamic> user = player['user'];      
+      Map<String, dynamic> player =
+          jsonDecode(response.body)['data']['createPlayer'];
+      Map<String, dynamic> user = player['user'];
       AppModel().currentUser = user;
-            
+
       createPlayerResponse["success"] = true;
       createPlayerResponse["message"] = "Player for Team Created";
       createPlayerResponse["data"] = player;
-
     } on ApiException catch (e) {
-      print('Mutation failed: $e');      
+      print('Mutation failed: $e');
     }
-      return createPlayerResponse;
+    return createPlayerResponse;
   }
 
-  Future<Map<String, dynamic>> updatePlayerWithTeam(Map<String,dynamic>playerInput, Map<String,dynamic>teamInput) async {
+  Future<Map<String, dynamic>> updatePlayerWithTeam(
+      Map<String, dynamic> playerInput, Map<String, dynamic> teamInput) async {
     print("updatePlayerWithTeam");
     Map<String, dynamic> updatePlayerWithTeamResponse = {
       "success": false,
@@ -105,27 +118,24 @@ class PlayerCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': PlayerMutations().updatePlayerWithTeam(playerInput, teamInput),
+          'query':
+              PlayerMutations().updatePlayerWithTeam(playerInput, teamInput),
         }),
       );
 
       print("response body: ");
       print(jsonDecode(response.body));
 
-      
-      
       updatePlayerWithTeamResponse["success"] = true;
-      updatePlayerWithTeamResponse["message"] = "Player for Team Created";      
-      updatePlayerWithTeamResponse["data"] = jsonDecode(response.body)['data']['updatePlayer'];
-
-      
+      updatePlayerWithTeamResponse["message"] = "Player for Team Created";
+      updatePlayerWithTeamResponse["data"] =
+          jsonDecode(response.body)['data']['updatePlayer'];
     } on ApiException catch (e) {
       print('Mutation failed: $e');
-      
     }
     return updatePlayerWithTeamResponse;
   }
