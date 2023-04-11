@@ -64,7 +64,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TeamView(teamObject: widget.teamRequestObject);
+            return TeamView(teamObject: widget.teamRequestObject, isMyTeam: false,);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -102,7 +102,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: ("join team("+widget.teamRequestObject['name'].toString()+")"),
+                    text: ("join team("+widget.teamRequestObject['team']['name'].toString()+")"),
                     svgImage: widget.svgImage,
                     subtitle:
                         "sent by "+widget.teamRequestObject['sender']['username'].toString()

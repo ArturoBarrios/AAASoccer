@@ -71,6 +71,12 @@ class BaseCommand {
   return words;
 }
 
+void nukeData(){
+  //remove all data
+  appModel.currentUser = {};
+
+}
+
   //will load profile, team, and other user images
   Future<Map<String, dynamic>> loadUserImagesFromAWS() async{
     print("loadUserImagesFromAWS()");
@@ -111,6 +117,7 @@ class BaseCommand {
   }
 
   void signOut() async{
+    BaseCommand().nukeData();
     await AmplifyAuthService().signOut();
   }
 

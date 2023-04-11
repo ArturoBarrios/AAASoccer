@@ -355,7 +355,9 @@ class _Home extends State<Home> {
     } else if (selectedKey == Constants.PLAYER) {
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {
-      card = TeamCard(teamObject: selectedObject, svgImage: svgImage);
+      bool isMyTeam = false;
+      isMyTeam = TeamCommand().isMyTeam(selectedObject);
+      card = TeamCard(teamObject: selectedObject, svgImage: svgImage, isMyTeam: isMyTeam);
     } else if (selectedKey == Constants.FRIEND) {
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.MYEVENTS) {
