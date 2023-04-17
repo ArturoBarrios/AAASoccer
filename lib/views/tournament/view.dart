@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-
 import '../../commands/event_command.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
+import '../../components/events_calendar.dart';
 
 class TournamentView extends StatefulWidget {
   const TournamentView(
@@ -68,46 +68,61 @@ class _TournamentViewState extends State<TournamentView> {
   Widget build(BuildContext context) {
     print("TournamentView build() widget.tournament: "+ widget.tournament.toString());
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "Tournament"),
-      body: Center(
-          child: Column(children: [
-            !widget.isMyEvent ? 
+  appBar: Headers().getBackHeader(context, "Tournament"),
+  body: SingleChildScrollView(
+    child: Center(
+      child: Expanded(
+        child: Column(
+          children: [
             Container(
-                height: 20,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: GestureDetector(
-                      onTap: () async {
-                        print("onTap: ");
-                        List<int>? requestIndexes =
-                            await showAnimatedDialog<dynamic>(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            return ClassicListDialogWidget<dynamic>(
+              height: 500,
+              child: EventsCalendar(testText: "test", events: ""),
+            ),
+            !widget.isMyEvent
+                ? Container(
+                    height: 20,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: GestureDetector(
+                        onTap: () async {
+                          print("onTap: ");
+                          List<int>? requestIndexes =
+                              await showAnimatedDialog<dynamic>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return ClassicListDialogWidget<dynamic>(
                                 selectedIndexes: selectedRequestTypeIndexes,
                                 titleText: 'Choose User Type',
                                 positiveText: "Send Request",
                                 listType: ListType.multiSelect,
                                 activeColor: Colors.green,
-                                dataList: requestUserTypes);
-                          },
-                          animationType: DialogTransitionType.size,
-                          curve: Curves.linear,
-                        );
+                                dataList: requestUserTypes,
+                              );
+                            },
+                            animationType: DialogTransitionType.size,
+                            curve: Curves.linear,
+                          );
 
-                        selectedRequestTypeIndexes =
-                            requestIndexes ?? selectedRequestTypeIndexes;
-                        print(
-                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                        await requestTypeSelected(selectedRequestTypeIndexes);
-                        await sendEventRequest();
-                      },
-                      child: Text("Send Request")),
-                ),
-              ) :
-              Container(),
-      ])),
-    );
+                          selectedRequestTypeIndexes =
+                              requestIndexes ?? selectedRequestTypeIndexes;
+                          print(
+                              'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                          await requestTypeSelected(selectedRequestTypeIndexes);
+                          await sendEventRequest();
+                        },
+                        child: Text("Send Request"),
+                      ),
+                    ),
+                  )
+                : Container(),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
+
+
   }
 }
