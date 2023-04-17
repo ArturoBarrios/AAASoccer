@@ -69,7 +69,7 @@ class _TryoutViewState extends State<TryoutView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Headers().getMainHeader(context),
+      appBar: Headers().getBackHeader(context, "Tryout"),
       body: Center(
           child: Column(children: [
             !widget.isMyEvent ? 
