@@ -59,7 +59,7 @@ class _TournamentViewState extends State<TournamentView> {
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
     for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-      await EventCommand().sendOrganizerEventRequest(widget.tournament, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+      await EventCommand().sendOrganizerEventRequest(widget.tournament, selectedRequestTypeObjects[i], Constants.TOURNAMENTREQUEST.toString());
     }
     
   }

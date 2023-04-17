@@ -61,7 +61,7 @@ class _LeagueViewState extends State<LeagueView> {
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
     for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-      await EventCommand().sendOrganizerEventRequest(widget.league, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+      await EventCommand().sendOrganizerEventRequest(widget.league, selectedRequestTypeObjects[i], Constants.LEAGUEREQUEST.toString());
     }
     
   }

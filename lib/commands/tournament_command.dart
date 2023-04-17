@@ -50,6 +50,19 @@ void updateTournamentData(dynamic tournament){
   eventsModel.tournaments.add(tournament);
 }
 
+dynamic getMainTournamentEvent(dynamic tournament){
+  print("getMainTournamentEvent");
+  Map<String, dynamic>? getMainEvent = null;
+  tournament['events']['data'].forEach((event) {
+    if (event['isMainEvent'] == true) {
+      getMainEvent = event;
+    }
+  });
+
+  return getMainEvent;
+
+}
+
 
 
 Future<Map<String, dynamic>> getTournamentsNearLocation() async {
@@ -130,7 +143,7 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
           Map<String, dynamic> eventInput = {
             "name": "Game: ${bergerTable[i][k]['game']}",
             "isMainEvent": false,
-            "price": 200,
+            "price": 0,
           };
           Map<String, dynamic> gameInput = {
             "pickup": false,

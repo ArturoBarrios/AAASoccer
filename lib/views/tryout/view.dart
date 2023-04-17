@@ -61,7 +61,7 @@ class _TryoutViewState extends State<TryoutView> {
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
     for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-      await EventCommand().sendOrganizerEventRequest(widget.tryout, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+      await EventCommand().sendOrganizerEventRequest(widget.tryout, selectedRequestTypeObjects[i], Constants.TRYOUTREQUEST.toString());
     }
     
   }

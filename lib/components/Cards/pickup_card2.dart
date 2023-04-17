@@ -250,14 +250,6 @@ class _PickupCard2 extends State<PickupCard2> {
                       ),
                     ),
                     !widget.isMyEvent ? 
-                    // IconButton(
-                    //   icon: const Icon(Icons.send),
-                    //   tooltip: 'Go to the next page',
-                    //   onPressed: () {
-                    //     //send event request
-                    //     sendEventRequest(widget.gameObject);              
-                    //   },
-                    // ) 
                     Container(
                 height: 20,
                 child: ClipRRect(

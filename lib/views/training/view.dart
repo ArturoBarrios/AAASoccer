@@ -60,7 +60,7 @@ class _TrainingViewState extends State<TrainingView> {
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
     for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-      await EventCommand().sendOrganizerEventRequest(widget.training, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+      await EventCommand().sendOrganizerEventRequest(widget.training, selectedRequestTypeObjects[i], Constants.TRAININGREQUEST.toString());
     }
     
   }

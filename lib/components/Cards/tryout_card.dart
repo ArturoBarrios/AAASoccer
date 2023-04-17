@@ -26,12 +26,6 @@ void tryoutClicked() {
   print("Tryout Clicked");
 }
 
-Future<void> sendEventRequest(dynamic tryoutObject) async {  
-  print("send event request for event: :"+tryoutObject.toString());
-
-  await EventCommand().sendOrganizerEventRequest(tryoutObject, "PLAYER", Constants.TRYOUTREQUEST.toString());                
-}
-
 
 class _TryoutCard extends State<TryoutCard> {
   final bool _isPressed = false;
@@ -66,7 +60,7 @@ class _TryoutCard extends State<TryoutCard> {
     print("send player event request");
     for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
       await EventCommand().sendOrganizerEventRequest(widget.tryoutObject,
-          selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+          selectedRequestTypeObjects[i], Constants.TRYOUTREQUEST.toString());
     }
   }
 
