@@ -70,7 +70,7 @@ class _TrainingViewState extends State<TrainingView> {
     print("TrainingView build() widget.training: "+ widget.training.toString());
 
     return Scaffold(
-      appBar: Headers().getMainHeader(context),
+      appBar: Headers().getBackHeader(context, "Training"),
       body: Center(
           child: Column(children: [
             !widget.isMyEvent ? 

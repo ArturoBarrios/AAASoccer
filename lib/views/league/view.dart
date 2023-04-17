@@ -70,7 +70,7 @@ class _LeagueViewState extends State<LeagueView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Headers().getMainHeader(context),
+      appBar: Headers().getBackHeader(context, "League"),
       body: Center(
           child: Column(children: [
         

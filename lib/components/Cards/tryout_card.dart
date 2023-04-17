@@ -37,6 +37,39 @@ class _TryoutCard extends State<TryoutCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
+  List<int>? selectedRequestTypeIndexes;
+  List requestUserTypes = [
+    Constants.PLAYER.toString(),
+    Constants.ORGANIZER.toString(),
+    Constants.MANAGER.toString(),
+    Constants.MAINCOACH.toString(),
+    Constants.ASSISTANTCOACH.toString(),
+    Constants.REF.toString(),
+  ];
+
+  List<String> selectedRequestTypeObjects = [];
+
+  requestTypeSelected(List<int>? indexes) {
+      print("requestTypeSelected: " + indexes.toString());
+      selectedRequestTypeIndexes = indexes;
+       for(int i = 0; i < indexes!.length; i++){
+          selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
+        }      
+    }
+
+    Future<void> sendEventRequest() async {
+    print("sendEventRequest");
+    print("selectedRequestTypeObjects.length: " +
+        selectedRequestTypeObjects.length.toString());
+    print(
+        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    print("send player event request");
+    for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
+      await EventCommand().sendOrganizerEventRequest(widget.tryoutObject,
+          selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+    }
+  }
+
   final ButtonStyle style = ElevatedButton.styleFrom(
       primary: Colors.orange.shade500,
       textStyle: const TextStyle(fontSize: 20));
@@ -132,16 +165,45 @@ class _TryoutCard extends State<TryoutCard> {
                 ),
               ),
             ),
-            !widget.isMyEvent ? 
-                    IconButton(
-                      icon: const Icon(Icons.send),
-                      tooltip: 'Go to the next page',
-                      onPressed: () {
-                        //send event request
-                        sendEventRequest(widget.tryoutObject);              
+            !widget.isMyEvent
+                ? 
+                Container(
+                height: 20,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: GestureDetector(
+                      onTap: () async {
+                        print("onTap: ");
+                        List<int>? requestIndexes =
+                            await showAnimatedDialog<dynamic>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            
+
+                            return ClassicListDialogWidget<dynamic>(
+                                selectedIndexes: selectedRequestTypeIndexes,
+                                titleText: 'Choose User Type',
+                                positiveText: "Send Request",
+                                listType: ListType.multiSelect,
+                                activeColor: Colors.green,
+                                dataList: requestUserTypes);
+                          },
+                          animationType: DialogTransitionType.size,
+                          curve: Curves.linear,
+                        );
+
+                        selectedRequestTypeIndexes =
+                            requestIndexes ?? selectedRequestTypeIndexes;
+                        print(
+                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                        await requestTypeSelected(selectedRequestTypeIndexes);
+                        await sendEventRequest();
                       },
-                    ) : 
-                    Text("Join Game"),
+                      child: Text("Send Request")),
+                ),
+              )
+                : Text("Join Your Game"),
           ])),
     ));
   }

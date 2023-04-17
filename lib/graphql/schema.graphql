@@ -170,6 +170,7 @@ type UserLink {
    user: User     
 }
 
+
 type User  {  
   stripeCustomers: [StripeCustomer] @relation
   userType: UserType

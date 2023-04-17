@@ -68,7 +68,7 @@ class _TournamentViewState extends State<TournamentView> {
   Widget build(BuildContext context) {
     print("TournamentView build() widget.tournament: "+ widget.tournament.toString());
     return Scaffold(
-      appBar: Headers().getMainHeader(context),
+      appBar: Headers().getBackHeader(context, "Tournament"),
       body: Center(
           child: Column(children: [
             !widget.isMyEvent ? 
