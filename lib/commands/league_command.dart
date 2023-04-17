@@ -93,6 +93,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
       "data": null,
     };
 
+    eventInput['user_id'] = appModel.currentUser['_id'];
     var rng = Random();
 
     List<dynamic> numberOfTeamsOptions = [2,4,8,16,32];
@@ -111,7 +112,8 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
           'query': LeagueMutations().createLeague(leagueData, eventInput, locationInput),
       }),
     );
-    print("createLeague response: ");    
+    print("createLeague response: "+response.body.toString());    
+    
     Map<String, dynamic> createdLeague = jsonDecode(response.body)['data']['createLeague'];      
     print("createdLeague: ");
     print(createdLeague);
@@ -127,7 +129,8 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
           Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
           Map<String, dynamic> eventInput = {
             "name": "Game: ${bergerTable[i][k]['game']}",
-            "isMainEvent": false
+            "isMainEvent": false,
+            "price": 0,
           };
           Map<String, dynamic> gameInput = {
             "pickup": false,

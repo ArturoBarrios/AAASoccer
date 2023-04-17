@@ -387,9 +387,25 @@ class EventCommand extends BaseCommand {
     };
     try {
       print("request for event: " + gameInput.toString());
+      dynamic eventInput = gameInput['event'];
+      dynamic eventId = "";
+      //set variables according to type
+      if(type == Constants.LEAGUEREQUEST ||
+          type == Constants.TOURNAMENTREQUEST){
+        print("eventId for league or tournament");
+        //find main tournament event
+        eventInput = TournamentCommand().getMainTournamentEvent(gameInput);
+        eventId = eventInput['_id'];        
+      }
+      else{
+        eventId = eventInput['_id'];
+      }
+      print("eventId: " + eventId.toString());
+
+      
       Map<String, dynamic> sendOrganizerEventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
-        "event_id": gameInput['event']['_id'],
+        "event_id": eventId,
         "fromOrganizer": false,
         "forRole": role,
         "type": type
@@ -400,7 +416,7 @@ class EventCommand extends BaseCommand {
 
       bool isYourEvent = false;
       dynamic userParticipants =
-          gameInput['event']['userParticipants']['data'];
+          eventInput['userParticipants']['data'];
       
       print("userParticipants: " + userParticipants.toString());
       String organizersString = "";

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import '../../commands/event_command.dart';
+import '../../components/events_calendar.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
 
@@ -61,7 +62,7 @@ class _LeagueViewState extends State<LeagueView> {
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
     for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-      await EventCommand().sendOrganizerEventRequest(widget.league, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+      await EventCommand().sendOrganizerEventRequest(widget.league, selectedRequestTypeObjects[i], Constants.LEAGUEREQUEST.toString());
     }
     
   }
@@ -73,6 +74,10 @@ class _LeagueViewState extends State<LeagueView> {
       appBar: Headers().getBackHeader(context, "League"),
       body: Center(
           child: Column(children: [
+            Container(
+              height: 500,
+              child: EventsCalendar(testText: "test", events: ""),
+            ),
         
             !widget.isMyEvent ? 
             Container(

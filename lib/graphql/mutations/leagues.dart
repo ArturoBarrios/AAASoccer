@@ -9,6 +9,17 @@ class LeagueMutations{
             {
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput ['isMainEvent']},
+              userParticipants: {
+                create:
+                  {
+                    user: {
+                      connect:                   
+                          "${eventInput['user_id']}"    
+                      }                                         
+                      roles: "{ORGANIZER, PLAYER}"
+                                       
+                  }                                     
+              },  
               location: {
                 create: 
                 {
@@ -19,7 +30,8 @@ class LeagueMutations{
             }
           } 
           }) {
-            _id                        
+            _id       
+            numberOfTeams                 
             events{
               data{
               _id

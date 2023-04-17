@@ -137,11 +137,13 @@ class GameCommand extends BaseCommand {
         await EventCommand().addGame(createdGame, true);
         eventInput['_id'] = createdGame['event']['_id'];
         //todo add error handling here, if game is not created, dont create price, etc
-        Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
-        print("create price event input: "+ eventInput.toString());
-        print("create price input: " + paymentInput['price'].toString());
-        Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
-        print("createPaymentResp: "+createPriceResp.toString());
+        if(eventInput['price']>0){
+          Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+          print("create price event input: "+ eventInput.toString());
+          print("create price input: " + paymentInput['price'].toString());
+          Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
+          print("createPaymentResp: "+createPriceResp.toString());
+        }
 
           createGameResponse["success"] = true;
           createGameResponse["message"] = "Game Created";

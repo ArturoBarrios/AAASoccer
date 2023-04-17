@@ -69,7 +69,7 @@ requestTypeSelected(List<int>? indexes) {
     print("send player event request");
     for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
       await EventCommand().sendOrganizerEventRequest(widget.trainingObject,
-          selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+          selectedRequestTypeObjects[i], Constants.TRAININGREQUEST.toString());
     }
   }
 

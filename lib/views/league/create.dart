@@ -67,7 +67,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
         "price": priceController.text.trim(),
         'isMainEvent': true,   
         'startTime': startTimestamp,
-        'endTime': endTimestamp,
+        'endTime': endTimestamp,        
       };
       
         // Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
