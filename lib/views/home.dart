@@ -119,7 +119,7 @@ class _Home extends State<Home> {
     for(int i = 0; i<userObjectSelections.length;i++){
       if(eventTeamChosen == "Event"){
         print("send player event request");
-        await EventCommand().sendPlayerEventRequests(userObjectSelections[i],selectedEventTeamObjects, selectedRequestTypeObjects);
+        await EventCommand().sendPlayerEventRequests(userObjectSelections[i],selectedEventTeamObjects, selectedRequestTypeObjects, "GAMEREQUEST");
       }
       else{
         print("send player team request");

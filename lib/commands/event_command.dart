@@ -297,7 +297,7 @@ class EventCommand extends BaseCommand {
 
   //send player event requests
   Future<Map<String, dynamic>> sendPlayerEventRequests(
-      dynamic userPlayerObject,List<dynamic> eventsObject, List<String> roles) async {
+      dynamic userPlayerObject,List<dynamic> eventsObject, List<String> roles, String type) async {
 
     print("sendPlayerEventRequest");
     Map<String, dynamic> sendPlayerEventRequestResponse = {
@@ -321,7 +321,7 @@ class EventCommand extends BaseCommand {
             "sender_id": appModel.currentUser['_id'],
             "event_id": eventsObject[i]['event']['_id'],        
             "forRole": roles[j],
-            "type": eventsObject[i]['event']['type'],
+            "type": type,
             "receivers": userPlayerObject['_id']
 
           };

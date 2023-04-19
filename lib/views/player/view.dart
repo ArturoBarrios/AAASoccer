@@ -94,9 +94,9 @@ class _PlayerViewState extends State<PlayerView> {
     print("sendPlayerRequests");
     print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
     print("selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    if(eventTeamChosen == "Event"){
+    if(eventTeamChosen == "Event"){      
       print("send player event request");
-      EventCommand().sendPlayerEventRequests(widget.userPlayerObject,selectedEventTeamObjects, selectedRequestTypeObjects);
+      EventCommand().sendPlayerEventRequests(widget.userPlayerObject,selectedEventTeamObjects, selectedRequestTypeObjects, "GAMEREQUEST" );
     }
     else{
       print("send player team request");
