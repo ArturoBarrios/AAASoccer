@@ -109,8 +109,7 @@ class _Home extends State<Home> {
     selectedRequestTypeIndexes = indexes;
     for(int i = 0; i < indexes!.length; i++){
       selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
-    }
-    await sendPlayerRequests();
+    }    
   }
 
   Future<void> sendPlayerRequests() async{
@@ -335,23 +334,28 @@ class _Home extends State<Home> {
 
     if (selectedKey == Constants.PICKUP) {
       print("selected pickup: " + selectedObject.toString());
-      bool isMyEvent = EventCommand().isMyEvent(selectedObject['event']);
+      bool isMyEvent = EventCommand().isMyEvent([selectedObject['event']]);
       card = PickupCard2(
           gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     } else if (selectedKey == Constants.TRAINING) {
-      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage, isMyEvent: false);
+      bool isMyEvent = EventCommand().isMyEvent([selectedObject['event']]);
+      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
-      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, isMyEvent: false);
+      bool isMyEvent = EventCommand().isMyEvent([selectedObject['event']]);
+      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     } else if (selectedKey == Constants.TOURNAMENT) {
       //process tournament data for card
       TournamentCommand().currateTournamentData(selectedObject);
+      
+      bool isMyEvent = EventCommand().isMyEvent(selectedObject['events']['data']);
       card =
-          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage, isMyEvent: false);
+          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     } else if (selectedKey == Constants.LEAGUE) {
       //process league data for card
       LeagueCommand().currateLeagueData(selectedObject);
-      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage, isMyEvent: false);
+      bool isMyEvent = EventCommand().isMyEvent(selectedObject['events']['data']);
+      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
     } else if (selectedKey == Constants.PLAYER) {
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {
@@ -451,6 +455,8 @@ class _Home extends State<Home> {
               },
             )),
           ])),
+          //logic/button for sending team/event requests to
+          // multiple players 
           userObjectSelections.isNotEmpty ?           
           GestureDetector(
               onTap: () async{
@@ -517,7 +523,8 @@ class _Home extends State<Home> {
               selectedRequestTypeIndexes =
                   requestIndexes ?? selectedRequestTypeIndexes;
               print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-              requestTypesSelected(selectedRequestTypeIndexes);
+              await requestTypesSelected(selectedRequestTypeIndexes);
+              await sendPlayerRequests();
             }
               },
             child: Container(

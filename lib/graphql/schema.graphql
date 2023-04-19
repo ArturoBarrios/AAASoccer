@@ -275,6 +275,7 @@ type Event   {
   location: [Location] @relation
   type: EventType
   payment: Payment
+  chats: [Chat] @relation
   # training: Training
   # tournament: Tournament
   # league: League
@@ -309,6 +310,7 @@ type Team   {
   deleted: Boolean
   createdAt: Int
   request: [Request] @relation
+  chats: [Chat] @relation
   
 }
 
@@ -445,6 +447,8 @@ type Chat  {
   name: String
   messages: [Message] @relation #has many messages
   users: [User] @relation
+  event: Event
+  team: Team
   archived: Boolean @default(value: false)
 }
 

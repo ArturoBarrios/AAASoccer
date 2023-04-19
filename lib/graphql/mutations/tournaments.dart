@@ -10,6 +10,7 @@ class TournamentMutations{
             {
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput ['isMainEvent']},
+              type: TOURNAMENT,
               userParticipants: {
                 create:
                   {

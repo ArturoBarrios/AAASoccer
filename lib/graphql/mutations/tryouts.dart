@@ -9,7 +9,7 @@ class TryoutMutations{
             create: 
             {
               name: "${eventInput['name']}",
-              type: TRAINING,
+              type: TRYOUT,
               archived: false,
               isMainEvent:true,
               startTime: "${eventInput['startTime']}",

@@ -39,6 +39,10 @@ class ChatCommand extends BaseCommand {
     chatPageModel.messages = user['chats']['data'][index]['messages']['data'];
   }
 
+
+  //generalize this method and attach to 
+  //teams, players, leagues, tournaments, 
+  // and other events
   Future<Map<String, dynamic>> createChat(dynamic chatInput) async {
     print("removeChat");
     print("chatInput: $chatInput");

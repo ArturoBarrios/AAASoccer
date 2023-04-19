@@ -1,27 +1,27 @@
 class EventFragments {
   String eventGameFragment() {
     String eventGame = r'''
-      _id
-                  archived
-                  deleted
-                  name
-                  isMainEvent
-                  type
-                  startTime
-                  endTime
-                  location{
-                    data{
-                    _id
-                    latitude
-                    longitude
-                    }
-                  }
-                  games{
-                    data{
-                      _id
-                      pickup
-                    }
-                  }
+        _id
+        archived
+        deleted
+        name
+        isMainEvent
+        type
+        startTime
+        endTime
+        location{
+          data{
+          _id
+          latitude
+          longitude
+          }
+        }
+        games{
+          data{
+            _id
+            pickup
+          }
+        }
      ''';
     return eventGame;
   }
