@@ -345,7 +345,7 @@ class _PickupCard2 extends State<PickupCard2> {
                         selectedRequestTypeIndexes = requestIndexes ?? selectedRequestTypeIndexes;
                         print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
                         requestTypeSelected(selectedRequestTypeIndexes);
-                        sendEventRequest();
+                        sendPlayersEventRequest();
             }
           },
 
