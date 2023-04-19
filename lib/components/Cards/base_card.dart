@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/views/request/view.dart';
 import '../../commands/event_command.dart';
 import '../../commands/player_command.dart';
 import '../../commands/team_command.dart';
+import '../../commands/user_command.dart';
 import '../../constants.dart';
 
 mixin BaseCardMixin {
@@ -23,10 +24,65 @@ mixin BaseCardMixin {
   List<int>? selectedPlayerIndexes;
   List<int>? selectedRequestTypeIndexes;
   List<String> selectedRequestTypeObjects = [];
+  List<dynamic> selectedEventTeamObjects = [];
+  List<int>? selectedEventTeamIndexes;
+  List choices = [];
+  List<String> teamEventList = ["Team", "Event"];
+  String eventTeamChosen = "";
+  List myEventsToChooseFrom = [];
+  List myTeamsToChooseFrom = [];
 
   void setupPlayerList() {
     print("setupPlayerList");
     playerList = PlayerCommand().getAppModelPlayersNearMe();
+  }
+
+  void setupEventTeamToChoose(int index) {    
+    eventTeamChosen = teamEventList[index];
+    if (eventTeamChosen == "Event") {
+      setupEventsToChooseFrom();
+    } else {
+      setupTeamsToChooseFrom();
+    }
+  }
+
+  void setupEventsToChooseFrom() {
+    print("setupEventsToChooseFrom");
+    List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
+    myEventsToChooseFrom = myEvents;
+    choices = myEventsToChooseFrom;
+  }
+
+  void setupTeamsToChooseFrom() {
+    print("setupTeamsToChooseFrom");
+    List<dynamic> myTeams = UserCommand().getAppModelMyTeams();
+    myTeamsToChooseFrom = myTeams;
+    choices = myTeamsToChooseFrom;
+  }
+
+  Future<void> sendTeamRequest(dynamic teamObject) async {    
+    print("sendTeamRequest");
+    print("selectedRequestTypeObjects.length: " +
+        selectedRequestTypeObjects.length.toString());
+    print(
+        "playersSelectedList.length: " + playersSelectedList.length.toString());
+    print(
+        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    print("send team request");
+    for(int i = 0; i < selectedRequestTypeObjects.length; i++) {
+      await TeamCommand().sendOrganizerTeamRequest(teamObject, selectedRequestTypeObjects[i]);
+    }    
+
+  }
+
+  eventTeamsSelected(List<int>? indexes) {        
+    print("eventTeamsSelected: " + indexes.toString());
+    selectedEventTeamObjects = [];
+    selectedEventTeamIndexes = indexes;
+    for(int i = 0; i < indexes!.length; i++){
+      selectedEventTeamObjects.add(choices[indexes[i]]);
+    }
+    print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
   }
 
   void playersSelected(List<int> selectedIndexes) {
@@ -38,11 +94,26 @@ mixin BaseCardMixin {
     }
   }
 
-  requestTypeSelected(List<int>? indexes) {
+  requestTypeSelected(List<int>? indexes) async{
     print("requestTypeSelected: " + indexes.toString());
     selectedRequestTypeIndexes = indexes;
     for (int i = 0; i < indexes!.length; i++) {
       selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
+    }
+    
+  }
+
+   sendPlayerRequests(dynamic userPlayerObject){
+    print("sendPlayerRequests");
+    print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
+    print("selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    if(eventTeamChosen == "Event"){      
+      print("send player event request");
+      EventCommand().sendPlayerEventRequests(userPlayerObject,selectedEventTeamObjects, selectedRequestTypeObjects, "GAMEREQUEST" );
+    }
+    else{
+      print("send player team request");
+      TeamCommand().sendPlayerTeamRequests(userPlayerObject,selectedEventTeamObjects, selectedRequestTypeObjects);
     }
   }
 

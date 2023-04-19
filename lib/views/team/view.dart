@@ -3,11 +3,12 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/commands/team_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/player_command.dart';
+import '../../components/Cards/base_card.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
 
-class TeamView extends StatefulWidget {
-  const TeamView({Key? key, required this.teamObject, required this.isMyTeam})
+class TeamView extends StatefulWidget with BaseCardMixin {
+  TeamView({Key? key, required this.teamObject, required this.isMyTeam})
       : super(key: key);
   final Map<String, dynamic> teamObject;
   final bool isMyTeam;
@@ -23,71 +24,76 @@ class _TeamViewState extends State<TeamView> {
     Navigator.pop(context);
   }
 
-  int selectIndex = 0;
-  int chosenRequestType = 0;
-  List requestUserTypes = [
-    Constants.PLAYER.toString(),
-    Constants.ORGANIZER.toString(),
-    Constants.MANAGER.toString(),
-    Constants.MAINCOACH.toString(),
-    Constants.ASSISTANTCOACH.toString(),
-    Constants.REF.toString(),
-  ];
-  List playerList = [];
-  List playersSelectedList = [];
-  List<int>? selectedPlayerIndexes;
-  List<int>? selectedRequestTypeIndexes;
-  List<String> selectedRequestTypeObjects = [];
+  // int selectIndex = 0;
+  // int chosenRequestType = 0;
+  // List requestUserTypes = [
+  //   Constants.PLAYER.toString(),
+  //   Constants.ORGANIZER.toString(),
+  //   Constants.MANAGER.toString(),
+  //   Constants.MAINCOACH.toString(),
+  //   Constants.ASSISTANTCOACH.toString(),
+  //   Constants.REF.toString(),
+  // ];
+  // List playerList = [];
+  // List playersSelectedList = [];
+  // List<int>? selectedPlayerIndexes;
+  // List<int>? selectedRequestTypeIndexes;
+  // List<String> selectedRequestTypeObjects = [];
 
   void setupPlayerList() {
-    print("setupPlayerList");
-    playerList = PlayerCommand().getAppModelPlayersNearMe();
+    widget.setupPlayerList();
+    // print("setupPlayerList");
+    // playerList = PlayerCommand().getAppModelPlayersNearMe();
   }
 
   void playersSelected(List<int> selectedIndexes) {
-    print("playersSelected: $selectedIndexes");
-    selectedPlayerIndexes = selectedIndexes;
-    playersSelectedList = [];
-    for (int i = 0; i < selectedIndexes.length; i++) {
-      playersSelectedList.add(playerList[selectedIndexes[i]]);
-    }
+    widget.playersSelected(selectedIndexes);
+    // print("playersSelected: $selectedIndexes");
+    // selectedPlayerIndexes = selectedIndexes;
+    // playersSelectedList = [];
+    // for (int i = 0; i < selectedIndexes.length; i++) {
+    //   playersSelectedList.add(playerList[selectedIndexes[i]]);
+    // }
   }
 
   requestTypeSelected(List<int>? indexes) {
-    print("requestTypeSelected: " + indexes.toString());
-    selectedRequestTypeIndexes = indexes;
-    for (int i = 0; i < indexes!.length; i++) {
-      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
-    }    
+    widget.requestTypeSelected(indexes);
+    // print("requestTypeSelected: " + indexes.toString());
+    // selectedRequestTypeIndexes = indexes;
+    // for (int i = 0; i < indexes!.length; i++) {
+    //   selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
+    // }    
   }
 
-  Future<void> sendPlayersEventRequest() async {
-    print("sendPlayersEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());
-    print(
-        "playersSelectedList.length: " + playersSelectedList.length.toString());
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
-    for (int i = 0; i < playersSelectedList.length; i++) {
-      await TeamCommand().sendPlayerTeamRequests(playersSelectedList[i],
-          [widget.teamObject], selectedRequestTypeObjects);
-    }
+  Future<void> sendPlayersTeamRequest() async {
+    widget.sendPlayersTeamRequest(widget.teamObject);
+    // print("sendPlayersTeamRequest");
+    // print("selectedRequestTypeObjects.length: " +
+    //     selectedRequestTypeObjects.length.toString());
+    // print(
+    //     "playersSelectedList.length: " + playersSelectedList.length.toString());
+    // print(
+    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    // print("send player team request");
+    // for (int i = 0; i < playersSelectedList.length; i++) {
+    //   await TeamCommand().sendPlayerTeamRequests(playersSelectedList[i],
+    //       [widget.teamObject], selectedRequestTypeObjects);
+    // }
   }
 
   Future<void> sendTeamRequest() async {
-    print("sendTeamRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());
-    print(
-        "playersSelectedList.length: " + playersSelectedList.length.toString());
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send team request");
-    for(int i = 0; i < selectedRequestTypeObjects.length; i++) {
-      await TeamCommand().sendOrganizerTeamRequest(widget.teamObject, selectedRequestTypeObjects[i]);
-    }
+    widget.sendTeamRequest(widget.teamObject);
+    // print("sendTeamRequest");
+    // print("selectedRequestTypeObjects.length: " +
+    //     selectedRequestTypeObjects.length.toString());
+    // print(
+    //     "playersSelectedList.length: " + playersSelectedList.length.toString());
+    // print(
+    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    // print("send team request");
+    // for(int i = 0; i < selectedRequestTypeObjects.length; i++) {
+    //   await TeamCommand().sendOrganizerTeamRequest(widget.teamObject, selectedRequestTypeObjects[i]);
+    // }
     
 
   }
@@ -118,46 +124,46 @@ class _TeamViewState extends State<TeamView> {
                           barrierDismissible: true,
                           builder: (BuildContext context) {
                             return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: selectedPlayerIndexes,
+                                selectedIndexes: widget.selectedPlayerIndexes,
                                 titleText: 'Choose Players',
                                 listType: ListType.multiSelect,
                                 positiveText: "Next",
                                 activeColor: Colors.green,
-                                dataList: playerList);
+                                dataList: widget.playerList);
                           },
                           animationType: DialogTransitionType.size,
                           curve: Curves.linear,
                         );
-                        selectedPlayerIndexes =
-                            playerIndexes ?? selectedPlayerIndexes;
+                        widget.selectedPlayerIndexes =
+                            playerIndexes ?? widget.selectedPlayerIndexes;
                         print(
-                            'selectedIndex:${selectedPlayerIndexes?.toString()}');
-                        playersSelected(selectedPlayerIndexes!);
+                            'selectedIndex:${widget.selectedPlayerIndexes?.toString()}');
+                        playersSelected(widget.selectedPlayerIndexes!);
 
-                        if (playersSelectedList.length > 0) {
+                        if (widget.playersSelectedList.length > 0) {
                           List<int>? requestIndexes =
                               await showAnimatedDialog<dynamic>(
                             context: context,
                             barrierDismissible: true,
                             builder: (BuildContext context) {
                               return ClassicListDialogWidget<dynamic>(
-                                  selectedIndexes: selectedRequestTypeIndexes,
+                                  selectedIndexes: widget.selectedRequestTypeIndexes,
                                   titleText: 'Choose User Type',
                                   positiveText: "Send Request",
                                   listType: ListType.multiSelect,
                                   activeColor: Colors.green,
-                                  dataList: requestUserTypes);
+                                  dataList: widget.requestUserTypes);
                             },
                             animationType: DialogTransitionType.size,
                             curve: Curves.linear,
                           );
 
-                          selectedRequestTypeIndexes =
-                              requestIndexes ?? selectedRequestTypeIndexes;
+                          widget.selectedRequestTypeIndexes =
+                              requestIndexes ?? widget.selectedRequestTypeIndexes;
                           print(
-                              'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                          await requestTypeSelected(selectedRequestTypeIndexes);
-                          await sendPlayersEventRequest();
+                              'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                          await requestTypeSelected(widget.selectedRequestTypeIndexes);
+                          await sendPlayersTeamRequest();
                         }
                       },
                       child: Text("Invite Players")),
@@ -174,22 +180,22 @@ class _TeamViewState extends State<TeamView> {
                         barrierDismissible: true,
                         builder: (BuildContext context) {
                           return ClassicListDialogWidget<dynamic>(
-                              selectedIndexes: selectedRequestTypeIndexes,
+                              selectedIndexes: widget.selectedRequestTypeIndexes,
                               titleText: 'Choose User Type',
                               positiveText: "Send Request",
                               listType: ListType.multiSelect,
                               activeColor: Colors.green,
-                              dataList: requestUserTypes);
+                              dataList: widget.requestUserTypes);
                         },
                         animationType: DialogTransitionType.size,
                         curve: Curves.linear,
                       );
 
-                      selectedRequestTypeIndexes =
-                          requestIndexes ?? selectedRequestTypeIndexes;
+                      widget.selectedRequestTypeIndexes =
+                          requestIndexes ?? widget.selectedRequestTypeIndexes;
                       print(
-                          'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                      await requestTypeSelected(selectedRequestTypeIndexes);
+                          'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                      await requestTypeSelected(widget.selectedRequestTypeIndexes);
                       await sendTeamRequest();
                     },
                     child: Text("Request to Join")

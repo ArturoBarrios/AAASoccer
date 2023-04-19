@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/event_command.dart';
+import '../../components/Cards/base_card.dart';
 import '../../components/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
@@ -14,8 +15,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants.dart';
 
-class PickupView extends StatefulWidget {
-  const PickupView({Key? key, required this.isMyEvent, required this.game})
+class PickupView extends StatefulWidget with BaseCardMixin {
+  PickupView({Key? key, required this.isMyEvent, required this.game})
       : super(key: key);
 
   final bool isMyEvent;
@@ -38,37 +39,40 @@ class _PickupViewState extends State<PickupView> {
   late LatLng _center = LatLng(45.521563, -122.677433);
   late GoogleMapController mapController;
 
-  List<int>? selectedRequestTypeIndexes;
-  List requestUserTypes = [
-    Constants.PLAYER.toString(),
-    Constants.ORGANIZER.toString(),
-    Constants.MANAGER.toString(),
-    Constants.MAINCOACH.toString(),
-    Constants.ASSISTANTCOACH.toString(),
-    Constants.REF.toString(),
-  ];  
-  List<String> selectedRequestTypeObjects = [];
+  // List<int>? selectedRequestTypeIndexes;
+  // List requestUserTypes = [
+  //   Constants.PLAYER.toString(),
+  //   Constants.ORGANIZER.toString(),
+  //   Constants.MANAGER.toString(),
+  //   Constants.MAINCOACH.toString(),
+  //   Constants.ASSISTANTCOACH.toString(),
+  //   Constants.REF.toString(),
+  // ];  
+  // List<String> selectedRequestTypeObjects = [];
 
   requestTypeSelected(List<int>? indexes) {
-    print("requestTypeSelected: " + indexes.toString());
-    selectedRequestTypeIndexes = indexes;
-    for (int i = 0; i < indexes!.length; i++) {
-      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
-    }    
+    widget.requestTypeSelected(indexes);
+    // print("requestTypeSelected: " + indexes.toString());
+    // selectedRequestTypeIndexes = indexes;
+    // for (int i = 0; i < indexes!.length; i++) {
+    //   selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
+    // }    
   }
 
   Future<void> sendEventRequest() async {
-    print("sendEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());    
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
-    for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-      await EventCommand().sendOrganizerEventRequest(widget.game, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
-    }
-    
+    widget.sendEventRequest(widget.game, Constants.GAMEREQUEST.toString());
+    // print("sendEventRequest");
+    // print("selectedRequestTypeObjects.length: " +
+    //     selectedRequestTypeObjects.length.toString());    
+    // print(
+    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    // print("send player event request");
+    // for(int i = 0;i<selectedRequestTypeObjects.length;i++){
+    //   await EventCommand().sendOrganizerEventRequest(widget.game, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
+    // }
+
   }
+    
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -148,22 +152,22 @@ class _PickupViewState extends State<PickupView> {
                             
 
                             return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: selectedRequestTypeIndexes,
+                                selectedIndexes: widget.selectedRequestTypeIndexes,
                                 titleText: 'Choose User Type',
                                 positiveText: "Send Request",
                                 listType: ListType.multiSelect,
                                 activeColor: Colors.green,
-                                dataList: requestUserTypes);
+                                dataList: widget.requestUserTypes);
                           },
                           animationType: DialogTransitionType.size,
                           curve: Curves.linear,
                         );
 
-                        selectedRequestTypeIndexes =
-                            requestIndexes ?? selectedRequestTypeIndexes;
+                        widget.selectedRequestTypeIndexes =
+                            requestIndexes ?? widget.selectedRequestTypeIndexes;
                         print(
-                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                        await requestTypeSelected(selectedRequestTypeIndexes);
+                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                        await requestTypeSelected(widget.selectedRequestTypeIndexes);
                         await sendEventRequest();
                       },
                       child: Text("Send Request")),
