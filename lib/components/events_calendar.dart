@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../utils.dart';
@@ -33,24 +35,29 @@ class _EventsCalendar extends State<EventsCalendar> {
     _selectedEvents.dispose();
     super.dispose();
   }
-
+  //update return type to LinkedHashMap<DateTime, List<Event>>
   List<Event> _getEventsForDay(DateTime day) {
-    print("_getEventsForDay: "+day.toString());
-    print("events: "+widget.events.toString());
+    // print("_getEventsForDay: "+day.toString());
+    // print("events: "+widget.events.toString());
+    //returns Linked<DateTime>
     //returns LinkedHashMap<DateTime, List<Event>>
-    for(int i = 0;i<widget.events.length;i++){
-      print("widget.events[i]: "+widget.events[i].toString());
-      dynamic event = widget.events[i];
-      if(!event[i]['isMainEvent']){
-        int millis = int.parse(event['startTime']); // Parse string to integer
-        DateTime startTime = DateTime.fromMillisecondsSinceEpoch(millis);
-        if(startTime.isBefore(DateTime.now())){
-          print("add to this day: "+startTime.toString());
+    LinkedHashMap<DateTime, List<Event>> dateTimeLinkedHashMap = new LinkedHashMap();
+    //custom List<Event data type>
+    // List<Event> listOfEvents = [];
+    // for(int i = 0;i<widget.events.length;i++){
+    //   print("widget.events[i]: "+widget.events[i].toString());
+    //   dynamic event = widget.events[i];
+    //   if(!event[i]['isMainEvent']){
+    //     int millis = int.parse(event['startTime']); // Parse string to integer
+    //     DateTime startTime = DateTime.fromMillisecondsSinceEpoch(millis);
+    //     if(startTime.isBefore(DateTime.now())){
+    //       print("add to this day: "+startTime.toString());
           
 
-        }
-      }
-    }
+    //     }
+    //   }
+    // }
+    //instead of kEvents[day], return LinkedHashMap<DateTime, List<Event>>
     // Implementation example
     return kEvents[day] ?? [];
   }

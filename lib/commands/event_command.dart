@@ -539,7 +539,7 @@ class EventCommand extends BaseCommand {
     print("getGameEventResp: " + getEventGameResp.toString());
     if(getEventGameResp['success']){
       dynamic eventGame = getEventGameResp['data'];
-      print("event: " + getEventGameResp.toString());
+      print("event: "+getEventGameResp.toString());        
       print("before appModel.myEvents: " + appModel.myEvents.toString());
       appModel.myEvents.add(eventGame);
       
@@ -649,14 +649,30 @@ class EventCommand extends BaseCommand {
     return getEventResp;
   }
 
-  bool isMyEvent(dynamic event){
+  bool isMyEvent(List<dynamic> events){
     print("isMyEvent()");
+    dynamic event;
+    if(events.length>1){
+      
+      for(int i = 0;i<events.length;i++){
+        print("events[i]: " + events[i].toString());
+        if(events[i]['isMainEvent'] && 
+        (events[i]['type'] == "TOURNAMENT" ||
+        events[i]['type'] == "LEAGUE")){
+          print("found mainEvent: " + events[i].toString());
+          event = events[i];
 
+        }
+      }
+    }
+    else{
+      event = events[0];
+    }
     bool resp = false;
     dynamic userParticipants = event['userParticipants']['data'];
     print("userParticipants: " + userParticipants.toString());
     for(int i = 0; i<userParticipants.length; i++){
-      if(userParticipants[i]['_id'] == appModel.currentUser['_id']){
+      if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']){
         resp = true;
         print("isMyEvent() = true");
       }
@@ -809,6 +825,7 @@ class EventCommand extends BaseCommand {
     List myArchivedEvents = [];
     //filter out archived events
     for(int i = 0; i < allMyEvents.length; i++){
+      print("allMyEvents[i]['event']: "+allMyEvents[i]['event'].toString());
       String millisecondsString = allMyEvents[i]['event']['endTime'].toString();
       DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
       // print("myEvent: "+allMyEvents.toString());

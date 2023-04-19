@@ -9,6 +9,7 @@ class LeagueMutations{
             {
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput ['isMainEvent']},
+              type: LEAGUE,
               userParticipants: {
                 create:
                   {

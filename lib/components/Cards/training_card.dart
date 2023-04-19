@@ -90,7 +90,7 @@ requestTypeSelected(List<int>? indexes) {
           barrierDismissible: true,
           builder: (BuildContext context) {
             return TrainingView(
-                isMyEvent: false, training: widget.trainingObject);
+                isMyEvent: widget.isMyEvent, training: widget.trainingObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

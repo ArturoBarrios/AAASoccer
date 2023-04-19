@@ -31,6 +31,8 @@ class _LeagueViewState extends State<LeagueView> {
 
   bool _isLoading = false;
 
+  dynamic leagueEvents = [];
+
   void goBack(){
     Navigator.pop(context);
   }  
@@ -67,6 +69,20 @@ class _LeagueViewState extends State<LeagueView> {
     
   }
 
+  @override
+  void initState() {
+    print("initState");
+    leagueEvents = widget.league['events']['data'];
+    //remove event where isMainEvent and type==TOURNAMENT
+    for (int i = 0; i < leagueEvents.length; i++) {
+      dynamic leagueEvent = leagueEvents[i];
+      if (leagueEvent['isMainEvent'] &&
+          leagueEvent['type'] == "LEAGUE") {
+        leagueEvents.remove(leagueEvent);
+      }
+    }
+    print("finish initState");
+  }
 
   @override
   Widget build(BuildContext context) {
