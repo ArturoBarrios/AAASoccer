@@ -64,10 +64,10 @@ class BaseCommand {
   }
 
   //"{"test1", "test2", "test3"}
-  List<String> parseWords(String inputString) {
+  List<String> parseRoles(String inputString) {
   // Remove curly braces and split string into individual words
   List<String> words = inputString.replaceAll('{', '').replaceAll('}', '').split(', ');
-
+  print("words: $words");
   return words;
 }
 

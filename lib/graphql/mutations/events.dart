@@ -1,5 +1,6 @@
+import '../fragments/event_fragments.dart';
 class EventMutations {
-  String addPlayerToEvent(
+  String addPlayerToEventDoesntWork(
       Map<String, dynamic> eventInput, Map<String, dynamic> playerInput) {
     String addPlayerToEvent = """      
       mutation {
@@ -38,6 +39,36 @@ class EventMutations {
 
     return addPlayerToEvent;
   }
+  
+  String addUserToEvent(
+      Map<String, dynamic> eventInput, Map<String, dynamic> userInput) {
+    String addPlayerToEvent = """      
+      mutation {
+        updateEvent(
+          id: ${eventInput['_id']},
+  				data: {                       
+            userParticipants:{
+              create:
+              {
+                user: {
+                  connect:
+                  "${userInput['_id']}"
+                }
+                roles: "{roles: [PLAYER]}"
+              }
+            }                                                        
+          }                      
+        ){
+          ${EventFragments().fullEvent()}
+              
+    				  
+          }
+        }
+        """;
+
+    return addPlayerToEvent;
+  }
+
 
   String createPrice(
     Map<String, dynamic> paymentInput,

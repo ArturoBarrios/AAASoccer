@@ -9,8 +9,10 @@ import '../../commands/event_command.dart';
 import '../../views/tryout/view.dart';
 import 'package:soccermadeeasy/constants.dart';
 
-class TryoutCard extends StatefulWidget {
-  const TryoutCard(
+import '../Mixins/requests_mixin.dart';
+
+class TryoutCard extends StatefulWidget with RequestsMixin {
+   TryoutCard(
       {Key? key, required this.tryoutObject, required this.svgImage, required this.isMyEvent})
       : super(key: key);
   final Map<String, dynamic> tryoutObject;
@@ -31,37 +33,39 @@ class _TryoutCard extends State<TryoutCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
-  List<int>? selectedRequestTypeIndexes;
-  List requestUserTypes = [
-    Constants.PLAYER.toString(),
-    Constants.ORGANIZER.toString(),
-    Constants.MANAGER.toString(),
-    Constants.MAINCOACH.toString(),
-    Constants.ASSISTANTCOACH.toString(),
-    Constants.REF.toString(),
-  ];
+  // List<int>? selectedRequestTypeIndexes;
+  // List requestUserTypes = [
+  //   Constants.PLAYER.toString(),
+  //   Constants.ORGANIZER.toString(),
+  //   Constants.MANAGER.toString(),
+  //   Constants.MAINCOACH.toString(),
+  //   Constants.ASSISTANTCOACH.toString(),
+  //   Constants.REF.toString(),
+  // ];
 
-  List<String> selectedRequestTypeObjects = [];
+  // List<String> selectedRequestTypeObjects = [];
 
   requestTypeSelected(List<int>? indexes) {
-      print("requestTypeSelected: " + indexes.toString());
-      selectedRequestTypeIndexes = indexes;
-       for(int i = 0; i < indexes!.length; i++){
-          selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
-        }      
+      widget.requestTypeSelected(indexes);
+      // print("requestTypeSelected: " + indexes.toString());
+      // selectedRequestTypeIndexes = indexes;
+      //  for(int i = 0; i < indexes!.length; i++){
+      //     selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
+      //   }      
     }
 
     Future<void> sendEventRequest() async {
-    print("sendEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
-    for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
-      await EventCommand().sendOrganizerEventRequest(widget.tryoutObject,
-          selectedRequestTypeObjects[i], Constants.TRYOUTREQUEST.toString());
-    }
+      widget.sendEventRequest(widget.tryoutObject, Constants.TRYOUTREQUEST);
+    // print("sendEventRequest");
+    // print("selectedRequestTypeObjects.length: " +
+    //     selectedRequestTypeObjects.length.toString());
+    // print(
+    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    // print("send player event request");
+    // for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
+    //   await EventCommand().sendOrganizerEventRequest(widget.tryoutObject,
+    //       selectedRequestTypeObjects[i], Constants.TRYOUTREQUEST.toString());
+    // }
   }
 
   final ButtonStyle style = ElevatedButton.styleFrom(
@@ -176,22 +180,22 @@ class _TryoutCard extends State<TryoutCard> {
                             
 
                             return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: selectedRequestTypeIndexes,
+                                selectedIndexes: widget.selectedRequestTypeIndexes,
                                 titleText: 'Choose User Type',
                                 positiveText: "Send Request",
                                 listType: ListType.multiSelect,
                                 activeColor: Colors.green,
-                                dataList: requestUserTypes);
+                                dataList: widget.requestUserTypes);
                           },
                           animationType: DialogTransitionType.size,
                           curve: Curves.linear,
                         );
 
-                        selectedRequestTypeIndexes =
-                            requestIndexes ?? selectedRequestTypeIndexes;
+                        widget.selectedRequestTypeIndexes =
+                            requestIndexes ?? widget.selectedRequestTypeIndexes;
                         print(
-                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                        await requestTypeSelected(selectedRequestTypeIndexes);
+                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                        await requestTypeSelected(widget.selectedRequestTypeIndexes);
                         await sendEventRequest();
                       },
                       child: Text("Send Request")),

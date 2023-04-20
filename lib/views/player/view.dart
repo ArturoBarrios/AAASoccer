@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../components/Mixins/requests_mixin.dart';
 import '../../components/profile.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/user_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/team_command.dart';
+
 //import singleListDialog.dart
 import '../../components/singleListDialog.dart';
 
-class PlayerView extends StatefulWidget {
-  const PlayerView({Key? key, required this.userPlayerObject})
+class PlayerView extends StatefulWidget with RequestsMixin {
+   PlayerView({Key? key, required this.userPlayerObject})
       : super(key: key);
   final Map<String, dynamic> userPlayerObject;
 
@@ -26,82 +28,75 @@ class _PlayerViewState extends State<PlayerView> {
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
 
-  int selectIndex = 0;
-  int chosenRequestType = 0;
-  List requestUserTypes = [
-    Constants.PLAYER.toString(),
-    Constants.ORGANIZER.toString(),
-    Constants.MANAGER.toString(),
-    Constants.MAINCOACH.toString(),
-    Constants.ASSISTANTCOACH.toString(),
-    Constants.REF.toString(),
-  ];
+  // int selectIndex = 0;
+  // int chosenRequestType = 0;
+  // List requestUserTypes = [
+  //   Constants.PLAYER.toString(),
+  //   Constants.ORGANIZER.toString(),
+  //   Constants.MANAGER.toString(),
+  //   Constants.MAINCOACH.toString(),
+  //   Constants.ASSISTANTCOACH.toString(),
+  //   Constants.REF.toString(),
+  // ];
 
-  List myEventsToChooseFrom = [];
-  List myTeamsToChooseFrom = [];
-  List choices = [];
-  String eventTeamChosen = "";
+  // List myEventsToChooseFrom = [];
+  // List myTeamsToChooseFrom = [];
+  // List choices = [];
+  // String eventTeamChosen = "";
 
   void setupEventTeamToChoose(int index) {
-    eventTeamChosen = teamEventList[index];
-    if (eventTeamChosen == "Event") {
-      setupEventsToChooseFrom();
-    } else {
-      setupTeamsToChooseFrom();
-    }
+    widget.setupEventTeamToChoose(index);
+    // eventTeamChosen = teamEventList[index];
+    // if (eventTeamChosen == "Event") {
+    //   setupEventsToChooseFrom();
+    // } else {
+    //   setupTeamsToChooseFrom();
+    // }
   }
 
-  void setupEventsToChooseFrom() {
-    print("setupEventsToChooseFrom");
-    List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
-    myEventsToChooseFrom = myEvents;
-    choices = myEventsToChooseFrom;
-  }
+  // void setupEventsToChooseFrom() {
+  //   print("setupEventsToChooseFrom");
+  //   List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
+  //   myEventsToChooseFrom = myEvents;
+  //   choices = myEventsToChooseFrom;
+  // }
 
-  void setupTeamsToChooseFrom() {
-    print("setupTeamsToChooseFrom");
-    List<dynamic> myTeams = UserCommand().getAppModelMyTeams();
-    myTeamsToChooseFrom = myTeams;
-    choices = myTeamsToChooseFrom;
-  }
+  // void setupTeamsToChooseFrom() {
+  //   print("setupTeamsToChooseFrom");
+  //   List<dynamic> myTeams = UserCommand().getAppModelMyTeams();
+  //   myTeamsToChooseFrom = myTeams;
+  //   choices = myTeamsToChooseFrom;
+  // }
 
-  List<String> teamEventList = ["Team", "Event"];
-  List<int>? selectedEventTeamIndexes;
-  List<int>? selectedRequestTypeIndexes;
-  List<dynamic> selectedEventTeamObjects = [];
-  List<String> selectedRequestTypeObjects = [];
+  // List<String> teamEventList = ["Team", "Event"];
+  // List<int>? selectedEventTeamIndexes;
+  // List<int>? selectedRequestTypeIndexes;
+  // List<dynamic> selectedEventTeamObjects = [];
+  // List<String> selectedRequestTypeObjects = [];
 
   eventTeamsSelected(List<int>? indexes) {    
-    print("eventTeamsSelected: " + indexes.toString());
-    selectedEventTeamObjects = [];
-    selectedEventTeamIndexes = indexes;
-    for(int i = 0; i < indexes!.length; i++){
-      selectedEventTeamObjects.add(choices[indexes[i]]);
-    }
-    print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
+    widget.eventTeamsSelected(indexes);
+    // print("eventTeamsSelected: " + indexes.toString());
+    // selectedEventTeamObjects = [];
+    // selectedEventTeamIndexes = indexes;
+    // for(int i = 0; i < indexes!.length; i++){
+    //   selectedEventTeamObjects.add(choices[indexes[i]]);
+    // }
+    // print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
   }
 
   requestTypesSelected(List<int>? indexes) async {
-    print("requestTypesSelected: " + indexes.toString());    
-    selectedRequestTypeIndexes = indexes;
-    for(int i = 0; i < indexes!.length; i++){
-      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
-    }
-    await sendPlayerRequests();
+    widget.requestTypeSelected(indexes);
+    // print("requestTypesSelected: " + indexes.toString());    
+    // selectedRequestTypeIndexes = indexes;
+    // for(int i = 0; i < indexes!.length; i++){
+    //   selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
+    // }
+    // await sendPlayerRequests();
   }
 
   sendPlayerRequests(){
-    print("sendPlayerRequests");
-    print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
-    print("selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    if(eventTeamChosen == "Event"){
-      print("send player event request");
-      EventCommand().sendPlayerEventRequests(widget.userPlayerObject,selectedEventTeamObjects, selectedRequestTypeObjects);
-    }
-    else{
-      print("send player team request");
-      TeamCommand().sendPlayerTeamRequests(widget.userPlayerObject,selectedEventTeamObjects, selectedRequestTypeObjects);
-    }
+    widget.sendPlayerRequests(widget.userPlayerObject);
   }
 
   void goBack() {
@@ -190,7 +185,7 @@ class _PlayerViewState extends State<PlayerView> {
               barrierDismissible: true,
               builder: (BuildContext context) {
                 return ClassicListDialogWidget<dynamic>(
-                    selectedIndex: selectIndex,
+                    selectedIndex: widget.selectIndex,
                     titleText: 'Title',
                     listType: ListType.singleSelect,
                     positiveText: "Next",
@@ -201,60 +196,61 @@ class _PlayerViewState extends State<PlayerView> {
                      
                     // },
                     activeColor: Colors.green,
-                    dataList: teamEventList);
+                    dataList: widget.teamEventList);
               },
               animationType: DialogTransitionType.size,
               curve: Curves.linear,
             );
             print("index: " + index.toString());
             setupEventTeamToChoose(index!);
-            if (eventTeamChosen != "") {
+            if (widget.eventTeamChosen != "") {
               List<int>? indexes = await showAnimatedDialog(
                 context: context,
                 barrierDismissible: true,
                 builder: (BuildContext context) {
                   return ClassicListDialogWidget<dynamic>(
-                      selectedIndexes: selectedEventTeamIndexes,
+                      selectedIndexes: widget.selectedEventTeamIndexes,
                       titleText: 'Choose Event/Team',
                       positiveText: "Next",
                       listType: ListType.multiSelect,
                       activeColor: Colors.green,
-                      dataList: choices);
+                      dataList: widget.choices);
                 },
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
               );
-              selectedEventTeamIndexes = indexes ?? selectedEventTeamIndexes;
-              print('selectedIndex:${selectedEventTeamIndexes?.toString()}');
-              eventTeamsSelected(selectedEventTeamIndexes);
+              widget.selectedEventTeamIndexes = indexes ?? widget.selectedEventTeamIndexes;
+              print('selectedIndex:${widget.selectedEventTeamIndexes?.toString()}');
+              eventTeamsSelected(widget.selectedEventTeamIndexes);
             }
-            if (selectedEventTeamIndexes!.isNotEmpty) {
+            if (widget.selectedEventTeamIndexes!.isNotEmpty) {
               List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
                 context: context,
                 barrierDismissible: true,
                 builder: (BuildContext context) {
                   return ClassicListDialogWidget<dynamic>(
-                      selectedIndexes: selectedRequestTypeIndexes,
+                      selectedIndexes: widget.selectedRequestTypeIndexes,
                       titleText: 'Choose User Type',
                       positiveText: "Send Request",
                       listType: ListType.multiSelect,
                       onNegativeClick: () {
                         print("onNegativeClick");
-                        selectedEventTeamIndexes = [];
+                        widget.selectedEventTeamIndexes = [];
                         //pop
                         Navigator.pop(context);
                       },
                       activeColor: Colors.green,
-                      dataList: requestUserTypes);
+                      dataList: widget.requestUserTypes);
                 },
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
               );
 
-              selectedRequestTypeIndexes =
-                  requestIndexes ?? selectedRequestTypeIndexes;
-              print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-              requestTypesSelected(selectedRequestTypeIndexes);
+              widget.selectedRequestTypeIndexes =
+                  requestIndexes ?? widget.selectedRequestTypeIndexes;
+              print('selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+              requestTypesSelected(widget.selectedRequestTypeIndexes);
+              sendPlayerRequests();
             }
           },
           child: Container(

@@ -53,6 +53,7 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  dynamic userObject;
   List<String> teamEventList = ["Team", "Event"];
   int selectIndex = 0;
   String eventTeamChosen = "";
@@ -119,7 +120,7 @@ class _Home extends State<Home> {
     for(int i = 0; i<userObjectSelections.length;i++){
       if(eventTeamChosen == "Event"){
         print("send player event request");
-        await EventCommand().sendPlayerEventRequests(userObjectSelections[i],selectedEventTeamObjects, selectedRequestTypeObjects);
+        await EventCommand().sendPlayerEventRequests(userObjectSelections[i],selectedEventTeamObjects, selectedRequestTypeObjects, "GAMEREQUEST");
       }
       else{
         print("send player team request");
@@ -225,6 +226,7 @@ class _Home extends State<Home> {
 
   //pretty sure this is obsolete now
   void _firstLoad() async {
+    userObject = UserCommand().getAppModelUser();
     // setState(() {
     //   _isFirstLoadRunning = true;
     // });
@@ -424,7 +426,7 @@ class _Home extends State<Home> {
       appBar: Headers().getMainHeader(context),
       drawer: Container(
         width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
-        child: Drawer(child: SideNavs().getMainSideNav(context)),
+        child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
       ),
       body:
           

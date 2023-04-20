@@ -76,6 +76,12 @@ class GameMutations {
               isMainEvent: ${eventInput['isMainEvent']},
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
+              joinConditions: {
+                create: {
+                  withRequest: ${eventInput['withRequest']},
+                  withPayment: ${eventInput['withPayment']},
+                }
+              },
               userParticipants: {
                 create:
                   {
@@ -83,7 +89,7 @@ class GameMutations {
                       connect:                   
                           "${userInput['_id']}"    
                       }                                         
-                      roles: "{ORGANIZER, PLAYER}"
+                      roles: "${eventInput['roles']}"
                                        
                   }                                     
               },                    
