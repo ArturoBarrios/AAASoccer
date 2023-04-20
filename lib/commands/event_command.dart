@@ -58,6 +58,40 @@ class EventCommand extends BaseCommand {
     return notifyEventParticipantsResponse;
   }
 
+  Future<Map<String, dynamic>> addUserToEvent(
+      dynamic eventInput, dynamic userInput) async {
+    print("addUserToEvent");
+    Map<String, dynamic> addUserToEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+      Uri.parse('https://graphql.fauna.com/graphql'),
+      headers: <String, String>{
+        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode(<String, String>{
+        'query': EventMutations().addUserToEvent(eventInput, userInput),
+      }),
+    );
+
+
+
+    print("response body: ");
+    print(jsonDecode(response.body));
+    
+    addEventToMyEvents(jsonDecode(response.body)['data']['updateEvent']);
+
+      return addUserToEventResponse;      
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return addUserToEventResponse;
+    }
+  }
+
 
 
 
@@ -228,7 +262,7 @@ class EventCommand extends BaseCommand {
       List<String> phones = [];
       for (var i = 0; i < userParticipants.length; i++) {
         String toUserId = userParticipants[i]['user']['_id'];
-        List<String> roles = BaseCommand().parseWords(userParticipants[i]['roles']);
+        List<String> roles = BaseCommand().parseRoles(userParticipants[i]['roles']);
         print("roles: " + roles.toString());
         if(roles.contains("ORGANIZER")){
           organizersString += toUserId + ",";
@@ -427,7 +461,7 @@ class EventCommand extends BaseCommand {
       List<String> phones = [];
       for (var i = 0; i < userParticipants.length; i++) {
         String toUserId = userParticipants[i]['user']['_id'];
-        List<String> roles = BaseCommand().parseWords(userParticipants[i]['roles']);
+        List<String> roles = BaseCommand().parseRoles(userParticipants[i]['roles']);
         print("roles: " + roles.toString());
         if(roles.contains("ORGANIZER")){
           organizersString += toUserId + ",";
@@ -566,7 +600,7 @@ class EventCommand extends BaseCommand {
         'Content-Type': 'application/json'
       },
       body: jsonEncode(<String, String>{
-        'query': EventMutations().addPlayerToEvent(eventInput, playerInput),
+        'query': EventMutations().addPlayerToEventDoesntWork(eventInput, playerInput),
       }),
     );
 
@@ -745,6 +779,8 @@ class EventCommand extends BaseCommand {
     };
     //think of sorting friends by location
     //
+
+
     print("getGamesNearLocation in setupEvents()");
     Map<String, dynamic> getGamesNearLocationResp =
         await GameCommand().getGamesNearLocation();
@@ -758,6 +794,15 @@ class EventCommand extends BaseCommand {
       Map<String, dynamic> filteredGamesResp =
           await GameCommand().filterGames(games);
 
+      print("started testing!");
+      print("games: " + games.toString());
+      for(int i = 0;i<games.length;i++){
+        List<dynamic> userParticipants =  games[i]['event']['userParticipants']['data'];
+        for(int j = 0;j<userParticipants.length;j++){
+          dynamic roles = userParticipants[i]['roles'];                    
+          BaseCommand().parseRoles(roles);
+        }
+      }
       eventsModel.games = filteredGamesResp['activeEvents'];
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
       eventsModel.events.addAll(games);

@@ -180,7 +180,7 @@ class TeamCommand extends BaseCommand {
       for (var i = 0; i < userParticipants.length; i++) {
         String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles =
-            BaseCommand().parseWords(userParticipants[i]['roles']);
+            BaseCommand().parseRoles(userParticipants[i]['roles']);
         print("roles: " + roles.toString());
         if (roles.contains("ORGANIZER")) {
           organizersString += toUserId + ",";

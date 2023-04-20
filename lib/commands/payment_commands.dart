@@ -20,6 +20,17 @@ import '../blocs/payment/payment_bloc.dart';
 
 class PaymentCommand extends BaseCommand {
   
+  void createPaymentForEvent(){
+
+  }
+
+  void createPaymentForTeam(){
+
+  }
+  
+
+
+
   Future<Map<String, dynamic>> getCustomerPaymentMethods(   
   ) async{
     print("getCustomerPaymentMethods");

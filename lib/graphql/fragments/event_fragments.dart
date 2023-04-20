@@ -22,51 +22,64 @@ class EventFragments {
             pickup
           }
         }
+        price{
+          _id
+          amount
+          event{
+            _id
+            name
+          }
+        }
      ''';
     return eventGame;
   }
 
   String fullEvent() {
     String fullEventReturn = r'''
-       name        	
-                  _id  
-                  type                  
-                  archived
-                  isMainEvent
-                  deleted  
-                  startTime
-                  endTime  
-                  price{                    
-                    _id
-                    amount
-                    event{
-                      _id
-                      name                      
-                    }
-                  }
-                  location{
-                    data{
-                    _id
-                    latitude
-                    longitude
-                    }
-                  }
-                  userParticipants{     
-                    data{
-                      _id
-                      event{                        
-                        _id
-                        name
-                      }
-                      user{
-                        _id
-                        name
-                        userType
-                      }
-                      roles
-                    }                                        
-                                 
-                  }
+      name        	
+      _id  
+      type                  
+      archived
+      isMainEvent
+      deleted  
+      startTime
+      endTime  
+      joinConditions{
+        _id
+        withRequest
+        withPayment
+      }
+      price{                    
+        _id
+        amount
+        event{
+          _id
+          name                      
+        }
+      }
+      location{
+        data{
+        _id
+        latitude
+        longitude
+        }
+      }
+      userParticipants{     
+        data{
+          _id
+          event{                        
+            _id
+            name
+          }
+          user{
+            _id
+            name
+            userType
+          }
+          roles
+        }                                        
+                      
+      }
     ''';
 
     return fullEventReturn;

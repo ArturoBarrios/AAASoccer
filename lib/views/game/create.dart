@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:math';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import '../../components/Mixins/event_mixin.dart';
 import '../../components/location_search_bar.dart';
 import '../../commands/game_command.dart';
 import '../../commands/game_command.dart';
@@ -16,7 +18,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 
-class GameCreate extends StatefulWidget {
+class GameCreate extends StatefulWidget with EventMixin {
   @override
   _GameCreateState createState() => _GameCreateState();
 }
@@ -44,6 +46,7 @@ class _GameCreateState extends State<GameCreate> {
   
   DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
   DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(DateTime.now().add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
+  
 
 
   void chooseAddress(String chosenAddress) async {
@@ -67,6 +70,7 @@ class _GameCreateState extends State<GameCreate> {
       print("setStartTime: " + startTimestamp.toString());
       twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(time.add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
       startTimeSet = true;
+      setEndTime(twoHoursFromStart);
     });
   }
 
@@ -94,6 +98,9 @@ class _GameCreateState extends State<GameCreate> {
         'price': int.parse(priceController.text.toString()),
         'startTime': startTimestamp,
         'endTime': endTimestamp,
+        'withRequest': widget.withRequest,
+        'withPayment': widget.withPayment, 
+        'roles': "{PLAYER, ORGANIZER}"
       };
 
       Map<String, dynamic> randomPickupData =
@@ -120,6 +127,7 @@ class _GameCreateState extends State<GameCreate> {
       }
     } on ApiException catch (e) {}
   }
+
 
   void goBack() {
     Navigator.pop(context);
@@ -167,7 +175,36 @@ class _GameCreateState extends State<GameCreate> {
         //   }),
 
         LocationSearchBar(chooseAddress: chooseAddress,),
-
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("Join With Request?"), 
+            Checkbox(              
+              value: widget.withRequest, 
+              onChanged: (bool? value) { 
+                setState(() {
+                  widget.withRequest = value!;
+                });
+              },
+              
+            ),
+          ]
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("Join With Payment?"), 
+            Checkbox(              
+              value: widget.withPayment, 
+              onChanged: (bool? value) { 
+                setState(() {
+                  widget.withPayment = value!;
+                });
+              },
+              
+            ),
+          ]
+        ),
         TextField(
           controller: awayteamController,
           decoration: new InputDecoration.collapsed(hintText: 'Away'),

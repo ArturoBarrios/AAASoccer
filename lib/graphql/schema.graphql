@@ -197,15 +197,6 @@ type User  {
   events: [Event] @relation      
   eventUserParticipants: [EventUserParticipant] @relation   
   teamUserParticipants: [TeamUserParticipant] @relation  
-  # eventRequestsSent: [EventRequest] @relation(name: "event_requests_sent")
-  # eventRequestsAcceptedBy: [EventRequest] @relation(name: "event_requests_acceptedBy")
-  # eventRequestsOrganizers: [EventRequest] @relation(name: "event_requests_organizers")
-  # eventRequestsToAccept: [EventRequest] @relation(name: "event_requests_to_accept")
-  # friendRequests: [FriendRequest] @relation(name: "friend_requests")
-  # teamRequests: [TeamRequest] @relation(name: "team_requests_organizers")
-  # teamRequestsToAccept: [TeamRequest] @relation(name: "team_requests_to_accept")
-  # teamRequestsSent: [TeamRequest] @relation(name: "team_requests_sent")
-  # teamRequestsAccepted: [TeamRequest] @relation(name: "team_requests_acceptedBy")
   requestsSent: [Request]  @relation(name: "requests_sent")
   requestsReceived: [Request] @relation(name: "request_receivers")
   requestsAccepted: [Request] @relation(name: "request_acceptedBy")
@@ -213,7 +204,6 @@ type User  {
   sentMessages: [Message] @relation(name: "messages_sent")
   messagesDirectedForMe: [Message] @relation(name: "messages_for")
   onboarded: Boolean @default(value: false)
-
 }
 
 
@@ -244,7 +234,7 @@ type TeamUserParticipant {
   roles: String
 }
 
-type Game   {
+type Game {
   hometeam: Team
   awayTeam: Team
   teamA: String 
@@ -257,8 +247,15 @@ type Game   {
   event: Event  
 }
 
+type JoinConditions {
+  withRequest: Boolean
+  withPayment: Boolean  
+  events: Event
+}
+
 type Event   {
   name: String
+  joinConditions: JoinConditions
   isMainEvent: Boolean
   userParticipants: [EventUserParticipant] @relation
   # eventUserOrganizers: EventUserOrganizers
@@ -482,4 +479,3 @@ type Price   {
   amount: String @default(value: "0")
   event: Event
 }
-

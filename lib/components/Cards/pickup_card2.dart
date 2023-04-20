@@ -1,22 +1,15 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:soccermadeeasy/commands/base_command.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
-import '../../commands/event_command.dart';
-import '../../commands/player_command.dart';
 import '../../views/game/view.dart';
 import '../../views/game/update.dart';
 import 'package:soccermadeeasy/constants.dart';
 
-import 'base_card.dart';
+import '../Mixins/requests_mixin.dart';
 
-class PickupCard2 extends StatefulWidget with BaseCardMixin {
+class PickupCard2 extends StatefulWidget with RequestsMixin {
   PickupCard2(
       {Key? key, required this.gameObject, required this.svgImage, required this.isMyEvent })
       : super(key: key);
@@ -160,9 +153,10 @@ class _PickupCard2 extends State<PickupCard2> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return widget.isMyEvent ? 
-              GameUpdate(game: widget.gameObject)
-              :
+            return 
+            // widget.isMyEvent ? 
+              // GameUpdate(game: widget.gameObject);
+              // :
               PickupView(isMyEvent: widget.isMyEvent, game: widget.gameObject);
           },
           animationType: DialogTransitionType.slideFromBottom,

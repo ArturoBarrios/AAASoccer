@@ -8,7 +8,7 @@ import '../../commands/team_command.dart';
 import '../../commands/user_command.dart';
 import '../../constants.dart';
 
-mixin BaseCardMixin {
+mixin RequestsMixin {
   int selectIndex = 0;
   int chosenRequestType = 0;
   List requestUserTypes = [

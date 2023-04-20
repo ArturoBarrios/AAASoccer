@@ -9,9 +9,9 @@ import '../../commands/event_command.dart';
 import '../../views/tryout/view.dart';
 import 'package:soccermadeeasy/constants.dart';
 
-import 'base_card.dart';
+import '../Mixins/requests_mixin.dart';
 
-class TryoutCard extends StatefulWidget with BaseCardMixin {
+class TryoutCard extends StatefulWidget with RequestsMixin {
    TryoutCard(
       {Key? key, required this.tryoutObject, required this.svgImage, required this.isMyEvent})
       : super(key: key);
