@@ -50,7 +50,15 @@ class PaymentCommand extends BaseCommand {
         uri 
       );
       print("response: " + json.decode(listPaymentMethodsResp.body).toString());
-      return json.decode(listPaymentMethodsResp.body);
+      List listPaymentMethods = json.decode(listPaymentMethodsResp.body);
+      if(listPaymentMethods.length>0){
+        getCustomerPaymentMethodsResultResp['success'] = true;
+        getCustomerPaymentMethodsResultResp['message'] = "Success";
+        getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods;
+      }
+
+
+      return getCustomerPaymentMethodsResultResp;
 
     } catch (e) {
       print("getCustomerPaymentMethods error: " + e.toString());

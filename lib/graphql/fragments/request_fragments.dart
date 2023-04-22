@@ -4,7 +4,8 @@ class RequestFragments {
        _id
             status
             requestAttempts   
-            type         
+            type     
+            forRole    
             receivers{
               data{
                 _id

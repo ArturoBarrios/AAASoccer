@@ -3,11 +3,11 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/commands/team_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/player_command.dart';
-import '../../components/Mixins/requests_mixin.dart';
+import '../../components/Mixins/event_mixin.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
 
-class TeamView extends StatefulWidget with RequestsMixin {
+class TeamView extends StatefulWidget with EventMixin {
   TeamView({Key? key, required this.teamObject, required this.isMyTeam})
       : super(key: key);
   final Map<String, dynamic> teamObject;

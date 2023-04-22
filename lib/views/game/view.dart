@@ -2,10 +2,12 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
+import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/user_command.dart';
 import '../../components/Mixins/payment_mixin.dart';
-import '../../components/Mixins/requests_mixin.dart';
+import '../../components/Mixins/event_mixin.dart';
 import '../../components/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
@@ -17,7 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants.dart';
 
-class PickupView extends StatefulWidget with RequestsMixin, PaymentMixin {
+class PickupView extends StatefulWidget with EventMixin, PaymentMixin, EventMixin {
   PickupView({Key? key, required this.isMyEvent, required this.game})
       : super(key: key);
 
@@ -41,7 +43,10 @@ class _PickupViewState extends State<PickupView> {
   late LatLng _center = LatLng(45.521563, -122.677433);
   late GoogleMapController mapController;
   dynamic priceObject;
-  dynamic userObject;
+  // dynamic userObject;
+  bool participatingInGame = false;
+  // List<String> participationRoles = [];
+  // dynamic eventUserParticipant;
 
   // List<int>? selectedRequestTypeIndexes;
   // List requestUserTypes = [
@@ -85,18 +90,9 @@ class _PickupViewState extends State<PickupView> {
   }
 
   GestureDetector getJoinGameWidget(){
-    return widget.getJoinGameWidget(widget.isMyEvent, widget.game['event'], userObject);
+    return widget.getJoinGameWidget(context, widget.isMyEvent, widget.game['event'], widget.userObject);
   }
 
-  void purchaseEvent() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              CardFormScreen(priceObject: widget.game['event'])),
-    );
-    // await AdaptyPaymentService().makePurchase();
-  }
 
   void goBack() {
     Navigator.pop(context);
@@ -106,14 +102,16 @@ class _PickupViewState extends State<PickupView> {
     priceObject = widget.game['event']['price'];
   }
 
+  
+
   @override
   void initState() {
     super.initState();
 
     print("initState");
-    print("game: " + widget.game.toString());
-    userObject = UserCommand().getAppModelUser();
+    print("game: " + widget.game.toString());    
     loadEventPayment();
+    widget.loadEventInfo(widget.game['event']);
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
     _isLoading = false;
   }

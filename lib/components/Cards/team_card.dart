@@ -3,7 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/commands/team_command.dart';
-import 'package:soccermadeeasy/components/Mixins/requests_mixin.dart';
+import '../Mixins/event_mixin.dart';
 import '../../commands/player_command.dart';
 import '../../constants.dart';
 import '../../svg_widgets.dart';
@@ -11,7 +11,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../views/team/view.dart';
 
-class TeamCard extends StatefulWidget with RequestsMixin {
+class TeamCard extends StatefulWidget with EventMixin {
    TeamCard(
       {Key? key, required this.teamObject, required this.svgImage,
         required this.isMyTeam

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:soccermadeeasy/components/Mixins/requests_mixin.dart';
+import '../Mixins/event_mixin.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../models/app_model.dart';
@@ -10,7 +10,7 @@ import '../../commands/event_command.dart';
 import '../../views/training/view.dart';
 import 'package:soccermadeeasy/constants.dart';
 
-class TrainingCard extends StatefulWidget with RequestsMixin {
+class TrainingCard extends StatefulWidget with EventMixin {
    TrainingCard(
       {Key? key,
       required this.trainingObject,

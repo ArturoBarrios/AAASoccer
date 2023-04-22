@@ -42,15 +42,6 @@ class _GameUpdateState extends State<GameUpdate> {
     return LatLng(lat, lon);
   }
 
-  void purchaseEvent() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              CardFormScreen(priceObject: widget.game['event'])),
-    );
-    // await AdaptyPaymentService().makePurchase();
-  }
 
   void partiallyUpdateEvent(dynamic gameObject) async{
     Map<String, dynamic> gameEventInput = {
@@ -124,7 +115,7 @@ class _GameUpdateState extends State<GameUpdate> {
                       GestureDetector(
                     onTap: () {
                       print("onTap Join Game");
-                      purchaseEvent();
+                      // purchaseEvent();
                     },
                     child: Text("Join Game"),
                   )
