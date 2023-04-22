@@ -41,7 +41,7 @@ class EventMutations {
   }
   
   String addUserToEvent(
-      Map<String, dynamic> eventInput, Map<String, dynamic> userInput) {
+      Map<String, dynamic> eventInput, Map<String, dynamic> userInput, String roles) {
     String addPlayerToEvent = """      
       mutation {
         updateEvent(
@@ -54,12 +54,41 @@ class EventMutations {
                   connect:
                   "${userInput['_id']}"
                 }
-                roles: "{roles: [PLAYER]}"
+                roles: "$roles"
               }
             }                                                        
           }                      
         ){
           ${EventFragments().fullEvent()}
+              
+    				  
+          }
+        }
+        """;
+
+    return addPlayerToEvent;
+  }
+  
+  String updateUserRolesInEvent(
+      Map<String, dynamic> eventInput, Map<String, dynamic> userInput, String roles, String eventRequestId) {
+    String addPlayerToEvent = """      
+      mutation {
+        partialUpdateEventUserParticipant(
+          id: ${eventRequestId},
+  				data: {                       
+            roles: "$roles"                                                      
+          }                      
+        ){
+          _id,
+          roles,
+          user{
+            _id
+            username
+          }
+          event{
+            ${EventFragments().fullEvent()}
+
+          }
               
     				  
           }

@@ -171,17 +171,24 @@ Future<void> getCustomerDetails() async {
 Future<void> getCustomerPaymentMethods() async {
   Map<String, dynamic> getCustomerPaymentMethodsResp = await PaymentCommand().getCustomerPaymentMethods();
   print("getCustomerPaymentMethodsResp: "+getCustomerPaymentMethodsResp.toString());
-  int numberOfPaymentMethods = getCustomerPaymentMethodsResp['paymentMethods']['data'].length;
-  print("numberOfPaymentMethods: "+numberOfPaymentMethods.toString());
-  
-  setState(() {
+  if(getCustomerPaymentMethodsResp['success']){
+    int numberOfPaymentMethods = getCustomerPaymentMethodsResp['paymentMethods']['data'].length;
+    print("numberOfPaymentMethods: "+numberOfPaymentMethods.toString());
     
-    var timer = Timer(Duration(milliseconds: 500), () => print('timer done'));
+    setState(() {
+      
+      var timer = Timer(Duration(milliseconds: 500), () => print('timer done'));
 
-    timer.cancel();
-    isLoading = false;
-    paymentMethods = getCustomerPaymentMethodsResp['paymentMethods']['data'];
-  });
+      timer.cancel();
+      isLoading = false;
+      paymentMethods = getCustomerPaymentMethodsResp['paymentMethods']['data'];
+    });
+  }
+  else{
+    setState(() {
+      isLoading = false;
+    });
+  }
 }
 
 @override
@@ -196,9 +203,9 @@ Future<void> getCustomerPaymentMethods() async {
     //todo check if customer exists, if so show credit card options. 
     dynamic customerResponse = getCustomerPaymentMethods();
     
-    // print("customerResponse: "+customerResponse.toString());
+    print("customerResponse: "+customerResponse.toString());
     // if(customerResponse['success']){
-    //   //allow adding new card button
+      //allow adding new card button
     // }
     
   }

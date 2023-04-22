@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../components/Mixins/requests_mixin.dart';
+import '../../components/Mixins/event_mixin.dart';
 import '../../components/profile.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -10,7 +10,7 @@ import '../../commands/team_command.dart';
 //import singleListDialog.dart
 import '../../components/singleListDialog.dart';
 
-class PlayerView extends StatefulWidget with RequestsMixin {
+class PlayerView extends StatefulWidget with EventMixin {
    PlayerView({Key? key, required this.userPlayerObject})
       : super(key: key);
   final Map<String, dynamic> userPlayerObject;

@@ -29,6 +29,9 @@ class UserFragments{
               eventUserParticipants{
                 data{
                   _id
+                  user{
+                    _id
+                  }
                   event{
                     ${EventFragments().eventGameFragment()}  
                   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
@@ -7,9 +8,9 @@ import '../../views/game/view.dart';
 import '../../views/game/update.dart';
 import 'package:soccermadeeasy/constants.dart';
 
-import '../Mixins/requests_mixin.dart';
+import '../Mixins/event_mixin.dart';
 
-class PickupCard2 extends StatefulWidget with RequestsMixin {
+class PickupCard2 extends StatefulWidget with EventMixin {
   PickupCard2(
       {Key? key, required this.gameObject, required this.svgImage, required this.isMyEvent })
       : super(key: key);

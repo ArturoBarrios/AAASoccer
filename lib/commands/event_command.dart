@@ -58,15 +58,78 @@ class EventCommand extends BaseCommand {
     return notifyEventParticipantsResponse;
   }
 
+  Map<String, dynamic> checkIfUpdateRole(dynamic event, dynamic userObject, String role){    
+        print("checkIfUpdateRole");
+        dynamic checkIfUpdateRoleResp = {
+          "updateRole": false,
+          "eventRequestId": ""
+        };        
+        userObject['eventUserParticipants']['data']
+            .forEach((eventUserParticipantElement) {
+          if (eventUserParticipantElement['event']['_id'] == event['_id']) {
+            //update role
+            checkIfUpdateRoleResp['updateRole'] = true;
+            checkIfUpdateRoleResp['eventUserParticipant'] = eventUserParticipantElement['_id'];
+          }
+          
+        });
+        print("checkIfUpdateRoleResp: $checkIfUpdateRoleResp");
+
+        return checkIfUpdateRoleResp;
+  }
+
   Future<Map<String, dynamic>> addUserToEvent(
-      dynamic eventInput, dynamic userInput) async {
+      dynamic eventInput, dynamic userInput, String roles) async {
     print("addUserToEvent");
     Map<String, dynamic> addUserToEventResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
-    try {
+    try {      
+      dynamic userObject = UserCommand().getAppModelUser();
+      dynamic updateRoleResp = EventCommand().checkIfUpdateRole(eventInput, userObject, eventInput['forRole']);
+      if(updateRoleResp['updateRole']){
+        updateUserRolesInEvent(eventInput, userInput, roles, updateRoleResp['eventUserParticipant']);
+      }
+      else{
+        http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations().addUserToEvent(eventInput, userInput, roles),
+        }),
+      );
+
+
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+      
+      addEventToMyEvents(jsonDecode(response.body)['data']['updateEvent']);
+
+      }
+
+      return addUserToEventResponse;      
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return addUserToEventResponse;
+    }
+  }
+  
+  Future<Map<String, dynamic>> updateUserRolesInEvent(
+      dynamic eventInput, dynamic userInput, String roles, String eventRequestId) async {
+    print("updateUserRolesInEvent");
+    Map<String, dynamic> addUserToEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {      
+           
       http.Response response = await http.post(
       Uri.parse('https://graphql.fauna.com/graphql'),
       headers: <String, String>{
@@ -74,7 +137,7 @@ class EventCommand extends BaseCommand {
         'Content-Type': 'application/json'
       },
       body: jsonEncode(<String, String>{
-        'query': EventMutations().addUserToEvent(eventInput, userInput),
+        'query': EventMutations().updateUserRolesInEvent(eventInput, userInput, roles, eventRequestId),
       }),
     );
 
@@ -83,7 +146,7 @@ class EventCommand extends BaseCommand {
     print("response body: ");
     print(jsonDecode(response.body));
     
-    addEventToMyEvents(jsonDecode(response.body)['data']['updateEvent']);
+    addEventToMyEvents(jsonDecode(response.body)['data']['partialUpdateEventUserParticipant']['event']);
 
       return addUserToEventResponse;      
     } on ApiException catch (e) {
@@ -411,7 +474,7 @@ class EventCommand extends BaseCommand {
 
   //send organizer event request
   Future<Map<String, dynamic>> sendOrganizerEventRequest(
-      dynamic gameInput, String role, type) async {
+      dynamic eventInput, String role, type) async {
     
     print("sendOrganizerEventRequestttt");
     Map<String, dynamic> sendOrganizerEventRequestResponse = {
@@ -420,26 +483,25 @@ class EventCommand extends BaseCommand {
       "data": null      
     };
     try {
-      print("request for event: " + gameInput.toString());
-      dynamic eventInput = gameInput['event'];
-      dynamic eventId = "";
+      print("request for event: " + eventInput.toString());      
+      // dynamic eventId = "";
       //set variables according to type
-      if(type == Constants.LEAGUEREQUEST ||
-          type == Constants.TOURNAMENTREQUEST){
-        print("eventId for league or tournament");
-        //find main tournament event
-        eventInput = TournamentCommand().getMainTournamentEvent(gameInput);
-        eventId = eventInput['_id'];        
-      }
-      else{
-        eventId = eventInput['_id'];
-      }
-      print("eventId: " + eventId.toString());
+      // if(type == Constants.LEAGUEREQUEST ||
+      //     type == Constants.TOURNAMENTREQUEST){
+      //   print("eventId for league or tournament");
+      //   //find main tournament event
+      //   eventInput = TournamentCommand().getMainTournamentEvent(gameInput);
+      //   eventId = eventInput['_id'];        
+      // }
+      // else{
+      //   eventId = eventInput['_id'];
+      // }
+      // print("eventId: " + eventId.toString());
 
       
       Map<String, dynamic> sendOrganizerEventRequestInput = {
         "sender_id": appModel.currentUser['_id'],
-        "event_id": eventId,
+        "event_id": eventInput['_id'],
         "fromOrganizer": false,
         "forRole": role,
         "type": type
@@ -569,7 +631,7 @@ class EventCommand extends BaseCommand {
     };
     print("before getEvent");
     print("eventRequestInput: " + eventRequestInput.toString());
-    dynamic getEventGameResp = await getEventGame(eventRequestInput['event']);
+    dynamic getEventGameResp = await getEventGame(eventRequestInput);
     print("getGameEventResp: " + getEventGameResp.toString());
     if(getEventGameResp['success']){
       dynamic eventGame = getEventGameResp['data'];
@@ -799,10 +861,11 @@ class EventCommand extends BaseCommand {
       for(int i = 0;i<games.length;i++){
         List<dynamic> userParticipants =  games[i]['event']['userParticipants']['data'];
         for(int j = 0;j<userParticipants.length;j++){
-          dynamic roles = userParticipants[i]['roles'];                    
-          BaseCommand().parseRoles(roles);
-        }
+          dynamic roles = userParticipants[j]['roles'];                    
+          BaseCommand().parseRoles(roles);          
+        }        
       }
+      print("done parsing roles!");
       eventsModel.games = filteredGamesResp['activeEvents'];
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
       eventsModel.events.addAll(games);
