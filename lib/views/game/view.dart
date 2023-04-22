@@ -93,15 +93,6 @@ class _PickupViewState extends State<PickupView> {
     return widget.getJoinGameWidget(context, widget.isMyEvent, widget.game['event'], widget.userObject);
   }
 
-  void purchaseEvent() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              CardFormScreen(priceObject: widget.game['event'])),
-    );
-    // await AdaptyPaymentService().makePurchase();
-  }
 
   void goBack() {
     Navigator.pop(context);

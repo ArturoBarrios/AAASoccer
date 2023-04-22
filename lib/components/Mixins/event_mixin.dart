@@ -267,7 +267,7 @@ mixin EventMixin {
           return GestureDetector(
             onTap: () {
               print("Send Request to Join with no payment required");
-              purchaseEvent(context, event);
+              purchaseEvent(context, event, roles);
             },
             child: Text("Pay to Join Game"),
           );
@@ -296,12 +296,12 @@ mixin EventMixin {
 
   }
 
-  void purchaseEvent(BuildContext context, dynamic event) async {
+  void purchaseEvent(BuildContext context, dynamic event, String roles) async {
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) =>
-              CardFormScreen(priceObject: event)),
+              CardFormScreen(priceObject: event, roles: roles)),
     );
     // await AdaptyPaymentService().makePurchase();
   }
