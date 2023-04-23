@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../graphql/mutations/users.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/Training.dart';
@@ -19,97 +20,93 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import '../blocs/payment/payment_bloc.dart';
 
 class PaymentCommand extends BaseCommand {
-  
-  void createPaymentForEvent(){
+  void createPaymentForEvent() {}
 
-  }
+  void createPaymentForTeam() {}
 
-  void createPaymentForTeam(){
-
-  }
-  
-
-
-
-  Future<Map<String, dynamic>> getCustomerPaymentMethods(   
-  ) async{
+  Future<Map<String, dynamic>> getCustomerPaymentMethods() async {
     print("getCustomerPaymentMethods");
-    print("appModel.currentUser['stripeCustomers']: " +   appModel.currentUser['stripeCustomers'].toString());
-    Map<String, dynamic> getCustomerPaymentMethodsResultResp = {"success": false, "message": "Default Error", "data": null};
-    if(appModel.currentUser['stripeCustomers']['data'].length==0){
+    print("appModel.currentUser['stripeCustomers']: " +
+        appModel.currentUser['stripeCustomers'].toString());
+    Map<String, dynamic> getCustomerPaymentMethodsResultResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    if (appModel.currentUser['stripeCustomers']['data'].length == 0) {
       return getCustomerPaymentMethodsResultResp;
     }
-    try{
+    try {
       Map<String, String> queryParams = {
-        'customerId': appModel.currentUser['stripeCustomers']['data'][0]['customerId'].toString(),        
+        'customerId': appModel.currentUser['stripeCustomers']['data'][0]
+                ['customerId']
+            .toString(),
       };
-      final uri =
-        Uri.https("us-central1-soccer-app-a9060.cloudfunctions.net", '/listPaymentMethods', queryParams);
-      
-      final listPaymentMethodsResp = await http.get(
-        uri 
-      );
+      final uri = Uri.https("us-central1-soccer-app-a9060.cloudfunctions.net",
+          '/listPaymentMethods', queryParams);
+
+      final listPaymentMethodsResp = await http.get(uri);
       print("response: " + json.decode(listPaymentMethodsResp.body).toString());
       List listPaymentMethods = json.decode(listPaymentMethodsResp.body);
-      if(listPaymentMethods.length>0){
+      if (listPaymentMethods.length > 0) {
         getCustomerPaymentMethodsResultResp['success'] = true;
         getCustomerPaymentMethodsResultResp['message'] = "Success";
         getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods;
       }
 
-
       return getCustomerPaymentMethodsResultResp;
-
     } catch (e) {
       print("getCustomerPaymentMethods error: " + e.toString());
       getCustomerPaymentMethodsResultResp['message'] = e.toString();
       return getCustomerPaymentMethodsResultResp;
     }
-
   }
 
-
-  Future<Map<String, dynamic>> getCustomerDetails(    
-  ) async{
+  Future<Map<String, dynamic>> getCustomerDetails() async {
     print("getCustomerDetailssss");
-    print("appModel.currentUser['stripeCustomers']['data'][0]['customerId']: " + appModel.currentUser['stripeCustomers']['data'][0]['customerId'].toString());
-    Map<String, dynamic> getCustomersResp = {"success": false, "message": "Default Error", "data": null};
+    print("appModel.currentUser['stripeCustomers']['data'][0]['customerId']: " +
+        appModel.currentUser['stripeCustomers']['data'][0]['customerId']
+            .toString());
+    Map<String, dynamic> getCustomersResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
 
-    try{
+    try {
       Map<String, String> queryParams = {
-        'customerId': appModel.currentUser['stripeCustomers']['data'][0]['customerId'].toString(),        
+        'customerId': appModel.currentUser['stripeCustomers']['data'][0]
+                ['customerId']
+            .toString(),
       };
       // var endpointUrl = "https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails";
-      final uri =
-        Uri.https('us-central1-soccer-app-a9060.cloudfunctions.net', '/getCustomerDetails', queryParams);
-      final getCustomerResult = await http.get(
-        uri
-      );
+      final uri = Uri.https('us-central1-soccer-app-a9060.cloudfunctions.net',
+          '/getCustomerDetails', queryParams);
+      final getCustomerResult = await http.get(uri);
       print("response: " + json.decode(getCustomerResult.body).toString());
       return json.decode(getCustomerResult.body);
-
     } catch (e) {
       print("getCustomers error: " + e.toString());
       getCustomersResp['message'] = e.toString();
       return getCustomersResp;
     }
-
   }
 
-
   Future<Map<String, dynamic>> createPaymentIntent(
-    PaymentCreateIntent event, dynamic eventInput
-
-  ) async{
-      print("createPaymentIntent");
-      print("event: " + event.toString());
-      print("eventInput: " + eventInput.toString());
-    Map<String, dynamic> createPaymentIntentResp = {"success": false, "message": "Default Error", "data": null};
-    try{
+      PaymentCreateIntent event, dynamic eventInput) async {
+    print("createPaymentIntent");
+    print("event: " + event.toString());
+    print("eventInput: " + eventInput.toString());
+    Map<String, dynamic> createPaymentIntentResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
       paymentModel.status = PaymentType.loading;
       final paymentMethod = await Stripe.instance.createPaymentMethod(
         params: PaymentMethodParams.card(
-            paymentMethodData: 
+          paymentMethodData:
               PaymentMethodData(billingDetails: event.billingDetails),
         ),
       );
@@ -117,177 +114,181 @@ class PaymentCommand extends BaseCommand {
       print("paymentMethod: " + paymentMethod.toString());
 
       final paymentIntentResults = await _callPayEndpointMethodId(
-        useStripeSdk: true,
-        paymentMethodId: paymentMethod.id,
-        currency: 'usd', 
-        items: event.items,
-        priceInput: eventInput['price']
-      );
-      print("paymentIntentResults: " + paymentIntentResults.toString());      
-      print("paymentIntentResults['customer']: " + paymentIntentResults['customer'].toString());            
-      print("paymentIntentResults['intent']: " + paymentIntentResults['intent'].toString());            
+          useStripeSdk: true,
+          paymentMethodId: paymentMethod.id,
+          currency: 'usd',
+          items: event.items,
+          priceInput: eventInput['price']);
+      print("paymentIntentResults: " + paymentIntentResults.toString());
+      print("paymentIntentResults['customer']: " +
+          paymentIntentResults['customer'].toString());
+      print("paymentIntentResults['intent']: " +
+          paymentIntentResults['intent'].toString());
 
       //attach payment method to customer
-      if(paymentIntentResults['success'] && 
-        paymentIntentResults['customer'] != null){
-          print("attach payment method to customer");
-          Map<String, dynamic> attachPaymentMethodToCustomerResp = await _callStripeAttachPaymentMethod(paymentMethodId: paymentMethod.id, customerId: paymentIntentResults['customer']);
-          print("attachPaymentMethodToCustomerResp: " + attachPaymentMethodToCustomerResp.toString());
-        }
-      
-
-      if(paymentIntentResults['error'] != null) {
-        paymentModel.status = PaymentType.failure;        
+      if (paymentIntentResults['success'] &&
+          paymentIntentResults['customer'] != null) {
+        print("attach payment method to customer");
+        Map<String, dynamic> attachPaymentMethodToCustomerResp =
+            await _callStripeAttachPaymentMethod(
+                paymentMethodId: paymentMethod.id,
+                customerId: paymentIntentResults['customer']);
+        print("attachPaymentMethodToCustomerResp: " +
+            attachPaymentMethodToCustomerResp.toString());
       }
-      print("paymentIntentResults['requiresAction']: "+ paymentIntentResults['requiresAction'].toString());
-      print("paymentIntentResults['clientSecret']: "+ paymentIntentResults['clientSecret'].toString());
-      if(paymentIntentResults['clientSecret'] != null &&
-        paymentIntentResults['requiresAction'] == null){
+
+      if (paymentIntentResults['error'] != null) {
+        paymentModel.status = PaymentType.failure;
+      }
+      print("paymentIntentResults['requiresAction']: " +
+          paymentIntentResults['requiresAction'].toString());
+      print("paymentIntentResults['clientSecret']: " +
+          paymentIntentResults['clientSecret'].toString());
+      if (paymentIntentResults['clientSecret'] != null &&
+          paymentIntentResults['requiresAction'] == null) {
         print("doesn't requires action!");
-        paymentModel.status = PaymentType.success;                
+        paymentModel.status = PaymentType.success;
       }
 
-      if(paymentIntentResults['clientSecret'] != null &&
-      paymentIntentResults['requiresAction'] == true){
+      if (paymentIntentResults['clientSecret'] != null &&
+          paymentIntentResults['requiresAction'] == true) {
         print("requires action!");
         final String clientSecret = paymentIntentResults['clientSecret'];
-        _onPaymentConfirmIntentId(clientSecret);        
+        _onPaymentConfirmIntentId(clientSecret);
       }
 
       //create Payment and StripeCustomer objects
-      if(paymentIntentResults['success'] && 
-        paymentIntentResults['customer'] != null){
-          //
+      if (paymentIntentResults['success'] &&
+          paymentIntentResults['customer'] != null) {
+        //
 
+        // _onPaymentConfirmIntent(event)
+        Map<String, dynamic> userInput = {
+          '_id': appModel.currentUser['_id'],
+        };
 
-          // _onPaymentConfirmIntent(event)
-          Map<String, dynamic> userInput = {
-            '_id': appModel.currentUser['_id'],
-          };
-          
-          Map<String, dynamic> stripeCustomerInput = {
-            'customerId': paymentIntentResults['customer'],
-            'ephemeralKey': paymentIntentResults['ephemeralKey'],
-          };
-          print("check if customer exists: " + paymentIntentResults['customer'].toString());
-          if(!doesCustomerExist(paymentIntentResults['customer'])){
-            print("customer does not exist, creating customer");
-            Map<String, dynamic> createUserCustomerResp = await UserCommand().createUserCustomer(userInput, stripeCustomerInput);
-            print("createUserCustomerResp: " + createUserCustomerResp.toString());
-          }
-
-          // UserCommand().addEvent(userInput, priceInput['event']);
-
-
+        Map<String, dynamic> stripeCustomerInput = {
+          'customerId': paymentIntentResults['customer'],
+          'ephemeralKey': paymentIntentResults['ephemeralKey'],
+        };
+        print("check if customer exists: " +
+            paymentIntentResults['customer'].toString());
+        if (!doesCustomerExist(paymentIntentResults['customer'])) {
+          print("customer does not exist, creating customer");
+          Map<String, dynamic> createUserCustomerResp = await UserCommand()
+              .createUserCustomer(userInput, stripeCustomerInput);
+          print("createUserCustomerResp: " + createUserCustomerResp.toString());
         }
+
+        //create payment
+        DateTime now = DateTime.now();
+        String timestamp = now.millisecondsSinceEpoch.toString();
+
+        print(timestamp);
+
+        dynamic paymentInput = {
+          "amount": eventInput['price'],
+          "paidAt": timestamp,
+        };
+        http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': UserMutations()
+                .createUserEventPayment(userInput, eventInput, paymentInput),
+          }),
+        );
+        print("createUserEventPayment response: " + response.body.toString());
+
+        // UserCommand().addEvent(userInput, priceInput['event']);
+      }
 
       createPaymentIntentResp["success"] = true;
       createPaymentIntentResp["message"] = "Payment Intent Created";
       // createPaymentIntentResp["data"] = result;
-      
     } on Exception catch (e) {
-      print('Mutation failed: $e');  
+      print('Mutation failed: $e');
     }
 
     return createPaymentIntentResp;
-
   }
-  
 
-  bool doesCustomerExist(String customerId){
+  bool doesCustomerExist(String customerId) {
     print("checkIfCustomerExists");
-    print("stripeCustomers length: " + appModel.currentUser['stripeCustomers']['data'].length.toString());
+    print("stripeCustomers length: " +
+        appModel.currentUser['stripeCustomers']['data'].length.toString());
     bool customerExists = false;
     dynamic customers = appModel.currentUser['stripeCustomers']['data'];
-    for(var i = 0; i < customers.length && !customerExists; i++){
-      if(customers[i]['customerId'] == customerId){
+    for (var i = 0; i < customers.length && !customerExists; i++) {
+      if (customers[i]['customerId'] == customerId) {
         customerExists = true;
       }
     }
 
     return customerExists;
-
   }
 
-  
- void _onPaymentConfirmIntentId(
-    String clientSecret
-  ) async {
-    try{
-      final paymentIntent = await Stripe.instance.handleNextAction(clientSecret);
+  void _onPaymentConfirmIntentId(String clientSecret) async {
+    try {
+      final paymentIntent =
+          await Stripe.instance.handleNextAction(clientSecret);
 
-      if(paymentIntent.status == PaymentIntentsStatus.RequiresConfirmation){
+      if (paymentIntent.status == PaymentIntentsStatus.RequiresConfirmation) {
         Map<String, dynamic> results = await _callPayEndpointIntentId(
           paymentIntentId: paymentIntent.id,
         );
-        if(results['error'] != null){
-        
-        }else{
-        
-        }
-
+        if (results['error'] != null) {
+        } else {}
       }
-
     } on Exception catch (e) {
-      print('Mutation failed: $e');  
+      print('Mutation failed: $e');
     }
-
   }
 
-  Future<Map<String, dynamic>> _callPayEndpointIntentId({
-    required String paymentIntentId
-  }) async {
-    final url = Uri.parse("https://us-central1-soccer-app-a9060.cloudfunctions.net/StripePayEndpointIntentId");
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(
-        {
+  Future<Map<String, dynamic>> _callPayEndpointIntentId(
+      {required String paymentIntentId}) async {
+    final url = Uri.parse(
+        "https://us-central1-soccer-app-a9060.cloudfunctions.net/StripePayEndpointIntentId");
+    final response = await http.post(url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
           'paymentIntentId': paymentIntentId,
-        }
-      )
-    );
+        }));
     return json.decode(response.body);
   }
 
-
-
-
-  Future<Map<String, dynamic>> _callStripeAttachPaymentMethod({
-    required String paymentMethodId,
-    required String customerId
-  }) async {
-    try{
-      
+  Future<Map<String, dynamic>> _callStripeAttachPaymentMethod(
+      {required String paymentMethodId, required String customerId}) async {
+    try {
       print("paymentMethodId: " + paymentMethodId);
- 
 
       final response = await http.post(
-        Uri.parse(
-            'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripeAttachPaymentMethod'),
-        body: {            
-          'paymentMethodId': paymentMethodId,
-          'customerId': customerId,                            
-        });
-        
-      print("return value: "+ response.toString());                  
+          Uri.parse(
+              'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripeAttachPaymentMethod'),
+          body: {
+            'paymentMethodId': paymentMethodId,
+            'customerId': customerId,
+          });
+
+      print("return value: " + response.toString());
 
       return json.decode(response.body);
-
-    } on FormatException catch(e) {
+    } on FormatException catch (e) {
       print("error: " + e.toString());
       return {};
     }
   }
 
-  Future<Map<String, dynamic>> _callPayEndpointMethodId({
-    required bool useStripeSdk,
-    required String paymentMethodId,
-    required String currency,
-    List<Map<String, dynamic>>? items,
-    required dynamic priceInput
-  }) async {
-    try{
+  Future<Map<String, dynamic>> _callPayEndpointMethodId(
+      {required bool useStripeSdk,
+      required String paymentMethodId,
+      required String currency,
+      List<Map<String, dynamic>>? items,
+      required dynamic priceInput}) async {
+    try {
       print("callPayEndpointMethodId");
       print("usesStripeSdk: " + useStripeSdk.toString());
       print("paymentMethodId: " + paymentMethodId);
@@ -296,54 +297,45 @@ class PaymentCommand extends BaseCommand {
       print("priceInput: " + priceInput.toString());
 
       final response = await http.post(
-        Uri.parse(
-            'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest'),
-        body: {    
-          'email': appModel.currentUser['email'],
-          'amount': priceInput['amount'].toString(),
-          'paymentMethodId': paymentMethodId,
-          
-          
-        
-        });
-        
-      print("return value: "+ response.toString());                  
+          Uri.parse(
+              'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest'),
+          body: {
+            'email': appModel.currentUser['email'],
+            'amount': priceInput['amount'].toString(),
+            'paymentMethodId': paymentMethodId,
+          });
+
+      print("return value: " + response.toString());
 
       return json.decode(response.body);
-
-    } on FormatException catch(e) {
+    } on FormatException catch (e) {
       print("error: " + e.toString());
       return {};
     }
   }
-  
 
-
-  Future<Map<String, dynamic>> createPrice(dynamic eventInput) async{
-    
+  Future<Map<String, dynamic>> createPrice(dynamic eventInput) async {
     Map<String, dynamic> createPriceResp = {
       "success": false,
       "message": "",
       "data": null
-    };    
+    };
 
-    try{
-        Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
-      print("create price event input: "+ eventInput.toString());
+    try {
+      Map<String, dynamic> paymentInput = {
+        'price': eventInput['price'].toString()
+      };
+      print("create price event input: " + eventInput.toString());
       print("create price input: " + paymentInput['price'].toString());
-      Map<String, dynamic> createPrice = await EventCommand().createPrice(paymentInput, eventInput);
-      print("createPrice resp: "+createPrice.toString());
+      Map<String, dynamic> createPrice =
+          await EventCommand().createPrice(paymentInput, eventInput);
+      print("createPrice resp: " + createPrice.toString());
       createPriceResp['data'] = createPrice['data'];
 
       return createPriceResp;
     } on Exception catch (e) {
-      print('Mutation failed: $e'); 
-      return createPriceResp; 
+      print('Mutation failed: $e');
+      return createPriceResp;
     }
-    
   }
-
-
-
-
 }

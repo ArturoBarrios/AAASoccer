@@ -241,18 +241,18 @@ mixin EventMixin {
             !event['joinConditions']['withRequest']) {
           return GestureDetector(
             onTap: () {
-              print("onTap Join Gameeeee");
+              print("!withPayment&&!withRequest");
               EventCommand().addUserToEvent(event, userInput, roles);
             },
             child: Text("Join Game(no immediate payment required)"),
           );
         }
-        //!withPayment && withRequest
+        //!withPayment&&!withRequestt
         else if (!event['joinConditions']['withPayment'] &&
             event['joinConditions']['withRequest']) {
           return GestureDetector(
             onTap: () {
-              print("Send Request to Join with no payment required");
+              print("!withPayment&&!withRequest");
               selectedRequestTypeObjects.add("PLAYER");
               sendEventRequest(event, "GAMEREQUEST");
               selectedRequestTypeObjects = [];
@@ -266,20 +266,71 @@ mixin EventMixin {
             !event['joinConditions']['withRequest']) {
           return GestureDetector(
             onTap: () {
-              print("Send Request to Join with no payment required");
+              print("withPayment && !withRequest");
               purchaseEvent(context, event, roles);
             },
             child: Text("Pay to Join Game"),
           );
         }
         //withPayment && withRequest
+        //find request element, else send request
         else {
-          return GestureDetector(
-            onTap: () {
-              print("Send Request to Join with no payment required");
-            },
-            child: Text("Send Request to Join(Payment required to join)"),
-          );
+          print("elseeee");
+          print("userObject['requestsSent']: ${userObject['requestsSent']}");
+          //check event request status
+          dynamic requestElementObject;
+          userObject['requestsSent']['data'].forEach((requestElement) {
+            print("requestElement: $requestElement");
+            if(requestElement['event']['_id'] == event['_id']){
+              requestElementObject = requestElement;
+              print("niceeeeee");
+              }
+          });
+          if(requestElementObject != null){
+            print("requestElementObject['status']: "+ requestElementObject['status'].toString());
+            if(requestElementObject['status'].toString() == "ACCEPTED"){
+              return GestureDetector(
+                onTap: () {
+                  print("withPayment && withRequest");
+                  purchaseEvent(context, event, roles);
+                },
+                child: Text("Pay to Join Game"),
+              );
+
+            }
+            else if(requestElementObject['status'].toString() == "PENDING"){
+              return GestureDetector(
+                onTap: () {
+                  print("WAITING FOR REQUEST TO BE ACCEPTED");
+                  
+                },
+                child: Text("Request Pending"),
+              );
+            }
+            else{
+              return GestureDetector(
+                onTap: () {
+                  selectedRequestTypeObjects.add("PLAYER");
+                  sendEventRequest(event, "GAMEREQUEST");
+                  selectedRequestTypeObjects = [];
+                },
+                child: Text("Request Denied, Resend Request"),
+              );
+            }
+
+          }
+          else{
+            return GestureDetector(
+              onTap: () {
+                print("withPayment && withRequest");
+                selectedRequestTypeObjects.add("PLAYER");
+                sendEventRequest(event, "GAMEREQUEST");
+                selectedRequestTypeObjects = [];
+              },
+              child: Text("Send Request to Join(Payment required to join)"),
+            );
+
+          }
         }
       }
     }
