@@ -173,6 +173,7 @@ type UserLink {
 
 type User  {  
   stripeCustomers: [StripeCustomer] @relation
+  payments: [Payment] @relation
   userType: UserType
   OSPID: String
   name: String
@@ -259,7 +260,7 @@ type Event   {
   isMainEvent: Boolean
   userParticipants: [EventUserParticipant] @relation
   # eventUserOrganizers: EventUserOrganizers
-  price: Price
+  price: Price  
   request: [Request] @relation
   # organization: Organization
   #need org to create events? nah. allow user to create events,
@@ -271,7 +272,7 @@ type Event   {
   images: [Image] @relation
   location: [Location] @relation
   type: EventType
-  payment: Payment
+  payment: [Payment] @relation
   chats: [Chat] @relation
   # training: Training
   # tournament: Tournament
@@ -311,35 +312,31 @@ type Team   {
   
 }
 
-type Coach   {
-  id: ID!
+type Coach   {  
   user: User
 }
 
-type Referee   {
-  id: ID!
+type Referee   {  
   user: User
 }
 
-type Organizer   {
-  id: ID!
+type Organizer   {  
   user: User
 }
 
 
 # a payment is attached to event
 # use payment object to create payment screen details for event
-type Payment   {
-  id: ID!
+type Payment   {  
   amount: String
   event: Event
-  paidAt: Int
+  paidAt: String
+  user: User
 }
 
 # orgs can have many suborgs
 # allow org to behave as Sponsor
-type Organization   {
-  id: ID!
+type Organization   {  
   name: String
   images: [Image] @relation
   rating: String

@@ -82,6 +82,39 @@ class UserMutations {
 
     return updateUserString;
   }
+  
+  String createUserEventPayment(dynamic userInput, dynamic eventInput, dynamic paymentInput) {
+    String createUserEventPaymentString = """      
+      mutation {
+        createPayment(data: {
+          amount: "${paymentInput['amount']}",, 
+          user: {
+            connect: "${userInput['_id']}"            
+          } 
+          event: {
+            connect: "${eventInput['_id']}"            
+          }
+          paidAt: "${paymentInput['paidAt']}"
+          }) {
+            _id
+            amount
+            event{
+              _id
+              name
+            }
+            paidAt
+            user{
+              _id
+              name
+              username
+            }
+            
+          }   
+        }
+        """;
+
+    return createUserEventPaymentString;
+  }
 
 
   String updateUser(Map<String, dynamic> userInput) {

@@ -104,6 +104,11 @@ class UserFragments{
 
                 }
               }
+              requestsSent{
+                data{
+                  ${RequestFragments().fullRequest()}   
+                }
+              }
     """;
 
     return FullUserReturn;
