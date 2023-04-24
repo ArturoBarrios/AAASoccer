@@ -334,30 +334,30 @@ class _Home extends State<Home> {
     Widget card = Text(
         "null"); //PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
 
-    if (selectedKey == Constants.PICKUP) {
+    if (selectedKey == Constants.PICKUP ) {
       print("selected pickup: " + selectedObject.toString());
-      bool isMyEvent = EventCommand().isMyEvent([selectedObject['event']]);
+      dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
       card = PickupCard2(
-          gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+          gameObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TRAINING) {
-      bool isMyEvent = EventCommand().isMyEvent([selectedObject['event']]);
-      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+      dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
+      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage, isMyEvent: getEventDetailsResp['isMyEvent']);
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
-      bool isMyEvent = EventCommand().isMyEvent([selectedObject['event']]);
-      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+      dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
+      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, isMyEvent: getEventDetailsResp['isMyEvent']);
     } else if (selectedKey == Constants.TOURNAMENT) {
       //process tournament data for card
       TournamentCommand().currateTournamentData(selectedObject);
       
-      bool isMyEvent = EventCommand().isMyEvent(selectedObject['events']['data']);
+      dynamic getEventDetailsResp = EventCommand().getUserEventDetails(selectedObject['events']['data']);
       card =
-          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage, isMyEvent: getEventDetailsResp['isMyEvent']);
     } else if (selectedKey == Constants.LEAGUE) {
       //process league data for card
       LeagueCommand().currateLeagueData(selectedObject);
-      bool isMyEvent = EventCommand().isMyEvent(selectedObject['events']['data']);
-      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+      dynamic getEventDetailsResp = EventCommand().getUserEventDetails(selectedObject['events']['data']);
+      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage, isMyEvent: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {
@@ -368,13 +368,18 @@ class _Home extends State<Home> {
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.MYEVENTS) {
       print("testing EventType.GAME===Game.type ");
-      print(EventType.GAME.name.toString() == selectedObject['type'].toString());
-      if (selectedObject['event']['type'].toString() == EventType.GAME.name.toString()) {
+      print("GAME" == selectedObject['event']['type'].toString());
+      if (selectedObject['event']['type'].toString() == "GAME") {
+        print("IN IF");
+        print("selectedObject['event']['games']: "+selectedObject['event']['games'].toString());
         //get game object first
         dynamic gameObject = selectedObject['event']['games']['data'][0];
+        print("0");
         gameObject['event'] = selectedObject['event'];
+        print("aaaaaaaaaaaa");
+        dynamic getEventDetailsResp = EventCommand().getUserEventDetails([gameObject['event']]);        
         card = PickupCard2(
-            gameObject: gameObject, svgImage: svgImage, isMyEvent: true);
+            gameObject: gameObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
       }
     }
 

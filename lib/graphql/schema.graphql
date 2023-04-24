@@ -260,7 +260,7 @@ type Event   {
   isMainEvent: Boolean
   userParticipants: [EventUserParticipant] @relation
   # eventUserOrganizers: EventUserOrganizers
-  price: Price  
+  price: Price    
   request: [Request] @relation
   # organization: Organization
   #need org to create events? nah. allow user to create events,
@@ -272,7 +272,7 @@ type Event   {
   images: [Image] @relation
   location: [Location] @relation
   type: EventType
-  payment: [Payment] @relation
+  payments: [Payment] @relation
   chats: [Chat] @relation
   # training: Training
   # tournament: Tournament
@@ -473,6 +473,6 @@ type Rating   {
 }
 
 type Price   {  
-  amount: String @default(value: "0")
+  amount: String
   event: Event
 }

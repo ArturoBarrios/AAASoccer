@@ -132,10 +132,11 @@ class GameCommand extends BaseCommand {
         );
         print("response body: ");
         print(jsonDecode(response.body));
-        Map<String, dynamic> createdGame =
+        
+          Map<String, dynamic> createdGame =
             jsonDecode(response.body)['data']['createGame'];
-        await EventCommand().addGame(createdGame, true);
         eventInput['_id'] = createdGame['event']['_id'];
+
         //todo add error handling here, if game is not created, dont create price, etc
         if(eventInput['price']>0){
           Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
@@ -143,6 +144,9 @@ class GameCommand extends BaseCommand {
           print("create price input: " + paymentInput['price'].toString());
           Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
           print("createPaymentResp: "+createPriceResp.toString());
+
+          createdGame['event']['price'] = createPriceResp['data'];
+          await EventCommand().addGame(createdGame, true);
         }
 
           createGameResponse["success"] = true;

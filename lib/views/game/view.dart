@@ -20,10 +20,10 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../constants.dart';
 
 class PickupView extends StatefulWidget with EventMixin, PaymentMixin, EventMixin {
-  PickupView({Key? key, required this.isMyEvent, required this.game})
+  PickupView({Key? key, required this.userEventDetails , required this.game})
       : super(key: key);
 
-  final bool isMyEvent;
+  final dynamic userEventDetails;  
   final dynamic game;
 
   @override
@@ -90,7 +90,11 @@ class _PickupViewState extends State<PickupView> {
   }
 
   GestureDetector getJoinGameWidget(){
-    return widget.getJoinGameWidget(context, widget.isMyEvent, widget.game['event'], widget.userObject);
+    return widget.getJoinGameWidget(context, widget.userEventDetails, widget.game['event'], widget.userObject);
+  }
+
+  GestureDetector getChatWidget() {
+    return widget.getChatWidget(context);
   }
 
 
@@ -140,7 +144,7 @@ class _PickupViewState extends State<PickupView> {
                       longitude: widget.game['event']['location']['data'][0]
                           ['longitude']),
                 ),
-                !widget.isMyEvent
+                !widget.userEventDetails['isMyEvent']
                     ? Container(
                         height: 20,
                         child: ClipRRect(
@@ -184,7 +188,7 @@ class _PickupViewState extends State<PickupView> {
                   children: [
                     Text(
                         "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                    widget.isMyEvent
+                    widget.userEventDetails['isMyEvent']
                         ? ElevatedButton(
                             onPressed: () {
                               // Add button onPressed logic here
@@ -196,6 +200,7 @@ class _PickupViewState extends State<PickupView> {
                 ),
                 //join game gesture detector for now
                 getJoinGameWidget(),
+                getChatWidget(),
               ],
             ),
     );
