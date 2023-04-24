@@ -8,12 +8,13 @@ import '../../commands/player_command.dart';
 import '../../commands/team_command.dart';
 import '../../commands/user_command.dart';
 import '../../constants.dart';
+import '../../views/chats/chat/create.dart';
 import '../card_form_screen.dart';
 
 mixin EventMixin {
-  bool withRequest = false;  
-  bool withPayment = false;  
-  dynamic userObject; 
+  bool withRequest = false;
+  bool withPayment = false;
+  dynamic userObject;
   List<String> participationRoles = [];
   dynamic eventUserParticipant;
 
@@ -45,7 +46,7 @@ mixin EventMixin {
     playerList = PlayerCommand().getAppModelPlayersNearMe();
   }
 
-  void setupEventTeamToChoose(int index) {    
+  void setupEventTeamToChoose(int index) {
     eventTeamChosen = teamEventList[index];
     if (eventTeamChosen == "Event") {
       setupEventsToChooseFrom();
@@ -68,7 +69,7 @@ mixin EventMixin {
     choices = myTeamsToChooseFrom;
   }
 
-  Future<void> sendTeamRequest(dynamic teamObject) async {    
+  Future<void> sendTeamRequest(dynamic teamObject) async {
     print("sendTeamRequest");
     print("selectedRequestTypeObjects.length: " +
         selectedRequestTypeObjects.length.toString());
@@ -77,17 +78,17 @@ mixin EventMixin {
     print(
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send team request");
-    for(int i = 0; i < selectedRequestTypeObjects.length; i++) {
-      await TeamCommand().sendOrganizerTeamRequest(teamObject, selectedRequestTypeObjects[i]);
-    }    
-
+    for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
+      await TeamCommand()
+          .sendOrganizerTeamRequest(teamObject, selectedRequestTypeObjects[i]);
+    }
   }
 
-  eventTeamsSelected(List<int>? indexes) {        
+  eventTeamsSelected(List<int>? indexes) {
     print("eventTeamsSelected: " + indexes.toString());
     selectedEventTeamObjects = [];
     selectedEventTeamIndexes = indexes;
-    for(int i = 0; i < indexes!.length; i++){
+    for (int i = 0; i < indexes!.length; i++) {
       selectedEventTeamObjects.add(choices[indexes[i]]);
     }
     print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
@@ -102,26 +103,27 @@ mixin EventMixin {
     }
   }
 
-  requestTypeSelected(List<int>? indexes) async{
+  requestTypeSelected(List<int>? indexes) async {
     print("requestTypeSelected: " + indexes.toString());
     selectedRequestTypeIndexes = indexes;
     for (int i = 0; i < indexes!.length; i++) {
       selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
     }
-    
   }
 
-   sendPlayerRequests(dynamic userPlayerObject){
+  sendPlayerRequests(dynamic userPlayerObject) {
     print("sendPlayerRequests");
     print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
-    print("selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    if(eventTeamChosen == "Event"){      
+    print(
+        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    if (eventTeamChosen == "Event") {
       print("send player event request");
-      EventCommand().sendPlayerEventRequests(userPlayerObject,selectedEventTeamObjects, selectedRequestTypeObjects, "GAMEREQUEST" );
-    }
-    else{
+      EventCommand().sendPlayerEventRequests(userPlayerObject,
+          selectedEventTeamObjects, selectedRequestTypeObjects, "GAMEREQUEST");
+    } else {
       print("send player team request");
-      TeamCommand().sendPlayerTeamRequests(userPlayerObject,selectedEventTeamObjects, selectedRequestTypeObjects);
+      TeamCommand().sendPlayerTeamRequests(userPlayerObject,
+          selectedEventTeamObjects, selectedRequestTypeObjects);
     }
   }
 
@@ -135,8 +137,8 @@ mixin EventMixin {
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
     for (int i = 0; i < playersSelectedList.length; i++) {
-      await TeamCommand().sendPlayerTeamRequests(playersSelectedList[i],
-          [teamObject], selectedRequestTypeObjects);
+      await TeamCommand().sendPlayerTeamRequests(
+          playersSelectedList[i], [teamObject], selectedRequestTypeObjects);
     }
   }
 
@@ -149,23 +151,19 @@ mixin EventMixin {
     print(
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
-    String type = "GAMEREQUEST";      
-    if(eventObject['event']['type']=="GAME"){
+    String type = "GAMEREQUEST";
+    if (eventObject['event']['type'] == "GAME") {
       type = "GAMEREQUEST";
-    }
-    else if(eventObject['event']['type']=="LEAGUE"){
+    } else if (eventObject['event']['type'] == "LEAGUE") {
       type = "LEAGUEREQUEST";
-    }
-    else if(eventObject['event']['type']=="TOURNAMENT"){
+    } else if (eventObject['event']['type'] == "TOURNAMENT") {
       type = "TOURNAMENTREQUEST";
-    }
-    else if(eventObject['event']['type']=="TRAINING"){
+    } else if (eventObject['event']['type'] == "TRAINING") {
       type = "TRAININGREQUEST";
-    }    
-    else if(eventObject['event']['type']=="TRYOUT"){
+    } else if (eventObject['event']['type'] == "TRYOUT") {
       type = "TRYOUTREQUEST";
     }
-    
+
     for (int i = 0; i < playersSelectedList.length; i++) {
       await EventCommand().sendPlayerEventRequests(playersSelectedList[i],
           [eventObject], selectedRequestTypeObjects, type);
@@ -181,41 +179,35 @@ mixin EventMixin {
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
     for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
-      await EventCommand().sendOrganizerEventRequest(eventObject,
-          selectedRequestTypeObjects[i], requestType);
+      await EventCommand().sendOrganizerEventRequest(
+          eventObject, selectedRequestTypeObjects[i], requestType);
     }
   }
 
-  void loadEventInfo(dynamic event){
+  void loadEventInfo(dynamic event) {
     print("loadEventInfo");
-    userObject = UserCommand().getAppModelUser();    
-    userObject['eventUserParticipants']['data'].forEach((eventUserParticipantElement) {
-      if(eventUserParticipantElement['event']['_id'] == event['_id'] 
-        ){
+    userObject = UserCommand().getAppModelUser();
+    userObject['eventUserParticipants']['data']
+        .forEach((eventUserParticipantElement) {
+      if (eventUserParticipantElement['event']['_id'] == event['_id']) {
         eventUserParticipant = eventUserParticipantElement;
-        participationRoles = BaseCommand().parseRoles(eventUserParticipant['roles']);
+        participationRoles =
+            BaseCommand().parseRoles(eventUserParticipant['roles']);
         print("participationRoles: $participationRoles");
-
       }
-
     });
-
-       
   }
 
-  void displayRoles(){
-    if(participationRoles.length>0){
-      
-
-    }
+  void displayRoles() {
+    if (participationRoles.length > 0) {}
   }
 
   //assumes you're adding a new role
-  String addRoleToRoles(String addRole){
+  String addRoleToRoles(String addRole) {
     String roles = "{";
     //get roles
     participationRoles.forEach((element) {
-      roles += element+",";
+      roles += element + ",";
     });
     //add new role
     roles += addRole;
@@ -224,10 +216,47 @@ mixin EventMixin {
     return roles;
   }
 
-  GestureDetector getJoinGameWidget(BuildContext context, bool isMyEvent, dynamic event, dynamic userInput) {    
-    if(!participationRoles.contains("PLAYER")){
+  GestureDetector getChatWidget(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          print("Add New Chat Pressed");
+          Navigator.push(context, MaterialPageRoute<void>(
+            builder: (BuildContext context) {
+              return ChatCreate();
+            },
+          ));
+        },
+        child: Container(
+          padding: EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 2),
+          height: 30,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.pink[50],
+          ),
+          child: Row(
+            children: <Widget>[
+              Icon(
+                Icons.add,
+                color: Colors.pink,
+                size: 20,
+              ),
+              SizedBox(
+                width: 2,
+              ),
+              Text("Add New",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ));
+  }
+
+  GestureDetector getJoinGameWidget(BuildContext context,
+      dynamic userEventDetails, dynamic event, dynamic userInput) {
+    print("userEventDetails: $userEventDetails");
+    //if not already a player
+    if (!participationRoles.contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");
-      if (isMyEvent) {
+      if (userEventDetails['isMyEvent']) {
         return GestureDetector(
           onTap: () {
             print("onTap Join My Game");
@@ -256,7 +285,6 @@ mixin EventMixin {
               selectedRequestTypeObjects.add("PLAYER");
               sendEventRequest(event, "GAMEREQUEST");
               selectedRequestTypeObjects = [];
-              
             },
             child: Text("Send Request to Join(No Payment required to join)"),
           );
@@ -264,6 +292,8 @@ mixin EventMixin {
         //withPayment && !withRequest
         else if (event['joinConditions']['withPayment'] &&
             !event['joinConditions']['withRequest']) {
+          //if amount is 0
+
           return GestureDetector(
             onTap: () {
               print("withPayment && !withRequest");
@@ -281,14 +311,14 @@ mixin EventMixin {
           dynamic requestElementObject;
           userObject['requestsSent']['data'].forEach((requestElement) {
             print("requestElement: $requestElement");
-            if(requestElement['event']['_id'] == event['_id']){
+            if (requestElement['event']['_id'] == event['_id']) {
               requestElementObject = requestElement;
-              print("niceeeeee");
-              }
+            }
           });
-          if(requestElementObject != null){
-            print("requestElementObject['status']: "+ requestElementObject['status'].toString());
-            if(requestElementObject['status'].toString() == "ACCEPTED"){
+          if (requestElementObject != null) {
+            print("requestElementObject['status']: " +
+                requestElementObject['status'].toString());
+            if (requestElementObject['status'].toString() == "ACCEPTED") {
               return GestureDetector(
                 onTap: () {
                   print("withPayment && withRequest");
@@ -296,18 +326,14 @@ mixin EventMixin {
                 },
                 child: Text("Pay to Join Game"),
               );
-
-            }
-            else if(requestElementObject['status'].toString() == "PENDING"){
+            } else if (requestElementObject['status'].toString() == "PENDING") {
               return GestureDetector(
                 onTap: () {
                   print("WAITING FOR REQUEST TO BE ACCEPTED");
-                  
                 },
                 child: Text("Request Pending"),
               );
-            }
-            else{
+            } else {
               return GestureDetector(
                 onTap: () {
                   selectedRequestTypeObjects.add("PLAYER");
@@ -317,9 +343,7 @@ mixin EventMixin {
                 child: Text("Request Denied, Resend Request"),
               );
             }
-
-          }
-          else{
+          } else {
             return GestureDetector(
               onTap: () {
                 print("withPayment && withRequest");
@@ -329,22 +353,17 @@ mixin EventMixin {
               },
               child: Text("Send Request to Join(Payment required to join)"),
             );
-
           }
         }
       }
-    }
-    else{
+    } else {
       return GestureDetector(
         onTap: () {
           print("onTap Leave Game");
         },
         child: Text("Leave Game"),
       );
-      
     }
-
-
   }
 
   void purchaseEvent(BuildContext context, dynamic event, String roles) async {
@@ -356,6 +375,4 @@ mixin EventMixin {
     );
     // await AdaptyPaymentService().makePurchase();
   }
-
-
 }

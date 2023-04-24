@@ -12,11 +12,11 @@ import '../Mixins/event_mixin.dart';
 
 class PickupCard2 extends StatefulWidget with EventMixin {
   PickupCard2(
-      {Key? key, required this.gameObject, required this.svgImage, required this.isMyEvent })
+      {Key? key, required this.gameObject, required this.svgImage, required this.userEventDetails })
       : super(key: key);
   final Map<String, dynamic> gameObject;
   final Svg svgImage;
-  final bool isMyEvent;
+  final dynamic userEventDetails;
   final double bevel = 10.0;
 
   @override
@@ -144,7 +144,7 @@ class _PickupCard2 extends State<PickupCard2> {
   Widget build(BuildContext context) {    
     print("widget: ");
     print("widget.gameObject.toString(): "+widget.gameObject.toString());
-    print("widget.isMyEvent.toString(): "+widget.isMyEvent.toString());
+    print("widget.isMyEvent.toString(): "+widget.userEventDetails.toString());
     setupPlayerList();
 
     return Listener(
@@ -158,7 +158,7 @@ class _PickupCard2 extends State<PickupCard2> {
             // widget.isMyEvent ? 
               // GameUpdate(game: widget.gameObject);
               // :
-              PickupView(isMyEvent: widget.isMyEvent, game: widget.gameObject);
+              PickupView(userEventDetails: widget.userEventDetails ,game: widget.gameObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -246,7 +246,7 @@ class _PickupCard2 extends State<PickupCard2> {
                         ),
                       ),
                     ),
-                    !widget.isMyEvent ? 
+                    !widget.userEventDetails['isMyEvent'] ? 
                     Container(
                 height: 20,
                 child: ClipRRect(
@@ -287,7 +287,7 @@ class _PickupCard2 extends State<PickupCard2> {
                     Text("Join Your Game")
                     ,
 
-                    widget.isMyEvent ? 
+                    widget.userEventDetails['isMyEvent'] ? 
                     Container(
                     height:20,
             child: ClipRRect(

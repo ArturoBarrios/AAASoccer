@@ -744,37 +744,83 @@ class EventCommand extends BaseCommand {
 
     return getEventResp;
   }
+  
+  //gets isMyEvent, isMember
+  Map<String,dynamic> getUserEventDetails(List<dynamic> events){
+    print("getUserEventDetails()");
 
-  bool isMyEvent(List<dynamic> events){
-    print("isMyEvent()");
-    dynamic event;
-    if(events.length>1){
-      
-      for(int i = 0;i<events.length;i++){
-        print("events[i]: " + events[i].toString());
-        if(events[i]['isMainEvent'] && 
-        (events[i]['type'] == "TOURNAMENT" ||
-        events[i]['type'] == "LEAGUE")){
-          print("found mainEvent: " + events[i].toString());
-          event = events[i];
+    dynamic isMyEventResp = {
+      "success": true,
+      "isMyEvent": false,
+      "isMember": false,      
+      "amountPaid": 0,      
+      "paymentObjects": [],
+    };
+    print("events: " + events.toString());
 
+    try{
+      //get event
+      dynamic event;
+      if(events.length>1){      
+        for(int i = 0;i<events.length;i++){
+          print("events[i]: " + events[i].toString());
+          if(events[i]['isMainEvent'] && 
+          (events[i]['type'] == "TOURNAMENT" ||
+          events[i]['type'] == "LEAGUE")){
+            print("found mainEvent: " + events[i].toString());
+            event = events[i];
+
+          }
         }
       }
-    }
-    else{
-      event = events[0];
-    }
-    bool resp = false;
-    dynamic userParticipants = event['userParticipants']['data'];
-    print("userParticipants: " + userParticipants.toString());
-    for(int i = 0; i<userParticipants.length; i++){
-      if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']){
-        resp = true;
-        print("isMyEvent() = true");
+      else{
+        event = events[0];
       }
+      print("event: " + event.toString());
+      //get userParticipation data      
+      dynamic userParticipants = event['userParticipants']['data'];
+      print("userParticipants: " + userParticipants.toString());
+      for(int i = 0; i<userParticipants.length; i++){
+        if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']
+        ){
+          dynamic userParticipant = userParticipants[i];
+          List<String> roles = parseRoles(userParticipant['roles']);
+          if(roles.contains("ORGANIZER")){
+            isMyEventResp["isMyEvent"] = true;
+            print("isMyEvent() = true");
+          }
+          if(roles.contains("MEMBER")){
+            isMyEventResp["isMember"] = true;
+            print("isMember() = true");          
+          }
+        }
+      }
+      print("bbbb");
+      
+
+      //get payment data
+      dynamic payments = event['payments']['data'];
+      isMyEventResp['paymentData'] = payments;
+      print("payments: " + payments.toString());
+      //get payment data
+      double amountPaid = 0.0;
+      for(int i = 0; i<payments.length; i++){
+        if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
+          amountPaid += double.parse(payments[i]['amount']);
+
+          
+        }
+      }
+      isMyEventResp['amountPaid'] = amountPaid;
+
+      isMyEventResp["success"] = true;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return isMyEventResp;
     }
 
-    return resp;
+
+    return isMyEventResp;
   }
 
   Future<Map<String, dynamic>> createPrice(dynamic paymentInput, dynamic eventInput) async {
@@ -1025,6 +1071,7 @@ class EventCommand extends BaseCommand {
       "data": []
     };
     print("length of games before adding game: ");
+    print("adding game: " + game.toString());
     print(eventsModel.games.length);
     eventsModel.games.add(game);
     print("length of games after adding game: ");

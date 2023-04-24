@@ -9,6 +9,21 @@ class EventFragments {
         type
         startTime
         endTime
+        userParticipants{     
+        data{
+          _id
+          event{                        
+            _id
+            name
+          }
+          user{
+            _id
+            name
+            userType
+          }
+          roles
+        }                                                              
+      }
         location{
           data{
           _id
@@ -28,8 +43,23 @@ class EventFragments {
           event{
             _id
             name
+
           }
         }
+        payments{
+        data{
+          _id
+          amount
+          user{
+            _id
+            name
+          }
+          event{
+            _id
+            name
+          }
+        }
+      }
      ''';
     return eventGame;
   }
@@ -77,8 +107,21 @@ class EventFragments {
             userType
           }
           roles
-        }                                        
-                      
+        }                                                              
+      }
+      payments{
+        data{
+          _id
+          amount
+          user{
+            _id
+            name
+          }
+          event{
+            _id
+            name
+          }
+        }
       }
     ''';
 
