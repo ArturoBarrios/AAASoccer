@@ -2,27 +2,33 @@ import '../fragments/user_fragments.dart';
 import '../fragments/chat_fragments.dart';
 
 class ChatMutations {
-  String createChat(Map<String, dynamic> chatInput) {
+  String createChat(
+      Map<String, dynamic> chatInput, dynamic objectsToAttachInput) {
+    String teamConnect = objectsToAttachInput['teamId'] != null
+        ? 'team: { connect: "${objectsToAttachInput['teamId']}" }'
+        : '';
+    String eventConnect = objectsToAttachInput['eventId'] != null
+        ? 'event: { connect: "${objectsToAttachInput['eventId']}" }'
+        : '';
+
     String createChatString = """
      mutation {
       createChat(
         data: {
-          name: "${chatInput['name']}"
+          name: "${chatInput['name']}",
           users: {
             connect:[
-              ${chatInput['user_id']}
+             ${objectsToAttachInput['playersIds']}
               
             ]
           }
+          
+          $eventConnect
+          $teamConnect        
         }
     )
       {
-        _id
-        users{
-          data{
-            ${ UserFragments().fullUser() }                                  			
-          }
-        }
+       ${ChatFragments().chatObject()}
       }
       
     }
@@ -30,7 +36,7 @@ class ChatMutations {
 
     return createChatString;
   }
-  
+
   String createTextMessage(Map<String, dynamic> messageInput) {
     String createTextMessageString = """
      mutation {
@@ -63,7 +69,7 @@ class ChatMutations {
 
     return createTextMessageString;
   }
-  
+
   String deleteChat(Map<String, dynamic> chatInput) {
     String createChatString = """
       mutation {
@@ -76,7 +82,7 @@ class ChatMutations {
 
     return createChatString;
   }
-  
+
   String updateChat(Map<String, dynamic> chatInput) {
     String updateChatString = """
       mutation {

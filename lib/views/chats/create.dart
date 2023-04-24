@@ -4,10 +4,12 @@ import '../../commands/chat_command.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class ChatCreate extends StatefulWidget {
-  const ChatCreate(
-    {Key? key })
+  const ChatCreate({Key? key, required this.eventObject, required this.teamObject, required this.players })
     : super(key: key);    
 
+  final dynamic eventObject;
+  final dynamic teamObject;
+  final dynamic players;
 
   @override
   _ChatCreateState createState() => _ChatCreateState();
@@ -35,12 +37,31 @@ class _ChatCreateState extends State<ChatCreate> {
     print("first load");
   }
 
+
+
   void createChat() async {
     print("create chat");
+    print("eventObject: "+widget.eventObject.toString());
+    print("teamObject: "+widget.teamObject.toString());
+    print("players: "+widget.players.toString());
+    String playersInput = "";
+    for (var i = 0; i < widget.players.length; i++) {
+      playersInput += widget.players[i]["_id"] +",";            
+    }
+    print("playersInput: $playersInput");
     dynamic chatInput = {
-      "name": nameController.text.toString(),      
+      "name": nameController.text.toString(),  
+
+    };    
+    dynamic objectsToAttachInput = {
+      "eventId": widget.eventObject!=null ? 
+        widget.eventObject["_id"] : null,
+      "teamId": widget.teamObject!=null ? 
+        widget.teamObject["_id"] : null,
+      "playersIds":playersInput,
     };
-    Map<String, dynamic> createChatResp = await ChatCommand().createChat(chatInput);
+    print("objectsToAttachInput: $objectsToAttachInput");
+    Map<String, dynamic> createChatResp = await ChatCommand().createChat(chatInput, objectsToAttachInput);
     print("createChatResp: $createChatResp");
 
   }
@@ -49,6 +70,8 @@ class _ChatCreateState extends State<ChatCreate> {
   void initState() {
     print("chat/view.dart init state");
     super.initState();    
+    
+
     _firstLoad();    
   }
 

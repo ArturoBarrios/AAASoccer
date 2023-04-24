@@ -116,6 +116,7 @@ class _PickupViewState extends State<PickupView> {
     print("game: " + widget.game.toString());    
     loadEventPayment();
     widget.loadEventInfo(widget.game['event']);
+    widget.setupPlayerList();
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
     _isLoading = false;
   }
@@ -200,7 +201,7 @@ class _PickupViewState extends State<PickupView> {
                 ),
                 //join game gesture detector for now
                 getJoinGameWidget(),
-                getChatWidget(),
+                 getChatWidget(),
               ],
             ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/profile.dart';
 import '../views/chats/view.dart';
 import '../views/home.dart';
-import '../views/chats/chat/create.dart';
+import '../views/chats/create.dart';
 
 class Headers extends StatefulWidget {
   const Headers({Key? key}) : super(key: key);
@@ -85,11 +85,11 @@ void goHome(BuildContext context) {
                     GestureDetector(
                         onTap: () {
                           print("Add New Chat Pressed");
-                          Navigator.push(context, MaterialPageRoute<void>(
-                            builder: (BuildContext context) {
-                              return ChatCreate();
-                            },
-                          ));
+                          // Navigator.push(context, MaterialPageRoute<void>(
+                          //   builder: (BuildContext context) {
+                          //     return ChatCreate();
+                          //   },
+                          // ));
                         },
                         child: Container(
                           padding: EdgeInsets.only(

@@ -8,7 +8,7 @@ import '../../commands/player_command.dart';
 import '../../commands/team_command.dart';
 import '../../commands/user_command.dart';
 import '../../constants.dart';
-import '../../views/chats/chat/create.dart';
+import '../../views/chats/create.dart';
 import '../card_form_screen.dart';
 
 mixin EventMixin {
@@ -17,6 +17,8 @@ mixin EventMixin {
   dynamic userObject;
   List<String> participationRoles = [];
   dynamic eventUserParticipant;
+  dynamic event;
+  dynamic team;
 
   int selectIndex = 0;
   int chosenRequestType = 0;
@@ -185,6 +187,7 @@ mixin EventMixin {
   }
 
   void loadEventInfo(dynamic event) {
+    this.event = event;
     print("loadEventInfo");
     userObject = UserCommand().getAppModelUser();
     userObject['eventUserParticipants']['data']
@@ -216,15 +219,49 @@ mixin EventMixin {
     return roles;
   }
 
+  void createChat(BuildContext context){
+    print("createChat");
+    print("selectedPlayers: "+playersSelectedList.toString());
+    playersSelectedList.add(userObject);
+    Navigator.push(context, MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return ChatCreate(eventObject: event, teamObject: null, players: playersSelectedList);
+      },
+    ));
+
+  }
+
   GestureDetector getChatWidget(BuildContext context) {
     return GestureDetector(
-        onTap: () {
+        onTap: () async{
           print("Add New Chat Pressed");
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return ChatCreate();
-            },
-          ));
+          // Navigator.push(context, MaterialPageRoute<void>(
+          //   builder: (BuildContext context) {
+          //     return ChatCreate();
+          //   },
+          // ));
+          List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
+              context: context,
+              barrierDismissible: true,
+              builder: (BuildContext context) {
+                return ClassicListDialogWidget<dynamic>(
+                    selectedIndexes: selectedPlayerIndexes,
+                    titleText: 'Choose Players',
+                    listType: ListType.multiSelect,
+                    positiveText: "Create Chat",
+                    activeColor: Colors.green,
+                    dataList: playerList);
+              },
+              animationType: DialogTransitionType.size,
+              curve: Curves.linear,
+            );
+            selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
+            print('selectedIndex:${selectedPlayerIndexes?.toString()}');
+            playersSelected(selectedPlayerIndexes!);
+            createChat(context);
+            
+            
+                          
         },
         child: Container(
           padding: EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 2),
