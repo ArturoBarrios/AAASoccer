@@ -86,12 +86,7 @@ class UserFragments{
                   customerId
                 }
               }
-              teams{
-                data{
-                  _id
-                  name
-                }
-              } 
+              
               sentMessages{
                 data{
                   _id

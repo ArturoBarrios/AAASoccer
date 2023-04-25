@@ -98,6 +98,16 @@ class _TeamViewState extends State<TeamView> {
 
   }
 
+   GestureDetector getChatWidget() {
+    return widget.getChatWidget(context, false, true);
+  }
+
+  @override 
+  void initState() {
+    super.initState();
+    widget.loadTeamInfo(widget.teamObject);
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build() in TeamView");
@@ -202,6 +212,8 @@ class _TeamViewState extends State<TeamView> {
                     ),
 
                     )),
+
+                    getChatWidget()
       ])),
     );
   }

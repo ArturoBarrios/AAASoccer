@@ -76,7 +76,7 @@ class _ChatViewState extends State<ChatView> {
     //     context.select<ChatPageModel, int>((value) => value.messagesLength);
     print("build() messages: $messages");
     return Scaffold(
-      appBar: Headers().getChatDetailHeader(context),
+      appBar: Headers().getChatDetailHeader(context, widget.chatObject),
       body: _isLoading
           ? Container(
               height: double.infinity,

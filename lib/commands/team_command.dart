@@ -242,15 +242,16 @@ class TeamCommand extends BaseCommand {
     return sendTeamRequestResponse;
   }
 
-  void updateModelsWithTeam(dynamic team) {
+  void updateModelsWithTeam(dynamic team, dynamic userParticipantObject) {
     print("updateModelsWithTeam");
     print(team);
 
     appModel.teams.add(team);
     appModel.myTeams.add(team);
-    if (homePageModel.selectedKey == Constants.TEAM) {
-      homePageModel.selectedObjects.add(team);
-    }
+    appModel.currentUser['teamUserParticipants']['data'].add(userParticipantObject);
+    // if (homePageModel.selectedKey == Constants.TEAM) {
+    //   homePageModel.selectedObjects.add(team);
+    // }
   }
 
   Future<Map<String, dynamic>> createTeam(Map<String, dynamic> teamInput,
@@ -281,8 +282,10 @@ class TeamCommand extends BaseCommand {
       if (response.statusCode == 200) {
         createTeamResponse["success"] = true;
         createTeamResponse["message"] = "Location Created";
+        dynamic createdTeam = 
         createTeamResponse["data"] =
             jsonDecode(response.body)['data']['createTeam'];
+        
       } else {
         //rollback somehow???
         // If the server did not return a 200 OK response,

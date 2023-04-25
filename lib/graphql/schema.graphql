@@ -201,7 +201,7 @@ type User  {
   requestsSent: [Request]  @relation(name: "requests_sent")
   requestsReceived: [Request] @relation(name: "request_receivers")
   requestsAccepted: [Request] @relation(name: "request_acceptedBy")
-  chats: [Chat] @relation
+  chats: [Chat] @relation(name: "user_chats")
   sentMessages: [Message] @relation(name: "messages_sent")
   messagesDirectedForMe: [Message] @relation(name: "messages_for")
   onboarded: Boolean @default(value: false)
@@ -440,7 +440,7 @@ type Message {
 type Chat  {  
   name: String
   messages: [Message] @relation #has many messages
-  users: [User] @relation
+  users: [User] @relation(name: "user_chats")
   event: Event
   team: Team
   archived: Boolean @default(value: false)

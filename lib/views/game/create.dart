@@ -95,7 +95,7 @@ class _GameCreateState extends State<GameCreate> {
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
         'isMainEvent': true,
-        'price': int.parse(priceController.text.toString()),
+        'price': double.parse(priceController.text.toString()),
         'startTime': startTimestamp,
         'endTime': endTimestamp,
         'withRequest': widget.withRequest,

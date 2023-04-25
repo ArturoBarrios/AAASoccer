@@ -794,7 +794,7 @@ class EventCommand extends BaseCommand {
             print("isMember() = true");          
           }
         }
-      }
+      }   
       print("bbbb");
       
 
@@ -806,6 +806,7 @@ class EventCommand extends BaseCommand {
       double amountPaid = 0.0;
       for(int i = 0; i<payments.length; i++){
         if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
+          print("amount before parsing: " + payments[i]['amount'].toString());
           amountPaid += double.parse(payments[i]['amount']);
 
           
@@ -1073,7 +1074,7 @@ class EventCommand extends BaseCommand {
     print("length of games before adding game: ");
     print("adding game: " + game.toString());
     print(eventsModel.games.length);
-    eventsModel.games.add(game);
+    eventsModel.games.insert(0,game);
     print("length of games after adding game: ");
     print(eventsModel.games.length);
     print("updateViewModelsBool: ");

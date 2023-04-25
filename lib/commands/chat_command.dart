@@ -43,10 +43,10 @@ class ChatCommand extends BaseCommand {
   //generalize this method and attach to 
   //teams, players, leagues, tournaments, 
   // and other events
-  Future<Map<String, dynamic>> createChat(dynamic chatInput) async {
-    print("removeChat");
+  Future<Map<String, dynamic>> createChat(dynamic chatInput, dynamic objectsToAttachInput) async {
+    print("createChat");
     print("chatInput: $chatInput");
-    Map<String, dynamic> removeChatResponse = {
+    Map<String, dynamic> createChatResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
@@ -60,17 +60,24 @@ class ChatCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': ChatMutations().createChat(chatInput),
+          'query': ChatMutations().createChat(chatInput, objectsToAttachInput),
         }),
       );
 
       print("response body: ");
       print(jsonDecode(response.body));
+      dynamic createdChat = jsonDecode(response.body)['data']['createChat'];
+      userModel.chats.insert(0, createdChat);
 
-      return removeChatResponse;
+      createChatResponse['success'] = true;
+      createChatResponse['data'] = createdChat;
+
+      
+
+      return createChatResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
-      return removeChatResponse;
+      return createChatResponse;
     }
   }
 
