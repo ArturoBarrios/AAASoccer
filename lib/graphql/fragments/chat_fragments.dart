@@ -10,6 +10,14 @@ class ChatFragments{
               name
             }
           }   
+          event{
+            _id
+            name            
+          }
+          team{
+            _id
+            name
+          }
           messages{
             data{
                _id

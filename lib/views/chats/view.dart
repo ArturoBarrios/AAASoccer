@@ -64,11 +64,13 @@ class _ChatsViewState extends State<ChatsView> {
             Headers().getChatHeader(context),
             SearchBar(),
             // Text("Chats: " + messagesLength.toString()),
+             Expanded(
+              child:
             ListView.builder(
               itemCount: chats.length,
               shrinkWrap: true,
               padding: EdgeInsets.only(top: 16),
-              physics: NeverScrollableScrollPhysics(),
+              physics: ScrollPhysics(),
               
               itemBuilder: (context, index) {
                  dynamic messages = chats[index]['messages']['data'];
@@ -83,7 +85,7 @@ class _ChatsViewState extends State<ChatsView> {
                   isMessageRead: (index == 0 || index == 3) ? true : false,
                 );
               },
-            ),
+            )),
             
           ])),
       bottomNavigationBar: const Footers().getChatBottomNav(context),

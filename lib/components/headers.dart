@@ -166,7 +166,7 @@ void goHome(BuildContext context) {
     return appBar;
   }
 
-  AppBar getChatDetailHeader(BuildContext context) {
+  AppBar getChatDetailHeader(BuildContext context, dynamic chatObject) {
     AppBar appBar = AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -198,10 +198,10 @@ void goHome(BuildContext context) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Kriss Benwat",style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600),),
+                    children: <Widget>[                      
+                      Text(chatObject['name'],style: TextStyle( fontSize: 16 ,fontWeight: FontWeight.w600),),
                       SizedBox(height: 6,),
-                      Text("Online",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
+                      // Text("Online",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
                     ],
                   ),
                 ),

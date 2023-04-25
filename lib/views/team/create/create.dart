@@ -2,10 +2,13 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../../commands/team_command.dart';
+import '../../../commands/user_command.dart';
 import '../../../testing/seeding/team_seeder.dart';
 import '../../../testing/seeding/location_seeder.dart';
 import '../../../components/profile.dart';
 import '../../../models/app_model.dart';
+import '../../home.dart';
+import '../view.dart';
 
 class TeamCreate extends StatefulWidget {
   @override
@@ -23,7 +26,7 @@ class _TeamCreateState extends State<TeamCreate> {
 
   bool _isLoading = false;
 
-  Future<Map<String, dynamic>> createTeam() async {
+  void createTeam() async {
     print("createGame");
     Map<String, dynamic> createEventResponse = {
       "success": false,
@@ -54,15 +57,34 @@ class _TeamCreateState extends State<TeamCreate> {
           print("now update view and app models that depend on this data");
           dynamic createdTeam = createdTeamResp['data'];
           print("createdTeam: " + createdTeam.toString());
-          TeamCommand().updateModelsWithTeam(createdTeam);
+
+          List<dynamic> userParticipants = createdTeam['userParticipants']['data'];
+          //find the userParticipant that matches the current user
+          dynamic currentUserParticipant;
+          dynamic currentUser = UserCommand().getAppModelUser();
+          for (var i = 0; i < userParticipants.length; i++) {
+            if (userParticipants[i]['user']['_id'] == currentUser['_id']) {
+              currentUserParticipant = userParticipants[i];
+            }
+          }
+          TeamCommand().updateModelsWithTeam(createdTeam, currentUserParticipant);
 
           createEventResponse['success'] = true;
-
+          //navigate home          
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Home()),
+          );          
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TeamView(teamObject: createdTeam, isMyTeam: true)),
+          );          
+           
         }
       
-      return createEventResponse;
+      // return createEventResponse;
     } on ApiException catch (e) {
-      return createEventResponse;
+      // return createEventResponse;
     }
   }
 

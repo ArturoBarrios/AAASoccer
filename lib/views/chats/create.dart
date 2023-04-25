@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/views/chats/view.dart';
 import '../../components/profile.dart';
 import '../../commands/chat_command.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+
+import 'chat/view.dart';
 
 class ChatCreate extends StatefulWidget {
   const ChatCreate({Key? key, required this.eventObject, required this.teamObject, required this.players })
@@ -46,6 +49,7 @@ class _ChatCreateState extends State<ChatCreate> {
     print("players: "+widget.players.toString());
     String playersInput = "";
     for (var i = 0; i < widget.players.length; i++) {
+      print("player: "+widget.players[i].toString());
       playersInput += widget.players[i]["_id"] +",";            
     }
     print("playersInput: $playersInput");
@@ -63,6 +67,19 @@ class _ChatCreateState extends State<ChatCreate> {
     print("objectsToAttachInput: $objectsToAttachInput");
     Map<String, dynamic> createChatResp = await ChatCommand().createChat(chatInput, objectsToAttachInput);
     print("createChatResp: $createChatResp");
+    if(createChatResp['success']){
+      dynamic chatObject = createChatResp['data'];
+      Navigator.push(context, MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return ChatsView();
+      },
+    ));
+      Navigator.push(context, MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return ChatView(index: 0,chatObject: chatObject);
+      },
+    ));
+    }
 
   }
 

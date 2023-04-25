@@ -186,6 +186,13 @@ mixin EventMixin {
     }
   }
 
+  void loadTeamInfo(dynamic team){
+    print("loadTeamInfo");
+    this.team = team;
+    userObject = UserCommand().getAppModelUser();
+
+  }
+
   void loadEventInfo(dynamic event) {
     this.event = event;
     print("loadEventInfo");
@@ -219,19 +226,19 @@ mixin EventMixin {
     return roles;
   }
 
-  void createChat(BuildContext context){
+  void createChat(BuildContext context, bool attachToEvent, bool attachToTeam){
     print("createChat");
     print("selectedPlayers: "+playersSelectedList.toString());
     playersSelectedList.add(userObject);
     Navigator.push(context, MaterialPageRoute<void>(
       builder: (BuildContext context) {
-        return ChatCreate(eventObject: event, teamObject: null, players: playersSelectedList);
+        return ChatCreate(eventObject: attachToEvent ? event : null, teamObject: attachToTeam ? team : null, players: playersSelectedList);
       },
     ));
 
   }
 
-  GestureDetector getChatWidget(BuildContext context) {
+  GestureDetector getChatWidget(BuildContext context, bool attachToEvent, bool attachToTeam) {
     return GestureDetector(
         onTap: () async{
           print("Add New Chat Pressed");
@@ -258,7 +265,7 @@ mixin EventMixin {
             selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
             print('selectedIndex:${selectedPlayerIndexes?.toString()}');
             playersSelected(selectedPlayerIndexes!);
-            createChat(context);
+            createChat(context, attachToEvent, attachToTeam);
             
             
                           

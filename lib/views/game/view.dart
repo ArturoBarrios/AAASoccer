@@ -94,7 +94,7 @@ class _PickupViewState extends State<PickupView> {
   }
 
   GestureDetector getChatWidget() {
-    return widget.getChatWidget(context);
+    return widget.getChatWidget(context, true, false);
   }
 
 

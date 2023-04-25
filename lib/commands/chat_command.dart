@@ -44,9 +44,9 @@ class ChatCommand extends BaseCommand {
   //teams, players, leagues, tournaments, 
   // and other events
   Future<Map<String, dynamic>> createChat(dynamic chatInput, dynamic objectsToAttachInput) async {
-    print("removeChat");
+    print("createChat");
     print("chatInput: $chatInput");
-    Map<String, dynamic> removeChatResponse = {
+    Map<String, dynamic> createChatResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
@@ -67,13 +67,17 @@ class ChatCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
       dynamic createdChat = jsonDecode(response.body)['data']['createChat'];
-      userModel.chats.add(createdChat);
+      userModel.chats.insert(0, createdChat);
+
+      createChatResponse['success'] = true;
+      createChatResponse['data'] = createdChat;
+
       
 
-      return removeChatResponse;
+      return createChatResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
-      return removeChatResponse;
+      return createChatResponse;
     }
   }
 
