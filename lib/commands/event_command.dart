@@ -801,19 +801,25 @@ class EventCommand extends BaseCommand {
       //get payment data
       dynamic payments = event['payments']['data'];
       isMyEventResp['paymentData'] = payments;
-      print("payments: " + payments.toString());
-      //get payment data
-      double amountPaid = 0.0;
-      for(int i = 0; i<payments.length; i++){
-        if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
-          print("amount before parsing: " + payments[i]['amount'].toString());
-          amountPaid += double.parse(payments[i]['amount']);
+      isMyEventResp['amountPaid'] = "0.00";
+      isMyEventResp['amountRemaining'] = "0.00";
+      isMyEventResp['price'] = event['price'];
+      if(event['price'] != null){
 
-          
+        print("payments: " + payments.toString());      
+        //get payment data
+        double amountPaid = 0.0;
+        for(int i = 0; i<payments.length; i++){
+          if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
+            print("amount before parsing: " + payments[i]['amount'].toString());
+            amountPaid += double.parse(payments[i]['amount']);
+
+            
+          }
         }
+        isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
+        isMyEventResp['amountRemaining'] = (double.parse(event['price']['amount']) - amountPaid).toStringAsFixed(2);
       }
-      isMyEventResp['amountPaid'] = amountPaid;
-
       isMyEventResp["success"] = true;
     } on Exception catch (e) {
       print('Mutation failed: $e');

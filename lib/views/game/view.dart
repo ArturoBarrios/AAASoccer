@@ -89,12 +89,16 @@ class _PickupViewState extends State<PickupView> {
     return LatLng(lat, lon);
   }
 
-  GestureDetector getJoinGameWidget(){
+  Container getJoinGameWidget(){
     return widget.getJoinGameWidget(context, widget.userEventDetails, widget.game['event'], widget.userObject);
   }
 
-  GestureDetector getChatWidget() {
+  Container getChatWidget() {
     return widget.getChatWidget(context, true, false);
+  }
+
+  Container getPriceWidget(){
+    return widget.getPriceWidget(widget.userEventDetails);
   }
 
 
@@ -187,8 +191,9 @@ class _PickupViewState extends State<PickupView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                        "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                    getPriceWidget(),
+                    // Text(
+                    //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
                     widget.userEventDetails['isMyEvent']
                         ? ElevatedButton(
                             onPressed: () {
