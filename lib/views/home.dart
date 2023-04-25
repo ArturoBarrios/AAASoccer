@@ -375,8 +375,7 @@ class _Home extends State<Home> {
         //get game object first
         dynamic gameObject = selectedObject['event']['games']['data'][0];
         print("0");
-        gameObject['event'] = selectedObject['event'];
-        print("aaaaaaaaaaaa");
+        gameObject['event'] = selectedObject['event'];        
         dynamic getEventDetailsResp = EventCommand().getUserEventDetails([gameObject['event']]);        
         card = PickupCard2(
             gameObject: gameObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);

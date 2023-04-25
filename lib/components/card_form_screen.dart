@@ -53,7 +53,8 @@ class _CardFormScreen extends State<CardFormScreen> {
                   {'id': 0},
                   {'id': 1}
                 ]),
-            widget.priceObject);
+              widget.priceObject
+            );
 
     print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
     if (createPaymentIntentResp['success'] ||

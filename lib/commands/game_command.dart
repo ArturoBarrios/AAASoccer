@@ -145,7 +145,9 @@ class GameCommand extends BaseCommand {
           Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
           print("createPaymentResp: "+createPriceResp.toString());
 
-          createdGame['event']['price'] = createPriceResp['data'];
+          dynamic createPrice = createPriceResp['data'];
+
+          createdGame['event']['price'] = createPrice;
           await EventCommand().addGame(createdGame, true);
         }
 

@@ -118,7 +118,7 @@ class PaymentCommand extends BaseCommand {
           paymentMethodId: paymentMethod.id,
           currency: 'usd',
           items: event.items,
-          priceInput: eventInput['price']);
+          priceInput: eventInput['price']['amount']);
       print("paymentIntentResults: " + paymentIntentResults.toString());
       print("paymentIntentResults['customer']: " +
           paymentIntentResults['customer'].toString());
@@ -187,9 +187,10 @@ class PaymentCommand extends BaseCommand {
         print(timestamp);
 
         dynamic paymentInput = {
-          "amount": eventInput['price'],
+          "amount": eventInput['price']['amount'],
           "paidAt": timestamp,
         };
+        print("paymentInput: " + paymentInput.toString());
         http.Response response = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{
@@ -301,7 +302,7 @@ class PaymentCommand extends BaseCommand {
               'https://us-central1-soccer-app-a9060.cloudfunctions.net/stripePaymentIntentRequest'),
           body: {
             'email': appModel.currentUser['email'],
-            'amount': priceInput['amount'].toString(),
+            'amount': priceInput.toString(),
             'paymentMethodId': paymentMethodId,
           });
 
