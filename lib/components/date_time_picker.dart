@@ -1,18 +1,9 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:soccermadeeasy/views/request/view.dart';
-
-import '../../commands/event_command.dart';
-import '../../commands/player_command.dart';
-import '../../commands/team_command.dart';
-import '../../commands/user_command.dart';
-import '../../constants.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
-mixin CreateEventMixin {
+class DateTimePicker extends StatefulWidget {
+  @override
+  _DateTimePicker createState() => _DateTimePicker();
   bool startTimeSet = false;
   DateTime startTime = new DateTime.now();
   DateTime endTime = new DateTime.now();
@@ -20,32 +11,34 @@ mixin CreateEventMixin {
   String endTimestamp = "";
   DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
   DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(DateTime.now().add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
-  Coordinates coordinates = new Coordinates(0, 0);
+}
 
-  final locationController = TextEditingController();
-
+class _DateTimePicker extends State<DateTimePicker> {
+  // State variables go here
   void setStartTime(DateTime time) {
     
-    startTime = time;
-    startTimestamp = time.millisecondsSinceEpoch.toString();
+    widget.startTime = time;
+    widget.startTimestamp = time.millisecondsSinceEpoch.toString();
     print("setStartTime: " + time.toString());
-    print("setStartTime: " + startTimestamp.toString());
-    twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(time.add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
-    startTimeSet = true;
-    setEndTime(twoHoursFromStart);
+    print("setStartTime: " + widget.startTimestamp.toString());
+    widget.twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(time.add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
+    widget.startTimeSet = true;
+    setEndTime(widget.twoHoursFromStart);
     
   }
 
   void setEndTime(DateTime time) {
     
-    endTime = time;
-    endTimestamp = time.millisecondsSinceEpoch.toString();
+    widget.endTime = time;
+    widget.endTimestamp = time.millisecondsSinceEpoch.toString();
     print("setEndTime: " + time.toString());
-    print("setEndTime: " + endTimestamp.toString());
+    print("setEndTime: " + widget.endTimestamp.toString());
   
   }
 
-  Container getTimeWidgets(context) {
+  @override
+  Widget build(BuildContext context) {
+    // Build method goes here
     return Container(
         child: Column(children: [
       TextButton(
@@ -57,7 +50,7 @@ mixin CreateEventMixin {
             }, onConfirm: (date) {
               print('confirm $date');
               setStartTime(date);
-            }, currentTime: !startTimeSet ? rightNow : startTime);
+            }, currentTime: !widget.startTimeSet ? widget.rightNow : widget.startTime);
           },
           child: Text(
             'show date time picker',
@@ -72,7 +65,7 @@ mixin CreateEventMixin {
             }, onConfirm: (date) {
               print('confirm $date');
               setEndTime(date);
-            }, currentTime: twoHoursFromStart);
+            }, currentTime: widget.twoHoursFromStart);
           },
           child: Text(
             'show date time picker',
@@ -80,18 +73,4 @@ mixin CreateEventMixin {
           )),
     ]));
   }
-
-  void chooseAddress(String chosenAddress) async {
-    print("chooseAddress");
-    locationController.text = chosenAddress;
-    List<Address> addresses = await Geocoder.local.findAddressesFromQuery(chosenAddress);
-    Address address = addresses.first;
-    print("address: " + address.toString());
-    coordinates = address.coordinates;
-    print("coordinates: " + coordinates.toString());
-    coordinates.latitude;
-    coordinates.longitude;
-    // LocationCommand().translateAddressToLocation(location);
-  }
-
 }

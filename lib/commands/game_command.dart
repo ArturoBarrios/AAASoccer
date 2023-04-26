@@ -130,8 +130,7 @@ class GameCommand extends BaseCommand {
     };
     try {
       print("appModel.currentUser['_id']: ");
-      print(appModel.currentUser['_id']);
-      eventInput['type'] = EventType.GAME;
+      print(appModel.currentUser['_id']);      
       eventInput['price'] = eventInput['price']*100;
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
@@ -167,9 +166,9 @@ class GameCommand extends BaseCommand {
           dynamic createPrice = createPriceResp['data'];
 
           createdGame['event']['price'] = createPrice;
-          EventCommand().updateViewModelsWithGame(createdGame);
           // await EventCommand().addGame(createdGame, true);
         }
+          EventCommand().updateViewModelsWithGame(createdGame);
 
           createGameResponse["success"] = true;
           createGameResponse["message"] = "Game Created";

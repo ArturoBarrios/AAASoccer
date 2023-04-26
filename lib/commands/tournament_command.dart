@@ -132,6 +132,7 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
     Map<String, dynamic> createdTournament = jsonDecode(response.body)['data']['createTournament'];      
     print("createdTournament: ");
     print(createdTournament);    
+
     
     //create games from bergerTable    
     for(int i = 0;i<bergerTable.length;i++){
@@ -155,7 +156,7 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
           
           Map<String, dynamic> gameResp = await GameCommand().createGame(gameInput, eventInput, locationInput);
           print("create gameResp: ");
-          print(gameResp);
+          print(gameResp);                     
           Map<String, dynamic> createdEvent = gameResp['data']['event'];
           //attach game to tournament     
           http.Response response = await http.post(
@@ -178,8 +179,84 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
 
     }
   }
+
+
+
+  dynamic findTournamentByIdResponse = findTournamentById(createdTournament['_id']);
+  print("findTournamentByIdResponse: "+findTournamentByIdResponse.toString());
+  if(findTournamentByIdResponse['success']){
+    //update tournament models
+    dynamic tournament = findTournamentByIdResponse['data']['findTournamentByID'];
+    //get tournament
+    //add price
+    if(eventInput['price']>0){
+      Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+      print("create price event input: "+ eventInput.toString());
+      print("create price input: " + paymentInput['price'].toString());
+      Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
+      print("createPaymentResp: "+createPriceResp.toString());
+
+      dynamic createPrice = createPriceResp['data'];
+      dynamic mainTournamentEvent = EventCommand().getMainEvent(tournament['events']['data']);
+      //assumes first event is main event
+      mainTournamentEvent['price'] = createPrice;      
+      // await EventCommand().addGame(createdGame, true);
+    }
+    print("tournament: "+tournament.toString());
+    EventCommand().updateViewModelsWithTournament(tournament);
+
+  }
+
+
+  
+
+
+  createTournamentResp["success"] = true;
+  createTournamentResp["message"] = "Tournament Created";
+
+
     return createTournamentResp;
   }
+
+  Future<Map<String, dynamic>> findTournamentById(String tournamentId) async {
+    print("getUser");
+    Map<String, dynamic> findTournamentByIdResp = {
+      "success": false,
+      "message": "no Tournament found",
+      "data": null
+    };
+    try {
+      print("tournamentId: ");
+      print(tournamentId);
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TournamentQueries().findTournamentByID(tournamentId),
+        }),
+      );
+
+      print("response: ");
+      print(jsonDecode(response.body));
+      final result = jsonDecode(response.body)['data']['findTournamentByID'];
+      // appModel.currentUser = result;
+      // if (result != null) {
+      findTournamentByIdResp["success"] = true;
+      findTournamentByIdResp["message"] = "Tournament found";
+      findTournamentByIdResp["data"] = result;
+
+      return findTournamentByIdResp;
+      // }
+    } catch (e) {
+      print('Query failed: $e');
+    }
+    return findTournamentByIdResp;
+  }
+
+
 
   //CREDIT TO https://github.com/sasatatar
   //LINK TO CODE: https://github.com/sasatatar/berger-table-generator/blob/master/index.js

@@ -14,6 +14,13 @@ class TryoutMutations{
               isMainEvent:true,
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
+              createdAt: "${eventInput['createdAt']}",
+              joinConditions: {
+                create: {
+                  withRequest: ${eventInput['withRequest']},
+                  withPayment: ${eventInput['withPayment']},
+                }
+              },
               userParticipants: {
                 create:
                   {

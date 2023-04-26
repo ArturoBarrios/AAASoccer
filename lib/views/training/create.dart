@@ -5,8 +5,14 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/training_command.dart';
 import '../../commands/event_command.dart';
+import '../../components/create_event_payment.dart';
+import '../../components/create_event_request.dart';
+import '../../components/date_time_picker.dart';
+import '../../components/location_search_bar.dart';
+import '../../enums/EventType.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../../components/headers.dart';
+import '../home.dart';
 
 class TrainingCreate extends StatefulWidget {
   @override
@@ -25,35 +31,14 @@ class _TrainingCreateState extends State<TrainingCreate> {
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
 
-  String startTimestamp = "";
-  String endTimestamp = "";
-  bool startTimeSet = false;
-  DateTime startTime = new DateTime.now();
-  DateTime endTime = new DateTime.now();
-  DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
-  DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(DateTime.now().add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
-
+ 
   bool _isLoading = false;
 
-  void setStartTime(DateTime time) {
-    setState(() {
-      startTime = time;
-      startTimestamp = time.millisecondsSinceEpoch.toString();
-      print("setStartTime: " + time.toString());
-      print("setStartTime: " + startTimestamp.toString());
-      twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(time.add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
-      startTimeSet = true;
-    });
-  }
-
-  void setEndTime(DateTime time) {
-    setState(() {
-      endTime = time;
-      endTimestamp = time.millisecondsSinceEpoch.toString();
-      print("setEndTime: " + time.toString());
-      print("setEndTime: " + endTimestamp.toString());
-    });
-  }
+  CreateEventRequest createEventRequestWidget = new CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  DateTimePicker dateTimePicker = new DateTimePicker();
+  LocationSearchBar locationSearchBar = new LocationSearchBar();
+    
 
   Future<void> createTraining() async {
     print("createTraining");
@@ -67,21 +52,32 @@ class _TrainingCreateState extends State<TrainingCreate> {
         "name": nameController.text.toString(),
         'isMainEvent': true,        
         'price':  double.parse(priceController.text.toString()),
-        'startTime': startTimestamp,
-        'endTime': endTimestamp,
+        'startTime': dateTimePicker.startTimestamp,
+        'endTime': dateTimePicker.endTimestamp,
+        'withRequest': createEventRequestWidget.withRequest,
+        'withPayment': createEventPaymentWidget.withPayment, 
+        'roles': "{PLAYER, ORGANIZER}",
+        'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
+        'type': EventType.TRAINING
 
       };
 
-      Map<String, dynamic> randomPickupData = EventSeeder().getRandomTrainingData();      
+      Map<String, dynamic> trainingData = {};
       Map<String, dynamic> locationInput = {
-        "latitude": 39.9526,
-        "longitude": 75.1652,
+        "latitude": locationSearchBar.coordinates.latitude,
+        "longitude": locationSearchBar.coordinates.longitude,
       };
       print("locationInputCheck: " + locationInput.toString());  
 
-      Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(randomPickupData, eventInput, locationInput);                                      
+      Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(trainingData, eventInput, locationInput);                                      
       print("createTrainingResp: "+ createTrainingResp.toString());
-                    
+
+      if (createTrainingResp['success']) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+      }            
       
       }
        on ApiException catch (e) {
@@ -99,40 +95,10 @@ class _TrainingCreateState extends State<TrainingCreate> {
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Name'),
         ),       
-        TextField(
-          controller: isPickupController,
-          decoration: new InputDecoration.collapsed(hintText: 'Pickup'),
-        ),
-        TextButton(
-                onPressed: () {
-                  DatePicker.showDateTimePicker(context, showTitleActions: true,
-                      onChanged: (date) {
-                    print('change $date in time zone ' +
-                        date.timeZoneOffset.inHours.toString());
-                  }, onConfirm: (date) {
-                    print('confirm $date');
-                    setStartTime(date);
-                  }, currentTime: !startTimeSet ? rightNow : startTime);
-                },
-                child: Text(
-                  'show date time picker',
-                  style: TextStyle(color: Colors.blue),
-                )),
-        TextButton(
-                onPressed: () {
-                  DatePicker.showDateTimePicker(context, showTitleActions: true,
-                      onChanged: (date) {
-                    print('change $date in time zone ' +
-                        date.timeZoneOffset.inHours.toString());
-                  }, onConfirm: (date) {
-                    print('confirm $date');
-                    setEndTime(date);
-                  }, currentTime: twoHoursFromStart);
-                },
-                child: Text(
-                  'show date time picker',
-                  style: TextStyle(color: Colors.blue),
-                )),
+        locationSearchBar,
+        createEventRequestWidget,
+        createEventPaymentWidget,
+        dateTimePicker,
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),

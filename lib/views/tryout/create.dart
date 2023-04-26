@@ -5,9 +5,15 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/tryout_command.dart';
 import '../../commands/event_command.dart';
+import '../../components/create_event_payment.dart';
+import '../../components/create_event_request.dart';
+import '../../components/date_time_picker.dart';
+import '../../components/location_search_bar.dart';
 import '../../components/profile.dart';
 import '../../components/headers.dart';
+import '../../enums/EventType.dart';
 import '../../testing/seeding/event_seeder.dart';
+import '../home.dart';
 
 class TryoutCreate extends StatefulWidget {
   @override
@@ -28,38 +34,11 @@ class _TryoutCreateState extends State<TryoutCreate> {
 
   bool _isLoading = false;
 
-  String startTimestamp = "";
-  String endTimestamp = "";
-  bool startTimeSet = false;
-  DateTime startTime = new DateTime.now();
-  DateTime endTime = new DateTime.now();
-  DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
-  DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(
-      DateTime.now().add(Duration(hours: 2)).millisecondsSinceEpoch ~/
-          1000 *
-          1000);
-
-  void setStartTime(DateTime time) {
-    setState(() {
-      startTime = time;
-      startTimestamp = time.millisecondsSinceEpoch.toString();
-      print("setStartTime: " + time.toString());
-      print("setStartTime: " + startTimestamp.toString());
-      twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(
-          time.add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
-      startTimeSet = true;
-    });
-  }
-
-  void setEndTime(DateTime time) {
-    setState(() {
-      endTime = time;
-      endTimestamp = time.millisecondsSinceEpoch.toString();
-      print("setEndTime: " + time.toString());
-      print("setEndTime: " + endTimestamp.toString());
-    });
-  }
+  CreateEventRequest createEventRequestWidget = new CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  DateTimePicker dateTimePicker = new DateTimePicker();
+  LocationSearchBar locationSearchBar = new LocationSearchBar();
+  
 
   Future<Map<String, dynamic>> createTryout() async {
     print("createGame");
@@ -72,22 +51,32 @@ class _TryoutCreateState extends State<TryoutCreate> {
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
         'isMainEvent': true,
-        'price': priceController.text.toString(),
-        'startTime': startTimestamp,
-        'endTime': endTimestamp,
+        'price': double.parse(priceController.text.toString()),
+        'startTime': dateTimePicker.startTimestamp,
+        'endTime': dateTimePicker.endTimestamp,
+        'withRequest': createEventRequestWidget.withRequest,
+        'withPayment': createEventPaymentWidget.withPayment, 
+        'roles': "{PLAYER, ORGANIZER}",
+        'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
+        'type': EventType.TRYOUT,
       };
 
-      Map<String, dynamic> randomPickupData =
-          EventSeeder().getRandomTryoutData();
+      Map<String, dynamic> tryoutData = {};          
       Map<String, dynamic> locationInput = {
-        "latitude": 39.9526,
-        "longitude": 75.1652,
+        "latitude": locationSearchBar.coordinates.latitude,
+        "longitude": locationSearchBar.coordinates.longitude,
       };
       print("locationInputCheck: " + locationInput.toString());
 
       Map<String, dynamic> createTryoutResp = await TryoutCommand()
-          .createTryout(randomPickupData, eventInput, locationInput);
+          .createTryout(tryoutData, eventInput, locationInput);
       print("createTryoutResp: " + createTryoutResp.toString());
+      if(createTryoutResp['success']){         
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+      }
 
       return createEventResponse;
     } on ApiException catch (e) {
@@ -95,66 +84,30 @@ class _TryoutCreateState extends State<TryoutCreate> {
     }
   }
 
+  void goBack() {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Headers().getMainHeader(context),
+      appBar: Headers().getBackHeader(context, "Create Tryout"),
       body: Center(
           child: Column(children: [
         TextField(
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Name'),
         ),
-        TextField(
-          controller: hometeamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),
-        TextField(
-          controller: awayteamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Away'),
-        ),
-        TextField(
-          controller: isPickupController,
-          decoration: new InputDecoration.collapsed(hintText: 'Pickup'),
-        ),
-        TextButton(
-            onPressed: () {
-              DatePicker.showDateTimePicker(context, showTitleActions: true,
-                  onChanged: (date) {
-                print('change $date in time zone ' +
-                    date.timeZoneOffset.inHours.toString());
-              }, onConfirm: (date) {
-                print('confirm $date');
-                setStartTime(date);
-              }, currentTime: !startTimeSet ? rightNow : startTime);
-            },
-            child: Text(
-              'show date time picker',
-              style: TextStyle(color: Colors.blue),
-            )),
-        TextButton(
-            onPressed: () {
-              DatePicker.showDateTimePicker(context, showTitleActions: true,
-                  onChanged: (date) {
-                print('change $date in time zone ' +
-                    date.timeZoneOffset.inHours.toString());
-              }, onConfirm: (date) {
-                print('confirm $date');
-                setEndTime(date);
-              }, currentTime: twoHoursFromStart);
-            },
-            child: Text(
-              'show date time picker',
-              style: TextStyle(color: Colors.blue),
-            )),
+        
+        locationSearchBar,
+        createEventRequestWidget,
+        createEventPaymentWidget,
+        dateTimePicker,
+        
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),
-        ),
-        TextField(
-          controller: locationController,
-          decoration: new InputDecoration.collapsed(hintText: 'Location'),
-        ),
+        ),        
         TextField(
           controller: imagesController,
           decoration: new InputDecoration.collapsed(hintText: 'Images'),
@@ -164,6 +117,11 @@ class _TryoutCreateState extends State<TryoutCreate> {
               createTryout();
             },
             child: Text("tap me")),
+            GestureDetector(
+            onTap: () {
+              goBack();
+            },
+            child: Text("Back to Home")),
       ])),
     );
   }

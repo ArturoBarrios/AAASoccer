@@ -66,8 +66,7 @@ class TrainingCommand extends BaseCommand {
     try {
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
-      };   
-      eventInput['type'] = EventType.TRAINING;
+      };         
       eventInput['price'] = eventInput['price']*100;
      
       http.Response response = await http.post(
@@ -85,15 +84,20 @@ class TrainingCommand extends BaseCommand {
       print(jsonDecode(response.body));
       Map<String, dynamic> createdTraining =
             jsonDecode(response.body)['data']['createTraining'];
-      await EventCommand().addTraining(createdTraining, true);
-
-
       eventInput['_id'] = createdTraining['event']['_id'];
-      Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
-      print("create price event input: "+ eventInput.toString());
-      print("create price input: " + paymentInput['price'].toString());
-      Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
-      print("createPaymentResp: "+createPriceResp.toString());
+      // await EventCommand().addTraining(createdTraining, true);
+
+      if(eventInput['price']>0){
+        Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+        print("create price event input: "+ eventInput.toString());
+        print("create price input: " + paymentInput['price'].toString());
+        Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
+        print("createPaymentResp: "+createPriceResp.toString());
+
+        dynamic createPrice = createPriceResp['data'];
+        createdTraining['event']['price'] = createPrice;
+      }
+        EventCommand().updateViewModelsWithTraining(createdTraining);
         
         createTrainingResponse["success"] = true;
         createTrainingResponse["message"] = "Game Created";

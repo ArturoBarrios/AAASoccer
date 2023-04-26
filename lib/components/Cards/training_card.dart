@@ -15,12 +15,12 @@ class TrainingCard extends StatefulWidget with EventMixin {
       {Key? key,
       required this.trainingObject,
       required this.svgImage,
-      required this.isMyEvent})
+      required this.userEventDetails })
       : super(key: key);
   final Map<String, dynamic> trainingObject;
   final Svg svgImage;
   final double bevel = 10.0;
-  final bool isMyEvent;
+  final dynamic userEventDetails;
 
   @override
   State<TrainingCard> createState() => _TrainingCard();
@@ -93,7 +93,7 @@ requestTypeSelected(List<int>? indexes) {
           barrierDismissible: true,
           builder: (BuildContext context) {
             return TrainingView(
-                isMyEvent: widget.isMyEvent, training: widget.trainingObject);
+                userEventDetails: widget.userEventDetails, training: widget.trainingObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -171,7 +171,7 @@ requestTypeSelected(List<int>? indexes) {
                 ),
               ),
             ),
-            !widget.isMyEvent
+            !widget.userEventDetails['isMyEvent']
                 ? 
                 Container(
                 height: 20,

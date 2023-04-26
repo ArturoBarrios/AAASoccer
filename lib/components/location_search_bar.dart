@@ -5,10 +5,10 @@ import '../../commands/location_command.dart';
 import 'package:geocoder/geocoder.dart';
 //returns chosen address
 // // // // // // // // // // // // // // //
-class LocationSearchBar extends StatefulWidget {  
-  final Function(String) chooseAddress;
-  const LocationSearchBar({Key? key, required this.chooseAddress })
-      : super(key: key);
+class LocationSearchBar extends StatefulWidget {    
+  
+  Coordinates coordinates = new Coordinates(0, 0);
+  final locationController = TextEditingController();
 
    
   
@@ -22,6 +22,8 @@ class LocationSearchBar extends StatefulWidget {
 class _LocationSearchBar extends State<LocationSearchBar> {
   final locationController = TextEditingController();
   List<dynamic> addressPredictions = [];
+
+
 
   //not necessary now, but feels like a
   //method to process predictions will be
@@ -52,7 +54,13 @@ class _LocationSearchBar extends State<LocationSearchBar> {
     locationController.text = location['description'];
     List<Address> addresses = await Geocoder.local.findAddressesFromQuery(location['description']);
     Address address = addresses.first;
-    widget.chooseAddress(location['description']);
+    // widget.chooseAddress(location['description']);
+    print("address: " + address.toString());
+    widget.coordinates = address.coordinates;
+    print("coordinates: " + widget.coordinates.toString());
+    widget.coordinates.latitude;
+    widget.coordinates.longitude;
+    
   }
 
   @override

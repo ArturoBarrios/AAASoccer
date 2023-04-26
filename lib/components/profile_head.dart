@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/profile.dart';
 import '../views/chats/view.dart';
-import '../views/chats/chat/create.dart';
+import '../views/chats/create.dart';
 
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);

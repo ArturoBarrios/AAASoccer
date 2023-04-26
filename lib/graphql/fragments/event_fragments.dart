@@ -38,6 +38,11 @@ class EventFragments {
             pickup
           }
         }
+        trainings{
+          data{
+            _id
+          }
+        }
         price{
           _id
           amount

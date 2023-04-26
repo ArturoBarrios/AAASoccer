@@ -1,3 +1,5 @@
+import '../fragments/event_fragments.dart';
+
 class TournamentMutations{
   String createTournament(Map<String, dynamic> tournamentInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput) {
     String createTournament = """
@@ -10,7 +12,16 @@ class TournamentMutations{
             {
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput ['isMainEvent']},
-              type: TOURNAMENT,
+              type: "${eventInput['type']}",
+              startTime: "${eventInput['startTime']}",
+              endTime: "${eventInput['endTime']}",
+              createdAt: "${eventInput['createdAt']}",
+              joinConditions: {
+                create: {
+                  withRequest: ${eventInput['withRequest']},
+                  withPayment: ${eventInput['withPayment']},
+                }
+              },
               userParticipants: {
                 create:
                   {
@@ -37,16 +48,7 @@ class TournamentMutations{
             groupPlay                    
             events{
               data{
-              _id
-              name
-              isMainEvent
-                location{
-                  data{
-                    _id
-                    latitude
-                    longitude
-                  }
-                }     
+                 ${EventFragments().fullEvent()}
               }
             } 
           }   

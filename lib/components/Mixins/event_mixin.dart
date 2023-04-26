@@ -173,6 +173,8 @@ mixin EventMixin {
     }
   }
 
+  
+
   //send organizers event request
   Future<void> sendEventRequest(dynamic eventObject, String requestType) async {
     print("sendEventRequest");
