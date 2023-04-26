@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../enums/EventType.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/Training.dart';
@@ -66,6 +67,8 @@ class TrainingCommand extends BaseCommand {
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
       };   
+      eventInput['type'] = EventType.TRAINING;
+      eventInput['price'] = eventInput['price']*100;
      
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -82,7 +85,7 @@ class TrainingCommand extends BaseCommand {
       print(jsonDecode(response.body));
       Map<String, dynamic> createdTraining =
             jsonDecode(response.body)['data']['createTraining'];
-      await EventCommand().addGame(createdTraining, true);
+      await EventCommand().addTraining(createdTraining, true);
 
 
       eventInput['_id'] = createdTraining['event']['_id'];

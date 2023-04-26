@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
+import '../constants.dart';
 import 'base_command.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
@@ -18,6 +19,21 @@ import '../../commands/payment_commands.dart';
 import '../../models/types_models.dart';
 
 class GameCommand extends BaseCommand {
+
+  List<dynamic> sortGames(List<dynamic> games,String sortBy){
+    //assume events are sorted by date for now
+    print("sortEvents()");
+    print("sortBy: " + sortBy);
+    List<dynamic> sortedGames = List.from(games);
+    sortedGames.sort((a, b) {
+      int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
+      int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
+      return aCreatedAt.compareTo(bCreatedAt);
+    });
+
+    return sortedGames;
+
+  }
 
   Future<Map<String, dynamic>> getGamesNearLocation() async {
     print("getGamesNearLocation");
@@ -44,7 +60,10 @@ class GameCommand extends BaseCommand {
       print(jsonDecode(response.body));
       
 
-      final result = jsonDecode(response.body)['data']['allGames']['data'];
+      dynamic result = jsonDecode(response.body)['data']['allGames']['data'];
+      if(result.length>0){
+        result = sortGames(result, Constants.CREATEDAT.toString());
+      }
       getGamesNearLocationResp["success"] = true;
       getGamesNearLocationResp["message"] = "Games Retrieved";
       getGamesNearLocationResp["data"] = result;
@@ -148,7 +167,8 @@ class GameCommand extends BaseCommand {
           dynamic createPrice = createPriceResp['data'];
 
           createdGame['event']['price'] = createPrice;
-          await EventCommand().addGame(createdGame, true);
+          EventCommand().updateViewModelsWithGame(createdGame);
+          // await EventCommand().addGame(createdGame, true);
         }
 
           createGameResponse["success"] = true;

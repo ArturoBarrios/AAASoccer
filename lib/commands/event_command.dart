@@ -801,19 +801,25 @@ class EventCommand extends BaseCommand {
       //get payment data
       dynamic payments = event['payments']['data'];
       isMyEventResp['paymentData'] = payments;
-      print("payments: " + payments.toString());
-      //get payment data
-      double amountPaid = 0.0;
-      for(int i = 0; i<payments.length; i++){
-        if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
-          print("amount before parsing: " + payments[i]['amount'].toString());
-          amountPaid += double.parse(payments[i]['amount']);
+      isMyEventResp['amountPaid'] = "0.00";
+      isMyEventResp['amountRemaining'] = "0.00";
+      isMyEventResp['price'] = event['price'];
+      if(event['price'] != null){
 
-          
+        print("payments: " + payments.toString());      
+        //get payment data
+        double amountPaid = 0.0;
+        for(int i = 0; i<payments.length; i++){
+          if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
+            print("amount before parsing: " + payments[i]['amount'].toString());
+            amountPaid += double.parse(payments[i]['amount']);
+
+            
+          }
         }
+        isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
+        isMyEventResp['amountRemaining'] = (double.parse(event['price']['amount']) - amountPaid).toStringAsFixed(2);
       }
-      isMyEventResp['amountPaid'] = amountPaid;
-
       isMyEventResp["success"] = true;
     } on Exception catch (e) {
       print('Mutation failed: $e');
@@ -878,6 +884,8 @@ class EventCommand extends BaseCommand {
 
   }
 
+
+
   Future<Map<String, dynamic>> setupEventsFromCurrentUser(dynamic user) async {
     print("setupEvents()()");
     
@@ -913,7 +921,7 @@ class EventCommand extends BaseCommand {
         }        
       }
       print("done parsing roles!");
-      eventsModel.games = filteredGamesResp['activeEvents'];
+      eventsModel.games = filteredGamesResp['activeEvents'];      
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
       eventsModel.events.addAll(games);
       homePageModel.selectedObjects =
@@ -1008,12 +1016,33 @@ class EventCommand extends BaseCommand {
     print("length of events modeL games: ");
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
-    // homePageModel.selectedObjects = [];
-    homePageModel.selectedObjects = List.from(eventsModel.games);
+    await EventCommand().addGame(game, true);
+    UserCommand().findMyUserById();
     if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){
       homePageModel.selectedObjects = List.from(eventsModel.games);
     }
+    
     return updateViewModelsWithGameResp;
+  }
+ 
+  Future<Map<String, dynamic>> updateViewModelsWithTraining(
+      Map<String, dynamic> training) async {
+    print("updateViewModelsWithTraining()");
+    Map<String, dynamic> updateViewModelsWithTrainingResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of events modeL trainings: ");
+    print(eventsModel.trainings.length);
+    print("length of homePageModel selectedObjects: ");
+    await EventCommand().addTraining(training, true);
+    UserCommand().findMyUserById();
+    if(homePageModel.selectedKey.toString() == Constants.TRAINING.toString()){
+      homePageModel.selectedObjects = List.from(eventsModel.trainings);
+    }
+    
+    return updateViewModelsWithTrainingResp;
   }
   
   Future<Map<String, dynamic>> updateViewModelsWithTryout(
@@ -1079,9 +1108,28 @@ class EventCommand extends BaseCommand {
     print(eventsModel.games.length);
     print("updateViewModelsBool: ");
     print(updateViewModelsBool);
-    if (updateViewModelsBool) await updateViewModelsWithGame(game);
+    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
 
     return addGameResp;
+  }
+  Future<Map<String, dynamic>> addTraining(
+      Map<String, dynamic> training, bool updateViewModelsBool) async {
+    Map<String, dynamic> addtrainingResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of trainings before adding game: ");
+    print("adding training: " + training.toString());
+    print(eventsModel.trainings.length);
+    eventsModel.trainings.insert(0,training);
+    print("length of trainings after adding training: ");
+    print(eventsModel.trainings.length);
+    print("updateViewModelsBool: ");
+    print(updateViewModelsBool);
+    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
+
+    return addtrainingResp;
   }
   
   Future<Map<String, dynamic>> addTryout(

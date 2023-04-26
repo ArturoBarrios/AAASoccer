@@ -17,6 +17,7 @@ mixin EventMixin {
   dynamic userObject;
   List<String> participationRoles = [];
   dynamic eventUserParticipant;
+  dynamic teamUserParticipant;
   dynamic event;
   dynamic team;
 
@@ -190,6 +191,17 @@ mixin EventMixin {
     print("loadTeamInfo");
     this.team = team;
     userObject = UserCommand().getAppModelUser();
+    userObject = UserCommand().getAppModelUser();
+    userObject['teamUserParticipants']['data']
+        .forEach((teamUserParticipantElement) {
+      if (teamUserParticipantElement['team']['_id'] == team['_id']) {
+        teamUserParticipant = teamUserParticipantElement;
+        participationRoles =
+            BaseCommand().parseRoles(teamUserParticipant['roles']);
+        print("participationRoles: $participationRoles");
+      }
+    });
+  
 
   }
 
@@ -238,8 +250,11 @@ mixin EventMixin {
 
   }
 
-  GestureDetector getChatWidget(BuildContext context, bool attachToEvent, bool attachToTeam) {
-    return GestureDetector(
+  Container getChatWidget(BuildContext context, bool attachToEvent, bool attachToTeam) {
+    if(participationRoles.contains("ORGANIZER")){    
+    return 
+    Container(child:
+    GestureDetector(
         onTap: () async{
           print("Add New Chat Pressed");
           // Navigator.push(context, MaterialPageRoute<void>(
@@ -291,39 +306,152 @@ mixin EventMixin {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
             ],
           ),
-        ));
+        ))
+        );
+      }
+      else{
+        return Container();
+      }
   }
 
-  GestureDetector getJoinGameWidget(BuildContext context,
+  Container getPriceWidget(dynamic userEventDetails){
+    print("getPriceWidget()");
+
+    
+    if(userEventDetails['price'] != null){
+    String amount = (double.parse(userEventDetails['price']['amount']) / 100).toStringAsFixed(2);
+    String amountPaid = (double.parse(userEventDetails['amountPaid']) / 100).toStringAsFixed(2);
+    String amountRemaining = (double.parse(userEventDetails['amountRemaining']) / 100).toStringAsFixed(2);
+      if(!participationRoles.contains("ORGANIZER")){
+        if(amountRemaining=="0.00"){
+          return 
+          Container(child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Price: \$${(amount)}"),
+              IconButton(
+              icon: const Icon(Icons.check_circle),
+              tooltip: 'Go to the next page',
+              onPressed: () {
+                // Navigator.push(context, MaterialPageRoute<void>(
+                //   builder: (BuildContext context) {
+                //     return Profile();
+                //   },
+                // ));
+              },
+            ),
+
+            ]
+          ));
+
+        }
+        //double.parse(amountRemaining)>0.00
+        else{
+          return Container(
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
+        children: [
+          Text(
+            "Price: \$${(amount)}",
+            style: TextStyle(fontSize: 16),
+          ),
+          userEventDetails['isMember'] ?
+          Text(
+            "Remaining Balance: \$$amountRemaining",
+            style: TextStyle(fontSize: 16),
+          ) : Container()
+            
+          
+        ]
+      )
+    ],
+  )
+);
+
+        }
+
+      }
+      else{
+        return Container(child:Row(
+
+        ));
+      }
+    }
+    else{
+      return Container(child:Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("FREE!")
+        ],
+      ));
+    }
+  }
+
+  Container getJoinGameWidget(BuildContext context,
       dynamic userEventDetails, dynamic event, dynamic userInput) {
     print("userEventDetails: $userEventDetails");
+
+    print("participationRoles: " + participationRoles.toString());
     //if not already a player
     if (!participationRoles.contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");
       if (userEventDetails['isMyEvent']) {
-        return GestureDetector(
+        return Container(child: GestureDetector(
           onTap: () {
             print("onTap Join My Game");
             EventCommand().addUserToEvent(event, userInput, roles);
           },
           child: Text("Join my Game"),
-        );
+        ));
       } else {
         //!withPayment&&!withRequest
         if (!event['joinConditions']['withPayment'] &&
             !event['joinConditions']['withRequest']) {
-          return GestureDetector(
-            onTap: () {
-              print("!withPayment&&!withRequest");
-              EventCommand().addUserToEvent(event, userInput, roles);
-            },
-            child: Text("Join Game(no immediate payment required)"),
-          );
+          //price exists(join with paying or not paying)
+          if(userEventDetails['price']!=null){
+            return Container(child:
+            Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+            GestureDetector(
+              onTap: () {
+                print("!withPayment&&!withRequest");
+                purchaseEvent(context, event, roles);
+              },
+              child: Text("Join Game, Pay Now"),
+            ),
+            Container(
+              child: GestureDetector(
+              onTap: () {
+                print("!withPayment&&!withRequest");
+                EventCommand().addUserToEvent(event, userInput, roles);
+              },
+              child: Text("Join Game, Pay Later"),
+            ))
+            ]
+            ));
+
+          }
+          //price does not exist
+          else{
+            return Container(
+              child: GestureDetector(
+              onTap: () {
+                print("!withPayment&&!withRequest");
+                EventCommand().addUserToEvent(event, userInput, roles);
+              },
+              child: Text("Join Game, Pay Later"),
+            ));
+
+          }
         }
-        //!withPayment&&!withRequestt
+        //!withPayment&&withRequestt
         else if (!event['joinConditions']['withPayment'] &&
             event['joinConditions']['withRequest']) {
-          return GestureDetector(
+          return Container(child:GestureDetector(
             onTap: () {
               print("!withPayment&&!withRequest");
               selectedRequestTypeObjects.add("PLAYER");
@@ -331,20 +459,20 @@ mixin EventMixin {
               selectedRequestTypeObjects = [];
             },
             child: Text("Send Request to Join(No Payment required to join)"),
-          );
+          ));
         }
         //withPayment && !withRequest
         else if (event['joinConditions']['withPayment'] &&
             !event['joinConditions']['withRequest']) {
           //if amount is 0
 
-          return GestureDetector(
+          return Container(child:GestureDetector(
             onTap: () {
               print("withPayment && !withRequest");
               purchaseEvent(context, event, roles);
             },
             child: Text("Pay to Join Game"),
-          );
+          ));
         }
         //withPayment && withRequest
         //find request element, else send request
@@ -362,33 +490,41 @@ mixin EventMixin {
           if (requestElementObject != null) {
             print("requestElementObject['status']: " +
                 requestElementObject['status'].toString());
-            if (requestElementObject['status'].toString() == "ACCEPTED") {
-              return GestureDetector(
-                onTap: () {
-                  print("withPayment && withRequest");
-                  purchaseEvent(context, event, roles);
-                },
-                child: Text("Pay to Join Game"),
-              );
+            if (requestElementObject['status'].toString() == "ACCEPTED"
+                ) {
+                  //if not paid off 
+                if((double.parse(userEventDetails['amountRemaining']) / 100).toStringAsFixed(2)!="0.00"){
+                  return Container(child:GestureDetector(
+                    onTap: () {
+                      print("withPayment && withRequest");
+                      purchaseEvent(context, event, roles);
+                    },
+                    child: Text("Pay to Join Game"),
+                  ));                  
+                }
+                //paid off
+                else{
+                  return Container();
+                }
             } else if (requestElementObject['status'].toString() == "PENDING") {
-              return GestureDetector(
+              return Container(child:GestureDetector(
                 onTap: () {
                   print("WAITING FOR REQUEST TO BE ACCEPTED");
                 },
                 child: Text("Request Pending"),
-              );
+              ));
             } else {
-              return GestureDetector(
+              return Container(child:GestureDetector(
                 onTap: () {
                   selectedRequestTypeObjects.add("PLAYER");
                   sendEventRequest(event, "GAMEREQUEST");
                   selectedRequestTypeObjects = [];
                 },
                 child: Text("Request Denied, Resend Request"),
-              );
+              ));
             }
           } else {
-            return GestureDetector(
+            return Container(child:GestureDetector(
               onTap: () {
                 print("withPayment && withRequest");
                 selectedRequestTypeObjects.add("PLAYER");
@@ -396,17 +532,17 @@ mixin EventMixin {
                 selectedRequestTypeObjects = [];
               },
               child: Text("Send Request to Join(Payment required to join)"),
-            );
+            ));
           }
         }
       }
     } else {
-      return GestureDetector(
+      return Container(child:GestureDetector(
         onTap: () {
           print("onTap Leave Game");
         },
         child: Text("Leave Game"),
-      );
+      ));
     }
   }
 

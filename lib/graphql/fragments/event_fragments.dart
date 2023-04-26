@@ -9,6 +9,7 @@ class EventFragments {
         type
         startTime
         endTime
+        createdAt
         userParticipants{     
         data{
           _id
@@ -74,6 +75,7 @@ class EventFragments {
       deleted  
       startTime
       endTime  
+      createdAt
       joinConditions{
         _id
         withRequest

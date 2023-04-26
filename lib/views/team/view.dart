@@ -98,7 +98,7 @@ class _TeamViewState extends State<TeamView> {
 
   }
 
-   GestureDetector getChatWidget() {
+   Container getChatWidget() {
     return widget.getChatWidget(context, false, true);
   }
 

@@ -89,12 +89,16 @@ class _PickupViewState extends State<PickupView> {
     return LatLng(lat, lon);
   }
 
-  GestureDetector getJoinGameWidget(){
+  Container getJoinGameWidget(){
     return widget.getJoinGameWidget(context, widget.userEventDetails, widget.game['event'], widget.userObject);
   }
 
-  GestureDetector getChatWidget() {
+  Container getChatWidget() {
     return widget.getChatWidget(context, true, false);
+  }
+
+  Container getPriceWidget(){
+    return widget.getPriceWidget(widget.userEventDetails);
   }
 
 
@@ -127,7 +131,7 @@ class _PickupViewState extends State<PickupView> {
     print("game: " + widget.game.toString());
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "View Game"),
+      appBar: Headers().getBackHeader(context, widget.game['event']['name']),
       body: _isLoading
           ? Text("Loading...")
           : ListView(
@@ -187,8 +191,9 @@ class _PickupViewState extends State<PickupView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                        "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                    getPriceWidget(),
+                    // Text(
+                    //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
                     widget.userEventDetails['isMyEvent']
                         ? ElevatedButton(
                             onPressed: () {

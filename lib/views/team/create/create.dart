@@ -58,16 +58,16 @@ class _TeamCreateState extends State<TeamCreate> {
           dynamic createdTeam = createdTeamResp['data'];
           print("createdTeam: " + createdTeam.toString());
 
-          List<dynamic> userParticipants = createdTeam['userParticipants']['data'];
+          // List<dynamic> userParticipants = createdTeam['userParticipants']['data'];
           //find the userParticipant that matches the current user
-          dynamic currentUserParticipant;
-          dynamic currentUser = UserCommand().getAppModelUser();
-          for (var i = 0; i < userParticipants.length; i++) {
-            if (userParticipants[i]['user']['_id'] == currentUser['_id']) {
-              currentUserParticipant = userParticipants[i];
-            }
-          }
-          TeamCommand().updateModelsWithTeam(createdTeam, currentUserParticipant);
+          // dynamic currentUserParticipant;
+          // dynamic currentUser = UserCommand().getAppModelUser();
+          // for (var i = 0; i < userParticipants.length; i++) {
+          //   if (userParticipants[i]['user']['_id'] == currentUser['_id']) {
+          //     currentUserParticipant = userParticipants[i];
+          //   }
+          // }
+          
 
           createEventResponse['success'] = true;
           //navigate home          

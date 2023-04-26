@@ -242,13 +242,14 @@ class TeamCommand extends BaseCommand {
     return sendTeamRequestResponse;
   }
 
-  void updateModelsWithTeam(dynamic team, dynamic userParticipantObject) {
+  void updateModelsWithTeam(dynamic team) {
     print("updateModelsWithTeam");
     print(team);
 
     appModel.teams.add(team);
     appModel.myTeams.add(team);
-    appModel.currentUser['teamUserParticipants']['data'].add(userParticipantObject);
+
+    // appModel.currentUser['teamUserParticipants']['data'].add(userParticipantObject);
     // if (homePageModel.selectedKey == Constants.TEAM) {
     //   homePageModel.selectedObjects.add(team);
     // }
@@ -280,11 +281,13 @@ class TeamCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
       if (response.statusCode == 200) {
-        createTeamResponse["success"] = true;
-        createTeamResponse["message"] = "Location Created";
         dynamic createdTeam = 
         createTeamResponse["data"] =
             jsonDecode(response.body)['data']['createTeam'];
+        
+        TeamCommand().updateModelsWithTeam(createdTeam);
+        createTeamResponse["success"] = true;
+        createTeamResponse["message"] = "Location Created";
         
       } else {
         //rollback somehow???
