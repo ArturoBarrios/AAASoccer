@@ -14,6 +14,7 @@ class TrainingMutations{
               isMainEvent:true,
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
+              createdAt: "${eventInput['createdAt']}",
               joinConditions: {
                 create: {
                   withRequest: ${eventInput['withRequest']},

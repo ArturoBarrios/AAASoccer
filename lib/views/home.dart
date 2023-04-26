@@ -341,7 +341,7 @@ class _Home extends State<Home> {
           gameObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TRAINING) {
       dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
-      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage, isMyEvent: getEventDetailsResp['isMyEvent']);
+      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
       dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
@@ -379,6 +379,16 @@ class _Home extends State<Home> {
         dynamic getEventDetailsResp = EventCommand().getUserEventDetails([gameObject['event']]);        
         card = PickupCard2(
             gameObject: gameObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
+      }
+      else if (selectedObject['event']['type'].toString() == "TRAINING") {        
+        print("selectedObject['event']['trainings']: "+selectedObject['event']['trainings'].toString());
+        //get game object first
+        dynamic trainingObject = selectedObject['event']['trainings']['data'][0];
+        print("0");
+        trainingObject['event'] = selectedObject['event'];        
+        dynamic getEventDetailsResp = EventCommand().getUserEventDetails([trainingObject['event']]);        
+        card = TrainingCard(
+            trainingObject: trainingObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
       }
     }
 

@@ -76,6 +76,7 @@ class GameMutations {
               isMainEvent: ${eventInput['isMainEvent']},
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
+              createdAt: "${eventInput['createdAt']}",
               joinConditions: {
                 create: {
                   withRequest: ${eventInput['withRequest']},

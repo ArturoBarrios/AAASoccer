@@ -6,10 +6,10 @@ import '../../constants.dart';
 
 class TrainingView extends StatefulWidget {
   const TrainingView(
-    {Key? key, required this.isMyEvent, required this.training })
+    {Key? key, required this.userEventDetails, required this.training })
     : super(key: key);
 
-    final bool isMyEvent;
+    final dynamic userEventDetails;
     final dynamic training;
 
   @override
@@ -73,7 +73,7 @@ class _TrainingViewState extends State<TrainingView> {
       appBar: Headers().getBackHeader(context, "Training"),
       body: Center(
           child: Column(children: [
-            !widget.isMyEvent ? 
+            !widget.userEventDetails['isMyEvent'] ? 
             Container(
                 height: 20,
                 child: ClipRRect(
