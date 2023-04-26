@@ -8,6 +8,7 @@ import '../../components/Mixins/event_mixin.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/date_time_picker.dart';
+import '../../components/headers.dart';
 import '../../components/location_search_bar.dart';
 import '../../commands/game_command.dart';
 import '../../commands/game_command.dart';
@@ -43,10 +44,6 @@ class _GameCreateState extends State<GameCreate> {
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
   
-  // DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
-  // DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(DateTime.now().add(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000 * 1000);
-  
-
 
   
 
@@ -109,26 +106,7 @@ class _GameCreateState extends State<GameCreate> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: new Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Text("Find Soccer Near You")),
-        backgroundColor: Colors.orange.shade500,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              // Navigator.push(context, MaterialPageRoute<void>(
-              //   builder: (BuildContext context) {
-              //     return Profile();
-              //   },
-              // ));
-            },
-          ),
-        ],
-      ),
+      appBar: Headers().getBackHeader(context, "Create Game"),
       body: Center(
           child: Column(children: [
         TextField(

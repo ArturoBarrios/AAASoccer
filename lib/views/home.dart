@@ -345,7 +345,7 @@ class _Home extends State<Home> {
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
       dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
-      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, isMyEvent: getEventDetailsResp['isMyEvent']);
+      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TOURNAMENT) {
       //process tournament data for card
       TournamentCommand().currateTournamentData(selectedObject);

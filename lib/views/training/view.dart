@@ -8,7 +8,7 @@ import '../../components/headers.dart';
 import '../../components/my_map_page.dart';
 import '../../constants.dart';
 
-class TrainingView extends StatefulWidget with EventMixin, PaymentMixin {
+class TrainingView extends StatefulWidget with EventMixin {
   TrainingView(
     {Key? key, required this.userEventDetails, required this.training })
     : super(key: key);
@@ -38,7 +38,6 @@ class _TrainingViewState extends State<TrainingView> {
   }
 
   dynamic priceObject;
-  late GoogleMapController mapController;
 
 
   void loadEventPayment() {

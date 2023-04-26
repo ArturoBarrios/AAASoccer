@@ -13,12 +13,12 @@ import '../Mixins/event_mixin.dart';
 
 class TryoutCard extends StatefulWidget with EventMixin {
    TryoutCard(
-      {Key? key, required this.tryoutObject, required this.svgImage, required this.isMyEvent})
+      {Key? key, required this.tryoutObject, required this.svgImage, required this.userEventDetails})
       : super(key: key);
   final Map<String, dynamic> tryoutObject;
   final Svg svgImage;
   final double bevel = 10.0;
-  final bool isMyEvent;
+  final dynamic userEventDetails;
 
   @override
   State<TryoutCard> createState() => _TryoutCard();
@@ -84,7 +84,7 @@ class _TryoutCard extends State<TryoutCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TryoutView(isMyEvent: widget.isMyEvent, tryout: widget.tryoutObject);
+            return TryoutView(userEventDetails: widget.userEventDetails, tryout: widget.tryoutObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -163,7 +163,7 @@ class _TryoutCard extends State<TryoutCard> {
                 ),
               ),
             ),
-            !widget.isMyEvent
+            !widget.userEventDetails['isMyEvent']
                 ? 
                 Container(
                 height: 20,

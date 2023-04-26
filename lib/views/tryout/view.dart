@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import '../../commands/event_command.dart';
+import '../../components/Mixins/event_mixin.dart';
 import '../../components/headers.dart';
+import '../../components/my_map_page.dart';
 import '../../constants.dart';
 
-class TryoutView extends StatefulWidget {
-  const TryoutView(
-    { Key? key, required this.isMyEvent, required this.tryout })
+class TryoutView extends StatefulWidget with EventMixin {
+   TryoutView(
+    { Key? key, required this.userEventDetails, required this.tryout })
     : super(key: key);
 
-    final bool isMyEvent;
+    final dynamic userEventDetails;
     final dynamic tryout;
 
   @override
@@ -34,6 +36,13 @@ class _TryoutViewState extends State<TryoutView> {
     Navigator.pop(context);
   }
 
+  dynamic priceObject;
+
+
+  void loadEventPayment() {
+    priceObject = widget.tryout['event']['price'];
+  }
+
   List<int>? selectedRequestTypeIndexes;
   List requestUserTypes = [
     Constants.PLAYER.toString(),
@@ -45,34 +54,41 @@ class _TryoutViewState extends State<TryoutView> {
   ];  
   List<String> selectedRequestTypeObjects = [];
 
-  requestTypeSelected(List<int>? indexes) {
-    print("requestTypeSelected: " + indexes.toString());
-    selectedRequestTypeIndexes = indexes;
-    for (int i = 0; i < indexes!.length; i++) {
-      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
-    }    
-  }
-
-  Future<void> sendEventRequest() async {
-    print("sendEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());    
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
-    for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-      await EventCommand().sendOrganizerEventRequest(widget.tryout, selectedRequestTypeObjects[i], Constants.TRYOUTREQUEST.toString());
-    }
-    
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "Tryout"),
-      body: Center(
-          child: Column(children: [
-            !widget.isMyEvent ? 
+      appBar: Headers().getBackHeader(context, widget.tryout['event']['name']),
+      body: _isLoading 
+      ? Text("Loading...")
+      : ListView(
+        padding: EdgeInsets.all(16),
+        children: [
+          Container(
+                  margin: const EdgeInsets.all(10.0),
+                  color: Colors.amber[600],
+                  width: MediaQuery.of(context).size.width -
+                      (MediaQuery.of(context).size.width * .1), //10% padding
+                  height: 200.0,
+                  child: MyMapPage(
+                      latitude: widget.tryout['event']['location']['data'][0]
+                          ['latitude'],
+                      longitude: widget.tryout['event']['location']['data'][0]
+                          ['longitude']),
+                ),
+
+
+
+
+
+
+
+
+
+          
+          
+            !widget.userEventDetails['isMyEvent'] ? 
             Container(
                 height: 20,
                 child: ClipRRect(
@@ -86,31 +102,55 @@ class _TryoutViewState extends State<TryoutView> {
                           barrierDismissible: true,
                           builder: (BuildContext context) {
                             return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: selectedRequestTypeIndexes,
+                                selectedIndexes: widget.selectedRequestTypeIndexes,
                                 titleText: 'Choose User Type',
                                 positiveText: "Send Request",
                                 listType: ListType.multiSelect,
                                 activeColor: Colors.green,
-                                dataList: requestUserTypes);
+                                dataList: widget.requestUserTypes);
                           },
                           animationType: DialogTransitionType.size,
                           curve: Curves.linear,
                         );
 
-                        selectedRequestTypeIndexes =
-                            requestIndexes ?? selectedRequestTypeIndexes;
+                        widget.selectedRequestTypeIndexes =
+                            requestIndexes ?? widget.selectedRequestTypeIndexes;
                         print(
-                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                        await requestTypeSelected(selectedRequestTypeIndexes);
-                        await sendEventRequest();
+                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                        await widget.requestTypeSelected(widget.selectedRequestTypeIndexes);
+                        await widget.sendEventRequest(widget.tryout, Constants.TRAININGREQUEST.toString());
                       },
                       child: Text("Send Request")),
                 ),
               ) :
               Container(),
+               Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    widget.getPriceWidget(widget.userEventDetails),
+                    // Text(
+                    //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                    widget.userEventDetails['isMyEvent']
+                        ? ElevatedButton(
+                            onPressed: () {
+                              // Add button onPressed logic here
+                            },
+                            child: Text('Update Payment'),
+                          )
+                        : Container(),
+                  ],
+                ),
+                widget.getJoinGameWidget(context, widget.userEventDetails, widget.tryout['event'], widget.userObject),
+                widget.getChatWidget(context, true, false),
         
-        
-      ])),
+     
+
+
+
+
+        ]
+      )
+      
     );
   }
 }

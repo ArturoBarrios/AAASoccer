@@ -54,6 +54,8 @@ Future<Map<String, dynamic>> getTryoutsNearLocation() async{
     print("createTryout");
     print("tryoutInput: "+tryoutInput.toString());
     print("eventInput: "+eventInput.toString());
+    eventInput['price'] = eventInput['price']*100;
+    
     Map<String, dynamic> createTryoutResponse = {
       "success": false,
       "message": "Default Error",
@@ -79,7 +81,7 @@ Future<Map<String, dynamic>> getTryoutsNearLocation() async{
       print(jsonDecode(response.body));
       Map<String, dynamic> createdTryout =
             jsonDecode(response.body)['data']['createTryout'];
-      await EventCommand().addGame(createdTryout, true);
+      // await EventCommand().addGame(createdTryout, true);
 
 
       eventInput['_id'] = createdTryout['event']['_id'];
@@ -88,10 +90,14 @@ Future<Map<String, dynamic>> getTryoutsNearLocation() async{
       print("create price input: " + paymentInput['price'].toString());
       Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
       print("createPaymentResp: "+createPriceResp.toString());
+
+      dynamic createPrice = createPriceResp['data'];
+      createdTryout['event']['price'] = createPrice;
+      EventCommand().updateViewModelsWithTryout(createdTryout);
         
         createTryoutResponse["success"] = true;
         createTryoutResponse["message"] = "Game Created";
-        createTryoutResponse["data"] = jsonDecode(response.body)['data']['createTryout'];
+        createTryoutResponse["data"] = createdTryout;
         
       
       

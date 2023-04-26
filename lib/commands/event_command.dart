@@ -1046,7 +1046,7 @@ class EventCommand extends BaseCommand {
   }
   
   Future<Map<String, dynamic>> updateViewModelsWithTryout(
-      Map<String, dynamic> game) async {
+      Map<String, dynamic> tryout) async {
     print("updateViewModelsWithTryout()");
     Map<String, dynamic> updateViewModelsWithTryoutResp = {
       "success": false,
@@ -1056,6 +1056,8 @@ class EventCommand extends BaseCommand {
     print("length of events modeL tryouts: ");
     print(eventsModel.tryouts.length);
     print("length of homePageModel selectedObjects: ");
+
+    await EventCommand().addTryout(tryout, true);
     // homePageModel.selectedObjects = [];
     if(homePageModel.selectedKey.toString() == Constants.TRYOUT.toString()){
       homePageModel.selectedObjects = List.from(eventsModel.tryouts);
