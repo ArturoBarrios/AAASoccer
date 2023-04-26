@@ -17,6 +17,7 @@ mixin EventMixin {
   dynamic userObject;
   List<String> participationRoles = [];
   dynamic eventUserParticipant;
+  dynamic teamUserParticipant;
   dynamic event;
   dynamic team;
 
@@ -190,6 +191,17 @@ mixin EventMixin {
     print("loadTeamInfo");
     this.team = team;
     userObject = UserCommand().getAppModelUser();
+    userObject = UserCommand().getAppModelUser();
+    userObject['teamUserParticipants']['data']
+        .forEach((teamUserParticipantElement) {
+      if (teamUserParticipantElement['team']['_id'] == team['_id']) {
+        teamUserParticipant = teamUserParticipantElement;
+        participationRoles =
+            BaseCommand().parseRoles(teamUserParticipant['roles']);
+        print("participationRoles: $participationRoles");
+      }
+    });
+  
 
   }
 
@@ -239,7 +251,10 @@ mixin EventMixin {
   }
 
   Container getChatWidget(BuildContext context, bool attachToEvent, bool attachToTeam) {
-    return Container(child:GestureDetector(
+    if(participationRoles.contains("ORGANIZER")){    
+    return 
+    Container(child:
+    GestureDetector(
         onTap: () async{
           print("Add New Chat Pressed");
           // Navigator.push(context, MaterialPageRoute<void>(
@@ -291,7 +306,12 @@ mixin EventMixin {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
             ],
           ),
-        )));
+        ))
+        );
+      }
+      else{
+        return Container();
+      }
   }
 
   Container getPriceWidget(dynamic userEventDetails){
@@ -373,6 +393,8 @@ mixin EventMixin {
   Container getJoinGameWidget(BuildContext context,
       dynamic userEventDetails, dynamic event, dynamic userInput) {
     print("userEventDetails: $userEventDetails");
+
+    print("participationRoles: " + participationRoles.toString());
     //if not already a player
     if (!participationRoles.contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");

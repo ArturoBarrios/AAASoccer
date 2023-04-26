@@ -293,6 +293,7 @@ type Event   {
   deleted: Boolean  @default(value: false)
   startTime: String
   endTime: String
+  createdAt: String
 }
 
 type Team   {

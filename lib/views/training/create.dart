@@ -55,8 +55,8 @@ class _TrainingCreateState extends State<TrainingCreate> {
     });
   }
 
-  Future<Map<String, dynamic>> createTraining() async {
-    print("createGame");
+  Future<void> createTraining() async {
+    print("createTraining");
     Map<String, dynamic> createEventResponse = {
       "success": false,
       "message": "Default Error"
@@ -66,7 +66,7 @@ class _TrainingCreateState extends State<TrainingCreate> {
        Map<String, dynamic> eventInput = {        
         "name": nameController.text.toString(),
         'isMainEvent': true,        
-        'price':  priceController.text.toString(),
+        'price':  double.parse(priceController.text.toString()),
         'startTime': startTimestamp,
         'endTime': endTimestamp,
 
@@ -82,10 +82,10 @@ class _TrainingCreateState extends State<TrainingCreate> {
       Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(randomPickupData, eventInput, locationInput);                                      
       print("createTrainingResp: "+ createTrainingResp.toString());
                     
-      return createEventResponse;
+      
       }
        on ApiException catch (e) {
-      return createEventResponse;
+      
     }
   }
 

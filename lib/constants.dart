@@ -23,6 +23,13 @@ class Constants {
   static final String MAINCOACH = "MAINCOACH";
   static final String ASSISTANTCOACH = "ASSISTANTCOACH";
   static final String REF = "REF";
+
+  //sort by
+  static final String DISTANCE = "DISTANCE";
+  static final String DATE = "DATE";
+  static final String CREATEDAT = "CREATEDAT";
+  static final String NAME = "STARTTIME";
+
   
   
 }

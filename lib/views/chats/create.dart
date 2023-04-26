@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/views/chats/view.dart';
+import 'package:soccermadeeasy/views/home.dart';
 import '../../components/profile.dart';
 import '../../commands/chat_command.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -69,6 +70,11 @@ class _ChatCreateState extends State<ChatCreate> {
     print("createChatResp: $createChatResp");
     if(createChatResp['success']){
       dynamic chatObject = createChatResp['data'];
+      Navigator.push(context, MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return Home();
+      },
+    ));
       Navigator.push(context, MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return ChatsView();

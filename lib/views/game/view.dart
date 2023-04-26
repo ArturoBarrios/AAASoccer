@@ -131,7 +131,7 @@ class _PickupViewState extends State<PickupView> {
     print("game: " + widget.game.toString());
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "View Game"),
+      appBar: Headers().getBackHeader(context, widget.game['event']['name']),
       body: _isLoading
           ? Text("Loading...")
           : ListView(

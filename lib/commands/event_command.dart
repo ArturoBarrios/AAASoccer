@@ -884,6 +884,8 @@ class EventCommand extends BaseCommand {
 
   }
 
+
+
   Future<Map<String, dynamic>> setupEventsFromCurrentUser(dynamic user) async {
     print("setupEvents()()");
     
@@ -919,7 +921,7 @@ class EventCommand extends BaseCommand {
         }        
       }
       print("done parsing roles!");
-      eventsModel.games = filteredGamesResp['activeEvents'];
+      eventsModel.games = filteredGamesResp['activeEvents'];      
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
       eventsModel.events.addAll(games);
       homePageModel.selectedObjects =
@@ -1014,12 +1016,33 @@ class EventCommand extends BaseCommand {
     print("length of events modeL games: ");
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
-    // homePageModel.selectedObjects = [];
-    homePageModel.selectedObjects = List.from(eventsModel.games);
+    await EventCommand().addGame(game, true);
+    UserCommand().findMyUserById();
     if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){
       homePageModel.selectedObjects = List.from(eventsModel.games);
     }
+    
     return updateViewModelsWithGameResp;
+  }
+ 
+  Future<Map<String, dynamic>> updateViewModelsWithTraining(
+      Map<String, dynamic> training) async {
+    print("updateViewModelsWithTraining()");
+    Map<String, dynamic> updateViewModelsWithTrainingResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of events modeL trainings: ");
+    print(eventsModel.trainings.length);
+    print("length of homePageModel selectedObjects: ");
+    await EventCommand().addTraining(training, true);
+    UserCommand().findMyUserById();
+    if(homePageModel.selectedKey.toString() == Constants.TRAINING.toString()){
+      homePageModel.selectedObjects = List.from(eventsModel.trainings);
+    }
+    
+    return updateViewModelsWithTrainingResp;
   }
   
   Future<Map<String, dynamic>> updateViewModelsWithTryout(
@@ -1085,9 +1108,28 @@ class EventCommand extends BaseCommand {
     print(eventsModel.games.length);
     print("updateViewModelsBool: ");
     print(updateViewModelsBool);
-    if (updateViewModelsBool) await updateViewModelsWithGame(game);
+    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
 
     return addGameResp;
+  }
+  Future<Map<String, dynamic>> addTraining(
+      Map<String, dynamic> training, bool updateViewModelsBool) async {
+    Map<String, dynamic> addtrainingResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of trainings before adding game: ");
+    print("adding training: " + training.toString());
+    print(eventsModel.trainings.length);
+    eventsModel.trainings.insert(0,training);
+    print("length of trainings after adding training: ");
+    print(eventsModel.trainings.length);
+    print("updateViewModelsBool: ");
+    print(updateViewModelsBool);
+    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
+
+    return addtrainingResp;
   }
   
   Future<Map<String, dynamic>> addTryout(

@@ -25,6 +25,8 @@ class UserCommand extends BaseCommand {
 
   }
 
+  
+
   List<dynamic> getAppModelMyEvents(){
     print("getAppModelMyEvents");
     print("appModel.myEvents: " + appModel.myEvents.toString());

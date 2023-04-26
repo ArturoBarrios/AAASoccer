@@ -12,6 +12,14 @@ class TrainingMutations{
               type: TRAINING,
               archived: false,
               isMainEvent:true,
+              startTime: "${eventInput['startTime']}",
+              endTime: "${eventInput['endTime']}",
+              joinConditions: {
+                create: {
+                  withRequest: ${eventInput['withRequest']},
+                  withPayment: ${eventInput['withPayment']},
+                }
+              },
                userParticipants: {
                 create:
                   {
