@@ -11,6 +11,7 @@ import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/profile.dart';
 import '../../components/headers.dart';
+import '../../enums/EventType.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../home.dart';
 
@@ -57,7 +58,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
         'withPayment': createEventPaymentWidget.withPayment, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
-        'type': "TRYOUT",
+        'type': EventType.TRYOUT,
       };
 
       Map<String, dynamic> tryoutData = {};          
@@ -70,9 +71,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
       Map<String, dynamic> createTryoutResp = await TryoutCommand()
           .createTryout(tryoutData, eventInput, locationInput);
       print("createTryoutResp: " + createTryoutResp.toString());
-      if(createTryoutResp['success']){
-         Map<String, dynamic> createdTryout = createTryoutResp['data'];
-        Map<String, dynamic> event = createdTryout['event'];
+      if(createTryoutResp['success']){         
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Home()),

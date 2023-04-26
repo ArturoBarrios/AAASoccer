@@ -14,6 +14,7 @@ import '../../commands/game_command.dart';
 import '../../commands/game_command.dart';
 import '../../commands/location_command.dart';
 import '../../commands/event_command.dart';
+import '../../enums/EventType.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
@@ -68,6 +69,7 @@ class _GameCreateState extends State<GameCreate> {
         'withPayment': createEventPaymentWidget.withPayment, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
+        'type': EventType.GAME,
       };
       dynamic pickupData = {
         "pickup": true,

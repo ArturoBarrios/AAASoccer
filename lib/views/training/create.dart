@@ -9,6 +9,7 @@ import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
+import '../../enums/EventType.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../../components/headers.dart';
 import '../home.dart';
@@ -57,7 +58,7 @@ class _TrainingCreateState extends State<TrainingCreate> {
         'withPayment': createEventPaymentWidget.withPayment, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
-
+        'type': EventType.TRAINING
 
       };
 

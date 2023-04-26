@@ -66,8 +66,7 @@ class TrainingCommand extends BaseCommand {
     try {
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
-      };   
-      eventInput['type'] = EventType.TRAINING;
+      };         
       eventInput['price'] = eventInput['price']*100;
      
       http.Response response = await http.post(
@@ -97,8 +96,8 @@ class TrainingCommand extends BaseCommand {
 
         dynamic createPrice = createPriceResp['data'];
         createdTraining['event']['price'] = createPrice;
-        EventCommand().updateViewModelsWithTraining(createdTraining);
       }
+        EventCommand().updateViewModelsWithTraining(createdTraining);
         
         createTrainingResponse["success"] = true;
         createTrainingResponse["message"] = "Game Created";

@@ -744,6 +744,21 @@ class EventCommand extends BaseCommand {
 
     return getEventResp;
   }
+
+  dynamic getMainEvent(List<dynamic> events){
+    print("getMainEvent()");
+    dynamic event = null;
+    for(int i = 0;i<events.length;i++){
+      print("events[i]: " + events[i].toString());
+      if(events[i]['isMainEvent'] && 
+      (events[i]['type'] == "TOURNAMENT" ||
+      events[i]['type'] == "LEAGUE")){
+        print("found mainEvent: " + events[i].toString());
+        event = events[i];
+
+      }
+    }
+  }
   
   //gets isMyEvent, isMember
   Map<String,dynamic> getUserEventDetails(List<dynamic> events){
@@ -1025,6 +1040,26 @@ class EventCommand extends BaseCommand {
     return updateViewModelsWithGameResp;
   }
  
+  Future<Map<String, dynamic>> updateViewModelsWithTournament(
+      Map<String, dynamic> tournament) async {
+    print("updateViewModelsWithTournament()");
+    Map<String, dynamic> updateViewModelsWithTournamentResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of events modeL tournament: ");
+    print(eventsModel.tournaments.length);
+    print("length of homePageModel selectedObjects: ");
+    await EventCommand().addTournament(tournament);
+    UserCommand().findMyUserById();
+    if(homePageModel.selectedKey.toString() == Constants.TOURNAMENT.toString()){
+      homePageModel.selectedObjects = List.from(eventsModel.tournaments);
+    }
+    
+    return updateViewModelsWithTournamentResp;
+  }
+
   Future<Map<String, dynamic>> updateViewModelsWithTraining(
       Map<String, dynamic> training) async {
     print("updateViewModelsWithTraining()");
@@ -1114,6 +1149,24 @@ class EventCommand extends BaseCommand {
 
     return addGameResp;
   }
+  Future<Map<String, dynamic>> addTournament(
+      Map<String, dynamic> tournament) async {
+    Map<String, dynamic> addtournamentResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of tournaments before adding game: ");
+    print("adding tournament: " + tournament.toString());
+    print(eventsModel.trainings.length);
+    eventsModel.trainings.insert(0,tournament);
+    print("length of trainings after adding tournaments: ");
+    print(eventsModel.trainings.length);    
+    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
+
+    return addtournamentResp;
+  }
+
   Future<Map<String, dynamic>> addTraining(
       Map<String, dynamic> training, bool updateViewModelsBool) async {
     Map<String, dynamic> addtrainingResp = {
