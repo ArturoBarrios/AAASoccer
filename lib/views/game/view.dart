@@ -8,6 +8,7 @@ import '../../commands/event_command.dart';
 import '../../commands/user_command.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/Mixins/event_mixin.dart';
+import '../../components/my_map_page.dart';
 import '../../components/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
@@ -19,7 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants.dart';
 
-class PickupView extends StatefulWidget with EventMixin, PaymentMixin, EventMixin {
+class PickupView extends StatefulWidget with EventMixin, PaymentMixin {
   PickupView({Key? key, required this.userEventDetails , required this.game})
       : super(key: key);
 
@@ -41,64 +42,12 @@ class _PickupViewState extends State<PickupView> {
 
   bool _isLoading = true;
   late LatLng _center = LatLng(45.521563, -122.677433);
-  late GoogleMapController mapController;
   dynamic priceObject;
-  // dynamic userObject;
-  bool participatingInGame = false;
-  // List<String> participationRoles = [];
-  // dynamic eventUserParticipant;
 
-  // List<int>? selectedRequestTypeIndexes;
-  // List requestUserTypes = [
-  //   Constants.PLAYER.toString(),
-  //   Constants.ORGANIZER.toString(),
-  //   Constants.MANAGER.toString(),
-  //   Constants.MAINCOACH.toString(),
-  //   Constants.ASSISTANTCOACH.toString(),
-  //   Constants.REF.toString(),
-  // ];
-  // List<String> selectedRequestTypeObjects = [];
 
-  requestTypeSelected(List<int>? indexes) {
-    widget.requestTypeSelected(indexes);
-    // print("requestTypeSelected: " + indexes.toString());
-    // selectedRequestTypeIndexes = indexes;
-    // for (int i = 0; i < indexes!.length; i++) {
-    //   selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
-    // }
-  }
-
-  Future<void> sendEventRequest() async {
-    widget.sendEventRequest(widget.game, Constants.GAMEREQUEST.toString());
-    // print("sendEventRequest");
-    // print("selectedRequestTypeObjects.length: " +
-    //     selectedRequestTypeObjects.length.toString());
-    // print(
-    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    // print("send player event request");
-    // for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-    //   await EventCommand().sendOrganizerEventRequest(widget.game, selectedRequestTypeObjects[i], Constants.GAMEREQUEST.toString());
-    // }
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
 
   LatLng latLng(lat, lon) {
     return LatLng(lat, lon);
-  }
-
-  Container getJoinGameWidget(){
-    return widget.getJoinGameWidget(context, widget.userEventDetails, widget.game['event'], widget.userObject);
-  }
-
-  Container getChatWidget() {
-    return widget.getChatWidget(context, true, false);
-  }
-
-  Container getPriceWidget(){
-    return widget.getPriceWidget(widget.userEventDetails);
   }
 
 
@@ -180,18 +129,18 @@ class _PickupViewState extends State<PickupView> {
                                         widget.selectedRequestTypeIndexes;
                                 print(
                                     'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                                await requestTypeSelected(
+                                await widget.requestTypeSelected(
                                     widget.selectedRequestTypeIndexes);
-                                await sendEventRequest();
+                                await widget.sendEventRequest(widget.game, Constants.GAMEREQUEST.toString());
                               },
                               child: Text("Send Request")),
                         ),
                       )
-                    : (Container()),
+                    : Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    getPriceWidget(),
+                    widget.getPriceWidget(widget.userEventDetails),
                     // Text(
                     //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
                     widget.userEventDetails['isMyEvent']
@@ -205,64 +154,12 @@ class _PickupViewState extends State<PickupView> {
                   ],
                 ),
                 //join game gesture detector for now
-                getJoinGameWidget(),
-                 getChatWidget(),
+                widget.getJoinGameWidget(context, widget.userEventDetails, widget.game['event'], widget.userObject),
+                widget.getChatWidget(context, true, false),
               ],
             ),
     );
   }
 }
 
-class MyMapPage extends StatefulWidget {
-  const MyMapPage({Key? key, required this.latitude, required this.longitude})
-      : super(key: key);
 
-  final double latitude;
-  final double longitude;
-
-  @override
-  State<MyMapPage> createState() => MapPageState();
-}
-
-class MapPageState extends State<MyMapPage> {
-  Completer<GoogleMapController> _controller = Completer();
-  static const CameraPosition initialCameraPosition = CameraPosition(
-    target: LatLng(
-      0,
-      0,
-    ),
-    zoom: 10.0,
-  );
-
-  CameraPosition getCameraPosition(double latitude, double longitude) {
-    print("getCameraPosition: " +
-        latitude.toString() +
-        ", " +
-        longitude.toString());
-    CameraPosition cameraPosition = CameraPosition(
-      target: LatLng(
-        latitude,
-        longitude,
-      ),
-      zoom: 10.0,
-    );
-
-    return cameraPosition;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition:
-            getCameraPosition(widget.latitude, widget.longitude),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        onTap: (argument) =>
-            LocationCommand().openMap(widget.latitude, widget.longitude),
-      ),
-    );
-  }
-}

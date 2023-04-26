@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../commands/event_command.dart';
+import '../../components/Mixins/event_mixin.dart';
+import '../../components/Mixins/payment_mixin.dart';
 import '../../components/headers.dart';
+import '../../components/my_map_page.dart';
 import '../../constants.dart';
 
-class TrainingView extends StatefulWidget {
-  const TrainingView(
+class TrainingView extends StatefulWidget with EventMixin, PaymentMixin {
+  TrainingView(
     {Key? key, required this.userEventDetails, required this.training })
     : super(key: key);
 
@@ -27,42 +31,33 @@ class _TrainingViewState extends State<TrainingView> {
   
 
 
-  bool _isLoading = false;
+  bool _isLoading = true;
 
   void goBack(){
     Navigator.pop(context);
   }
 
-  List<int>? selectedRequestTypeIndexes;
-  List requestUserTypes = [
-    Constants.PLAYER.toString(),
-    Constants.ORGANIZER.toString(),
-    Constants.MANAGER.toString(),
-    Constants.MAINCOACH.toString(),
-    Constants.ASSISTANTCOACH.toString(),
-    Constants.REF.toString(),
-  ];  
-  List<String> selectedRequestTypeObjects = [];
+  dynamic priceObject;
+  late GoogleMapController mapController;
 
-  requestTypeSelected(List<int>? indexes) {
-    print("requestTypeSelected: " + indexes.toString());
-    selectedRequestTypeIndexes = indexes;
-    for (int i = 0; i < indexes!.length; i++) {
-      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
-    }    
+
+  void loadEventPayment() {
+    priceObject = widget.training['event']['price'];
   }
 
-  Future<void> sendEventRequest() async {
-    print("sendEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());    
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
-    for(int i = 0;i<selectedRequestTypeObjects.length;i++){
-      await EventCommand().sendOrganizerEventRequest(widget.training, selectedRequestTypeObjects[i], Constants.TRAININGREQUEST.toString());
-    }
-    
+  
+
+  @override
+  void initState() {
+    super.initState();
+
+    print("initState");
+    print("training: " + widget.training.toString());    
+    loadEventPayment();
+    widget.loadEventInfo(widget.training['event']);
+    widget.setupPlayerList();
+    // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
+    _isLoading = false;
   }
 
   @override
@@ -70,9 +65,35 @@ class _TrainingViewState extends State<TrainingView> {
     print("TrainingView build() widget.training: "+ widget.training.toString());
 
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "Training"),
-      body: Center(
-          child: Column(children: [
+      appBar: Headers().getBackHeader(context, widget.training['event']['name']),
+      body: _isLoading 
+      ? Text("Loading...")
+      : ListView(
+        padding: EdgeInsets.all(16),
+        children: [
+          Container(
+                  margin: const EdgeInsets.all(10.0),
+                  color: Colors.amber[600],
+                  width: MediaQuery.of(context).size.width -
+                      (MediaQuery.of(context).size.width * .1), //10% padding
+                  height: 200.0,
+                  child: MyMapPage(
+                      latitude: widget.training['event']['location']['data'][0]
+                          ['latitude'],
+                      longitude: widget.training['event']['location']['data'][0]
+                          ['longitude']),
+                ),
+
+
+
+
+
+
+
+
+
+          
+          
             !widget.userEventDetails['isMyEvent'] ? 
             Container(
                 height: 20,
@@ -87,30 +108,55 @@ class _TrainingViewState extends State<TrainingView> {
                           barrierDismissible: true,
                           builder: (BuildContext context) {
                             return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: selectedRequestTypeIndexes,
+                                selectedIndexes: widget.selectedRequestTypeIndexes,
                                 titleText: 'Choose User Type',
                                 positiveText: "Send Request",
                                 listType: ListType.multiSelect,
                                 activeColor: Colors.green,
-                                dataList: requestUserTypes);
+                                dataList: widget.requestUserTypes);
                           },
                           animationType: DialogTransitionType.size,
                           curve: Curves.linear,
                         );
 
-                        selectedRequestTypeIndexes =
-                            requestIndexes ?? selectedRequestTypeIndexes;
+                        widget.selectedRequestTypeIndexes =
+                            requestIndexes ?? widget.selectedRequestTypeIndexes;
                         print(
-                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                        await requestTypeSelected(selectedRequestTypeIndexes);
-                        await sendEventRequest();
+                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                        await widget.requestTypeSelected(widget.selectedRequestTypeIndexes);
+                        await widget.sendEventRequest(widget.training, Constants.TRAININGREQUEST.toString());
                       },
                       child: Text("Send Request")),
                 ),
               ) :
               Container(),
+               Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    widget.getPriceWidget(widget.userEventDetails),
+                    // Text(
+                    //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                    widget.userEventDetails['isMyEvent']
+                        ? ElevatedButton(
+                            onPressed: () {
+                              // Add button onPressed logic here
+                            },
+                            child: Text('Update Payment'),
+                          )
+                        : Container(),
+                  ],
+                ),
+                widget.getJoinGameWidget(context, widget.userEventDetails, widget.training['event'], widget.userObject),
+                widget.getChatWidget(context, true, false),
         
-      ])),
+     
+
+
+
+
+        ]
+      )
+      
     );
   }
 }
