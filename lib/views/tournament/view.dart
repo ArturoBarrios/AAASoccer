@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/event_command.dart';
+import '../../components/Mixins/event_mixin.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
 
-class TournamentView extends StatefulWidget {
-  const TournamentView(
-      {Key? key, required this.isMyEvent, required this.tournament})
+class TournamentView extends StatefulWidget with EventMixin{
+  TournamentView(
+      {Key? key, required this.userEventDetails, required this.tournament})
       : super(key: key);
 
-  final bool isMyEvent;
+  final dynamic userEventDetails;
   final dynamic tournament;
 
   @override
@@ -82,13 +83,13 @@ class _TournamentViewState extends State<TournamentView> {
     print("initState");
     tournamentEvents = widget.tournament['events']['data'];
     //remove event where isMainEvent and type==TOURNAMENT
-    for (int i = 0; i < tournamentEvents.length; i++) {
-      dynamic tournamentEvent = tournamentEvents[i];
-      if (tournamentEvent['isMainEvent'] &&
-          tournamentEvent['type'] == "TOURNAMENT") {
-        tournamentEvents.remove(tournamentEvent);
-      }
-    }
+    // for (int i = 0; i < tournamentEvents.length; i++) {
+    //   dynamic tournamentEvent = tournamentEvents[i];
+    //   if (tournamentEvent['isMainEvent'] &&
+    //       tournamentEvent['type'] == "TOURNAMENT") {
+    //     tournamentEvents.remove(tournamentEvent);
+    //   }
+    // }
     print("tournamentEvents: " + tournamentEvents.toString());
   }
 
@@ -107,7 +108,7 @@ class _TournamentViewState extends State<TournamentView> {
                   height: 500,
                   child: EventsCalendar(testText: "test", events: ""),
                 ),
-                !widget.isMyEvent
+                !widget.userEventDetails['isMyEvent']
                     ? Container(
                         height: 20,
                         child: ClipRRect(

@@ -21,7 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../constants.dart';
 
 class PickupView extends StatefulWidget with EventMixin, PaymentMixin {
-  PickupView({Key? key, required this.userEventDetails , required this.game})
+  PickupView({Key? key, required this.userEventDetails, required this.game})
       : super(key: key);
 
   final dynamic userEventDetails;  

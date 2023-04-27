@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:soccermadeeasy/graphql/queries/tournaments.dart';
 
+import '../enums/EventType.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:faunadb_http/faunadb_http.dart';
@@ -133,6 +134,10 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
     print("createdTournament: ");
     print(createdTournament);    
 
+    dynamic priceEventInput = {
+      "_id": createdTournament['events']['data'][0]['_id'],
+    };
+
     
     //create games from bergerTable    
     for(int i = 0;i<bergerTable.length;i++){
@@ -145,6 +150,13 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
             "name": "Game: ${bergerTable[i][k]['game']}",
             "isMainEvent": false,
             "price": 0,
+            'startTime': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
+            'endTime': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
+            'withRequest': false,
+            'withPayment': false, 
+            'roles': "{PLAYER, ORGANIZER}",
+            'createdAt': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
+            'type': EventType.GAME,
           };
           Map<String, dynamic> gameInput = {
             "pickup": false,
@@ -182,22 +194,25 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
 
 
 
-  dynamic findTournamentByIdResponse = findTournamentById(createdTournament['_id']);
+  dynamic findTournamentByIdResponse = await findTournamentById(createdTournament['_id']);
   print("findTournamentByIdResponse: "+findTournamentByIdResponse.toString());
   if(findTournamentByIdResponse['success']){
     //update tournament models
-    dynamic tournament = findTournamentByIdResponse['data']['findTournamentByID'];
+    dynamic tournament = findTournamentByIdResponse['data'];
+    print("tournamenttt: "+tournament.toString());
     //get tournament
     //add price
     if(eventInput['price']>0){
+      
       Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
-      print("create price event input: "+ eventInput.toString());
+      print("create price,,,, event input: "+ priceEventInput.toString());
       print("create price input: " + paymentInput['price'].toString());
-      Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
+      Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, priceEventInput);
       print("createPaymentResp: "+createPriceResp.toString());
 
       dynamic createPrice = createPriceResp['data'];
       dynamic mainTournamentEvent = EventCommand().getMainEvent(tournament['events']['data']);
+      print("mainTournamentEvent: "+mainTournamentEvent.toString());
       //assumes first event is main event
       mainTournamentEvent['price'] = createPrice;      
       // await EventCommand().addGame(createdGame, true);

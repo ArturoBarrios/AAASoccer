@@ -758,6 +758,7 @@ class EventCommand extends BaseCommand {
 
       }
     }
+    return event;
   }
   
   //gets isMyEvent, isMember
@@ -770,6 +771,7 @@ class EventCommand extends BaseCommand {
       "isMember": false,      
       "amountPaid": 0,      
       "paymentObjects": [],
+      "mainEvent": null
     };
     print("events: " + events.toString());
 
@@ -791,6 +793,8 @@ class EventCommand extends BaseCommand {
       else{
         event = events[0];
       }
+      isMyEventResp['mainEvent'] = event;
+      
       print("event: " + event.toString());
       //get userParticipation data      
       dynamic userParticipants = event['userParticipants']['data'];
@@ -1158,10 +1162,10 @@ class EventCommand extends BaseCommand {
     };
     print("length of tournaments before adding game: ");
     print("adding tournament: " + tournament.toString());
-    print(eventsModel.trainings.length);
-    eventsModel.trainings.insert(0,tournament);
+    print(eventsModel.tournaments.length);
+    eventsModel.tournaments.insert(0,tournament);
     print("length of trainings after adding tournaments: ");
-    print(eventsModel.trainings.length);    
+    print(eventsModel.tournaments.length);    
     // if (updateViewModelsBool) await updateViewModelsWithGame(game);
 
     return addtournamentResp;

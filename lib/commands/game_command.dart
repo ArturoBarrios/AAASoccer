@@ -172,8 +172,7 @@ class GameCommand extends BaseCommand {
 
           createGameResponse["success"] = true;
           createGameResponse["message"] = "Game Created";
-          createGameResponse["data"] =
-          jsonDecode(response.body)['data']['createGame'];
+          createGameResponse["data"] = createdGame;
 
         // }
           return createGameResponse;

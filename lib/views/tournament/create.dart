@@ -122,6 +122,10 @@ class _TournamentCreateState extends State<TournamentCreate> {
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Name'),
         ),
+        locationSearchBar,
+        createEventRequestWidget,
+        createEventPaymentWidget,
+        dateTimePicker,
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),
