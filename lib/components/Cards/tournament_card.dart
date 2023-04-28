@@ -11,12 +11,12 @@ import '../../views/tournament/view.dart';
 
 class TournamentCard extends StatefulWidget {
   const TournamentCard(
-      {Key? key, required this.tournamentObject, required this.svgImage, required this.isMyEvent})
+      {Key? key, required this.tournamentObject, required this.svgImage, required this.userEventDetails})
       : super(key: key);
   final Map<String, dynamic> tournamentObject;
   final Svg svgImage;
   final double bevel = 10.0;
-  final bool isMyEvent;
+  final dynamic userEventDetails;
 
   @override
   State<TournamentCard> createState() => _TournamentCard();
@@ -89,7 +89,7 @@ class _TournamentCard extends State<TournamentCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TournamentView(isMyEvent: widget.isMyEvent, tournament: widget.tournamentObject);
+            return TournamentView(userEventDetails: widget.userEventDetails, tournament: widget.tournamentObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -127,7 +127,7 @@ class _TournamentCard extends State<TournamentCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.tournamentObject['mainEvent']['name'],
+                    text: widget.userEventDetails['mainEvent']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.tournamentObject['description'],
@@ -168,7 +168,7 @@ class _TournamentCard extends State<TournamentCard> {
                 ),
               ),
             ),
-             !widget.isMyEvent ? 
+             !widget.userEventDetails['isMyEvent'] ? 
                     Container(
                 height: 20,
                 child: ClipRRect(

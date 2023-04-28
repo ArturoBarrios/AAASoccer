@@ -24,15 +24,22 @@ class TournamentQueries {
    }
 
    String findTournamentByID(String tournamentId ){
-    String getUser = """
-      query getUser {
-            findUserByID(id: $tournamentId) {      
-             ${EventFragments().eventGameFragment()}                                                                                    
+    String getTournament = """
+      query getTournament {
+            findTournamentByID(id: $tournamentId) {  
+              _id                        
+              numberOfTeams
+              groupPlay  
+              events{
+                data{
+                  ${EventFragments().eventGameFragment()}                                                                                   
+                }
+              }
           }
         }
     """;
   
-    return getUser;
+    return getTournament;
   }
 
 }

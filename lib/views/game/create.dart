@@ -89,8 +89,10 @@ class _GameCreateState extends State<GameCreate> {
       print("createPickupGameResp: ");
       print(createPickupGameResp['data']);
       if (createPickupGameResp['success']) {
-        Map<String, dynamic> pickupGame = createPickupGameResp['data'];
-        Map<String, dynamic> event = pickupGame['event'];
+
+        Map<String, dynamic> createdGame = createPickupGameResp['data'];
+        EventCommand().updateViewModelsWithGame(createdGame);
+        
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Home()),

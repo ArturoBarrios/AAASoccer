@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/event_command.dart';
+import '../../components/Mixins/event_mixin.dart';
+import '../../components/Mixins/payment_mixin.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
 
-class TournamentView extends StatefulWidget {
-  const TournamentView(
-      {Key? key, required this.isMyEvent, required this.tournament})
+class TournamentView extends StatefulWidget with EventMixin, PaymentMixin{
+  TournamentView(
+      {Key? key, required this.userEventDetails, required this.tournament})
       : super(key: key);
 
-  final bool isMyEvent;
+  final dynamic userEventDetails;
   final dynamic tournament;
 
   @override
@@ -27,68 +29,41 @@ class _TournamentViewState extends State<TournamentView> {
   final privateController = TextEditingController();
 
   bool _isLoading = false;
-
+  dynamic priceObject;
   List<dynamic> tournamentEvents = [];
 
-  void goBack() {
-    Navigator.pop(context);
-  }
+  
 
-  List paymentChoices = [
-    "Apply to All",
-    "Apply to Team(s)"
-    "Apply to Player(s)"
-  ];
-  int? selectPaymentIndex = 0;
+  
   //send player request for main tournament event
   //should add player as a free agent
   //should also handle sending team request
-  List<int>? selectedRequestTypeIndexes;
-  List requestUserTypes = [
-    Constants.PLAYER.toString(),
-    Constants.ORGANIZER.toString(),
-    Constants.MANAGER.toString(),
-    Constants.MAINCOACH.toString(),
-    Constants.ASSISTANTCOACH.toString(),
-    Constants.REF.toString(),
-  ];
-  List<String> selectedRequestTypeObjects = [];
 
-  requestTypeSelected(List<int>? indexes) {
-    print("requestTypeSelected: " + indexes.toString());
-    selectedRequestTypeIndexes = indexes;
-    for (int i = 0; i < indexes!.length; i++) {
-      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
-    }
+
+   void goBack() {
+    Navigator.pop(context);
   }
 
-  Future<void> sendEventRequest() async {
-    print("sendEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
-    for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
-      await EventCommand().sendOrganizerEventRequest(
-          widget.tournament,
-          selectedRequestTypeObjects[i],
-          Constants.TOURNAMENTREQUEST.toString());
-    }
+  void loadEventPayment() {
+    priceObject = widget.userEventDetails['mainEvent'];
   }
 
   @override
   void initState() {
-    print("initState");
+    print("initState");    
     tournamentEvents = widget.tournament['events']['data'];
+    loadEventPayment();
+    widget.loadEventInfo(widget.userEventDetails['mainEvent']);
+    widget.setupPlayerList();
+    _isLoading = false;
     //remove event where isMainEvent and type==TOURNAMENT
-    for (int i = 0; i < tournamentEvents.length; i++) {
-      dynamic tournamentEvent = tournamentEvents[i];
-      if (tournamentEvent['isMainEvent'] &&
-          tournamentEvent['type'] == "TOURNAMENT") {
-        tournamentEvents.remove(tournamentEvent);
-      }
-    }
+    // for (int i = 0; i < tournamentEvents.length; i++) {
+    //   dynamic tournamentEvent = tournamentEvents[i];
+    //   if (tournamentEvent['isMainEvent'] &&
+    //       tournamentEvent['type'] == "TOURNAMENT") {
+    //     tournamentEvents.remove(tournamentEvent);
+    //   }
+    // }
     print("tournamentEvents: " + tournamentEvents.toString());
   }
 
@@ -107,7 +82,7 @@ class _TournamentViewState extends State<TournamentView> {
                   height: 500,
                   child: EventsCalendar(testText: "test", events: ""),
                 ),
-                !widget.isMyEvent
+                !widget.userEventDetails['isMyEvent']
                     ? Container(
                         height: 20,
                         child: ClipRRect(
@@ -121,69 +96,51 @@ class _TournamentViewState extends State<TournamentView> {
                                 barrierDismissible: true,
                                 builder: (BuildContext context) {
                                   return ClassicListDialogWidget<dynamic>(
-                                    selectedIndexes: selectedRequestTypeIndexes,
+                                    selectedIndexes: widget.selectedRequestTypeIndexes,
                                     titleText: 'Choose User Type',
                                     positiveText: "Send Request",
                                     listType: ListType.multiSelect,
                                     activeColor: Colors.green,
-                                    dataList: requestUserTypes,
+                                    dataList: widget.requestUserTypes,
                                   );
                                 },
                                 animationType: DialogTransitionType.size,
                                 curve: Curves.linear,
                               );
 
-                              selectedRequestTypeIndexes =
-                                  requestIndexes ?? selectedRequestTypeIndexes;
+                              widget.selectedRequestTypeIndexes =
+                                  requestIndexes ?? widget.selectedRequestTypeIndexes;
                               print(
-                                  'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                              await requestTypeSelected(
-                                  selectedRequestTypeIndexes);
-                              await sendEventRequest();
+                                  'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                              await widget.requestTypeSelected(
+                                  widget.selectedRequestTypeIndexes);
+                              await widget.sendEventRequest(widget.userEventDetails['mainEvent'], Constants.GAMEREQUEST.toString());
                             },
                             child: Text("Send Request"),
                           ),
                         ),
                       )
                     : Container(),
-                    //add payment to tournament
-                    Container(
-                        height: 20,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              print("onTap: ");
-                              int? paymentOptionIndex =
-                                  await showAnimatedDialog<int>(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return ClassicListDialogWidget<dynamic>(
-                                    selectedIndex: selectPaymentIndex,
-                                    titleText: 'Payment Option',
-                                    positiveText: "Next",
-                                    listType: ListType.singleSelect,
-                                    activeColor: Colors.green,
-                                    dataList: paymentChoices,                                    
-                                  );
-                                },
-                                animationType: DialogTransitionType.size,
-                                curve: Curves.linear,
-                              );
-
-
-                              
-                              print(
-                                  'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                              await requestTypeSelected(
-                                  selectedRequestTypeIndexes);
-                              await sendEventRequest();
+                    Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    widget.getPriceWidget(widget.userEventDetails),
+                    // Text(
+                    //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                    widget.userEventDetails['isMyEvent']
+                        ? ElevatedButton(
+                            onPressed: () {
+                              // Add button onPressed logic here
                             },
-                            child: Text("Add Payment"),
-                          ),
-                        ),
-                      )
+                            child: Text('Update Payment'),
+                          )
+                        : Container(),
+                  ],
+                ),
+                 //join game gesture detector for now
+                widget.getJoinGameWidget(context, widget.userEventDetails, widget.userEventDetails['mainEvent'], widget.userObject),
+                widget.getChatWidget(context, true, false),
+                 
               ],
             ),
           ),
