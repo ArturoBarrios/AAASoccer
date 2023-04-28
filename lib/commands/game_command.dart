@@ -130,8 +130,7 @@ class GameCommand extends BaseCommand {
     };
     try {
       print("appModel.currentUser['_id']: ");
-      print(appModel.currentUser['_id']);      
-      eventInput['price'] = eventInput['price']*100;
+      print(appModel.currentUser['_id']);            
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
       };      
@@ -157,6 +156,7 @@ class GameCommand extends BaseCommand {
 
         //todo add error handling here, if game is not created, dont create price, etc
         if(eventInput['price']>0){
+          eventInput['price'] = eventInput['price']*100;
           Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
           print("create price event input: "+ eventInput.toString());
           print("create price input: " + paymentInput['price'].toString());

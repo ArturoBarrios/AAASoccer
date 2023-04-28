@@ -127,7 +127,7 @@ class _TournamentCard extends State<TournamentCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: "test",//widget.tournamentObject['mainEvent']['name'],
+                    text: widget.userEventDetails['mainEvent']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.tournamentObject['description'],

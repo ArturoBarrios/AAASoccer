@@ -203,7 +203,7 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
     //get tournament
     //add price
     if(eventInput['price']>0){
-      
+      eventInput['price'] = eventInput['price']*100;
       Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
       print("create price,,,, event input: "+ priceEventInput.toString());
       print("create price input: " + paymentInput['price'].toString());
@@ -211,10 +211,16 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
       print("createPaymentResp: "+createPriceResp.toString());
 
       dynamic createPrice = createPriceResp['data'];
-      dynamic mainTournamentEvent = EventCommand().getMainEvent(tournament['events']['data']);
-      print("mainTournamentEvent: "+mainTournamentEvent.toString());
+      tournament['events']['data'].forEach((tournamentEvent) {
+        if(tournamentEvent['isMainEvent']){
+          tournamentEvent['price'] = createPrice;
+        }
+
+      });
+      // dynamic mainTournamentEvent = EventCommand().getMainEvent(tournament['events']['data']);
+      // print("mainTournamentEvent: "+mainTournamentEvent.toString());
       //assumes first event is main event
-      mainTournamentEvent['price'] = createPrice;      
+      // mainTournamentEvent['price'] = createPrice;      
       // await EventCommand().addGame(createdGame, true);
     }
     print("tournament: "+tournament.toString());

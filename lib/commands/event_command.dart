@@ -794,7 +794,7 @@ class EventCommand extends BaseCommand {
         event = events[0];
       }
       isMyEventResp['mainEvent'] = event;
-      
+
       print("event: " + event.toString());
       //get userParticipation data      
       dynamic userParticipants = event['userParticipants']['data'];
@@ -808,7 +808,7 @@ class EventCommand extends BaseCommand {
             isMyEventResp["isMyEvent"] = true;
             print("isMyEvent() = true");
           }
-          if(roles.contains("MEMBER")){
+          if(roles.contains("PLAYER")){
             isMyEventResp["isMember"] = true;
             print("isMember() = true");          
           }
