@@ -22,4 +22,22 @@ class LeagueQueries {
       return getLeagues;
    }
 
+   String findLeagueByID(String leagueId ){
+    String getLeague = """
+      query getLeague {
+            findLeagueByID(id: $leagueId) {  
+              _id                        
+              numberOfTeams
+              events{
+                data{
+                  ${EventFragments().eventGameFragment()}                                                                                   
+                }
+              }
+          }
+        }
+    """;
+  
+    return getLeague;
+  }
+
 }

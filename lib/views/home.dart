@@ -355,9 +355,9 @@ class _Home extends State<Home> {
           TournamentCard(tournamentObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.LEAGUE) {
       //process league data for card
-      LeagueCommand().currateLeagueData(selectedObject);
+      // LeagueCommand().currateLeagueData(selectedObject);
       dynamic getEventDetailsResp = EventCommand().getUserEventDetails(selectedObject['events']['data']);
-      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage, isMyEvent: getEventDetailsResp);
+      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {
