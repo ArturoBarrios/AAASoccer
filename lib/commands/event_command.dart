@@ -1063,6 +1063,26 @@ class EventCommand extends BaseCommand {
     
     return updateViewModelsWithTournamentResp;
   }
+  
+  Future<Map<String, dynamic>> updateViewModelsWithLeague(
+      Map<String, dynamic> league) async {
+    print("updateViewModelsWithLeague()");
+    Map<String, dynamic> updateViewModelsWithLeagueResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of events modeL league: ");
+    print(eventsModel.leagues.length);
+    print("length of homePageModel selectedObjects: ");
+    await EventCommand().addLeague(league);
+    UserCommand().findMyUserById();
+    if(homePageModel.selectedKey.toString() == Constants.LEAGUE.toString()){
+      homePageModel.selectedObjects = List.from(eventsModel.leagues);
+    }
+    
+    return updateViewModelsWithLeagueResp;
+  }
 
   Future<Map<String, dynamic>> updateViewModelsWithTraining(
       Map<String, dynamic> training) async {
@@ -1169,6 +1189,24 @@ class EventCommand extends BaseCommand {
     // if (updateViewModelsBool) await updateViewModelsWithGame(game);
 
     return addtournamentResp;
+  }
+  
+  Future<Map<String, dynamic>> addLeague(
+      Map<String, dynamic> league) async {
+    Map<String, dynamic> addLeagueResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+    print("length of tournaments before adding game: ");
+    print("adding league: " + league.toString());
+    print(eventsModel.leagues.length);
+    eventsModel.leagues.insert(0,league);
+    print("length of trainings after adding leagues: ");
+    print(eventsModel.leagues.length);    
+    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
+
+    return addLeagueResp;
   }
 
   Future<Map<String, dynamic>> addTraining(

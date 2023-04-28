@@ -1,3 +1,5 @@
+import '../fragments/event_fragments.dart';
+
 class LeagueMutations{
   String createLeague(Map<String, dynamic> leagueInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput) {
     String createLeague = """
@@ -10,6 +12,12 @@ class LeagueMutations{
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput ['isMainEvent']},
               type: LEAGUE,
+              joinConditions: {
+                create: {
+                  withRequest: ${eventInput['withRequest']},
+                  withPayment: ${eventInput['withPayment']},
+                }
+              },
               userParticipants: {
                 create:
                   {
@@ -30,21 +38,12 @@ class LeagueMutations{
               }
             }
           } 
-          }) {
-            _id       
-            numberOfTeams                 
+          }) {                         
+           _id    
+            numberOfTeams                  
             events{
               data{
-              _id
-              name
-              isMainEvent
-                location{
-                  data{
-                    _id
-                    latitude
-                    longitude
-                  }
-                }     
+                 ${EventFragments().fullEvent()}
               }
             } 
           }   
@@ -133,4 +132,7 @@ return addGameToLeague;
 
     return addPlayerToGame;
   }
+
+
+  
 }

@@ -8,10 +8,10 @@ import '../../constants.dart';
 
 class LeagueView extends StatefulWidget {
   const LeagueView(
-    {Key? key, required this.isMyEvent, required this.league })
+    {Key? key, required this.userEventDetails, required this.league })
     : super(key: key);
 
-  final bool isMyEvent;
+  final dynamic userEventDetails;
   final dynamic league;
 
   @override
@@ -95,7 +95,7 @@ class _LeagueViewState extends State<LeagueView> {
               child: EventsCalendar(testText: "test", events: ""),
             ),
         
-            !widget.isMyEvent ? 
+            !widget.userEventDetails['isMyEvent'] ? 
             Container(
                 height: 20,
                 child: ClipRRect(

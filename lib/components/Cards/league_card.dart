@@ -12,12 +12,12 @@ import '../../views/league/view.dart';
 
 class LeagueCard extends StatefulWidget {
   const LeagueCard(
-      {Key? key, required this.leagueObject, required this.svgImage, required this.isMyEvent })
+      {Key? key, required this.leagueObject, required this.svgImage, required this.userEventDetails })
       : super(key: key);
   final Map<String, dynamic> leagueObject;
   final Svg svgImage;
   final double bevel = 10.0;
-  final bool isMyEvent;
+  final dynamic userEventDetails;
 
   @override
   State<LeagueCard> createState() => _LeagueCard();
@@ -82,7 +82,7 @@ class _LeagueCard extends State<LeagueCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return LeagueView(isMyEvent: widget.isMyEvent, league: widget.leagueObject);
+            return LeagueView(userEventDetails: widget.userEventDetails, league: widget.leagueObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -120,7 +120,7 @@ class _LeagueCard extends State<LeagueCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.leagueObject['mainEvent']['name'],
+                    text: widget.userEventDetails['mainEvent']['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.leagueObject['description'],
@@ -161,7 +161,7 @@ class _LeagueCard extends State<LeagueCard> {
                 ),
               ),
             ),
-            !widget.isMyEvent ? 
+            !widget.userEventDetails['isMyEvent'] ? 
                     Container(
                 height: 20,
                 child: ClipRRect(
