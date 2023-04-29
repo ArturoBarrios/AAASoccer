@@ -92,9 +92,9 @@ mixin EventMixin {
   }
 
   sendEventRequestForMyTeam(){
-    print("sendEventRequestForMyTeam");
-    for(int i = 0; i < selectedEventTeamObjects.length; i++){
-      TeamCommand().sendEventRequestForMyTeam(event, selectedEventTeamObjects[i]);
+    print("sendEventRequestForMyTeam: " + teamsSelectedList.toString());
+    for(int i = 0; i < teamsSelectedList.length; i++){
+      TeamCommand().sendEventRequestForMyTeam(event, teamsSelectedList[i]);
     }
   }
 
@@ -109,7 +109,7 @@ mixin EventMixin {
     print("send team request");
     for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
       await TeamCommand()
-          .sendOrganizerTeamRequest(teamObject, selectedRequestTypeObjects[i]);
+          .sendTeamOrganizersRequest(teamObject, selectedRequestTypeObjects[i]);
     }
   }
 
@@ -134,10 +134,13 @@ mixin EventMixin {
 
   void teamsSelected(List<int> selectedIndexes) {
     print("teamsSelected: $selectedIndexes");
+    print("teamList: " +teamList.toString());
     selectedTeamIndexes = selectedIndexes;
     teamsSelectedList = [];
     for (int i = 0; i < selectedIndexes.length; i++) {
+      print("inside for loop");
       teamsSelectedList.add(teamList[selectedIndexes[i]]);
+      print("teamList[selectedIndexes[i]]: " + teamList[selectedIndexes[i]].toString());
     }
   }
 
@@ -751,12 +754,12 @@ mixin EventMixin {
     return Container(
         child: GestureDetector(
             onTap: () async {
-              List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
+              List<int>? teamIndexes = await showAnimatedDialog<dynamic>(
                 context: context,
                 barrierDismissible: true,
                 builder: (BuildContext context) {
                   return ClassicListDialogWidget<dynamic>(
-                      selectedIndexes: selectedPlayerIndexes,
+                      selectedIndexes: selectedTeamIndexes,
                       titleText: 'Choose Teams',
                       listType: ListType.multiSelect,
                       positiveText: "Send Request",
@@ -772,9 +775,9 @@ mixin EventMixin {
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
               );
-              selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
-              print('selectedIndex:${selectedPlayerIndexes?.toString()}');
-              teamsSelected(selectedPlayerIndexes!);
+              selectedTeamIndexes = teamIndexes ?? selectedTeamIndexes;
+              print('selectedIndex:${selectedTeamIndexes?.toString()}');
+              teamsSelected(selectedTeamIndexes!);
               sendEventRequestForMyTeam();
             },
             child: Container(
