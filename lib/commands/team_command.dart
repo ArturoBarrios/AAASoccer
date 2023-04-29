@@ -35,6 +35,12 @@ class TeamCommand extends BaseCommand {
     return resp;
   }
 
+  List<dynamic> getAppModelTeamsNearMe() {
+    print("getAppModelTeamsNearMe");
+    print("appModel.teamsNearMe: "+appModel.teamsNearMe.toString());
+    return appModel.teamsNearMe;
+  }
+
   Future<Map<String, dynamic>> getTeamsNearLocation() async {
     print("getTeamsNearLocation");
     Map<String, dynamic> getTrainingsNearLocationResp = {
@@ -144,6 +150,97 @@ class TeamCommand extends BaseCommand {
 
     
 
+  }
+  //send event request to team organizers
+  Future<Map<String, dynamic>> sendTeamEventRequest(
+      dynamic teamInput, dynamic event
+  ) async{
+    print("sendTeamEventRequest");
+    Map<String, dynamic> sendTeamEventRequestResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try{
+      dynamic sendTeamEventRequestInput = {
+        "sender_id": appModel.currentUser['_id'],
+        "team_id": teamInput['_id'],
+        "event_id": event['_id'],
+        "type": Constants.TOURNAMENTREQUEST.toString(),
+     
+      };      
+
+
+      dynamic userParticipants = teamInput['userParticipants']['data'];
+      print("teamParticipants");
+      print(userParticipants);
+      String organizersString = "";
+      print("get OSPIDs");
+      //populate list with onesignal player ids
+      List<String> OSPIDs = [];
+      List<String> phones = [];
+      for (var i = 0; i < userParticipants.length; i++) {
+        String toUserId = userParticipants[i]['user']['_id'];
+        List<String> roles =
+            BaseCommand().parseRoles(userParticipants[i]['roles']);
+        print("roles: " + roles.toString());
+        if (roles.contains("ORGANIZER")) {
+          organizersString += toUserId + ",";
+          Map<String, dynamic> organizerUserInput = {"_id": toUserId};
+          Map<String, dynamic> getUserResp =
+              await UserCommand().findUserById(organizerUserInput);
+          print("in for getUserResp: ");
+          print(getUserResp);
+          if (getUserResp["success"] == true) {
+            Map<String, dynamic> user = getUserResp["data"];
+            print("user: " + user.toString());
+            if (user != null) {
+              //it shouldn't be null here, risk for bug
+              OSPIDs.add(user['OSPID']);
+              phones.add(user['phone']);
+            }
+          }
+        }
+      }
+
+      print("organizersString: " + organizersString);
+      print("OSPIDs: " + OSPIDs.toString());
+      sendTeamEventRequestInput['receivers'] = organizersString;
+
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query':
+              RequestMutations().sendTeamEventRequest(sendTeamEventRequestInput)
+        }),
+      );
+
+      print("response: "+ response.body.toString());
+      print("sendTeamEventRequest");
+
+      Map<String, dynamic> sendOrganizerRequestNotificationInput = {
+        "phones": phones,
+        "message": appModel.currentUser['username'] +
+            " has sent your team a request to join tournament called"+event['name'],
+        "OSPIDs": OSPIDs
+      };
+      await NotificationsCommand().sendOrganizerRequestNotification(
+          sendOrganizerRequestNotificationInput);
+
+
+      sendTeamEventRequestResponse["success"] = true;
+      sendTeamEventRequestResponse["message"] = "Event Request to Team Created";
+
+      return sendTeamEventRequestResponse;
+    } catch(e){
+      print("error in sendTeamEventRequest: " + e.toString());
+      return sendTeamEventRequestResponse;
+    }
   }
 
   Future<Map<String, dynamic>> sendOrganizerTeamRequest(

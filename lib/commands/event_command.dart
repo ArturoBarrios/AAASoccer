@@ -416,7 +416,7 @@ class EventCommand extends BaseCommand {
           print("roles[j]: " + roles[j]);          
           Map<String, dynamic> sendPlayerEventRequestInput = {
             "sender_id": appModel.currentUser['_id'],
-            "event_id": eventsObject[i]['event']['_id'],        
+            "event_id": eventsObject[i]['_id'],        
             "forRole": roles[j],
             "type": type,
             "receivers": userPlayerObject['_id']
@@ -484,19 +484,6 @@ class EventCommand extends BaseCommand {
     };
     try {
       print("request for event: " + eventInput.toString());      
-      // dynamic eventId = "";
-      //set variables according to type
-      // if(type == Constants.LEAGUEREQUEST ||
-      //     type == Constants.TOURNAMENTREQUEST){
-      //   print("eventId for league or tournament");
-      //   //find main tournament event
-      //   eventInput = TournamentCommand().getMainTournamentEvent(gameInput);
-      //   eventId = eventInput['_id'];        
-      // }
-      // else{
-      //   eventId = eventInput['_id'];
-      // }
-      // print("eventId: " + eventId.toString());
 
       
       Map<String, dynamic> sendOrganizerEventRequestInput = {
@@ -897,6 +884,7 @@ class EventCommand extends BaseCommand {
       print("teams: ");
       print(teams);
       appModel.teams = teams;
+      appModel.teamsNearMe = teams;
     }
 
     appModel.myTeams = user['teamUserParticipants']['data'];

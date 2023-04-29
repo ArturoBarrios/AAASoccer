@@ -52,7 +52,6 @@ class RequestMutations {
     return updateRequest;
   }
 
-
   String sendTeamRequest(
       Map<String, dynamic> teamRequestInput) {
       String sendTeamRequestString = """
@@ -73,6 +72,38 @@ class RequestMutations {
             connect: "${teamRequestInput['team_id']}"            
           }   
           forRole: "${teamRequestInput['forRole']}"                                        
+          }) {
+            ${RequestFragments().fullRequest()}        
+          }   
+        }
+        """;
+
+    return sendTeamRequestString;
+    }
+  
+  String sendTeamEventRequest(
+      Map<String, dynamic> teamRequestInput) {
+      String sendTeamRequestString = """
+      mutation {
+        createRequest(data: {    
+          status: PENDING,
+          requestAttempts: 1, 
+          type: ${teamRequestInput['type']},         
+          receivers: {
+              connect: [
+                ${teamRequestInput['receivers']}
+              ]
+            }
+          sender: {
+            connect: "${teamRequestInput['sender_id']}"            
+          },  
+          team: {
+            connect: "${teamRequestInput['team_id']}"            
+          }   
+          forRole: "PLAYER",
+          event:{
+            connect: "${teamRequestInput['event_id']}"
+          }                                        
           }) {
             ${RequestFragments().fullRequest()}        
           }   
