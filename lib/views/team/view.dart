@@ -64,6 +64,7 @@ class _TeamViewState extends State<TeamView> {
     //   selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
     // }    
   }
+  
 
   Future<void> sendPlayersTeamRequest() async {
     widget.sendPlayersTeamRequest(widget.teamObject);

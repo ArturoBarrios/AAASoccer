@@ -45,7 +45,7 @@ class _TournamentViewState extends State<TournamentView> {
   }
 
   void loadEventPayment() {
-    priceObject = widget.userEventDetails['mainEvent'];
+    priceObject = widget.userEventDetails['mainEvent']['price'];
   }
 
   @override
@@ -55,6 +55,7 @@ class _TournamentViewState extends State<TournamentView> {
     loadEventPayment();
     widget.loadEventInfo(widget.userEventDetails['mainEvent']);
     widget.setupPlayerList();
+    widget.setupTeamList();
     _isLoading = false;
     //remove event where isMainEvent and type==TOURNAMENT
     // for (int i = 0; i < tournamentEvents.length; i++) {
@@ -78,6 +79,7 @@ class _TournamentViewState extends State<TournamentView> {
           child: Expanded(
             child: Column(
               children: [
+                widget.getParticipationRolesWidget(),
                 Container(
                   height: 500,
                   child: EventsCalendar(testText: "test", events: ""),
@@ -114,9 +116,9 @@ class _TournamentViewState extends State<TournamentView> {
                                   'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
                               await widget.requestTypeSelected(
                                   widget.selectedRequestTypeIndexes);
-                              await widget.sendEventRequest(widget.userEventDetails['mainEvent'], Constants.GAMEREQUEST.toString());
+                              await widget.sendEventRequest(widget.userEventDetails['mainEvent'], Constants.TOURNAMENTREQUEST.toString());
                             },
-                            child: Text("Send Request"),
+                            child: Text("Send Non Player Request"),
                           ),
                         ),
                       )
@@ -140,6 +142,13 @@ class _TournamentViewState extends State<TournamentView> {
                  //join game gesture detector for now
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.userEventDetails['mainEvent'], widget.userObject),
                 widget.getChatWidget(context, true, false),
+                widget.userEventDetails['isMyEvent'] ?                
+                  widget.sendPlayersRequestWidget(context)
+                  : Container(),                
+                widget.userEventDetails['isMyEvent'] ?                
+                  widget.sendTeamsRequestWidget(context)
+                  : Container(),                
+
                  
               ],
             ),
