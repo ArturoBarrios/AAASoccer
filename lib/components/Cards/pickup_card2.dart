@@ -116,7 +116,7 @@ class _PickupCard2 extends State<PickupCard2> {
     }
 
     Future<void> sendEventRequest() async {
-      widget.sendEventRequest(widget.gameObject, Constants.GAMEREQUEST);
+      widget.sendEventRequest(widget.gameObject);
     // print("sendEventRequest");
     // print("selectedRequestTypeObjects.length: " +
     //     selectedRequestTypeObjects.length.toString());    

@@ -105,8 +105,7 @@ class _LeagueViewState extends State<LeagueView> {
                         await widget.requestTypeSelected(
                             widget.selectedRequestTypeIndexes);
                         await widget.sendEventRequest(
-                            widget.userEventDetails['mainEvent'],
-                            Constants.LEAGUEREQUEST.toString());
+                            widget.userEventDetails['mainEvent']);
                       },
                       child: Text("Send Request")),
                 ),

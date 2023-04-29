@@ -118,7 +118,7 @@ class _TryoutViewState extends State<TryoutView> {
                         print(
                             'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
                         await widget.requestTypeSelected(widget.selectedRequestTypeIndexes);
-                        await widget.sendEventRequest(widget.tryout, Constants.TRAININGREQUEST.toString());
+                        await widget.sendEventRequest(widget.tryout);
                       },
                       child: Text("Send Request")),
                 ),

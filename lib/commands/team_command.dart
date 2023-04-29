@@ -151,6 +151,8 @@ class TeamCommand extends BaseCommand {
     
 
   }
+
+  
   //send event request to team organizers
   Future<Map<String, dynamic>> sendTeamEventRequest(
       dynamic teamInput, dynamic event
@@ -241,6 +243,26 @@ class TeamCommand extends BaseCommand {
       print("error in sendTeamEventRequest: " + e.toString());
       return sendTeamEventRequestResponse;
     }
+  }
+
+  Future<Map<String,dynamic>> sendEventRequestForMyTeam(
+    dynamic eventInput, dynamic teamInput
+  ) async{
+    print("sendEventRequestForMyTeam");
+    Map<String, dynamic> sendEventRequestForMyTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+
+      return sendEventRequestForMyTeamResponse;
+    }catch (e){
+      print("error in sendEventRequestForMyTeam: " + e.toString());
+      return sendEventRequestForMyTeamResponse;
+    }
+
   }
 
   Future<Map<String, dynamic>> sendOrganizerTeamRequest(

@@ -63,7 +63,7 @@ requestTypeSelected(List<int>? indexes) {
 
     }
   Future<void> sendEventRequest() async {
-    widget.sendEventRequest(widget.trainingObject, Constants.TRAININGREQUEST);
+    widget.sendEventRequest(widget.trainingObject);
     // print("sendEventRequest");
     // print("selectedRequestTypeObjects.length: " +
     //     selectedRequestTypeObjects.length.toString());
