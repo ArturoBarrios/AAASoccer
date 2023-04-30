@@ -1,82 +1,7 @@
 import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
 
 class EventFragments {
-  String eventGameFragment() {
-    String eventGame = """
-        _id
-        archived
-        deleted
-        name
-        isMainEvent
-        type
-        startTime
-        endTime
-        createdAt
-        userParticipants{     
-        data{
-          _id
-          event{                        
-            _id
-            name
-          }
-          user{
-            _id
-            name
-            userType
-          }
-          roles
-        }                                                              
-      }
-        location{
-          data{
-          _id
-          latitude
-          longitude
-          }
-        }
-        games{
-          data{
-            _id
-            pickup
-          }
-        }
-        trainings{
-          data{
-            _id
-          }
-        }
-        teams{
-          data{
-            ${TeamFragments().fullTeam()}
-          }
-        }
-        price{
-          _id
-          amount
-          event{
-            _id
-            name
-
-          }
-        }
-        payments{
-        data{
-          _id
-          amount
-          user{
-            _id
-            name
-          }
-          event{
-            _id
-            name
-          }
-        }
-      }
-     """;
-    return eventGame;
-  }
-
+  
   String fullEvent() {
     String fullEventReturn = """
       name        	
@@ -135,7 +60,13 @@ class EventFragments {
             _id
             name
             userType
-          }
+            teams{
+              data{
+                _id
+              }
+
+            }
+          }          
           roles
         }                                                              
       }
