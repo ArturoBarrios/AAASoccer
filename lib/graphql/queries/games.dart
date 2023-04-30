@@ -25,7 +25,7 @@ class GameQueries {
     String getGame = """
         query getEvent {
           findEventByID(id: $id) {                           
-            ${EventFragments().eventGameFragment()}              
+            ${EventFragments().fullEvent()}              
           }          
         }
       """;

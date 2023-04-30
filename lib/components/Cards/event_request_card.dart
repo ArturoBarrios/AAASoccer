@@ -13,13 +13,13 @@ class EventRequestCard extends StatefulWidget {
       {Key? key, required this.eventRequestObject, 
       required this.svgImage, 
       required this.type,
-      required this.didSendRequest
+      required this.didSendRequest      
       })
       : super(key: key);
   final Map<String, dynamic> eventRequestObject;
   final Svg svgImage;  
   final String type;
-  final bool didSendRequest;
+  final bool didSendRequest;  
 
   @override
   State<EventRequestCard> createState() => _EventRequestCard();
@@ -100,8 +100,8 @@ class _EventRequestCard extends State<EventRequestCard> {
                     svgImage: widget.svgImage,
                     subtitle:
                       widget.didSendRequest ? 
-                        "sent to "+widget.eventRequestObject['receivers']['data'][0]['username'].toString()
-                        : "sent by "+ widget.eventRequestObject['sender']['username'].toString()
+                        "sent to "+widget.eventRequestObject['receivers']['data'][0]['email'].toString() + " for "+(widget.eventRequestObject['team']==null ? "player" : "team "+widget.eventRequestObject['team']['name'].toString())
+                        : "sent by "+ widget.eventRequestObject['sender']['email'].toString() + " for "+(widget.eventRequestObject['team']==null ? "player" : "team "+widget.eventRequestObject['team']['name'].toString())
                         ,                        
                     onPressed: () {
                       print("inside container onPressed");

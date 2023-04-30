@@ -156,7 +156,8 @@ class RequestsCommand extends BaseCommand {
       Map<String, dynamic> eventInput = {
         "_id": eventRequestInput['event']['_id'],
       };
-      print("b");
+
+      
 
       print("updateEventRequest: " + updateEventRequest.toString());
       print("updateEventRequest['status']: " +
@@ -171,36 +172,32 @@ class RequestsCommand extends BaseCommand {
       if (updateEventRequest['status'].toString() == "ACCEPTED") {
         print("before UserCommand().addEvent()");
         String role = "{" + updateEventRequest['forRole'] + "}";
-        //check if user is already in event
-        // dynamic userObject = UserCommand().findMyUserById();
-        // bool updateRole = EventCommand().updateRole(updateEventRequest, userObject, updateEventRequest['forRole']);
-                
-        // if(updateRole){
-        //   Map<String, dynamic> addEventResp =
-        //       await EventCommand().updateUserRolesInEvent(eventInput, userInput, role);
-        //   print("addEventResp: " + addEventResp.toString());
-        //   print("before EventCommand().addEvent()");
-
-        // }
-        // else{
+        //todo check if user or team is already in event
+        if(eventRequestInput['team'] == null){
           Map<String, dynamic> addEventResp =
               await EventCommand().addUserToEvent(eventInput, userInput, role);
           print("addEventResp: " + addEventResp.toString());
           print("before EventCommand().addEvent()");
+        }
+        else{
+          dynamic teamInput = {
+            "_id": eventRequestInput['team']['_id'],
+          };
+          Map<String, dynamic> addEventResp =
+              await EventCommand().addTeamToEvent(eventInput, teamInput);
+          print("addEventResp: " + addEventResp.toString());
+          print("before EventCommand().addEvent()");
 
-        // }
-        //get event
-        // Map<String, dynamic> addEventToMyEventsResp = await EventCommand().addEventToMyEvents(eventRequestInput);
-        // print("addEventToMyEventsResp: " + addEventToMyEventsResp.toString());
+
+        }
+        
       }
 
-      //send notification to sender)
-      //get sender information for push notification
-      // Map<String, dynamic> findEventRequestResp = await findEventRequest(eventRequestInput);
+      // updateEventRequestModels();
+      // updateTeamModels();
+      // updateEventModels();
 
-      // print("findEventRequestResp: " + findEventRequestResp.toString());
-      // if(findEventRequestResp['success'] == true){
-      // prepare notification data
+
       print("prepare notification data");
       Map<String, dynamic> sender = eventRequestInput['sender'];
       print("sender: " + sender.toString());
@@ -209,12 +206,12 @@ class RequestsCommand extends BaseCommand {
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
         "message": appModel.currentUser['username'] +
-            " has accepted your request to join event",
+            " has accepted your request "+ 
+            (eventRequestInput['team']==null ? "" : "for team"+eventRequestInput['team']['name']) +" to join event",
         "OSPIDs": OSPIDs
       };
       await NotificationsCommand().sendAcceptedRequestNotification(
           sendOrganizerRequestNotificationInput);
-      // }
 
       //todo
       //add check and revert entirely if adding event fails???

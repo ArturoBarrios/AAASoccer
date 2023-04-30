@@ -32,7 +32,7 @@ class TournamentQueries {
               groupPlay  
               events{
                 data{
-                  ${EventFragments().eventGameFragment()}                                                                                   
+                  ${EventFragments().fullEvent()}                                                                                   
                 }
               }
           }

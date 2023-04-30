@@ -116,7 +116,7 @@ class _TournamentViewState extends State<TournamentView> {
                                   'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
                               await widget.requestTypeSelected(
                                   widget.selectedRequestTypeIndexes);
-                              await widget.sendEventRequest(widget.userEventDetails['mainEvent'], Constants.TOURNAMENTREQUEST.toString());
+                              await widget.sendEventRequest(widget.userEventDetails['mainEvent']);
                             },
                             child: Text("Send Non Player Request"),
                           ),
@@ -142,12 +142,13 @@ class _TournamentViewState extends State<TournamentView> {
                  //join game gesture detector for now
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.userEventDetails['mainEvent'], widget.userObject),
                 widget.getChatWidget(context, true, false),
+
                 widget.userEventDetails['isMyEvent'] ?                
                   widget.sendPlayersRequestWidget(context)
-                  : Container(),                
+                  : widget.sendOrganizerPlayerEventRequest(context),                
                 widget.userEventDetails['isMyEvent'] ?                
                   widget.sendTeamsRequestWidget(context)
-                  : Container(),                
+                  : widget.sendEventRequestForMyTeamWidget(context),                
 
                  
               ],

@@ -1,4 +1,5 @@
 import '../fragments/event_fragments.dart';
+
 class EventMutations {
   String addPlayerToEventDoesntWork(
       Map<String, dynamic> eventInput, Map<String, dynamic> playerInput) {
@@ -39,9 +40,9 @@ class EventMutations {
 
     return addPlayerToEvent;
   }
-  
-  String addUserToEvent(
-      Map<String, dynamic> eventInput, Map<String, dynamic> userInput, String roles) {
+
+  String addUserToEvent(Map<String, dynamic> eventInput,
+      Map<String, dynamic> userInput, String roles) {
     String addPlayerToEvent = """      
       mutation {
         updateEvent(
@@ -68,9 +69,9 @@ class EventMutations {
 
     return addPlayerToEvent;
   }
-  
-  String updateUserRolesInEvent(
-      Map<String, dynamic> eventInput, Map<String, dynamic> userInput, String roles, String eventRequestId) {
+
+  String updateUserRolesInEvent(Map<String, dynamic> eventInput,
+      Map<String, dynamic> userInput, String roles, String eventRequestId) {
     String addPlayerToEvent = """      
       mutation {
         partialUpdateEventUserParticipant(
@@ -98,7 +99,6 @@ class EventMutations {
     return addPlayerToEvent;
   }
 
-
   String createPrice(
     Map<String, dynamic> paymentInput,
     Map<String, dynamic> eventInput,
@@ -123,5 +123,27 @@ class EventMutations {
         """;
 
     return createPrice;
+  }
+
+  String addTeam(
+      Map<String, dynamic> eventInput, Map<String, dynamic> teamInput) {
+    String addTeamString = """      
+      mutation {
+        updateEvent(id: ${eventInput['_id']},
+  				data: {            
+            teams: {
+              connect: [
+                ${teamInput['_id']}                                                                                 
+              ]
+            }             
+          }                      
+        ){
+        ${EventFragments().fullEvent()}
+                                             			
+      }
+    }
+    """;
+
+    return addTeamString;
   }
 }

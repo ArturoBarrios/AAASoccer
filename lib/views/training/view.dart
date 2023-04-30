@@ -123,7 +123,7 @@ class _TrainingViewState extends State<TrainingView> {
                         print(
                             'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
                         await widget.requestTypeSelected(widget.selectedRequestTypeIndexes);
-                        await widget.sendEventRequest(widget.training, Constants.TRAININGREQUEST.toString());
+                        await widget.sendEventRequest(widget.training);
                       },
                       child: Text("Send Request")),
                 ),

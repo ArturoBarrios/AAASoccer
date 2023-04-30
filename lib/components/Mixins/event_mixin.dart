@@ -53,6 +53,7 @@ mixin EventMixin {
     print("setupPlayerList");
     playerList = PlayerCommand().getAppModelPlayersNearMe();
   }
+
   void setupTeamList() {
     print("setupTeamList");
     teamList = TeamCommand().getAppModelTeamsNearMe();
@@ -90,6 +91,13 @@ mixin EventMixin {
     choices = myTeamsToChooseFrom;
   }
 
+  sendEventRequestForMyTeam(){
+    print("sendEventRequestForMyTeam: " + teamsSelectedList.toString());
+    for(int i = 0; i < teamsSelectedList.length; i++){
+      TeamCommand().sendEventRequestForMyTeam(event, teamsSelectedList[i]);
+    }
+  }
+
   Future<void> sendTeamRequest(dynamic teamObject) async {
     print("sendTeamRequest");
     print("selectedRequestTypeObjects.length: " +
@@ -101,7 +109,7 @@ mixin EventMixin {
     print("send team request");
     for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
       await TeamCommand()
-          .sendOrganizerTeamRequest(teamObject, selectedRequestTypeObjects[i]);
+          .sendTeamOrganizersRequest(teamObject, selectedRequestTypeObjects[i]);
     }
   }
 
@@ -123,13 +131,16 @@ mixin EventMixin {
       playersSelectedList.add(playerList[selectedIndexes[i]]);
     }
   }
-  
+
   void teamsSelected(List<int> selectedIndexes) {
     print("teamsSelected: $selectedIndexes");
+    print("teamList: " +teamList.toString());
     selectedTeamIndexes = selectedIndexes;
     teamsSelectedList = [];
     for (int i = 0; i < selectedIndexes.length; i++) {
+      print("inside for loop");
       teamsSelectedList.add(teamList[selectedIndexes[i]]);
+      print("teamList[selectedIndexes[i]]: " + teamList[selectedIndexes[i]].toString());
     }
   }
 
@@ -176,24 +187,25 @@ mixin EventMixin {
     print("sendTeamsEventRequest");
     print("selectedRequestTypeObjects.length: " +
         selectedRequestTypeObjects.length.toString());
-    print(
-        "teamsSelectedList: " + teamsSelectedList.toString());
+    print("teamsSelectedList: " + teamsSelectedList.toString());
 
     for (int i = 0; i < teamsSelectedList.length; i++) {
-      await TeamCommand().sendTeamEventRequest(
-          teamsSelectedList[i], event);
+      await TeamCommand().sendTeamEventRequest(teamsSelectedList[i], event);
+    }
+  }
+  
+  Future<void> sendEventRequestForMyTeams(dynamic event) async {
+    print("sendTeamsEventRequest");
+    print("selectedRequestTypeObjects.length: " +
+        selectedRequestTypeObjects.length.toString());
+    print("teamsSelectedList: " + teamsSelectedList.toString());
+
+    for (int i = 0; i < teamsSelectedList.length; i++) {
+      await TeamCommand().sendTeamEventRequest(teamsSelectedList[i], event);
     }
   }
 
-  Future<void> sendPlayersEventRequest(dynamic eventObject) async {
-    print("sendPlayersEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());
-    print(
-        "playersSelectedList.length: " + playersSelectedList.length.toString());
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
+  String getRequestType(eventObject) {
     String type = "GAMEREQUEST";
     if (eventObject['type'] == "GAME") {
       type = "GAMEREQUEST";
@@ -206,6 +218,19 @@ mixin EventMixin {
     } else if (eventObject['type'] == "TRYOUT") {
       type = "TRYOUTREQUEST";
     }
+    return type;
+  }
+
+  Future<void> sendPlayersEventRequest(dynamic eventObject) async {
+    print("sendPlayersEventRequest");
+    print("selectedRequestTypeObjects.length: " +
+        selectedRequestTypeObjects.length.toString());
+    print(
+        "playersSelectedList.length: " + playersSelectedList.length.toString());
+    print(
+        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    print("send player event request");
+    String type = getRequestType(eventObject);
 
     for (int i = 0; i < playersSelectedList.length; i++) {
       await EventCommand().sendPlayerEventRequests(playersSelectedList[i],
@@ -214,13 +239,14 @@ mixin EventMixin {
   }
 
   //send organizers event request
-  Future<void> sendEventRequest(dynamic eventObject, String requestType) async {
+  Future<void> sendEventRequest(dynamic eventObject) async {
     print("sendEventRequest");
     print("selectedRequestTypeObjects.length: " +
         selectedRequestTypeObjects.length.toString());
     print(
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
+    String requestType = getRequestType(eventObject);
     for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
       await EventCommand().sendOrganizerEventRequest(
           eventObject, selectedRequestTypeObjects[i], requestType);
@@ -481,7 +507,7 @@ mixin EventMixin {
             onTap: () {
               print("!withPayment&&!withRequest");
               selectedRequestTypeObjects.add("PLAYER");
-              sendEventRequest(event, "GAMEREQUEST");
+              sendEventRequest(event);
               selectedRequestTypeObjects = [];
             },
             child: Text("Send Request to Join(No Payment required to join)"),
@@ -548,7 +574,7 @@ mixin EventMixin {
                   child: GestureDetector(
                 onTap: () {
                   selectedRequestTypeObjects.add("PLAYER");
-                  sendEventRequest(event, "GAMEREQUEST");
+                  sendEventRequest(event);
                   selectedRequestTypeObjects = [];
                 },
                 child: Text("Request Denied, Resend Request"),
@@ -560,7 +586,7 @@ mixin EventMixin {
               onTap: () {
                 print("withPayment && withRequest");
                 selectedRequestTypeObjects.add("PLAYER");
-                sendEventRequest(event, "GAMEREQUEST");
+                sendEventRequest(event);
                 selectedRequestTypeObjects = [];
               },
               child: Text("Send Request to Join(Payment required to join)"),
@@ -594,58 +620,54 @@ mixin EventMixin {
         child: GestureDetector(
             onTap: () async {
               List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
-              context: context,
-              barrierDismissible: true,
-              builder: (BuildContext context) {
-                return ClassicListDialogWidget<dynamic>(
-                    selectedIndexes: selectedPlayerIndexes,
-                    titleText: 'Choose Players',
-                    listType: ListType.multiSelect,
-                    positiveText: "Next",
-                    // onPositiveClick: () async{
-                    //   print("onPositiveClick: " );
-                    //   print("selectIndex: " + index.toString());
-                    //   //navigation add
-                     
-                    // },
-                    activeColor: Colors.green,
-                    dataList: playerList);
-              },
-              animationType: DialogTransitionType.size,
-              curve: Curves.linear,
-            );
-            selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
-            print('selectedIndex:${selectedPlayerIndexes?.toString()}');
-            playersSelected(selectedPlayerIndexes!);
-            
-            if(playersSelectedList.length > 0){
-              List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) {
-                              return ClassicListDialogWidget<dynamic>(
-                                  selectedIndexes: selectedRequestTypeIndexes,
-                                  titleText: 'Choose User Type',
-                                  positiveText: "Send Request",
-                                  listType: ListType.multiSelect,
-                                  
-                                  activeColor: Colors.green,
-                                  dataList: requestUserTypes);
-                            },
-                            animationType: DialogTransitionType.size,
-                            curve: Curves.linear,
-                          );
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) {
+                  return ClassicListDialogWidget<dynamic>(
+                      selectedIndexes: selectedPlayerIndexes,
+                      titleText: 'Choose Players',
+                      listType: ListType.multiSelect,
+                      positiveText: "Next",
+                      // onPositiveClick: () async{
+                      //   print("onPositiveClick: " );
+                      //   print("selectIndex: " + index.toString());
+                      //   //navigation add
 
-                        selectedRequestTypeIndexes = requestIndexes ?? selectedRequestTypeIndexes;
-                        print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                        requestTypeSelected(selectedRequestTypeIndexes);
-                        sendPlayersEventRequest(event);
-            }
+                      // },
+                      activeColor: Colors.green,
+                      dataList: playerList);
+                },
+                animationType: DialogTransitionType.size,
+                curve: Curves.linear,
+              );
+              selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
+              print('selectedIndex:${selectedPlayerIndexes?.toString()}');
+              playersSelected(selectedPlayerIndexes!);
 
-             
-              
-             
-              
+              if (playersSelectedList.length > 0) {
+                List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) {
+                    return ClassicListDialogWidget<dynamic>(
+                        selectedIndexes: selectedRequestTypeIndexes,
+                        titleText: 'Choose User Type',
+                        positiveText: "Send Request",
+                        listType: ListType.multiSelect,
+                        activeColor: Colors.green,
+                        dataList: requestUserTypes);
+                  },
+                  animationType: DialogTransitionType.size,
+                  curve: Curves.linear,
+                );
+
+                selectedRequestTypeIndexes =
+                    requestIndexes ?? selectedRequestTypeIndexes;
+                print(
+                    'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                requestTypeSelected(selectedRequestTypeIndexes);
+                sendPlayersEventRequest(event);
+              }
             },
             child: Container(
               width: 200,
@@ -654,41 +676,109 @@ mixin EventMixin {
               child: Center(child: Text("Send Players Request")),
             )));
   }
-  
+
   Container sendTeamsRequestWidget(BuildContext context) {
     return Container(
         child: GestureDetector(
             onTap: () async {
               List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
-              context: context,
-              barrierDismissible: true,
-              builder: (BuildContext context) {
-                return ClassicListDialogWidget<dynamic>(
-                    selectedIndexes: selectedPlayerIndexes,
-                    titleText: 'Choose Teams',
-                    listType: ListType.multiSelect,
-                    positiveText: "Next",
-                    // onPositiveClick: () async{
-                    //   print("onPositiveClick: " );
-                    //   print("selectIndex: " + index.toString());
-                    //   //navigation add
-                     
-                    // },
-                    activeColor: Colors.green,
-                    dataList: teamList);
-              },
-              animationType: DialogTransitionType.size,
-              curve: Curves.linear,
-            );
-            selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
-            print('selectedIndex:${selectedPlayerIndexes?.toString()}');
-            teamsSelected(selectedPlayerIndexes!);
-            sendTeamsEventRequest(event);                      
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) {
+                  return ClassicListDialogWidget<dynamic>(
+                      selectedIndexes: selectedPlayerIndexes,
+                      titleText: 'Choose Teams',
+                      listType: ListType.multiSelect,
+                      positiveText: "Send Request",
+                      // onPositiveClick: () async{
+                      //   print("onPositiveClick: " );
+                      //   print("selectIndex: " + index.toString());
+                      //   //navigation add
 
-             
-              
-             
-              
+                      // },
+                      activeColor: Colors.green,
+                      dataList: teamList);
+                },
+                animationType: DialogTransitionType.size,
+                curve: Curves.linear,
+              );
+              selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
+              print('selectedIndex:${selectedPlayerIndexes?.toString()}');
+              teamsSelected(selectedPlayerIndexes!);
+              sendTeamsEventRequest(event);
+            },
+            child: Container(
+              width: 200,
+              height: 50,
+              color: Colors.blue,
+              child: Center(child: Text("Send Teams Request")),
+            )));
+  }
+
+  Container sendOrganizerPlayerEventRequest(BuildContext context) {
+    return Container(
+      height: 20,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.0),
+        child: GestureDetector(
+            onTap: () async {
+              print("onTap: ");
+              List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) {
+                  return ClassicListDialogWidget<dynamic>(
+                      selectedIndexes: selectedRequestTypeIndexes,
+                      titleText: 'Choose User Type',
+                      positiveText: "Send Request",
+                      listType: ListType.multiSelect,
+                      activeColor: Colors.green,
+                      dataList: requestUserTypes);
+                },
+                animationType: DialogTransitionType.size,
+                curve: Curves.linear,
+              );
+
+              selectedRequestTypeIndexes =
+                  requestIndexes ?? selectedRequestTypeIndexes;
+              print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+              await requestTypeSelected(selectedRequestTypeIndexes);
+              await sendEventRequest(event);
+            },
+            child: Text("Send Player Request")),
+      ),
+    );
+  }
+  
+  Container sendEventRequestForMyTeamWidget(BuildContext context) {
+    return Container(
+        child: GestureDetector(
+            onTap: () async {
+              List<int>? teamIndexes = await showAnimatedDialog<dynamic>(
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) {
+                  return ClassicListDialogWidget<dynamic>(
+                      selectedIndexes: selectedTeamIndexes,
+                      titleText: 'Choose Teams',
+                      listType: ListType.multiSelect,
+                      positiveText: "Send Request",
+                      // onPositiveClick: () async{
+                      //   print("onPositiveClick: " );
+                      //   print("selectIndex: " + index.toString());
+                      //   //navigation add
+
+                      // },
+                      activeColor: Colors.green,
+                      dataList: teamList);
+                },
+                animationType: DialogTransitionType.size,
+                curve: Curves.linear,
+              );
+              selectedTeamIndexes = teamIndexes ?? selectedTeamIndexes;
+              print('selectedIndex:${selectedTeamIndexes?.toString()}');
+              teamsSelected(selectedTeamIndexes!);
+              sendEventRequestForMyTeam();
             },
             child: Container(
               width: 200,
@@ -705,4 +795,13 @@ mixin EventMixin {
       return Container();
     }
   }
+
+  // Container getUserParticipants(){
+  //   if (event['userParticipants'].length > 0) {
+  //     return Container(child: Text("userParticipants: " + userParticipants.toString()));
+  //   } else {
+  //     return Container(Text("No Free Agents"));
+  //   }
+
+  // }
 }

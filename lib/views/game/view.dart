@@ -131,7 +131,7 @@ class _PickupViewState extends State<PickupView> {
                                     'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
                                 await widget.requestTypeSelected(
                                     widget.selectedRequestTypeIndexes);
-                                await widget.sendEventRequest(widget.game, Constants.GAMEREQUEST.toString());
+                                await widget.sendEventRequest(widget.game);
                               },
                               child: Text("Send Request")),
                         ),
