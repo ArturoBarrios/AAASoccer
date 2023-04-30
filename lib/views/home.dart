@@ -9,7 +9,7 @@ import '../services/amplify_auth_service.dart' as AmplifyAuth;
 import '../components/bottom_nav.dart';
 import '../components/select_icon_button.dart';
 import '../components/search_field.dart';
-import '../components/Dialogues/animated_dialogue.dart';
+import '../components/Dialogues/animated_dialogu.dart';
 import '../components/profile.dart';
 import '../components/headers.dart';
 //card widgets
