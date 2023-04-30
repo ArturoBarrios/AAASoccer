@@ -62,7 +62,7 @@ class _RequestsViewState extends State<RequestsView> {
           eventRequestObject: requestObject, 
           svgImage: svgImage,
           type: requestObject['type'],
-          didSendRequest: didSendRequest,          
+          didSendRequest: didSendRequest     
       );
       return card;
     } else {

@@ -795,4 +795,13 @@ mixin EventMixin {
       return Container();
     }
   }
+
+  // Container getUserParticipants(){
+  //   if (event['userParticipants'].length > 0) {
+  //     return Container(child: Text("userParticipants: " + userParticipants.toString()));
+  //   } else {
+  //     return Container(Text("No Free Agents"));
+  //   }
+
+  // }
 }

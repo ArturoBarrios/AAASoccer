@@ -1,6 +1,8 @@
+import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
+
 class EventFragments {
   String eventGameFragment() {
-    String eventGame = r'''
+    String eventGame = """
         _id
         archived
         deleted
@@ -43,6 +45,11 @@ class EventFragments {
             _id
           }
         }
+        teams{
+          data{
+            ${TeamFragments().fullTeam()}
+          }
+        }
         price{
           _id
           amount
@@ -66,12 +73,12 @@ class EventFragments {
           }
         }
       }
-     ''';
+     """;
     return eventGame;
   }
 
   String fullEvent() {
-    String fullEventReturn = r'''
+    String fullEventReturn = """
       name        	
       _id  
       type                  
@@ -94,6 +101,22 @@ class EventFragments {
           name                      
         }
       }
+      games{
+          data{
+            _id
+            pickup
+          }
+        }
+        trainings{
+          data{
+            _id
+          }
+        }
+      teams{
+          data{
+            ${TeamFragments().fullTeam()}
+          }
+        }
       location{
         data{
         _id
@@ -130,7 +153,7 @@ class EventFragments {
           }
         }
       }
-    ''';
+    """;
 
     return fullEventReturn;
   }

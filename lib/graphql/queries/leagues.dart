@@ -30,7 +30,7 @@ class LeagueQueries {
               numberOfTeams
               events{
                 data{
-                  ${EventFragments().eventGameFragment()}                                                                                   
+                  ${EventFragments().fullEvent()}                                                                                   
                 }
               }
           }

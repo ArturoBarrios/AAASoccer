@@ -33,7 +33,7 @@ class UserFragments{
                     _id
                   }
                   event{
-                    ${EventFragments().eventGameFragment()}  
+                    ${EventFragments().fullEvent()}  
                   }
                   roles
                 }
@@ -49,7 +49,7 @@ class UserFragments{
               }
               events{
                 data{
-                  ${EventFragments().eventGameFragment()}               
+                  ${EventFragments().fullEvent()}               
 
                 }                
               }

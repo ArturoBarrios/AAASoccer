@@ -58,6 +58,42 @@ class EventCommand extends BaseCommand {
     return notifyEventParticipantsResponse;
   }
 
+  Future<Map<String, dynamic>> addTeamToEvent(dynamic eventInput,dynamic teamInput)async{
+    print("addTeamToEvent()");
+    Map<String, dynamic> addTeamToEventResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    
+    try{
+      print("eventInput: " + eventInput.toString());
+      print("teamInput: " + teamInput.toString());
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations().addTeam(eventInput, teamInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+       addTeamToEventResp["success"] = true;
+       addTeamToEventResp["message"] = "Team added";
+       addTeamToEventResp["data"] = jsonDecode(response.body)['data']['updateEvent'];
+
+      return addTeamToEventResp;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return addTeamToEventResp;
+    }
+  }
+
   Map<String, dynamic> checkIfUpdateRole(dynamic event, dynamic userObject, String role){    
         print("checkIfUpdateRole");
         dynamic checkIfUpdateRoleResp = {
@@ -261,10 +297,16 @@ class EventCommand extends BaseCommand {
     print("iterate through events: " + events.toString());
     events.forEach((event) async {
       print("event: " + event.toString());
+      if(event['events'] != null){
+        event = getMainEvent(event['events']['data']);
+      }
+      else{
+        event = event['event'];
+      }
       print("event location check: " +
-          event['event']['location']['data'][0]['longitude'].toString());
-      double latitude = event['event']['location']['data'][0]['latitude'];
-      double longitude = event['event']['location']['data'][0]['longitude'];
+          event['location']['data'][0]['longitude'].toString());
+      double latitude = event['location']['data'][0]['latitude'];
+      double longitude = event['location']['data'][0]['longitude'];
 
       double distanceFromUser =
           await GeoLocationCommand().getDistanceFromUser(latitude, longitude);
@@ -758,11 +800,17 @@ class EventCommand extends BaseCommand {
       "isMember": false,      
       "amountPaid": 0,      
       "paymentObjects": [],
-      "mainEvent": null
+      "mainEvent": null, 
+      "players": [],
+      "freeAgents": [],
+      "organizers": [],
+      "teams": [],
     };
     print("events: " + events.toString());
 
-    try{
+    try{      
+
+
       //get event
       dynamic event;
       if(events.length>1){      
@@ -779,10 +827,16 @@ class EventCommand extends BaseCommand {
       }
       else{
         event = events[0];
-      }
-      isMyEventResp['mainEvent'] = event;
+      }      
 
+      isMyEventResp['mainEvent'] = event;
       print("event: " + event.toString());
+
+      //get teams
+      dynamic teams = event['teams']['data'];
+      print("teams: " + teams.toString());
+      isMyEventResp['teams'] = teams;
+
       //get userParticipation data      
       dynamic userParticipants = event['userParticipants']['data'];
       print("userParticipants: " + userParticipants.toString());
@@ -794,14 +848,21 @@ class EventCommand extends BaseCommand {
           if(roles.contains("ORGANIZER")){
             isMyEventResp["isMyEvent"] = true;
             print("isMyEvent() = true");
+            isMyEventResp['organizers'].add(userParticipant);
           }
           if(roles.contains("PLAYER")){
             isMyEventResp["isMember"] = true;
             print("isMember() = true");          
+            isMyEventResp['players'].add(userParticipant);
+            //check if player belongs to team
+            bool playerBelongsToTeam = BaseCommand().checkElementExists(userParticipant['teams']['data'], teams);                                          
+            print("playerBelongsToTeam: " + playerBelongsToTeam.toString());
+            if(!playerBelongsToTeam){
+              isMyEventResp['freeAgents'].add(userParticipant);
+            }
           }
         }
-      }   
-      print("bbbb");
+      }         
       
 
       //get payment data
@@ -1009,7 +1070,7 @@ class EventCommand extends BaseCommand {
     appModel.myEvents = appModel.currentUser['eventUserParticipants']['data'];
 
     return setupEventsResp;
-  }
+  }  
 
   // updates models for views dependent on EventsModel
   Future<Map<String, dynamic>> updateViewModelsWithGame(

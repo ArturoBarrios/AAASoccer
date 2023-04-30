@@ -371,6 +371,15 @@ void nukeData(){
     print("disconnectUserIdsString: " + disconnectUserIdsString);
     return disconnectUserIdsString;
   }
+
+  bool checkElementExists(List<dynamic> list1, List<dynamic> list2) {
+  for (var item1 in list1) {
+    if (list2.any((item2) => item2['_id'] == item1['_id'])) {
+      return true;
+    }
+  }
+  return false;
+}
   
 
   
