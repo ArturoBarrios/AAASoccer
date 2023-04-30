@@ -15,6 +15,8 @@ import '../commands/notifications_command.dart';
 import '../enums/RequestStatus.dart';
 
 class RequestsCommand extends BaseCommand {
+  
+
   //gets most up to date user model and assigns
   //requests appropriately
   Future<void> updatedSelectedRequests(String requestType) async {
@@ -114,6 +116,80 @@ class RequestsCommand extends BaseCommand {
     }
 
     return getTeamRequestsResp;
+  }
+
+  Future<Map<String, dynamic>> updateFriendRequest(
+      Map<String, dynamic> friendRequestInput) async {
+    print("updateFriendRequest");
+    Map<String, dynamic> updateFriendRequestResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      print("user id before updateFriendRequest: ");
+      print(appModel.currentUser['_id']);
+      friendRequestInput['acceptedBy_id'] = appModel.currentUser['_id'];
+      print("friendRequestInput: ");
+      print(friendRequestInput);
+
+      //create friend relationship
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().updateFriendRequest(
+              friendRequestInput), //(fromInput, toInputs, gameInput),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      Map<String, dynamic> userInput = {
+        "_id": appModel.currentUser['_id'],
+      };
+      Map<String, dynamic> friendInput = {
+        "_id": friendRequestInput['sender']['_id'],
+      };
+      Map<String, dynamic> createUserLink =
+          await UserCommand().addFriend(userInput, friendInput);
+      print("createUserLink: " + createUserLink.toString());
+      if (createUserLink['success']) {
+        //add friend
+        dynamic newFriend = createUserLink['data']['user'];
+        appModel.currentUser['friends'].add(newFriend);
+        //get sender information for push notification
+        Map<String, dynamic> findFriendRequestResp =
+            await findFriendRequest(friendRequestInput);
+        print("findFriendRequestResp: " + findFriendRequestResp.toString());
+        if (findFriendRequestResp['success'] == true) {
+          // prepare notification data
+          print("prepare notification data");
+          Map<String, dynamic> sender = findFriendRequestResp['data']['sender'];
+          print("sender: " + sender.toString());
+          List<String> phones = [sender['phone']];
+          List<String> OSPIDs = [sender['OSPID']];
+          Map<String, dynamic> sendSenderRequestNotificationInput = {
+            "phones": phones,
+            "message": appModel.currentUser['username'] +
+                " has accepted your friend request",
+            "OSPIDs": OSPIDs
+          };
+          await NotificationsCommand().sendAcceptedRequestNotification(
+              sendSenderRequestNotificationInput);
+        }
+      }
+
+      updateFriendRequestResponse["success"] = true;
+      updateFriendRequestResponse["message"] = "Event Request Created";
+      updateFriendRequestResponse["data"] =
+          jsonDecode(response.body)['data']['updateEventRequest'];
+    } catch (e) {}
+
+    return updateFriendRequestResponse;
   }
 
   //eventRequestInput is basically Game, Tournament, League, Training, with attached event
@@ -402,83 +478,11 @@ class RequestsCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> updateFriendRequest(
-      Map<String, dynamic> friendRequestInput) async {
-    print("updateFriendRequest");
-    Map<String, dynamic> updateFriendRequestResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    try {
-      print("user id before updateFriendRequest: ");
-      print(appModel.currentUser['_id']);
-      friendRequestInput['acceptedBy_id'] = appModel.currentUser['_id'];
-      print("friendRequestInput: ");
-      print(friendRequestInput);
+  
 
-      //create friend relationship
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': UserMutations().updateFriendRequest(
-              friendRequestInput), //(fromInput, toInputs, gameInput),
-        }),
-      );
-      print("response body: ");
-      print(jsonDecode(response.body));
-
-      Map<String, dynamic> userInput = {
-        "_id": appModel.currentUser['_id'],
-      };
-      Map<String, dynamic> friendInput = {
-        "_id": friendRequestInput['sender']['_id'],
-      };
-      Map<String, dynamic> createUserLink =
-          await UserCommand().addFriend(userInput, friendInput);
-      print("createUserLink: " + createUserLink.toString());
-      if (createUserLink['success']) {
-        //add friend
-        dynamic newFriend = createUserLink['data']['user'];
-        appModel.currentUser['friends'].add(newFriend);
-        //get sender information for push notification
-        Map<String, dynamic> findFriendRequestResp =
-            await findFriendRequest(friendRequestInput);
-        print("findFriendRequestResp: " + findFriendRequestResp.toString());
-        if (findFriendRequestResp['success'] == true) {
-          // prepare notification data
-          print("prepare notification data");
-          Map<String, dynamic> sender = findFriendRequestResp['data']['sender'];
-          print("sender: " + sender.toString());
-          List<String> phones = [sender['phone']];
-          List<String> OSPIDs = [sender['OSPID']];
-          Map<String, dynamic> sendSenderRequestNotificationInput = {
-            "phones": phones,
-            "message": appModel.currentUser['username'] +
-                " has accepted your friend request",
-            "OSPIDs": OSPIDs
-          };
-          await NotificationsCommand().sendAcceptedRequestNotification(
-              sendSenderRequestNotificationInput);
-        }
-      }
-
-      updateFriendRequestResponse["success"] = true;
-      updateFriendRequestResponse["message"] = "Event Request Created";
-      updateFriendRequestResponse["data"] =
-          jsonDecode(response.body)['data']['updateEventRequest'];
-    } catch (e) {}
-
-    return updateFriendRequestResponse;
-  }
-
-  Map<String, dynamic> updateEventRequestsModel(List eventRequests) {
-    print("updateEventRequestsModel");
-    print(eventRequests);
+  Map<String, dynamic> updateEventRequestsModel(dynamic eventRequest) {
+    print("updateEventRequestModel");
+    print(eventRequest);
     Map<String, dynamic> updateEventRequestsModelResp = {
       "success": false,
       "message": "Default Error",
@@ -486,10 +490,10 @@ class RequestsCommand extends BaseCommand {
     };
 
     print("updateEventRequestsModel eventRequests to set: ");
-    print(eventRequests);
+    print(eventRequest);
     print("updateEventRequestsModel before set eventRequests");
     print(requestsModel.eventRequests);
-    requestsModel.eventRequests = eventRequests;
+    requestsModel.eventRequests.add(eventRequest);
     // requestsPageModel.selectedObjects = eventRequests;
     print("updateEventRequestsModel after set eventRequests");
     print(requestsModel.eventRequests);
@@ -584,7 +588,5 @@ class RequestsCommand extends BaseCommand {
     return updateFriendRequestsModelResp;
   }
 
-  void initialConditionsMet() {
-    requestsPageModel.initialConditionsMet = true;
-  }
+  
 }

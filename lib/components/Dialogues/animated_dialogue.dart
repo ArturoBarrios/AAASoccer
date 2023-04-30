@@ -1,30 +1,98 @@
 import 'package:flutter/material.dart';
-import '../../models/home_page_model.dart';
 
-class AnimatedDialogue extends StatefulWidget {
-  final bool? isVisible;
+class AnimatedDialog extends StatefulWidget {
+  final List<String> items;
 
-  const AnimatedDialogue({Key? key, this.isVisible}) : super(key: key);
+  AnimatedDialog({required this.items});
 
   @override
-  State<AnimatedDialogue> createState() => _AnimatedDialogue();
+  _AnimatedDialogState createState() => _AnimatedDialogState();
 }
 
-class _AnimatedDialogue extends State<AnimatedDialogue> {
-  @override
-  Widget build(BuildContext context){
-    return AnimatedOpacity(
-          // If the widget is visible, animate to 0.0 (invisible).
-          // If the widget is hidden, animate to 1.0 (fully visible).
-          opacity: widget.isVisible == true ? 1.0 : 0.0,
-          duration: const Duration(seconds: 0),
-          // The green box must be a child of the AnimatedOpacity widget.
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: Colors.red,
-            
-          ),
+class _AnimatedDialogState extends State<AnimatedDialog>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  List<String> _selectedItems = [];
+
+  void _openSubDialog(String item) async {
+    final List<String>? result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AnimatedDialog(
+          items: ['${item}_1', '${item}_2', '${item}_3'],
         );
+      },
+    );
+    if (result != null) {
+      setState(() {
+        _selectedItems.addAll(result);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _animation,
+      child: AlertDialog(
+        title: Text('Select Items'),
+        contentPadding: EdgeInsets.all(16.0),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (String item in widget.items)
+                CheckboxListTile(
+                  title: Text(item),
+                  value: _selectedItems.contains(item),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value != null && value) {
+                        _selectedItems.add(item);
+                        _openSubDialog(item);
+                      } else {
+                        _selectedItems.remove(item);
+                      }
+                    });
+                  },
+                ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: Text('CANCEL'),
+            onPressed: () {
+              _controller.reverse().then((value) => Navigator.pop(context));
+            },
+          ),
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              _controller.reverse().then((value) {
+                Navigator.pop(context, _selectedItems);
+              });
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

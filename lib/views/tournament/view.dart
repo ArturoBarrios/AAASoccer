@@ -56,6 +56,7 @@ class _TournamentViewState extends State<TournamentView> {
     widget.loadEventInfo(widget.userEventDetails['mainEvent']);
     widget.setupPlayerList();
     widget.setupTeamList();
+    widget.setupMyTeams();
     _isLoading = false;
     //remove event where isMainEvent and type==TOURNAMENT
     // for (int i = 0; i < tournamentEvents.length; i++) {
@@ -144,11 +145,11 @@ class _TournamentViewState extends State<TournamentView> {
                 widget.getChatWidget(context, true, false),
 
                 widget.userEventDetails['isMyEvent'] ?                
-                  widget.sendPlayersRequestWidget(context)
+                  widget.sendPlayersRequestWidget(context, widget.userEventDetails)
                   : widget.sendOrganizerPlayerEventRequest(context),                
                 widget.userEventDetails['isMyEvent'] ?                
-                  widget.sendTeamsRequestWidget(context)
-                  : widget.sendEventRequestForMyTeamWidget(context),                
+                  widget.sendTeamsRequestWidget(context, widget.userEventDetails)
+                  : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                
 
                  
               ],

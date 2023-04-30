@@ -33,6 +33,7 @@ mixin EventMixin {
   ];
   List playerList = [];
   List teamList = [];
+  List myTeamList = [];
   List playersSelectedList = [];
   List<int>? selectedPlayerIndexes;
   List teamsSelectedList = [];
@@ -57,6 +58,13 @@ mixin EventMixin {
   void setupTeamList() {
     print("setupTeamList");
     teamList = TeamCommand().getAppModelTeamsNearMe();
+    //add teamInEvent property
+  }
+
+  void setupMyTeams(){
+    print("setupMyTeams");
+    teamList = UserCommand().getAppModelMyTeams();
+    myTeamList = teamList;
   }
 
   void setupEventTeamToChoose(int index) {
@@ -615,7 +623,7 @@ mixin EventMixin {
     // await AdaptyPaymentService().makePurchase();
   }
 
-  Container sendPlayersRequestWidget(BuildContext context) {
+  Container sendPlayersRequestWidget(BuildContext context, dynamic userEventDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -628,14 +636,20 @@ mixin EventMixin {
                       titleText: 'Choose Players',
                       listType: ListType.multiSelect,
                       positiveText: "Next",
-                      // onPositiveClick: () async{
-                      //   print("onPositiveClick: " );
-                      //   print("selectIndex: " + index.toString());
-                      //   //navigation add
+                      onPositiveClick: () async{
+                        print("onPositiveClick: " );
+                        
+                        //navigation add
 
-                      // },
+                      },                      
+
+                      onListItemClick: ()  {
+                        print("onListItemClick: ");
+                         
+
+                      },
                       activeColor: Colors.green,
-                      dataList: playerList);
+                      dataList: myTeamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
                 },
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
@@ -677,7 +691,7 @@ mixin EventMixin {
             )));
   }
 
-  Container sendTeamsRequestWidget(BuildContext context) {
+  Container sendTeamsRequestWidget(BuildContext context, dynamic userEventDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -697,7 +711,8 @@ mixin EventMixin {
 
                       // },
                       activeColor: Colors.green,
-                      dataList: teamList);
+                      //only show teams that aren't in event
+                      dataList: teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
                 },
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
@@ -750,7 +765,7 @@ mixin EventMixin {
     );
   }
   
-  Container sendEventRequestForMyTeamWidget(BuildContext context) {
+  Container sendEventRequestForMyTeamWidget(BuildContext context, dynamic userEventDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -762,7 +777,7 @@ mixin EventMixin {
                       selectedIndexes: selectedTeamIndexes,
                       titleText: 'Choose Teams',
                       listType: ListType.multiSelect,
-                      positiveText: "Send Request",
+                      positiveText: "Send Request",                      
                       // onPositiveClick: () async{
                       //   print("onPositiveClick: " );
                       //   print("selectIndex: " + index.toString());
@@ -770,7 +785,7 @@ mixin EventMixin {
 
                       // },
                       activeColor: Colors.green,
-                      dataList: teamList);
+                      dataList: myTeamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
                 },
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
@@ -783,8 +798,8 @@ mixin EventMixin {
             child: Container(
               width: 200,
               height: 50,
-              color: Colors.blue,
-              child: Center(child: Text("Send Teams Request")),
+              color: Colors.green,
+              child: Center(child: Text("Send My Teams Request")),
             )));
   }
 
@@ -795,13 +810,4 @@ mixin EventMixin {
       return Container();
     }
   }
-
-  // Container getUserParticipants(){
-  //   if (event['userParticipants'].length > 0) {
-  //     return Container(child: Text("userParticipants: " + userParticipants.toString()));
-  //   } else {
-  //     return Container(Text("No Free Agents"));
-  //   }
-
-  // }
 }
