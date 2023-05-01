@@ -71,9 +71,32 @@ class BaseCommand {
   return words;
 }
 
-void nukeData(){
   //remove all data
-  appModel.currentUser = {};
+void nukeData(){
+  WidgetsFlutterBinding.ensureInitialized();
+  //nuke data
+  userModel = _mainContext.read();
+  paymentModel = _mainContext.read();
+  appModel = _mainContext.read();
+  eventsModel = _mainContext.read();
+  gamesModel = _mainContext.read();
+  homePageModel = _mainContext.read();
+  requestsModel = _mainContext.read();
+  requestsPageModel = _mainContext.read();
+  friendsPageModel = _mainContext.read();
+  chatPageModel = _mainContext.read();
+  
+  //services
+  geoLocationServices = _mainContext.read();
+
+
+
+
+
+  
+  
+
+
 
 }
 
@@ -226,7 +249,7 @@ void nukeData(){
           userModel.chats = user['chats']['data'];
 
           //setup onesignal
-          await OneSignalService().configureOneSignalUserDetails();
+          await UserCommand().configureOneSignalUserDetails();
 
           print("testing some shit out!");
           

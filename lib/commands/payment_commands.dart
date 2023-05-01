@@ -339,4 +339,18 @@ class PaymentCommand extends BaseCommand {
       return createPriceResp;
     }
   }
+
+  Future<void> testPayment() async {
+    await createPaymentMethod();
+  }
+
+  
+
+  
+
+  Future<void> createPaymentMethod() async {
+    // final paymentMethod =
+    //               await Stripe.instance.createPaymentMethod(PaymentMethodParams.card());
+  }
+
 }

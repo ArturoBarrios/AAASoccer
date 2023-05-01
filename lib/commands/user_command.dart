@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'base_command.dart';
 import 'package:faunadb_http/query.dart';
 import '../models/app_model.dart';
@@ -642,4 +643,37 @@ class UserCommand extends BaseCommand {
     }
     return resp;
   }
+
+  Future<Map<String, dynamic>> configureOneSignalUserDetails() async {
+    print("configureOneSignalUserDetails");
+    Map<String, dynamic> configureOneSignalUserDetailsResp = {
+      "success": false,
+      "message": "Default Error"
+    };
+
+    try {
+      // Add the following line to add Auth plugin to your app.
+      // Pass in email provided by customer
+      OneSignal.shared.setEmail(email: appModel.currentUser['email']);
+      print("phone number to set: " + appModel.currentUser['phone']);
+      // Pass in phone number provided by customer
+      OneSignal.shared
+          .setSMSNumber(smsNumber: "1" + appModel.currentUser['phone']);
+      OneSignal.shared.sendTag("username", appModel.currentUser['username']);
+
+      Map<String, dynamic> updateUserOSPIDResp = await updateUserOSPID();
+
+      configureOneSignalUserDetailsResp["success"] = true;
+      configureOneSignalUserDetailsResp["message"] = "Twilio Configured";
+
+      appModel.onesignalUserDetailsSetup = true;
+    } on Exception catch (e) {
+      print('An error occurred in configureOneSignalUserDetailsResp() : $e');
+    }
+
+    return configureOneSignalUserDetailsResp;
+  }
+
+   
+  
 }

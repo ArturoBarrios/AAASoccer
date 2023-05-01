@@ -4,6 +4,9 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:soccermadeeasy/components/Dialogues/animated_dialogu.dart';
 import 'package:soccermadeeasy/models/home_page_model.dart';
+import 'package:soccermadeeasy/services/network_services.dart';
+import 'package:soccermadeeasy/services/onesignal_service.dart';
+import 'package:soccermadeeasy/services/stripe_service.dart';
 
 import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
@@ -56,72 +59,13 @@ void main() async {
   await dotenv.load(fileName: ".env");
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
-
-    await initHiveForFlutter();
-    final HttpLink httpLink = HttpLink(
-      'https://neat-sunfish-45.hasura.app/v1/graphql',
-    );
-
-    final AuthLink authLink = AuthLink(
-      getToken: () async => 'Bearer fnAEwyiZocACT1B4JJ2YkT2yPqdbIBgQz55x7a-0',
-    );
-
-    final Link link = authLink.concat(httpLink);
-    ValueNotifier<GraphQLClient> client = ValueNotifier(
-      GraphQLClient(
-        link: link,
-        // The default store is the InMemoryStore, which does NOT persist to disk
-        cache: GraphQLCache(store: InMemoryStore()),
-      ),
-    );
-    print("graphQL client: ");
-    print(client);
-
-  Location location = new Location();
-  //this sometimes works and sometimes doesn't. Figure it out!
-  // _locationData = await location.getLocation();
-  // print("locationData: "+_locationData.latitude.toString() + _locationData.longitude.toString());
-
-  bool _serviceEnabled;
-  PermissionStatus _permissionGranted;
-  LocationData _locationData;
-
-  _serviceEnabled = await location.serviceEnabled();
-  print("_serviceEnabled: "+_serviceEnabled.toString());
-  if (!_serviceEnabled) {
-    _serviceEnabled = await location.requestService();
-    if (!_serviceEnabled) {
-      
-    }
-  }
-
-  _permissionGranted = await location.hasPermission();
-  print("permissionGranted: "+_permissionGranted.toString());
-  if (_permissionGranted == PermissionStatus.denied) {
-    _permissionGranted = await location.requestPermission();
-    if (_permissionGranted != PermissionStatus.granted) {
-      
-    }
-  }   
-
-
   
-
-  //Remove this method to stop OneSignal Debugging 
-  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-
-  OneSignal.shared.setAppId("aeb22176-60a9-4077-b161-69381a79fa94");
-
-  // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      print("Accepted permission: $accepted");
-  });
-     
-      print("set publishable key: "+dotenv.env['STRIPE_PUBLISHABLE_KEY']!);
-      Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
-      Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
-      Stripe.urlScheme = 'flutterstripe';
-      await Stripe.instance.applySettings();
+  dynamic createFaunaClientResp = await FaunaDBServices().createFaunaClient();  
+  ValueNotifier<GraphQLClient> client = createFaunaClientResp['client'];
+  await NetworkServices().enableLocationService();
+  await OneSignalService().configureOneSignal();
+  await StripeServices().configureStripeService();
+  print("===============================================");
 
   runApp(MyApp(client: client));
 
