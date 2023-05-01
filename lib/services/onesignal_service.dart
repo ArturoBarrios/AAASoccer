@@ -11,61 +11,43 @@ import '../models/ModelProvider.dart';
 import '../commands/user_command.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';
-import 'package:twilio_flutter/twilio_flutter.dart'; 
+import 'package:twilio_flutter/twilio_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
-class OneSignalService extends BaseCommand {
+class OneSignalService  {
+  Future<void> configureOneSignal() async{
+    print("configureOneSignal");
+    //Remove this method to stop OneSignal Debugging
+    OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
-  Future<Map<String, dynamic>> configureOneSignalUserDetails() async {
-    print("configureOneSignalUserDetails");
-    Map<String, dynamic> configureOneSignalUserDetailsResp = {"success": false, "message": "Default Error"};
-    
-    try {
-      // Add the following line to add Auth plugin to your app.
-      // Pass in email provided by customer
-      OneSignal.shared.setEmail(email: appModel.currentUser['email']);
-      print("phone number to set: "+appModel.currentUser['phone']);
-      // Pass in phone number provided by customer
-      OneSignal.shared.setSMSNumber(smsNumber: "1"+appModel.currentUser['phone']);
-      OneSignal.shared.sendTag("username", appModel.currentUser['username'] );
+    OneSignal.shared.setAppId("aeb22176-60a9-4077-b161-69381a79fa94");
 
-      Map<String, dynamic> updateUserOSPIDResp = await updateUserOSPID();    
-
-      
-        configureOneSignalUserDetailsResp["success"] =  true;
-        configureOneSignalUserDetailsResp["message"] = "Twilio Configured";   
-        
-        
-        appModel.onesignalUserDetailsSetup = true;
-      
-      
-    } on Exception catch (e) {
-      print('An error occurred in configureOneSignalUserDetailsResp() : $e');
-    }
-
-    return configureOneSignalUserDetailsResp;
+    // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+    });
   }
+  
 
-  Future<void> sendPN(Map<String,dynamic> pNInput) async {
+  Future<void> sendPN(Map<String, dynamic> pNInput) async {
     print("sendPNN");
     var deviceState = await OneSignal.shared.getDeviceState();
-    print("OSPIDs: "+pNInput.toString());    
+    print("OSPIDs: " + pNInput.toString());
 
-    if (deviceState == null || deviceState.userId == null){
+    if (deviceState == null || deviceState.userId == null) {
       print("if (deviceState == null || deviceState.userId == null)");
       return;
-    }
-    else{
+    } else {
       print("go onnnn!");
     }
-
 
     var imgUrlString =
         "http://cdn1-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-2.jpg";
 
     var notification = OSCreateNotification(
-        playerIds: pNInput['OSPIDs'],//["3a4086ef-4354-40d1-9573-41a3cc51ed83"],
+        playerIds:
+            pNInput['OSPIDs'], //["3a4086ef-4354-40d1-9573-41a3cc51ed83"],
         content: pNInput['message'],
         heading: "Hello World!",
         iosAttachments: {"id1": imgUrlString},
@@ -77,13 +59,5 @@ class OneSignalService extends BaseCommand {
 
     // var response = await OneSignal.shared.postNotification(notification);
     // print("sendPN response: "+response.toString());
-    
   }
-
-
-  
-
-  
-
-
 }

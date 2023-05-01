@@ -1,6 +1,8 @@
 
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import '../models/app_model.dart';
 import '../graphql/queries/games.dart';
 
@@ -13,14 +15,32 @@ class FaunaDBServices {
     print("createFaunaClient");
     Map<String, dynamic> createFaunaClientResponse = {
       "success": false,
-      "message": "Default Error"
     };
 
-    ///available    
-    print("client: ");
-    print(AppModel().faunaClient.toString());    
+    
+    await initHiveForFlutter();
+  final HttpLink httpLink = HttpLink(
+    'https://neat-sunfish-45.hasura.app/v1/graphql',
+  );
+
+  final AuthLink authLink = AuthLink(
+    getToken: () async => 'Bearer fnAEwyiZocACT1B4JJ2YkT2yPqdbIBgQz55x7a-0',
+  );
+
+    final Link link = authLink.concat(httpLink);
+    ValueNotifier<GraphQLClient> client = ValueNotifier(
+      GraphQLClient(
+        link: link,
+        // The default store is the InMemoryStore, which does NOT persist to disk
+        cache: GraphQLCache(store: InMemoryStore()),
+      ),
+    );
+    print("graphQL client: ");
+    print(client);
+    
     createFaunaClientResponse["success"] = true;
     createFaunaClientResponse["message"] = "Fauna Client Created";
+    createFaunaClientResponse["client"] = client;
     // createFaunaClientResponse["faunaClient"] = faunaClient;
 
     return createFaunaClientResponse;

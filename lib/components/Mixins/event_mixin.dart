@@ -9,6 +9,7 @@ import '../../commands/team_command.dart';
 import '../../commands/user_command.dart';
 import '../../constants.dart';
 import '../../views/chats/create.dart';
+import '../Dialogues/animated_dialogu.dart';
 import '../card_form_screen.dart';
 
 mixin EventMixin {
@@ -33,6 +34,7 @@ mixin EventMixin {
   ];
   List playerList = [];
   List teamList = [];
+  List myTeamList = [];
   List playersSelectedList = [];
   List<int>? selectedPlayerIndexes;
   List teamsSelectedList = [];
@@ -57,6 +59,13 @@ mixin EventMixin {
   void setupTeamList() {
     print("setupTeamList");
     teamList = TeamCommand().getAppModelTeamsNearMe();
+    //add teamInEvent property
+  }
+
+  void setupMyTeams(){
+    print("setupMyTeams");
+    teamList = UserCommand().getAppModelMyTeams();
+    myTeamList = teamList;
   }
 
   void setupEventTeamToChoose(int index) {
@@ -615,7 +624,7 @@ mixin EventMixin {
     // await AdaptyPaymentService().makePurchase();
   }
 
-  Container sendPlayersRequestWidget(BuildContext context) {
+  Container sendPlayersRequestWidget(BuildContext context, dynamic userEventDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -628,14 +637,20 @@ mixin EventMixin {
                       titleText: 'Choose Players',
                       listType: ListType.multiSelect,
                       positiveText: "Next",
-                      // onPositiveClick: () async{
-                      //   print("onPositiveClick: " );
-                      //   print("selectIndex: " + index.toString());
-                      //   //navigation add
+                      onPositiveClick: () async{
+                        print("onPositiveClick: " );
+                        
+                        //navigation add
 
-                      // },
+                      },                      
+
+                      onListItemClick: ()  {
+                        print("onListItemClick: ");
+                         
+
+                      },
                       activeColor: Colors.green,
-                      dataList: playerList);
+                      dataList: myTeamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
                 },
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
@@ -677,7 +692,7 @@ mixin EventMixin {
             )));
   }
 
-  Container sendTeamsRequestWidget(BuildContext context) {
+  Container sendTeamsRequestWidget(BuildContext context, dynamic userEventDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -697,7 +712,8 @@ mixin EventMixin {
 
                       // },
                       activeColor: Colors.green,
-                      dataList: teamList);
+                      //only show teams that aren't in event
+                      dataList: teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
                 },
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
@@ -750,41 +766,52 @@ mixin EventMixin {
     );
   }
   
-  Container sendEventRequestForMyTeamWidget(BuildContext context) {
+  Container sendEventRequestForMyTeamWidget(BuildContext context, dynamic userEventDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
-              List<int>? teamIndexes = await showAnimatedDialog<dynamic>(
-                context: context,
-                barrierDismissible: true,
-                builder: (BuildContext context) {
-                  return ClassicListDialogWidget<dynamic>(
-                      selectedIndexes: selectedTeamIndexes,
-                      titleText: 'Choose Teams',
-                      listType: ListType.multiSelect,
-                      positiveText: "Send Request",
-                      // onPositiveClick: () async{
-                      //   print("onPositiveClick: " );
-                      //   print("selectIndex: " + index.toString());
-                      //   //navigation add
+               List<String> myTeamList = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+    List<String>? result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AnimatedDialog(items: myTeamList, singleSelect: false, secondaryItems: true,);
+      },
+    );
+    if (result != null) {
+      print('Selected items: $result');
+    }
+  
+            //   List<int>? teamIndexes = await showAnimatedDialog<dynamic>(
+            //     context: context,
+            //     barrierDismissible: true,
+            //     builder: (BuildContext context) {
+            //       return ClassicListDialogWidget<dynamic>(
+            //           selectedIndexes: selectedTeamIndexes,
+            //           titleText: 'Choose Teams',
+            //           listType: ListType.multiSelect,
+            //           positiveText: "Send Request",                      
+            //           // onPositiveClick: () async{
+            //           //   print("onPositiveClick: " );
+            //           //   print("selectIndex: " + index.toString());
+            //           //   //navigation add
 
-                      // },
-                      activeColor: Colors.green,
-                      dataList: teamList);
-                },
-                animationType: DialogTransitionType.size,
-                curve: Curves.linear,
-              );
-              selectedTeamIndexes = teamIndexes ?? selectedTeamIndexes;
-              print('selectedIndex:${selectedTeamIndexes?.toString()}');
-              teamsSelected(selectedTeamIndexes!);
-              sendEventRequestForMyTeam();
+            //           // },
+            //           activeColor: Colors.green,
+            //           dataList: myTeamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
+            //     },
+            //     animationType: DialogTransitionType.size,
+            //     curve: Curves.linear,
+            //   );
+            //   selectedTeamIndexes = teamIndexes ?? selectedTeamIndexes;
+            //   print('selectedIndex:${selectedTeamIndexes?.toString()}');
+            //   teamsSelected(selectedTeamIndexes!);
+            //   sendEventRequestForMyTeam();
             },
             child: Container(
               width: 200,
               height: 50,
-              color: Colors.blue,
-              child: Center(child: Text("Send Teams Request")),
+              color: Colors.green,
+              child: Center(child: Text("Send My Teams Request")),
             )));
   }
 
@@ -795,13 +822,4 @@ mixin EventMixin {
       return Container();
     }
   }
-
-  // Container getUserParticipants(){
-  //   if (event['userParticipants'].length > 0) {
-  //     return Container(child: Text("userParticipants: " + userParticipants.toString()));
-  //   } else {
-  //     return Container(Text("No Free Agents"));
-  //   }
-
-  // }
 }

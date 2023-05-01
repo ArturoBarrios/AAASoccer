@@ -840,18 +840,22 @@ class EventCommand extends BaseCommand {
       //get userParticipation data      
       dynamic userParticipants = event['userParticipants']['data'];
       print("userParticipants: " + userParticipants.toString());
-      for(int i = 0; i<userParticipants.length; i++){
-        if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']
-        ){
+      for(int i = 0; i<userParticipants.length; i++){        
           dynamic userParticipant = userParticipants[i];
           List<String> roles = parseRoles(userParticipant['roles']);
           if(roles.contains("ORGANIZER")){
+            if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']
+        ){
             isMyEventResp["isMyEvent"] = true;
+        }
             print("isMyEvent() = true");
             isMyEventResp['organizers'].add(userParticipant);
           }
           if(roles.contains("PLAYER")){
+            if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']
+        ){
             isMyEventResp["isMember"] = true;
+        }
             print("isMember() = true");          
             isMyEventResp['players'].add(userParticipant);
             //check if player belongs to team
@@ -868,8 +872,10 @@ class EventCommand extends BaseCommand {
 
             }
           }
-        }
-      }         
+        
+      }     
+
+      print("players: " + isMyEventResp['players'].toString());    
       
 
       //get payment data

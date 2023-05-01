@@ -132,7 +132,7 @@ class _LeagueViewState extends State<LeagueView> {
             widget.userEventDetails['mainEvent'], widget.userObject),
         widget.getChatWidget(context, true, false),
         widget.userEventDetails['isMyEvent']
-            ? widget.sendPlayersRequestWidget(context)
+            ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
             : Container(),
       ])),
     );

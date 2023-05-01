@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter/material.dart';
+import '../commands/payment_commands.dart';
 import '../services/stripe_service.dart';
 
 
@@ -28,7 +29,7 @@ class _PaymentScreen extends State<PaymentScreen> {
           TextButton(
             onPressed: () async {
               print("payment button pressed");
-             StripeServices().testPayment();
+             PaymentCommand().testPayment();
             },
             child: Text('pay button!'),
           )
