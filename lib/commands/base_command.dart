@@ -89,6 +89,8 @@ void nukeData(){
   //services
   geoLocationServices = _mainContext.read();
 
+  appModel.initialConditionsMet = false;
+
 
 
 
