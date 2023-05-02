@@ -197,15 +197,14 @@ mixin EventMixin {
     }
   }
 
-  Future<void> sendTeamsEventRequest(dynamic event) async {
+  Future<void> sendTeamsEventRequest(dynamic event, Map<int, dynamic> indexes, List<dynamic> primaryList, List<dynamic> secondaryList) async {
     print("sendTeamsEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());
-    print("teamsSelectedList: " + teamsSelectedList.toString());
-
-    for (int i = 0; i < teamsSelectedList.length; i++) {
-      await TeamCommand().sendTeamEventRequest(teamsSelectedList[i], event);
-    }
+    print("primaryList: " + primaryList.toString());
+    print("secondaryList: " + secondaryList.toString());
+    indexes.forEach((mainIndex, secondaryIndexes) async {
+      dynamic teamChosen = primaryList[mainIndex];
+      await TeamCommand().sendTeamEventRequest(teamChosen, event);
+    });
   }
   
   Future<void> sendEventRequestForMyTeams(dynamic event) async {
@@ -255,18 +254,22 @@ mixin EventMixin {
   }
 
   //send organizers event request
-  Future<void> sendEventRequest(dynamic eventObject) async {
+  Future<void> sendEventRequest(dynamic eventObject, Map<int, dynamic> indexes, List<dynamic> primaryList, List<dynamic> secondaryList) async {
     print("sendEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
+    print("primaryList: " + primaryList.toString());
+    print("secondaryList: " + secondaryList.toString());    
     String requestType = getRequestType(eventObject);
-    for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
+
+    indexes.forEach((mainIndex, secondaryIndexesThatIsNull) async {
+      dynamic role = primaryList[mainIndex];
       await EventCommand().sendOrganizerEventRequest(
-          eventObject, selectedRequestTypeObjects[i], requestType);
-    }
+        eventObject, role, requestType);
+    });
+
+    // for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
+    //   await EventCommand().sendOrganizerEventRequest(
+    //       eventObject, selectedRequestTypeObjects[i], requestType);
+    // }
   }
 
   void loadTeamInfo(dynamic team) {
@@ -536,7 +539,7 @@ mixin EventMixin {
             onTap: () {
               print("!withPayment&&!withRequest");
               selectedRequestTypeObjects.add("PLAYER");
-              sendEventRequest(event);
+              sendEventRequest(event, {0: {}}, requestUserTypes, []);
               selectedRequestTypeObjects = [];
             },
             child: Text("Send Request to Join(No Payment required to join)"),
@@ -603,7 +606,7 @@ mixin EventMixin {
                   child: GestureDetector(
                 onTap: () {
                   selectedRequestTypeObjects.add("PLAYER");
-                  sendEventRequest(event);
+                  sendEventRequest(event, {0: {}}, requestUserTypes, []);
                   selectedRequestTypeObjects = [];
                 },
                 child: Text("Request Denied, Resend Request"),
@@ -615,7 +618,7 @@ mixin EventMixin {
               onTap: () {
                 print("withPayment && withRequest");
                 selectedRequestTypeObjects.add("PLAYER");
-                sendEventRequest(event);
+                sendEventRequest(event, {0: {}}, requestUserTypes, []);
                 selectedRequestTypeObjects = [];
               },
               child: Text("Send Request to Join(Payment required to join)"),
@@ -731,26 +734,29 @@ mixin EventMixin {
     return Container(
         child: GestureDetector(
             onTap: () async {
+               List<dynamic> primaryList = playerList;
+              List<dynamic> secondaryList = [];
               List<dynamic> processedTeamList = teamList
                 .where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"]))
                 .map((item) => item['team'])
                 .toList();
+                primaryList = processedTeamList;
                 //original list (just look at commented code below)
               // teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList();
               Map<int,dynamic> result = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
-                    items: processedTeamList,
+                    items: primaryList,
                     singleSelect: false,
-                    secondaryItems: [] 
+                    secondaryItems: secondaryList 
                     );
                 },
               );
               if (result.isNotEmpty) {
                 print('Selected items: $result');
                 // teamsSelected(selectedPlayerIndexes!);
-              // sendTeamsEventRequest(event);
+              sendTeamsEventRequest(event, result, primaryList, secondaryList );
                 
               }
 
@@ -792,20 +798,22 @@ mixin EventMixin {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20.0),
         child: GestureDetector(
-            onTap: () async {                            
+            onTap: () async {        
+              List<dynamic> primaryList = requestUserTypes;
+              List<dynamic> secondaryList = [];                    
               Map<int,dynamic> result = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
-                    items: requestUserTypes,
+                    items: primaryList,
                     singleSelect: false,
-                    secondaryItems: [] );
+                    secondaryItems: secondaryList );
                 },
               );
               if (result.isNotEmpty) {
                 print('Selected items: $result');
                 // await requestTypeSelected(selectedRequestTypeIndexes);
-                // await sendEventRequest(event);
+                await sendEventRequest(event, result, primaryList, secondaryList );
                 
               }
 
@@ -837,7 +845,12 @@ mixin EventMixin {
               // await requestTypeSelected(selectedRequestTypeIndexes);
               // await sendEventRequest(event);
             },
-            child: Text("Send Player Request")),
+            child: Container(
+              width: 200,
+              height: 50,
+              color: Colors.green,
+              child: Center(child: Text("Send Player Request")),
+            )),            
       ),
     );
   }
