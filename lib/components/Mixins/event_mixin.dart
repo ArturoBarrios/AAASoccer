@@ -337,30 +337,43 @@ mixin EventMixin {
           child: GestureDetector(
               onTap: () async {
                 print("Add New Chat Pressed");
-                // Navigator.push(context, MaterialPageRoute<void>(
+                 Map<int,dynamic> result = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AnimatedDialog(
+                    items: playerList,
+                    singleSelect: false,
+                    secondaryItems: [] );
+                },
+              );
+              if (result.isNotEmpty) {
+                // playersSelected(selectedPlayerIndexes!);
+                // createChat(context, attachToEvent, attachToTeam);
+              }
+
+
+
+
+
+                // List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
+                //   context: context,
+                //   barrierDismissible: true,
                 //   builder: (BuildContext context) {
-                //     return ChatCreate();
+                //     return ClassicListDialogWidget<dynamic>(
+                //         selectedIndexes: selectedPlayerIndexes,
+                //         titleText: 'Choose Players',
+                //         listType: ListType.multiSelect,
+                //         positiveText: "Create Chat",
+                //         activeColor: Colors.green,
+                //         dataList: playerList);
                 //   },
-                // ));
-                List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) {
-                    return ClassicListDialogWidget<dynamic>(
-                        selectedIndexes: selectedPlayerIndexes,
-                        titleText: 'Choose Players',
-                        listType: ListType.multiSelect,
-                        positiveText: "Create Chat",
-                        activeColor: Colors.green,
-                        dataList: playerList);
-                  },
-                  animationType: DialogTransitionType.size,
-                  curve: Curves.linear,
-                );
-                selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
-                print('selectedIndex:${selectedPlayerIndexes?.toString()}');
-                playersSelected(selectedPlayerIndexes!);
-                createChat(context, attachToEvent, attachToTeam);
+                //   animationType: DialogTransitionType.size,
+                //   curve: Curves.linear,
+                // );
+                // selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
+                // print('selectedIndex:${selectedPlayerIndexes?.toString()}');
+                // playersSelected(selectedPlayerIndexes!);
+                // createChat(context, attachToEvent, attachToTeam);
               },
               child: Container(
                 padding: EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 2),
@@ -701,24 +714,49 @@ mixin EventMixin {
     return Container(
         child: GestureDetector(
             onTap: () async {
-              List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
+              List<dynamic> processedTeamList = teamList
+                .where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"]))
+                .map((item) => item['team'])
+                .toList();
+                //original list (just look at commented code below)
+              // teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList();
+              Map<int,dynamic> result = await showDialog(
                 context: context,
-                barrierDismissible: true,
                 builder: (BuildContext context) {
-                  return ClassicListDialogWidget<dynamic>(
-                      selectedIndexes: selectedPlayerIndexes,
-                      titleText: 'Choose Teams',
-                      listType: ListType.multiSelect,
-                      positiveText: "Send Request",
-                      activeColor: Colors.green,
-                      //only show teams that aren't in event
-                      dataList: teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
+                  return AnimatedDialog(
+                    items: processedTeamList,
+                    singleSelect: false,
+                    secondaryItems: [] );
                 },
-                animationType: DialogTransitionType.size,
-                curve: Curves.linear,
               );
-              selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
-              print('selectedIndex:${selectedPlayerIndexes?.toString()}');
+              if (result.isNotEmpty) {
+                print('Selected items: $result');
+                // teamsSelected(selectedPlayerIndexes!);
+              // sendTeamsEventRequest(event);
+                
+              }
+
+
+
+
+              // List<int>? playerIndexes = await showAnimatedDialog<dynamic>(
+              //   context: context,
+              //   barrierDismissible: true,
+              //   builder: (BuildContext context) {
+              //     return ClassicListDialogWidget<dynamic>(
+              //         selectedIndexes: selectedPlayerIndexes,
+              //         titleText: 'Choose Teams',
+              //         listType: ListType.multiSelect,
+              //         positiveText: "Send Request",
+              //         activeColor: Colors.green,
+              //         //only show teams that aren't in event
+              //         dataList: teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
+              //   },
+              //   animationType: DialogTransitionType.size,
+              //   curve: Curves.linear,
+              // );
+              // selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
+              // print('selectedIndex:${selectedPlayerIndexes?.toString()}');
               // teamsSelected(selectedPlayerIndexes!);
               // sendTeamsEventRequest(event);
             },
@@ -736,29 +774,50 @@ mixin EventMixin {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20.0),
         child: GestureDetector(
-            onTap: () async {
-              print("onTap: ");
-              List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
+            onTap: () async {                            
+              Map<int,dynamic> result = await showDialog(
                 context: context,
-                barrierDismissible: true,
                 builder: (BuildContext context) {
-                  return ClassicListDialogWidget<dynamic>(
-                      selectedIndexes: selectedRequestTypeIndexes,
-                      titleText: 'Choose User Type',
-                      positiveText: "Send Request",
-                      listType: ListType.multiSelect,
-                      activeColor: Colors.green,
-                      dataList: requestUserTypes);
+                  return AnimatedDialog(
+                    items: requestUserTypes,
+                    singleSelect: false,
+                    secondaryItems: [] );
                 },
-                animationType: DialogTransitionType.size,
-                curve: Curves.linear,
               );
+              if (result.isNotEmpty) {
+                print('Selected items: $result');
+                // await requestTypeSelected(selectedRequestTypeIndexes);
+                // await sendEventRequest(event);
+                
+              }
 
-              selectedRequestTypeIndexes =
-                  requestIndexes ?? selectedRequestTypeIndexes;
-              print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-              await requestTypeSelected(selectedRequestTypeIndexes);
-              await sendEventRequest(event);
+
+
+
+
+
+              // print("onTap: ");
+              // List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
+              //   context: context,
+              //   barrierDismissible: true,
+              //   builder: (BuildContext context) {
+              //     return ClassicListDialogWidget<dynamic>(
+              //         selectedIndexes: selectedRequestTypeIndexes,
+              //         titleText: 'Choose User Type',
+              //         positiveText: "Send Request",
+              //         listType: ListType.multiSelect,
+              //         activeColor: Colors.green,
+              //         dataList: requestUserTypes);
+              //   },
+              //   animationType: DialogTransitionType.size,
+              //   curve: Curves.linear,
+              // );
+
+              // selectedRequestTypeIndexes =
+              //     requestIndexes ?? selectedRequestTypeIndexes;
+              // print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+              // await requestTypeSelected(selectedRequestTypeIndexes);
+              // await sendEventRequest(event);
             },
             child: Text("Send Player Request")),
       ),
