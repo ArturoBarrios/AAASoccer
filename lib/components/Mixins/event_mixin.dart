@@ -771,15 +771,17 @@ mixin EventMixin {
         child: GestureDetector(
             onTap: () async {
                List<String> myTeamList = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
-    List<String>? result = await showDialog(
+    Map<int,dynamic> result = await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AnimatedDialog(items: myTeamList, singleSelect: false, secondaryItems: true,);
+        return AnimatedDialog(items: myTeamList, singleSelect: false, secondaryItems: ["Item21"] );
       },
     );
-    if (result != null) {
+    if (result.isNotEmpty) {
       print('Selected items: $result');
+      
     }
+    
   
             //   List<int>? teamIndexes = await showAnimatedDialog<dynamic>(
             //     context: context,
