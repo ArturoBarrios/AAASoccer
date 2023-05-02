@@ -117,7 +117,7 @@ class _TournamentViewState extends State<TournamentView> {
                                   'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
                               await widget.requestTypeSelected(
                                   widget.selectedRequestTypeIndexes);
-                              await widget.sendEventRequest(widget.userEventDetails['mainEvent']);
+                              await widget.sendEventRequest(widget.userEventDetails['mainEvent'], {0: {}}, widget.requestUserTypes, []);
                             },
                             child: Text("Send Non Player Request"),
                           ),

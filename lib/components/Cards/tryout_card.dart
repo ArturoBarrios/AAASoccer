@@ -55,7 +55,7 @@ class _TryoutCard extends State<TryoutCard> {
     }
 
     Future<void> sendEventRequest() async {
-      widget.sendEventRequest(widget.tryoutObject);
+      widget.sendEventRequest(widget.tryoutObject, {0: {}}, widget.requestUserTypes, []);
     // print("sendEventRequest");
     // print("selectedRequestTypeObjects.length: " +
     //     selectedRequestTypeObjects.length.toString());
