@@ -95,7 +95,7 @@ class _AnimatedDialogState extends State<AnimatedDialog> {
               itemCount: widget.items.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(widget.items[index]),
+                  title: Text(widget.items[index].toString()),
                   leading: widget.singleSelect
                       ? Radio(
                           value: true,

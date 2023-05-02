@@ -257,6 +257,7 @@ class TeamCommand extends BaseCommand {
     };
 
     try{
+      print("teamInput: "+ teamInput.toString());
       dynamic sendEventRequestForMyTeamInput = {
         "sender_id": appModel.currentUser['_id'],
         "team_id": teamInput['_id'],
@@ -298,6 +299,7 @@ class TeamCommand extends BaseCommand {
 
       print("organizersString: " + organizersString);
       print("OSPIDs: " + OSPIDs.toString());
+      print("phones: " + phones.toString());
       sendEventRequestForMyTeamInput['receivers'] = organizersString;
 
       http.Response response = await http.post(
@@ -314,15 +316,17 @@ class TeamCommand extends BaseCommand {
 
       print("response: "+ response.body.toString());
       print("sendTeamEventRequest");
-
+      
        Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
         "message": appModel.currentUser['username']+" from "+teamInput['name'] +
             " has sent you a request to join your tournament "+ eventInput['name'],
         "OSPIDs": OSPIDs
       };
+      print("sendOrganizerRequestNotificationInput: "+sendOrganizerRequestNotificationInput.toString());
       await NotificationsCommand().sendOrganizerRequestNotification(
-          sendOrganizerRequestNotificationInput);
+          sendOrganizerRequestNotificationInput
+      );
 
 
       sendEventRequestForMyTeamResponse["success"] = true;

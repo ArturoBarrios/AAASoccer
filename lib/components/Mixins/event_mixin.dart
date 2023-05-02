@@ -141,16 +141,21 @@ mixin EventMixin {
     }
   }
 
-  void teamsSelected(List<int> selectedIndexes) {
+  void teamsSelected(Map<int,dynamic> selectedIndexes, List<dynamic> teamListUsed) {
     print("teamsSelected: $selectedIndexes");
     print("teamList: " +teamList.toString());
-    selectedTeamIndexes = selectedIndexes;
-    teamsSelectedList = [];
-    for (int i = 0; i < selectedIndexes.length; i++) {
-      print("inside for loop");
-      teamsSelectedList.add(teamList[selectedIndexes[i]]);
-      print("teamList[selectedIndexes[i]]: " + teamList[selectedIndexes[i]].toString());
-    }
+    // selectedTeamIndexes = selectedIndexes;
+    // teamsSelectedList = [];
+    selectedIndexes.forEach((key, secondarySelectedIndexes){
+      print("key: " + key.toString());
+      print("secondarySelectedIndexes: " + secondarySelectedIndexes.toString());
+      teamsSelectedList.add(teamListUsed[key]);
+    });
+    // for (int i = 0; i < selectedIndexes.length; i++) {
+    //   print("inside for loop");
+    //   teamsSelectedList.add(teamList[selectedIndexes[i]]);
+    //   print("teamList[selectedIndexes[i]]: " + teamList[selectedIndexes[i]].toString());
+    // }
   }
 
   requestTypeSelected(List<int>? indexes) async {
@@ -705,12 +710,6 @@ mixin EventMixin {
                       titleText: 'Choose Teams',
                       listType: ListType.multiSelect,
                       positiveText: "Send Request",
-                      // onPositiveClick: () async{
-                      //   print("onPositiveClick: " );
-                      //   print("selectIndex: " + index.toString());
-                      //   //navigation add
-
-                      // },
                       activeColor: Colors.green,
                       //only show teams that aren't in event
                       dataList: teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList());
@@ -720,8 +719,8 @@ mixin EventMixin {
               );
               selectedPlayerIndexes = playerIndexes ?? selectedPlayerIndexes;
               print('selectedIndex:${selectedPlayerIndexes?.toString()}');
-              teamsSelected(selectedPlayerIndexes!);
-              sendTeamsEventRequest(event);
+              // teamsSelected(selectedPlayerIndexes!);
+              // sendTeamsEventRequest(event);
             },
             child: Container(
               width: 200,
@@ -770,15 +769,27 @@ mixin EventMixin {
     return Container(
         child: GestureDetector(
             onTap: () async {
-               List<String> myTeamList = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+              print("myTeamList before: "+myTeamList.toString());
+              
+            List<dynamic> myProcessedTeamList = myTeamList
+    .where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"]))
+    .map((item) => item['team'])
+    .toList();
+
+              //  List<String> myTeamList = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
     Map<int,dynamic> result = await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AnimatedDialog(items: myTeamList, singleSelect: false, secondaryItems: ["Item21"] );
+        return AnimatedDialog(
+          items: myProcessedTeamList,
+          singleSelect: false,
+          secondaryItems: [] );
       },
     );
     if (result.isNotEmpty) {
       print('Selected items: $result');
+      teamsSelected(result, myProcessedTeamList);
+      sendEventRequestForMyTeam();
       
     }
     
