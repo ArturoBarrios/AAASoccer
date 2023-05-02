@@ -102,18 +102,7 @@ class _PickupCard2 extends State<PickupCard2> {
 
     }
 
-    Future<void> sendPlayersEventRequest() async{
-      widget.sendPlayersEventRequest(widget.gameObject);   
-      // print("sendPlayersEventRequest");            
-      // print("selectedRequestTypeObjects.length: " + selectedRequestTypeObjects.length.toString());      
-      // print("playersSelectedList.length: " + playersSelectedList.length.toString());
-      // print("selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-      // print("send player event request");
-      // for(int i = 0; i< playersSelectedList.length;i++){
-      //   await EventCommand().sendPlayerEventRequests(playersSelectedList[i],[widget.gameObject], selectedRequestTypeObjects);
-      // }
-      
-    }
+    
 
     Future<void> sendEventRequest() async {
       widget.sendEventRequest(widget.gameObject);
@@ -342,7 +331,8 @@ class _PickupCard2 extends State<PickupCard2> {
                         widget.selectedRequestTypeIndexes = requestIndexes ?? widget.selectedRequestTypeIndexes;
                         print('selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
                         requestTypeSelected(widget.selectedRequestTypeIndexes);
-                        sendPlayersEventRequest();
+                        //uncomment this 
+                        // widget.sendPlayersEventRequest();
             }
           },
 
