@@ -1,7 +1,6 @@
 import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
 
 class EventFragments {
-  
   String fullEvent() {
     String fullEventReturn = """
       name        	
@@ -27,16 +26,26 @@ class EventFragments {
         }
       }
       games{
-          data{
-            _id
-            pickup
-          }
+        data{
+          _id
+          pickup
         }
-        trainings{
-          data{
-            _id
-          }
+      }
+      trainings{
+        data{
+          _id
         }
+      }
+      tournaments{
+        data{
+          _id
+        }
+      } 
+      leagues{
+        data{
+          _id
+        }
+      }
       teams{
           data{
             ${TeamFragments().fullTeam()}

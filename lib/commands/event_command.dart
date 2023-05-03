@@ -1087,7 +1087,7 @@ class EventCommand extends BaseCommand {
 
   // updates models for views dependent on EventsModel
   Future<Map<String, dynamic>> updateViewModelsWithGame(
-      Map<String, dynamic> game) async {
+      Map<String, dynamic> game, bool add) async {
     print("updateViewModelsWithGame()");
     Map<String, dynamic> updateViewModelsWithGameResp = {
       "success": false,
@@ -1097,7 +1097,12 @@ class EventCommand extends BaseCommand {
     print("length of events modeL games: ");
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
-    await EventCommand().addGame(game, true);
+    if(add){
+      await EventCommand().addGame(game, true);      
+    }
+    else{
+      // await EventCommand().removeGame(game, true);
+    }
     UserCommand().findMyUserById();
     if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){
       homePageModel.selectedObjects = List.from(eventsModel.games);
@@ -1107,7 +1112,7 @@ class EventCommand extends BaseCommand {
   }
  
   Future<Map<String, dynamic>> updateViewModelsWithTournament(
-      Map<String, dynamic> tournament) async {
+      Map<String, dynamic> tournament, bool add) async {
     print("updateViewModelsWithTournament()");
     Map<String, dynamic> updateViewModelsWithTournamentResp = {
       "success": false,
@@ -1117,7 +1122,12 @@ class EventCommand extends BaseCommand {
     print("length of events modeL tournament: ");
     print(eventsModel.tournaments.length);
     print("length of homePageModel selectedObjects: ");
-    await EventCommand().addTournament(tournament);
+    if(add){
+      await EventCommand().addTournament(tournament);
+    }
+    else{
+      // await EventCommand().removeTournament(tournament);
+    }
     UserCommand().findMyUserById();
     if(homePageModel.selectedKey.toString() == Constants.TOURNAMENT.toString()){
       homePageModel.selectedObjects = List.from(eventsModel.tournaments);
@@ -1127,7 +1137,7 @@ class EventCommand extends BaseCommand {
   }
   
   Future<Map<String, dynamic>> updateViewModelsWithLeague(
-      Map<String, dynamic> league) async {
+      Map<String, dynamic> league, bool add) async {
     print("updateViewModelsWithLeague()");
     Map<String, dynamic> updateViewModelsWithLeagueResp = {
       "success": false,
@@ -1137,7 +1147,13 @@ class EventCommand extends BaseCommand {
     print("length of events modeL league: ");
     print(eventsModel.leagues.length);
     print("length of homePageModel selectedObjects: ");
-    await EventCommand().addLeague(league);
+    if(add){
+      await EventCommand().addLeague(league);
+    }
+    else{
+      // await EventCommand().removeLeague(league);
+    }
+      
     UserCommand().findMyUserById();
     if(homePageModel.selectedKey.toString() == Constants.LEAGUE.toString()){
       homePageModel.selectedObjects = List.from(eventsModel.leagues);
@@ -1211,7 +1227,7 @@ class EventCommand extends BaseCommand {
     print(eventsModel.games.length);
     print("updateViewModelsBool: ");
     print(updateViewModelsBool);
-    if (updateViewModelsBool) await updateViewModelsWithGame(game);
+    if (updateViewModelsBool) await updateViewModelsWithGame(game, true);
 
     return archiveGameResp;
   }
@@ -1351,4 +1367,83 @@ class EventCommand extends BaseCommand {
 
     return setupMappedEventsResp;
   }
+
+  Future<Map<String, dynamic>> removeUsersRolesFromEvent(dynamic event ,List<dynamic> users, List<dynamic>roles ) async {
+    print("removePlayersFromTeam");
+    print("event: " + event.toString());
+    print("users: " + users.toString());
+    print("roles: " + roles.toString());
+    
+    Map<String, dynamic> removeUsersRolesFromEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+      
+
+    // http.Response response = await http.post(
+    //   Uri.parse('https://graphql.fauna.com/graphql'),
+    //   headers: <String, String>{
+    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
+    //   }),
+    // );
+
+    // print("response body: ");
+    // print(jsonDecode(response.body));
+
+  
+
+    removeUsersRolesFromEventResponse["success"] = true;
+    removeUsersRolesFromEventResponse["message"] = "Team Removed";
+    // removePlayersFromTeamResponse["data"] =
+    //     jsonDecode(response.body)['data']['updateTeam'];
+
+    return removeUsersRolesFromEventResponse;
+  }
+
+
+  //ensure safety of team
+  //todo add a make team safe property on Event
+  Future<Map<String, dynamic>> removeUsersFromEvent(dynamic event ,List<dynamic> users, List<dynamic>roles ) async {
+    print("removeUsersFromEvent");
+    print("event: " + event.toString());
+    print("users: " + users.toString());    
+    
+    Map<String, dynamic> removeUsersFromEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+      
+
+    // http.Response response = await http.post(
+    //   Uri.parse('https://graphql.fauna.com/graphql'),
+    //   headers: <String, String>{
+    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
+    //   }),
+    // );
+
+    // print("response body: ");
+    // print(jsonDecode(response.body));
+
+  
+
+    removeUsersFromEventResponse["success"] = true;
+    removeUsersFromEventResponse["message"] = "Team Removed";
+    // removePlayersFromTeamResponse["data"] =
+    //     jsonDecode(response.body)['data']['updateTeam'];
+
+    return removeUsersFromEventResponse;
+  }
+
+
+
 }
