@@ -228,7 +228,7 @@ Future<Map<String, dynamic>> getTournamentsNearLocation() async {
       // await EventCommand().addGame(createdGame, true);
     }
     print("tournament: "+tournament.toString());
-    EventCommand().updateViewModelsWithTournament(tournament);
+    EventCommand().updateViewModelsWithTournament(tournament, true);
 
   }
 

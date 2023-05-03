@@ -210,7 +210,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
       // await EventCommand().addGame(createdGame, true);
     }
     print("league: "+league.toString());
-    EventCommand().updateViewModelsWithLeague(league);
+    EventCommand().updateViewModelsWithLeague(league, true);
 
   }
 

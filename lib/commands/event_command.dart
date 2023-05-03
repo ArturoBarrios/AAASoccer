@@ -1404,6 +1404,43 @@ class EventCommand extends BaseCommand {
 
     return removeUsersRolesFromEventResponse;
   }
+  
+  Future<Map<String, dynamic>> addUsersRolesInEvent(dynamic event ,List<dynamic> users, List<dynamic>roles ) async {
+    print("addUsersRolesInEvent");
+    print("event: " + event.toString());
+    print("users: " + users.toString());
+    print("roles: " + roles.toString());
+    
+    Map<String, dynamic> addUsersRolesInEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+      
+
+    // http.Response response = await http.post(
+    //   Uri.parse('https://graphql.fauna.com/graphql'),
+    //   headers: <String, String>{
+    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
+    //   }),
+    // );
+
+    // print("response body: ");
+    // print(jsonDecode(response.body));
+
+  
+
+    addUsersRolesInEventResponse["success"] = true;
+    addUsersRolesInEventResponse["message"] = "Team Removed";
+    // removePlayersFromTeamResponse["data"] =
+    //     jsonDecode(response.body)['data']['updateTeam'];
+
+    return addUsersRolesInEventResponse;
+  }
 
 
   //ensure safety of team
