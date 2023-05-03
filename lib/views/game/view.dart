@@ -24,7 +24,7 @@ class PickupView extends StatefulWidget with EventMixin, PaymentMixin {
   PickupView({Key? key, required this.userEventDetails, required this.game})
       : super(key: key);
 
-  final dynamic userEventDetails;  
+  final dynamic userEventDetails;
   final dynamic game;
 
   @override
@@ -44,12 +44,9 @@ class _PickupViewState extends State<PickupView> {
   late LatLng _center = LatLng(45.521563, -122.677433);
   dynamic priceObject;
 
-
-
   LatLng latLng(lat, lon) {
     return LatLng(lat, lon);
   }
-
 
   void goBack() {
     Navigator.pop(context);
@@ -59,14 +56,12 @@ class _PickupViewState extends State<PickupView> {
     priceObject = widget.game['event']['price'];
   }
 
-  
-
   @override
   void initState() {
     super.initState();
 
     print("initState");
-    print("game: " + widget.game.toString());    
+    print("game: " + widget.game.toString());
     loadEventPayment();
     widget.loadEventInfo(widget.game['event']);
     widget.setupPlayerList();
@@ -99,43 +94,7 @@ class _PickupViewState extends State<PickupView> {
                           ['longitude']),
                 ),
                 !widget.userEventDetails['isMyEvent']
-                    ? Container(
-                        height: 20,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: GestureDetector(
-                              onTap: () async {
-                                print("onTap: ");
-                                List<int>? requestIndexes =
-                                    await showAnimatedDialog<dynamic>(
-                                  context: context,
-                                  barrierDismissible: true,
-                                  builder: (BuildContext context) {
-                                    return ClassicListDialogWidget<dynamic>(
-                                        selectedIndexes:
-                                            widget.selectedRequestTypeIndexes,
-                                        titleText: 'Choose User Type',
-                                        positiveText: "Send Request",
-                                        listType: ListType.multiSelect,
-                                        activeColor: Colors.green,
-                                        dataList: widget.requestUserTypes);
-                                  },
-                                  animationType: DialogTransitionType.size,
-                                  curve: Curves.linear,
-                                );
-
-                                widget.selectedRequestTypeIndexes =
-                                    requestIndexes ??
-                                        widget.selectedRequestTypeIndexes;
-                                print(
-                                    'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                                await widget.requestTypeSelected(
-                                    widget.selectedRequestTypeIndexes);
-                                await widget.sendEventRequest(widget.game, {0: {}}, widget.requestUserTypes, []);
-                              },
-                              child: Text("Send Request")),
-                        ),
-                      )
+                    ? widget.sendOrganizerPlayerEventRequest(context)
                     : Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,12 +113,11 @@ class _PickupViewState extends State<PickupView> {
                   ],
                 ),
                 //join game gesture detector for now
-                widget.getJoinGameWidget(context, widget.userEventDetails, widget.game['event'], widget.userObject),
+                widget.getJoinGameWidget(context, widget.userEventDetails,
+                    widget.game['event'], widget.userObject),
                 widget.getChatWidget(context, true, false),
               ],
             ),
     );
   }
 }
-
-

@@ -18,6 +18,7 @@ class PickupCard2 extends StatefulWidget with EventMixin {
   final Svg svgImage;
   final dynamic userEventDetails;
   final double bevel = 10.0;
+  
 
   @override
   State<PickupCard2> createState() => _PickupCard2();
@@ -60,6 +61,8 @@ Future<Map<String, dynamic>> removePickup(dynamic gameObject) async {
 
 
 class _PickupCard2 extends State<PickupCard2> {
+  dynamic priceObject;
+  bool _isLoading = true;
   // int selectIndex = 0;  
   // int chosenRequestType = 0;
   // List requestUserTypes = [
@@ -118,7 +121,9 @@ class _PickupCard2 extends State<PickupCard2> {
     
   }
 
-
+  void loadEventPayment() {
+    priceObject = widget.gameObject['event']['price'];
+  }
 
 
   final bool _isPressed = false;
@@ -129,12 +134,25 @@ class _PickupCard2 extends State<PickupCard2> {
       textStyle: const TextStyle(fontSize: 20));
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
+
+
+   @override
+  void initState() {
+    super.initState();
+
+    print("initState");
+    print("game: " + widget.gameObject.toString());    
+    loadEventPayment();
+    widget.loadEventInfo(widget.gameObject['event']);
+    widget.setupPlayerList();
+    // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
+    _isLoading = false;
+  }
+
   @override
   Widget build(BuildContext context) {    
     print("widget: ");
-    print("widget.gameObject.toString(): "+widget.gameObject.toString());
-    print("widget.isMyEvent.toString(): "+widget.userEventDetails.toString());
-    setupPlayerList();
+    print("widget.gameObject.toString(): "+widget.gameObject.toString());    
 
     return Listener(
         child: GestureDetector(
@@ -236,42 +254,7 @@ class _PickupCard2 extends State<PickupCard2> {
                       ),
                     ),
                     !widget.userEventDetails['isMyEvent'] ? 
-                    Container(
-                height: 20,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: GestureDetector(
-                      onTap: () async {
-                        print("onTap: ");
-                        List<int>? requestIndexes =
-                            await showAnimatedDialog<dynamic>(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            
-
-                            return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: widget.selectedRequestTypeIndexes,
-                                titleText: 'Choose User Type',
-                                positiveText: "Send Request",
-                                listType: ListType.multiSelect,
-                                activeColor: Colors.green,
-                                dataList: widget.requestUserTypes);
-                          },
-                          animationType: DialogTransitionType.size,
-                          curve: Curves.linear,
-                        );
-
-                        widget.selectedRequestTypeIndexes =
-                            requestIndexes ?? widget.selectedRequestTypeIndexes;
-                        print(
-                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                        await requestTypeSelected(widget.selectedRequestTypeIndexes);
-                        await sendEventRequest();
-                      },
-                      child: Text("Send Request")),
-                ),
-              )
+                    widget.sendOrganizerPlayerEventRequest(context)
                     : 
                     Text("Join Your Game")
                     ,

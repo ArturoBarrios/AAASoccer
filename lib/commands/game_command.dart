@@ -168,7 +168,7 @@ class GameCommand extends BaseCommand {
           createdGame['event']['price'] = createPrice;
           // await EventCommand().addGame(createdGame, true);
         }
-          EventCommand().updateViewModelsWithGame(createdGame);
+          // EventCommand().updateViewModelsWithGame(createdGame, true);
 
           createGameResponse["success"] = true;
           createGameResponse["message"] = "Game Created";

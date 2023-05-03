@@ -621,6 +621,42 @@ class TeamCommand extends BaseCommand {
 
     return removeUsersRolesFromTeamResponse;
   }
+  
+  Future<Map<String, dynamic>> addUsersRolesInTeam(dynamic team,List<dynamic> users, List<dynamic>roles ) async {
+    print("removePlayersFromTeam");
+    print("users: " + users.toString());
+    print("roles: " + roles.toString());
+    
+    Map<String, dynamic> addUsersRolesInTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+      
+
+    // http.Response response = await http.post(
+    //   Uri.parse('https://graphql.fauna.com/graphql'),
+    //   headers: <String, String>{
+    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
+    //   }),
+    // );
+
+    // print("response body: ");
+    // print(jsonDecode(response.body));
+
+  
+
+    addUsersRolesInTeamResponse["success"] = true;
+    addUsersRolesInTeamResponse["message"] = "Team Removed";
+    // removePlayersFromTeamResponse["data"] =
+    //     jsonDecode(response.body)['data']['updateTeam'];
+
+    return addUsersRolesInTeamResponse;
+  }
 
 
 
