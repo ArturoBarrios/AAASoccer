@@ -549,4 +549,80 @@ class TeamCommand extends BaseCommand {
 
     return removeTeamResponse;
   }
+
+  Future<Map<String, dynamic>> removeUsersFromTeam(List<dynamic> team, List<dynamic>players ) async {
+    print("removePlayersFromTeam");
+    print("team: " + team.toString());
+    print("players: " + players.toString());
+    
+    Map<String, dynamic> removePlayersFromTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+      
+
+    // http.Response response = await http.post(
+    //   Uri.parse('https://graphql.fauna.com/graphql'),
+    //   headers: <String, String>{
+    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
+    //   }),
+    // );
+
+    // print("response body: ");
+    // print(jsonDecode(response.body));
+
+  
+
+    removePlayersFromTeamResponse["success"] = true;
+    removePlayersFromTeamResponse["message"] = "Team Removed";
+    // removePlayersFromTeamResponse["data"] =
+    //     jsonDecode(response.body)['data']['updateTeam'];
+
+    return removePlayersFromTeamResponse;
+  }
+  
+  Future<Map<String, dynamic>> removeUsersRolesFromTeam(dynamic team,List<dynamic> users, List<dynamic>roles ) async {
+    print("removePlayersFromTeam");
+    print("users: " + users.toString());
+    print("roles: " + roles.toString());
+    
+    Map<String, dynamic> removeUsersRolesFromTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+      
+
+    // http.Response response = await http.post(
+    //   Uri.parse('https://graphql.fauna.com/graphql'),
+    //   headers: <String, String>{
+    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: jsonEncode(<String, String>{
+    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
+    //   }),
+    // );
+
+    // print("response body: ");
+    // print(jsonDecode(response.body));
+
+  
+
+    removeUsersRolesFromTeamResponse["success"] = true;
+    removeUsersRolesFromTeamResponse["message"] = "Team Removed";
+    // removePlayersFromTeamResponse["data"] =
+    //     jsonDecode(response.body)['data']['updateTeam'];
+
+    return removeUsersRolesFromTeamResponse;
+  }
+
+
+
+
 }

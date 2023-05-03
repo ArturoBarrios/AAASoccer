@@ -87,6 +87,59 @@ class TeamMutations {
     return updateTeamRequest;
     }  
 
+    String removeUserFromTeam(
+      dynamic team, dynamic user) {
+      String updateTeamRequest = """
+      mutation {
+        updateRequest(id: ${team['_id']},
+          data: {              
+          status: ACCEPTED,
+          acceptedBy: {
+           	connect: "${team['acceptedBy_id']}"           
+          },                                                  
+          }) {
+              _id
+            status
+            requestAttempts
+            acceptedBy{              
+                _id
+                name              
+                email         
+            }
+            organizers{                            
+              data{
+              _id
+              name     
+              email         
+              }
+            }   
+            receivers{                            
+              data{
+              _id
+              name     
+              email         
+              }
+            }   
+            sender{              
+                _id
+                name          
+                email             
+            }            
+            team{              
+                _id
+                name              
+            }            
+    				
+                 
+          }   
+        }
+        """;
+
+    return updateTeamRequest;
+    }  
+
+
+
 
 
 

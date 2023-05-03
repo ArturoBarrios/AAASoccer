@@ -393,7 +393,8 @@ class _Home extends State<Home> {
     else if (selectedKey == Constants.MYEVENTS) {
       print("testing EventType.GAME===Game.type ");
       print("GAME" == selectedObject['event']['type'].toString());
-      if (selectedObject['event']['type'].toString() == "GAME") {
+      if (selectedObject['event']['type'].toString() 
+        == "GAME") {
         print("IN IF");
         print("selectedObject['event']['games']: " +
             selectedObject['event']['games'].toString());
@@ -407,7 +408,8 @@ class _Home extends State<Home> {
             gameObject: gameObject,
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
-      } else if (selectedObject['event']['type'].toString() == "TRAINING") {
+      } else if (selectedObject['event']['type'].toString() 
+        == "TRAINING") {
         print("selectedObject['event']['trainings']: " +
             selectedObject['event']['trainings'].toString());
         //get game object first
@@ -421,8 +423,25 @@ class _Home extends State<Home> {
             trainingObject: trainingObject,
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
+      
+      } else if (selectedObject['event']['type'].toString() 
+        == "TRYOUT") {
+        print("selectedObject['event']['tryouts']: " +
+            selectedObject['event']['trainings'].toString());
+        //get game object first
+        dynamic tryoutObject =
+            selectedObject['event']['tryouts']['data'][0];
+        print("0");
+        tryoutObject['event'] = selectedObject['event'];
+        dynamic getEventDetailsResp =
+            EventCommand().getUserEventDetails([tryoutObject['event']]);
+        card = TrainingCard(
+            trainingObject: tryoutObject,
+            svgImage: svgImage,
+            userEventDetails: getEventDetailsResp);
       }      
-      else if (selectedObject['event']['type'].toString() == "TOURNAMENT") {
+      else if (selectedObject['event']['type'].toString() 
+      == "TOURNAMENT") {
         String tournamentId = selectedObject['event']['tournaments']['data'][0]['_id'];
         dynamic findTournamentByIdResp =
             await TournamentCommand().findTournamentById(tournamentId);
@@ -434,9 +453,11 @@ class _Home extends State<Home> {
               tournamentObject: tournament,
               svgImage: svgImage,
               userEventDetails: getEventDetailsResp);
-        }       
+           
+        }
       }
-      else if (selectedObject['event']['type'].toString() == "LEAGUE") {
+      else if (selectedObject['event']['type'].toString()
+       == "LEAGUE") {
         String leagueId = selectedObject['event']['leagues']['data'][0]['_id'];
         dynamic findLeagueByIdResp =
             await LeagueCommand().findLeagueById(leagueId);

@@ -46,9 +46,13 @@ Map<String, dynamic> currateTournamentData(dynamic selectedObject)  {
   return currateTournamentDataResp;
 }
 
-void updateTournamentData(dynamic tournament){
+void updateTournamentData(dynamic tournament, bool add){
   print("updateTournamentData");
-  eventsModel.tournaments.add(tournament);
+  if(add){
+    eventsModel.tournaments.add(tournament);
+  }else{
+    eventsModel.tournaments.remove(tournament);
+  }
 }
 
 dynamic getMainTournamentEvent(dynamic tournament){
