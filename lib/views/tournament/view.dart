@@ -150,7 +150,7 @@ class _TournamentViewState extends State<TournamentView> {
                 widget.userEventDetails['isMyEvent'] ?                
                   widget.sendTeamsRequestWidget(context, widget.userEventDetails)
                   : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                
-
+              
                  
               ],
             ),

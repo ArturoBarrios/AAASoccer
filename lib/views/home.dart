@@ -81,7 +81,7 @@ class _Home extends State<Home> {
       setupTeamsToChooseFrom();
     }
   }
- 
+
   void setupEventsToChooseFrom() {
     print("setupEventsToChooseFrom");
     List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
@@ -96,42 +96,44 @@ class _Home extends State<Home> {
     choices = myTeamsToChooseFrom;
   }
 
-  eventTeamsSelected(List<int>? indexes) {    
+  eventTeamsSelected(List<int>? indexes) {
     print("eventTeamsSelected: " + indexes.toString());
     selectedEventTeamObjects = [];
     selectedEventTeamIndexes = indexes;
-    for(int i = 0; i < indexes!.length; i++){
+    for (int i = 0; i < indexes!.length; i++) {
       selectedEventTeamObjects.add(choices[indexes[i]]);
     }
     print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
   }
+
   requestTypesSelected(List<int>? indexes) async {
-    print("requestTypesSelected: " + indexes.toString());    
+    print("requestTypesSelected: " + indexes.toString());
     selectedRequestTypeIndexes = indexes;
-    for(int i = 0; i < indexes!.length; i++){
-      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
-    }    
-  }
-
-  Future<void> sendPlayerRequests() async{
-    print("sendPlayerRequests");
-    print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
-    print("selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    for(int i = 0; i<userObjectSelections.length;i++){
-      if(eventTeamChosen == "Event"){
-        print("send player event request");
-        await EventCommand().sendPlayerEventRequests(userObjectSelections[i],selectedEventTeamObjects, selectedRequestTypeObjects, "GAMEREQUEST");
-      }
-      else{
-        print("send player team request");
-        await TeamCommand().sendPlayerTeamRequests(userObjectSelections[i],selectedEventTeamObjects, selectedRequestTypeObjects);
-      }
-
+    for (int i = 0; i < indexes!.length; i++) {
+      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
     }
   }
 
-
-
+  Future<void> sendPlayerRequests() async {
+    print("sendPlayerRequests");
+    print("selectedEventTeamObjects: " + selectedEventTeamObjects.toString());
+    print(
+        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
+    for (int i = 0; i < userObjectSelections.length; i++) {
+      if (eventTeamChosen == "Event") {
+        print("send player event request");
+        await EventCommand().sendPlayerEventRequests(
+            userObjectSelections[i],
+            selectedEventTeamObjects,
+            selectedRequestTypeObjects,
+            "GAMEREQUEST");
+      } else {
+        print("send player team request");
+        await TeamCommand().sendPlayerTeamRequests(userObjectSelections[i],
+            selectedEventTeamObjects, selectedRequestTypeObjects);
+      }
+    }
+  }
 
   final cardsMap = <Map>[
     {"key": 0, "opened": false},
@@ -326,7 +328,8 @@ class _Home extends State<Home> {
     super.dispose();
   }
 
-  Widget getCard(String selectedKey, dynamic selectedObject, Svg svgImage) {
+  Future<Widget> getCard(
+      String selectedKey, dynamic selectedObject, Svg svgImage) async {
     print("getCard()");
     print("selectedKey: " + selectedKey);
     print("selectedObject: " + selectedObject.toString());
@@ -334,61 +337,118 @@ class _Home extends State<Home> {
     Widget card = Text(
         "null"); //PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
 
-    if (selectedKey == Constants.PICKUP ) {
+    if (selectedKey == Constants.PICKUP) {
       print("selected pickup: " + selectedObject.toString());
-      dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
+      dynamic getEventDetailsResp =
+          EventCommand().getUserEventDetails([selectedObject['event']]);
       card = PickupCard2(
-          gameObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
+          gameObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TRAINING) {
-      dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
-      card = TrainingCard(trainingObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
+      dynamic getEventDetailsResp =
+          EventCommand().getUserEventDetails([selectedObject['event']]);
+      card = TrainingCard(
+          trainingObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
-      dynamic getEventDetailsResp = EventCommand().getUserEventDetails([selectedObject['event']]);
-      card = TryoutCard(tryoutObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
+      dynamic getEventDetailsResp =
+          EventCommand().getUserEventDetails([selectedObject['event']]);
+      card = TryoutCard(
+          tryoutObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TOURNAMENT) {
       //process tournament data for card
       // TournamentCommand().currateTournamentData(selectedObject);
-      
-      dynamic getEventDetailsResp = EventCommand().getUserEventDetails(selectedObject['events']['data']);
-      card =
-          TournamentCard(tournamentObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
+
+      dynamic getEventDetailsResp =
+          EventCommand().getUserEventDetails(selectedObject['events']['data']);
+      card = TournamentCard(
+          tournamentObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.LEAGUE) {
       //process league data for card
       // LeagueCommand().currateLeagueData(selectedObject);
-      dynamic getEventDetailsResp = EventCommand().getUserEventDetails(selectedObject['events']['data']);
-      card = LeagueCard(leagueObject: selectedObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
+      dynamic getEventDetailsResp =
+          EventCommand().getUserEventDetails(selectedObject['events']['data']);
+      card = LeagueCard(
+          leagueObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {
       bool isMyTeam = false;
       isMyTeam = TeamCommand().isMyTeam(selectedObject);
-      card = TeamCard(teamObject: selectedObject, svgImage: svgImage, isMyTeam: isMyTeam);
+      card = TeamCard(
+          teamObject: selectedObject, svgImage: svgImage, isMyTeam: isMyTeam);
     } else if (selectedKey == Constants.FRIEND) {
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
-    } else if (selectedKey == Constants.MYEVENTS) {
+    } 
+    //My Events
+    else if (selectedKey == Constants.MYEVENTS) {
       print("testing EventType.GAME===Game.type ");
       print("GAME" == selectedObject['event']['type'].toString());
       if (selectedObject['event']['type'].toString() == "GAME") {
         print("IN IF");
-        print("selectedObject['event']['games']: "+selectedObject['event']['games'].toString());
+        print("selectedObject['event']['games']: " +
+            selectedObject['event']['games'].toString());
         //get game object first
         dynamic gameObject = selectedObject['event']['games']['data'][0];
         print("0");
-        gameObject['event'] = selectedObject['event'];        
-        dynamic getEventDetailsResp = EventCommand().getUserEventDetails([gameObject['event']]);        
+        gameObject['event'] = selectedObject['event'];
+        dynamic getEventDetailsResp =
+            EventCommand().getUserEventDetails([gameObject['event']]);
         card = PickupCard2(
-            gameObject: gameObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
-      }
-      else if (selectedObject['event']['type'].toString() == "TRAINING") {        
-        print("selectedObject['event']['trainings']: "+selectedObject['event']['trainings'].toString());
+            gameObject: gameObject,
+            svgImage: svgImage,
+            userEventDetails: getEventDetailsResp);
+      } else if (selectedObject['event']['type'].toString() == "TRAINING") {
+        print("selectedObject['event']['trainings']: " +
+            selectedObject['event']['trainings'].toString());
         //get game object first
-        dynamic trainingObject = selectedObject['event']['trainings']['data'][0];
+        dynamic trainingObject =
+            selectedObject['event']['trainings']['data'][0];
         print("0");
-        trainingObject['event'] = selectedObject['event'];        
-        dynamic getEventDetailsResp = EventCommand().getUserEventDetails([trainingObject['event']]);        
+        trainingObject['event'] = selectedObject['event'];
+        dynamic getEventDetailsResp =
+            EventCommand().getUserEventDetails([trainingObject['event']]);
         card = TrainingCard(
-            trainingObject: trainingObject, svgImage: svgImage, userEventDetails: getEventDetailsResp);
+            trainingObject: trainingObject,
+            svgImage: svgImage,
+            userEventDetails: getEventDetailsResp);
+      }      
+      else if (selectedObject['event']['type'].toString() == "TOURNAMENT") {
+        String tournamentId = selectedObject['event']['tournaments']['data'][0]['_id'];
+        dynamic findTournamentByIdResp =
+            await TournamentCommand().findTournamentById(tournamentId);
+        if (findTournamentByIdResp['success']) {
+          dynamic tournament = findTournamentByIdResp['data'];
+          dynamic getEventDetailsResp = EventCommand()
+              .getUserEventDetails(tournament['events']['data']);
+          card = TournamentCard(
+              tournamentObject: tournament,
+              svgImage: svgImage,
+              userEventDetails: getEventDetailsResp);
+        }       
+      }
+      else if (selectedObject['event']['type'].toString() == "LEAGUE") {
+        String leagueId = selectedObject['event']['leagues']['data'][0]['_id'];
+        dynamic findLeagueByIdResp =
+            await LeagueCommand().findLeagueById(leagueId);
+        if (findLeagueByIdResp['success']) {
+          dynamic league = findLeagueByIdResp['data'];
+          dynamic getEventDetailsResp = EventCommand()
+              .getUserEventDetails(league['events']['data']);
+          card = LeagueCard(
+              leagueObject: league,
+              svgImage: svgImage,
+              userEventDetails: getEventDetailsResp);
+        }       
       }
     }
 
@@ -412,9 +472,9 @@ class _Home extends State<Home> {
 
     List selectedObjects =
         context.select<HomePageModel, List>((value) => value.selectedObjects);
-    
-     userObjectSelections =
-        context.select<HomePageModel, List>((value) => value.userObjectSelections);
+
+    userObjectSelections = context
+        .select<HomePageModel, List>((value) => value.userObjectSelections);
 
     Map<String, dynamic> enabledSelections2 =
         context.select<HomePageModel, Map<String, dynamic>>(
@@ -431,9 +491,6 @@ class _Home extends State<Home> {
               (value) => value.enabledSelections2[k]['enabled'])
         });
 
-    
-    
-
     print("selectedKey in build: " + selectedKey);
 
     return (Scaffold(
@@ -442,14 +499,10 @@ class _Home extends State<Home> {
         width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
         child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
       ),
-      body:
-          
-          Stack(children: <Widget>[
-        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [          
-          
+      body: Stack(children: <Widget>[
+        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Expanded(
               child: Column(children: <Widget>[
-                
             // Padding(
             //     padding: EdgeInsets.all(10.0),
             //     child: SearchField(testText: testText)),
@@ -472,103 +525,111 @@ class _Home extends State<Home> {
             )),
           ])),
           //logic/button for sending team/event requests to
-          // multiple players 
-          userObjectSelections.isNotEmpty ?           
-          GestureDetector(
-              onTap: () async{
-                int? index = await showAnimatedDialog<int>(
-              context: context,
-              barrierDismissible: true,
-              builder: (BuildContext context) {
-                return ClassicListDialogWidget<dynamic>(
-                    selectedIndex: selectIndex,
-                    titleText: 'Title',
-                    listType: ListType.singleSelect,
-                    positiveText: "Next",                    
-                    activeColor: Colors.green,
-                    dataList: teamEventList);
-              },
-              animationType: DialogTransitionType.size,
-              curve: Curves.linear,
-            );
-              print("index: " + index.toString());
-              setupEventTeamToChoose(index!);
-              if (eventTeamChosen != "") {
-              List<int>? indexes = await showAnimatedDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (BuildContext context) {
-                  return ClassicListDialogWidget<dynamic>(
-                      selectedIndexes: selectedEventTeamIndexes,
-                      titleText: 'Choose Players',
-                      positiveText: "Next",
-                      listType: ListType.multiSelect,
-                      activeColor: Colors.green,
-                      dataList: choices);
-                },
-                animationType: DialogTransitionType.size,
-                curve: Curves.linear,
-              );
-              selectedEventTeamIndexes = indexes ?? selectedEventTeamIndexes;
-              print('selectedIndex:${selectedEventTeamIndexes?.toString()}');
-              eventTeamsSelected(selectedEventTeamIndexes);
-            }
-            if (selectedEventTeamIndexes!.isNotEmpty) {
-              List<int>? requestIndexes = await showAnimatedDialog<dynamic>(
-                context: context,
-                barrierDismissible: true,
-                builder: (BuildContext context) {
-                  return ClassicListDialogWidget<dynamic>(
-                      selectedIndexes: selectedRequestTypeIndexes,
-                      titleText: 'Choose User Type',
-                      positiveText: "Send Request",
-                      listType: ListType.multiSelect,
-                      onNegativeClick: () {
-                        print("onNegativeClick");
-                        selectedEventTeamIndexes = [];
-                        //pop
-                        Navigator.pop(context);
+          // multiple players
+          userObjectSelections.isNotEmpty
+              ? GestureDetector(
+                  onTap: () async {
+                    int? index = await showAnimatedDialog<int>(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return ClassicListDialogWidget<dynamic>(
+                            selectedIndex: selectIndex,
+                            titleText: 'Title',
+                            listType: ListType.singleSelect,
+                            positiveText: "Next",
+                            activeColor: Colors.green,
+                            dataList: teamEventList);
                       },
-                      activeColor: Colors.green,
-                      dataList: requestUserTypes);
-                },
-                animationType: DialogTransitionType.size,
-                curve: Curves.linear,
-              );
+                      animationType: DialogTransitionType.size,
+                      curve: Curves.linear,
+                    );
+                    print("index: " + index.toString());
+                    setupEventTeamToChoose(index!);
+                    if (eventTeamChosen != "") {
+                      List<int>? indexes = await showAnimatedDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return ClassicListDialogWidget<dynamic>(
+                              selectedIndexes: selectedEventTeamIndexes,
+                              titleText: 'Choose Players',
+                              positiveText: "Next",
+                              listType: ListType.multiSelect,
+                              activeColor: Colors.green,
+                              dataList: choices);
+                        },
+                        animationType: DialogTransitionType.size,
+                        curve: Curves.linear,
+                      );
+                      selectedEventTeamIndexes =
+                          indexes ?? selectedEventTeamIndexes;
+                      print(
+                          'selectedIndex:${selectedEventTeamIndexes?.toString()}');
+                      eventTeamsSelected(selectedEventTeamIndexes);
+                    }
+                    if (selectedEventTeamIndexes!.isNotEmpty) {
+                      List<int>? requestIndexes =
+                          await showAnimatedDialog<dynamic>(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return ClassicListDialogWidget<dynamic>(
+                              selectedIndexes: selectedRequestTypeIndexes,
+                              titleText: 'Choose User Type',
+                              positiveText: "Send Request",
+                              listType: ListType.multiSelect,
+                              onNegativeClick: () {
+                                print("onNegativeClick");
+                                selectedEventTeamIndexes = [];
+                                //pop
+                                Navigator.pop(context);
+                              },
+                              activeColor: Colors.green,
+                              dataList: requestUserTypes);
+                        },
+                        animationType: DialogTransitionType.size,
+                        curve: Curves.linear,
+                      );
 
-              selectedRequestTypeIndexes =
-                  requestIndexes ?? selectedRequestTypeIndexes;
-              print('selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-              await requestTypesSelected(selectedRequestTypeIndexes);
-              await sendPlayerRequests();
-            }
-              },
-            child: Container(
-              width: 200,
-              height: 50,
-              color: Colors.blue,
-              child: Center(child: Text("Send Event/Team Request")),
-            
-            )
-          )
-          : 
-          Container()
-          ,
+                      selectedRequestTypeIndexes =
+                          requestIndexes ?? selectedRequestTypeIndexes;
+                      print(
+                          'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                      await requestTypesSelected(selectedRequestTypeIndexes);
+                      await sendPlayerRequests();
+                    }
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 50,
+                    color: Colors.blue,
+                    child: Center(child: Text("Send Event/Team Request")),
+                  ))
+              : Container(),
           //list view
           Expanded(
             child: ListView.builder(
-                controller: _selectEventController,
-                itemCount: selectedObjects.length,
-                itemBuilder: (_, index) => Card(
+              controller: _selectEventController,
+              itemCount: selectedObjects.length,
+              itemBuilder: (_, index) => FutureBuilder(
+                future: getCard(selectedKey, selectedObjects[index], svgImage),
+                builder: (_, snapshot) {
+                  if (snapshot.hasData) {
+                    return Card(
                       margin: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 10),
-                      child: getCard(
-                          selectedKey, selectedObjects[index], svgImage),
-                      // PickupCard2(
-                      //     eventObject: selectedObjects[index],
-                      //     svgImage: svgImage),
-                    )),
-          ),      
+                        vertical: 8,
+                        horizontal: 10,
+                      ),
+                      child: snapshot.data as Widget,
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+            ),
+          ),
         ])
       ]),
       bottomNavigationBar: const Footers().getMainBottomNav(context),
