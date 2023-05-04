@@ -257,10 +257,18 @@ class _MyAppState extends State<MyApp> {
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if(otherConfigurationResp['success']){
       /////////////////////////addback in when shortcode is ready
-      await BaseCommand().setupInitialAppModels(emailController.text.trim());      
-      // await BaseCommand().setupInitialAppModels(emailController.text.trim());      
-      BaseCommand().initialConditionsMet();
-      print("initialConditionsMett");
+      Map<String,dynamic> resp = await BaseCommand().setupInitialAppModels(emailController.text.trim());      
+      print("resp: "+ resp.toString());
+      if(resp['success']){
+        BaseCommand().initialConditionsMet();
+        print("initialConditionsMett");
+      }
+      else{
+        print("try again....");
+        
+        // startLoadToHomeTransition();
+      }
+      
     }    
     else{
       print("error in startLoadToHomeTransition");

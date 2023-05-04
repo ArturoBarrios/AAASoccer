@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/commands/user_command.dart';
 import 'package:soccermadeeasy/commands/player_command.dart';
 import '../../components/Cards/friend_card.dart';
 import 'package:provider/provider.dart';
+import '../../models/app_model.dart';
 import '../../models/friends_page_model.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
@@ -36,6 +37,7 @@ class _FriendsViewState extends State<FriendsView> {
 
   }
 
+  //todo probably need to update where you're getting this data from
   void getRequestPageData() async {
     print("getRequestPageData");
     Map<String, dynamic> getCurrentUserResp = await UserCommand().getCurrentUserByEmail();
@@ -71,6 +73,9 @@ class _FriendsViewState extends State<FriendsView> {
     
     List selectedObjects = context
     .select<FriendsPageModel, List>((value) => value.selectedObjects);
+    
+    List selectedObjects2 = context
+    .select<AppModel, List>((value) => value.friends);
 
     String selectedKey = context
         .select<FriendsPageModel, String>((value) => value.selectedKey);
@@ -86,13 +91,13 @@ class _FriendsViewState extends State<FriendsView> {
                     Expanded(
                       child: ListView.builder(
                           controller: _selectEventController,
-                          itemCount: selectedObjects.length,
+                          itemCount: selectedObjects2.length,
                           itemBuilder: (_, index) => Card(
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 10),
                                 child:
                                 // Text("test") 
-                                  getFriendCard(selectedKey, selectedObjects[index], svgImage),                              
+                                  getFriendCard(selectedKey, selectedObjects2[index], svgImage),                              
                                   // PickupCard2(
                                   //     eventObject: selectedObjects[index],
                                   //     svgImage: svgImage),

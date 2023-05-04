@@ -91,7 +91,7 @@ class AppModel extends ChangeNotifier {
 
   List _teamsNearMe = [];
   List get teamsNearMe => _teamsNearMe;
-  set teamsNearMe(List teamsNearMe) {
+  set teamsNearMe(List teamsNearMe) {    
     _teamsNearMe = teamsNearMe;
     notifyListeners();
   }

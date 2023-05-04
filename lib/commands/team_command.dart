@@ -443,6 +443,7 @@ class TeamCommand extends BaseCommand {
 
     appModel.teams.add(team);
     appModel.myTeams.add(team);
+    
 
     // appModel.currentUser['teamUserParticipants']['data'].add(userParticipantObject);
     // if (homePageModel.selectedKey == Constants.TEAM) {
