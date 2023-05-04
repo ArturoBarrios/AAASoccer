@@ -141,7 +141,7 @@ class RequestsCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().updateFriendRequest(
+          'query': RequestMutations().updateRequest(
               friendRequestInput), //(fromInput, toInputs, gameInput),
         }),
       );
@@ -160,15 +160,16 @@ class RequestsCommand extends BaseCommand {
       if (createUserLink['success']) {
         //add friend
         dynamic newFriend = createUserLink['data']['user'];
-        appModel.currentUser['friends'].add(newFriend);
+        newFriend['user'] = newFriend;
+        UserCommand().updateModelsWithFriend(newFriend, true);
         //get sender information for push notification
-        Map<String, dynamic> findFriendRequestResp =
-            await findFriendRequest(friendRequestInput);
-        print("findFriendRequestResp: " + findFriendRequestResp.toString());
-        if (findFriendRequestResp['success'] == true) {
+        // Map<String, dynamic> findFriendRequestResp =
+        //     await findFriendRequest(friendRequestInput);
+        // print("findFriendRequestResp: " + findFriendRequestResp.toString());
+        // if (findFriendRequestResp['success'] == true) {
           // prepare notification data
           print("prepare notification data");
-          Map<String, dynamic> sender = findFriendRequestResp['data']['sender'];
+          Map<String, dynamic> sender = friendRequestInput['data']['sender'];
           print("sender: " + sender.toString());
           List<String> phones = [sender['phone']];
           List<String> OSPIDs = [sender['OSPID']];
@@ -180,7 +181,7 @@ class RequestsCommand extends BaseCommand {
           };
           await NotificationsCommand().sendAcceptedRequestNotification(
               sendSenderRequestNotificationInput);
-        }
+        // }
       }
 
       updateFriendRequestResponse["success"] = true;

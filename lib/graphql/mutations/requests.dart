@@ -113,4 +113,28 @@ class RequestMutations {
     return sendTeamRequestString;
     }
 
+    String sendFriendRequest(Map<String, dynamic> sendFriendRequestInput) {
+    String sendFriendRequestString = """
+      mutation {
+        createRequest(data: {    
+          requestAttempts: 1, 
+          status: PENDING,
+          type: FRIENDREQUEST,
+          sender: {
+            connect: "${sendFriendRequestInput['sender_id']}"
+          },  
+           receivers: {
+              connect: [
+                ${sendFriendRequestInput['receiver_id']}
+              ]
+            }
+          }) {
+           ${RequestFragments().fullRequest()}    
+          }   
+        }
+        """;
+
+    return sendFriendRequestString;
+  }
+
 }

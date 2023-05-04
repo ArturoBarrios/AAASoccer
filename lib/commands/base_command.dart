@@ -218,6 +218,7 @@ void nukeData(){
 
   Future <Map<String, dynamic>> setupInitialAppModels(String email) async{
     print("setupInitialAppModels");
+    print("email: "+email);
     Map<String, dynamic> resp = {"success": false, "message": "setup unsuccessfull", "data": null};
     try{            
       Map<String, dynamic> getUserInput = {
@@ -263,27 +264,7 @@ void nukeData(){
           List<dynamic> myTeams = appModel.currentUser['teamUserParticipants']['data'];
           List<dynamic> myArchivedEvents = [];
           List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
-          print("friendss: "+friends.toString());          
-          // print("myEventss: "+myEvents.toString());
-          // for(int i = 0;i<myEventsCopy.length;i++){
-          //   dynamic myEventCopy = myEventsCopy[i];
-          //   String millisecondsString = myEventCopy[i]['event']['endTime'].toString();
-          //   DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
-          //   print("myEvent: "+myEventCopy.toString());
-          //   if(myEventCopy['archived'] ||
-          //       (dateTime.isBefore(DateTime.now())
-          //     )
-          //   ){
-          //     print("archived");
-          //     myEvents.remove(myEventCopy);
-          //     print("removed");
-          //     myArchivedEvents.add(myEventCopy);
-          //     print("added");
-          //   }
-
-          // }
-          // print("myEvents2: "+myEvents.toString());
-          
+          print("friendss: "+friends.toString());                              
           
           print("setting appModel.myEvents, appModel.friends, and appModel.myArchivedEvents ");
           // appModel.myEvents = myEvents;

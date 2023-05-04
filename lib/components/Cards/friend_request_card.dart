@@ -43,8 +43,13 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
-Future<void> updateFriendRequest(dynamic friendRequestObject) async {
+Future<void> updateFriendRequest(dynamic friendRequestObject, BuildContext context) async {
   await RequestsCommand().updateFriendRequest(friendRequestObject);
+  //go back
+  Navigator.pop(context);
+
+  
+
 }
 
 class _FriendRequestCard extends State<FriendRequestCard> {
@@ -148,7 +153,7 @@ class _FriendRequestCard extends State<FriendRequestCard> {
           tooltip: 'Notifications',
           onPressed: () {
             print(widget.toString());
-            updateFriendRequest(widget.friendRequestObject);            
+            updateFriendRequest(widget.friendRequestObject, context);            
           },
         ),          
           ])),

@@ -134,8 +134,9 @@ class _FriendCard extends State<FriendCard> {
                   ),
                 ),          
             GestureDetector(
-              onTap: () {
-                UserCommand().removeFriend(widget.friendObject);
+              onTap: ()async  {
+                await UserCommand().removeFriend(widget.friendObject);
+                
                 // UserCommand().sendFriendRequest(widget.friendObject);
               },
               child: Container(

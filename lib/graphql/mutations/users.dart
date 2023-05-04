@@ -1,5 +1,6 @@
 import '../fragments/user_fragments.dart';
 import '../fragments/event_fragments.dart';
+import '../fragments/request_fragments.dart';
 
 class UserMutations {
   String partialUserUpdate(Map<String, dynamic> userInput) {
@@ -18,42 +19,7 @@ class UserMutations {
     return updateUserString;
   }
 
-  String sendFriendRequest(Map<String, dynamic> sendFriendRequestInput) {
-    String sendFriendRequestString = """
-      mutation {
-        createFriendRequest(data: {    
-          requestAttempts: 1, 
-          status: PENDING,
-          requestType: FRIENDREQUEST,
-          sender: {
-            connect: "${sendFriendRequestInput['sender_id']}"
-          },  
-          receiver: {
-            connect: "${sendFriendRequestInput['receiver_id']}"
-            
-          }                       
-          }) {
-            _id
-            status
-            requestAttempts
-            sender{
-              _id
-              email
-              name   
-              phone           
-            }   
-            receiver{              
-              _id
-              email
-              name 
-              phone             
-            }            
-          }   
-        }
-        """;
-
-    return sendFriendRequestString;
-  }
+  
 
 
 
@@ -235,11 +201,9 @@ class UserMutations {
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String addFriendString = """      
       mutation {
-        deleteUser(id: "${friendInput['user']['_id']}") {
+        deleteUserLink(id: "${friendInput['_id']}") {
           _id
-          name
-          email
-          OSPID
+          
         }
       }
         """;
@@ -357,31 +321,5 @@ class UserMutations {
     return addPlayerToEvent;
   }
 
-  String updateFriendRequest(Map<String, dynamic> friendRequestInput) {
-    String updateFriendRequestString = """      
-      mutation {
-        updateFriendRequest(id: ${friendRequestInput['_id']},
-  				data: {            
-            status: ACCEPTED,                                                
-          }                      
-        ){
-            _id
-            status
-            requestAttempts
-            sender{              
-              _id
-              name              
-            }   
-            receiver{              
-              _id
-              name              
-            }                        
-            
-    			
-  }
-}
-        """;
-
-    return updateFriendRequestString;
-  }
+  
 }

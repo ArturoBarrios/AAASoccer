@@ -280,8 +280,7 @@ mixin EventMixin {
   void loadTeamInfo(dynamic team) {
     print("loadTeamInfo");
     this.team = team;
-    userObject = UserCommand().getAppModelUser();
-    userObject = UserCommand().getAppModelUser();
+    userObject = UserCommand().findMyUserById();    
     userObject['teamUserParticipants']['data']
         .forEach((teamUserParticipantElement) {
       if (teamUserParticipantElement['team']['_id'] == team['_id']) {
