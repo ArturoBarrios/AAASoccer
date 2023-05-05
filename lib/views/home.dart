@@ -502,6 +502,8 @@ class _Home extends State<Home> {
             (value) => value.enabledSelections2);
 
     context.select<EventsModel, List<dynamic>>((value) => value.games);
+    
+    context.select<AppModel, List<dynamic>>((value) => value.friends);
 
     context.select<AppModel, List<dynamic>>((value) => value.myEvents);
 
