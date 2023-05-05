@@ -277,10 +277,10 @@ mixin EventMixin {
     // }
   }
 
-  void loadTeamInfo(dynamic team) {
+  void loadTeamInfo(dynamic team) async {
     print("loadTeamInfo");
     this.team = team;
-    userObject = UserCommand().findMyUserById();    
+    userObject = await UserCommand().findMyUserById();    
     userObject['teamUserParticipants']['data']
         .forEach((teamUserParticipantElement) {
       if (teamUserParticipantElement['team']['_id'] == team['_id']) {

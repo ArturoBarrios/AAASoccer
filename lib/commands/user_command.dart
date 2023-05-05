@@ -3,6 +3,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import '../constants.dart';
 import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
 import 'package:faunadb_http/query.dart';
@@ -333,8 +334,13 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
+      dynamic friend = jsonDecode(response.body)['data']['createUserLink'];
+      print("friend: " + friend.toString());
+
       print("update currentUser friends");
       print("currentUser: " + appModel.currentUser.toString());
+
+      // updateModelsWithFriend(friend, true);
 
       addFriendResponse["success"] = true;
       addFriendResponse["message"] = "Player for Team Created";
@@ -374,7 +380,7 @@ class UserCommand extends BaseCommand {
       print("response :" + jsonDecode(response.body).toString());
 
       //remove friend
-      updateModelsWithFriend(friendInput, false);
+      await updateModelsWithFriend(friendInput, false);
 
       print("response body: ");
       print(jsonDecode(response.body));
@@ -385,14 +391,17 @@ class UserCommand extends BaseCommand {
     return removeFriendResp;
   }
 
-  void updateModelsWithFriend(dynamic friend, bool add) {
+  Future<void> updateModelsWithFriend(dynamic friend, bool add) async {
     print("updateModelsWithFriend");
     print("friend: " + friend.toString());
     print("add: " + add.toString());
+    
     if (add) {
       dynamic friends = appModel.currentUser['friends']['data'];
       friends.add(friend);
       appModel.friends.add(friend);
+
+      //
     } else {
       //find the friend in the currentUser friends list
       dynamic friends = appModel.currentUser['friends']['data'];
@@ -408,6 +417,13 @@ class UserCommand extends BaseCommand {
       }
       appModel.friends.remove(friend);
       appModel.friends = List.from(friends);
+    }
+    
+    if(homePageModel.selectedKey.toString() == Constants.FRIEND.toString()){
+      print("in iffffffffffff");
+      homePageModel.selectedObjects = List.from(appModel.friends);
+      // homePageModel.selectedKey = Constants.TEAM;
+      // homePageModel.selectedKey = Constants.FRIEND;
     }
   }
 
@@ -495,7 +511,7 @@ class UserCommand extends BaseCommand {
   }
 
   Future<Map<String, dynamic>> findMyUserById() async {
-    print("getUser");
+    print("findMyUserById()");
     Map<String, dynamic> getUserResp = {
       "success": false,
       "message": "no user found",

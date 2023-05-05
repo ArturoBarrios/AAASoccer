@@ -161,7 +161,7 @@ class RequestsCommand extends BaseCommand {
         //add friend
         dynamic newFriend = createUserLink['data']['user'];
         newFriend['user'] = newFriend;
-        UserCommand().updateModelsWithFriend(newFriend, true);
+        await UserCommand().updateModelsWithFriend(newFriend, true);
         //get sender information for push notification
         // Map<String, dynamic> findFriendRequestResp =
         //     await findFriendRequest(friendRequestInput);
