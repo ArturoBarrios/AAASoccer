@@ -19,21 +19,100 @@ import '../graphql/mutations/users.dart';
 
 class TeamCommand extends BaseCommand {
 
-  bool isMyTeam(dynamic team){
-    print("isMyTeam()");
 
-    bool resp = false;
-    dynamic userParticipants = team['userParticipants']['data'];
-    print("userParticipants: " + userParticipants.toString());
-    for(int i = 0; i<userParticipants.length; i++){
-      if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']){
-        resp = true;
-        print("isMyTeam() = true");
+  Future<dynamic> getUserTeamDetails(dynamic team) async{
+    print("getUserTeamDetails()");
+    dynamic userTeamDetails = {
+      "success": true,
+      "isMyTeam": false,
+      "isMember": "",      
+      "amountPaid": 0,      
+      "paymentObjects": [],
+      "mainEvent": null, 
+      "players": [],      
+      "organizers": [],
+      "events": [],
+      "roles": [],
+    };
+
+    List<dynamic> myTeamRoles = getMyTeamRoles(team,appModel.currentUser);
+    print("myTeamRoles: " + myTeamRoles.toString());
+
+    userTeamDetails['roles'] = myTeamRoles;
+    userTeamDetails['isMyTeam'] = myTeamRoles.contains("ORGANIZER");
+    userTeamDetails['isMember'] = myTeamRoles.contains("PLAYER");
+
+    List<dynamic> userParticipants = team['userParticipants']['data'];
+    for(int i = 0;i<userParticipants.length;i++){
+      if(myTeamRoles.contains("PLAYER")){
+        userTeamDetails['players'].add(userParticipants[i]['user']);
+      }
+      if(myTeamRoles.contains("ORGANIZER")){
+        userTeamDetails['organizers'].add(userParticipants[i]['user']);
       }
     }
 
-    return resp;
+    //get price and payment info
+
+
+    
+
+    return userTeamDetails;
   }
+
+  Future<Map<String, dynamic>> findTeamById(
+      Map<String, dynamic> teamInput) async {
+    print("getTeam");
+    Map<String, dynamic> getTeamResp = {
+      "success": false,
+      "message": "no team found",
+      "data": null
+    };
+    try {
+      print("teamInput: ");
+      print(teamInput);
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TeamQueries().findTeamByID(teamInput),
+        }),
+      );
+
+      print("response: ");
+      print(jsonDecode(response.body));
+      final result = jsonDecode(response.body)['data']['findTeamByID'];
+      // appModel.currentTeam = result;
+      // if (result != null) {
+      getTeamResp["success"] = true;
+      getTeamResp["message"] = "team found";
+      getTeamResp["data"] = result;
+      // }
+    } catch (e) {
+      print('Query failed: $e');
+    }
+    return getTeamResp;
+  }
+
+  List<dynamic> getMyTeamRoles(dynamic team, dynamic user){
+    print("getMyTeamRoles()");
+    List<dynamic> roles = [];
+    dynamic userParticipants = team['userParticipants']['data'];
+    print("userParticipants: " + userParticipants.toString());    
+    for(int i = 0; i<userParticipants.length; i++){
+      if(userParticipants[i]['user']['_id'] == user['_id']){
+        roles = BaseCommand().parseRoles(userParticipants[i]['roles']);
+      }
+    }
+
+
+    return roles;
+  }
+
+ 
 
   List<dynamic> getAppModelTeamsNearMe() {
     print("getAppModelTeamsNearMe");

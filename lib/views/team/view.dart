@@ -8,10 +8,10 @@ import '../../components/headers.dart';
 import '../../constants.dart';
 
 class TeamView extends StatefulWidget with EventMixin {
-  TeamView({Key? key, required this.teamObject, required this.isMyTeam})
+  TeamView({Key? key, required this.teamObject, required this.userTeamDetails})
       : super(key: key);
   final Map<String, dynamic> teamObject;
-  final bool isMyTeam;
+  final dynamic userTeamDetails;
 
   @override
   _TeamViewState createState() => _TeamViewState();
@@ -106,7 +106,7 @@ class _TeamViewState extends State<TeamView> {
   @override 
   void initState() {
     super.initState();
-    widget.loadTeamInfo(widget.teamObject);
+    // widget.loadTeamInfo(widget.teamObject);
   }
 
   @override
@@ -118,9 +118,8 @@ class _TeamViewState extends State<TeamView> {
       appBar:
           Headers().getBackHeader(context, widget.teamObject['name']),
       body: Center(
-          child: Column(children: [
-        Text("isMyTeam: " + widget.isMyTeam.toString()),
-        widget.isMyTeam
+          child: Column(children: [        
+        widget.userTeamDetails['isMyTeam']
             ? Container(
                 height: 20,
                 child: ClipRRect(
@@ -214,7 +213,7 @@ class _TeamViewState extends State<TeamView> {
 
                     )),
 
-                    getChatWidget()
+                    widget.getChatWidget(context, true, false),
       ])),
     );
   }

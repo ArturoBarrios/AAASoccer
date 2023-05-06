@@ -17,4 +17,18 @@ class TeamQueries {
 
     return getTeams;
   }
+  
+String findTeamByID(Map<String, dynamic> teamInput ){
+    String getTeam = """
+      query getTeam {
+            findTeamByID(id: "${teamInput['_id']}") {      
+             ${TeamFragments().fullTeam()}                                                                                    
+          }
+        }
+    """;
+  
+    return getTeam;
+  }
+
+
 }

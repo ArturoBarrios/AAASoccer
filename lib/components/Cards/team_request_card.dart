@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import '../../commands/team_command.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
@@ -12,12 +13,14 @@ class TeamRequestCard extends StatefulWidget {
   const TeamRequestCard(
       {Key? key, required this.teamRequestObject, 
       required this.svgImage,
-      required this.didSendRequest
+      required this.didSendRequest,
+      required this.userTeamDetails
       })
       : super(key: key);
   final Map<String, dynamic> teamRequestObject;
   final Svg svgImage;
   final bool didSendRequest;  
+  final dynamic userTeamDetails;
 
   @override
   State<TeamRequestCard> createState() => _TeamRequestCard();
@@ -43,6 +46,8 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
+
+
 class _TeamRequestCard extends State<TeamRequestCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
@@ -52,6 +57,15 @@ class _TeamRequestCard extends State<TeamRequestCard> {
       textStyle: const TextStyle(fontSize: 20));
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
+
+
+
+@override
+  void initState() {
+    super.initState();
+   
+  }
+
   @override
   Widget build(BuildContext context) {
   print("TeamRequestCard Build()");
@@ -64,7 +78,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TeamView(teamObject: widget.teamRequestObject, isMyTeam: false,);
+            return TeamView(teamObject: widget.teamRequestObject, userTeamDetails: widget.userTeamDetails,);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

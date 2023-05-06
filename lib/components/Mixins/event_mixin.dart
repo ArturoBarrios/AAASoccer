@@ -276,21 +276,21 @@ mixin EventMixin {
     //       eventObject, selectedRequestTypeObjects[i], requestType);
     // }
   }
-
-  void loadTeamInfo(dynamic team) async {
-    print("loadTeamInfo");
-    this.team = team;
-    userObject = await UserCommand().findMyUserById();    
-    userObject['teamUserParticipants']['data']
-        .forEach((teamUserParticipantElement) {
-      if (teamUserParticipantElement['team']['_id'] == team['_id']) {
-        teamUserParticipant = teamUserParticipantElement;
-        participationRoles =
-            BaseCommand().parseRoles(teamUserParticipant['roles']);
-        print("participationRoles: $participationRoles");
-      }
-    });
-  }
+  //todo: remove these two methods and do it in getDetails page
+  // void loadTeamInfo(dynamic team) async {
+  //   print("loadTeamInfo");
+  //   this.team = team;
+  //   userObject = await UserCommand().findMyUserById();    
+  //   userObject['teamUserParticipants']['data']
+  //       .forEach((teamUserParticipantElement) {
+  //     if (teamUserParticipantElement['team']['_id'] == team['_id']) {
+  //       teamUserParticipant = teamUserParticipantElement;
+  //       participationRoles =
+  //           BaseCommand().parseRoles(teamUserParticipant['roles']);
+  //       print("participationRoles: $participationRoles");
+  //     }
+  //   });
+  // }
 
   void loadEventInfo(dynamic event) {
     this.event = event;
@@ -347,6 +347,8 @@ mixin EventMixin {
 
   Container getChatWidget(
       BuildContext context, bool attachToEvent, bool attachToTeam) {
+    print("getChatWidget");
+    print("participationRoles: $participationRoles");
     if (participationRoles.contains("ORGANIZER")) {
       return Container(
           child: GestureDetector(

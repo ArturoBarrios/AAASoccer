@@ -67,9 +67,10 @@ class _TeamCreateState extends State<TeamCreate> {
           //     currentUserParticipant = userParticipants[i];
           //   }
           // }
+
+          dynamic userTeamDetails = TeamCommand().getUserTeamDetails(createdTeam);
           
 
-          createEventResponse['success'] = true;
           //navigate home          
           Navigator.push(
             context,
@@ -77,9 +78,10 @@ class _TeamCreateState extends State<TeamCreate> {
           );          
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TeamView(teamObject: createdTeam, isMyTeam: true)),
+            MaterialPageRoute(builder: (context) => TeamView(teamObject: createdTeam, userTeamDetails: userTeamDetails)),
           );          
            
+          createEventResponse['success'] = true;
         }
       
       // return createEventResponse;

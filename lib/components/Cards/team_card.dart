@@ -14,13 +14,13 @@ import '../../views/team/view.dart';
 class TeamCard extends StatefulWidget with EventMixin {
    TeamCard(
       {Key? key, required this.teamObject, required this.svgImage,
-        required this.isMyTeam
+        required this.userTeamDetails
       })
       : super(key: key);
   final Map<String, dynamic> teamObject;
   final Svg svgImage;
   final double bevel = 10.0;
-  final bool isMyTeam;
+  final dynamic userTeamDetails;
 
   @override
   State<TeamCard> createState() => _TeamCard();
@@ -108,6 +108,13 @@ class _TeamCard extends State<TeamCard> {
       // }
       
     }
+
+    @override
+    void initState() {
+      super.initState();
+     print("initState");
+     print("userTeamDetails: " + widget.userTeamDetails.toString());
+    }
   @override
   Widget build(BuildContext context) {
     print("build() for TeamCard()");
@@ -121,7 +128,7 @@ class _TeamCard extends State<TeamCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TeamView(teamObject: widget.teamObject, isMyTeam: widget.isMyTeam);
+            return TeamView(teamObject: widget.teamObject, userTeamDetails: widget.userTeamDetails);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -220,7 +227,7 @@ class _TeamCard extends State<TeamCard> {
               ),
             ),
 
-            widget.isMyTeam ? 
+            widget.userTeamDetails['isMyTeam'] ? 
                     Container(
                     height:20,
             child: ClipRRect(
