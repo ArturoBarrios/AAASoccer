@@ -19,8 +19,6 @@ mixin EventMixin {
   List<String> participationRoles = [];
   dynamic eventUserParticipant;
   dynamic teamUserParticipant;
-  dynamic event;
-  dynamic team;
 
   int selectIndex = 0;
   int chosenRequestType = 0;
@@ -100,10 +98,10 @@ mixin EventMixin {
     choices = myTeamsToChooseFrom;
   }
 
-  sendEventRequestForMyTeam() {
+  sendEventRequestForMyTeam(dynamic userObjectDetails) {
     print("sendEventRequestForMyTeam: " + teamsSelectedList.toString());
     for (int i = 0; i < teamsSelectedList.length; i++) {
-      TeamCommand().sendEventRequestForMyTeam(event, teamsSelectedList[i]);
+      TeamCommand().sendEventRequestForMyTeam(userObjectDetails['mainEvent'], teamsSelectedList[i]);
     }
   }
 
@@ -292,20 +290,20 @@ mixin EventMixin {
   //   });
   // }
 
-  void loadEventInfo(dynamic event) {
-    this.event = event;
-    print("loadEventInfo");
-    userObject = UserCommand().getAppModelUser();
-    userObject['eventUserParticipants']['data']
-        .forEach((eventUserParticipantElement) {
-      if (eventUserParticipantElement['event']['_id'] == event['_id']) {
-        eventUserParticipant = eventUserParticipantElement;
-        participationRoles =
-            BaseCommand().parseRoles(eventUserParticipant['roles']);
-        print("participationRoles: $participationRoles");
-      }
-    });
-  }
+  // void loadEventInfo(dynamic event) {
+  //   this.event = event;
+  //   print("loadEventInfo");
+  //   userObject = UserCommand().getAppModelUser();
+  //   userObject['eventUserParticipants']['data']
+  //       .forEach((eventUserParticipantElement) {
+  //     if (eventUserParticipantElement['event']['_id'] == event['_id']) {
+  //       eventUserParticipant = eventUserParticipantElement;
+  //       participationRoles =
+  //           BaseCommand().parseRoles(eventUserParticipant['roles']);
+  //       print("participationRoles: $participationRoles");
+  //     }
+  //   });
+  // }
 
   void displayRoles() {
     if (participationRoles.length > 0) {}
@@ -326,7 +324,7 @@ mixin EventMixin {
   }
 
   void createChat(BuildContext context, bool attachToEvent, bool attachToTeam,
-      Map<int, dynamic> indexes, List<dynamic> primaryList) {
+      Map<int, dynamic> indexes, List<dynamic> primaryList, dynamic userObjectDetails) {
     print("createChat");
     List<dynamic> selectedPlayers = [];
     indexes.forEach((mainIndex, secondaryIndexes) {
@@ -338,18 +336,19 @@ mixin EventMixin {
     Navigator.push(context, MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return ChatCreate(
-            eventObject: attachToEvent ? event : null,
-            teamObject: attachToTeam ? team : null,
+            eventObject: attachToEvent ? userObjectDetails['mainEvent'] : null,
+            teamObject: attachToTeam ? userObjectDetails['team'] : null,
             players: selectedPlayers);
       },
     ));
   }
 
   Container getChatWidget(
-      BuildContext context, bool attachToEvent, bool attachToTeam) {
+      BuildContext context, bool attachToEvent, bool attachToTeam,
+       dynamic userObjectDetails) {
     print("getChatWidget");
     print("participationRoles: $participationRoles");
-    if (participationRoles.contains("ORGANIZER")) {
+    if (userObjectDetails['roles'].contains("ORGANIZER")) {
       return Container(
           child: GestureDetector(
               onTap: () async {
@@ -367,7 +366,7 @@ mixin EventMixin {
                 );
                 if (result.isNotEmpty) {
                   createChat(context, attachToEvent, attachToTeam, result,
-                      primaryList);
+                      primaryList, userObjectDetails);
                 }
               },
               child: Container(
@@ -398,18 +397,18 @@ mixin EventMixin {
     }
   }
 
-  Container getPriceWidget(dynamic userEventDetails) {
+  Container getPriceWidget(dynamic userObjectDetails) {
     print("getPriceWidget()");
-    print("userEventDetails: " + userEventDetails.toString());
-    if (userEventDetails['price'] != null) {
-      String amount = (double.parse(userEventDetails['price']['amount']) / 100)
+    print("userObjectDetails: " + userObjectDetails.toString());
+    if (userObjectDetails['price'] != null) {
+      String amount = (double.parse(userObjectDetails['price']['amount']) / 100)
           .toStringAsFixed(2);
-      String amountPaid = (double.parse(userEventDetails['amountPaid']) / 100)
+      String amountPaid = (double.parse(userObjectDetails['amountPaid']) / 100)
           .toStringAsFixed(2);
       String amountRemaining =
-          (double.parse(userEventDetails['amountRemaining']) / 100)
+          (double.parse(userObjectDetails['amountRemaining']) / 100)
               .toStringAsFixed(2);
-      if (!participationRoles.contains("ORGANIZER")) {
+      if (!userObjectDetails['roles'].contains("ORGANIZER")) {
         if (amountRemaining == "0.00") {
           return Container(
               child: Row(
@@ -437,7 +436,7 @@ mixin EventMixin {
                       "Price: \$${(amount)}",
                       style: TextStyle(fontSize: 16),
                     ),
-                    userEventDetails['isMember']
+                    userObjectDetails['isMember']
                         ? Text(
                             "Remaining Balance: \$$amountRemaining",
                             style: TextStyle(fontSize: 16),
@@ -474,15 +473,15 @@ mixin EventMixin {
     }
   }
 
-  Container getJoinGameWidget(BuildContext context, dynamic userEventDetails,
+  Container getJoinGameWidget(BuildContext context, dynamic userObjectDetails,
       dynamic event, dynamic userInput) {
-    print("userEventDetails: $userEventDetails");
+    print("userObjectDetails: $userObjectDetails");
 
     print("participationRoles: " + participationRoles.toString());
     //if not already a player
-    if (!participationRoles.contains("PLAYER")) {
+    if (!userObjectDetails['roles'].contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");
-      if (userEventDetails['isMyEvent']) {
+      if (userObjectDetails['isMine']) {
         return Container(
             child: GestureDetector(
           onTap: () {
@@ -496,7 +495,7 @@ mixin EventMixin {
         if (!event['joinConditions']['withPayment'] &&
             !event['joinConditions']['withRequest']) {
           //price exists(join with paying or not paying)
-          if (userEventDetails['price'] != null) {
+          if (userObjectDetails['price'] != null) {
             return Container(
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -576,7 +575,7 @@ mixin EventMixin {
                 requestElementObject['status'].toString());
             if (requestElementObject['status'].toString() == "ACCEPTED") {
               //if not paid off
-              if ((double.parse(userEventDetails['amountRemaining']) / 100)
+              if ((double.parse(userObjectDetails['amountRemaining']) / 100)
                       .toStringAsFixed(2) !=
                   "0.00") {
                 return Container(
@@ -647,7 +646,7 @@ mixin EventMixin {
   }
 
   Container sendPlayersRequestWidget(
-      BuildContext context, dynamic userEventDetails) {
+      BuildContext context, dynamic userObjectDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -665,7 +664,7 @@ mixin EventMixin {
               if (result.isNotEmpty) {
                 print("result: " + result.toString());
                 sendPlayersEventRequest(
-                    event, result, primaryList, secondaryList);
+                    userObjectDetails['mainEvent'], result, primaryList, secondaryList);
               }
             },
             child: Container(
@@ -677,20 +676,20 @@ mixin EventMixin {
   }
 
   Container sendTeamsRequestWidget(
-      BuildContext context, dynamic userEventDetails) {
+      BuildContext context, dynamic userObjectDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
               List<dynamic> primaryList = playerList;
               List<dynamic> secondaryList = [];
               List<dynamic> processedTeamList = teamList
-                  .where((item1) => !userEventDetails['teams']
+                  .where((item1) => !userObjectDetails['teams']
                       .any((item2) => item2["_id"] == item1["_id"]))
                   .map((item) => item['team'])
                   .toList();
               primaryList = processedTeamList;
               //original list (just look at commented code below)
-              // teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList();
+              // teamList.where((item1) => !userObjectDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList();
               Map<int, dynamic> result = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -703,7 +702,7 @@ mixin EventMixin {
               if (result.isNotEmpty) {
                 print('Selected items: $result');
                 sendTeamsEventRequest(
-                    event, result, primaryList, secondaryList);
+                    userObjectDetails['mainEvent'], result, primaryList, secondaryList);
               }
             },
             child: Container(
@@ -714,7 +713,7 @@ mixin EventMixin {
             )));
   }
 
-  Container sendOrganizerPlayerEventRequest(BuildContext context) {
+  Container sendOrganizerPlayerEventRequest(BuildContext context, dynamic userObjectDetails) {
     return Container(
       height: 20,
       child: ClipRRect(
@@ -736,7 +735,7 @@ mixin EventMixin {
                 print('Selected items: $result');
                 // await requestTypeSelected(selectedRequestTypeIndexes);
                 await sendEventRequest(
-                    event, result, primaryList, secondaryList);
+                    userObjectDetails['mainEvent'], result, primaryList, secondaryList);
               }
             },
             child: Container(
@@ -750,14 +749,14 @@ mixin EventMixin {
   }
 
   Container sendEventRequestForMyTeamWidget(
-      BuildContext context, dynamic userEventDetails) {
+      BuildContext context, dynamic userObjectDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
               print("myTeamList before: " + myTeamList.toString());
 
               List<dynamic> myProcessedTeamList = myTeamList
-                  .where((item1) => !userEventDetails['teams']
+                  .where((item1) => !userObjectDetails['teams']
                       .any((item2) => item2["_id"] == item1["_id"]))
                   .map((item) => item['team'])
                   .toList();
@@ -775,7 +774,7 @@ mixin EventMixin {
               if (result.isNotEmpty) {
                 print('Selected items: $result');
                 teamsSelected(result, myProcessedTeamList);
-                sendEventRequestForMyTeam();
+                sendEventRequestForMyTeam(userObjectDetails);
               }
             },
             child: Container(

@@ -13,12 +13,15 @@ class TeamView extends StatefulWidget with EventMixin {
   final Map<String, dynamic> teamObject;
   final dynamic userTeamDetails;
 
+  
+
   @override
   _TeamViewState createState() => _TeamViewState();
 }
 
 class _TeamViewState extends State<TeamView> {
   bool _isLoading = false;
+  dynamic priceObject;
 
   void goBack() {
     Navigator.pop(context);
@@ -98,14 +101,22 @@ class _TeamViewState extends State<TeamView> {
     
 
   }
+   
 
-   Container getChatWidget() {
-    return widget.getChatWidget(context, false, true);
+  void loadEventPayment() {
+    priceObject = widget.userTeamDetails['price'];
   }
+
+  
 
   @override 
   void initState() {
     super.initState();
+    print("initState() in TeamView");
+    print("userTeamDetails: " + widget.userTeamDetails.toString());
+    widget.setupPlayerList();
+    loadEventPayment();
+
     // widget.loadTeamInfo(widget.teamObject);
   }
 
@@ -113,13 +124,12 @@ class _TeamViewState extends State<TeamView> {
   Widget build(BuildContext context) {
     print("build() in TeamView");
     print("teamObject: " + widget.teamObject.toString());
-    setupPlayerList();
     return Scaffold(
       appBar:
           Headers().getBackHeader(context, widget.teamObject['name']),
       body: Center(
           child: Column(children: [        
-        widget.userTeamDetails['isMyTeam']
+        widget.userTeamDetails['isMine']
             ? Container(
                 height: 20,
                 child: ClipRRect(
@@ -213,7 +223,22 @@ class _TeamViewState extends State<TeamView> {
 
                     )),
 
-                    widget.getChatWidget(context, true, false),
+                    Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    widget.getPriceWidget(widget.userTeamDetails),
+                    widget.userTeamDetails['isMine']
+                        ? ElevatedButton(
+                            onPressed: () {
+                              // Add button onPressed logic here
+                            },
+                            child: Text('Update Payment'),
+                          )
+                        : Container(),
+                  ],
+                ),
+
+                    widget.getChatWidget(context, false, true, widget.userTeamDetails),
       ])),
     );
   }

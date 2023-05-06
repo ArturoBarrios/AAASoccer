@@ -171,7 +171,7 @@ requestTypeSelected(List<int>? indexes) {
                 ),
               ),
             ),
-            !widget.userEventDetails['isMyEvent']
+            !widget.userEventDetails['isMine']
                 ? 
                 Container(
                 height: 20,

@@ -53,7 +53,7 @@ class _TournamentViewState extends State<TournamentView> {
     print("initState");    
     tournamentEvents = widget.tournament['events']['data'];
     loadEventPayment();
-    widget.loadEventInfo(widget.userEventDetails['mainEvent']);
+    // widget.loadEventInfo(widget.userEventDetails['mainEvent']);
     widget.setupPlayerList();
     widget.setupTeamList();
     widget.setupMyTeams();
@@ -85,7 +85,7 @@ class _TournamentViewState extends State<TournamentView> {
                   height: 500,
                   child: EventsCalendar(testText: "test", events: ""),
                 ),
-                !widget.userEventDetails['isMyEvent']
+                !widget.userEventDetails['isMine']
                     ? Container(
                         height: 20,
                         child: ClipRRect(
@@ -130,7 +130,7 @@ class _TournamentViewState extends State<TournamentView> {
                     widget.getPriceWidget(widget.userEventDetails),
                     // Text(
                     //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                    widget.userEventDetails['isMyEvent']
+                    widget.userEventDetails['isMine']
                         ? ElevatedButton(
                             onPressed: () {
                               // Add button onPressed logic here
@@ -142,12 +142,12 @@ class _TournamentViewState extends State<TournamentView> {
                 ),
                  //join game gesture detector for now
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.userEventDetails['mainEvent'], widget.userObject),
-                widget.getChatWidget(context, true, false),
+                widget.getChatWidget(context, true, false, widget.userEventDetails),
 
-                widget.userEventDetails['isMyEvent'] ?                
+                widget.userEventDetails['isMine'] ?                
                   widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-                  : widget.sendOrganizerPlayerEventRequest(context),                
-                widget.userEventDetails['isMyEvent'] ?                
+                  : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),                
+                widget.userEventDetails['isMine'] ?                
                   widget.sendTeamsRequestWidget(context, widget.userEventDetails)
                   : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                
               

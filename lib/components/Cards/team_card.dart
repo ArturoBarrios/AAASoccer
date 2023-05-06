@@ -227,7 +227,7 @@ class _TeamCard extends State<TeamCard> {
               ),
             ),
 
-            widget.userTeamDetails['isMyTeam'] ? 
+            widget.userTeamDetails['isMine'] ? 
                     Container(
                     height:20,
             child: ClipRRect(

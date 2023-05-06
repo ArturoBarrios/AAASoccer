@@ -61,7 +61,7 @@ class _TryoutViewState extends State<TryoutView> {
     print("initState");
     print("training: " + widget.tryout.toString());    
     loadEventPayment();
-    widget.loadEventInfo(widget.tryout['event']);
+    // widget.loadEventInfo(widget.tryout['event']);
     widget.setupPlayerList();
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
     _isLoading = false;
@@ -99,7 +99,7 @@ class _TryoutViewState extends State<TryoutView> {
 
           
           
-            !widget.userEventDetails['isMyEvent'] ? 
+            !widget.userEventDetails['isMine'] ? 
             Container(
                 height: 20,
                 child: ClipRRect(
@@ -141,7 +141,7 @@ class _TryoutViewState extends State<TryoutView> {
                     widget.getPriceWidget(widget.userEventDetails),
                     // Text(
                     //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                    widget.userEventDetails['isMyEvent']
+                    widget.userEventDetails['isMine']
                         ? ElevatedButton(
                             onPressed: () {
                               // Add button onPressed logic here
@@ -152,11 +152,11 @@ class _TryoutViewState extends State<TryoutView> {
                   ],
                 ),
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.tryout['event'], widget.userObject),
-                widget.getChatWidget(context, true, false),
+                widget.getChatWidget(context, true, false, widget.userEventDetails),
 
-                widget.userEventDetails['isMyEvent']
+                widget.userEventDetails['isMine']
             ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-            : widget.sendOrganizerPlayerEventRequest(context),
+            : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
      
 
 
