@@ -20,7 +20,33 @@ class TeamFragments {
                 roles
               }
             } 
-
+            joinConditions{
+              _id
+              withRequest
+              withPayment
+            }
+            price{                    
+              _id
+              amount
+              team{
+                _id
+                name                      
+              }
+            }
+            payments{
+              data{
+                _id
+                amount
+                user{
+                  _id
+                  name
+                }
+                team{
+                  _id
+                  name
+                }
+              }
+            }
     ''';
 
     return fullTeamReturn;

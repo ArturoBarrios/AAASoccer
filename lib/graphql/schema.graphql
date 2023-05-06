@@ -252,6 +252,7 @@ type JoinConditions {
   withRequest: Boolean
   withPayment: Boolean  
   events: Event
+  team: Team
 }
 
 type Event   {
@@ -307,9 +308,13 @@ type Team   {
   userParticipants: [TeamUserParticipant] @relation
   status: String
   deleted: Boolean
-  createdAt: Int
+  createdAt: String
   request: [Request] @relation
   chats: [Chat] @relation
+  price: Price
+  payments: [Payment] @relation
+  joinConditions: JoinConditions
+
   
 }
 
@@ -331,6 +336,7 @@ type Organizer   {
 type Payment   {  
   amount: String
   event: Event
+  team: Team
   paidAt: String
   user: User
 }
@@ -476,4 +482,5 @@ type Rating   {
 type Price   {  
   amount: String
   event: Event
+  team: Team
 }

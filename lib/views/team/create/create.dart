@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../../commands/team_command.dart';
 import '../../../commands/user_command.dart';
+import '../../../components/create_event_payment.dart';
+import '../../../components/create_event_request.dart';
+import '../../../components/date_time_picker.dart';
+import '../../../components/location_search_bar.dart';
 import '../../../testing/seeding/team_seeder.dart';
 import '../../../testing/seeding/location_seeder.dart';
 import '../../../components/profile.dart';
@@ -22,6 +26,12 @@ class _TeamCreateState extends State<TeamCreate> {
   final imagesController = TextEditingController();
   int createTeamCurrentStep = 0;
   final createTeamTotalSteps = 3;
+  final priceController = TextEditingController();
+
+  CreateEventRequest createEventRequestWidget = new CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  DateTimePicker dateTimePicker = new DateTimePicker();
+  LocationSearchBar locationSearchBar = new LocationSearchBar();
   
 
   bool _isLoading = false;
@@ -32,23 +42,24 @@ class _TeamCreateState extends State<TeamCreate> {
       "success": false,
       "message": "Default Error"
     };
-    try {      
-      Map<String, dynamic> locationInput = {
-        "latitude": AppModel().currentPosition.latitude,
-        "longitude": AppModel().currentPosition.longitude,
-      };
-      print("locationInputCheck: " + locationInput.toString());                                  
-     
-      
+    try {                       
         Map<String, dynamic> createTeamInput = {
           'name': nameController.text.trim(),
           'color': colorController.text.trim(),
           'logo': logoController.text.trim(),
           'images': imagesController.text.trim(),
-
-          
-          
+          'price': double.parse(priceController.text.toString()),
+          'withRequest': createEventRequestWidget.withRequest,
+          'withPayment': createEventPaymentWidget.withPayment, 
+          'roles': "{PLAYER, ORGANIZER}",
+          'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),                    
         };
+
+        Map<String, dynamic> locationInput = {
+        "latitude": locationSearchBar.coordinates.latitude,
+        "longitude": locationSearchBar.coordinates.longitude,
+      };
+
         Map<String, dynamic> createdTeamResp = await TeamCommand().createTeam(createTeamInput, locationInput);
 
           print("createdTeamResponse: " + createdTeamResp.toString());
@@ -58,17 +69,8 @@ class _TeamCreateState extends State<TeamCreate> {
           dynamic createdTeam = createdTeamResp['data'];
           print("createdTeam: " + createdTeam.toString());
 
-          // List<dynamic> userParticipants = createdTeam['userParticipants']['data'];
-          //find the userParticipant that matches the current user
-          // dynamic currentUserParticipant;
-          // dynamic currentUser = UserCommand().getAppModelUser();
-          // for (var i = 0; i < userParticipants.length; i++) {
-          //   if (userParticipants[i]['user']['_id'] == currentUser['_id']) {
-          //     currentUserParticipant = userParticipants[i];
-          //   }
-          // }
 
-          dynamic userTeamDetails = TeamCommand().getUserTeamDetails(createdTeam);
+          dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(createdTeam);
           
 
           //navigate home          
@@ -123,9 +125,13 @@ class _TeamCreateState extends State<TeamCreate> {
           controller: colorController,
           decoration: new InputDecoration.collapsed(hintText: 'Color'),
         ),
+        locationSearchBar,
+        createEventRequestWidget,
+        createEventPaymentWidget,
+        dateTimePicker,
         TextField(
-          controller: logoController,
-          decoration: new InputDecoration.collapsed(hintText: 'Logo'),
+          controller: priceController,
+          decoration: new InputDecoration.collapsed(hintText: 'Price'),
         ),
         TextField(
           controller: imagesController,
