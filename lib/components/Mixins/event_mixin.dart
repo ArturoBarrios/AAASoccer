@@ -346,10 +346,11 @@ mixin EventMixin {
   }
 
   Container getChatWidget(
-      BuildContext context, bool attachToEvent, bool attachToTeam) {
+      BuildContext context, bool attachToEvent, bool attachToTeam,
+       dynamic userObjectDetails) {
     print("getChatWidget");
     print("participationRoles: $participationRoles");
-    if (participationRoles.contains("ORGANIZER")) {
+    if (userObjectDetails['roles'].contains("ORGANIZER")) {
       return Container(
           child: GestureDetector(
               onTap: () async {
@@ -398,18 +399,18 @@ mixin EventMixin {
     }
   }
 
-  Container getPriceWidget(dynamic userEventDetails) {
+  Container getPriceWidget(dynamic userObjectDetails) {
     print("getPriceWidget()");
-    print("userEventDetails: " + userEventDetails.toString());
-    if (userEventDetails['price'] != null) {
-      String amount = (double.parse(userEventDetails['price']['amount']) / 100)
+    print("userObjectDetails: " + userObjectDetails.toString());
+    if (userObjectDetails['price'] != null) {
+      String amount = (double.parse(userObjectDetails['price']['amount']) / 100)
           .toStringAsFixed(2);
-      String amountPaid = (double.parse(userEventDetails['amountPaid']) / 100)
+      String amountPaid = (double.parse(userObjectDetails['amountPaid']) / 100)
           .toStringAsFixed(2);
       String amountRemaining =
-          (double.parse(userEventDetails['amountRemaining']) / 100)
+          (double.parse(userObjectDetails['amountRemaining']) / 100)
               .toStringAsFixed(2);
-      if (!participationRoles.contains("ORGANIZER")) {
+      if (!userObjectDetails['roles'].contains("ORGANIZER")) {
         if (amountRemaining == "0.00") {
           return Container(
               child: Row(
@@ -437,7 +438,7 @@ mixin EventMixin {
                       "Price: \$${(amount)}",
                       style: TextStyle(fontSize: 16),
                     ),
-                    userEventDetails['isMember']
+                    userObjectDetails['isMember']
                         ? Text(
                             "Remaining Balance: \$$amountRemaining",
                             style: TextStyle(fontSize: 16),
@@ -474,15 +475,15 @@ mixin EventMixin {
     }
   }
 
-  Container getJoinGameWidget(BuildContext context, dynamic userEventDetails,
+  Container getJoinGameWidget(BuildContext context, dynamic userObjectDetails,
       dynamic event, dynamic userInput) {
-    print("userEventDetails: $userEventDetails");
+    print("userObjectDetails: $userObjectDetails");
 
     print("participationRoles: " + participationRoles.toString());
     //if not already a player
-    if (!participationRoles.contains("PLAYER")) {
+    if (!userObjectDetails['roles'].contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");
-      if (userEventDetails['isMyEvent']) {
+      if (userObjectDetails['isMine']) {
         return Container(
             child: GestureDetector(
           onTap: () {
@@ -496,7 +497,7 @@ mixin EventMixin {
         if (!event['joinConditions']['withPayment'] &&
             !event['joinConditions']['withRequest']) {
           //price exists(join with paying or not paying)
-          if (userEventDetails['price'] != null) {
+          if (userObjectDetails['price'] != null) {
             return Container(
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -576,7 +577,7 @@ mixin EventMixin {
                 requestElementObject['status'].toString());
             if (requestElementObject['status'].toString() == "ACCEPTED") {
               //if not paid off
-              if ((double.parse(userEventDetails['amountRemaining']) / 100)
+              if ((double.parse(userObjectDetails['amountRemaining']) / 100)
                       .toStringAsFixed(2) !=
                   "0.00") {
                 return Container(
@@ -647,7 +648,7 @@ mixin EventMixin {
   }
 
   Container sendPlayersRequestWidget(
-      BuildContext context, dynamic userEventDetails) {
+      BuildContext context, dynamic userObjectDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -677,20 +678,20 @@ mixin EventMixin {
   }
 
   Container sendTeamsRequestWidget(
-      BuildContext context, dynamic userEventDetails) {
+      BuildContext context, dynamic userObjectDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
               List<dynamic> primaryList = playerList;
               List<dynamic> secondaryList = [];
               List<dynamic> processedTeamList = teamList
-                  .where((item1) => !userEventDetails['teams']
+                  .where((item1) => !userObjectDetails['teams']
                       .any((item2) => item2["_id"] == item1["_id"]))
                   .map((item) => item['team'])
                   .toList();
               primaryList = processedTeamList;
               //original list (just look at commented code below)
-              // teamList.where((item1) => !userEventDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList();
+              // teamList.where((item1) => !userObjectDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList();
               Map<int, dynamic> result = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -750,14 +751,14 @@ mixin EventMixin {
   }
 
   Container sendEventRequestForMyTeamWidget(
-      BuildContext context, dynamic userEventDetails) {
+      BuildContext context, dynamic userObjectDetails) {
     return Container(
         child: GestureDetector(
             onTap: () async {
               print("myTeamList before: " + myTeamList.toString());
 
               List<dynamic> myProcessedTeamList = myTeamList
-                  .where((item1) => !userEventDetails['teams']
+                  .where((item1) => !userObjectDetails['teams']
                       .any((item2) => item2["_id"] == item1["_id"]))
                   .map((item) => item['team'])
                   .toList();

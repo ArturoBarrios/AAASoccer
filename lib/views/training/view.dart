@@ -94,7 +94,7 @@ class _TrainingViewState extends State<TrainingView> {
 
           
           
-            !widget.userEventDetails['isMyEvent'] ? 
+            !widget.userEventDetails['isMine'] ? 
             Container(
                 height: 20,
                 child: ClipRRect(
@@ -136,7 +136,7 @@ class _TrainingViewState extends State<TrainingView> {
                     widget.getPriceWidget(widget.userEventDetails),
                     // Text(
                     //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                    widget.userEventDetails['isMyEvent']
+                    widget.userEventDetails['isMine']
                         ? ElevatedButton(
                             onPressed: () {
                               // Add button onPressed logic here
@@ -147,9 +147,9 @@ class _TrainingViewState extends State<TrainingView> {
                   ],
                 ),
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.training['event'], widget.userObject),
-                widget.getChatWidget(context, true, false),
+                widget.getChatWidget(context, true, false, widget.userEventDetails),
 
-                widget.userEventDetails['isMyEvent']
+                widget.userEventDetails['isMine']
             ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
             : widget.sendOrganizerPlayerEventRequest(context),
         

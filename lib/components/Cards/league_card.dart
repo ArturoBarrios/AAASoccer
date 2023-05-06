@@ -161,7 +161,7 @@ class _LeagueCard extends State<LeagueCard> {
                 ),
               ),
             ),
-            !widget.userEventDetails['isMyEvent'] ? 
+            !widget.userEventDetails['isMine'] ? 
                     Container(
                 height: 20,
                 child: ClipRRect(

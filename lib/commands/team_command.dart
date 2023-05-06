@@ -24,7 +24,7 @@ class TeamCommand extends BaseCommand {
     print("getUserTeamDetails()");
     dynamic userTeamDetails = {
       "success": true,
-      "isMyTeam": false,
+      "isMine": false,
       "isMember": "",      
       "amountPaid": 0,      
       "paymentObjects": [],
@@ -39,7 +39,7 @@ class TeamCommand extends BaseCommand {
     print("myTeamRoles: " + myTeamRoles.toString());
 
     userTeamDetails['roles'] = myTeamRoles;
-    userTeamDetails['isMyTeam'] = myTeamRoles.contains("ORGANIZER");
+    userTeamDetails['isMine'] = myTeamRoles.contains("ORGANIZER");
     userTeamDetails['isMember'] = myTeamRoles.contains("PLAYER");
 
     List<dynamic> userParticipants = team['userParticipants']['data'];

@@ -168,7 +168,7 @@ class _TournamentCard extends State<TournamentCard> {
                 ),
               ),
             ),
-             !widget.userEventDetails['isMyEvent'] ? 
+             !widget.userEventDetails['isMine'] ? 
                     Container(
                 height: 20,
                 child: ClipRRect(

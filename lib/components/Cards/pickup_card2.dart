@@ -253,13 +253,13 @@ class _PickupCard2 extends State<PickupCard2> {
                         ),
                       ),
                     ),
-                    !widget.userEventDetails['isMyEvent'] ? 
+                    !widget.userEventDetails['isMine'] ? 
                     widget.sendOrganizerPlayerEventRequest(context)
                     : 
                     Text("Join Your Game")
                     ,
 
-                    widget.userEventDetails['isMyEvent'] ? 
+                    widget.userEventDetails['isMine'] ? 
                     Container(
                     height:20,
             child: ClipRRect(

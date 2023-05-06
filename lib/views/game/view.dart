@@ -93,7 +93,7 @@ class _PickupViewState extends State<PickupView> {
                       longitude: widget.game['event']['location']['data'][0]
                           ['longitude']),
                 ),
-                !widget.userEventDetails['isMyEvent']
+                !widget.userEventDetails['isMine']
                     ? widget.sendOrganizerPlayerEventRequest(context)
                     : Container(),
                 Row(
@@ -102,7 +102,7 @@ class _PickupViewState extends State<PickupView> {
                     widget.getPriceWidget(widget.userEventDetails),
                     // Text(
                     //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                    widget.userEventDetails['isMyEvent']
+                    widget.userEventDetails['isMine']
                         ? ElevatedButton(
                             onPressed: () {
                               // Add button onPressed logic here
@@ -115,7 +115,7 @@ class _PickupViewState extends State<PickupView> {
                 //join game gesture detector for now
                 widget.getJoinGameWidget(context, widget.userEventDetails,
                     widget.game['event'], widget.userObject),
-                widget.getChatWidget(context, true, false),
+                widget.getChatWidget(context, true, false, widget.userEventDetails),
               ],
             ),
     );

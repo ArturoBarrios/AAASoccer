@@ -58,6 +58,8 @@ class EventCommand extends BaseCommand {
     return notifyEventParticipantsResponse;
   }
 
+
+
   Future<Map<String, dynamic>> addTeamToEvent(dynamic eventInput,dynamic teamInput)async{
     print("addTeamToEvent()");
     Map<String, dynamic> addTeamToEventResp = {
@@ -92,6 +94,21 @@ class EventCommand extends BaseCommand {
       print('Mutation failed: $e');
       return addTeamToEventResp;
     }
+  }
+
+  List<dynamic> getEventRoles(dynamic event, dynamic user){
+    print("getMyTeamRoles()");
+    List<dynamic> roles = [];
+    dynamic userParticipants = event['userParticipants']['data'];
+    print("userParticipants: " + userParticipants.toString());    
+    for(int i = 0; i<userParticipants.length; i++){
+      if(userParticipants[i]['user']['_id'] == user['_id']){
+        roles = BaseCommand().parseRoles(userParticipants[i]['roles']);
+      }
+    }
+
+
+    return roles;
   }
 
   Map<String, dynamic> checkIfUpdateRole(dynamic event, dynamic userObject, String role){    
@@ -796,7 +813,7 @@ class EventCommand extends BaseCommand {
 
     dynamic isMyEventResp = {
       "success": true,
-      "isMyEvent": false,
+      "isMine": false,
       "isMember": false,      
       "amountPaid": 0,      
       "paymentObjects": [],
@@ -805,10 +822,12 @@ class EventCommand extends BaseCommand {
       "freeAgents": [],
       "organizers": [],
       "teams": [],
+      "roles": [],
     };
     print("events: " + events.toString());
 
     try{      
+
 
 
       //get event
@@ -827,10 +846,17 @@ class EventCommand extends BaseCommand {
       }
       else{
         event = events[0];
-      }      
-
+      }         
       isMyEventResp['mainEvent'] = event;
       print("event: " + event.toString());
+
+      List<dynamic> myTeamRoles = getEventRoles(event,appModel.currentUser);
+      print("myTeamRoles: " + myTeamRoles.toString());
+      
+      isMyEventResp['roles'] = myTeamRoles;
+      isMyEventResp['isMine'] = myTeamRoles.contains("ORGANIZER");
+      isMyEventResp['isMember'] = myTeamRoles.contains("PLAYER");
+
 
       //get teams
       dynamic teams = event['teams']['data'];
@@ -843,19 +869,11 @@ class EventCommand extends BaseCommand {
       for(int i = 0; i<userParticipants.length; i++){        
           dynamic userParticipant = userParticipants[i];
           List<String> roles = parseRoles(userParticipant['roles']);
-          if(roles.contains("ORGANIZER")){
-            if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']
-        ){
-            isMyEventResp["isMyEvent"] = true;
-        }
+          if(roles.contains("ORGANIZER")){            
             print("isMyEvent() = true");
             isMyEventResp['organizers'].add(userParticipant);
           }
-          if(roles.contains("PLAYER")){
-            if(userParticipants[i]['user']['_id'] == appModel.currentUser['_id']
-        ){
-            isMyEventResp["isMember"] = true;
-        }
+          if(roles.contains("PLAYER")){            
             print("isMember() = true");          
             isMyEventResp['players'].add(userParticipant);
             //check if player belongs to team
@@ -871,8 +889,7 @@ class EventCommand extends BaseCommand {
                 isMyEventResp['freeAgents'].add(userParticipant);
 
             }
-          }
-        
+          }        
       }     
 
       print("players: " + isMyEventResp['players'].toString());    
