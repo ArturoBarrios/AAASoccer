@@ -818,11 +818,13 @@ class EventCommand extends BaseCommand {
       "amountPaid": 0,      
       "paymentObjects": [],
       "mainEvent": null, 
+      "team": null,      
       "players": [],
       "freeAgents": [],
       "organizers": [],
       "teams": [],
       "roles": [],
+      
     };
     print("events: " + events.toString());
 

@@ -143,7 +143,7 @@ class _PickupCard2 extends State<PickupCard2> {
     print("initState");
     print("game: " + widget.gameObject.toString());    
     loadEventPayment();
-    widget.loadEventInfo(widget.gameObject['event']);
+    // widget.loadEventInfo(widget.gameObject['event'], widget.userEventDetails);
     widget.setupPlayerList();
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
     _isLoading = false;
@@ -254,7 +254,7 @@ class _PickupCard2 extends State<PickupCard2> {
                       ),
                     ),
                     !widget.userEventDetails['isMine'] ? 
-                    widget.sendOrganizerPlayerEventRequest(context)
+                    widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails)
                     : 
                     Text("Join Your Game")
                     ,

@@ -29,6 +29,7 @@ class TeamCommand extends BaseCommand {
       "amountPaid": 0,      
       "paymentObjects": [],
       "mainEvent": null, 
+      "team": team,
       "players": [],      
       "organizers": [],
       "events": [],

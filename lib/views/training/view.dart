@@ -54,7 +54,7 @@ class _TrainingViewState extends State<TrainingView> {
     print("initState");
     print("training: " + widget.training.toString());    
     loadEventPayment();
-    widget.loadEventInfo(widget.training['event']);
+    // widget.loadEventInfo(widget.training['event']);
     widget.setupPlayerList();
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
     _isLoading = false;
@@ -151,7 +151,7 @@ class _TrainingViewState extends State<TrainingView> {
 
                 widget.userEventDetails['isMine']
             ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-            : widget.sendOrganizerPlayerEventRequest(context),
+            : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
         
      
 

@@ -61,7 +61,7 @@ class _TryoutViewState extends State<TryoutView> {
     print("initState");
     print("training: " + widget.tryout.toString());    
     loadEventPayment();
-    widget.loadEventInfo(widget.tryout['event']);
+    // widget.loadEventInfo(widget.tryout['event']);
     widget.setupPlayerList();
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
     _isLoading = false;
@@ -156,7 +156,7 @@ class _TryoutViewState extends State<TryoutView> {
 
                 widget.userEventDetails['isMine']
             ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-            : widget.sendOrganizerPlayerEventRequest(context),
+            : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
      
 
 

@@ -63,7 +63,7 @@ class _PickupViewState extends State<PickupView> {
     print("initState");
     print("game: " + widget.game.toString());
     loadEventPayment();
-    widget.loadEventInfo(widget.game['event']);
+    // widget.loadEventInfo(widget.game['event']);
     widget.setupPlayerList();
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
     _isLoading = false;
@@ -94,7 +94,7 @@ class _PickupViewState extends State<PickupView> {
                           ['longitude']),
                 ),
                 !widget.userEventDetails['isMine']
-                    ? widget.sendOrganizerPlayerEventRequest(context)
+                    ? widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails)
                     : Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

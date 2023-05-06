@@ -53,7 +53,7 @@ class _TournamentViewState extends State<TournamentView> {
     print("initState");    
     tournamentEvents = widget.tournament['events']['data'];
     loadEventPayment();
-    widget.loadEventInfo(widget.userEventDetails['mainEvent']);
+    // widget.loadEventInfo(widget.userEventDetails['mainEvent']);
     widget.setupPlayerList();
     widget.setupTeamList();
     widget.setupMyTeams();
@@ -146,7 +146,7 @@ class _TournamentViewState extends State<TournamentView> {
 
                 widget.userEventDetails['isMine'] ?                
                   widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-                  : widget.sendOrganizerPlayerEventRequest(context),                
+                  : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),                
                 widget.userEventDetails['isMine'] ?                
                   widget.sendTeamsRequestWidget(context, widget.userEventDetails)
                   : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                

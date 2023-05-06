@@ -45,7 +45,7 @@ class _LeagueViewState extends State<LeagueView> {
     print("initState");
     leagueEvents = widget.league['events']['data'];
     loadEventPayment();
-    widget.loadEventInfo(widget.userEventDetails['mainEvent']);
+    // widget.loadEventInfo(widget.userEventDetails['mainEvent']);
     widget.setupPlayerList();
     _isLoading = false;
     // leagueEvents = widget.league['events']['data'];
@@ -134,7 +134,7 @@ class _LeagueViewState extends State<LeagueView> {
 
         widget.userEventDetails['isMine']
             ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-            : widget.sendOrganizerPlayerEventRequest(context),
+            : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
         
         widget.userEventDetails['isMine'] ?                
                   widget.sendTeamsRequestWidget(context, widget.userEventDetails)

@@ -238,7 +238,7 @@ class _TeamViewState extends State<TeamView> {
                   ],
                 ),
 
-                    widget.getChatWidget(context, true, false, widget.userTeamDetails),
+                    widget.getChatWidget(context, false, true, widget.userTeamDetails),
       ])),
     );
   }
