@@ -54,7 +54,18 @@ class _TryoutViewState extends State<TryoutView> {
   ];  
   List<String> selectedRequestTypeObjects = [];
 
-  
+  @override
+  void initState() {
+    super.initState();
+
+    print("initState");
+    print("training: " + widget.tryout.toString());    
+    loadEventPayment();
+    widget.loadEventInfo(widget.tryout['event']);
+    widget.setupPlayerList();
+    // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
+    _isLoading = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +153,10 @@ class _TryoutViewState extends State<TryoutView> {
                 ),
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.tryout['event'], widget.userObject),
                 widget.getChatWidget(context, true, false),
-        
+
+                widget.userEventDetails['isMyEvent']
+            ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
+            : widget.sendOrganizerPlayerEventRequest(context),
      
 
 

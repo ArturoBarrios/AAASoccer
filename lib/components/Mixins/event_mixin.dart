@@ -398,7 +398,7 @@ mixin EventMixin {
 
   Container getPriceWidget(dynamic userEventDetails) {
     print("getPriceWidget()");
-
+    print("userEventDetails: " + userEventDetails.toString());
     if (userEventDetails['price'] != null) {
       String amount = (double.parse(userEventDetails['price']['amount']) / 100)
           .toStringAsFixed(2);
@@ -446,7 +446,22 @@ mixin EventMixin {
           ));
         }
       } else {
-        return Container(child: Row());
+        return Container(child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the left
+                  children: [
+                    Text(
+                      "Set Price: \$${(amount)}",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    
+                  ])
+            ],
+
+        ));
       }
     } else {
       return Container(

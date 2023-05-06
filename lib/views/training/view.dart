@@ -44,6 +44,7 @@ class _TrainingViewState extends State<TrainingView> {
     priceObject = widget.training['event']['price'];
   }
 
+
   
 
   @override
@@ -147,6 +148,10 @@ class _TrainingViewState extends State<TrainingView> {
                 ),
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.training['event'], widget.userObject),
                 widget.getChatWidget(context, true, false),
+
+                widget.userEventDetails['isMyEvent']
+            ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
+            : widget.sendOrganizerPlayerEventRequest(context),
         
      
 

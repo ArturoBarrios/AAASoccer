@@ -395,11 +395,12 @@ class UserCommand extends BaseCommand {
     print("updateModelsWithFriend");
     print("friend: " + friend.toString());
     print("add: " + add.toString());
+    print("homePageModel.selectedObjects in updateModelsWithFriend: " + homePageModel.selectedObjects.toString());
     
     if (add) {
       dynamic friends = appModel.currentUser['friends']['data'];
       friends.add(friend);
-      appModel.friends.add(friend);
+      // appModel.friends.add(friend);
 
       //
     } else {
@@ -421,7 +422,9 @@ class UserCommand extends BaseCommand {
     
     if(homePageModel.selectedKey.toString() == Constants.FRIEND.toString()){
       print("in iffffffffffff");
+      print("homePageModel.selectedObjects before: " + homePageModel.selectedObjects.toString());
       homePageModel.selectedObjects = List.from(appModel.friends);
+      print("homePageModel.selectedObjects after: " + homePageModel.selectedObjects.toString());
       // homePageModel.selectedKey = Constants.TEAM;
       // homePageModel.selectedKey = Constants.FRIEND;
     }

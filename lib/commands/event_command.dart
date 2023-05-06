@@ -1322,7 +1322,7 @@ class EventCommand extends BaseCommand {
     print(eventsModel.tryouts.length);
     print("updateViewModelsBool: ");
     print(updateViewModelsBool);
-    if (updateViewModelsBool) await updateViewModelsWithTryout(tryout);
+    // if (updateViewModelsBool) await updateViewModelsWithTryout(tryout);
 
     return addTryoutResp;
   }

@@ -435,8 +435,8 @@ class _Home extends State<Home> {
         tryoutObject['event'] = selectedObject['event'];
         dynamic getEventDetailsResp =
             EventCommand().getUserEventDetails([tryoutObject['event']]);
-        card = TrainingCard(
-            trainingObject: tryoutObject,
+        card = TryoutCard(
+            tryoutObject: tryoutObject,
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
       }      
