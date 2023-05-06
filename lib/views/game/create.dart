@@ -120,13 +120,7 @@ class _GameCreateState extends State<GameCreate> {
         TextField(
           controller: hometeamController,
           decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),
-        // TextField(
-        //   controller: locationController,
-        //   decoration: new InputDecoration.collapsed(hintText: 'Location'),
-        //   onChanged: (value) async => {
-        //     await LocationCommand().place_api_autocomplete(value),
-        //   }),
+        ),        
 
         locationSearchBar,
         createEventRequestWidget,

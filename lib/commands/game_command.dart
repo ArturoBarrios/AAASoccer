@@ -155,7 +155,7 @@ class GameCommand extends BaseCommand {
         eventInput['_id'] = createdGame['event']['_id'];
 
         //todo add error handling here, if game is not created, dont create price, etc
-        if(eventInput['price']>0){
+        
           eventInput['price'] = eventInput['price']*100;
           Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
           print("create price event input: "+ eventInput.toString());
@@ -167,7 +167,7 @@ class GameCommand extends BaseCommand {
 
           createdGame['event']['price'] = createPrice;
           // await EventCommand().addGame(createdGame, true);
-        }
+        
           // EventCommand().updateViewModelsWithGame(createdGame, true);
 
           createGameResponse["success"] = true;

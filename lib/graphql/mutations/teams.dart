@@ -8,6 +8,13 @@ class TeamMutations {
           name: "${teamInput['name']}",
           color: "${teamInput['color']}",          
           status: "ACTIVE"
+          createdAt: "${teamInput['createdAt']}",
+          joinConditions: {
+            create: {
+              withRequest: ${teamInput['withRequest']},
+              withPayment: ${teamInput['withPayment']},
+            }
+          },
           userParticipants: {
                 create:
                   {
@@ -15,7 +22,7 @@ class TeamMutations {
                       connect:                   
                           "${teamInput['user_id']}"    
                       }                                         
-                      roles: "{ORGANIZER, PLAYER}"
+                      roles: "${teamInput['roles']}"
                                        
                   }                                     
               },  
