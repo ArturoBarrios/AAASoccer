@@ -53,6 +53,29 @@ class TeamCommand extends BaseCommand {
     }
 
     //get price and payment info
+    dynamic payments = team['payments']['data'];
+      userTeamDetails['paymentData'] = payments;
+      userTeamDetails['amountPaid'] = "0.00";
+      userTeamDetails['amountRemaining'] = "0.00";
+      userTeamDetails['price'] = team['price'];
+      if(team['price'] != null){
+
+        print("payments: " + payments.toString());      
+        //get payment data
+        double amountPaid = 0.0;
+        for(int i = 0; i<payments.length; i++){
+          if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
+            print("amount before parsing: " + payments[i]['amount'].toString());
+            amountPaid += double.parse(payments[i]['amount']);
+
+            
+          }
+        }
+        userTeamDetails['amountPaid'] = (amountPaid).toStringAsFixed(2);
+        userTeamDetails['amountRemaining'] = (double.parse(team['price']['amount']) - amountPaid).toStringAsFixed(2);
+      }
+
+
 
 
     
@@ -559,6 +582,20 @@ class TeamCommand extends BaseCommand {
         dynamic createdTeam = 
         createTeamResponse["data"] =
             jsonDecode(response.body)['data']['createTeam'];
+
+        //create price
+        teamInput['price'] = teamInput['price']*100;
+          Map<String, dynamic> paymentInput = {'price': teamInput['price'].toString()};
+          print("create price event input: "+ teamInput.toString());
+          print("create price input: " + paymentInput['price'].toString());
+          Map<String, dynamic> createPriceResp = await TeamCommand().createPrice(paymentInput, createdTeam);
+          print("createPaymentResp: "+createPriceResp.toString());
+
+          dynamic createPrice = createPriceResp['data'];
+
+          createdTeam['price'] = createPrice;
+
+
         
         TeamCommand().updateModelsWithTeam(createdTeam);
         createTeamResponse["success"] = true;
@@ -575,6 +612,43 @@ class TeamCommand extends BaseCommand {
       print('Mutation failed: $e');
       return createTeamResponse;
     }
+  }
+
+  Future<Map<String, dynamic>> createPrice(dynamic paymentInput, dynamic teamInput) async {
+    print("createPrice()");
+    Map<String, dynamic> createPriceResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TeamMutations()
+              .createPrice(paymentInput, teamInput),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      Map<String, dynamic> createdPayment = jsonDecode(response.body)['data']['createPrice'];
+      print("createdPayment: " + createdPayment.toString());
+      createPriceResp["success"] = true;
+      createPriceResp["message"] = "Payment Created";
+      createPriceResp["data"] = createdPayment;
+
+      return createPriceResp;
+
+    } on Exception catch (e) {
+      print("Mutation failed: $e");
+      return createPriceResp;
+    }
+
   }
 
   Future<Map<String, dynamic>> removeTeam(String teamId) async {

@@ -103,9 +103,13 @@ class _TeamViewState extends State<TeamView> {
     return widget.getChatWidget(context, false, true);
   }
 
+  
+
   @override 
   void initState() {
     super.initState();
+    print("initState() in TeamView");
+    print("userTeamDetails: " + widget.userTeamDetails.toString());
     // widget.loadTeamInfo(widget.teamObject);
   }
 

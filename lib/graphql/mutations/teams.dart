@@ -41,6 +41,32 @@ class TeamMutations {
 
     return createTeam;
   }
+
+  String createPrice(
+    Map<String, dynamic> paymentInput,
+    Map<String, dynamic> teamInput,
+  ) {
+    String createPrice = """
+     mutation {
+        createPrice(data: {      
+          amount: "${paymentInput['price']}",  
+          team: {
+              connect: "${teamInput['_id']}"
+            },  
+                                    
+          }) {
+            _id    
+            amount
+            team {
+              _id
+              name
+            }                                  
+          }
+        }
+        """;
+
+    return createPrice;
+  }
     
   
  String updateTeamRequest(
