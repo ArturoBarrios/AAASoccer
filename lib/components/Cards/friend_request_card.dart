@@ -5,6 +5,7 @@ import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/user_command.dart';
 import '../../commands/requests_command.dart';
+import '../../views/home.dart';
 import '../../views/player/view.dart';
 import '../../assets/icons/plus.svg';
 
@@ -46,7 +47,10 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
 Future<void> updateFriendRequest(dynamic friendRequestObject, BuildContext context) async {
   await RequestsCommand().updateFriendRequest(friendRequestObject);
   //go back
-  Navigator.pop(context);
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Home()),
+  );  
 
   
 

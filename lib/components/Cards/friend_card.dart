@@ -33,6 +33,7 @@ Future<Map<String, dynamic>> removeFriend(dynamic friendObject) async {
     "message": "Friend deleted successfully"
   };
   Map<String, dynamic> removeFriendResp = await UserCommand().removeFriend(friendObject);
+  
   print("removeFriendResp: $removeFriendResp");
   if (removeFriendResp["success"]) {
     print("friend removed successfully");

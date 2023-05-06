@@ -116,7 +116,7 @@ class _TeamViewState extends State<TeamView> {
     setupPlayerList();
     return Scaffold(
       appBar:
-          Headers().getBackHeader(context, "Team " + widget.teamObject['name']),
+          Headers().getBackHeader(context, widget.teamObject['name']),
       body: Center(
           child: Column(children: [
         Text("isMyTeam: " + widget.isMyTeam.toString()),
@@ -125,7 +125,7 @@ class _TeamViewState extends State<TeamView> {
                 height: 20,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20.0),
-                  child: GestureDetector(
+                child: GestureDetector(
                       onTap: () async {
                         print("onTap: ");
 
