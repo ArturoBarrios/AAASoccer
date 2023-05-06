@@ -3,6 +3,7 @@ import 'package:soccermadeeasy/commands/user_command.dart';
 import 'package:soccermadeeasy/components/Cards/pickup_card2.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
+import '../../commands/team_command.dart';
 import '../../components/profile.dart';
 import '../../components/headers.dart';
 import '../../components/Cards/team_request_card.dart';
@@ -34,8 +35,8 @@ class _RequestsViewState extends State<RequestsView> {
     Navigator.pop(context);
   }
 
-  Widget getRequestCard(
-      String selectedKey, dynamic requestObject, Svg svgImage) {
+  Future<Widget> getRequestCard(
+      String selectedKey, dynamic requestObject, Svg svgImage) async {
     print("getRequestCard()");
     print("selectedKey: " + selectedKey);
     print("requestObject: " + requestObject.toString());
@@ -66,10 +67,13 @@ class _RequestsViewState extends State<RequestsView> {
       );
       return card;
     } else {
+      dynamic team = await TeamCommand().findTeamById(requestObject['team']['_id']);
+      dynamic teamDetails = await TeamCommand().getUserTeamDetails(team);
       Widget card =
           TeamRequestCard(teamRequestObject: requestObject, 
           svgImage: svgImage,
           didSendRequest: didSendRequest,
+          userTeamDetails: teamDetails,
           );
       return card;
     }
@@ -245,19 +249,28 @@ class _RequestsViewState extends State<RequestsView> {
                   : 
                   selectedObjects.length>0 ? 
                   ListView.builder(
-                      controller: _selectEventController,
-                      itemCount: selectedObjects.length,
-                      itemBuilder: (_, index) => Card(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 10),
-                            child:
-                                // Text("test")
-                                getRequestCard(selectedKey,
-                                    selectedObjects[index], svgImage),
-                            // PickupCard2(
-                            //     eventObject: selectedObjects[index],
-                            //     svgImage: svgImage),
-                          )) :
+  controller: _selectEventController,
+  itemCount: selectedObjects.length,
+  itemBuilder: (_, index) {
+    return FutureBuilder(
+      future: getRequestCard(
+          selectedKey, selectedObjects[index], svgImage),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return Card(
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            child: snapshot.data,
+          );
+        }
+      },
+    );
+  },
+)
+ :
                           Text("No Requests Yet")
                           
             ),

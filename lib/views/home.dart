@@ -381,11 +381,10 @@ class _Home extends State<Home> {
           userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
       card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
-    } else if (selectedKey == Constants.TEAM) {
-      bool isMyTeam = false;
-      isMyTeam = TeamCommand().isMyTeam(selectedObject);
+    } else if (selectedKey == Constants.TEAM) {            
+      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject);
       card = TeamCard(
-          teamObject: selectedObject, svgImage: svgImage, isMyTeam: isMyTeam);
+          teamObject: selectedObject, svgImage: svgImage, userTeamDetails: userTeamDetails);
     } else if (selectedKey == Constants.FRIEND) {
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
     } 
