@@ -824,6 +824,7 @@ class EventCommand extends BaseCommand {
       "organizers": [],
       "teams": [],
       "roles": [],
+      "chats": [],
       
     };
     print("events: " + events.toString());
@@ -851,6 +852,9 @@ class EventCommand extends BaseCommand {
       }         
       isMyEventResp['mainEvent'] = event;
       print("event: " + event.toString());
+
+      //get chats
+      dynamic chats = event['chats']['data'];
 
       List<dynamic> myTeamRoles = getEventRoles(event,appModel.currentUser);
       print("myTeamRoles: " + myTeamRoles.toString());
@@ -968,21 +972,7 @@ class EventCommand extends BaseCommand {
 
   
 
-  Future<void> setupTeamsFromCurrentUser(dynamic user) async {
-    print("setupTeamsFromUser()");
-    Map<String, dynamic> getTeamsNearLocationResp =
-        await TeamCommand().getTeamsNearLocation();
-    if (getTeamsNearLocationResp['success']) {
-      List<dynamic> teams = getTeamsNearLocationResp['data'];
-      print("teams: ");
-      print(teams);
-      appModel.teams = teams;
-      appModel.teamsNearMe = teams;
-    }
-
-    appModel.myTeams = user['teamUserParticipants']['data'];
-
-  }
+  
 
 
 

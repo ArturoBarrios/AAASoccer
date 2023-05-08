@@ -3,15 +3,16 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/commands/team_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/player_command.dart';
+import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
 
 class TeamView extends StatefulWidget with EventMixin {
-  TeamView({Key? key, required this.teamObject, required this.userTeamDetails})
+  TeamView({Key? key, required this.teamObject})
       : super(key: key);
   final Map<String, dynamic> teamObject;
-  final dynamic userTeamDetails;
+  
 
   
 
@@ -20,8 +21,9 @@ class TeamView extends StatefulWidget with EventMixin {
 }
 
 class _TeamViewState extends State<TeamView> {
-  bool _isLoading = false;
+  bool _isLoading = true;
   dynamic priceObject;
+  dynamic userTeamDetails;
 
   void goBack() {
     Navigator.pop(context);
@@ -104,7 +106,21 @@ class _TeamViewState extends State<TeamView> {
    
 
   void loadEventPayment() {
-    priceObject = widget.userTeamDetails['price'];
+    priceObject = userTeamDetails['price'];
+  }
+
+  void loadInitialData() async {
+    print("loadInitialData() in TeamView");
+    userTeamDetails = await TeamCommand().getUserTeamDetails(widget.teamObject);
+    widget.setupPlayerList();
+    loadEventPayment();
+    //wait for 3 seconds
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      _isLoading = false;
+    });
+    print("userTeamDetails: " + userTeamDetails.toString());
+
   }
 
   
@@ -112,12 +128,12 @@ class _TeamViewState extends State<TeamView> {
   @override 
   void initState() {
     super.initState();
-    print("initState() in TeamView");
-    print("userTeamDetails: " + widget.userTeamDetails.toString());
-    widget.setupPlayerList();
-    loadEventPayment();
-
-    // widget.loadTeamInfo(widget.teamObject);
+    
+    loadInitialData();
+    // print("initState() in TeamView");
+    // print("userTeamDetails: " + userTeamDetails.toString());
+    
+    
   }
 
   @override
@@ -127,9 +143,9 @@ class _TeamViewState extends State<TeamView> {
     return Scaffold(
       appBar:
           Headers().getBackHeader(context, widget.teamObject['name']),
-      body: Center(
+      body: !_isLoading ? Center(
           child: Column(children: [        
-        widget.userTeamDetails['isMine']
+        userTeamDetails['isMine']
             ? Container(
                 height: 20,
                 child: ClipRRect(
@@ -226,8 +242,8 @@ class _TeamViewState extends State<TeamView> {
                     Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    widget.getPriceWidget(widget.userTeamDetails),
-                    widget.userTeamDetails['isMine']
+                    widget.getPriceWidget(userTeamDetails),
+                    userTeamDetails['isMine']
                         ? ElevatedButton(
                             onPressed: () {
                               // Add button onPressed logic here
@@ -238,8 +254,22 @@ class _TeamViewState extends State<TeamView> {
                   ],
                 ),
 
-                    widget.getChatWidget(context, false, true, widget.userTeamDetails),
-      ])),
+                    widget.getChatWidget(context, false, true, userTeamDetails),
+                    Container(
+      child: Text("Number of Chats: "+ userTeamDetails['chats'].length.toString() ) 
+      ),
+                    
+      ])) : 
+      Container(
+            height: double.infinity,
+            width: double.infinity,
+            child:Align(
+              alignment: Alignment.center,
+              child: 
+              // BottomNav()//for times when user deleted in cognito but still signed into app
+              LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
+            )
+          ) 
     );
   }
 }

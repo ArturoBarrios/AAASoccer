@@ -67,7 +67,8 @@ class ChatCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
       dynamic createdChat = jsonDecode(response.body)['data']['createChat'];
-      userModel.chats.insert(0, createdChat);
+      BaseCommand().updateChatViewModels(createdChat, objectsToAttachInput);
+      // userModel.chats.insert(0, createdChat);
 
       createChatResponse['success'] = true;
       createChatResponse['data'] = createdChat;
