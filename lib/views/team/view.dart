@@ -111,15 +111,19 @@ class _TeamViewState extends State<TeamView> {
 
   void loadInitialData() async {
     print("loadInitialData() in TeamView");
-    userTeamDetails = await TeamCommand().getUserTeamDetails(widget.teamObject);
-    widget.setupPlayerList();
-    loadEventPayment();
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
+    dynamic userTeamDetailsResp =  await TeamCommand().getUserTeamDetails(widget.teamObject);
+      widget.setupPlayerList();
     setState(() {
+      userTeamDetails = userTeamDetailsResp;
       _isLoading = false;
     });
-    print("userTeamDetails: " + userTeamDetails.toString());
+      print("userTeamDetails: " + userTeamDetails.toString());
+      print("loadInitialData() finished!");
+      print("loadEventPayment() in loadInitialData()");
+      loadEventPayment();
+      print("loadEventPayment() finished in loadInitialData()");
 
   }
 
@@ -128,8 +132,10 @@ class _TeamViewState extends State<TeamView> {
   @override 
   void initState() {
     super.initState();
-    
+    print("initState()");
+    print("loadIinitialData() in initState()");
     loadInitialData();
+    print("initState finished!");    
     // print("initState() in TeamView");
     // print("userTeamDetails: " + userTeamDetails.toString());
     

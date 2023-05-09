@@ -86,7 +86,7 @@ class TeamCommand extends BaseCommand {
 
 
 
-    
+    print("getUserTeamDetails() finished with userTeamDetails: " + userTeamDetails.toString());
 
     return userTeamDetails;
   }

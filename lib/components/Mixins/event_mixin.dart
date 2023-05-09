@@ -334,8 +334,7 @@ mixin EventMixin {
       dynamic playerChosen = primaryList[mainIndex];
       selectedPlayers.add(playerChosen);
     });
-    selectedPlayers.add(userObject);
-    // Navigator.pop(context);
+    selectedPlayers.add(userObject);    
     Navigator.push(context, MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return ChatCreate(

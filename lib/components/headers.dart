@@ -216,17 +216,23 @@ void goHome(BuildContext context) {
   }
 
   AppBar getBackHeader(BuildContext context, String title) {
-    AppBar appBar = AppBar(
-      elevation: 2,
-      centerTitle: false,
-      title: 
-      Text(title),
-      backgroundColor: Colors.orange.shade500,
-      actions: <Widget>[],
-    );
+  AppBar appBar = AppBar(
+    elevation: 2,
+    centerTitle: false,
+    title: Text(title),
+    backgroundColor: Colors.orange.shade500,
+    leading: IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
+    actions: <Widget>[],
+  );
 
-    return appBar;
-  }
+  return appBar;
+}
+
 }
 
 class _Headers extends State<Headers> {

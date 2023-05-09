@@ -91,16 +91,18 @@ void nukeData(){
 
   appModel.initialConditionsMet = false;
 
-
-
-
-
-  
-  
-
-
-
 }
+
+
+  void updateChatViewModels(dynamic chat, eventOrTeamObject){
+    print("updateChatViewModels()");
+    print("chat: $chat");
+    print("eventOrTeamObject: $eventOrTeamObject");
+    //update chat view models
+    appModel.currentUser['chats']['data'].insert(0, chat);
+
+
+  }
 
   //will load profile, team, and other user images
   Future<Map<String, dynamic>> loadUserImagesFromAWS() async{
@@ -273,7 +275,7 @@ void nukeData(){
           print("set");
 
           await EventCommand().setupEventsFromCurrentUser(appModel.currentUser);
-          await EventCommand().setupTeamsFromCurrentUser(appModel.currentUser);
+          await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
             
           //setup events(league, tournament, tryout, training)
           //,teams, players near me data. 
