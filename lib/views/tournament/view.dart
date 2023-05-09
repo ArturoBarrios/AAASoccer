@@ -143,6 +143,7 @@ class _TournamentViewState extends State<TournamentView> {
                  //join game gesture detector for now
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.userEventDetails['mainEvent'], widget.userObject),
                 widget.getChatWidget(context, true, false, widget.userEventDetails),
+                
 
                 widget.userEventDetails['isMine'] ?                
                   widget.sendPlayersRequestWidget(context, widget.userEventDetails)
@@ -150,7 +151,7 @@ class _TournamentViewState extends State<TournamentView> {
                 widget.userEventDetails['isMine'] ?                
                   widget.sendTeamsRequestWidget(context, widget.userEventDetails)
                   : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                
-              
+
                  
               ],
             ),

@@ -316,7 +316,7 @@ class _Home extends State<Home> {
 
   @override
   void initState() {
-    print("home.dart init state");
+    print("initState() in home");
     super.initState();
     _firstLoad();
     _selectEventController = ScrollController()..addListener(_loadMore);

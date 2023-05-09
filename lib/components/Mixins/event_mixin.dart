@@ -52,6 +52,9 @@ mixin EventMixin {
   void setupPlayerList() {
     print("setupPlayerList");
     playerList = PlayerCommand().getAppModelPlayersNearMe();
+    print("playerList: " + playerList.toString());
+    print("playerList length: " + playerList.length.toString());
+    userObject = UserCommand().getAppModelUser();       
   }
 
   void setupTeamList() {
@@ -331,8 +334,7 @@ mixin EventMixin {
       dynamic playerChosen = primaryList[mainIndex];
       selectedPlayers.add(playerChosen);
     });
-    selectedPlayers.add(userObject);
-
+    selectedPlayers.add(userObject);    
     Navigator.push(context, MaterialPageRoute<void>(
       builder: (BuildContext context) {
         return ChatCreate(
@@ -343,10 +345,19 @@ mixin EventMixin {
     ));
   }
 
+  Container getChatsWidget(BuildContext context, dynamic userObjectDetails){
+    print("getChatsWidget");
+    
+    return Container(
+      child: Text("Number of Chats: "+ userObjectDetails['chats'].length.toString() ) 
+      );
+  }
+
   Container getChatWidget(
       BuildContext context, bool attachToEvent, bool attachToTeam,
        dynamic userObjectDetails) {
     print("getChatWidget");
+    
     print("participationRoles: $participationRoles");
     if (userObjectDetails['roles'].contains("ORGANIZER")) {
       return Container(

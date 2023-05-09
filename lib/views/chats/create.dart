@@ -48,6 +48,7 @@ class _ChatCreateState extends State<ChatCreate> {
     print("eventObject: "+widget.eventObject.toString());
     print("teamObject: "+widget.teamObject.toString());
     print("players: "+widget.players.toString());
+    print("players length: "+widget.players.length.toString());
     String playersInput = "";
     for (var i = 0; i < widget.players.length; i++) {
       print("player: "+widget.players[i].toString());
@@ -67,24 +68,28 @@ class _ChatCreateState extends State<ChatCreate> {
     };
     print("objectsToAttachInput: $objectsToAttachInput");
     Map<String, dynamic> createChatResp = await ChatCommand().createChat(chatInput, objectsToAttachInput);
+
     print("createChatResp: $createChatResp");
     if(createChatResp['success']){
       dynamic chatObject = createChatResp['data'];
-      Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return Home();
-      },
-    ));
-      Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return ChatsView();
-      },
-    ));
-      Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return ChatView(index: 0,chatObject: chatObject);
-      },
-    ));
+      if(mounted){
+        Navigator.pop(context);
+      }
+    //   Navigator.push(context, MaterialPageRoute<void>(
+    //   builder: (BuildContext context) {
+    //     return Home();
+    //   },
+    // ));
+    //   Navigator.push(context, MaterialPageRoute<void>(
+    //   builder: (BuildContext context) {
+    //     return ChatsView();
+    //   },
+    // )); 
+    //   Navigator.push(context, MaterialPageRoute<void>(
+    //   builder: (BuildContext context) {
+    //     return ChatView(index: 0,chatObject: chatObject);
+    //   },
+    // ));
     }
 
   }

@@ -1,9 +1,16 @@
+import 'package:soccermadeeasy/graphql/fragments/chat_fragments.dart';
+
 class TeamFragments {
   String fullTeam() {
-    String fullTeamReturn = r'''
+    String fullTeamReturn = """
             _id
             name
             color
+            chats{
+              data{
+                ${ChatFragments().chatObject()}
+              }
+            }
             location{
               _id
               latitude
@@ -47,7 +54,7 @@ class TeamFragments {
                 }
               }
             }
-    ''';
+    """;
 
     return fullTeamReturn;
   }

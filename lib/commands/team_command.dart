@@ -34,7 +34,14 @@ class TeamCommand extends BaseCommand {
       "organizers": [],
       "events": [],
       "roles": [],
+      "chats": []
     };
+
+    //get chats
+    dynamic chats = team['chats']['data'];
+    userTeamDetails['chats'] = chats;
+    print("length of chats in userTeamDetails: " + chats.length.toString());
+
 
     List<dynamic> myTeamRoles = getMyTeamRoles(team,appModel.currentUser);
     print("myTeamRoles: " + myTeamRoles.toString());
@@ -79,7 +86,7 @@ class TeamCommand extends BaseCommand {
 
 
 
-    
+    print("getUserTeamDetails() finished with userTeamDetails: " + userTeamDetails.toString());
 
     return userTeamDetails;
   }
@@ -134,6 +141,22 @@ class TeamCommand extends BaseCommand {
 
 
     return roles;
+  }
+
+  Future<void> setupTeamsFromCurrentUser(dynamic user) async {
+    print("setupTeamsFromUser()");
+    Map<String, dynamic> getTeamsNearLocationResp =
+        await TeamCommand().getTeamsNearLocation();
+    if (getTeamsNearLocationResp['success']) {
+      List<dynamic> teams = getTeamsNearLocationResp['data'];
+      print("teams: ");
+      print(teams);
+      appModel.teams = teams;
+      appModel.teamsNearMe = teams;
+    }
+
+    appModel.myTeams = user['teamUserParticipants']['data'];
+
   }
 
  

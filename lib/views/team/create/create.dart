@@ -80,7 +80,7 @@ class _TeamCreateState extends State<TeamCreate> {
           );          
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TeamView(teamObject: createdTeam, userTeamDetails: userTeamDetails)),
+            MaterialPageRoute(builder: (context) => TeamView(teamObject: createdTeam)),
           );          
            
           createEventResponse['success'] = true;

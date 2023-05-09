@@ -1,4 +1,5 @@
 import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
+import 'package:soccermadeeasy/graphql/fragments/chat_fragments.dart';
 
 class EventFragments {
   String fullEvent() {
@@ -12,6 +13,11 @@ class EventFragments {
       startTime
       endTime  
       createdAt
+      chats{
+        data{
+          ${ChatFragments().chatObject()}
+        }
+      }
       joinConditions{
         _id
         withRequest
