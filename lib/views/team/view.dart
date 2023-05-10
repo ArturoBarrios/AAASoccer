@@ -72,7 +72,8 @@ class _TeamViewState extends State<TeamView> {
   
 
   Future<void> sendPlayersTeamRequest() async {
-    widget.sendPlayersTeamRequest(widget.teamObject);
+    
+    // widget.sendPlayersTeamRequest(widget.teamObject);
     // print("sendPlayersTeamRequest");
     // print("selectedRequestTypeObjects.length: " +
     //     selectedRequestTypeObjects.length.toString());
@@ -264,6 +265,7 @@ class _TeamViewState extends State<TeamView> {
                     Container(
       child: Text("Number of Chats: "+ userTeamDetails['chats'].length.toString() ) 
       ),
+      widget.sendPlayersRequestWidget(context, userTeamDetails),
                     
       ])) : 
       Container(

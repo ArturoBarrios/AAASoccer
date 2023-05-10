@@ -204,7 +204,7 @@ class TeamCommand extends BaseCommand {
 
   //send player event requests
   Future<Map<String, dynamic>> sendPlayerTeamRequests(
-      dynamic userPlayerObject,List<dynamic> teamsObject, List<String> roles) async {
+      dynamic userPlayerObject,List<dynamic> teamsObject, List<dynamic> roles) async {
 
     print("sendPlayerEventRequest");
     Map<String, dynamic> sendPlayerTeamRequestsResponse = {

@@ -97,7 +97,7 @@ class _TeamCard extends State<TeamCard> {
     }
 
     Future<void> sendPlayersTeamRequest() async{
-      widget.sendPlayersTeamRequest(widget.teamObject);
+      // widget.sendPlayersTeamRequest(widget.teamObject);
       // print("sendPlayersEventRequest");            
       // print("selectedRequestTypeObjects.length: " + selectedRequestTypeObjects.length.toString());      
       // print("playersSelectedList.length: " + playersSelectedList.length.toString());
