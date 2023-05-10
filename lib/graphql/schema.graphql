@@ -314,6 +314,7 @@ type Team   {
   price: Price
   payments: [Payment] @relation
   joinConditions: JoinConditions
+  
 
   
 }

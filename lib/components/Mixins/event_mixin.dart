@@ -184,23 +184,33 @@ mixin EventMixin {
     }
   }
 
-  Future<void> sendPlayersTeamRequest(dynamic teamObject) async {
-    print("sendPlayersEventRequest");
-    print("selectedRequestTypeObjects.length: " +
-        selectedRequestTypeObjects.length.toString());
-    print(
-        "playersSelectedList.length: " + playersSelectedList.length.toString());
-    print(
-        "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    print("send player event request");
-    for (int i = 0; i < playersSelectedList.length; i++) {
-      await TeamCommand().sendPlayerTeamRequests(
-          playersSelectedList[i], [teamObject], selectedRequestTypeObjects);
-    }
-  }
+  Future<void> sendPlayersTeamRequest(
+    dynamic userObjectDetails, 
+    Map<int, dynamic> indexes, 
+    List<dynamic> primaryList, List<dynamic> secondaryList
+    ) async {
+    print("sendPlayersTeamRequest");
+    print("userObjectDetails: " + userObjectDetails['team'].toString());
+    print("indexes: " + indexes.toString());
+    print("primaryList: " + primaryList.toString());
+    print("secondaryList: " + secondaryList.toString());    
+    indexes.forEach((mainIndex, secondaryIndexes) async {
+      dynamic playerChosen = primaryList[mainIndex];
+      dynamic roles = [];
+      secondaryIndexes.forEach((secondaryIndex, blankValue) async {
+        roles.add(secondaryList[secondaryIndex]);
+        print("roles: " + roles.toString());      
 
-  Future<void> sendTeamsEventRequest(dynamic event, Map<int, dynamic> indexes,
-      List<dynamic> primaryList, List<dynamic> secondaryList) async {
+        await TeamCommand().sendPlayerTeamRequests(
+          playerChosen, [userObjectDetails['team']], roles);
+      });
+    });    
+  }  
+
+  Future<void> sendTeamsEventRequest(dynamic event, 
+    Map<int, dynamic> indexes,
+    List<dynamic> primaryList, List<dynamic> secondaryList
+  ) async {
     print("sendTeamsEventRequest");
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
@@ -233,19 +243,24 @@ mixin EventMixin {
       type = "TRAININGREQUEST";
     } else if (eventObject['type'] == "TRYOUT") {
       type = "TRYOUTREQUEST";
-    }
+    }    
     return type;
   }
 
   Future<void> sendPlayersEventRequest(
-      dynamic eventObject,
+      dynamic userObjectDetails,
       Map<int, dynamic> indexes,
       List<dynamic> primaryList,
       List<dynamic> secondaryList) async {
+    
     print("sendPlayersEventRequest");
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
-    String type = getRequestType(eventObject);
+    
+    String type = getRequestType(userObject['mainEvent']);
+
+
+    
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic playerChosen = primaryList[mainIndex];
       dynamic roles = [];
@@ -254,7 +269,7 @@ mixin EventMixin {
       });
       print("roles: " + roles.toString());
       await EventCommand()
-          .sendPlayerEventRequests(playerChosen, [eventObject], roles, type);
+          .sendPlayerEventRequests(playerChosen, [userObjectDetails['mainEvent']], roles, type);
     });
   }
 
@@ -277,36 +292,7 @@ mixin EventMixin {
     //       eventObject, selectedRequestTypeObjects[i], requestType);
     // }
   }
-  //todo: remove these two methods and do it in getDetails page
-  // void loadTeamInfo(dynamic team) async {
-  //   print("loadTeamInfo");
-  //   this.team = team;
-  //   userObject = await UserCommand().findMyUserById();    
-  //   userObject['teamUserParticipants']['data']
-  //       .forEach((teamUserParticipantElement) {
-  //     if (teamUserParticipantElement['team']['_id'] == team['_id']) {
-  //       teamUserParticipant = teamUserParticipantElement;
-  //       participationRoles =
-  //           BaseCommand().parseRoles(teamUserParticipant['roles']);
-  //       print("participationRoles: $participationRoles");
-  //     }
-  //   });
-  // }
 
-  // void loadEventInfo(dynamic event) {
-  //   this.event = event;
-  //   print("loadEventInfo");
-  //   userObject = UserCommand().getAppModelUser();
-  //   userObject['eventUserParticipants']['data']
-  //       .forEach((eventUserParticipantElement) {
-  //     if (eventUserParticipantElement['event']['_id'] == event['_id']) {
-  //       eventUserParticipant = eventUserParticipantElement;
-  //       participationRoles =
-  //           BaseCommand().parseRoles(eventUserParticipant['roles']);
-  //       print("participationRoles: $participationRoles");
-  //     }
-  //   });
-  // }
 
   void displayRoles() {
     if (participationRoles.length > 0) {}
@@ -658,6 +644,8 @@ mixin EventMixin {
 
   Container sendPlayersRequestWidget(
       BuildContext context, dynamic userObjectDetails) {
+        print("sendPlayersRequestWidget: "+ userObjectDetails.toString());
+        
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -673,9 +661,15 @@ mixin EventMixin {
                 },
               );
               if (result.isNotEmpty) {
-                print("result: " + result.toString());
-                sendPlayersEventRequest(
-                    userObjectDetails['mainEvent'], result, primaryList, secondaryList);
+                  print("result: " + result.toString());
+                if(userObjectDetails['mainEvent'] != null){
+                  sendPlayersEventRequest(
+                      userObjectDetails, result, primaryList, secondaryList);
+                 
+                }
+                else{
+                  sendPlayersTeamRequest(userObjectDetails, result , primaryList, secondaryList);
+                }
               }
             },
             child: Container(
