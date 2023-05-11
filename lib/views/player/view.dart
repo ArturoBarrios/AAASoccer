@@ -95,12 +95,16 @@ class _PlayerViewState extends State<PlayerView> {
     // await sendPlayerRequests();
   }
 
-  sendPlayerRequests(){
-    widget.sendPlayerRequests(widget.userPlayerObject);
-  }
 
   void goBack() {
     Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.setupEventsToChooseFrom();
+    widget.setupTeamsToChooseFrom();
   }
 
   @override
@@ -250,7 +254,7 @@ class _PlayerViewState extends State<PlayerView> {
                   requestIndexes ?? widget.selectedRequestTypeIndexes;
               print('selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
               requestTypesSelected(widget.selectedRequestTypeIndexes);
-              sendPlayerRequests();
+              widget.sendPlayerRequests(widget.userPlayerObject);
             }
           },
           child: Container(
@@ -259,6 +263,9 @@ class _PlayerViewState extends State<PlayerView> {
                 child: const Icon(Icons.send)),
           ),
         ),
+
+        widget.sendPlayerTeamsRequestWidget(context, widget.userPlayerObject),
+        widget.sendPlayerEventsRequestWidget(context, widget.userPlayerObject)
       ])),
     );
   }
