@@ -797,4 +797,11 @@ mixin EventMixin {
       return Container();
     }
   }
+
+  Future<dynamic> getPlayerListWidgetDetails(userObjectDetails) async{
+    
+    return userObjectDetails;
+  }
+
+
 }

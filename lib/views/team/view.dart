@@ -6,6 +6,7 @@ import '../../commands/player_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/headers.dart';
+import '../../components/players_list_widget.dart';
 import '../../constants.dart';
 
 class TeamView extends StatefulWidget with EventMixin {
@@ -24,6 +25,7 @@ class _TeamViewState extends State<TeamView> {
   bool _isLoading = true;
   dynamic priceObject;
   dynamic userTeamDetails;
+  dynamic playerListWidgetDetails;
 
   void goBack() {
     Navigator.pop(context);
@@ -115,7 +117,8 @@ class _TeamViewState extends State<TeamView> {
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
     dynamic userTeamDetailsResp =  await TeamCommand().getUserTeamDetails(widget.teamObject);
-      widget.setupPlayerList();
+    widget.setupPlayerList();
+    playerListWidgetDetails =  await widget.getPlayerListWidgetDetails(userTeamDetailsResp);
     setState(() {
       userTeamDetails = userTeamDetailsResp;
       _isLoading = false;
@@ -136,6 +139,7 @@ class _TeamViewState extends State<TeamView> {
     print("initState()");
     print("loadIinitialData() in initState()");
     loadInitialData();
+
     print("initState finished!");    
     // print("initState() in TeamView");
     // print("userTeamDetails: " + userTeamDetails.toString());
@@ -147,137 +151,145 @@ class _TeamViewState extends State<TeamView> {
   Widget build(BuildContext context) {
     print("build() in TeamView");
     print("teamObject: " + widget.teamObject.toString());
-    return Scaffold(
-      appBar:
-          Headers().getBackHeader(context, widget.teamObject['name']),
-      body: !_isLoading ? Center(
-          child: Column(children: [        
-        userTeamDetails['isMine']
-            ? Container(
-                height: 20,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                child: GestureDetector(
-                      onTap: () async {
-                        print("onTap: ");
+   return Scaffold(
+  appBar: Headers().getBackHeader(context, widget.teamObject['name']),
+  body: !_isLoading
+      ? Center(
+          child: Column(
+            children: [
+              userTeamDetails['isMine']
+                  ? Container(
+                      height: 20,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: GestureDetector(
+                            onTap: () async {
+                              print("onTap: ");
 
-                        List<int>? playerIndexes =
-                            await showAnimatedDialog<dynamic>(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: widget.selectedPlayerIndexes,
-                                titleText: 'Choose Players',
-                                listType: ListType.multiSelect,
-                                positiveText: "Next",
-                                activeColor: Colors.green,
-                                dataList: widget.playerList);
-                          },
-                          animationType: DialogTransitionType.size,
-                          curve: Curves.linear,
-                        );
-                        widget.selectedPlayerIndexes =
-                            playerIndexes ?? widget.selectedPlayerIndexes;
-                        print(
-                            'selectedIndex:${widget.selectedPlayerIndexes?.toString()}');
-                        playersSelected(widget.selectedPlayerIndexes!);
+                              List<int>? playerIndexes =
+                                  await showAnimatedDialog<dynamic>(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (BuildContext context) {
+                                  return ClassicListDialogWidget<dynamic>(
+                                      selectedIndexes: widget.selectedPlayerIndexes,
+                                      titleText: 'Choose Players',
+                                      listType: ListType.multiSelect,
+                                      positiveText: "Next",
+                                      activeColor: Colors.green,
+                                      dataList: widget.playerList);
+                                },
+                                animationType: DialogTransitionType.size,
+                                curve: Curves.linear,
+                              );
+                              widget.selectedPlayerIndexes =
+                                  playerIndexes ?? widget.selectedPlayerIndexes;
+                              print(
+                                  'selectedIndex:${widget.selectedPlayerIndexes?.toString()}');
+                              playersSelected(widget.selectedPlayerIndexes!);
 
-                        if (widget.playersSelectedList.length > 0) {
-                          List<int>? requestIndexes =
-                              await showAnimatedDialog<dynamic>(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) {
-                              return ClassicListDialogWidget<dynamic>(
-                                  selectedIndexes: widget.selectedRequestTypeIndexes,
-                                  titleText: 'Choose User Type',
-                                  positiveText: "Send Request",
-                                  listType: ListType.multiSelect,
-                                  activeColor: Colors.green,
-                                  dataList: widget.requestUserTypes);
+                              if (widget.playersSelectedList.length > 0) {
+                                List<int>? requestIndexes =
+                                    await showAnimatedDialog<dynamic>(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return ClassicListDialogWidget<dynamic>(
+                                        selectedIndexes: widget.selectedRequestTypeIndexes,
+                                        titleText: 'Choose User Type',
+                                        positiveText: "Send Request",
+                                        listType: ListType.multiSelect,
+                                        activeColor: Colors.green,
+                                        dataList: widget.requestUserTypes);
+                                  },
+                                  animationType: DialogTransitionType.size,
+                                  curve: Curves.linear,
+                                );
+
+                                widget.selectedRequestTypeIndexes =
+                                    requestIndexes ?? widget.selectedRequestTypeIndexes;
+                                print(
+                                    'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                                await requestTypeSelected(widget.selectedRequestTypeIndexes);
+                                await sendPlayersTeamRequest();
+                              }
                             },
-                            animationType: DialogTransitionType.size,
-                            curve: Curves.linear,
-                          );
+                            child: Text("Invite Players")),
+                      ),
+                    )
+                  : Container(
+                      height: 20,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: GestureDetector(
+                              onTap: () async {
+                                List<int>? requestIndexes =
+                                    await showAnimatedDialog<dynamic>(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return ClassicListDialogWidget<dynamic>(
+                                        selectedIndexes: widget.selectedRequestTypeIndexes,
+                                        titleText: 'Choose User Type',
+                                        positiveText: "Send Request",
+                                        listType: ListType.multiSelect,
+                                        activeColor: Colors.green,
+                                        dataList: widget.requestUserTypes);
+                                  },
+                                  animationType: DialogTransitionType.size,
+                                  curve: Curves.linear,
+                                );
 
-                          widget.selectedRequestTypeIndexes =
-                              requestIndexes ?? widget.selectedRequestTypeIndexes;
-                          print(
-                              'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                          await requestTypeSelected(widget.selectedRequestTypeIndexes);
-                          await sendPlayersTeamRequest();
-                        }
+                                widget.selectedRequestTypeIndexes =
+                                    requestIndexes ?? widget.selectedRequestTypeIndexes;
+                                print(
+                                    'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                                await requestTypeSelected(widget.selectedRequestTypeIndexes);
+                                await sendTeamRequest();
+                              },
+                              child: Text("Request to Join")),
+                          )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  widget.getPriceWidget(userTeamDetails),
+              userTeamDetails['isMine']
+                  ? ElevatedButton(
+                      onPressed: () {
+                        // Add button onPressed logic here
                       },
-                      child: Text("Invite Players")),
-                ),
-              )
-            : Container(
-                height: 20,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: GestureDetector(onTap: () async {
-                      List<int>? requestIndexes =
-                          await showAnimatedDialog<dynamic>(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return ClassicListDialogWidget<dynamic>(
-                              selectedIndexes: widget.selectedRequestTypeIndexes,
-                              titleText: 'Choose User Type',
-                              positiveText: "Send Request",
-                              listType: ListType.multiSelect,
-                              activeColor: Colors.green,
-                              dataList: widget.requestUserTypes);
-                        },
-                        animationType: DialogTransitionType.size,
-                        curve: Curves.linear,
-                      );
-
-                      widget.selectedRequestTypeIndexes =
-                          requestIndexes ?? widget.selectedRequestTypeIndexes;
-                      print(
-                          'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                      await requestTypeSelected(widget.selectedRequestTypeIndexes);
-                      await sendTeamRequest();
-                    },
-                    child: Text("Request to Join")
-                    ),
-
-                    )),
-
-                    Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    widget.getPriceWidget(userTeamDetails),
-                    userTeamDetails['isMine']
-                        ? ElevatedButton(
-                            onPressed: () {
-                              // Add button onPressed logic here
-                            },
-                            child: Text('Update Payment'),
-                          )
-                        : Container(),
-                  ],
-                ),
-
-                    widget.getChatWidget(context, false, true, userTeamDetails),
-                    Container(
-      child: Text("Number of Chats: "+ userTeamDetails['chats'].length.toString() ) 
+                      child: Text('Update Payment'),
+                    )
+                  : Container(),
+            ],
+          ),
+          widget.getChatWidget(context, false, true, userTeamDetails),
+          widget.sendPlayersRequestWidget(context, userTeamDetails),
+          Container(
+              child:
+                  Text("Number of Chats: " + userTeamDetails['chats'].length.toString())),
+          SizedBox(
+            child: Container(
+    height: 200,
+    child: PlayerList(playersDetails: playerListWidgetDetails),
+  ),
+          ),
+        ],
       ),
-      widget.sendPlayersRequestWidget(context, userTeamDetails),
-                    
-      ])) : 
-      Container(
-            height: double.infinity,
-            width: double.infinity,
-            child:Align(
-              alignment: Alignment.center,
-              child: 
-              // BottomNav()//for times when user deleted in cognito but still signed into app
-              LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
-            )
-          ) 
-    );
+    )
+  : Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.center,
+        child:
+            // BottomNav()//for times when user deleted in cognito but still signed into app
+            LoadingScreen(
+                currentDotColor: Colors.white,
+                defaultDotColor: Colors.black,
+                numDots: 10),
+      ),
+    ),
+   );
   }
 }

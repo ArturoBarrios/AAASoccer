@@ -1,3 +1,5 @@
+Please finish this app for me if I shall die. 
+go to passwords section to find password for things. password for access is Ruforufo0714357$
 # soccermadeeasy
 
 A new Flutter project.
