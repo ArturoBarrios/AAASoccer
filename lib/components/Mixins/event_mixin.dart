@@ -642,6 +642,7 @@ mixin EventMixin {
     // await AdaptyPaymentService().makePurchase();
   }
 
+  //send player events/teams request
   Container sendPlayersRequestWidget(
       BuildContext context, dynamic userObjectDetails) {
         print("sendPlayersRequestWidget: "+ userObjectDetails.toString());
@@ -677,6 +678,77 @@ mixin EventMixin {
               height: 50,
               color: Colors.blue,
               child: Center(child: Text("Send Players Request")),
+            )));
+  }
+
+
+  //send players events request
+  Container sendPlayerEventsRequestWidget(
+      BuildContext context, dynamic userObjectDetails) {
+        print("sendPlayersRequestWidget: "+ userObjectDetails.toString());
+        
+    return Container(
+        child: GestureDetector(
+            onTap: () async {
+              List<dynamic> primaryList = myEventsToChooseFrom;
+              List<dynamic> secondaryList = requestUserTypes;
+              Map<int, dynamic> result = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AnimatedDialog(
+                      items: primaryList,
+                      singleSelect: false,
+                      secondaryItems: secondaryList);
+                },
+              );
+              if (result.isNotEmpty) {
+                  print("result: " + result.toString());
+                if(userObjectDetails['mainEvent'] != null){
+                  sendPlayersEventRequest(
+                      userObjectDetails, result, primaryList, secondaryList);
+                 
+                }
+                else{
+                  sendPlayersTeamRequest(userObjectDetails, result , primaryList, secondaryList);
+                }
+              }
+            },
+            child: Container(
+              width: 200,
+              height: 50,
+              color: Colors.blue,
+              child: Center(child: Text("Send Players Request")),
+            )));
+  }
+
+  Container sendPlayerTeamsRequestWidget(
+      BuildContext context, dynamic userObjectDetails) {
+        print("sendPlayersRequestWidget: "+ userObjectDetails.toString());
+        
+    return Container(
+        child: GestureDetector(
+            onTap: () async {
+              List<dynamic> primaryList = myTeamsToChooseFrom;
+              List<dynamic> secondaryList = requestUserTypes;
+              Map<int, dynamic> result = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AnimatedDialog(
+                      items: myTeamsToChooseFrom,
+                      singleSelect: false,
+                      secondaryItems: secondaryList);
+                },
+              );
+              if (result.isNotEmpty) {
+                print("result: " + result.toString());               
+                sendPlayersTeamRequest(userObjectDetails, result , primaryList, secondaryList);               
+              }
+            },
+            child: Container(
+              width: 200,
+              height: 50,
+              color: Colors.blue,
+              child: Center(child: Text("Send Player Team Request")),
             )));
   }
 
@@ -797,4 +869,11 @@ mixin EventMixin {
       return Container();
     }
   }
+
+  Future<dynamic> getPlayerListWidgetDetails(userObjectDetails) async{
+    
+    return userObjectDetails;
+  }
+
+
 }
