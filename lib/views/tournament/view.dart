@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:soccermadeeasy/components/group_stage_widget.dart';
 import '../../commands/event_command.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
+import '../../components/bracket_widget.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
@@ -152,6 +154,14 @@ class _TournamentViewState extends State<TournamentView> {
                   widget.sendTeamsRequestWidget(context, widget.userEventDetails)
                   : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                
 
+                Container(
+        height: 400, // Provide a fixed height here
+        child: GroupStageWidget(groupData: []),
+      ),
+                Container(
+        height: 400, // Provide a fixed height here
+        child: BracketWidget(bracketDetails: ""),
+      ),
                  
               ],
             ),
