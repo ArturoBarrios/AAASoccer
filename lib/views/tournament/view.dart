@@ -85,7 +85,7 @@ class _TournamentViewState extends State<TournamentView> {
                 widget.getParticipationRolesWidget(),
                 Container(
                   height: 500,
-                  child: EventsCalendar(testText: "test", events: ""),
+                  child: EventsCalendar(testText: "test", events: widget.userEventDetails['allEvents']),
                 ),
                 !widget.userEventDetails['isMine']
                     ? Container(

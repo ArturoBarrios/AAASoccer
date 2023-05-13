@@ -33,6 +33,8 @@ class _TournamentCreateState extends State<TournamentCreate> {
   final priceController = TextEditingController();
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
+  final numberOfRoundsPerTeamController = TextEditingController();
+  final numberOfTeamsPerGroupController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -69,8 +71,11 @@ class _TournamentCreateState extends State<TournamentCreate> {
         var rng = Random();        
         print("locationInputCheck: " + locationInput.toString());   
         Map<String, dynamic> createTournamentInput = {
-          "numberOfTeams": 2,
+          "numberOfRoundsPerTeam": int.parse(numberOfRoundsPerTeamController.text.toString()),
+          "numberOfTeams": int.parse(numberOfTeamsController.text.toString()),
+          "numberOfGroups": int.parse(numberOfTeamsController.text.toString()) ~/ int.parse(numberOfTeamsPerGroupController.text.toString()),
           "groupPlay": false,
+          "numberOfTeamsPerGroup": int.parse(numberOfTeamsPerGroupController.text.toString()),
 
         };
         Map<String, dynamic> createdTournament =
@@ -137,8 +142,12 @@ class _TournamentCreateState extends State<TournamentCreate> {
         
        
         TextField(
-          controller: imagesController,
-          decoration: new InputDecoration.collapsed(hintText: 'Images'),
+          controller: numberOfRoundsPerTeamController,
+          decoration: new InputDecoration.collapsed(hintText: 'Number of Rounds Per Team'),
+        ),
+        TextField(
+          controller: numberOfTeamsPerGroupController,
+          decoration: new InputDecoration.collapsed(hintText: 'Number of Teams Per Group'),
         ),
         GestureDetector(
             onTap: () {

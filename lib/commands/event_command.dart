@@ -825,9 +825,10 @@ class EventCommand extends BaseCommand {
       "teams": [],
       "roles": [],
       "chats": [],
+      "allEvents": [],
       
     };
-    print("events: " + events.toString());
+    print("events length: " + events.length.toString());
 
     try{      
 
@@ -835,6 +836,7 @@ class EventCommand extends BaseCommand {
 
       //get event
       dynamic event;
+      //tournament or league
       if(events.length>1){      
         for(int i = 0;i<events.length;i++){
           print("events[i]: " + events[i].toString());
@@ -845,10 +847,14 @@ class EventCommand extends BaseCommand {
             event = events[i];
 
           }
+          else {
+            isMyEventResp['allEvents'].add(events[i]);
+          }
         }
       }
       else{
         event = events[0];
+
       }         
       isMyEventResp['mainEvent'] = event;
       print("event: " + event.toString());

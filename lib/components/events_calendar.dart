@@ -28,6 +28,7 @@ class _EventsCalendar extends State<EventsCalendar> {
   void initState() {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    print("events_calendar events: "+ widget.events.length.toString());
   }
 
   @override

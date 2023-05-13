@@ -3,8 +3,9 @@ import 'dart:math';
 
 class Team {
   final String name;
+  final int seed;
 
-  Team(this.name);
+  Team(this.name, this.seed);
 }
 
 class Match {
@@ -41,51 +42,47 @@ class _BracketWidgetState extends State<BracketWidget> {
     super.initState();
     print("BracketWidget initState");
     loadInitialData();
-
   }
 
 void loadInitialData() {
+  print("loadInitialData");
   // Predefined list of team counts
-  List<int> teamCounts = [32, 16, 8, 4, 2];
+  List<int> roundCounts = [32, 16, 8, 4, 2];
+  Random random = Random();
+  int initialTeamCount = roundCounts[random.nextInt(roundCounts.length)];
+  print("initialTeamCount: $initialTeamCount");
 
-  List<Team> teams = List.generate(teamCounts.first, (index) => Team('Team ${index + 1}'));
+  List<Team> teams = List.generate(initialTeamCount, (index) => Team('Team ${index + 1}', index + 1));
+  teams.sort((a, b) => a.seed.compareTo(b.seed));
 
-  for (int i = 0; i < teamCounts.length; i++) {
-    String roundName;
-    if (i == teamCounts.length - 1) {
-      roundName = 'Finals';
-    } else {
-      roundName = 'Round of ${teamCounts[i]}';
+  int roundsLeft = (log(initialTeamCount) / log(2)).ceil();
+
+  if (roundsLeft <= 1) {
+    rounds.add(Round('Final', [Match(teams.first, teams.last)]));
+  } else {
+    for (int i = 0; i < roundsLeft; i++) {
+      int teamCount = pow(2, roundsLeft - i).toInt();
+      String roundName = (i == roundsLeft - 1) ? 'Final' : 'Round of $teamCount';
+
+      List<Match> matches = [];
+      for (int j = 0; j < teamCount ~/ 2; j++) {
+        Team team1 = teams[j];
+        Team team2 = teams[teamCount - j - 1];
+        matches.add(Match(team1, team2));
+      }
+
+      rounds.add(Round(roundName, matches));
     }
-
-    rounds.add(Round(roundName, generateMatches(teams)));
-
-    teams = getWinners(rounds.last);
   }
 
   setState(() {
     _isLoading = false;
   });
+  print("done loading initial data");
 }
 
 
 
-
-  List<Match> generateMatches(List<Team> teams) {
-    List<Match> matches = [];
-    for (int i = 0; i < teams.length; i += 2) {
-      matches.add(Match(teams[i], teams[i + 1]));
-    }
-    return matches;
-  }
-
-  List<Team> getWinners(Round round) {
-    List<Team> winners = [];
-    for (var match in round.matches) {
-      winners.add(Team('Winner of ${match.team1.name} vs ${match.team2.name}'));
-    }
-    return winners;
-  }
 
   void simulateMatchResult(Match match, String result) {
     setState(() {
@@ -125,7 +122,8 @@ void loadInitialData() {
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
                             borderRadius: BorderRadius.circular(8.0),
-                            color: match.isComplete ? Colors.green : null),
+                            color: match.isComplete ? Colors.green : null,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -172,4 +170,3 @@ void main() {
     home: BracketWidget(bracketDetails: 'Sample Bracket'),
   ));
 }
-                            
