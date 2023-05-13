@@ -121,7 +121,7 @@ class SideNavs extends StatefulWidget {
           onTap: () {
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {
-                return History();
+                return History(historyDetails: []);
               },
             ));
           },
