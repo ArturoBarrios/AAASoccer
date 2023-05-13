@@ -5,30 +5,55 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../utils.dart';
 
 class EventsCalendar extends StatefulWidget {
-  const EventsCalendar({Key? key, required this.testText, required this.events }) : super(key: key);
+  const EventsCalendar({Key? key, required this.testText, required this.events})
+      : super(key: key);
 
   final String testText;
   final dynamic events;
 
   @override
-  State<EventsCalendar> createState() => _EventsCalendar();
+  State<EventsCalendar> createState() => _EventsCalendarState();
 }
 
-class _EventsCalendar extends State<EventsCalendar> {
-   late final ValueNotifier<List<Event>> _selectedEvents;
+class _EventsCalendarState extends State<EventsCalendar> {
+  late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
-      .toggledOff; // Can be toggled on/off by longpressing a date
+      .toggledOff; // Can be toggled on/off by long-pressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
+  LinkedHashMap<DateTime, List<Event>> kEventsReal =
+      LinkedHashMap<DateTime, List<Event>>();
+
+  void loadInitialData(dynamic events) {
+    kEventsReal = getEventsFromData(events);
+  }
+
+  LinkedHashMap<DateTime, List<Event>> getEventsFromData(dynamic events) {
+    LinkedHashMap<DateTime, List<Event>> dateTimeLinkedHashMap =
+        LinkedHashMap<DateTime, List<Event>>();
+
+    for (int i = 0; i < events.length; i++) {
+      dynamic event = events[i];
+      int millis = int.parse(event['endTime']); // Parse string to integer
+      DateTime endTime = DateTime.fromMillisecondsSinceEpoch(millis);
+      DateTime day = DateTime.utc(endTime.year, endTime.month, endTime.day);
+      dateTimeLinkedHashMap.update(
+          day, (value) => value..add(Event(event['name'])),
+          ifAbsent: () => [Event(event['name'])]);
+    }
+
+    return dateTimeLinkedHashMap;
+  }
+
   @override
   void initState() {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-    print("events_calendar events: "+ widget.events.length.toString());
+    loadInitialData(widget.events);
   }
 
   @override
@@ -36,35 +61,12 @@ class _EventsCalendar extends State<EventsCalendar> {
     _selectedEvents.dispose();
     super.dispose();
   }
-  //update return type to LinkedHashMap<DateTime, List<Event>>
-  List<Event> _getEventsForDay(DateTime day) {
-    // print("_getEventsForDay: "+day.toString());
-    // print("events: "+widget.events.toString());
-    //returns Linked<DateTime>
-    //returns LinkedHashMap<DateTime, List<Event>>
-    LinkedHashMap<DateTime, List<Event>> dateTimeLinkedHashMap = new LinkedHashMap();
-    //custom List<Event data type>
-    // List<Event> listOfEvents = [];
-    // for(int i = 0;i<widget.events.length;i++){
-    //   print("widget.events[i]: "+widget.events[i].toString());
-    //   dynamic event = widget.events[i];
-    //   if(!event[i]['isMainEvent']){
-    //     int millis = int.parse(event['startTime']); // Parse string to integer
-    //     DateTime startTime = DateTime.fromMillisecondsSinceEpoch(millis);
-    //     if(startTime.isBefore(DateTime.now())){
-    //       print("add to this day: "+startTime.toString());
-          
 
-    //     }
-    //   }
-    // }
-    //instead of kEvents[day], return LinkedHashMap<DateTime, List<Event>>
-    // Implementation example
-    return kEvents[day] ?? [];
+  List<Event> _getEventsForDay(DateTime day) {
+    return kEventsReal[day] ?? [];
   }
 
   List<Event> _getEventsForRange(DateTime start, DateTime end) {
-    // Implementation example
     final days = daysInRange(start, end);
 
     return [
@@ -95,7 +97,6 @@ class _EventsCalendar extends State<EventsCalendar> {
       _rangeSelectionMode = RangeSelectionMode.toggledOn;
     });
 
-    // `start` or `end` could be null
     if (start != null && end != null) {
       _selectedEvents.value = _getEventsForRange(start, end);
     } else if (start != null) {
@@ -105,12 +106,9 @@ class _EventsCalendar extends State<EventsCalendar> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return 
-     Scaffold(
-      
+    return Scaffold(
       body: Column(
         children: [
           TableCalendar<Event>(
@@ -125,7 +123,6 @@ class _EventsCalendar extends State<EventsCalendar> {
             eventLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarStyle: CalendarStyle(
-              // Use `CalendarStyle` to customize the UI
               outsideDaysVisible: false,
             ),
             onDaySelected: _onDaySelected,

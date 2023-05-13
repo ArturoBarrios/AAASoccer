@@ -154,7 +154,7 @@ class _BottomNav extends State<BottomNav> {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return History();
+                        return History(historyDetails: []);
                       },
                     ));
                   })
