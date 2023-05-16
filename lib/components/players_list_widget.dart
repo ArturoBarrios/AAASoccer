@@ -13,6 +13,33 @@ class _PlayerListState extends State<PlayerList> {
   bool _isExpanded = false;
   List<dynamic> _selectedPlayersDetails = [];
 
+  void _showPlayerDetailsDialog(BuildContext context, String playerName) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Player Details'),
+        content: Text('This is ' + playerName + '.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  @override
+  void initState() {
+    super.initState();
+   print("initState PlayerList Widget ");
+   print("playerDetails: " + widget.playersDetails.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -73,107 +100,37 @@ class _PlayerListState extends State<PlayerList> {
         //     ),
         //   ),
         Expanded(
-          child: SingleChildScrollView(
-            child: Column(
+  child: SingleChildScrollView(
+    child: Column(
+      children: widget.playersDetails['players'].map<Widget>((player) {
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text('John Doe'),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.info),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Player Details'),
-                                  content: Text('This is John Doe.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                Expanded(
+                  child: Text(player['name']),
                 ),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text('Jane Smith'),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.info),
-                          onPressed: () {
-                            
-                            // showDialog(
-                            //   context: context,
-                            //   builder: (BuildContext context) {
-                            //     return AlertDialog(
-                            //       title: Text('Player Details'),
-                            //       content: Text('This is Jane Smith.'),
-                            //       actions: [
-                            //         TextButton(
-                            //           onPressed: () {
-                            //             Navigator.pop(context);
-                            //           },
-                            //           child: Text('OK'),
-                            //         ),
-                            //       ],
-                            //     );
-                            //   },
-                            // );
-                          },
-                        ),
-                        IconButton(
-                          //remove by role, choose role(s) 
-                          //to remove from player
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-
-                            // showDialog(
-                            //   context: context,
-                            //   builder: (BuildContext context) {
-                            //     return AlertDialog(
-                            //       title: Text('Player Details'),
-                            //       content: Text('This is Jane Smith.'),
-                            //       actions: [
-                            //         TextButton(
-                            //           onPressed: () {
-                            //             Navigator.pop(context);
-                            //           },
-                            //           child: Text('OK'),
-                            //         ),
-                            //       ],
-                            //     );
-                            //   },
-                            // );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                IconButton(
+                  icon: Icon(Icons.info),
+                  onPressed: () {
+                    _showPlayerDetailsDialog(context, player['name']);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    // You can call a function here to handle player deletion
+                  },
                 ),
               ],
             ),
           ),
-        ),
+        );
+      }).toList(),
+    ),
+  ),
+),
       ],
     );
   }

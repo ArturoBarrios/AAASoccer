@@ -21,6 +21,7 @@ import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 
 class EventCommand extends BaseCommand {
   Future<Map<String, dynamic>> notifyEventParticipants(dynamic notifyEventParticipantInput
@@ -826,7 +827,7 @@ class EventCommand extends BaseCommand {
       "roles": [],
       "chats": [],
       "allEvents": [],
-      
+      "groupData": []      
     };
     print("events length: " + events.length.toString());
 
@@ -1036,7 +1037,27 @@ class EventCommand extends BaseCommand {
     Map<String, dynamic> getTournamentsNearLocationResp =
         await TournamentCommand().getTournamentsNearLocation();
     if (getTournamentsNearLocationResp['success']) {
+
       List<dynamic> tournaments = getTournamentsNearLocationResp['data'];
+      //sort tournaments
+      print("sort tournaments");      
+      
+      tournaments.sort((a, b) {
+  dynamic mainEventA = EventCommand().getMainEvent(a['events']['data']);
+  dynamic mainEventB = EventCommand().getMainEvent(b['events']['data']);
+
+  if (mainEventA != null && mainEventB != null) {
+    DateTime startTimeA = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventA['startTime']));
+    DateTime startTimeB = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventB['startTime']));
+    return startTimeA.compareTo(startTimeB);
+  }
+
+  // Handle cases where main events are not available
+  return 0;
+});
+
+      
+      
       print("in if statement");
       print("tournaments: " + tournaments.toString());
       eventsModel.tournaments = tournaments;

@@ -16,6 +16,7 @@ class TournamentMutations{
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
+
               joinConditions: {
                 create: {
                   withRequest: ${eventInput['withRequest']},
@@ -57,6 +58,8 @@ class TournamentMutations{
 
     return createTournament;
   }
+
+  
 
   String addEventToTournament(
       Map<String, dynamic> tournamentInput, Map<String, dynamic> eventInput) {
@@ -138,5 +141,63 @@ return addGameToTournament;
         """;
 
     return addPlayerToGame;
+  }
+
+
+  
+  String createGroup(
+      Map<String, dynamic> groupInput) {
+    String createGroup = """      
+       mutation {
+        createGroup(data: {      
+          groupNumber: ${groupInput['groupNumber']},             
+          
+          }) {
+            _id                                                    
+          }   
+        }
+        """;
+
+    return createGroup;
+  }
+
+  String createGroupStage(
+      Map<String, dynamic> groupStageInput) {
+    String createGroupStage = """      
+       mutation {
+        createGroupStage(data: {      
+          numberOfTeams: ${groupStageInput['numberOfTeams']},             
+          tournament: {
+            connect: 
+            {
+              _id: ${groupStageInput['tournament_id']}
+            }
+          }
+          groups: {            
+              connect: 
+                [
+                  ${groupStageInput['groups']}
+                ]            
+            }
+          } 
+          }) {
+            _id    
+            numberOfTeams                             
+                        
+            groups{
+              data{
+                 groupStageNumber
+                 teams{
+                  data{
+                    _id
+                  }
+                 }
+              }
+            } 
+          }   
+        }
+        """;
+
+    return createGroupStage;
   }
 }

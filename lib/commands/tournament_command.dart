@@ -84,11 +84,11 @@ class TournamentCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      final result =
+      final allTournaments =
           jsonDecode(response.body)['data']['allTournaments']['data'];
       getTournamentsNearLocationResp["success"] = true;
       getTournamentsNearLocationResp["message"] = "Tournaments Retrieved";
-      getTournamentsNearLocationResp["data"] = result;
+      getTournamentsNearLocationResp["data"] = allTournaments;
     } on Exception catch (e) {
       print('Mutation failed: $e');
     }
@@ -115,11 +115,14 @@ class TournamentCommand extends BaseCommand {
     int numberOfGroups = tournamentData['numberOfGroups'];
     print("numberOfGroups: " + numberOfGroups.toString());
     print("numberOfTeams: " + numberOfTeams.toString());
-    dynamic bergerTables = [];      
+    dynamic bergerTables = [];   
+    //create groupStage
+       
     for (int i = 0; i < numberOfGroups; i++) {
       List<dynamic> bergerTable = TournamentCommand().bergerTable(tournamentData['numberOfTeamsPerGroup'], tournamentData['numberOfRoundsPerTeam']);
       print("bergerTable length: " + bergerTable.length.toString());
       bergerTables.add(bergerTable);
+      //create group
     }
     print("bergerTables: "+bergerTables.length.toString());
 
@@ -143,10 +146,33 @@ class TournamentCommand extends BaseCommand {
     dynamic priceEventInput = {
       "_id": createdTournament['events']['data'][0]['_id'],
     };
-
+    String groupsString = "";
     //create group games from bergerTable
     for (int a = 0; a < bergerTables.length; a++) {
       dynamic bergerTable = bergerTables[a];
+      dynamic groupInput = {                        
+        "groupNumber": (a + 1),                
+      };
+
+      http.Response createGroupResponse = await http.post(
+              Uri.parse('https://graphql.fauna.com/graphql'),
+              headers: <String, String>{
+                'Authorization':
+                    'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+                'Content-Type': 'application/json'
+              },
+              body: jsonEncode(<String, String>{
+                'query': TournamentMutations()
+                    .createGroup(groupInput),
+              }),
+            );
+
+      print("createGroupResponse: " + jsonDecode(createGroupResponse.body).toString());
+      Map<String, dynamic> createdGroup =
+          jsonDecode(createGroupResponse.body)['data']['createGroup'];
+
+      print("createdGroup: "+ createdGroup.toString());
+      groupsString += createdGroup['_id'] + ", ";
       for (int i = 0; i < bergerTable.length; i++) {
         List<dynamic> roundGames = bergerTable[i];
         for (int k = 0; k < roundGames.length; k++) {
@@ -209,6 +235,27 @@ class TournamentCommand extends BaseCommand {
         }
       }
     }
+
+    //create groupstage
+    Map<String, dynamic> groupStageInput = {
+      "tournament_id": createdTournament['_id'],
+      "numberOfTeams": tournamentData['numberOfTeams'],
+      "groups": groupsString,
+    };
+    http.Response createGroupStageResponse = await http.post(
+              Uri.parse('https://graphql.fauna.com/graphql'),
+              headers: <String, String>{
+                'Authorization':
+                    'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+                'Content-Type': 'application/json'
+              },
+              body: jsonEncode(<String, String>{
+                'query': TournamentMutations()
+                    .createGroupStage(groupStageInput)
+              }),
+            );
+
+
 
     dynamic findTournamentByIdResponse =
         await findTournamentById(createdTournament['_id']);
