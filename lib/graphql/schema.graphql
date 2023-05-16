@@ -314,6 +314,8 @@ type Team   {
   price: Price
   payments: [Payment] @relation
   joinConditions: JoinConditions
+  groups: [Group] @relation
+  teamOrders: [TeamOrder] @relation
   
 
   
@@ -398,11 +400,51 @@ type League   {
   # eligibleEventTypes: [EventType] @relation
 }
 
+type TeamOrder {
+  team: Team
+  order: Int
+  groupStage: GroupStage
+
+
+}
+
+type Group {
+  groupNumber: Int
+  groupStage: GroupStage
+  teams: [Team]
+}
+
+type GroupStage {
+  groups: [Group]
+  numberOfTeams: Int
+  teamOrder: [TeamOrder]
+  numberOfRoundsPerTeam: Int    
+  tournament: Tournament
+  league: League
+  type: EventType  
+}
+
+type EventOrder{
+  event: Event
+  order: Int
+  tournamentStage: TournamentStage
+}
+
+type TournamentStage {
+  numberOfTeams: Int
+  numberOfRoundsPerTeam: Int  
+  tournament: Tournament
+  eventOrder: [EventOrder]
+}
+
 type Tournament   {
   groupPlay: Boolean  
   # event: Event
   events: [Event] @relation
   numberOfTeams: Int
+  groupStage: GroupStage
+  tournamentStage: TournamentStage
+
   # eligibleEventTypes: [EventType] @relation  
 }
 

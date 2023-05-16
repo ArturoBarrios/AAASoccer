@@ -29,7 +29,9 @@ class _EventsCalendarState extends State<EventsCalendar> {
       LinkedHashMap<DateTime, List<Event>>();
 
   void loadInitialData(dynamic events) {
+    print("loadInitialData()");    
     kEventsReal = getEventsFromData(events);
+    print("kEventsReal: $kEventsReal");
   }
 
   LinkedHashMap<DateTime, List<Event>> getEventsFromData(dynamic events) {

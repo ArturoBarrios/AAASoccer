@@ -32,6 +32,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
   final priceController = TextEditingController();
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
+  final numberOfRoundsPerTeamController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -68,7 +69,8 @@ class _LeagueCreateState extends State<LeagueCreate> {
         var rng = Random();        
         print("locationInputCheck: " + locationInput.toString());   
         Map<String, dynamic> createLeagueInput = {
-          "numberOfTeams": 2,          
+          "numberOfTeams": int.parse(numberOfTeamsController.text.toString()),    
+          "numberOfRoundsPerTeam": int.parse(numberOfRoundsPerTeamController.text.toString()),  
         };
         Map<String, dynamic> createdLeague =
             await LeagueCommand().createLeague(createLeagueInput, createEventInput, locationInput);
@@ -136,8 +138,8 @@ class _LeagueCreateState extends State<LeagueCreate> {
           decoration: new InputDecoration.collapsed(hintText: 'Location'),
         ),
         TextField(
-          controller: imagesController,
-          decoration: new InputDecoration.collapsed(hintText: 'Images'),
+          controller: numberOfRoundsPerTeamController,
+          decoration: new InputDecoration.collapsed(hintText: 'Number of Rounds Per Team'),
         ),
         GestureDetector(
             onTap: () {

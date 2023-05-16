@@ -103,7 +103,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     int randomLocationNumber = rng.nextInt(100000000);
     int numberOfTeams = numberOfTeamsOptions[rng.nextInt(1)];
     
-    List<dynamic> bergerTable = TournamentCommand().bergerTable(numberOfTeams, 1);
+    List<dynamic> bergerTable = TournamentCommand().bergerTable(numberOfTeams, leagueData['numberOfRoundsPerTeam']);
     print("bergerTable length: " + bergerTable.length.toString());
     http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
