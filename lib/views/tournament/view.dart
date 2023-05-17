@@ -55,6 +55,7 @@ class _TournamentViewState extends State<TournamentView> {
     print("initState");    
     tournamentEvents = widget.tournament['events']['data'];
     loadEventPayment();
+    print("widget.userEventDetails['groupStage]: " + widget.userEventDetails['groupStage'].toString());
     // widget.loadEventInfo(widget.userEventDetails['mainEvent']);
     widget.setupPlayerList();
     widget.setupTeamList();
@@ -156,7 +157,7 @@ class _TournamentViewState extends State<TournamentView> {
 
                 Container(
         height: 400, // Provide a fixed height here
-        child: GroupStageWidget(groupData: widget.userEventDetails['groupData']),
+        child: GroupStageWidget(groupData: widget.userEventDetails['groupStage']),
       ),
                 Container(
         height: 400, // Provide a fixed height here

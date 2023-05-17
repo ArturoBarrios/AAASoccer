@@ -827,7 +827,8 @@ class EventCommand extends BaseCommand {
       "roles": [],
       "chats": [],
       "allEvents": [],
-      "groupData": []      
+      "groupData": [],
+      "groupStage": [],  
     };
     print("events length: " + events.length.toString());
 

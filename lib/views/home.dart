@@ -366,6 +366,7 @@ class _Home extends State<Home> {
 
       dynamic getEventDetailsResp =
           EventCommand().getUserEventDetails(selectedObject['events']['data']);
+      getEventDetailsResp['groupStage'] = selectedObject['groupStage'];
       card = TournamentCard(
           tournamentObject: selectedObject,
           svgImage: svgImage,
@@ -448,6 +449,8 @@ class _Home extends State<Home> {
           dynamic tournament = findTournamentByIdResp['data'];
           dynamic getEventDetailsResp = EventCommand()
               .getUserEventDetails(tournament['events']['data']);
+          print("tournament['groupStage']: " + tournament['groupStage'].toString());
+          getEventDetailsResp['groupStage'] = tournament['groupStage'];
           card = TournamentCard(
               tournamentObject: tournament,
               svgImage: svgImage,

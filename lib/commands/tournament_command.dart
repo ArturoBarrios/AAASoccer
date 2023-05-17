@@ -242,6 +242,7 @@ class TournamentCommand extends BaseCommand {
       "numberOfTeams": tournamentData['numberOfTeams'],
       "groups": groupsString,
     };
+    print("groupStageInput: " + groupStageInput.toString());
     http.Response createGroupStageResponse = await http.post(
               Uri.parse('https://graphql.fauna.com/graphql'),
               headers: <String, String>{
@@ -254,6 +255,8 @@ class TournamentCommand extends BaseCommand {
                     .createGroupStage(groupStageInput)
               }),
             );
+
+    print("createGroupStageResponse: " + jsonDecode(createGroupStageResponse.body).toString());    
 
 
 
