@@ -1,54 +1,46 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class GroupStageWidget extends StatefulWidget {
-  final List<dynamic> groupData;
+  final Map<String, dynamic>? groupData;
 
-  const GroupStageWidget({required this.groupData});
+  const GroupStageWidget({this.groupData});
 
   @override
   _GroupStageWidgetState createState() => _GroupStageWidgetState();
 }
 
 class _GroupStageWidgetState extends State<GroupStageWidget> {
-  List<dynamic> fakeGroupData = [];
-  bool _isLoading = true;
-
-  List<dynamic> generateFakeGroupData() {
-    Random random = Random();
-    List<dynamic> groupData = [];
-
-    for (int i = 0; i < 8; i++) {
-      List<dynamic> teams = [];
-      for (int j = 0; j < 4; j++) {
-        String teamName = 'Team ${String.fromCharCode(65 + random.nextInt(26))}';
-        teams.add({'teamName': teamName});
-      }
-      groupData.add({'groupName': 'Group ${i + 1}', 'teams': teams});
-    }
-
-    return groupData;
-  }
+  List<dynamic> groupData = [];
 
   void loadInitialData() {
-    print("loadInitialData");
-    print(widget.groupData);
-    fakeGroupData = generateFakeGroupData();
-    setState(() {
-      _isLoading = false;
-    });
+    if (widget.groupData != null) {
+      setState(() {
+        groupData = widget.groupData!['groups']['data'];
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    print("initState");
     loadInitialData();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.groupData == null) {
+      return Scaffold(
+        body: Center(
+          child: IconButton(
+            icon: Icon(Icons.add_circle_outline, size: 100.0), 
+            onPressed: () {
+              print('Add a group stage');
+            },
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Group Stage'),
@@ -61,28 +53,28 @@ class _GroupStageWidgetState extends State<GroupStageWidget> {
           ),
         ],
       ),
-      body: !_isLoading
-          ? SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(fakeGroupData.length, (index) {
-                  var group = fakeGroupData[index];
-                  return Container(
-                    width: 200, // Set the width of each group container
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Group ${group['groupName']}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 8.0),
-                        Column(
-                          children: List.generate(group['teams'].length, (index) {
-                            var team = group['teams'][index];
+      body: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: groupData.map<Widget>((group) {
+            int numberOfTeamsPerGroup = widget.groupData!['numberOfTeams']~/widget.groupData!['groups']['data'].length as int;
+            var teamPlaceholders = List.filled( numberOfTeamsPerGroup - group['teams']['data'].length as int , 'No team yet');
+            return Container(
+              width: 200, // Set the width of each group container
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Group ${group['groupNumber']}',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Column(
+                    children: group['teams']['data'].length > 0
+                        ? group['teams']['data'].map<Widget>((team) {
                             return GestureDetector(
                               onTap: () {
                                 print('Team clicked');
@@ -92,16 +84,24 @@ class _GroupStageWidgetState extends State<GroupStageWidget> {
                                 title: Text(team['teamName']),
                               ),
                             );
-                          }),
-                        ),
-                        SizedBox(height: 16.0),
-                      ],
-                    ),
-                  );
-                }),
+                          }).toList()
+                        : teamPlaceholders.map<Widget>((placeholder) {
+                            return ListTile(
+                              leading: Icon(Icons.add),
+                              title: Text(placeholder),
+                              onTap: () {
+                                print('Add Team');
+                              },
+                            );
+                          }).toList(),
+                  ),
+                  SizedBox(height: 16.0),
+                ],
               ),
-            )
-          : Container(child: Text("Loading...")),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }

@@ -168,29 +168,23 @@ return addGameToTournament;
         createGroupStage(data: {      
           numberOfTeams: ${groupStageInput['numberOfTeams']},             
           tournament: {
-            connect: 
-            {
-              _id: ${groupStageInput['tournament_id']}
-            }
+            connect: "${groupStageInput['tournament_id']}"            
           }
           groups: {            
-              connect: 
-                [
+              connect: [
                   ${groupStageInput['groups']}
                 ]            
-            }
-          } 
+            }          
           }) {
             _id    
-            numberOfTeams                             
-                        
+            numberOfTeams                                    
             groups{
               data{
-                 groupStageNumber
+                 groupNumber
                  teams{
-                  data{
-                    _id
-                  }
+                    data{
+                      _id
+                    }
                  }
               }
             } 

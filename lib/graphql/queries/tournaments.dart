@@ -10,11 +10,26 @@ class TournamentQueries {
               _id              
               numberOfTeams
               groupPlay
+              groupStage{
+                _id 
+                numberOfTeams
+                groups{
+                  data{
+                    _id
+                    groupNumber
+                    teams{
+                      data{
+                        _id
+                      }
+                    }
+                  }
+                }
+              }
               events{
                 data{                  
                  ${EventFragments().fullEvent()}
                 }                  
-              } 
+              }               
             }
           }
         }
@@ -30,6 +45,21 @@ class TournamentQueries {
               _id                        
               numberOfTeams
               groupPlay  
+              groupStage{
+                _id 
+                numberOfTeams
+                groups{
+                  data{
+                    _id
+                    groupNumber
+                    teams{
+                      data{
+                        _id
+                      }
+                    }
+                  }
+                }
+              }
               events{
                 data{
                   ${EventFragments().fullEvent()}                                                                                   

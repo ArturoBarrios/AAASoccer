@@ -408,16 +408,21 @@ type TeamOrder {
 
 }
 
+type TeamGroup {
+  numberOfPoints: Int
+  
+}
+
 type Group {
   groupNumber: Int
   groupStage: GroupStage
-  teams: [Team]
+  teams: [Team] @relation
 }
 
 type GroupStage {
-  groups: [Group]
+  groups: [Group] @relation
   numberOfTeams: Int
-  teamOrder: [TeamOrder]
+  teamOrder: [TeamOrder] @relation
   numberOfRoundsPerTeam: Int    
   tournament: Tournament
   league: League
