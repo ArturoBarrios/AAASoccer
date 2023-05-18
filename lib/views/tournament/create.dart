@@ -35,6 +35,8 @@ class _TournamentCreateState extends State<TournamentCreate> {
   final imagesController = TextEditingController();
   final numberOfRoundsPerTeamController = TextEditingController();
   final numberOfTeamsPerGroupController = TextEditingController();
+  final roundOfXController = TextEditingController();
+  final knockoutRoundsController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -76,6 +78,8 @@ class _TournamentCreateState extends State<TournamentCreate> {
           "numberOfGroups": int.parse(numberOfTeamsController.text.toString()) ~/ int.parse(numberOfTeamsPerGroupController.text.toString()),
           "groupPlay": false,
           "numberOfTeamsPerGroup": int.parse(numberOfTeamsPerGroupController.text.toString()),
+          "roundOfX": int.parse(roundOfXController.text.toString()),
+          "knockoutRounds": int.parse(knockoutRoundsController.text.toString()),
 
         };
         Map<String, dynamic> createdTournament =
@@ -148,6 +152,14 @@ class _TournamentCreateState extends State<TournamentCreate> {
         TextField(
           controller: numberOfTeamsPerGroupController,
           decoration: new InputDecoration.collapsed(hintText: 'Number of Teams Per Group'),
+        ),
+        TextField(
+          controller: roundOfXController,
+          decoration: new InputDecoration.collapsed(hintText: 'Round of X'),
+        ),
+        TextField(
+          controller: knockoutRoundsController,
+          decoration: new InputDecoration.collapsed(hintText: 'Knockout Rounds'),
         ),
         GestureDetector(
             onTap: () {

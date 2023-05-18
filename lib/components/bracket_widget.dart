@@ -40,39 +40,40 @@ class _BracketWidgetState extends State<BracketWidget> {
   @override
   void initState() {
     super.initState();
-    print("BracketWidget initState");
+    print("BracketWidget initState");    
     loadInitialData();
   }
 
 void loadInitialData() {
   print("loadInitialData");
-  // Predefined list of team counts
-  List<int> roundCounts = [32, 16, 8, 4, 2];
-  Random random = Random();
-  int initialTeamCount = roundCounts[random.nextInt(roundCounts.length)];
-  print("initialTeamCount: $initialTeamCount");
+  print("widget.bracketDetails: " + widget.bracketDetails.toString());
 
-  List<Team> teams = List.generate(initialTeamCount, (index) => Team('Team ${index + 1}', index + 1));
-  teams.sort((a, b) => a.seed.compareTo(b.seed));
+  // Get the initial number of teams
+  int initialTeamCount = widget.bracketDetails['numberOfTeams'];
+  print("initialTeamCount: " + initialTeamCount.toString());
 
-  int roundsLeft = (log(initialTeamCount) / log(2)).ceil();
+  int roundsLeft = (initialTeamCount == 2) ? 1 : (initialTeamCount ~/ 2);
+  print("roundsLeft: " + roundsLeft.toString());
 
-  if (roundsLeft <= 1) {
-    rounds.add(Round('Final', [Match(teams.first, teams.last)]));
-  } else {
-    for (int i = 0; i < roundsLeft; i++) {
-      int teamCount = pow(2, roundsLeft - i).toInt();
-      String roundName = (i == roundsLeft - 1) ? 'Final' : 'Round of $teamCount';
+  for (int i = 0; i < roundsLeft; i++) {
+    // Adjust teamCount calculation to handle the 'Final' case
+    int teamCount = (i == roundsLeft - 1) ? 2 : pow(2, (roundsLeft - i)).toInt();
 
-      List<Match> matches = [];
-      for (int j = 0; j < teamCount ~/ 2; j++) {
-        Team team1 = teams[j];
-        Team team2 = teams[teamCount - j - 1];
-        matches.add(Match(team1, team2));
-      }
+    // Adjust roundName calculation to handle the 'Final' case
+    String roundName = (i == roundsLeft - 1) ? 'Final' : 'Round of $teamCount';
 
-      rounds.add(Round(roundName, matches));
+    List<Match> matches = [];
+    for (int j = 0; j < teamCount ~/ 2; j++) {
+      // Create random team names
+      String team1Name = 'Team ${(i * teamCount) + (j * 2) + 1}';
+      String team2Name = 'Team ${(i * teamCount) + (j * 2) + 2}';
+      
+      Team team1 = Team(team1Name, (j * 2) + 1);
+      Team team2 = Team(team2Name, (j * 2) + 2);
+      matches.add(Match(team1, team2));
     }
+
+    rounds.add(Round(roundName, matches));
   }
 
   setState(() {
@@ -80,6 +81,10 @@ void loadInitialData() {
   });
   print("done loading initial data");
 }
+
+
+
+
 
 
 

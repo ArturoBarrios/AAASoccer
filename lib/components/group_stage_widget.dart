@@ -29,17 +29,31 @@ class _GroupStageWidgetState extends State<GroupStageWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.groupData == null) {
-      return Scaffold(
-        body: Center(
-          child: IconButton(
-            icon: Icon(Icons.add_circle_outline, size: 100.0), 
-            onPressed: () {
-              print('Add a group stage');
-            },
-          ),
-        ),
-      );
-    }
+    return Scaffold(
+      body: Center(
+        child: Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: <Widget>[
+    Text(
+      'Create a Group Stage!',
+      style: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    SizedBox(height: 20.0), // Add some spacing
+    ElevatedButton(
+      child: Icon(Icons.add_circle_outline, size: 100.0),
+      onPressed: () {
+        print('Add a group stage');
+      },
+    ),
+  ],
+),
+
+      ),
+    );
+  }
 
     return Scaffold(
       appBar: AppBar(
