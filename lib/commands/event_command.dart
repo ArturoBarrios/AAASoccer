@@ -829,6 +829,7 @@ class EventCommand extends BaseCommand {
       "allEvents": [],
       "groupData": [],
       "groupStage": [],  
+      "tournamentStage": [],
     };
     print("events length: " + events.length.toString());
 

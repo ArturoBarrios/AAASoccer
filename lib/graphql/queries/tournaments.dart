@@ -1,15 +1,31 @@
 import '../fragments/event_fragments.dart';
 
 class TournamentQueries {
-   String getTournaments()
-   {
-      String getTournaments = """
+  String getTournaments() {
+    String getTournaments = """
         query GetTournaments {
           allTournaments {
             data {      
               _id              
               numberOfTeams
               groupPlay
+              tournamentStage{
+                _id    
+                numberOfTeams                                    
+                numberOfRoundsPerTeam                                    
+                tournament{
+                  _id
+                }
+                eventOrders{
+                  data{
+                    _id
+                    order                  
+                    event{
+                      _id
+                    }
+                  }
+                }
+              }              
               groupStage{
                 _id 
                 numberOfTeams
@@ -35,16 +51,33 @@ class TournamentQueries {
         }
       """;
 
-      return getTournaments;
-   }
+    return getTournaments;
+  }
 
-   String findTournamentByID(String tournamentId ){
+  String findTournamentByID(String tournamentId) {
     String getTournament = """
       query getTournament {
             findTournamentByID(id: $tournamentId) {  
               _id                        
               numberOfTeams
               groupPlay  
+              tournamentStage{
+                _id    
+                numberOfTeams                                    
+                numberOfRoundsPerTeam                                    
+                tournament{
+                  _id
+                }
+                eventOrders{
+                  data{
+                    _id
+                    order                  
+                    event{
+                      _id
+                    }
+                  }
+                }
+              } 
               groupStage{
                 _id 
                 numberOfTeams
@@ -68,8 +101,7 @@ class TournamentQueries {
           }
         }
     """;
-  
+
     return getTournament;
   }
-
 }

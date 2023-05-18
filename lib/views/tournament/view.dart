@@ -161,7 +161,7 @@ class _TournamentViewState extends State<TournamentView> {
       ),
                 Container(
         height: 400, // Provide a fixed height here
-        child: BracketWidget(bracketDetails: ""),
+        child: BracketWidget(bracketDetails: widget.userEventDetails['tournamentStage']),
       ),
                  
               ],

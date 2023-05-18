@@ -410,7 +410,7 @@ type TeamOrder {
 
 type TeamGroup {
   numberOfPoints: Int
-  
+
 }
 
 type Group {
@@ -439,7 +439,7 @@ type TournamentStage {
   numberOfTeams: Int
   numberOfRoundsPerTeam: Int  
   tournament: Tournament
-  eventOrder: [EventOrder]
+  eventOrders: [EventOrder] @relation
 }
 
 type Tournament   {

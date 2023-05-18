@@ -194,4 +194,79 @@ return addGameToTournament;
 
     return createGroupStage;
   }
+  
+  String createTournamentStage(
+      Map<String, dynamic> tournamentStageInput) {
+   String createGroupStage = """   
+   mutation {
+    createTournamentStage(data: {      
+      numberOfTeams: ${tournamentStageInput['numberOfTeams']},             
+      numberOfRoundsPerTeam: ${tournamentStageInput['numberOfRoundsPerTeam']},             
+      tournament: {
+        connect: "${tournamentStageInput['tournament_id']}"            
+      }
+      }) {
+        _id    
+        numberOfTeams                                    
+        numberOfRoundsPerTeam                                    
+        tournament{
+          _id
+        }
+        eventOrders{
+          data{
+            _id
+            order                  
+            event{
+              _id
+            }
+          }
+        }
+      }   
+    }
+    """;
+
+
+
+
+    return createGroupStage;
+  }
+  
+  String createEventOrder(
+      Map<String, dynamic> eventOrdersInput) {
+   
+  String createEventOrderString =  """
+    mutation {
+      createEventOrder(data: {
+        order: ${eventOrdersInput['order']},
+        event: {
+          create: {
+            name: "${eventOrdersInput['name']}",
+          }
+        },
+        tournamentStage: {
+          connect: ${eventOrdersInput['tournamentStage_id']},
+        }
+      }) {
+        _id
+        order
+        event {
+          _id
+          name
+        }
+        tournamentStage {
+          _id
+        }
+      }
+    }
+  """;
+
+  return createEventOrderString;
+}
+
+
+
+
+
+    
+  
 }
