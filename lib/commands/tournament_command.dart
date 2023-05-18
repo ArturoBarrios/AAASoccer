@@ -18,6 +18,25 @@ import '../commands/geolocation_command.dart';
 // import 'package:geolocator/geolocator.dart';
 
 class TournamentCommand extends BaseCommand {
+
+  Future<Map<String,dynamic>> addTeamToGroupStage(dynamic groupStageInput) async{
+    print("addTeamToGroupStage");
+    Map<String,dynamic> addTeamToGroupStageResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+
+      return addTeamToGroupStageResp;
+    } catch (e) {
+      print("addTeamToGroupStage error");
+      print(e);
+      return addTeamToGroupStageResp;
+    }    
+  }
+
   Map<String, dynamic> currateTournamentData(dynamic selectedObject) {
     print("currateTournamentData");
     Map<String, dynamic> currateTournamentDataResp = {

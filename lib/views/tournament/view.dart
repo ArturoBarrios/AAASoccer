@@ -157,7 +157,7 @@ class _TournamentViewState extends State<TournamentView> {
 
                 Container(
         height: 400, // Provide a fixed height here
-        child: GroupStageWidget(groupData: widget.userEventDetails['groupStage']),
+        child: GroupStageWidget(groupData: widget.userEventDetails['groupStage'], teams: widget.userEventDetails['teams']),
       ),
                 Container(
         height: 400, // Provide a fixed height here

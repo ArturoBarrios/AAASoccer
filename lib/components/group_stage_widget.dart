@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../commands/tournament_command.dart';
+
 class GroupStageWidget extends StatefulWidget {
   final Map<String, dynamic>? groupData;
+  final List<dynamic>? teams;
 
-  const GroupStageWidget({this.groupData});
+  const GroupStageWidget({this.groupData, this.teams});
 
   @override
   _GroupStageWidgetState createState() => _GroupStageWidgetState();
@@ -18,6 +21,19 @@ class _GroupStageWidgetState extends State<GroupStageWidget> {
         groupData = widget.groupData!['groups']['data'];
       });
     }
+  }
+
+  void addTeamToGroupStage(groupStageNumber){
+    print('Add team to group stage');
+    print("groupStageNumber: " + groupStageNumber.toString());
+    dynamic groupStageInput = {
+      'groupStageNumber': groupStageNumber,
+      'team_id': ''
+    };
+
+    TournamentCommand().addTeamToGroupStage(groupStageInput);
+
+
   }
 
   @override
@@ -105,6 +121,7 @@ class _GroupStageWidgetState extends State<GroupStageWidget> {
                               title: Text(placeholder),
                               onTap: () {
                                 print('Add Team');
+                                addTeamToGroupStage(group['groupNumber']);
                               },
                             );
                           }).toList(),
