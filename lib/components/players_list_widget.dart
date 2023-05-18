@@ -12,8 +12,8 @@ class PlayerList extends StatefulWidget {
 }
 
 class _PlayerListState extends State<PlayerList> {
-  bool _isExpanded = false;
-  List<String> _selectedUserTypes = ["PLAYER"]; // Default selection: "PLAYER"
+  bool _isExpanded = true;
+  String _selectedUserType = "PLAYER"; // Default selection: "PLAYER"
   List<String> _userTypes = ["PLAYER", "ORGANIZER", "COACH", "REFEREE"];
 
   void _showPlayerDetailsDialog(BuildContext context, String userName) {
@@ -52,10 +52,6 @@ class _PlayerListState extends State<PlayerList> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> selectedTypes = _selectedUserTypes.isNotEmpty
-        ? _selectedUserTypes
-        : _userTypes;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -66,7 +62,7 @@ class _PlayerListState extends State<PlayerList> {
             });
           },
           child: Text(
-            _isExpanded ? 'Showing Selected' : 'Showing All',
+            _selectedUserType,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
@@ -84,38 +80,22 @@ class _PlayerListState extends State<PlayerList> {
                   onSelected: (isSelected) {
                     setState(() {
                       if (isSelected) {
-                        if (!_selectedUserTypes.contains(userType)) {
-                          _selectedUserTypes.add(userType);
-                        }
-                      } else {
-                        _selectedUserTypes.remove(userType);
+                        _selectedUserType = userType;
                       }
                     });
                   },
-                  selected: _selectedUserTypes.contains(userType),
+                  selected: _selectedUserType == userType,
                 );
               }).toList(),
             ),
           ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Showing ${selectedTypes.toString()}',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
         Flexible(
           child: SingleChildScrollView(
             child: Column(
               children: widget.playersDetails['userParticipants']
                   .where((userParticipant) {
                 List<String> userRoles = getUserRoles(userParticipant);
-                print("userRoles: " + userRoles.toString());
-                bool hasSelectedRoles = selectedTypes.any((type) => userRoles.contains(type));
-                print("hasSelectedRoles: " + hasSelectedRoles.toString());
-                return hasSelectedRoles;
+                return userRoles.contains(_selectedUserType);
               }).map<Widget>((userParticipant) {
                 dynamic user = userParticipant['user'];
                 return Card(
