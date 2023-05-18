@@ -59,6 +59,11 @@ class EventCommand extends BaseCommand {
     return notifyEventParticipantsResponse;
   }
 
+  dynamic returnMyEventsModel(){
+    return appModel.myEvents;
+
+  }
+
 
 
   Future<Map<String, dynamic>> addTeamToEvent(dynamic eventInput,dynamic teamInput)async{

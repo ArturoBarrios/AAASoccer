@@ -26,6 +26,13 @@ class UserCommand extends BaseCommand {
     return appModel.currentUser;
   }
 
+  dynamic getFriendsModel(){
+    print("getFriendsModel");
+    print("appMOdel.friends: " + appModel.friends.toString());
+
+    return appModel.friends;
+  }
+
   List<dynamic> getAppModelMyEvents() {
     print("getAppModelMyEvents");
     print("appModel.myEvents: " + appModel.myEvents.toString());
