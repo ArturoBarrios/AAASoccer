@@ -337,150 +337,257 @@ class _MyAppState extends State<MyApp> {
                 switch (state.currentStep) {
                   case AuthenticatorStep.signIn:
                     return Scaffold(
-                      body: Padding(
-                        padding: padding,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              //todo
-                              //create switch to switch between login and signup
-                              //onpress function that creates creates/updates cognito user
-                              TextField(
-                                controller: emailController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Email'),
-                              ),
-                              TextField(
-                                controller: phoneController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Phone'),
-                              ),
-                              TextField(
-                                controller: passwordController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Password'),
-                              ),
+  backgroundColor: Colors.white,
+  body: Padding(
+    padding: EdgeInsets.all(20),
+    child: Center(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Welcome Back",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 50),
+            TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                hintText: 'Email',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                hintText: 'Phone',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: passwordController,
+              keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Password',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 50),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue, // background color
+                onPrimary: Colors.white, // foreground color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              ),
+              onPressed: () {
+                signIn(state);
+              },
+              child: Text(
+                'Sign In',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Don\'t have an account?'),
+                TextButton(
+                  onPressed: () => state.changeStep(AuthenticatorStep.signUp),
+                  child: Text(
+                    'Sign Up',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
 
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background
-                                  onPrimary: Colors.white, // foreground
-                                ),
-                                //emailController, passwordController
-                                onPressed: () {
-                                  signIn(state);
-                                },
-                                child: Text('Sign In'),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      // custom button to take the user to sign up
-                      persistentFooterButtons: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Don\'t have an account?'),
-                            TextButton(
-                              onPressed: () => state.changeStep(
-                                AuthenticatorStep.signUp,
-                              ),
-                              child: const Text('Sign Up'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
                   case AuthenticatorStep.signUp:
                     return Scaffold(
-                      body: Padding(
-                        padding: padding,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              // app logo
-                              const Center(child: FlutterLogo(size: 100)),
-                              // prebuilt sign up form from amplify_authenticator package
+  backgroundColor: Colors.white,
+  body: Padding(
+    padding: EdgeInsets.all(20),
+    child: Center(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Create Account",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 50),
+            TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                hintText: 'Email',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: usernameController,
+              decoration: InputDecoration(
+                hintText: 'Username',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                hintText: 'Phone',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: passwordController,
+              keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Password',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: birthdateController,
+              keyboardType: TextInputType.datetime,
+              decoration: InputDecoration(
+                hintText: 'Birthdate',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: genderController,
+              decoration: InputDecoration(
+                hintText: 'Gender',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: addressController,
+              decoration: InputDecoration(
+                hintText: 'Address',
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 50),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue, // background color
+                onPrimary: Colors.white, // foreground color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              ),
+              onPressed: () {
+                signUp(state);
+              },
+              child: Text(
+                'Sign Up',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Already have an account?'),
+                TextButton(
+                  onPressed: () => state.changeStep(AuthenticatorStep.signIn),
+                  child: Text(
+                    'Sign In',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
 
-                              TextField(
-                                controller: emailController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Email'),
-                              ),
-
-                              TextField(
-                                controller: usernameController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Username'),
-                              ),
-                              TextField(
-                                controller: phoneController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Phone'),
-                              ),
-                              TextField(
-                                controller: passwordController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Password'),
-                              ),
-                              TextField(
-                                controller: birthdateController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Birthdate'),
-                              ),
-                              TextField(
-                                controller: genderController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Gender'),
-                              ),
-                              TextField(
-                                controller: addressController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Address'),
-                              ),
-
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background
-                                  onPrimary: Colors.white, // foreground
-                                ),
-                                //emailController, passwordController, usernameController, phoneController
-                                onPressed: () {
-                                  signUp(state);
-                                },
-                                child: Text('Sign Up'),
-                              )
-                              // SignUpForm.custom(
-                              //   fields: [
-                              //     SignUpFormField.username(),
-                              //     SignUpFormField.email(required: true),
-                              //     SignUpFormField.phoneNumber(),
-                              //     SignUpFormField.password(),
-
-                              //   ],
-
-                              // ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // custom button to take the user to sign in
-                      persistentFooterButtons: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Already have an account?'),
-                            TextButton(
-                              onPressed: () => state.changeStep(
-                                AuthenticatorStep.signIn,
-                              ),
-                              child: const Text('Sign In'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
                   case AuthenticatorStep.confirmSignUp:
                     return Scaffold(
                       body: Padding(
