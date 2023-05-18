@@ -34,7 +34,8 @@ class TeamCommand extends BaseCommand {
       "organizers": [],
       "events": [],
       "roles": [],
-      "chats": []
+      "chats": [],
+      "userParticipants": [],
     };
 
     //get chats
@@ -51,6 +52,7 @@ class TeamCommand extends BaseCommand {
     userTeamDetails['isMember'] = myTeamRoles.contains("PLAYER");
 
     List<dynamic> userParticipants = team['userParticipants']['data'];
+    userTeamDetails['userParticipants'] = userParticipants;
     for(int i = 0;i<userParticipants.length;i++){
       if(myTeamRoles.contains("PLAYER")){
         userTeamDetails['players'].add(userParticipants[i]['user']);

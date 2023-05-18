@@ -873,6 +873,7 @@ mixin EventMixin {
   Future<dynamic> getPlayerListWidgetDetails(userObjectDetails) async{
     dynamic res = {
       'players': userObjectDetails['players'],
+      'userParticipants': userObjectDetails['userParticipants'],
     };
     return res;
   }
