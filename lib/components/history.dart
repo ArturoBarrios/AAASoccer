@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../commands/event_command.dart';
+
 dynamic listOfEvents = [];
 
 class History extends StatefulWidget {
@@ -12,30 +14,46 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
+  bool _isLoading = true;
+
+
   @override
   void initState() {
     super.initState();
+    print("History initState");
+    print("historyDetails: " + widget.historyDetails.toString());
     loadInitialData();
   }
 
-  void loadInitialData() {
-    // Simulating the loading of initial data
-    listOfEvents = [
-      {
-        "name": "Pickup Game",
-        "endDate": 1684004132000,
-        "type": "GAME"
-      },
-      {
-        "name": "u23 International Champions League",
-        "endDate": 1684004132000,
-        "type": "TOURNAMENT"
-      },
-      // Add more events here...
-    ];
+void loadInitialData() async {
+  print("loadInitialData");
 
-    // You can perform any additional data processing here
-  }
+  // Retrieve all events
+  var rawEvents = await EventCommand().returnMyEventsModel();
+
+  // Filter events to get only those that have already ended and format them accordingly
+  DateTime now = DateTime.now();
+  listOfEvents = rawEvents.map((rawEvent) {
+    DateTime eventDate = DateTime.fromMillisecondsSinceEpoch(int.parse(rawEvent['event']['endTime']));
+    return {
+      'name': rawEvent['event']['name'],
+      'endDate': eventDate.isBefore(now) ? int.parse(rawEvent['event']['endTime']) : null,
+      'type': rawEvent['event']['type'],
+    };
+  }).toList();
+
+  // Filter out any events that didn't end
+  listOfEvents = listOfEvents.where((event) => event['endDate'] != null).toList();
+
+  print("listOfEvents: " + listOfEvents.toString());
+  // You can perform any additional data processing here
+  setState(() {
+    _isLoading = false;
+    
+  });
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +61,7 @@ class _HistoryState extends State<History> {
       appBar: AppBar(
         title: Text('Event History'),
       ),
-      body: ListView.builder(
+      body: !_isLoading ? ListView.builder(
         itemCount: listOfEvents.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
@@ -59,6 +77,9 @@ class _HistoryState extends State<History> {
             ),
           );
         },
+      ): 
+      Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
