@@ -1,7 +1,10 @@
+import 'package:soccermadeeasy/graphql/fragments/tournament_fragments.dart';
+
 import '../fragments/event_fragments.dart';
 
-class TournamentMutations{
-  String createTournament(Map<String, dynamic> tournamentInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput) {
+class TournamentMutations {
+  String createTournament(Map<String, dynamic> tournamentInput,
+      Map<String, dynamic> eventInput, Map<String, dynamic> locationInput) {
     String createTournament = """
       mutation {
         createTournament(data: {      
@@ -11,7 +14,7 @@ class TournamentMutations{
             create: 
             {
               name: "${eventInput['name']}",
-              isMainEvent: ${eventInput ['isMainEvent']},
+              isMainEvent: ${eventInput['isMainEvent']},
               type: TOURNAMENT,
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
@@ -38,7 +41,7 @@ class TournamentMutations{
                 create: 
                 {
                   latitude: ${locationInput['latitude']},
-                  longitude: ${locationInput ['longitude']},
+                  longitude: ${locationInput['longitude']},
                 }
               }
             }
@@ -59,11 +62,9 @@ class TournamentMutations{
     return createTournament;
   }
 
-  
-
   String addEventToTournament(
       Map<String, dynamic> tournamentInput, Map<String, dynamic> eventInput) {
-         String addGameToTournament = """      
+    String addGameToTournament = """      
       mutation {
         updateTournament(id: ${tournamentInput['_id']},
   				data: {            
@@ -95,8 +96,53 @@ class TournamentMutations{
         }
         """;
 
-return addGameToTournament;
+    return addGameToTournament;
+  }
 
+  String addTeamToGroup(Map<String, dynamic> groupInput) {
+    String addGameToTournament = """      
+     mutation {
+  updateGroup(id: ${groupInput['_id']},
+    data: {            
+      teamOrders: {
+        create: {
+          team: {
+            connect: ${groupInput['team_id']}
+          }      
+          points: ${groupInput['points']}
+        }
+      },      
+    }                  
+  ){
+    ${TournamentFragments().groupStageFragment()}
+        			   				                                                      
+  }
+}
+
+        """;
+
+    return addGameToTournament;
+  }
+
+
+  String removeTeamFromGroupStage(Map<String, dynamic> groupStageInput) {
+    String removeTeamFromGroupStageString = """      
+     mutation {
+  updateGroupStage(id: ${groupStageInput['_id']},
+    data: {            
+      teamOrders: {                  
+        disconnect: ${groupStageInput['team_orders_id']}                            
+      },      
+    }                  
+  ){
+    ${TournamentFragments().groupStageFragment()}
+        			   				                                                      
+  }
+}
+
+        """;
+
+    return removeTeamFromGroupStageString;
   }
 
   String addPlayerToGame(
@@ -143,17 +189,13 @@ return addGameToTournament;
     return addPlayerToGame;
   }
 
-
-  
-  String createGroup(
-      Map<String, dynamic> groupInput) {
+  String createGroup(Map<String, dynamic> groupInput) {
     String createGroup = """      
        mutation {
         createGroup(data: {      
-          groupNumber: ${groupInput['groupNumber']},             
-          
+          groupNumber: ${groupInput['groupNumber']},                               
           }) {
-            _id                                                    
+               _id                                              
           }   
         }
         """;
@@ -161,8 +203,7 @@ return addGameToTournament;
     return createGroup;
   }
 
-  String createGroupStage(
-      Map<String, dynamic> groupStageInput) {
+  String createGroupStage(Map<String, dynamic> groupStageInput) {
     String createGroupStage = """      
        mutation {
         createGroupStage(data: {      
@@ -176,28 +217,16 @@ return addGameToTournament;
                 ]            
             }          
           }) {
-            _id    
-            numberOfTeams                                    
-            groups{
-              data{
-                 groupNumber
-                 teams{
-                    data{
-                      _id
-                    }
-                 }
-              }
-            } 
+            ${TournamentFragments().groupStageFragment()}
           }   
         }
         """;
 
     return createGroupStage;
   }
-  
-  String createTournamentStage(
-      Map<String, dynamic> tournamentStageInput) {
-   String createGroupStage = """   
+
+  String createTournamentStage(Map<String, dynamic> tournamentStageInput) {
+    String createGroupStage = """   
    mutation {
     createTournamentStage(data: {      
       numberOfTeams: ${tournamentStageInput['numberOfTeams']},             
@@ -206,35 +235,16 @@ return addGameToTournament;
         connect: "${tournamentStageInput['tournament_id']}"            
       }
       }) {
-        _id    
-        numberOfTeams                                    
-        numberOfRoundsPerTeam                                    
-        tournament{
-          _id
-        }
-        eventOrders{
-          data{
-            _id
-            order                  
-            event{
-              _id
-            }
-          }
-        }
+        ${TournamentFragments().tournamentStageFragment()}
       }   
     }
     """;
 
-
-
-
     return createGroupStage;
   }
-  
-  String createEventOrder(
-      Map<String, dynamic> eventOrdersInput) {
-   
-  String createEventOrderString =  """
+
+  String createEventOrder(Map<String, dynamic> eventOrdersInput) {
+    String createEventOrderString = """
     mutation {
       createEventOrder(data: {
         order: ${eventOrdersInput['order']},
@@ -260,13 +270,6 @@ return addGameToTournament;
     }
   """;
 
-  return createEventOrderString;
-}
-
-
-
-
-
-    
-  
+    return createEventOrderString;
+  }
 }
