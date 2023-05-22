@@ -1,4 +1,5 @@
 import '../fragments/event_fragments.dart';
+import '../fragments/tournament_fragments.dart';
 
 class TournamentQueries {
   String getTournaments() {
@@ -27,19 +28,7 @@ class TournamentQueries {
                 }
               }              
               groupStage{
-                _id 
-                numberOfTeams
-                groups{
-                  data{
-                    _id
-                    groupNumber
-                    teams{
-                      data{
-                        _id
-                      }
-                    }
-                  }
-                }
+                ${TournamentFragments().groupStageFragment()}
               }
               events{
                 data{                  
@@ -79,19 +68,7 @@ class TournamentQueries {
                 }
               } 
               groupStage{
-                _id 
-                numberOfTeams
-                groups{
-                  data{
-                    _id
-                    groupNumber
-                    teams{
-                      data{
-                        _id
-                      }
-                    }
-                  }
-                }
+                ${TournamentFragments().groupStageFragment()}
               }
               events{
                 data{

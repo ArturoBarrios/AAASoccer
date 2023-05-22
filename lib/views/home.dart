@@ -367,6 +367,7 @@ class _Home extends State<Home> {
       dynamic getEventDetailsResp =
           EventCommand().getUserEventDetails(selectedObject['events']['data']);
       getEventDetailsResp['groupStage'] = selectedObject['groupStage'];
+      
       getEventDetailsResp['tournamentStage'] = selectedObject['tournamentStage'];
       card = TournamentCard(
           tournamentObject: selectedObject,

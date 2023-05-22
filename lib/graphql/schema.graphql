@@ -313,8 +313,7 @@ type Team   {
   chats: [Chat] @relation
   price: Price
   payments: [Payment] @relation
-  joinConditions: JoinConditions
-  groups: [Group] @relation
+  joinConditions: JoinConditions  
   teamOrders: [TeamOrder] @relation
   
 
@@ -402,9 +401,8 @@ type League   {
 
 type TeamOrder {
   team: Team
-  order: Int
-  groupStage: GroupStage
-
+  points: Int
+  group: Group
 
 }
 
@@ -415,14 +413,13 @@ type TeamGroup {
 
 type Group {
   groupNumber: Int
-  groupStage: GroupStage
-  teams: [Team] @relation
+  groupStage: GroupStage  
+  teamOrders: [TeamOrder] @relation
 }
 
 type GroupStage {
   groups: [Group] @relation
   numberOfTeams: Int
-  teamOrder: [TeamOrder] @relation
   numberOfRoundsPerTeam: Int    
   tournament: Tournament
   league: League

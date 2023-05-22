@@ -34,7 +34,8 @@ class TeamCommand extends BaseCommand {
       "organizers": [],
       "events": [],
       "roles": [],
-      "chats": []
+      "chats": [],
+      "userParticipants": [],
     };
 
     //get chats
@@ -51,6 +52,7 @@ class TeamCommand extends BaseCommand {
     userTeamDetails['isMember'] = myTeamRoles.contains("PLAYER");
 
     List<dynamic> userParticipants = team['userParticipants']['data'];
+    userTeamDetails['userParticipants'] = userParticipants;
     for(int i = 0;i<userParticipants.length;i++){
       if(myTeamRoles.contains("PLAYER")){
         userTeamDetails['players'].add(userParticipants[i]['user']);
@@ -728,46 +730,53 @@ class TeamCommand extends BaseCommand {
     return removeTeamResponse;
   }
 
-  Future<Map<String, dynamic>> removeUsersFromTeam(List<dynamic> team, List<dynamic>players ) async {
+  Future<Map<String, dynamic>> removeUsersFromTeam(dynamic team, List<dynamic>users ) async {
     print("removePlayersFromTeam");
     print("team: " + team.toString());
-    print("players: " + players.toString());
+    print("players: " + users.toString());
     
     Map<String, dynamic> removePlayersFromTeamResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
+
+    users.forEach((user) async {
+      dynamic userInput = {
+        "_id": user['_id'],
+
+      };      
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().removeTeamFromUser(userInput, team),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+    });
       
 
-    // http.Response response = await http.post(
-    //   Uri.parse('https://graphql.fauna.com/graphql'),
-    //   headers: <String, String>{
-    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: jsonEncode(<String, String>{
-    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
-    //   }),
-    // );
-
-    // print("response body: ");
-    // print(jsonDecode(response.body));
 
   
 
     removePlayersFromTeamResponse["success"] = true;
     removePlayersFromTeamResponse["message"] = "Team Removed";
-    // removePlayersFromTeamResponse["data"] =
-    //     jsonDecode(response.body)['data']['updateTeam'];
 
     return removePlayersFromTeamResponse;
   }
   
-  Future<Map<String, dynamic>> removeUsersRolesFromTeam(dynamic team,List<dynamic> users, List<dynamic>roles ) async {
-    print("removePlayersFromTeam");
+  Future<Map<String, dynamic>> updateUsersRolesFromTeam(dynamic team,List<dynamic> users, String newRoles ) async {
+    print("updateUsersRolesFromTeam");
     print("users: " + users.toString());
-    print("roles: " + roles.toString());
+    print("newRoles: " + newRoles.toString());
     
     Map<String, dynamic> removeUsersRolesFromTeamResponse = {
       "success": false,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../commands/base_command.dart';
+
 class PlayerList extends StatefulWidget {
   final dynamic playersDetails;
 
@@ -10,34 +12,42 @@ class PlayerList extends StatefulWidget {
 }
 
 class _PlayerListState extends State<PlayerList> {
-  bool _isExpanded = false;
-  List<dynamic> _selectedPlayersDetails = [];
+  bool _isExpanded = true;
+  String _selectedUserType = "PLAYER"; // Default selection: "PLAYER"
+  List<String> _userTypes = ["PLAYER", "ORGANIZER", "COACH", "REFEREE"];
 
-  void _showPlayerDetailsDialog(BuildContext context, String playerName) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Player Details'),
-        content: Text('This is ' + playerName + '.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('OK'),
-          ),
-        ],
-      );
-    },
-  );
-}
+  void _showPlayerDetailsDialog(BuildContext context, String userName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Player Details'),
+          content: Text('This is ' + userName + '.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-   print("initState PlayerList Widget ");
-   print("playerDetails: " + widget.playersDetails.toString());
+    print("initState PlayerList Widget ");
+    print("playerDetails: " + widget.playersDetails.toString());
+  }
+
+  List<String> getUserRoles(dynamic userParticipant) {
+    print("getUserRoles(): " + userParticipant.toString());
+    List<String> roles = BaseCommand().parseRoles(userParticipant['roles']);
+    print("roles: " + roles.toString());
+    return roles;
   }
 
   @override
@@ -52,85 +62,70 @@ class _PlayerListState extends State<PlayerList> {
             });
           },
           child: Text(
-            _isExpanded ? 'Showing Selected' : 'Showing All',
+            _selectedUserType,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
             ),
           ),
         ),
-        // if (_isExpanded)
-        //   Container(
-        //     padding: EdgeInsets.symmetric(vertical: 10),
-        //     child: Column(
-        //       children: [
-        //         TextField(
-        //           decoration: InputDecoration(
-        //             hintText: 'Search',
-        //             prefixIcon: Icon(Icons.search),
-        //           ),
-        //           onChanged: (value) {
-        //             // TODO: Implement search functionality
-        //           },
-        //         ),
-        //         SizedBox(height: 10),
-        //         Expanded(
-        //           child: ListView.builder(
-        //             itemCount: widget.playersDetails.length,
-        //             itemBuilder: (BuildContext context, int index) {
-        //               final playerDetails = widget.playersDetails[index];
-        //               final isSelected = _selectedPlayersDetails.contains(playerDetails);
-        //               return CheckboxListTile(
-        //                 title: Text(playerDetails['name']),
-        //                 value: isSelected,
-        //                 onChanged: (value) {
-        //                   setState(() {
-        //                     if (value == true) {
-        //                       _selectedPlayersDetails.add(playerDetails);
-        //                     } else {
-        //                       _selectedPlayersDetails.remove(playerDetails);
-        //                     }
-        //                   });
-        //                 },
-        //               );
-        //             },
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        Expanded(
-  child: SingleChildScrollView(
-    child: Column(
-      children: widget.playersDetails['players'].map<Widget>((player) {
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(player['name']),
-                ),
-                IconButton(
-                  icon: Icon(Icons.info),
-                  onPressed: () {
-                    _showPlayerDetailsDialog(context, player['name']);
+        if (_isExpanded)
+          Container(
+            padding: EdgeInsets.all(8.0),
+            child: Wrap(
+              spacing: 8.0,
+              children: _userTypes.map((userType) {
+                return FilterChip(
+                  label: Text(userType),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      if (isSelected) {
+                        _selectedUserType = userType;
+                      }
+                    });
                   },
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    // You can call a function here to handle player deletion
-                  },
-                ),
-              ],
+                  selected: _selectedUserType == userType,
+                );
+              }).toList(),
             ),
           ),
-        );
-      }).toList(),
-    ),
-  ),
-),
+        Flexible(
+          child: SingleChildScrollView(
+            child: Column(
+              children: widget.playersDetails['userParticipants']
+                  .where((userParticipant) {
+                List<String> userRoles = getUserRoles(userParticipant);
+                return userRoles.contains(_selectedUserType);
+              }).map<Widget>((userParticipant) {
+                dynamic user = userParticipant['user'];
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(user['name']),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.info),
+                          onPressed: () {
+                            _showPlayerDetailsDialog(context, user['name']);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            // You can call a function here to handle user deletion
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
       ],
     );
   }
