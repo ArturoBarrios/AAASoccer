@@ -44,7 +44,7 @@ class _GroupStageWidgetState extends State<GroupStageWidget> {
           await TournamentCommand().addTeamToGroup(groupStageInput);
       print("check if addTeamToGroup success");
       print("addTeamToGroupResp: " + addTeamToGroupResp.toString());
-      if (addTeamToGroupResp['status'] == 'success') {
+      if (addTeamToGroupResp['success']) {
         dynamic updatedGroup = addTeamToGroupResp['data'];
         int index = 0;
         widget.groupData!['groups']['data'].forEach((group) {
@@ -130,77 +130,86 @@ class _GroupStageWidgetState extends State<GroupStageWidget> {
         ],
       ),
       body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: groupData.map<Widget>((group) {
-            int numberOfTeamsPerGroup = widget.groupData!['numberOfTeams'] ~/
-                widget.groupData!['groups']['data'].length as int;
-            var teamPlaceholders = List.filled(
-                numberOfTeamsPerGroup - group['teamOrders']['data'].length as int,
-                'No team yet');
-            print("group: " + group.toString());
-            return Container(
-              width: 200, // Set the width of each group container
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Group ${group['groupNumber']}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8.0),
-                  Column(
-                    children: group['teamOrders']['data'].length > 0
-                        ? group['teamOrders']['data'].map<Widget>((teamOrder) {
-                            return GestureDetector(
-                              onTap: () {
-                                print('Team clicked');
-                              },
-                              child: ListTile(
-                                leading: Icon(
-                                    Icons.sports_soccer), // Placeholder icon
-                                title: Text(teamOrder['team']['name']),
-                              ),
-                            );
-                          }).toList()
-                        : teamPlaceholders.map<Widget>((placeholder) {
-                            return ListTile(
-                              leading: Icon(Icons.add),
-                              title: Text(placeholder),
-                              onTap: () async {
-                                print('Add Team tapped');
-                                List<dynamic> primaryList = widget.teams!;
-                                List<dynamic> secondaryList = [];
-                                Map<int, dynamic> result = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AnimatedDialog(
-                                        items: primaryList,
-                                        singleSelect: false,
-                                        secondaryItems: secondaryList);
-                                  },
-                                );
-                                if (result.isNotEmpty) {
-                                  print('Selected items: $result');
-                                  addTeamToGroupStage(group, result,
-                                      primaryList, secondaryList);
+  scrollDirection: Axis.horizontal,
+  child: Row(
+    children: groupData.map<Widget>((group) {
+      int numberOfTeamsPerGroup = widget.groupData!['numberOfTeams'] ~/ 
+          widget.groupData!['groups']['data'].length as int;
+      var teamPlaceholders = List.filled(
+          numberOfTeamsPerGroup - group['teamOrders']['data'].length as int, 
+          'No team yet');
 
-                                  // userObjectDetails['mainEvent'], result, primaryList, secondaryList);
-                                }
-                              },
-                            );
-                          }).toList(),
-                  ),
-                  SizedBox(height: 16.0),
-                ],
-              ),
+      print("group: " + group.toString());
+      print("numberOfTeamsPerGroup: " + numberOfTeamsPerGroup.toString());
+      print("teamPlaceholders: " + teamPlaceholders.toString());
+
+      // create a list of widgets for the teams
+      List<Widget> teamWidgets = group['teamOrders']['data'].map<Widget>((teamOrder) {
+        return GestureDetector(
+          onTap: () {
+            print('Team clicked');
+          },
+          child: ListTile(
+            leading: Icon(Icons.sports_soccer), // Placeholder icon
+            title: Text(teamOrder['team']['name']),
+          ),
+        );
+      }).toList();
+
+      // create a list of widgets for the placeholders
+      List<Widget> placeholderWidgets = teamPlaceholders.map<Widget>((placeholder) {
+        return ListTile(
+          leading: Icon(Icons.add),
+          title: Text(placeholder),
+          onTap: () async {
+            print('Add Team tapped');
+            List<dynamic> primaryList = widget.teams!;
+            List<dynamic> secondaryList = [];
+            Map<int, dynamic> result = await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AnimatedDialog(
+                  items: primaryList,
+                  singleSelect: false,
+                  secondaryItems: secondaryList
+                );
+              },
             );
-          }).toList(),
+            if (result.isNotEmpty) {
+              print('Selected items: $result');
+              addTeamToGroupStage(group, result, primaryList, secondaryList);
+            }
+          },
+        );
+      }).toList();
+
+      // combine the team and placeholder widgets into a single list
+      List<Widget> combinedWidgets = []..addAll(teamWidgets)..addAll(placeholderWidgets);
+
+      return Container(
+        width: 200, // Set the width of each group container
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(
+              'Group ${group['groupNumber']}',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Column(
+              children: combinedWidgets,
+            ),
+            SizedBox(height: 16.0),
+          ],
         ),
-      ),
+      );
+    }).toList(),
+  ),
+      )
+
     );
   }
 }

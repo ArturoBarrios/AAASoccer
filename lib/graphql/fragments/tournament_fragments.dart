@@ -24,7 +24,8 @@ class TournamentFragments {
       data{
         points                
         team{                
-            _id                
+            _id     
+            name           
         }                
       }
     } 

@@ -114,7 +114,7 @@ class TournamentMutations {
       },      
     }                  
   ){
-    ${TournamentFragments().groupStageFragment()}
+    ${TournamentFragments().groupFragment()}
         			   				                                                      
   }
 }
