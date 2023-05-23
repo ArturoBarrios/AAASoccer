@@ -62,6 +62,50 @@ class TournamentCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> removeTeamFromTeamOrder(
+      dynamic teamOrderInput) async {
+    print("removeTeamFromTeamOrder");
+    print(teamOrderInput.toString());
+    Map<String, dynamic> removeTeamFromTeamOrderResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TournamentMutations().removeTeamFromTeamOrder(teamOrderInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      final deleteTeamOrder =
+          jsonDecode(response.body)['data']['deleteTeamOrder'];   
+      print("deleteTeamOrder: "+ deleteTeamOrder.toString());
+             
+      if (deleteTeamOrder != null) {
+        removeTeamFromTeamOrderResp['success'] = true;
+        removeTeamFromTeamOrderResp['message'] = "Successfully added team to group stage";
+        removeTeamFromTeamOrderResp['data'] = deleteTeamOrder;
+      }
+      
+
+      return removeTeamFromTeamOrderResp;
+    } catch (e) {
+      print("removeTeamFromTeamOrder error");
+      print(e);
+      return removeTeamFromTeamOrderResp;
+    }
+  }
+
   Map<String, dynamic> currateTournamentData(dynamic selectedObject) {
     print("currateTournamentData");
     Map<String, dynamic> currateTournamentDataResp = {

@@ -125,24 +125,19 @@ class TournamentMutations {
   }
 
 
-  String removeTeamFromGroupStage(Map<String, dynamic> groupStageInput) {
-    String removeTeamFromGroupStageString = """      
+  String removeTeamFromTeamOrder(Map<String, dynamic> teamOrderInput) {
+    String removeTeamFromTeamOrderString = """      
      mutation {
-  updateGroupStage(id: ${groupStageInput['_id']},
-    data: {            
-      teamOrders: {                  
-        disconnect: ${groupStageInput['team_orders_id']}                            
-      },      
-    }                  
-  ){
-    ${TournamentFragments().groupStageFragment()}
-        			   				                                                      
+  deleteTeamOrder(id: ${teamOrderInput['_id']}){
+    ${TournamentFragments().teamOrderFragment()}
   }
-}
+     			   				                                                      
+  }
+
 
         """;
 
-    return removeTeamFromGroupStageString;
+    return removeTeamFromTeamOrderString;
   }
 
   String addPlayerToGame(
