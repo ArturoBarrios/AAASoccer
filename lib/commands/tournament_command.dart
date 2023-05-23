@@ -18,10 +18,10 @@ import '../commands/geolocation_command.dart';
 // import 'package:geolocator/geolocator.dart';
 
 class TournamentCommand extends BaseCommand {
-  Future<Map<String, dynamic>> addTeamToGroup(
-      dynamic groupInput) async {
+  Future<Map<String, dynamic>> addTeamToTeamOrder(
+      dynamic teamOrderInput) async {
     print("addTeamToGroup");
-    print(groupInput.toString());
+    print(teamOrderInput.toString());
     Map<String, dynamic> addTeamToGroupResp = {
       "success": false,
       "message": "Default Error",
@@ -36,15 +36,15 @@ class TournamentCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': TournamentMutations().addTeamToGroup(groupInput),
-        }),
+          'query': TournamentMutations().addTeamToTeamOrder(teamOrderInput),
+      }),
       );
 
       print("response body: ");
       print(jsonDecode(response.body));
 
       final updateGroupResp =
-          jsonDecode(response.body)['data']['updateGroup'];   
+          jsonDecode(response.body)['data']['updateTeamOrder'];   
 
              
       if (updateGroupResp != null) {
@@ -87,14 +87,14 @@ class TournamentCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      final deleteTeamOrder =
-          jsonDecode(response.body)['data']['deleteTeamOrder'];   
-      print("deleteTeamOrder: "+ deleteTeamOrder.toString());
+      final updateTeamOrder =
+          jsonDecode(response.body)['data']['updateTeamOrder'];   
+      print("updateTeamOrder: "+ updateTeamOrder.toString());
              
-      if (deleteTeamOrder != null) {
+      if (updateTeamOrder != null) {
         removeTeamFromTeamOrderResp['success'] = true;
         removeTeamFromTeamOrderResp['message'] = "Successfully added team to group stage";
-        removeTeamFromTeamOrderResp['data'] = deleteTeamOrder;
+        removeTeamFromTeamOrderResp['data'] = updateTeamOrder;
       }
       
 
@@ -261,6 +261,30 @@ class TournamentCommand extends BaseCommand {
 
       print("createdGroup: " + createdGroup.toString());
       groupsString += createdGroup['_id'] + ", ";
+
+      //create TeamOrders inside group
+      for(int i = 0;i<tournamentData['numberOfTeamsPerGroup'];i++){
+        dynamic teamOrderInput = {
+          "group_id": createdGroup['_id'],
+          "points": 0,
+          "order": i+1,
+        };
+        http.Response createTeamOrdersResponse = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': TournamentMutations().createTeamOrder(teamOrderInput),
+          }),
+        );
+
+        dynamic createdTeamOrder = jsonDecode(createTeamOrdersResponse.body)['data']['createTeamOrder'];
+        createdGroup['teamOrders']['data'].add(createdTeamOrder);
+      }
+
+
       for (int i = 0; i < bergerTable.length; i++) {
         List<dynamic> roundGames = bergerTable[i];
         for (int k = 0; k < roundGames.length; k++) {

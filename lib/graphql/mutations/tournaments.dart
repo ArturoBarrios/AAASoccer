@@ -99,41 +99,42 @@ class TournamentMutations {
     return addGameToTournament;
   }
 
-  String addTeamToGroup(Map<String, dynamic> groupInput) {
-    String addGameToTournament = """      
+  String addTeamToTeamOrder(Map<String, dynamic> teamOrderInput) {
+    String addTeamToTeamOrderString = """      
      mutation {
-  updateGroup(id: ${groupInput['_id']},
+  updateTeamOrder(id: ${teamOrderInput['_id']},
     data: {            
-      teamOrders: {
-        create: {
+           
           team: {
-            connect: ${groupInput['team_id']}
-          }      
-          points: ${groupInput['points']}
-        }
-      },      
+            connect: ${teamOrderInput['team_id']}        
+        }      
+          points: ${teamOrderInput['points']}
     }                  
   ){
-    ${TournamentFragments().groupFragment()}
+    ${TournamentFragments().teamOrderFragment()}
         			   				                                                      
   }
 }
 
         """;
 
-    return addGameToTournament;
+    return addTeamToTeamOrderString;
   }
-
 
   String removeTeamFromTeamOrder(Map<String, dynamic> teamOrderInput) {
     String removeTeamFromTeamOrderString = """      
      mutation {
-  deleteTeamOrder(id: ${teamOrderInput['_id']}){
+  updateTeamOrder(id: ${teamOrderInput['_id']},
+    data: {            
+      team: {                          
+        disconnect: true                               
+      },      
+    }                  
+  ){
     ${TournamentFragments().teamOrderFragment()}
+        			   				                                                      
   }
-     			   				                                                      
-  }
-
+}
 
         """;
 
@@ -190,12 +191,29 @@ class TournamentMutations {
         createGroup(data: {      
           groupNumber: ${groupInput['groupNumber']},                               
           }) {
-               _id                                              
+               ${TournamentFragments().groupFragment()}                                                         
           }   
         }
         """;
 
     return createGroup;
+  }
+
+  String createTeamOrder(Map<String, dynamic> teamOrderInput) {
+    String createTeamOrderString = """      
+       mutation {
+        createTeamOrder(data: {               
+          points: ${teamOrderInput['points']}
+          group: {
+            connect: "${teamOrderInput['group_id']}"            
+          }
+          }) {
+               _id                                                             
+          }   
+        }
+        """;
+
+    return createTeamOrderString;
   }
 
   String createGroupStage(Map<String, dynamic> groupStageInput) {

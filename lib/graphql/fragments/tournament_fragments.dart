@@ -23,7 +23,10 @@ class TournamentFragments {
         team{                
             _id     
             name           
-        }                
+        }    
+        group{
+          _id
+        }            
       
     """;
 
