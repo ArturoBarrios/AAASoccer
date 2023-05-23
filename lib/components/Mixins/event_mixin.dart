@@ -472,9 +472,8 @@ mixin EventMixin {
 
   Container getJoinGameWidget(BuildContext context, dynamic userObjectDetails,
       dynamic event, dynamic userInput) {
-    print("userObjectDetails: $userObjectDetails");
-
-    print("participationRoles: " + participationRoles.toString());
+    print("userObjectDetails['roles']: "+ userObjectDetails['roles'].toString());
+    
     //if not already a player
     if (!userObjectDetails['roles'].contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");
@@ -563,7 +562,8 @@ mixin EventMixin {
           dynamic requestElementObject;
           userObject['requestsSent']['data'].forEach((requestElement) {
             print("requestElement: $requestElement");
-            if (requestElement['event']['_id'] == event['_id']) {
+            print("event: " + event.toString());
+            if (requestElement['type']!='TEAMREQUEST' && requestElement['event']['_id'] == event['_id']) {
               requestElementObject = requestElement;
             }
           });

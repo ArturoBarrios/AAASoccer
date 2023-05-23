@@ -865,7 +865,8 @@ class EventCommand extends BaseCommand {
 
       }         
       isMyEventResp['mainEvent'] = event;
-      print("event: " + event.toString());
+      print("main event: " + event.toString());
+      print("main event user participants: "+ event['userParticipants'].toString());
 
       //get chats
       dynamic chats = event['chats']['data'];
