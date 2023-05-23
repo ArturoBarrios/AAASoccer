@@ -403,6 +403,7 @@ type TeamOrder {
   team: Team
   points: Int
   group: Group
+  order: Int
 
 }
 
