@@ -16,19 +16,30 @@ class TournamentFragments {
     return groupStageFragmentString;
   }
 
-  String groupFragment() {
-    String groupFragmentString = """
-      _id                                                                        
-      groupNumber
-    teamOrders{
-      data{
+  String teamOrderFragment() {
+    String teamOrderFragmentString = """      
+        _id
         points                
         team{                
             _id     
             name           
         }                
+      
+    """;
+
+    return teamOrderFragmentString;
+  }
+
+  String groupFragment() {
+    String groupFragmentString = """
+      _id                                                                        
+      groupNumber
+      teamOrders{
+        data{
+         ${TournamentFragments().teamOrderFragment()}
+
+        }
       }
-    } 
     groupStage{
       _id
     }
