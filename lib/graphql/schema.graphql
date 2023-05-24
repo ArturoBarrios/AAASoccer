@@ -261,7 +261,7 @@ type Event   {
   isMainEvent: Boolean
   userParticipants: [EventUserParticipant] @relation
   # eventUserOrganizers: EventUserOrganizers
-  price: Price    
+  price: Price @relation(name: "event_price")
   request: [Request] @relation
   # organization: Organization
   #need org to create events? nah. allow user to create events,
@@ -527,6 +527,7 @@ type Rating   {
 
 type Price   {  
   amount: String
-  event: Event
+  event: Event @relation(name: "event_price")
   team: Team
+  teamAmount: String
 }

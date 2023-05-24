@@ -100,30 +100,34 @@ class EventMutations {
   }
 
   String createPrice(
-    Map<String, dynamic> paymentInput,
-    Map<String, dynamic> eventInput,
-  ) {
-    String createPrice = """
-     mutation {
-        createPrice(data: {      
-          amount: "${paymentInput['price']}",  
-          event: {
-              connect: "${eventInput['_id']}"
-            },  
-                                    
-          }) {
-            _id    
-            amount
-            event {
-              _id
-              name
-            }                                  
-          }
-        }
-        """;
+  Map<String, dynamic> paymentInput,
+  Map<String, dynamic> eventInput,
+) {
+  // Check if 'teamAmount' is present in paymentInput, if not set it to 0
+  var teamAmount = paymentInput.containsKey('teamPrice') ? paymentInput['teamPrice'] : "0";
 
-    return createPrice;
-  }
+  String createPrice = """
+   mutation {
+      createPrice(data: {      
+        amount: "${paymentInput['price']}",  
+        teamAmount: "$teamAmount",
+        event: {
+            connect: "${eventInput['_id']}"
+          },  
+                                  
+        }) {
+          _id    
+          amount
+          event {
+            _id
+            name
+          }                                  
+        }
+      }
+      """;
+
+  return createPrice;
+}
 
   String addTeam(
       Map<String, dynamic> eventInput, Map<String, dynamic> teamInput) {

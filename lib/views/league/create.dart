@@ -33,6 +33,8 @@ class _LeagueCreateState extends State<LeagueCreate> {
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
   final numberOfRoundsPerTeamController = TextEditingController();
+  final teamPriceController = TextEditingController();
+  
 
   bool _isLoading = false;
 
@@ -55,6 +57,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
         "name": nameController.text.trim(),
         'isMainEvent': true,           
         'price': double.parse(priceController.text.toString()),
+        'teamPrice': double.parse(teamPriceController.text.toString()),
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest,
@@ -128,6 +131,10 @@ class _LeagueCreateState extends State<LeagueCreate> {
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),
+        ),
+        TextField(
+          controller: teamPriceController,
+          decoration: new InputDecoration.collapsed(hintText: 'Team Price'),
         ),
         TextField(
           controller: numberOfTeamsController,

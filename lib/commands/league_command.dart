@@ -190,7 +190,11 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     //add price
     if(eventInput['price']>0){
       eventInput['price'] = eventInput['price']*100;
-      Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+      eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
+      Map<String, dynamic> paymentInput = {
+        'price': eventInput['price'].toString(),
+        'teamPrice': eventInput['teamPrice'].toString(),
+      };
       print("create price,,,, event input: "+ priceEventInput.toString());
       print("create price input: " + paymentInput['price'].toString());
       Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, priceEventInput);
