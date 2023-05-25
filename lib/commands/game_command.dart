@@ -157,7 +157,9 @@ class GameCommand extends BaseCommand {
         //todo add error handling here, if game is not created, dont create price, etc
         
           eventInput['price'] = eventInput['price']*100;
-          Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+          Map<String, dynamic> paymentInput = {
+            'price': eventInput['price'].toStringAsFixed(2)
+            };
           print("create price event input: "+ eventInput.toString());
           print("create price input: " + paymentInput['price'].toString());
           Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);

@@ -394,6 +394,82 @@ mixin EventMixin {
     }
   }
 
+  Container getTeamPriceWidget(dynamic userObjectDetails) {
+    print("getPriceWidget()");
+    print("userObjectDetails: " + userObjectDetails.toString());
+    if (userObjectDetails['price'] != null) {
+      String teamAmount = (double.parse(userObjectDetails['price']['teamAmount']) / 100)
+          .toStringAsFixed(2);
+      String teamAmountPaid = (double.parse(userObjectDetails['teamAmountPaid']) / 100)
+          .toStringAsFixed(2);
+      String teamAmountRemaining =
+          (double.parse(userObjectDetails['teamAmountRemaining']) / 100)
+              .toStringAsFixed(2);
+      if (!userObjectDetails['roles'].contains("ORGANIZER")) {
+        if (teamAmountRemaining == "0.00") {
+          return Container(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                Text("Price: \$${(teamAmount)}"),
+                IconButton(
+                  icon: const Icon(Icons.check_circle),
+                  tooltip: 'Go to the next page',
+                  onPressed: () {},
+                ),
+              ]));
+        }
+        //double.parse(teamAmountRemaining)>0.00
+        else {
+          return Container(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the left
+                  children: [
+                    Text(
+                      "Price: \$${(teamAmount)}",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    userObjectDetails['isMember']
+                        ? Text(
+                            "Remaining Balance: \$$teamAmountRemaining",
+                            style: TextStyle(fontSize: 16),
+                          )
+                        : Container()
+                  ])
+            ],
+          ));
+        }
+      } else {
+        return Container(child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the left
+                  children: [
+                    Text(
+                      "Set Price: \$${(teamAmount)}",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    
+                  ])
+            ],
+
+        ));
+      }
+    } else {
+      return Container(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text("FREE!")],
+      ));
+    }
+  }
+
   Container getPriceWidget(dynamic userObjectDetails) {
     print("getPriceWidget()");
     print("userObjectDetails: " + userObjectDetails.toString());

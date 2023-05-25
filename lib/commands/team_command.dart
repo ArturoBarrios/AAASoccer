@@ -611,7 +611,9 @@ class TeamCommand extends BaseCommand {
 
         //create price
         teamInput['price'] = teamInput['price']*100;
-          Map<String, dynamic> paymentInput = {'price': teamInput['price'].toString()};
+          Map<String, dynamic> paymentInput = {
+            'price': teamInput['price'].toStringAsFixed(2)
+            };
           print("create price event input: "+ teamInput.toString());
           print("create price input: " + paymentInput['price'].toString());
           Map<String, dynamic> createPriceResp = await TeamCommand().createPrice(paymentInput, createdTeam);

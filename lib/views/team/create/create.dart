@@ -29,7 +29,7 @@ class _TeamCreateState extends State<TeamCreate> {
   final priceController = TextEditingController();
 
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
-  CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  CreateEventPayment createEventPaymentWidget = new CreateEventPayment();  
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
   
@@ -50,7 +50,7 @@ class _TeamCreateState extends State<TeamCreate> {
           'images': imagesController.text.trim(),
           'price': double.parse(priceController.text.toString()),
           'withRequest': createEventRequestWidget.withRequest,
-          'withPayment': createEventPaymentWidget.withPayment, 
+          'withPayment': createEventPaymentWidget.withPayment,           
           'roles': "{PLAYER, ORGANIZER}",
           'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),                    
         };

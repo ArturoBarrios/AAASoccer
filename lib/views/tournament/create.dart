@@ -6,6 +6,7 @@ import 'package:soccermadeeasy/models/app_model.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
+import '../../components/create_team_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
@@ -43,6 +44,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
 
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
@@ -65,6 +67,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest,
         'withPayment': createEventPaymentWidget.withPayment, 
+        'withTeamPayment': createTeamPaymentWidget.withPayment, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TOURNAMENT,

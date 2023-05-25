@@ -821,7 +821,11 @@ class EventCommand extends BaseCommand {
       "success": true,
       "isMine": false,
       "isMember": false,      
-      "amountPaid": 0,      
+      "amountPaid": "0.00",      
+      "amountRemaining": "0.00",
+      "teamAmountPaid": "0.00",      
+      "teamAmountRemaining": "0.00",
+      "price": {},
       "paymentObjects": [],
       "mainEvent": null, 
       "team": null,      
@@ -919,24 +923,34 @@ class EventCommand extends BaseCommand {
       //get payment data
       dynamic payments = event['payments']['data'];
       isMyEventResp['paymentData'] = payments;
-      isMyEventResp['amountPaid'] = "0.00";
-      isMyEventResp['amountRemaining'] = "0.00";
+      // isMyEventResp['amountPaid'] = "0.00";
+      // isMyEventResp['amountRemaining'] = "0.00";
       isMyEventResp['price'] = event['price'];
-      if(event['price'] != null){
-
+      if(event['price'] != null){        
         print("payments: " + payments.toString());      
         //get payment data
         double amountPaid = 0.0;
-        for(int i = 0; i<payments.length; i++){
+        double teamAmountPaid = 0.0;        
+        for(int i = 0; i<payments.length; i++){          
           if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
-            print("amount before parsing: " + payments[i]['amount'].toString());
-            amountPaid += double.parse(payments[i]['amount']);
-
-            
+            if(payments[i]['isPlayerPayment']){
+              print("isPlayerPayment");
+              print("amount before parsing: " + payments[i]['amount'].toString());
+              amountPaid += double.parse(payments[i]['amount']);            
+            }
+            else if(payments[i]['isTeamPayment']){
+              print("isTeamPayment");
+              print("amount before parsing: " + payments[i]['amount'].toString());
+              teamAmountPaid += double.parse(payments[i]['amount']);            
+            }
           }
+
         }
         isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
         isMyEventResp['amountRemaining'] = (double.parse(event['price']['amount']) - amountPaid).toStringAsFixed(2);
+        
+        isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);
+        isMyEventResp['teamAmountRemaining'] = (double.parse(event['price']['teamAmount']) - teamAmountPaid).toStringAsFixed(2);
       }
       isMyEventResp["success"] = true;
     } on Exception catch (e) {

@@ -87,8 +87,10 @@ class TrainingCommand extends BaseCommand {
       eventInput['_id'] = createdTraining['event']['_id'];
       // await EventCommand().addTraining(createdTraining, true);
 
-      if(eventInput['price']>0){
-        Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+      // if(eventInput['price']>0){
+        Map<String, dynamic> paymentInput = {
+          'price': eventInput['price'].toStringAsFixed(2)
+        };
         print("create price event input: "+ eventInput.toString());
         print("create price input: " + paymentInput['price'].toString());
         Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
@@ -96,7 +98,7 @@ class TrainingCommand extends BaseCommand {
 
         dynamic createPrice = createPriceResp['data'];
         createdTraining['event']['price'] = createPrice;
-      }
+      // }
         EventCommand().updateViewModelsWithTraining(createdTraining);
         
         createTrainingResponse["success"] = true;
