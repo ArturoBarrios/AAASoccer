@@ -12,6 +12,7 @@ class EventFragments {
       deleted  
       startTime
       endTime  
+      capacity
       createdAt
       chats{
         data{
@@ -26,6 +27,7 @@ class EventFragments {
       price{                    
         _id
         amount
+        teamAmount
         event{
           _id
           name                      
@@ -89,7 +91,9 @@ class EventFragments {
       payments{
         data{
           _id
-          amount
+          amount   
+          isPlayerPayment
+          isTeamPayment       
           user{
             _id
             name

@@ -6,6 +6,7 @@ import 'package:soccermadeeasy/models/app_model.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
+import '../../components/create_team_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
@@ -37,11 +38,14 @@ class _TournamentCreateState extends State<TournamentCreate> {
   final numberOfTeamsPerGroupController = TextEditingController();
   final roundOfXController = TextEditingController();
   final knockoutRoundsController = TextEditingController();
+  final teamPriceController = TextEditingController();
+  final capacityController = TextEditingController();
 
   bool _isLoading = false;
 
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
@@ -59,13 +63,16 @@ class _TournamentCreateState extends State<TournamentCreate> {
         "name": nameController.text.trim(),
         'isMainEvent': true,           
         'price': double.parse(priceController.text.toString()),
+        'teamPrice': double.parse(teamPriceController.text.toString()),
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest,
         'withPayment': createEventPaymentWidget.withPayment, 
+        'withTeamPayment': createTeamPaymentWidget.withPayment, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TOURNAMENT,
+        'capacity': int.parse(capacityController.text.toString()),
       };
       
         Map<String, dynamic> locationInput = {"latitude": AppModel().currentPosition.latitude, "longitude": AppModel().currentPosition.longitude};//generateRandomLocation["data"]["randomLocation"];
@@ -134,10 +141,15 @@ class _TournamentCreateState extends State<TournamentCreate> {
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
+        createTeamPaymentWidget,
         dateTimePicker,
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),
+        ),
+        TextField(
+          controller: teamPriceController,
+          decoration: new InputDecoration.collapsed(hintText: 'Team Price'),
         ),
         TextField(
           controller: numberOfTeamsController,
@@ -160,6 +172,10 @@ class _TournamentCreateState extends State<TournamentCreate> {
         TextField(
           controller: knockoutRoundsController,
           decoration: new InputDecoration.collapsed(hintText: 'Knockout Rounds'),
+        ),
+        TextField(
+          controller: capacityController,
+          decoration: new InputDecoration.collapsed(hintText: 'Capcity'),
         ),
         GestureDetector(
             onTap: () {

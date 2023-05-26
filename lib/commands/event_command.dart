@@ -326,6 +326,7 @@ class EventCommand extends BaseCommand {
       else{
         event = event['event'];
       }
+      
       print("event location check: " +
           event['location']['data'][0]['longitude'].toString());
       double latitude = event['location']['data'][0]['latitude'];
@@ -801,7 +802,7 @@ class EventCommand extends BaseCommand {
     print("getMainEvent()");
     dynamic event = null;
     for(int i = 0;i<events.length;i++){
-      print("events[i]: " + events[i].toString());
+      print("events[i]]: " + events[i].toString());
       if(events[i]['isMainEvent'] && 
       (events[i]['type'] == "TOURNAMENT" ||
       events[i]['type'] == "LEAGUE")){
@@ -810,6 +811,7 @@ class EventCommand extends BaseCommand {
 
       }
     }
+    print("finish getMainEvent");
     return event;
   }
   
@@ -821,7 +823,11 @@ class EventCommand extends BaseCommand {
       "success": true,
       "isMine": false,
       "isMember": false,      
-      "amountPaid": 0,      
+      "amountPaid": "0.00",      
+      "amountRemaining": "0.00",
+      "teamAmountPaid": "0.00",      
+      "teamAmountRemaining": "0.00",
+      "price": {},
       "paymentObjects": [],
       "mainEvent": null, 
       "team": null,      
@@ -865,7 +871,8 @@ class EventCommand extends BaseCommand {
 
       }         
       isMyEventResp['mainEvent'] = event;
-      print("event: " + event.toString());
+      print("main event: " + event.toString());
+      print("main event user participants: "+ event['userParticipants'].toString());
 
       //get chats
       dynamic chats = event['chats']['data'];
@@ -918,24 +925,34 @@ class EventCommand extends BaseCommand {
       //get payment data
       dynamic payments = event['payments']['data'];
       isMyEventResp['paymentData'] = payments;
-      isMyEventResp['amountPaid'] = "0.00";
-      isMyEventResp['amountRemaining'] = "0.00";
+      // isMyEventResp['amountPaid'] = "0.00";
+      // isMyEventResp['amountRemaining'] = "0.00";
       isMyEventResp['price'] = event['price'];
-      if(event['price'] != null){
-
+      if(event['price'] != null){        
         print("payments: " + payments.toString());      
         //get payment data
-        double amountPaid = 0.0;
-        for(int i = 0; i<payments.length; i++){
+        double amountPaid = 0.00;
+        double teamAmountPaid = 0.00;        
+        for(int i = 0; i<payments.length; i++){          
           if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
-            print("amount before parsing: " + payments[i]['amount'].toString());
-            amountPaid += double.parse(payments[i]['amount']);
-
-            
+            if(payments[i]['isPlayerPayment']){
+              print("isPlayerPayment");
+              print("amount before parsing: " + payments[i]['amount'].toString());
+              amountPaid += double.parse(payments[i]['amount']);            
+            }
+            else if(payments[i]['isTeamPayment']){
+              print("isTeamPayment");
+              print("amount before parsing: " + payments[i]['amount'].toString());
+              teamAmountPaid += double.parse(payments[i]['amount']);            
+            }
           }
+
         }
         isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
         isMyEventResp['amountRemaining'] = (double.parse(event['price']['amount']) - amountPaid).toStringAsFixed(2);
+        
+        isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);
+        isMyEventResp['teamAmountRemaining'] = (double.parse(event['price']['teamAmount']) - teamAmountPaid).toStringAsFixed(2);
       }
       isMyEventResp["success"] = true;
     } on Exception catch (e) {
@@ -1052,7 +1069,8 @@ class EventCommand extends BaseCommand {
       tournaments.sort((a, b) {
   dynamic mainEventA = EventCommand().getMainEvent(a['events']['data']);
   dynamic mainEventB = EventCommand().getMainEvent(b['events']['data']);
-
+  print("mainEventA: " + mainEventA.toString());
+  print("mainEventB: " + mainEventB.toString());
   if (mainEventA != null && mainEventB != null) {
     DateTime startTimeA = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventA['startTime']));
     DateTime startTimeB = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventB['startTime']));
@@ -1062,8 +1080,8 @@ class EventCommand extends BaseCommand {
   // Handle cases where main events are not available
   return 0;
 });
+      print("afterrrrrr");
 
-      
       
       print("in if statement");
       print("tournaments: " + tournaments.toString());

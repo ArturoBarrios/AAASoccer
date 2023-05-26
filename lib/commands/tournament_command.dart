@@ -437,10 +437,14 @@ class TournamentCommand extends BaseCommand {
       print("tournamenttt: " + tournament.toString());
       //get tournament
       //add price
-      if (eventInput['price'] > 0) {
+      // if (eventInput['price'] > 0) {
+
         eventInput['price'] = eventInput['price'] * 100;
+        eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
         Map<String, dynamic> paymentInput = {
-          'price': eventInput['price'].toString()
+          'price': eventInput['price'].toStringAsFixed(2),
+          'teamPrice': eventInput['teamPrice'].toStringAsFixed(2)
+
         };
         print("create price,,,, event input: " + priceEventInput.toString());
         print("create price input: " + paymentInput['price'].toString());
@@ -459,7 +463,7 @@ class TournamentCommand extends BaseCommand {
         //assumes first event is main event
         // mainTournamentEvent['price'] = createPrice;
         // await EventCommand().addGame(createdGame, true);
-      }
+      // }
       print("tournament: " + tournament.toString());
       EventCommand().updateViewModelsWithTournament(tournament, true);
     }

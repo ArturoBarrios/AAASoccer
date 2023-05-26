@@ -188,9 +188,13 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     print("leaguett: "+league.toString());
     //get league
     //add price
-    if(eventInput['price']>0){
+    // if(eventInput['price']>0){
       eventInput['price'] = eventInput['price']*100;
-      Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+      eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
+      Map<String, dynamic> paymentInput = {
+        'price': eventInput['price'].toStringAsFixed(2),
+        'teamPrice': eventInput['teamPrice'].toStringAsFixed(2),
+      };
       print("create price,,,, event input: "+ priceEventInput.toString());
       print("create price input: " + paymentInput['price'].toString());
       Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, priceEventInput);
@@ -208,7 +212,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
       //assumes first event is main event
       // mainLeagueEvent['price'] = createPrice;      
       // await EventCommand().addGame(createdGame, true);
-    }
+    // }
     print("league: "+league.toString());
     EventCommand().updateViewModelsWithLeague(league, true);
 

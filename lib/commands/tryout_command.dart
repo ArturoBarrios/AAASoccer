@@ -85,7 +85,9 @@ Future<Map<String, dynamic>> getTryoutsNearLocation() async{
 
 
       eventInput['_id'] = createdTryout['event']['_id'];
-      Map<String, dynamic> paymentInput = {'price': eventInput['price'].toString()};
+      Map<String, dynamic> paymentInput = {
+        'price': eventInput['price'].toStringAsFixed(2)
+      };
       print("create price event input: "+ eventInput.toString());
       print("create price input: " + paymentInput['price'].toString());
       Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);

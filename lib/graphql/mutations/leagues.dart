@@ -11,6 +11,7 @@ class LeagueMutations{
             {
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput ['isMainEvent']},
+              capacity: ${eventInput['capacity']},
               type: LEAGUE,
               joinConditions: {
                 create: {

@@ -77,6 +77,7 @@ class GameMutations {
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
+              capacity: ${eventInput['capacity']},
               joinConditions: {
                 create: {
                   withRequest: ${eventInput['withRequest']},

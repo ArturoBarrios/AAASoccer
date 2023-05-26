@@ -8,6 +8,7 @@ import '../../commands/league_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
+import '../../components/create_team_payment.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
 import '../../enums/EventType.dart';
@@ -33,11 +34,14 @@ class _LeagueCreateState extends State<LeagueCreate> {
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
   final numberOfRoundsPerTeamController = TextEditingController();
+  final teamPriceController = TextEditingController();
+  
 
   bool _isLoading = false;
 
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
@@ -55,10 +59,12 @@ class _LeagueCreateState extends State<LeagueCreate> {
         "name": nameController.text.trim(),
         'isMainEvent': true,           
         'price': double.parse(priceController.text.toString()),
+        'teamPrice': double.parse(teamPriceController.text.toString()),
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest,
         'withPayment': createEventPaymentWidget.withPayment, 
+        'withTeamPayment': createTeamPaymentWidget.withPayment, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.LEAGUE,
@@ -128,6 +134,10 @@ class _LeagueCreateState extends State<LeagueCreate> {
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),
+        ),
+        TextField(
+          controller: teamPriceController,
+          decoration: new InputDecoration.collapsed(hintText: 'Team Price'),
         ),
         TextField(
           controller: numberOfTeamsController,
