@@ -19,7 +19,7 @@ class _CreateTeamPayment extends State<CreateTeamPayment> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Join With Payment?"), 
+            Text("Join With Team Payment?"), 
             Checkbox(              
               value: widget.withPayment, 
               onChanged: (bool? value) {    

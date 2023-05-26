@@ -16,6 +16,7 @@ class TournamentMutations {
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput['isMainEvent']},
               type: TOURNAMENT,
+              capacity: ${eventInput['capacity']},
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",

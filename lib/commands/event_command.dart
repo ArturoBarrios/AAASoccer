@@ -326,6 +326,7 @@ class EventCommand extends BaseCommand {
       else{
         event = event['event'];
       }
+      
       print("event location check: " +
           event['location']['data'][0]['longitude'].toString());
       double latitude = event['location']['data'][0]['latitude'];
@@ -801,7 +802,7 @@ class EventCommand extends BaseCommand {
     print("getMainEvent()");
     dynamic event = null;
     for(int i = 0;i<events.length;i++){
-      print("events[i]: " + events[i].toString());
+      print("events[i]]: " + events[i].toString());
       if(events[i]['isMainEvent'] && 
       (events[i]['type'] == "TOURNAMENT" ||
       events[i]['type'] == "LEAGUE")){
@@ -810,6 +811,7 @@ class EventCommand extends BaseCommand {
 
       }
     }
+    print("finish getMainEvent");
     return event;
   }
   
@@ -929,8 +931,8 @@ class EventCommand extends BaseCommand {
       if(event['price'] != null){        
         print("payments: " + payments.toString());      
         //get payment data
-        double amountPaid = 0.0;
-        double teamAmountPaid = 0.0;        
+        double amountPaid = 0.00;
+        double teamAmountPaid = 0.00;        
         for(int i = 0; i<payments.length; i++){          
           if(payments[i]['user']['_id'] == appModel.currentUser['_id']){
             if(payments[i]['isPlayerPayment']){
@@ -1067,7 +1069,8 @@ class EventCommand extends BaseCommand {
       tournaments.sort((a, b) {
   dynamic mainEventA = EventCommand().getMainEvent(a['events']['data']);
   dynamic mainEventB = EventCommand().getMainEvent(b['events']['data']);
-
+  print("mainEventA: " + mainEventA.toString());
+  print("mainEventB: " + mainEventB.toString());
   if (mainEventA != null && mainEventB != null) {
     DateTime startTimeA = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventA['startTime']));
     DateTime startTimeB = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventB['startTime']));
@@ -1077,8 +1080,8 @@ class EventCommand extends BaseCommand {
   // Handle cases where main events are not available
   return 0;
 });
+      print("afterrrrrr");
 
-      
       
       print("in if statement");
       print("tournaments: " + tournaments.toString());

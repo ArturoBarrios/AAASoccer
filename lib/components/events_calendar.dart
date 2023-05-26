@@ -28,34 +28,44 @@ class _EventsCalendarState extends State<EventsCalendar> {
   LinkedHashMap<DateTime, List<Event>> kEventsReal =
       LinkedHashMap<DateTime, List<Event>>();
 
-  void loadInitialData(dynamic events) {
+  void loadInitialData(dynamic events) async {
     print("loadInitialData()");    
-    kEventsReal = getEventsFromData(events);
+    _selectedDay = _focusedDay;
+    dynamic eventsFromData = await getEventsFromData(events);
+    setState(() {
+      kEventsReal = eventsFromData;
+       _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+      
+    });
     print("kEventsReal: $kEventsReal");
   }
 
-  LinkedHashMap<DateTime, List<Event>> getEventsFromData(dynamic events) {
+  Future<LinkedHashMap<DateTime, List<Event>>> getEventsFromData(dynamic events) async {
     LinkedHashMap<DateTime, List<Event>> dateTimeLinkedHashMap =
         LinkedHashMap<DateTime, List<Event>>();
+        print("getEventsFromData()");
 
     for (int i = 0; i < events.length; i++) {
       dynamic event = events[i];
-      int millis = int.parse(event['endTime']); // Parse string to integer
-      DateTime endTime = DateTime.fromMillisecondsSinceEpoch(millis);
-      DateTime day = DateTime.utc(endTime.year, endTime.month, endTime.day);
-      dateTimeLinkedHashMap.update(
-          day, (value) => value..add(Event(event['name'])),
-          ifAbsent: () => [Event(event['name'])]);
+      if(event['isMainEvent'] == false){
+        print("niceeeeekjekjekjekjekjej");
+        int millis = int.parse(event['endTime']); // Parse string to integer
+        DateTime endTime = DateTime.fromMillisecondsSinceEpoch(millis);
+        DateTime day = DateTime.utc(endTime.year, endTime.month, endTime.day);
+        dateTimeLinkedHashMap.update(
+            day, (value) => value..add(Event(event['name'])),
+            ifAbsent: () => [Event(event['name'])]);
+
+      }
     }
 
     return dateTimeLinkedHashMap;
   }
 
   @override
-  void initState() {
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+  void initState() {    
     loadInitialData(widget.events);
+    
   }
 
   @override
@@ -108,67 +118,92 @@ class _EventsCalendarState extends State<EventsCalendar> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          TableCalendar<Event>(
-            firstDay: kFirstDay,
-            lastDay: kLastDay,
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            calendarFormat: _calendarFormat,
-            rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: CalendarStyle(
-              outsideDaysVisible: false,
-            ),
-            onDaySelected: _onDaySelected,
-            onRangeSelected: _onRangeSelected,
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-          ),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: ListTile(
-                        onTap: () => print('${value[index]}'),
-                        title: Text('${value[index]}'),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+@override
+Widget build(BuildContext context) {
+  if (kEventsReal.isEmpty) {
+    return FutureBuilder<LinkedHashMap<DateTime, List<Event>>>(
+      future: getEventsFromData(widget.events),
+      builder: (BuildContext context, AsyncSnapshot<LinkedHashMap<DateTime, List<Event>>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else {
+          if (snapshot.hasError)
+            return Text('Error: ${snapshot.error}');
+          else {
+            kEventsReal = snapshot.data!;
+            _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+            return buildCalendarAndEvents();
+          }
+        }
+      },
     );
+  } else {
+    return buildCalendarAndEvents();
   }
+}
+
+Widget buildCalendarAndEvents() {
+  return Scaffold(
+    body: Column(
+      children: [
+        TableCalendar<Event>(
+          firstDay: kFirstDay,
+          lastDay: kLastDay,
+          focusedDay: _focusedDay,
+          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+          rangeStartDay: _rangeStart,
+          rangeEndDay: _rangeEnd,
+          calendarFormat: _calendarFormat,
+          rangeSelectionMode: _rangeSelectionMode,
+          eventLoader: _getEventsForDay,
+          startingDayOfWeek: StartingDayOfWeek.monday,
+          calendarStyle: CalendarStyle(
+            outsideDaysVisible: false,
+          ),
+          onDaySelected: _onDaySelected,
+          onRangeSelected: _onRangeSelected,
+          onFormatChanged: (format) {
+            if (_calendarFormat != format) {
+              setState(() {
+                _calendarFormat = format;
+              });
+            }
+          },
+          onPageChanged: (focusedDay) {
+            _focusedDay = focusedDay;
+          },
+        ),
+        const SizedBox(height: 8.0),
+        Expanded(
+          child: ValueListenableBuilder<List<Event>>(
+            valueListenable: _selectedEvents,
+            builder: (context, value, _) {
+              return ListView.builder(
+                itemCount: value.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: ListTile(
+                      onTap: () => print('${value[index]}'),
+                      title: Text('${value[index]}'),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+
 }

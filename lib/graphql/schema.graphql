@@ -295,6 +295,7 @@ type Event   {
   startTime: String
   endTime: String
   createdAt: String
+  capacity: Int
 }
 
 type Team   {

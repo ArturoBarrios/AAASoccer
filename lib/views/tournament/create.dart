@@ -39,6 +39,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
   final roundOfXController = TextEditingController();
   final knockoutRoundsController = TextEditingController();
   final teamPriceController = TextEditingController();
+  final capacityController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -71,6 +72,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TOURNAMENT,
+        'capacity': int.parse(capacityController.text.toString()),
       };
       
         Map<String, dynamic> locationInput = {"latitude": AppModel().currentPosition.latitude, "longitude": AppModel().currentPosition.longitude};//generateRandomLocation["data"]["randomLocation"];
@@ -139,6 +141,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
+        createTeamPaymentWidget,
         dateTimePicker,
         TextField(
           controller: priceController,
@@ -169,6 +172,10 @@ class _TournamentCreateState extends State<TournamentCreate> {
         TextField(
           controller: knockoutRoundsController,
           decoration: new InputDecoration.collapsed(hintText: 'Knockout Rounds'),
+        ),
+        TextField(
+          controller: capacityController,
+          decoration: new InputDecoration.collapsed(hintText: 'Capcity'),
         ),
         GestureDetector(
             onTap: () {

@@ -546,6 +546,7 @@ mixin EventMixin {
     }
   }
 
+
   Container getJoinGameWidget(BuildContext context, dynamic userObjectDetails,
       dynamic event, dynamic userInput) {
     print("userObjectDetails['roles']: "+ userObjectDetails['roles'].toString());
