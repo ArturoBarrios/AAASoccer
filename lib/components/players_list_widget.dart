@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../commands/base_command.dart';
+import '../commands/team_command.dart';
 
 class PlayerList extends StatefulWidget {
   final dynamic playersDetails;
@@ -34,6 +35,43 @@ class _PlayerListState extends State<PlayerList> {
         );
       },
     );
+  }
+
+  Future<void> removePlayerRole(dynamic user) async{
+    print("removePlayerRole");
+    if(widget.playersDetails['team'] != null){
+      int index = widget.playersDetails['userParticipants'].indexWhere((userParticipant) => userParticipant['user']['_id'] == user['_id']);
+      print("indexWhere:" + index.toString());
+      if (index != -1) {
+        print("in ifff");
+        // Replace item at found index
+        dynamic userParticipantRemoved = widget.playersDetails['userParticipants'].removeAt(index);
+        
+        List<String> userRoles = getUserRoles(userParticipantRemoved);
+        print("userRoles before remove: " + userRoles.toString());
+        userRoles.remove(_selectedUserType);
+        print("userRoles after remove: " + userRoles.toString());
+        String newRolesString = BaseCommand().stringifyRoles(userRoles);        
+        dynamic removeUsersFromTeamResp = await TeamCommand().updateTeamUserParticipant(userParticipantRemoved, newRolesString);      
+        print("removeUsersFromTeamResp: " + removeUsersFromTeamResp.toString());
+        if(removeUsersFromTeamResp['success']){
+          dynamic teamUserParticipant = removeUsersFromTeamResp['data'];
+          widget.playersDetails['userParticipants'].add(teamUserParticipant);
+        }
+
+      }
+    }
+  }
+  
+  Future<void> removePlayer(dynamic user) async{
+    //remove player from team
+    if(widget.playersDetails['team'] != null){
+      dynamic removeUsersFromTeamResp = await TeamCommand().removeUsersFromTeam(widget.playersDetails['team'], [user]);      
+      print("removeUsersFromTeamResp: " + removeUsersFromTeamResp.toString());
+      if(removeUsersFromTeamResp['success']){
+        widget.playersDetails['userParticipants'].removeWhere((userParticipant) => userParticipant['user']['_id'] == user['_id']);
+      }
+    }    
   }
 
   @override
@@ -113,9 +151,17 @@ class _PlayerListState extends State<PlayerList> {
                           },
                         ),
                         IconButton(
+                          icon: Icon(Icons.group_remove_sharp),
+                          onPressed: () {
+                            // You can call a function here to handle user deletion
+                            removePlayerRole(user);
+                          },
+                        ),
+                        IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {
                             // You can call a function here to handle user deletion
+                            removePlayer(user);
                           },
                         ),
                       ],

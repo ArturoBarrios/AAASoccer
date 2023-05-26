@@ -9,6 +9,7 @@ import '../../components/create_event_payment.dart';
 import '../../components/create_team_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/date_time_picker.dart';
+import '../../components/event_input_widget.dart';
 import '../../components/location_search_bar.dart';
 import '../../enums/EventType.dart';
 import '../../testing/seeding/location_seeder.dart';
@@ -24,14 +25,14 @@ class TournamentCreate extends StatefulWidget {
 }
 
 class _TournamentCreateState extends State<TournamentCreate> {
-  final nameController = TextEditingController();
+  String name = "";
   final groupPlayController = TextEditingController();
   final numberOfTeamsController = TextEditingController();
   final isPickupController = TextEditingController();
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
-  final priceController = TextEditingController();
+  String price = "0.00";
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
   final numberOfRoundsPerTeamController = TextEditingController();
@@ -49,7 +50,13 @@ class _TournamentCreateState extends State<TournamentCreate> {
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
- 
+    void onUserEventDetailsChange(String newName, String newPrice) {
+    setState(() {
+      name = newName;
+      price = newPrice;
+    });
+  }
+  
   
 
   Future<Map<String, dynamic>> createTournament() async {
@@ -60,9 +67,9 @@ class _TournamentCreateState extends State<TournamentCreate> {
     };
     try {
       Map<String, dynamic> createEventInput = {
-        "name": nameController.text.trim(),
+        "name": name,
         'isMainEvent': true,           
-        'price': double.parse(priceController.text.toString()),
+        'price': double.parse(price),
         'teamPrice': double.parse(teamPriceController.text.toString()),
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
@@ -134,19 +141,12 @@ class _TournamentCreateState extends State<TournamentCreate> {
       ),
       body: Center(
           child: Column(children: [
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Name'),
-        ),
+             EventInputWidget(onUserEventDetailsChange: onUserEventDetailsChange),        
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
         createTeamPaymentWidget,
-        dateTimePicker,
-        TextField(
-          controller: priceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Price'),
-        ),
+        dateTimePicker,        
         TextField(
           controller: teamPriceController,
           decoration: new InputDecoration.collapsed(hintText: 'Team Price'),

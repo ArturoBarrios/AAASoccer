@@ -120,6 +120,32 @@ class TeamMutations {
     return updateTeamRequest;
     }  
 
+    String updateTeamUserParticipant(
+      dynamic updateTeamUserParticipantInput){
+      String updateTeamUserParticipantString = """
+      mutation {
+        updateTeamUserParticipant(id: ${updateTeamUserParticipantInput['_id']},
+          data: {                      
+          roles: "${updateTeamUserParticipantInput['roles']}",                                             
+          }) {
+              _id
+                user{
+                  _id
+                  name
+                  email
+                  phone
+                }
+                roles
+                
+    				
+                 
+          }   
+        }
+        """;
+
+    return updateTeamUserParticipantString;
+    }  
+
     String removeUserFromTeam(
       dynamic team, dynamic user) {
       String updateTeamRequest = """

@@ -16,11 +16,11 @@ class EventsCalendar extends StatefulWidget {
 }
 
 class _EventsCalendarState extends State<EventsCalendar> {
-  late final ValueNotifier<List<Event>> _selectedEvents;
+ ValueNotifier<List<Event>> _selectedEvents = ValueNotifier([]);
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOff; // Can be toggled on/off by long-pressing a date
-  DateTime _focusedDay = DateTime.now();
+  DateTime _focusedDay = DateTime.now();  
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
@@ -30,14 +30,17 @@ class _EventsCalendarState extends State<EventsCalendar> {
 
   void loadInitialData(dynamic events) async {
     print("loadInitialData()");    
-    _selectedDay = _focusedDay;
     dynamic eventsFromData = await getEventsFromData(events);
     setState(() {
+      _focusedDay = DateTime.utc(_focusedDay.year, _focusedDay.month, _focusedDay.day);
+      _selectedDay = _focusedDay;
+      print("_selectedDay: "+_selectedDay.toString());
       kEventsReal = eventsFromData;
-       _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+      _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+      print("kEventsReal: $kEventsReal");
+       print("setState: "+_selectedEvents.toString());
       
     });
-    print("kEventsReal: $kEventsReal");
   }
 
   Future<LinkedHashMap<DateTime, List<Event>>> getEventsFromData(dynamic events) async {
@@ -65,7 +68,7 @@ class _EventsCalendarState extends State<EventsCalendar> {
   @override
   void initState() {    
     loadInitialData(widget.events);
-    
+
   }
 
   @override
@@ -87,6 +90,7 @@ class _EventsCalendarState extends State<EventsCalendar> {
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    print("onDaySelected: "+selectedDay.toString());
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
         _selectedDay = selectedDay;
@@ -178,6 +182,7 @@ Widget buildCalendarAndEvents() {
           child: ValueListenableBuilder<List<Event>>(
             valueListenable: _selectedEvents,
             builder: (context, value, _) {
+              print("_selectedEvents: "+_selectedEvents.toString());
               return ListView.builder(
                 itemCount: value.length,
                 itemBuilder: (context, index) {

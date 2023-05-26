@@ -678,59 +678,59 @@ class TeamCommand extends BaseCommand {
     }
 
   }
+  //change this to celete team
+  // Future<Map<String, dynamic>> removeTeam(String teamId) async {
+  //   print("removeTeam");
+  //   print("teamId: " + teamId);
+  //   Map<String, dynamic> removeTeamResponse = {
+  //     "success": false,
+  //     "message": "Default Error",
+  //     "data": null
+  //   };
+  //   Map<String, dynamic> userInput = {
+  //     "_id": appModel.currentUser['_id'],
+  //   };
+  //   Map<String, dynamic> teamInput = {
+  //     "_id": teamId,
+  //   };
 
-  Future<Map<String, dynamic>> removeTeam(String teamId) async {
-    print("removeTeam");
-    print("teamId: " + teamId);
-    Map<String, dynamic> removeTeamResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    Map<String, dynamic> userInput = {
-      "_id": appModel.currentUser['_id'],
-    };
-    Map<String, dynamic> teamInput = {
-      "_id": teamId,
-    };
+  //   http.Response response = await http.post(
+  //     Uri.parse('https://graphql.fauna.com/graphql'),
+  //     headers: <String, String>{
+  //       'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: jsonEncode(<String, String>{
+  //       'query': UserMutations().removeTeamFromUser(userInput, teamInput),
+  //     }),
+  //   );
 
-    http.Response response = await http.post(
-      Uri.parse('https://graphql.fauna.com/graphql'),
-      headers: <String, String>{
-        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-        'Content-Type': 'application/json'
-      },
-      body: jsonEncode(<String, String>{
-        'query': UserMutations().removeTeamFromUser(userInput, teamInput),
-      }),
-    );
+  //   print("response body: ");
+  //   print(jsonDecode(response.body));
 
-    print("response body: ");
-    print(jsonDecode(response.body));
+  //   //remove team from eventsModel.teams
+  //   print("remove team from appModel.teams: " + appModel.teams.toString());
+  //   var i = 0;
+  //   var found = false;
+  //   while (i < appModel.teams.length - 1 && !found) {
+  //     if (appModel.teams[i]['id'] == jsonDecode(response.body)['id']) {
+  //       var removed = appModel.teams.removeAt(i);
+  //       print("removedTeamObject: ");
+  //       print(removed);
+  //       found = true;
+  //     }
+  //     i += 1;
+  //   }
+  //   print("length of teams after archiving team: ");
+  //   print(appModel.teams.length);
 
-    //remove team from eventsModel.teams
-    print("remove team from appModel.teams: " + appModel.teams.toString());
-    var i = 0;
-    var found = false;
-    while (i < appModel.teams.length - 1 && !found) {
-      if (appModel.teams[i]['id'] == jsonDecode(response.body)['id']) {
-        var removed = appModel.teams.removeAt(i);
-        print("removedTeamObject: ");
-        print(removed);
-        found = true;
-      }
-      i += 1;
-    }
-    print("length of teams after archiving team: ");
-    print(appModel.teams.length);
+  //   removeTeamResponse["success"] = true;
+  //   removeTeamResponse["message"] = "Team Removed";
+  //   removeTeamResponse["data"] =
+  //       jsonDecode(response.body)['data']['updateTeam'];
 
-    removeTeamResponse["success"] = true;
-    removeTeamResponse["message"] = "Team Removed";
-    removeTeamResponse["data"] =
-        jsonDecode(response.body)['data']['updateTeam'];
-
-    return removeTeamResponse;
-  }
+  //   return removeTeamResponse;
+  // }
 
   Future<Map<String, dynamic>> removeUsersFromTeam(dynamic team, List<dynamic>users ) async {
     print("removePlayersFromTeam");
@@ -743,72 +743,81 @@ class TeamCommand extends BaseCommand {
       "data": null
     };
 
-    users.forEach((user) async {
-      dynamic userInput = {
-        "_id": user['_id'],
+    try{
+      users.forEach((user) async {
+        dynamic userInput = {
+          "_id": user['_id'],
 
-      };      
+        };      
 
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': UserMutations().removeTeamFromUser(userInput, team),
-        }),
-      );
+        http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': UserMutations().removeTeamFromUser(userInput, team),
+          }),
+        );
 
-      print("response body: ");
-      print(jsonDecode(response.body));
+        print("response body: ");
+        print(jsonDecode(response.body));
 
-    });
+        removePlayersFromTeamResponse['success'] = true;
+        removePlayersFromTeamResponse['message'] = "Team from players";
+
+      });
+    } on Exception catch (e) {
+      print("Mutation failed: $e");
+      return removePlayersFromTeamResponse;
+    }
       
 
 
   
 
-    removePlayersFromTeamResponse["success"] = true;
-    removePlayersFromTeamResponse["message"] = "Team Removed";
 
     return removePlayersFromTeamResponse;
   }
   
-  Future<Map<String, dynamic>> updateUsersRolesFromTeam(dynamic team,List<dynamic> users, String newRoles ) async {
-    print("updateUsersRolesFromTeam");
-    print("users: " + users.toString());
+  Future<Map<String, dynamic>> updateTeamUserParticipant(dynamic teamUserParticipant, String newRoles ) async {
+    print("updateTeamUserParticipant");
     print("newRoles: " + newRoles.toString());
     
-    Map<String, dynamic> removeUsersRolesFromTeamResponse = {
+    Map<String, dynamic> updateTeamUserParticipantResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
       
+      dynamic updateTeamUserParticipantInput = {
+        "_id": teamUserParticipant['_id'],
+        "roles": newRoles
+      };
 
-    // http.Response response = await http.post(
-    //   Uri.parse('https://graphql.fauna.com/graphql'),
-    //   headers: <String, String>{
-    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: jsonEncode(<String, String>{
-    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
-    //   }),
-    // );
+    http.Response response = await http.post(
+      Uri.parse('https://graphql.fauna.com/graphql'),
+      headers: <String, String>{
+        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode(<String, String>{
+        'query': TeamMutations().updateTeamUserParticipant(updateTeamUserParticipantInput),
+      }),
+    );
 
-    // print("response body: ");
-    // print(jsonDecode(response.body));
+    print("response body: ");
+    print(jsonDecode(response.body));
 
   
 
-    removeUsersRolesFromTeamResponse["success"] = true;
-    removeUsersRolesFromTeamResponse["message"] = "Team Removed";
-    // removePlayersFromTeamResponse["data"] =
-    //     jsonDecode(response.body)['data']['updateTeam'];
+    updateTeamUserParticipantResponse["success"] = true;
+    updateTeamUserParticipantResponse["message"] = "Team User Participant Updated";
+    updateTeamUserParticipantResponse["data"] =
+        jsonDecode(response.body)['data']['updateTeamUserParticipant'];
 
-    return removeUsersRolesFromTeamResponse;
+    return updateTeamUserParticipantResponse;
   }
   
   Future<Map<String, dynamic>> addUsersRolesInTeam(dynamic team,List<dynamic> users, List<dynamic>roles ) async {

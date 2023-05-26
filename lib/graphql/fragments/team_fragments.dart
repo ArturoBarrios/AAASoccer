@@ -18,6 +18,7 @@ class TeamFragments {
             }    
             userParticipants{
               data{
+                _id
                 user{
                   _id
                   name
