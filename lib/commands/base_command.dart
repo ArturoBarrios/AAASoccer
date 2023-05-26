@@ -63,12 +63,19 @@ class BaseCommand {
     homePageModel.testText = "testingggggg";
   }
 
-  //"{"test1", "test2", "test3"}
+  //"{"test1", "test2", "test3"} => ["test1", "test2", "test3"]
   List<String> parseRoles(String inputString) {
   // Remove curly braces and split string into individual words
   List<String> words = inputString.replaceAll('{', '').replaceAll('}', '').split(', ');
   print("words: $words");
   return words;
+}
+  //["test1", "test2", "test3"] => {"test1", "test2", "test3"}
+  String stringifyRoles(List<String> inputList) {
+
+  String rolesString = inputList.toSet().toString();
+
+  return rolesString;
 }
 
   //remove all data
@@ -100,8 +107,6 @@ void nukeData(){
     print("eventOrTeamObject: $eventOrTeamObject");
     //update chat view models
     appModel.currentUser['chats']['data'].insert(0, chat);
-
-
   }
 
   //will load profile, team, and other user images

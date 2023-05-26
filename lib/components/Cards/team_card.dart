@@ -36,8 +36,8 @@ Future<Map<String, dynamic>> removeTeam(dynamic teamObject) async {
     "success": false,
     "message": "Team deleted successfully"
   };
-  Map<String, dynamic> removeTeamResponse = await TeamCommand()
-      .removeTeam(teamObject["_id"]);
+  // Map<String, dynamic> removeTeamResponse = await TeamCommand()
+  //     .removeTeam(teamObject["_id"]);
   // print("deleteTeamResponse: $deleteTeamResponse");
   // if (deleteTeamResponse["success"]) {
   //   deleteTeamResp["success"] = true;
@@ -184,7 +184,7 @@ class _TeamCard extends State<TeamCard> {
                       contentText: '',
                       onPositiveClick: () {
                         Navigator.of(context).pop();
-                        removeTeam(widget.teamObject);
+                        // removeTeam(widget.teamObject);
                        
                       },
                       onNegativeClick: () {
