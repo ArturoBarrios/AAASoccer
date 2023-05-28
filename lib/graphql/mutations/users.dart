@@ -1,3 +1,5 @@
+import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
+
 import '../fragments/user_fragments.dart';
 import '../fragments/event_fragments.dart';
 import '../fragments/request_fragments.dart';
@@ -158,37 +160,26 @@ class UserMutations {
     return addEventString;
   }
 
-  String addTeam(
-      Map<String, dynamic> userInput, Map<String, dynamic> teamInput) {
+  String addUserToTeam(
+      Map<String, dynamic> userInput, Map<String, dynamic> teamInput, role) {
     String addTeamString = """      
       mutation {
-        updateUser(id: ${userInput['_id']},
+        updateTeam(
+          id: ${teamInput['_id']},
   				data: {            
-            teams: {
-              connect: [
-                ${teamInput['_id']}                                                                                 
-              ]
-            }             
-          }                      
-        ){
-        _id
-        name
-        email
-        teams{      
-          data{    
-            _id
-            name       
-            teamUserOrganizers{
-              users{
-                data{
-                  _id
-                  name
-                  email
-                }
+             userParticipants:{
+              create:
+              {
+                user: {
+                  connect:
+                  "${userInput['_id']}"
+                }                
+                roles: "$role"
               }
-            }             
-          }
-        }                                        			
+          }   
+          }                   
+        ){
+        ${TeamFragments().fullTeam()}                                     			
   }
 }
         """;

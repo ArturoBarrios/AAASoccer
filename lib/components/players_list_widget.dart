@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../commands/base_command.dart';
 import '../commands/team_command.dart';
+import '../constants.dart';
+import 'Dialogues/animated_dialogu.dart';
 
 class PlayerList extends StatefulWidget {
   final dynamic playersDetails;
@@ -15,8 +17,15 @@ class PlayerList extends StatefulWidget {
 class _PlayerListState extends State<PlayerList> {
   bool _isExpanded = true;
   String _selectedUserType = "PLAYER"; // Default selection: "PLAYER"
-  List<String> _userTypes = ["PLAYER", "ORGANIZER", "COACH", "REFEREE"];
-
+  List<String> _userTypes = ["PLAYER", "ORGANIZER", "MAINCOACH", "MANAGER", "ASSISTANTCOACH", "REF"];
+ List requestUserTypes = [
+    Constants.PLAYER.toString(),
+    Constants.ORGANIZER.toString(),
+    Constants.MANAGER.toString(),
+    Constants.MAINCOACH.toString(),
+    Constants.ASSISTANTCOACH.toString(),
+    Constants.REF.toString(),
+  ];
   void _showPlayerDetailsDialog(BuildContext context, String userName) {
     showDialog(
       context: context,
@@ -37,41 +46,87 @@ class _PlayerListState extends State<PlayerList> {
     );
   }
 
-  Future<void> removePlayerRole(dynamic user) async{
-    print("removePlayerRole");
-    if(widget.playersDetails['team'] != null){
-      int index = widget.playersDetails['userParticipants'].indexWhere((userParticipant) => userParticipant['user']['_id'] == user['_id']);
+  Future<void> removePlayerRole(dynamic user) async {
+    print("removePlayerRoler");
+    if (widget.playersDetails['team'] != null) {
+      int index = widget.playersDetails['userParticipants'].indexWhere(
+          (userParticipant) => userParticipant['user']['_id'] == user['_id']);
       print("indexWhere:" + index.toString());
       if (index != -1) {
         print("in ifff");
         // Replace item at found index
-        dynamic userParticipantRemoved = widget.playersDetails['userParticipants'].removeAt(index);
-        
-        List<String> userRoles = getUserRoles(userParticipantRemoved);
+        dynamic userParticipantRemoved =
+            widget.playersDetails['userParticipants'].removeAt(index);
+
+        List<String> userRoles = getUserRoles(userParticipantRemoved);        
         print("userRoles before remove: " + userRoles.toString());
         userRoles.remove(_selectedUserType);
         print("userRoles after remove: " + userRoles.toString());
-        String newRolesString = BaseCommand().stringifyRoles(userRoles);        
-        dynamic removeUsersFromTeamResp = await TeamCommand().updateTeamUserParticipant(userParticipantRemoved, newRolesString);      
+        String newRolesString = BaseCommand().stringifyRoles(userRoles);
+        dynamic removeUsersFromTeamResp = await TeamCommand()
+            .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
         print("removeUsersFromTeamResp: " + removeUsersFromTeamResp.toString());
-        if(removeUsersFromTeamResp['success']){
+        if (removeUsersFromTeamResp['success']) {
+          print("successfully removed user role from TeamUserParticipant;");
           dynamic teamUserParticipant = removeUsersFromTeamResp['data'];
-          widget.playersDetails['userParticipants'].add(teamUserParticipant);
+          setState(() {
+            widget.playersDetails['userParticipants'].add(teamUserParticipant);            
+          });
+          print("done");
         }
-
       }
     }
   }
-  
-  Future<void> removePlayer(dynamic user) async{
+
+  Future<void> updatePlayerRequest(dynamic user, 
+    Map<int, dynamic> indexes,
+    List<dynamic> primaryList, ) async {
+    print("updatePlayerRequest");
+    print("user: " + user.toString());
+    print("indexes: " + indexes.toString());
+    print("primaryList: " + primaryList.toString());
+
+    if (widget.playersDetails['team'] != null) {
+      int index = widget.playersDetails['userParticipants'].indexWhere(
+          (userParticipant) => userParticipant['user']['_id'] == user['_id']);
+      print("indexWhere:" + index.toString());
+      dynamic userParticipantRemoved = widget.playersDetails['userParticipants'].removeAt(index);
+      List<String> userRoles = getUserRoles(userParticipantRemoved);      
+      indexes.forEach((mainIndex, secondaryIndexes) async {
+        userRoles.add(primaryList[mainIndex]);
+      });
+      String newRolesString = BaseCommand().stringifyRoles(userRoles);      
+      dynamic updateUserParticipantResp = await TeamCommand()
+            .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
+        print("updateUserParticipantResp: " + updateUserParticipantResp.toString());
+        if (updateUserParticipantResp['success']) {
+          print("successfully updated Team User participant");
+          dynamic teamUserParticipant = updateUserParticipantResp['data'];
+          setState(() {
+            widget.playersDetails['userParticipants'].add(teamUserParticipant);
+            
+          });
+          String currentlySelectedUserType = _selectedUserType;
+          print("done adding back to widget.palyersDetails['userParticipants']");
+        }
+
+    }
+  }
+
+  Future<void> removePlayer(dynamic user) async {
     //remove player from team
-    if(widget.playersDetails['team'] != null){
-      dynamic removeUsersFromTeamResp = await TeamCommand().removeUsersFromTeam(widget.playersDetails['team'], [user]);      
+    if (widget.playersDetails['team'] != null) {
+      dynamic removeUsersFromTeamResp = await TeamCommand()
+          .removeUsersFromTeam(widget.playersDetails['team'], [user]);
       print("removeUsersFromTeamResp: " + removeUsersFromTeamResp.toString());
-      if(removeUsersFromTeamResp['success']){
-        widget.playersDetails['userParticipants'].removeWhere((userParticipant) => userParticipant['user']['_id'] == user['_id']);
+      if (removeUsersFromTeamResp['success']) {
+        setState(() {
+          widget.playersDetails['userParticipants'].removeWhere(
+              (userParticipant) => userParticipant['user']['_id'] == user['_id']);
+          
+        });
       }
-    }    
+    }
   }
 
   @override
@@ -162,6 +217,38 @@ class _PlayerListState extends State<PlayerList> {
                           onPressed: () {
                             // You can call a function here to handle user deletion
                             removePlayer(user);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () async {
+                            List<dynamic> primaryList = requestUserTypes;
+                            List<dynamic> secondaryList = [];
+                            // // List<dynamic> processedTeamList = teamList
+                            // //     .where((item1) => !userObjectDetails['teams']
+                            // //         .any((item2) =>
+                            // //             item2["_id"] == item1["_id"]))
+                            // //     .map((item) => item['team'])
+                            // //     .toList();
+                            // primaryList = processedTeamList;                                                        
+                            Map<int, dynamic> result = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AnimatedDialog(
+                                    items: primaryList,
+                                    singleSelect: false,
+                                    secondaryItems: secondaryList);
+                              },
+                            );
+                            if (result.isNotEmpty) {
+                              print('Selected items: $result');
+                              updatePlayerRequest(user, result, primaryList);
+                              // sendTeamsEventRequest(
+                              //     userObjectDetails['mainEvent'],
+                              //     result,
+                              //     primaryList,
+                              //     secondaryList);
+                            }
                           },
                         ),
                       ],

@@ -605,16 +605,17 @@ mixin EventMixin {
         //!withPayment&&withRequestt
         else if (!event['joinConditions']['withPayment'] &&
             event['joinConditions']['withRequest']) {
-          return Container(
-              child: GestureDetector(
-            onTap: () {
-              print("!withPayment&&!withRequest");
-              selectedRequestTypeObjects.add("PLAYER");
-              sendEventRequest(event, {0: {}}, requestUserTypes, []);
-              selectedRequestTypeObjects = [];
-            },
-            child: Text("Send Request to Join(No Payment required to join)"),
-          ));
+          return sendOrganizerPlayerEventRequest(context, userObjectDetails);
+          // return Container(
+          //     child: GestureDetector(
+          //   onTap: () {
+          //     print("!withPayment&&!withRequest");
+          //     selectedRequestTypeObjects.add("PLAYER");
+          //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
+          //     selectedRequestTypeObjects = [];
+          //   },
+          //   child: Text("Send Request to Join(No Payment required to join)"),
+          // ));
         }
         //withPayment && !withRequest
         else if (event['joinConditions']['withPayment'] &&
@@ -674,27 +675,29 @@ mixin EventMixin {
                 child: Text("Request Pending"),
               ));
             } else {
-              return Container(
-                  child: GestureDetector(
-                onTap: () {
-                  selectedRequestTypeObjects.add("PLAYER");
-                  sendEventRequest(event, {0: {}}, requestUserTypes, []);
-                  selectedRequestTypeObjects = [];
-                },
-                child: Text("Request Denied, Resend Request"),
-              ));
+              return sendOrganizerPlayerEventRequest(context, userObjectDetails);
+              // return Container(
+              //     child: GestureDetector(
+              //   onTap: () {
+              //     selectedRequestTypeObjects.add("PLAYER");
+              //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
+              //     selectedRequestTypeObjects = [];
+              //   },
+              //   child: Text("Request Denied, Resend Request"),
+              // ));
             }
           } else {
-            return Container(
-                child: GestureDetector(
-              onTap: () {
-                print("withPayment && withRequest");
-                selectedRequestTypeObjects.add("PLAYER");
-                sendEventRequest(event, {0: {}}, requestUserTypes, []);
-                selectedRequestTypeObjects = [];
-              },
-              child: Text("Send Request to Join(Payment required to join)"),
-            ));
+            return sendOrganizerPlayerEventRequest(context, userObjectDetails);                
+            // return Container(
+            //     child: GestureDetector(
+            //   onTap: () {
+            //     print("withPayment && withRequest");
+            //     selectedRequestTypeObjects.add("PLAYER");
+            //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
+            //     selectedRequestTypeObjects = [];
+            //   },
+            //   child: Text("Send Request to Join(Payment required to join)"),
+            // ));
           }
         }
       }

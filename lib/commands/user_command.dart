@@ -284,7 +284,7 @@ class UserCommand extends BaseCommand {
   }
 
   Future<Map<String, dynamic>> addTeam(
-      Map<String, dynamic> userInput, Map<String, dynamic> teamInput) async {
+      Map<String, dynamic> userInput, Map<String, dynamic> teamInput, String role) async {
     print("addTeam");
     Map<String, dynamic> addTeamResponse = {
       "success": false,
@@ -300,7 +300,7 @@ class UserCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().addTeam(userInput, teamInput),
+          'query': UserMutations().addUserToTeam(userInput, teamInput, role),
         }),
       );
 

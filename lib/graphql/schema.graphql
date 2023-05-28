@@ -299,14 +299,14 @@ type Event   {
 }
 
 type Team   {
-  name: String!
-  color: String!  
+  name: String
+  color: String
   events: [Event] @relation
   images: [Image] @relation
   users: [User] @relation    
   sponsors: [Sponsor] @relation
   location: Location    
-  userParticipants: [TeamUserParticipant] @relation
+userParticipants: [TeamUserParticipant] @relation
   status: String
   deleted: Boolean
   createdAt: String

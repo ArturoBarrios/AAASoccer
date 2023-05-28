@@ -270,7 +270,7 @@ class _TeamViewState extends State<TeamView> {
                   Text("Number of Chats: " + userTeamDetails['chats'].length.toString())),
           SizedBox(
             child: Container(
-    height: 200,
+    height: 450,
     child: PlayerList(playersDetails: playerListWidgetDetails),
   ),
           ),
