@@ -203,7 +203,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void signUp(AuthenticatorState state) async {
+  Future<void> signUp(AuthenticatorState state) async {
     try {
       SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
           emailController,
@@ -217,12 +217,7 @@ class _MyAppState extends State<MyApp> {
       print(signUpRes.nextStep);
       print("signUpRes toString()");
       print(signUpRes.toString());
-      String signUpStep = signUpRes.nextStep.signUpStep;
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signUpStep, state);
       
-      // await BaseCommand().setupInitialAppModels(emailController.text.trim());
-      // await UserCommand()
-      //     .updateUserStatus(emailController.text.trim(), "SignedUp");
       Map<String, dynamic> userInput = {
         "email": emailController.text.trim(),
         "username": usernameController.text.trim(),
@@ -232,15 +227,25 @@ class _MyAppState extends State<MyApp> {
         "address": addressController.text.trim(),
         "status": "SignedUp"
       };      
-      Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};      
-      Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
-      print("createPlayerResp: ");
-      print(createPlayerResp);
-      
-      AppModel().currentUser = createPlayerResp['data'];
-      print("AppModel().currentUser: " + AppModel().currentUser.toString());
+      //check unique attributes
+      bool uniquenessUserAttributesCheckResponse = await BaseCommand().uniquenessUserAttributesCheck(userInput);
+      print("uniquenessUserAttributesCheckResponse: "+uniquenessUserAttributesCheckResponse.toString());
+      if(uniquenessUserAttributesCheckResponse){
+        String signUpStep = signUpRes.nextStep.signUpStep;
+        AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signUpStep, state);
+        Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};      
+        Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
+        print("createPlayerResp: ");
+        print(createPlayerResp);
         
-      await startLoadToHomeTransition();
+        AppModel().currentUser = createPlayerResp['data'];
+        print("AppModel().currentUser: " + AppModel().currentUser.toString());
+          
+        await startLoadToHomeTransition();
+      }
+      else{
+        print("createUserAttributesCheck failed");
+      }
     } on AuthException catch (e) {
       print("signUpError");
       print(e);

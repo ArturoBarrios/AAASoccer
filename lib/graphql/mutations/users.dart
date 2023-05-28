@@ -19,15 +19,10 @@ class UserMutations {
     """;
 
     return updateUserString;
-  }
+  }  
 
-  
-
-
-
-
- 
-  String createUserStripeCustomer(Map<String, dynamic> userInput, Map<String, dynamic> customerInput) {
+  String createUserStripeCustomer(
+      Map<String, dynamic> userInput, Map<String, dynamic> customerInput) {
     String updateUserString = """      
       mutation {
         createStripeCustomer(data: {
@@ -50,8 +45,9 @@ class UserMutations {
 
     return updateUserString;
   }
-  
-  String createUserEventPayment(dynamic userInput, dynamic eventInput, dynamic paymentInput) {
+
+  String createUserEventPayment(
+      dynamic userInput, dynamic eventInput, dynamic paymentInput) {
     String createUserEventPaymentString = """      
       mutation {
         createPayment(data: {
@@ -84,7 +80,6 @@ class UserMutations {
     return createUserEventPaymentString;
   }
 
-
   String updateUser(Map<String, dynamic> userInput) {
     String updateUserString = """      
       mutation {
@@ -101,7 +96,6 @@ class UserMutations {
     return updateUserString;
   }
 
-  
   String addFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String addFriendString = """      
@@ -127,10 +121,6 @@ class UserMutations {
 
     return addFriendString;
   }
-
-  
-
-
 
   String addEvent(
       Map<String, dynamic> userInput, Map<String, dynamic> eventInput) {
@@ -187,8 +177,7 @@ class UserMutations {
     return addTeamString;
   }
 
-
-   String removeFriend(
+  String removeFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String addFriendString = """      
       mutation {
@@ -225,7 +214,7 @@ class UserMutations {
   }
 
   String removeTeamFromUser(
-      Map<String, dynamic> teamInput, Map<String, dynamic> userInput ) {
+      Map<String, dynamic> teamInput, Map<String, dynamic> userInput) {
     String addPlayerToEvent = """      
       mutation {
         updateUser(id: ${userInput['_id']}, data: {          
@@ -240,6 +229,4 @@ class UserMutations {
 
     return addPlayerToEvent;
   }
-
-  
 }

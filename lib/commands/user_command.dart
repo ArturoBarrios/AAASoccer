@@ -503,7 +503,7 @@ class UserCommand extends BaseCommand {
 
       print("response: ");
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['getUser'];
+      final result = jsonDecode(response.body)['data']['getUserByEmail'];
       // if (result != null) {
       getUserResp["success"] = true;
       getUserResp["message"] = "user found";

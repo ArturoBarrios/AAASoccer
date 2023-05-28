@@ -1,10 +1,29 @@
 import '../fragments/user_fragments.dart';
 
 class UserQueries {
+
+  String checkUserUniqueness(Map<String, dynamic> userInput) {
+    String updateUserString = """
+      query getUser{
+        getUserByEmail(email: "${userInput['email']}") {
+          _id
+        }
+        getUserByUsername(username: "${userInput['username']}") {
+          _id
+        }
+        getUserByPhone(phone: "${userInput['phone']}") {
+          _id
+        }
+      }
+        """;
+
+    return updateUserString;
+  }
+
   String getUserByEmail(Map<String, dynamic> userInput ){
     String getUser = """
       query getUser {
-          getUser(email: "${userInput['email']}") {      
+          getUserByEmail(email: "${userInput['email']}") {      
               ${UserFragments().fullUser()}           
                                                
               
@@ -55,7 +74,7 @@ class UserQueries {
         """;
 
     return addPlayerToEvent;
-  }
+  }  
   
  
 

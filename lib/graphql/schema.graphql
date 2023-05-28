@@ -9,8 +9,10 @@ type Query {
   allPlayers: [Player!]
   allRequests: [Request!]
   allTeams: [Team!]
-  getUser(email: String): User  
-  AllGamesByID(ids: [ID]):[ID] @resolver
+  getUserByEmail(email: String): User  
+  getUserByPhone(phone: String): User  
+  getUserByUsername(username: String): User  
+  AllGamesByID(username: [ID]):[ID] @resolver
   AllEventsByID(ids: [ID]):[ID] @resolver
 }
 
