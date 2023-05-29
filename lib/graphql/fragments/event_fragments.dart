@@ -77,6 +77,7 @@ class EventFragments {
             _id
             name
             email
+            username
             userType
             teams{
               data{

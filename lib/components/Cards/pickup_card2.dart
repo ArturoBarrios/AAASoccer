@@ -165,7 +165,7 @@ class _PickupCard2 extends State<PickupCard2> {
             // widget.isMyEvent ? 
               // GameUpdate(game: widget.gameObject);
               // :
-              PickupView(userEventDetails: widget.userEventDetails ,game: widget.gameObject);
+              PickupView(game: widget.gameObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

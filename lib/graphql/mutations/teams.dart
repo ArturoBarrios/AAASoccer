@@ -120,6 +120,64 @@ class TeamMutations {
     return updateTeamRequest;
     }  
 
+    String updateUserRolesInTeam(Map<String, dynamic> teamInput,
+      Map<String, dynamic> userInput, String roles, String teamRequestId) {
+    String addPlayerToTeam = """      
+      mutation {
+        partialUpdateTeamUserParticipant(
+          id: ${teamRequestId},
+  				data: {                       
+            roles: "$roles"                                                      
+          }                      
+        ){
+          _id,
+          roles,
+          user{
+            _id
+            username
+          }
+          team{
+            ${TeamFragments().fullTeam()}
+
+          }
+              
+    				  
+          }
+        }
+        """;
+
+    return addPlayerToTeam;
+  }
+
+    String addUserToTeam(Map<String, dynamic> teamInput,
+      Map<String, dynamic> userInput, String roles) {
+    String addPlayerToTeam = """      
+      mutation {
+        updateTeam(
+          id: ${teamInput['_id']},
+  				data: {                       
+            userParticipants:{
+              create:
+              {
+                user: {
+                  connect:
+                  "${userInput['_id']}"
+                }
+                roles: "$roles"
+              }
+            }                                                        
+          }                      
+        ){
+          ${TeamFragments().fullTeam()}
+              
+    				  
+          }
+        }
+        """;
+
+    return addPlayerToTeam;
+  }
+
     String updateTeamUserParticipant(
       dynamic updateTeamUserParticipantInput){
       String updateTeamUserParticipantString = """

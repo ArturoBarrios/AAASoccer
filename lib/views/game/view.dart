@@ -6,9 +6,11 @@ import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/user_command.dart';
+import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/my_map_page.dart';
+import '../../components/players_list_widget.dart';
 import '../../components/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
@@ -21,11 +23,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../constants.dart';
 
 class PickupView extends StatefulWidget with EventMixin, PaymentMixin {
-  PickupView({Key? key, required this.userEventDetails, required this.game})
+  PickupView({Key? key, required this.game})
       : super(key: key);
 
-  final dynamic userEventDetails;
   final dynamic game;
+  
 
   @override
   _PickupViewState createState() => _PickupViewState();
@@ -43,6 +45,8 @@ class _PickupViewState extends State<PickupView> {
   bool _isLoading = true;
   late LatLng _center = LatLng(45.521563, -122.677433);
   dynamic priceObject;
+  dynamic userEventDetails;
+  dynamic playerListWidgetDetails;
 
   LatLng latLng(lat, lon) {
     return LatLng(lat, lon);
@@ -56,17 +60,38 @@ class _PickupViewState extends State<PickupView> {
     priceObject = widget.game['event']['price'];
   }
 
+  void loadInitialData() async {
+    print("loadInitialData() in TeamView");
+    //wait for 3 seconds
+    await Future.delayed(const Duration(seconds: 2));
+    dynamic getEventDetailsResp =
+          EventCommand().getUserEventDetails([widget.game['event']]);
+    widget.setupPlayerList();
+    playerListWidgetDetails =  await widget.getPlayerListWidgetDetails(getEventDetailsResp);
+    setState(() {
+      userEventDetails = getEventDetailsResp;
+      _isLoading = false;
+    });
+      print("userEventDetails: " + userEventDetails.toString());
+      print("loadInitialData() finished!");
+      print("loadEventPayment() in loadInitialData()");
+      loadEventPayment();
+      print("loadEventPayment() finished in loadInitialData()");
+
+  }
+
   @override
   void initState() {
     super.initState();
 
     print("initState");
     print("game: " + widget.game.toString());
-    loadEventPayment();
+    // loadEventPayment();
     // widget.loadEventInfo(widget.game['event']);
-    widget.setupPlayerList();
+    // widget.setupPlayerList();
     // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
-    _isLoading = false;
+    loadInitialData();
+    // _isLoading = false;
   }
 
   @override
@@ -77,7 +102,19 @@ class _PickupViewState extends State<PickupView> {
     return Scaffold(
       appBar: Headers().getBackHeader(context, widget.game['event']['name']),
       body: _isLoading
-          ? Text("Loading...")
+          ?  Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.center,
+        child:
+            // BottomNav()//for times when user deleted in cognito but still signed into app
+            LoadingScreen(
+                currentDotColor: Colors.white,
+                defaultDotColor: Colors.black,
+                numDots: 10),
+      ),
+    )
           : ListView(
               padding: EdgeInsets.all(16),
               children: [
@@ -93,16 +130,16 @@ class _PickupViewState extends State<PickupView> {
                       longitude: widget.game['event']['location']['data'][0]
                           ['longitude']),
                 ),
-                !widget.userEventDetails['isMine']
-                    ? widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails)
+                !userEventDetails['isMine']
+                    ? widget.sendOrganizerPlayerEventRequest(context, userEventDetails)
                     : Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    widget.getPriceWidget(widget.userEventDetails),
+                    widget.getPriceWidget(userEventDetails),
                     // Text(
                     //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                    widget.userEventDetails['isMine']
+                    userEventDetails['isMine']
                         ? ElevatedButton(
                             onPressed: () {
                               // Add button onPressed logic here
@@ -113,9 +150,18 @@ class _PickupViewState extends State<PickupView> {
                   ],
                 ),
                 //join game gesture detector for now
-                widget.getJoinGameWidget(context, widget.userEventDetails,
+                widget.getJoinGameWidget(context, userEventDetails,
                     widget.game['event'], widget.userObject),
-                widget.getChatWidget(context, true, false, widget.userEventDetails),
+                widget.getChatWidget(context, true, false, userEventDetails),
+                SizedBox(
+            child: Container(
+    height: 450,
+    child: PlayerList(playersDetails: playerListWidgetDetails),
+  ),
+          ),
+
+
+
               ],
             ),
     );

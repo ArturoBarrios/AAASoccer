@@ -70,6 +70,32 @@ class EventMutations {
     return addPlayerToEvent;
   }
 
+  String updateEventUserParticipant(
+      dynamic updateEventUserParticipantInput){
+      String updateEventUserParticipantString = """
+      mutation {
+        updateEventUserParticipant(id: ${updateEventUserParticipantInput['_id']},
+          data: {                      
+          roles: "${updateEventUserParticipantInput['roles']}",                                             
+          }) {
+              _id
+                user{
+                  _id
+                  name
+                  email
+                  phone
+                }
+                roles
+                
+    				
+                 
+          }   
+        }
+        """;
+
+    return updateEventUserParticipantString;
+    }  
+
   String updateUserRolesInEvent(Map<String, dynamic> eventInput,
       Map<String, dynamic> userInput, String roles, String eventRequestId) {
     String addPlayerToEvent = """      
