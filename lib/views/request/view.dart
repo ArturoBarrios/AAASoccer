@@ -67,14 +67,19 @@ class _RequestsViewState extends State<RequestsView> {
       );
       return card;
     } else {
-      dynamic team = await TeamCommand().findTeamById(requestObject['team']['_id']);
+      print("elseeeeee");
+      print("team: "+ requestObject['team'].toString());
+      dynamic findTeamByIdResponse = await TeamCommand().findTeamById({"_id": requestObject['team']['_id']});      
+      dynamic team = findTeamByIdResponse['data'];
+      print("team: " + team.toString());
       dynamic teamDetails = await TeamCommand().getUserTeamDetails(team);
+      print("teamDetails: " + teamDetails.toString());
       Widget card =
           TeamRequestCard(teamRequestObject: requestObject, 
           svgImage: svgImage,
           didSendRequest: didSendRequest,
           userTeamDetails: teamDetails,
-          );
+          );      
       return card;
     }
   }

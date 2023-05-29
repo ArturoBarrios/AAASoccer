@@ -63,6 +63,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
 @override
   void initState() {
     super.initState();
+    print("TeamRequestCard initState()");
    
   }
 

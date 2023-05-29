@@ -340,7 +340,8 @@ class RequestsCommand extends BaseCommand {
         "_id": teamRequestInput['team']['_id'],
       };
       if (updateTeamRequest['status'].toString() == "ACCEPTED") {
-        await UserCommand().addTeam(userInput, teamInput);
+         String role = "{" + teamRequestInput['forRole'] + "}";
+        await UserCommand().addTeam(userInput, teamInput, role);
       }
 
       //get sender information for push notification

@@ -148,12 +148,19 @@ class _TournamentViewState extends State<TournamentView> {
                 widget.getChatWidget(context, true, false, widget.userEventDetails),
                 
 
-                widget.userEventDetails['isMine'] ?                
-                  widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-                  : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),                
-                widget.userEventDetails['isMine'] ?                
-                  widget.sendTeamsRequestWidget(context, widget.userEventDetails)
-                  : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                
+                // widget.userEventDetails['isMine'] ?                
+                //   widget.sendPlayersRequestWidget(context, widget.userEventDetails)
+                //   : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),                
+                if(widget.userEventDetails['isMine'])
+                  widget.sendPlayersRequestWidget(context, widget.userEventDetails),
+
+
+                // widget.userEventDetails['isMine'] ?                
+                //   widget.sendTeamsRequestWidget(context, widget.userEventDetails)
+                //   : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                
+
+                  if (widget.userEventDetails['isMine']) 
+                    widget.sendTeamsRequestWidget(context, widget.userEventDetails),
 
                 Container(
         height: 400, // Provide a fixed height here

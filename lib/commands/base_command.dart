@@ -1,4 +1,7 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
+import '../graphql/mutations/users.dart';
+import '../graphql/queries/users.dart';
 import '/models/app_model.dart';
 import 'package:flutter/material.dart';
 import '/models/user_model.dart';
@@ -28,6 +31,7 @@ import '../services/amplify_auth_service.dart';
 // import 'package:geocoding/geocoding.dart';
 import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
 
 
 
@@ -97,6 +101,66 @@ void nukeData(){
   geoLocationServices = _mainContext.read();
 
   appModel.initialConditionsMet = false;
+
+}
+
+Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) async{
+  print("createUserAttributesCheck()");
+  print("userAttributes: $userAttributes");
+  bool createUserAttributesCheckResponse = true;
+  try{
+    String email = userAttributes['email'];
+    String username = userAttributes['username'];
+    String phone = userAttributes['phone'];
+    dynamic userInput = {
+      "email": email,
+      "username": username,
+      "phone": phone    
+    };
+    print("userInput: $userInput");
+    http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserQueries().checkUserUniqueness(userInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+      dynamic data = jsonDecode(response.body)['data'];
+      dynamic getUserByEmailResponse = data['getUserByEmail'];
+      dynamic getUserByUsernameResponse = data['getUserByUsername'];
+      dynamic getUserByPhoneResponse = data['getUserByPhone'];
+
+      if(getUserByEmailResponse != null){
+        print("email already exists");
+        createUserAttributesCheckResponse = false;
+      }
+      if(getUserByUsernameResponse != null){
+        print("username already exists");
+        createUserAttributesCheckResponse = false;
+      }
+      if(getUserByPhoneResponse != null){
+        print("phone already exists");
+        if(dotenv.env['ENVIRONMENT'] == "PRODUCTION"){
+          //if in production, don't allow user to create account with phone number that already exists
+          createUserAttributesCheckResponse = false;
+        
+        }
+      }
+
+  } catch(e){
+    print("createUserAttributesCheck error: ");
+    print(e);
+    createUserAttributesCheckResponse = false;
+  }
+  
+
+  return createUserAttributesCheckResponse;
 
 }
 
