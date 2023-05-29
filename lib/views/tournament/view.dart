@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/components/group_stage_widget.dart';
 import '../../commands/event_command.dart';
+import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/bracket_widget.dart';
 import '../../components/headers.dart';
+import '../../components/players_list_widget.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
 
 class TournamentView extends StatefulWidget with EventMixin, PaymentMixin{
   TournamentView(
-      {Key? key, required this.userEventDetails, required this.tournament})
+      {Key? key, required this.tournament})
       : super(key: key);
 
-  final dynamic userEventDetails;
   final dynamic tournament;
 
   @override
@@ -33,6 +34,8 @@ class _TournamentViewState extends State<TournamentView> {
   bool _isLoading = false;
   dynamic priceObject;
   List<dynamic> tournamentEvents = [];
+  dynamic userEventDetails;
+  dynamic playerListWidgetDetails;
 
   
 
@@ -47,29 +50,44 @@ class _TournamentViewState extends State<TournamentView> {
   }
 
   void loadEventPayment() {
-    priceObject = widget.userEventDetails['mainEvent']['price'];
+    priceObject = userEventDetails['mainEvent']['price'];
+  }
+
+  Future<void> loadInitialData() async {
+    print("loadInitialData() in TournamentView");
+    tournamentEvents = widget.tournament['events']['data'];
+    loadEventPayment();
+    print("userEventDetails['groupStage]: " + userEventDetails['groupStage'].toString());        
+    widget.setupTeamList();
+    widget.setupMyTeams();
+    
+    dynamic getEventDetailsResp =
+          EventCommand().getUserEventDetails(widget.tournament['events']['data']);
+      getEventDetailsResp['groupStage'] = widget.tournament['groupStage'];
+      
+      getEventDetailsResp['tournamentStage'] = widget.tournament['tournamentStage'];
+    widget.setupPlayerList();
+    playerListWidgetDetails =  await widget.getPlayerListWidgetDetails(getEventDetailsResp);
+    setState(() {
+      userEventDetails = getEventDetailsResp;
+      _isLoading = false;
+    });
+      print("userEventDetails: " + userEventDetails.toString());
+      print("loadInitialData() finished!");
+      print("loadEventPayment() in loadInitialData()");
+      loadEventPayment();
+      print("loadEventPayment() finished in loadInitialData()");
+
   }
 
   @override
   void initState() {
-    print("initState");    
-    tournamentEvents = widget.tournament['events']['data'];
-    loadEventPayment();
-    print("widget.userEventDetails['groupStage]: " + widget.userEventDetails['groupStage'].toString());
-    // widget.loadEventInfo(widget.userEventDetails['mainEvent']);
-    widget.setupPlayerList();
-    widget.setupTeamList();
-    widget.setupMyTeams();
-    _isLoading = false;
-    //remove event where isMainEvent and type==TOURNAMENT
-    // for (int i = 0; i < tournamentEvents.length; i++) {
-    //   dynamic tournamentEvent = tournamentEvents[i];
-    //   if (tournamentEvent['isMainEvent'] &&
-    //       tournamentEvent['type'] == "TOURNAMENT") {
-    //     tournamentEvents.remove(tournamentEvent);
-    //   }
-    // }
-    print("tournamentEvents: " + tournamentEvents.toString());
+    print("initState");   
+    loadInitialData(); 
+                
+
+
+    
   }
 
   @override
@@ -78,7 +96,8 @@ class _TournamentViewState extends State<TournamentView> {
     //     widget.tournament.toString());
     return Scaffold(
       appBar: Headers().getBackHeader(context, "Tournament"),
-      body: SingleChildScrollView(
+      body: !_isLoading 
+      ? SingleChildScrollView(
         child: Center(
           child: Expanded(
             child: Column(
@@ -86,9 +105,9 @@ class _TournamentViewState extends State<TournamentView> {
                 widget.getParticipationRolesWidget(),
                 Container(
                   height: 500,
-                  child: EventsCalendar(testText: "test", events: widget.userEventDetails['allEvents']),
+                  child: EventsCalendar(testText: "test", events: userEventDetails['allEvents']),
                 ),
-                !widget.userEventDetails['isMine']
+                !userEventDetails['isMine']
                     ? Container(
                         height: 20,
                         child: ClipRRect(
@@ -120,7 +139,7 @@ class _TournamentViewState extends State<TournamentView> {
                                   'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
                               await widget.requestTypeSelected(
                                   widget.selectedRequestTypeIndexes);
-                              await widget.sendEventRequest(widget.userEventDetails['mainEvent'], {0: {}}, widget.requestUserTypes, []);
+                              await widget.sendEventRequest(userEventDetails['mainEvent'], {0: {}}, widget.requestUserTypes, []);
                             },
                             child: Text("Send Non Player Request"),
                           ),
@@ -130,10 +149,10 @@ class _TournamentViewState extends State<TournamentView> {
                     Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    widget.getPriceWidget(widget.userEventDetails),
+                    widget.getPriceWidget(userEventDetails),
                     // Text(
                     //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                    widget.userEventDetails['isMine']
+                    userEventDetails['isMine']
                         ? ElevatedButton(
                             onPressed: () {
                               // Add button onPressed logic here
@@ -144,38 +163,56 @@ class _TournamentViewState extends State<TournamentView> {
                   ],
                 ),
                  //join game gesture detector for now
-                widget.getJoinGameWidget(context, widget.userEventDetails, widget.userEventDetails['mainEvent'], widget.userObject),
-                widget.getChatWidget(context, true, false, widget.userEventDetails),
-                
+                widget.getJoinGameWidget(context, userEventDetails, userEventDetails['mainEvent'], widget.userObject),
+                widget.getChatWidget(context, true, false, userEventDetails),
+                SizedBox(
+            child: Container(
+    height: 450,
+    child: PlayerList(playersDetails: playerListWidgetDetails),
+  ),
+          ),
 
-                // widget.userEventDetails['isMine'] ?                
-                //   widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-                //   : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),                
-                if(widget.userEventDetails['isMine'])
-                  widget.sendPlayersRequestWidget(context, widget.userEventDetails),
+                // userEventDetails['isMine'] ?                
+                //   widget.sendPlayersRequestWidget(context, userEventDetails)
+                //   : widget.sendOrganizerPlayerEventRequest(context, userEventDetails),                
+                if(userEventDetails['isMine'])
+                  widget.sendPlayersRequestWidget(context, userEventDetails),
 
 
-                // widget.userEventDetails['isMine'] ?                
-                //   widget.sendTeamsRequestWidget(context, widget.userEventDetails)
-                //   : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),                
+                // userEventDetails['isMine'] ?                
+                //   widget.sendTeamsRequestWidget(context, userEventDetails)
+                //   : widget.sendEventRequestForMyTeamWidget(context, userEventDetails),                
 
-                  if (widget.userEventDetails['isMine']) 
-                    widget.sendTeamsRequestWidget(context, widget.userEventDetails),
+                  if (userEventDetails['isMine']) 
+                    widget.sendTeamsRequestWidget(context, userEventDetails),
 
                 Container(
         height: 400, // Provide a fixed height here
-        child: GroupStageWidget(groupData: widget.userEventDetails['groupStage'], teams: widget.userEventDetails['teams']),
+        child: GroupStageWidget(groupData: userEventDetails['groupStage'], teams: userEventDetails['teams']),
       ),
                 Container(
         height: 400, // Provide a fixed height here
-        child: BracketWidget(bracketDetails: widget.userEventDetails['tournamentStage']),
+        child: BracketWidget(bracketDetails: userEventDetails['tournamentStage']),
       ),
                  
               ],
             ),
           ),
         ),
+      ) : 
+      Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.center,
+        child:
+            // BottomNav()//for times when user deleted in cognito but still signed into app
+            LoadingScreen(
+                currentDotColor: Colors.white,
+                defaultDotColor: Colors.black,
+                numDots: 10),
       ),
+    ),
     );
   }
 }

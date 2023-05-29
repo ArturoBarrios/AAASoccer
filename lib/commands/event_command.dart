@@ -879,12 +879,12 @@ class EventCommand extends BaseCommand {
       //get chats
       dynamic chats = event['chats']['data'];
 
-      List<dynamic> myTeamRoles = getEventRoles(event,appModel.currentUser);
-      print("myTeamRoles: " + myTeamRoles.toString());
+      List<dynamic> myObjectRoles = getEventRoles(event,appModel.currentUser);
+      print("myObjectRoles: " + myObjectRoles.toString());
       
-      isMyEventResp['roles'] = myTeamRoles;
-      isMyEventResp['isMine'] = myTeamRoles.contains("ORGANIZER");
-      isMyEventResp['isMember'] = myTeamRoles.contains("PLAYER");
+      isMyEventResp['roles'] = myObjectRoles;
+      isMyEventResp['isMine'] = myObjectRoles.contains("ORGANIZER");
+      isMyEventResp['isMember'] = myObjectRoles.contains("PLAYER");
 
 
       //get teams

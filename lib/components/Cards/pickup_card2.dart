@@ -62,22 +62,7 @@ Future<Map<String, dynamic>> removePickup(dynamic gameObject) async {
 
 class _PickupCard2 extends State<PickupCard2> {
   dynamic priceObject;
-  bool _isLoading = true;
-  // int selectIndex = 0;  
-  // int chosenRequestType = 0;
-  // List requestUserTypes = [
-  //   Constants.PLAYER.toString(),
-  //   Constants.ORGANIZER.toString(),
-  //   Constants.MANAGER.toString(),
-  //   Constants.MAINCOACH.toString(),
-  //   Constants.ASSISTANTCOACH.toString(),
-  //   Constants.REF.toString(),
-  // ];
-  // List playerList = [];
-  // List playersSelectedList = [];
-  // List<int>? selectedPlayerIndexes;
-  // List<int>? selectedRequestTypeIndexes;
-  // List<String> selectedRequestTypeObjects = [];
+  bool _isLoading = true;  
 
   void setupPlayerList() {
     widget.setupPlayerList();
