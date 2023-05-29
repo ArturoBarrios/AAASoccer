@@ -768,19 +768,133 @@ class TeamCommand extends BaseCommand {
         removePlayersFromTeamResponse['message'] = "Team from players";
 
       });
+      return removePlayersFromTeamResponse;
     } on Exception catch (e) {
       print("Mutation failed: $e");
       return removePlayersFromTeamResponse;
     }
-      
-
-
-  
-
-
-    return removePlayersFromTeamResponse;
+        
   }
   
+  Future<Map<String, dynamic>> addUserToTeam(
+      dynamic teamInput, dynamic userInput, String roles) async {
+    print("addUserToTeam");
+    Map<String, dynamic> addUserToTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {      
+      dynamic userObject = UserCommand().getAppModelUser();
+      dynamic updateRoleResp = TeamCommand().checkIfUpdateRole(teamInput, userObject, teamInput['forRole']);
+      if(updateRoleResp['updateRole']){
+        updateUserRolesInTeam(teamInput, userInput, roles, updateRoleResp['teamUserParticipant']);
+      }
+      else{
+        http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TeamMutations().addUserToTeam(teamInput, userInput, roles),
+        }),
+      );
+
+
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+      
+      addTeamToMyTeams(jsonDecode(response.body)['data']['updateTeam']);
+
+      }
+
+      return addUserToTeamResponse;      
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return addUserToTeamResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> addTeamToMyTeams(
+      Map<String, dynamic> teamInput) async {
+    print("addTeamToMyTeams");
+    print("teamInput: " + teamInput.toString());
+    Map<String, dynamic> addTeamToMyTeamsResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    print("before getTeam");
+    dynamic team = findTeamById(teamInput);
+      print("team: "+team.toString());        
+      print("before appModel.myTeams: " + appModel.myTeams.toString());
+      appModel.myTeams.add(team);
+      
+      print("after appModel.myTeams: " + appModel.myTeams.toString());
+      addTeamToMyTeamsResponse["success"] = true;
+    
+
+    return addTeamToMyTeamsResponse;
+  }
+
+  Future<Map<String, dynamic>> updateUserRolesInTeam(
+      dynamic teamInput, dynamic userInput, String roles, String teamRequestId) async {
+    print("updateUserRolesInTeam");
+    Map<String, dynamic> addUserToTeamResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {      
+           
+      http.Response response = await http.post(
+      Uri.parse('https://graphql.fauna.com/graphql'),
+      headers: <String, String>{
+        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode(<String, String>{
+        'query': TeamMutations().updateUserRolesInTeam(teamInput, userInput, roles, teamRequestId),
+      }),
+    );
+
+
+
+    print("response body: ");
+    print(jsonDecode(response.body));
+    
+    addTeamToMyTeams(jsonDecode(response.body)['data']['partialUpdateTeamUserParticipant']['team']);
+
+      return addUserToTeamResponse;      
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return addUserToTeamResponse;
+    }
+  }
+
+  Map<String, dynamic> checkIfUpdateRole(dynamic team, dynamic userObject, String role){    
+        print("checkIfUpdateRole");
+        dynamic checkIfUpdateRoleResp = {
+          "updateRole": false,
+          "teamRequestId": ""
+        };        
+        userObject['teamUserParticipants']['data']
+            .forEach((teamUserParticipantElement) {
+          if (teamUserParticipantElement['team']['_id'] == team['_id']) {
+            //update role
+            checkIfUpdateRoleResp['updateRole'] = true;
+            checkIfUpdateRoleResp['teamUserParticipant'] = teamUserParticipantElement['_id'];
+          }
+          
+        });
+        print("checkIfUpdateRoleResp: $checkIfUpdateRoleResp");
+
+        return checkIfUpdateRoleResp;
+  }
+
   Future<Map<String, dynamic>> updateTeamUserParticipant(dynamic teamUserParticipant, String newRoles ) async {
     print("updateTeamUserParticipant");
     print("newRoles: " + newRoles.toString());

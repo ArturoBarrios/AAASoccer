@@ -22,6 +22,7 @@ class TeamFragments {
                 user{
                   _id
                   name
+                  username
                   email
                   phone
                 }

@@ -19,10 +19,11 @@ import 'package:flip_card/flip_card_controller.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
-  const CardFormScreen({Key? key, required this.priceObject, required this.roles}) : super(key: key);
+  const CardFormScreen({Key? key, required this.priceObject, required this.roles, required this.userObjectDetails}) : super(key: key);
 
   final dynamic priceObject;
   final String roles;
+  final String userObjectDetails;
 
   @override
   _CardFormScreen createState() => _CardFormScreen();
@@ -69,12 +70,11 @@ class _CardFormScreen extends State<CardFormScreen> {
       print("currentUser:" + currentUser.toString());
       print("userInput: " + userInput.toString());
       print("widget.priceObject: " + widget.priceObject.toString());
-
-      // await UserCommand().addEvent(userInput, widget.priceObject);
-      EventCommand().addUserToEvent(widget.priceObject, userInput, widget.roles);
-      UserCommand().updatePaymentStatus(PaymentType.success);
+      //these two methods shouldn't be called here lol
+      // EventCommand().addUserToEvent(widget.priceObject, userInput, widget.roles);
+      // UserCommand().updatePaymentStatus(PaymentType.success);
       print("move on to next screen");
-      // Navigator.pop(context);
+      
     }
   }
 

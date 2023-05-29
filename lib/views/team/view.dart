@@ -265,9 +265,7 @@ class _TeamViewState extends State<TeamView> {
           ),
           widget.getChatWidget(context, false, true, userTeamDetails),
           widget.sendPlayersRequestWidget(context, userTeamDetails),
-          Container(
-              child:
-                  Text("Number of Chats: " + userTeamDetails['chats'].length.toString())),
+          widget.getJoinTeamWidget(context, userTeamDetails, userTeamDetails['team'], widget.userObject),          
           SizedBox(
             child: Container(
     height: 450,

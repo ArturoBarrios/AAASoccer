@@ -59,7 +59,7 @@ class _Card extends State<Card> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return PickupView(userEventDetails: {}, game: widget.eventObject);
+            return PickupView(game: widget.eventObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

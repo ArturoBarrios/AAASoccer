@@ -3,6 +3,7 @@ import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/models/events_model.dart';
 
+import '../graphql/mutations/users.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../commands/game_command.dart';
@@ -1508,7 +1509,7 @@ class EventCommand extends BaseCommand {
 
   //ensure safety of team
   //todo add a make team safe property on Event
-  Future<Map<String, dynamic>> removeUsersFromEvent(dynamic event ,List<dynamic> users, List<dynamic>roles ) async {
+  Future<Map<String, dynamic>> removeUsersFromEvent(dynamic event ,List<dynamic> users) async {
     print("removeUsersFromEvent");
     print("event: " + event.toString());
     print("users: " + users.toString());    
@@ -1520,28 +1521,76 @@ class EventCommand extends BaseCommand {
     };
       
 
-    // http.Response response = await http.post(
-    //   Uri.parse('https://graphql.fauna.com/graphql'),
-    //   headers: <String, String>{
-    //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: jsonEncode(<String, String>{
-    //     'query': UserMutations().removeTeamFromUser(userInput, teamInput),
-    //   }),
-    // );
+    try{
+      users.forEach((user) async {
+        dynamic userInput = {
+          "_id": user['_id'],
 
-    // print("response body: ");
-    // print(jsonDecode(response.body));
+        };      
+
+        http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': UserMutations().removeEventFromUser(userInput, event),
+          }),
+        );
+
+        print("response body: ");
+        print(jsonDecode(response.body));
+
+        removeUsersFromEventResponse['success'] = true;
+        removeUsersFromEventResponse['message'] = "Team from players";
+
+      });
+      return removeUsersFromEventResponse;
+    } on Exception catch (e) {
+      print("Mutation failed: $e");
+      return removeUsersFromEventResponse;
+    }
+    
+  }
+
+  Future<Map<String, dynamic>> updateEventUserParticipant(dynamic eventUserParticipant, String newRoles ) async {
+    print("updateEventUserParticipant");
+    print("newRoles: " + newRoles.toString());
+    
+    Map<String, dynamic> updateEventUserParticipantResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+      
+      dynamic updateEventUserParticipantInput = {
+        "_id": eventUserParticipant['_id'],
+        "roles": newRoles
+      };
+
+    http.Response response = await http.post(
+      Uri.parse('https://graphql.fauna.com/graphql'),
+      headers: <String, String>{
+        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode(<String, String>{
+        'query': EventMutations().updateEventUserParticipant(updateEventUserParticipantInput),
+      }),
+    );
+
+    print("response body: ");
+    print(jsonDecode(response.body));
 
   
 
-    removeUsersFromEventResponse["success"] = true;
-    removeUsersFromEventResponse["message"] = "Team Removed";
-    // removePlayersFromTeamResponse["data"] =
-    //     jsonDecode(response.body)['data']['updateTeam'];
+    updateEventUserParticipantResponse["success"] = true;
+    updateEventUserParticipantResponse["message"] = "Event User Participant Updated";
+    updateEventUserParticipantResponse["data"] =
+        jsonDecode(response.body)['data']['updateEventUserParticipant'];
 
-    return removeUsersFromEventResponse;
+    return updateEventUserParticipantResponse;
   }
 
 

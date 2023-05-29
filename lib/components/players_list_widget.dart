@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../commands/base_command.dart';
+import '../commands/event_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
 import 'Dialogues/animated_dialogu.dart';
@@ -17,8 +18,15 @@ class PlayerList extends StatefulWidget {
 class _PlayerListState extends State<PlayerList> {
   bool _isExpanded = true;
   String _selectedUserType = "PLAYER"; // Default selection: "PLAYER"
-  List<String> _userTypes = ["PLAYER", "ORGANIZER", "MAINCOACH", "MANAGER", "ASSISTANTCOACH", "REF"];
- List requestUserTypes = [
+  List<String> _userTypes = [
+    "PLAYER",
+    "ORGANIZER",
+    "MAINCOACH",
+    "MANAGER",
+    "ASSISTANTCOACH",
+    "REF"
+  ];
+  List requestUserTypes = [
     Constants.PLAYER.toString(),
     Constants.ORGANIZER.toString(),
     Constants.MANAGER.toString(),
@@ -48,21 +56,22 @@ class _PlayerListState extends State<PlayerList> {
 
   Future<void> removePlayerRole(dynamic user) async {
     print("removePlayerRoler");
-    if (widget.playersDetails['team'] != null) {
-      int index = widget.playersDetails['userParticipants'].indexWhere(
-          (userParticipant) => userParticipant['user']['_id'] == user['_id']);
-      print("indexWhere:" + index.toString());
-      if (index != -1) {
-        print("in ifff");
-        // Replace item at found index
-        dynamic userParticipantRemoved =
-            widget.playersDetails['userParticipants'].removeAt(index);
 
-        List<String> userRoles = getUserRoles(userParticipantRemoved);        
-        print("userRoles before remove: " + userRoles.toString());
-        userRoles.remove(_selectedUserType);
-        print("userRoles after remove: " + userRoles.toString());
-        String newRolesString = BaseCommand().stringifyRoles(userRoles);
+    int index = widget.playersDetails['userParticipants'].indexWhere(
+        (userParticipant) => userParticipant['user']['_id'] == user['_id']);
+    print("indexWhere:" + index.toString());
+    if (index != -1) {
+      print("in ifff");
+      // Replace item at found index
+      dynamic userParticipantRemoved =
+          widget.playersDetails['userParticipants'].removeAt(index);
+
+      List<String> userRoles = getUserRoles(userParticipantRemoved);
+      print("userRoles before remove: " + userRoles.toString());
+      userRoles.remove(_selectedUserType);
+      print("userRoles after remove: " + userRoles.toString());
+      String newRolesString = BaseCommand().stringifyRoles(userRoles);
+      if (widget.playersDetails['team'] != null) {
         dynamic removeUsersFromTeamResp = await TeamCommand()
             .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
         print("removeUsersFromTeamResp: " + removeUsersFromTeamResp.toString());
@@ -70,49 +79,75 @@ class _PlayerListState extends State<PlayerList> {
           print("successfully removed user role from TeamUserParticipant;");
           dynamic teamUserParticipant = removeUsersFromTeamResp['data'];
           setState(() {
-            widget.playersDetails['userParticipants'].add(teamUserParticipant);            
+            widget.playersDetails['userParticipants'].add(teamUserParticipant);
+          });
+          print("done");
+        }
+      } else {
+        dynamic removeUsersFromEventResp = await EventCommand()
+            .updateEventUserParticipant(userParticipantRemoved, newRolesString);
+        print(
+            "removeUsersFromEventResp: " + removeUsersFromEventResp.toString());
+        if (removeUsersFromEventResp['success']) {
+          print("successfully removed user role from EventUserParticipant;");
+          dynamic eventUserParticipant = removeUsersFromEventResp['data'];
+          setState(() {
+            widget.playersDetails['userParticipants'].add(eventUserParticipant);
           });
           print("done");
         }
       }
     }
-    else{
-      
-    }
   }
 
-  Future<void> updatePlayerRequest(dynamic user, 
+  Future<void> updatePlayerRequest(
+    dynamic user,
     Map<int, dynamic> indexes,
-    List<dynamic> primaryList, ) async {
+    List<dynamic> primaryList,
+  ) async {
     print("updatePlayerRequest");
     print("user: " + user.toString());
     print("indexes: " + indexes.toString());
     print("primaryList: " + primaryList.toString());
 
+    int index = widget.playersDetails['userParticipants'].indexWhere(
+        (userParticipant) => userParticipant['user']['_id'] == user['_id']);
+    print("indexWhere:" + index.toString());
+    dynamic userParticipantRemoved =
+        widget.playersDetails['userParticipants'].removeAt(index);
+    List<String> userRoles = getUserRoles(userParticipantRemoved);
+    indexes.forEach((mainIndex, secondaryIndexes) async {
+      userRoles.add(primaryList[mainIndex]);
+    });
+    String newRolesString = BaseCommand().stringifyRoles(userRoles);
     if (widget.playersDetails['team'] != null) {
-      int index = widget.playersDetails['userParticipants'].indexWhere(
-          (userParticipant) => userParticipant['user']['_id'] == user['_id']);
-      print("indexWhere:" + index.toString());
-      dynamic userParticipantRemoved = widget.playersDetails['userParticipants'].removeAt(index);
-      List<String> userRoles = getUserRoles(userParticipantRemoved);      
-      indexes.forEach((mainIndex, secondaryIndexes) async {
-        userRoles.add(primaryList[mainIndex]);
-      });
-      String newRolesString = BaseCommand().stringifyRoles(userRoles);      
       dynamic updateUserParticipantResp = await TeamCommand()
-            .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
-        print("updateUserParticipantResp: " + updateUserParticipantResp.toString());
-        if (updateUserParticipantResp['success']) {
-          print("successfully updated Team User participant");
-          dynamic teamUserParticipant = updateUserParticipantResp['data'];
-          setState(() {
-            widget.playersDetails['userParticipants'].add(teamUserParticipant);
-            
-          });
-          String currentlySelectedUserType = _selectedUserType;
-          print("done adding back to widget.palyersDetails['userParticipants']");
-        }
-
+          .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
+      print(
+          "updateUserParticipantResp: " + updateUserParticipantResp.toString());
+      if (updateUserParticipantResp['success']) {
+        print("successfully updated Team User participant");
+        dynamic teamUserParticipant = updateUserParticipantResp['data'];
+        setState(() {
+          widget.playersDetails['userParticipants'].add(teamUserParticipant);
+        });
+        String currentlySelectedUserType = _selectedUserType;
+        print("done adding back to widget.palyersDetails['userParticipants']");
+      }
+    } else {
+      dynamic updateUserParticipantResp = await EventCommand()
+          .updateEventUserParticipant(userParticipantRemoved, newRolesString);
+      print(
+          "updateUserParticipantResp: " + updateUserParticipantResp.toString());
+      if (updateUserParticipantResp['success']) {
+        print("successfully updated Event User participant");
+        dynamic eventUserParticipant = updateUserParticipantResp['data'];
+        setState(() {
+          widget.playersDetails['userParticipants'].add(eventUserParticipant);
+        });
+        String currentlySelectedUserType = _selectedUserType;
+        print("done adding back to widget.palyersDetails['userParticipants']");
+      }
     }
   }
 
@@ -125,8 +160,19 @@ class _PlayerListState extends State<PlayerList> {
       if (removeUsersFromTeamResp['success']) {
         setState(() {
           widget.playersDetails['userParticipants'].removeWhere(
-              (userParticipant) => userParticipant['user']['_id'] == user['_id']);
-          
+              (userParticipant) =>
+                  userParticipant['user']['_id'] == user['_id']);
+        });
+      }
+    } else {
+      dynamic removeUsersFromEventResp = await EventCommand()
+          .removeUsersFromEvent(widget.playersDetails['event'], [user]);
+      print("removeUsersFromEventResp: " + removeUsersFromEventResp.toString());
+      if (removeUsersFromEventResp['success']) {
+        setState(() {
+          widget.playersDetails['userParticipants'].removeWhere(
+              (userParticipant) =>
+                  userParticipant['user']['_id'] == user['_id']);
         });
       }
     }
@@ -200,7 +246,7 @@ class _PlayerListState extends State<PlayerList> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(user['name']),
+                          child: Text(user['username']),
                         ),
                         IconButton(
                           icon: Icon(Icons.info),
@@ -233,7 +279,7 @@ class _PlayerListState extends State<PlayerList> {
                             // //             item2["_id"] == item1["_id"]))
                             // //     .map((item) => item['team'])
                             // //     .toList();
-                            // primaryList = processedTeamList;                                                        
+                            // primaryList = processedTeamList;
                             Map<int, dynamic> result = await showDialog(
                               context: context,
                               builder: (BuildContext context) {

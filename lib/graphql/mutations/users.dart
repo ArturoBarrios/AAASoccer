@@ -229,4 +229,21 @@ class UserMutations {
 
     return addPlayerToEvent;
   }
+  
+  String removeEventFromUser(
+      Map<String, dynamic> teamInput, Map<String, dynamic> userInput) {
+    String addPlayerToEvent = """      
+      mutation {
+        updateUser(id: ${userInput['_id']}, data: {          
+          teams: {
+            disconnect: ${teamInput['_id']}
+          }
+        }) {
+          _id
+        }
+      }
+        """;
+
+    return addPlayerToEvent;
+  }
 }
