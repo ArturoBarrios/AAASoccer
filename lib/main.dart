@@ -16,6 +16,7 @@ import 'commands/base_command.dart';
 import 'commands/user_command.dart';
 import 'commands/player_command.dart';
 import 'commands/event_command.dart';
+import 'components/location_search_bar.dart';
 import 'models/app_model.dart';
 import 'models/chat_page_model.dart';
 import 'models/user_model.dart';
@@ -233,7 +234,10 @@ class _MyAppState extends State<MyApp> {
       if(uniquenessUserAttributesCheckResponse){
         String signUpStep = signUpRes.nextStep.signUpStep;
         AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signUpStep, state);
-        Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};      
+        Map<String, dynamic> locationInput = {
+          "latitude": 0,
+          "longitude": 0,
+        };        
         Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
         print("createPlayerResp: ");
         print(createPlayerResp);
@@ -540,20 +544,7 @@ class _MyAppState extends State<MyApp> {
                   borderSide: BorderSide.none,
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: addressController,
-              decoration: InputDecoration(
-                hintText: 'Address',
-                filled: true,
-                fillColor: Colors.grey[200],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
+            ),                        
             SizedBox(height: 50),
             ElevatedButton(
               style: ElevatedButton.styleFrom(

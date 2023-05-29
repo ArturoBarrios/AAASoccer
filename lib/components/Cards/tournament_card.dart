@@ -89,7 +89,7 @@ class _TournamentCard extends State<TournamentCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TournamentView(userEventDetails: widget.userEventDetails, tournament: widget.tournamentObject);
+            return TournamentView(tournament: widget.tournamentObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
