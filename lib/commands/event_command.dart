@@ -841,6 +841,7 @@ class EventCommand extends BaseCommand {
       "groupData": [],
       "groupStage": [],  
       "tournamentStage": [],
+      "userParticipants": [],
     };
     print("events length: " + events.length.toString());
 
@@ -892,6 +893,7 @@ class EventCommand extends BaseCommand {
 
       //get userParticipation data      
       dynamic userParticipants = event['userParticipants']['data'];
+      isMyEventResp['userParticipants'] = userParticipants;
       print("userParticipants: " + userParticipants.toString());
       for(int i = 0; i<userParticipants.length; i++){        
           dynamic userParticipant = userParticipants[i];

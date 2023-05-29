@@ -76,6 +76,9 @@ class _PlayerListState extends State<PlayerList> {
         }
       }
     }
+    else{
+      
+    }
   }
 
   Future<void> updatePlayerRequest(dynamic user, 
