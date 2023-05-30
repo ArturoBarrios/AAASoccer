@@ -363,12 +363,13 @@ class _Home extends State<Home> {
     } else if (selectedKey == Constants.TOURNAMENT) {
       //process tournament data for card
       // TournamentCommand().currateTournamentData(selectedObject);
-
+      print("else if tournament");
       dynamic getEventDetailsResp =
           EventCommand().getUserEventDetails(selectedObject['events']['data']);
       getEventDetailsResp['groupStage'] = selectedObject['groupStage'];
-      
+      print("a::");
       getEventDetailsResp['tournamentStage'] = selectedObject['tournamentStage'];
+      print("b::");
       card = TournamentCard(
           tournamentObject: selectedObject,
           svgImage: svgImage,

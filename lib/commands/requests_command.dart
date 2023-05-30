@@ -24,6 +24,7 @@ class RequestsCommand extends BaseCommand {
     print("requestType: " + requestType);
     Map<String, dynamic> getRequestsResp =
         await UserCommand().getCurrentUserByEmail();
+    print("getRequestsResp: " + getRequestsResp.toString());
 
     if (getRequestsResp['success']) {
       // UserCommand().updateUserModelWithUser(getRequestsResp['data']);

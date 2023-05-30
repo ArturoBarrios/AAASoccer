@@ -174,6 +174,7 @@ class TournamentCommand extends BaseCommand {
 
       final allTournaments =
           jsonDecode(response.body)['data']['allTournaments']['data'];
+      print("allTournaments length: " + allTournaments.length.toString());
       getTournamentsNearLocationResp["success"] = true;
       getTournamentsNearLocationResp["message"] = "Tournaments Retrieved";
       getTournamentsNearLocationResp["data"] = allTournaments;

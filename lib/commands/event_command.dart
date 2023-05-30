@@ -889,7 +889,7 @@ class EventCommand extends BaseCommand {
 
       //get teams
       dynamic teams = event['teams']['data'];
-      print("teams: " + teams.toString());
+      print("teams:: " + teams.toString());
       isMyEventResp['teams'] = teams;
 
       //get userParticipation data      
@@ -907,18 +907,19 @@ class EventCommand extends BaseCommand {
             print("isMember() = true");          
             isMyEventResp['players'].add(userParticipant);
             //check if player belongs to team
-            if(userParticipant['user']['teams']['data'].length>0&&teams.length>0){
-              bool playerBelongsToTeam = BaseCommand().checkElementExists(userParticipant['teams']['data'], teams);                                          
-              print("playerBelongsToTeam: " + playerBelongsToTeam.toString());
-              if(!playerBelongsToTeam){
-                isMyEventResp['freeAgents'].add(userParticipant);
-              }
+            //this code is causing error!
+            // if(userParticipant['user']['teams']['data'].length>0&&teams.length>0){
+            //   bool playerBelongsToTeam = BaseCommand().checkElementExists(userParticipant['teams']['data'], teams);                                          
+            //   print("playerBelongsToTeam: " + playerBelongsToTeam.toString());
+            //   if(!playerBelongsToTeam){
+            //     isMyEventResp['freeAgents'].add(userParticipant);
+            //   }
 
-            }
-            else{
-                isMyEventResp['freeAgents'].add(userParticipant);
+            // }
+            // else{
+            //     isMyEventResp['freeAgents'].add(userParticipant);
 
-            }
+            // }
           }        
       }     
 

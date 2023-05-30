@@ -308,7 +308,7 @@ type Team   {
   users: [User] @relation    
   sponsors: [Sponsor] @relation
   location: Location    
-userParticipants: [TeamUserParticipant] @relation
+  userParticipants: [TeamUserParticipant] @relation
   status: String
   deleted: Boolean
   createdAt: String

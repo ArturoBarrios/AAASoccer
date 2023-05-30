@@ -153,11 +153,13 @@ class _PickupViewState extends State<PickupView> {
                 widget.getJoinGameWidget(context, userEventDetails,
                     widget.game['event'], widget.userObject),
                 widget.getChatWidget(context, true, false, userEventDetails),
+          widget.sendPlayersRequestWidget(context, userEventDetails),
                 SizedBox(
             child: Container(
     height: 450,
     child: PlayerList(playersDetails: playerListWidgetDetails),
   ),
+  
           ),
 
 
