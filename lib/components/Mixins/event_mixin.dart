@@ -917,37 +917,45 @@ mixin EventMixin {
       BuildContext context, dynamic userObjectDetails) {
     print("sendPlayersRequestWidget: " + userObjectDetails.toString());
 
-    return Container(
-        child: GestureDetector(
-            onTap: () async {
-              List<dynamic> primaryList = playerList;
-              List<dynamic> secondaryList = requestUserTypes;
-              Map<int, dynamic> result = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AnimatedDialog(
-                      items: playerList,
-                      singleSelect: false,
-                      secondaryItems: requestUserTypes);
-                },
-              );
-              if (result.isNotEmpty) {
-                print("result: " + result.toString());
-                if (userObjectDetails['mainEvent'] != null) {
-                  sendPlayersEventRequest(
-                      userObjectDetails, result, primaryList, secondaryList);
-                } else {
-                  sendPlayersTeamRequest(
-                      userObjectDetails, result, primaryList, secondaryList);
+    
+    if(userObjectDetails['isMine']){
+      return Container(
+          child: GestureDetector(
+              onTap: () async {
+                List<dynamic> primaryList = playerList;
+                List<dynamic> secondaryList = requestUserTypes;
+                Map<int, dynamic> result = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AnimatedDialog(
+                        items: playerList,
+                        singleSelect: false,
+                        secondaryItems: requestUserTypes);
+                  },
+                );
+                if (result.isNotEmpty) {
+                  print("result: " + result.toString());
+                  if (userObjectDetails['mainEvent'] != null) {
+                    sendPlayersEventRequest(
+                        userObjectDetails, result, primaryList, secondaryList);
+                  } else {
+                    sendPlayersTeamRequest(
+                        userObjectDetails, result, primaryList, secondaryList);
+                  }
                 }
-              }
-            },
-            child: Container(
-              width: 200,
-              height: 50,
-              color: Colors.blue,
-              child: Center(child: Text("Send Players Request")),
-            )));
+              },
+              child: Container(
+                width: 200,
+                height: 50,
+                color: Colors.blue,
+                child: Center(child: Text("Send Players Request")),
+              )));
+
+    }
+    else{
+      return sendOrganizerPlayerEventRequest(context, userObjectDetails);                
+
+    }
   }
 
   //send players events request
@@ -1022,40 +1030,45 @@ mixin EventMixin {
 
   Container sendTeamsRequestWidget(
       BuildContext context, dynamic userObjectDetails) {
-    return Container(
-        child: GestureDetector(
-            onTap: () async {
-              List<dynamic> primaryList = [];
-              List<dynamic> secondaryList = [];
-              List<dynamic> processedTeamList = teamList
-                  .where((item1) => !userObjectDetails['teams']
-                      .any((item2) => item2["_id"] == item1["_id"]))
-                  .map((item) => item['team'])
-                  .toList();
-              primaryList = processedTeamList;
-              //original list (just look at commented code below)
-              // teamList.where((item1) => !userObjectDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList();
-              Map<int, dynamic> result = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AnimatedDialog(
-                      items: primaryList,
-                      singleSelect: false,
-                      secondaryItems: secondaryList);
-                },
-              );
-              if (result.isNotEmpty) {
-                print('Selected items: $result');
-                sendTeamsEventRequest(userObjectDetails['mainEvent'], result,
-                    primaryList, secondaryList);
-              }
-            },
-            child: Container(
-              width: 200,
-              height: 50,
-              color: Colors.blue,
-              child: Center(child: Text("Send Teams Request")),
-            )));
+        if(userObjectDetails['isMine']){
+          return Container(
+              child: GestureDetector(
+                  onTap: () async {
+                    List<dynamic> primaryList = [];
+                    List<dynamic> secondaryList = [];
+                    List<dynamic> processedTeamList = teamList
+                        .where((item1) => !userObjectDetails['teams']
+                            .any((item2) => item2["_id"] == item1["_id"]))
+                        .map((item) => item['team'])
+                        .toList();
+                    primaryList = processedTeamList;
+                    //original list (just look at commented code below)
+                    // teamList.where((item1) => !userObjectDetails['teams'].any((item2) => item2["_id"] == item1["_id"])).toList();
+                    Map<int, dynamic> result = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AnimatedDialog(
+                            items: primaryList,
+                            singleSelect: false,
+                            secondaryItems: secondaryList);
+                      },
+                    );
+                    if (result.isNotEmpty) {
+                      print('Selected items: $result');
+                      sendTeamsEventRequest(userObjectDetails['mainEvent'], result,
+                          primaryList, secondaryList);
+                    }
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 50,
+                    color: Colors.blue,
+                    child: Center(child: Text("Send Teams Request")),
+                  )));
+        }
+        else{
+          return sendEventRequestForMyTeamWidget(context, userObjectDetails);                
+        }
   }
 
   Container sendOrganizerPlayerEventRequest(
@@ -1144,6 +1157,17 @@ mixin EventMixin {
       'players': userObjectDetails['players'],
       'userParticipants': userObjectDetails['userParticipants'],
       'team': userObjectDetails['team'],
+      'mainEvent': userObjectDetails['mainEvent'],
+    };
+    return res;
+  }
+  
+  Future<dynamic> getTeamListWidgetDetails(userObjectDetails) async {
+    dynamic res = {
+      'players': userObjectDetails['players'],
+      'userParticipants': userObjectDetails['userParticipants'],
+      'team': userObjectDetails['team'],
+      'teams': userObjectDetails['teams'],
       'mainEvent': userObjectDetails['mainEvent'],
     };
     return res;
