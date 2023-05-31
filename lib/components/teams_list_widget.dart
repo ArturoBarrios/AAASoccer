@@ -1,40 +1,91 @@
 import 'package:flutter/material.dart';
 
-class TeamsListWidget extends StatelessWidget {
+import '../commands/event_command.dart';
+
+class TeamsListWidget extends StatefulWidget {
   final Map<String, dynamic> teamsDetails;
 
   TeamsListWidget({required this.teamsDetails});
+  
+  @override
+  _TeamsListWidgetState createState() => _TeamsListWidgetState();
+
+}
+
+class _TeamsListWidgetState extends State<TeamsListWidget> {
+
+   Future<void> removeTeamFromEvent(dynamic team)async{
+    print("removeTeamFromEvent");
+    print("team: " + team.toString());
+    dynamic removeTeamFromEventInput = {
+      'team_id': team['_id'],
+      'event_id': widget.teamsDetails['mainEvent']['_id'],
+    };
+    dynamic removeTeamFromEventResp = await EventCommand().removeTeamFromEvent(removeTeamFromEventInput);
+    print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
+    if(removeTeamFromEventResp['success']){
+      widget.teamsDetails['teams'].forEach((teamItem) {
+        if(teamItem['_id'] == team['_id']){
+          setState(() {
+            widget.teamsDetails['teams'].remove(teamItem);
+          });
+        }
+      });
+
+    }
+    
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> teams = teamsDetails['teams'] ?? [];
+    List<dynamic> teams = widget.teamsDetails['teams'] ?? [];
 
-    return ListView.builder(
-      itemCount: teams.length,
-      itemBuilder: (context, index) {
-        String teamName = teams[index]['name'] ?? '';
-
-        return ListTile(
-          title: Text(teamName),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  // TODO: Add your button action here.
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  // TODO: Add your button action here.
-                },
-              ),
-            ],
+   
+  
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey,
+        ),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Column(
+        children: <Widget>[
+          Text(
+            'Team List',
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        );
-      },
+          SizedBox(height: 10.0),
+          teams.isEmpty
+              ? Center(
+                  child: Text('No Teams'),
+                )
+              : Column(
+                  children: List<Widget>.generate(teams.length, (index) {
+                    String teamName = teams[index]['name'] ?? '';
+
+                    return ListTile(
+                      title: Text(teamName),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[                          
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              removeTeamFromEvent(teams[index]);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+        ],
+      ),
     );
   }
 }

@@ -167,20 +167,14 @@ class _TournamentViewState extends State<TournamentView> {
                           userEventDetails['mainEvent'], widget.userObject),
                       widget.getChatWidget(
                           context, true, false, userEventDetails),
-                      SizedBox(
-                        child: Container(
-                          height: 450,
-                          child: PlayerList(
+                      
+                          PlayerList(
                               playersDetails: playerListWidgetDetails),
-                        ),
-                      ),
-                      SizedBox(
-                        child: Container(
-                          height: 450,
-                          child: TeamsListWidget(
+                        
+                      
+                      TeamsListWidget(
                               teamsDetails: teamListWidgetDetails),
-                        ),
-                      ),
+                      
 
                       // userEventDetails['isMine'] ?
                       //   widget.sendPlayersRequestWidget(context, userEventDetails)
