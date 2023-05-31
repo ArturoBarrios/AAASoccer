@@ -176,4 +176,25 @@ class EventMutations {
 
     return addTeamString;
   }
+
+  String removeTeamFromEvent(Map<String, dynamic> removeTeamFromEventInput) {
+  String removeTeamString = """      
+    mutation {
+      updateEvent(id: ${removeTeamFromEventInput['event_id']},
+        data: {            
+          teams: {
+            disconnect: [
+              ${removeTeamFromEventInput['team_id']}                                                                                 
+            ]
+          }             
+        }                      
+      ){
+        ${EventFragments().fullEvent()}
+      }
+    }
+  """;
+
+  return removeTeamString;
+}
+
 }

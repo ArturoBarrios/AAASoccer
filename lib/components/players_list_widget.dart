@@ -194,121 +194,82 @@ class _PlayerListState extends State<PlayerList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _isExpanded = !_isExpanded;
-            });
-          },
-          child: Text(
-            _selectedUserType,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey,
         ),
-        if (_isExpanded)
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: Wrap(
-              spacing: 8.0,
-              children: _userTypes.map((userType) {
-                return FilterChip(
-                  label: Text(userType),
-                  onSelected: (isSelected) {
-                    setState(() {
-                      if (isSelected) {
-                        _selectedUserType = userType;
-                      }
-                    });
-                  },
-                  selected: _selectedUserType == userType,
-                );
-              }).toList(),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
+            child: Text(
+              _selectedUserType,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
           ),
-        Flexible(
-          child: SingleChildScrollView(
-            child: Column(
-              children: widget.playersDetails['userParticipants']
-                  .where((userParticipant) {
-                List<String> userRoles = getUserRoles(userParticipant);
-                return userRoles.contains(_selectedUserType);
-              }).map<Widget>((userParticipant) {
-                dynamic user = userParticipant['user'];
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(user['username']),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.info),
-                          onPressed: () {
-                            _showPlayerDetailsDialog(context, user['name']);
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.group_remove_sharp),
-                          onPressed: () {
-                            // You can call a function here to handle user deletion
-                            removePlayerRole(user);
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            // You can call a function here to handle user deletion
-                            removePlayer(user);
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () async {
-                            List<dynamic> primaryList = requestUserTypes;
-                            List<dynamic> secondaryList = [];
-                            // // List<dynamic> processedTeamList = teamList
-                            // //     .where((item1) => !userObjectDetails['teams']
-                            // //         .any((item2) =>
-                            // //             item2["_id"] == item1["_id"]))
-                            // //     .map((item) => item['team'])
-                            // //     .toList();
-                            // primaryList = processedTeamList;
-                            Map<int, dynamic> result = await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AnimatedDialog(
-                                    items: primaryList,
-                                    singleSelect: false,
-                                    secondaryItems: secondaryList);
-                              },
-                            );
-                            if (result.isNotEmpty) {
-                              print('Selected items: $result');
-                              updatePlayerRequest(user, result, primaryList);
-                              // sendTeamsEventRequest(
-                              //     userObjectDetails['mainEvent'],
-                              //     result,
-                              //     primaryList,
-                              //     secondaryList);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+          if (_isExpanded)
+            Container(
+              padding: EdgeInsets.all(8.0),
+              child: Wrap(
+                spacing: 8.0,
+                children: _userTypes.map((userType) {
+                  return FilterChip(
+                    label: Text(userType),
+                    onSelected: (isSelected) {
+                      setState(() {
+                        if (isSelected) {
+                          _selectedUserType = userType;
+                        }
+                      });
+                    },
+                    selected: _selectedUserType == userType,
+                  );
+                }).toList(),
+              ),
+            ),
+          Column(
+            children: widget.playersDetails['userParticipants']
+                .where((userParticipant) {
+              List<String> userRoles = getUserRoles(userParticipant);
+              return userRoles.contains(_selectedUserType);
+            }).map<Widget>((userParticipant) {
+              dynamic user = userParticipant['user'];
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(user['username']),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.info),
+                        onPressed: () {
+                          _showPlayerDetailsDialog(context, user['name']);
+                        },
+                      ),
+                      // ...other icons and actions...
+                    ],
                   ),
-                );
-              }).toList(),
-            ),
+                ),
+              );
+            }).toList(),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+
 }

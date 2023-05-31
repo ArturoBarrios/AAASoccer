@@ -815,6 +815,47 @@ class EventCommand extends BaseCommand {
     print("finish getMainEvent");
     return event;
   }
+
+  Future<Map<String, dynamic>> removeTeamFromEvent(dynamic removeTeamFromEventInput)async{
+    print("removeTeamFromEvent()");
+    Map<String, dynamic> removeTeamFromEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations().removeTeamFromEvent(removeTeamFromEventInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+
+
+      if(jsonDecode(response.body)['data'] != null){
+        dynamic removeTeamFromEvent = jsonDecode(response.body)['data']['updateEvent'];
+        removeTeamFromEventResponse["success"] = true;
+        removeTeamFromEventResponse["message"] = "Team Removed From Event";
+        removeTeamFromEventResponse["data"] = removeTeamFromEvent;
+      }
+
+
+
+      return removeTeamFromEventResponse;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return removeTeamFromEventResponse;
+    } 
+  }
   
   //gets isMyEvent, isMember
   Map<String,dynamic> getUserEventDetails(List<dynamic> events){
