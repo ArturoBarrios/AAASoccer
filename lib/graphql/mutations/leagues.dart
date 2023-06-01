@@ -12,7 +12,10 @@ class LeagueMutations{
               name: "${eventInput['name']}",
               isMainEvent: ${eventInput ['isMainEvent']},
               capacity: ${eventInput['capacity']},
-              type: LEAGUE,
+              startTime: "${eventInput['startTime']}",
+              endTime: "${eventInput['endTime']}",
+              createdAt: "${eventInput['createdAt']}", 
+              type: LEAGUE,             
               joinConditions: {
                 create: {
                   withRequest: ${eventInput['withRequest']},
