@@ -35,6 +35,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
   final imagesController = TextEditingController();
   final numberOfRoundsPerTeamController = TextEditingController();
   final teamPriceController = TextEditingController();
+  final capacityController = TextEditingController();
   
 
   bool _isLoading = false;
@@ -68,6 +69,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.LEAGUE,
+        'capacity': int.parse(capacityController.text.toString()),
       };
       
         Map<String, dynamic> locationInput = {"latitude": AppModel().currentPosition.latitude, "longitude": AppModel().currentPosition.longitude};//generateRandomLocation["data"]["randomLocation"];
@@ -150,6 +152,10 @@ class _LeagueCreateState extends State<LeagueCreate> {
         TextField(
           controller: numberOfRoundsPerTeamController,
           decoration: new InputDecoration.collapsed(hintText: 'Number of Rounds Per Team'),
+        ),
+        TextField(
+          controller: capacityController,
+          decoration: new InputDecoration.collapsed(hintText: 'Capacity'),
         ),
         GestureDetector(
             onTap: () {

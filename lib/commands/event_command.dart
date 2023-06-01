@@ -1175,6 +1175,7 @@ class EventCommand extends BaseCommand {
     List myArchivedEvents = [];
     //filter out archived events
     for(int i = 0; i < allMyEvents.length; i++){
+      print("eventUserParticipants['data'][i]['_id': "+allMyEvents[i]["_id"].toString());
       print("allMyEvents[i]['event']: "+allMyEvents[i]['event'].toString());
       String millisecondsString = allMyEvents[i]['event']['endTime'].toString();
       DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      

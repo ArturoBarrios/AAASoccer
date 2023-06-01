@@ -402,6 +402,15 @@ type League   {
   events: [Event] @relation
   numberOfTeams: Int
   # eligibleEventTypes: [EventType] @relation
+  season: Season
+}
+
+type Season {
+  leagues: [League] @relation
+  tournaments: [Tournament] @relation  
+  # was going to add season but you can calculate season from start and end date
+  startDate: String
+  endDate: String
 }
 
 type TeamOrder {
@@ -452,7 +461,7 @@ type Tournament   {
   numberOfTeams: Int
   groupStage: GroupStage
   tournamentStage: TournamentStage
-
+  season: Season
   # eligibleEventTypes: [EventType] @relation  
 }
 

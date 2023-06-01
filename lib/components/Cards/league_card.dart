@@ -82,7 +82,7 @@ class _LeagueCard extends State<LeagueCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return LeagueView(userEventDetails: widget.userEventDetails, league: widget.leagueObject);
+            return LeagueView(league: widget.leagueObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

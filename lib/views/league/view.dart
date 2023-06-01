@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import '../../commands/event_command.dart';
+import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/events_calendar.dart';
 import '../../components/headers.dart';
+import '../../components/players_list_widget.dart';
+import '../../components/teams_list_widget.dart';
 import '../../constants.dart';
 
 class LeagueView extends StatefulWidget with EventMixin, PaymentMixin {
-  LeagueView({Key? key, required this.userEventDetails, required this.league})
+  LeagueView({Key? key, required this.league})
       : super(key: key);
 
-  final dynamic userEventDetails;
   final dynamic league;
 
   @override
@@ -28,35 +30,40 @@ class _LeagueViewState extends State<LeagueView> {
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
 
-  bool _isLoading = false;
+  bool _isLoading = true;
   dynamic priceObject;
   dynamic leagueEvents = [];
+  dynamic userEventDetails;
+  dynamic playerListWidgetDetails;
+  dynamic teamListWidgetDetails;
 
   void goBack() {
     Navigator.pop(context);
   }
 
   void loadEventPayment() {
-    priceObject = widget.userEventDetails['mainEvent']['price'];
+    priceObject = userEventDetails['mainEvent']['price'];
+  }
+
+  Future<void> loadInitialData() async {
+    print("loadInitialData() in LeagueView");
+    
+    dynamic getEventDetailsResp =  
+        EventCommand().getUserEventDetails(widget.league['events']['data']);
+    leagueEvents = widget.league['events']['data'];
+    widget.setupPlayerList();
+    setState(() {
+      userEventDetails = getEventDetailsResp;
+      _isLoading = false;
+    });
+    loadEventPayment();    
   }
 
   @override
   void initState() {
     print("initState");
-    leagueEvents = widget.league['events']['data'];
-    loadEventPayment();
-    // widget.loadEventInfo(widget.userEventDetails['mainEvent']);
-    widget.setupPlayerList();
-    _isLoading = false;
-    // leagueEvents = widget.league['events']['data'];
-    // //remove event where isMainEvent and type==TOURNAMENT
-    // for (int i = 0; i < leagueEvents.length; i++) {
-    //   dynamic leagueEvent = leagueEvents[i];
-    //   if (leagueEvent['isMainEvent'] &&
-    //       leagueEvent['type'] == "LEAGUE") {
-    //     leagueEvents.remove(leagueEvent);
-    //   }
-    // }
+    loadInitialData();
+    
     print("finish initState");
   }
 
@@ -64,7 +71,9 @@ class _LeagueViewState extends State<LeagueView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Headers().getBackHeader(context, "League"),
-      body: Center(
+      body: !_isLoading 
+        ? 
+        Center(
           child: Column(children: [
         widget.getParticipationRolesWidget(),
         Container(
@@ -72,7 +81,7 @@ class _LeagueViewState extends State<LeagueView> {
           child: EventsCalendar(testText: "test", events: ""),
         ),
 
-        !widget.userEventDetails['isMine']
+        !userEventDetails['isMine']
             ? Container(
                 height: 20,
                 child: ClipRRect(
@@ -105,7 +114,7 @@ class _LeagueViewState extends State<LeagueView> {
                         await widget.requestTypeSelected(
                             widget.selectedRequestTypeIndexes);
                         await widget.sendEventRequest(
-                            widget.userEventDetails['mainEvent'], {0: {}}, widget.requestUserTypes, []);
+                            userEventDetails['mainEvent'], {0: {}}, widget.requestUserTypes, []);
                       },
                       child: Text("Send Request")),
                 ),
@@ -114,10 +123,9 @@ class _LeagueViewState extends State<LeagueView> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            widget.getPriceWidget(widget.userEventDetails),
-            // Text(
-            //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-            widget.userEventDetails['isMine']
+            // widget.getPriceWidget(userEventDetails),
+          
+            userEventDetails['isMine']
                 ? ElevatedButton(
                     onPressed: () {
                       // Add button onPressed logic here
@@ -127,19 +135,41 @@ class _LeagueViewState extends State<LeagueView> {
                 : Container(),
           ],
         ),
+  ///
+        PlayerList(
+                              playersDetails: playerListWidgetDetails),
+                        
+                      
+                      // TeamsListWidget(
+                      //         teamsDetails: teamListWidgetDetails),
         //join game gesture detector for now
-        widget.getJoinGameWidget(context, widget.userEventDetails,
-            widget.userEventDetails['mainEvent'], widget.userObject),
-        widget.getChatWidget(context, true, false, widget.userEventDetails),
+        // widget.getJoinGameWidget(context, userEventDetails,
+        //     userEventDetails['mainEvent'], widget.userObject),
+        // widget.getChatWidget(context, true, false, userEventDetails),
 
-        widget.userEventDetails['isMine']
-            ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-            : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
-        
-        widget.userEventDetails['isMine'] ?                
-                  widget.sendTeamsRequestWidget(context, widget.userEventDetails)
-                  : widget.sendEventRequestForMyTeamWidget(context, widget.userEventDetails),
-      ])),
+        // userEventDetails['isMine']
+            // ? widget.sendPlayersRequestWidget(context, userEventDetails)
+            // : widget.sendOrganizerPlayerEventRequest(context, userEventDetails),
+        // widget.sendPlayersRequestWidget(context, userEventDetails),
+
+        // userEventDetails['isMine'] ?                
+        //           widget.sendTeamsRequestWidget(context, userEventDetails)
+        //           : widget.sendEventRequestForMyTeamWidget(context, userEventDetails),
+        // widget.sendTeamsRequestWidget(context, userEventDetails),
+      ]))
+      : 
+      Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Align(
+                alignment: Alignment.center,
+                child:                   
+                    LoadingScreen(
+                        currentDotColor: Colors.white,
+                        defaultDotColor: Colors.black,
+                        numDots: 10),
+              ),
+            ),
     );
   }
 }
