@@ -44,33 +44,33 @@ class _LeagueTableWidgetState extends State<LeagueTableWidget> {
             });
           },
         ),
-        Expanded(
-          child: ListView.separated(
-            itemCount: teamDummyData.length,
-            separatorBuilder: (context, index) => Divider(
-              color: Colors.grey,
-            ),
-            itemBuilder: (context, index) {
-              var teamData = teamDummyData[index];
-              return Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(child: Text('${index + 1}. ${teamData['name']}')),
-                    Expanded(child: Text('${teamData['wins']}')),
-                    Expanded(child: Text('${teamData['draws']}')),
-                    Expanded(child: Text('${teamData['losses']}')),
-                    Expanded(child: Text('${teamData['goalsFor']}')),
-                    Expanded(child: Text('${teamData['goalAgainst']}')),
-                    Expanded(
-                      child: Text('${teamData['goalsFor'] - teamData['goalAgainst']}'),
-                    ),
-                    Expanded(child: Text('${teamData['points']}')),
-                  ],
-                ),
-              );
-            },
+        ListView.separated(
+          shrinkWrap: true, // this is needed
+          physics: NeverScrollableScrollPhysics(), // and this!
+          itemCount: teamDummyData.length,
+          separatorBuilder: (context, index) => Divider(
+            color: Colors.grey,
           ),
+          itemBuilder: (context, index) {
+            var teamData = teamDummyData[index];
+            return Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(child: Text('${index + 1}. ${teamData['name']}')),
+                  Expanded(child: Text('${teamData['wins']}')),
+                  Expanded(child: Text('${teamData['draws']}')),
+                  Expanded(child: Text('${teamData['losses']}')),
+                  Expanded(child: Text('${teamData['goalsFor']}')),
+                  Expanded(child: Text('${teamData['goalAgainst']}')),
+                  Expanded(
+                    child: Text('${teamData['goalsFor'] - teamData['goalAgainst']}'),
+                  ),
+                  Expanded(child: Text('${teamData['points']}')),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );
