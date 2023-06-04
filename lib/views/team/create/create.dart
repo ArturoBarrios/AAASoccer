@@ -49,8 +49,8 @@ class _TeamCreateState extends State<TeamCreate> {
           'logo': logoController.text.trim(),
           'images': imagesController.text.trim(),
           'price': double.parse(priceController.text.toString()),
-          'withRequest': createEventRequestWidget.withRequest,
-          'withPayment': createEventPaymentWidget.withPayment,           
+          'withRequest': createEventRequestWidget.withRequest.value,
+          'withPayment': createEventPaymentWidget.withPayment.value,           
           'roles': "{PLAYER, ORGANIZER}",
           'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),                    
         };

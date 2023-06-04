@@ -11,6 +11,10 @@ import '../../constants.dart';
 import '../../views/chats/create.dart';
 import '../Dialogues/animated_dialogu.dart';
 import '../card_form_screen.dart';
+import '../create_event_payment.dart';
+import '../create_event_request.dart';
+import '../create_team_payment.dart';
+import '../create_team_request.dart';
 
 mixin EventMixin {
   bool withRequest = false;
@@ -48,6 +52,12 @@ mixin EventMixin {
   String playersTeamsChosen = "";
   List myEventsToChooseFrom = [];
   List myTeamsToChooseFrom = [];
+
+  CreateEventRequest createEventRequestWidget = new CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
+
 
   void setupPlayerList() {
     print("setupPlayerList");
@@ -551,8 +561,7 @@ mixin EventMixin {
 
   Container getJoinGameWidget(BuildContext context, dynamic userObjectDetails,
       dynamic event, dynamic userInput) {
-    print(
-        "userObjectDetails['roles']: " + userObjectDetails['roles'].toString());
+    print("getJoinGameWidget()");
     dynamic eventJoinCondition = getEventJoinConditions(event['joinConditions']['data']);
     print("eventJoinCondition: "+eventJoinCondition.toString());
     //if not already a player
@@ -726,7 +735,7 @@ mixin EventMixin {
       print("joinCondition: "+ joinCondition.toString());
       if(joinCondition['forEvent']!=null){
         print("in ifffff");
-        return joinCondition;
+        joinConditionResp = joinCondition;
       }
       
     });
@@ -738,14 +747,32 @@ mixin EventMixin {
   dynamic getTeamJoinConditions(dynamic joinConditions){
     print("getTeamJoinConditions");
     print("joinConditions: "+joinConditions.toString());
+    dynamic joinConditionResp = null;
     joinConditions.forEach((joinCondition) {
       print("joinCondition: "+ joinCondition.toString());
       if(joinCondition['forTeam'] != null){
-        return joinCondition;
-      }
-      
+        joinConditionResp = joinCondition;
+      }      
     });
 
+    return joinConditionResp;
+
+  }
+
+  void setupRequestWidgetData(dynamic userObjectDetails){
+    print("setupRequestWidgetData()");
+    if(userObjectDetails['mainEvent']!=null){
+      userObjectDetails['mainEvent']['joinConditions']['data'].forEach((joinCondition) {
+        if(joinCondition['forEvent'] != null){
+          createEventRequestWidget = new CreateEventRequest(withRequest: joinCondition['withRequest']);
+          createEventPaymentWidget = new CreateEventPayment(withPayment: joinCondition['withPayment']);
+        }
+        else{
+          createTeamRequestWidget = new CreateTeamRequest(withRequest: joinCondition['withRequest']);
+          createTeamPaymentWidget = new CreateTeamPayment(withPayment: joinCondition['withPayment']);
+        }        
+      });
+    }
   }
 
   Container getJoinTeamWidget(BuildContext context, dynamic userObjectDetails,

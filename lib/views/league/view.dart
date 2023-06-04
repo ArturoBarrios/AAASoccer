@@ -53,6 +53,7 @@ class _LeagueViewState extends State<LeagueView> {
     
     dynamic getEventDetailsResp =  
         EventCommand().getUserEventDetails(widget.league['events']['data']);
+    widget.setupRequestWidgetData(getEventDetailsResp);
     leagueEvents = widget.league['events']['data'];
     widget.setupPlayerList();
     playerListWidgetDetails =
@@ -137,9 +138,16 @@ Widget build(BuildContext context) {
                   : Container(),
               ],
             ),
-            //join game gesture detector for now
-            widget.getJoinGameWidget(context, userEventDetails,
-                userEventDetails['mainEvent'], widget.userObject),
+              if (userEventDetails['isMine'])
+              widget.createEventRequestWidget,
+              if (userEventDetails['isMine'])
+              widget.createEventPaymentWidget,
+              if (userEventDetails['isMine'])
+              widget.createTeamRequestWidget,
+              if (userEventDetails['isMine'])
+              widget.createTeamPaymentWidget,
+
+
             widget.getChatWidget(context, true, false, userEventDetails),
             PlayerList(
                               playersDetails: playerListWidgetDetails),

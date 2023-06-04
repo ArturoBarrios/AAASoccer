@@ -198,6 +198,7 @@ class TournamentCommand extends BaseCommand {
     };
 
     eventInput['user_id'] = appModel.currentUser['_id'];
+    print("eventInput: " + eventInput.toString());
     var rng = Random();
 
     int numberOfTeams = tournamentData['numberOfTeams'] as int;
