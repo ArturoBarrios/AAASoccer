@@ -30,9 +30,12 @@ class TeamFragments {
               }
             } 
             joinConditions{
-              _id
-              withRequest
-              withPayment
+              data{
+                _id
+                withRequest
+                withPayment
+
+              }
             }
             price{                    
               _id

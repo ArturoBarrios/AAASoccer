@@ -48,6 +48,8 @@ class _LeagueViewState extends State<LeagueView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in LeagueView");
+    widget.setupTeamList();
+    widget.setupMyTeams();
     
     dynamic getEventDetailsResp =  
         EventCommand().getUserEventDetails(widget.league['events']['data']);
@@ -124,7 +126,7 @@ Widget build(BuildContext context) {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // widget.getPriceWidget(userEventDetails),
+                widget.getPriceWidget(userEventDetails),
                 userEventDetails['isMine']
                   ? ElevatedButton(
                       onPressed: () {

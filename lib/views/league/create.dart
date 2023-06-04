@@ -9,6 +9,7 @@ import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
+import '../../components/create_team_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
 import '../../enums/EventType.dart';
@@ -43,6 +44,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
   CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
@@ -66,6 +68,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
         'withRequest': createEventRequestWidget.withRequest,
         'withPayment': createEventPaymentWidget.withPayment, 
         'withTeamPayment': createTeamPaymentWidget.withPayment, 
+        'withTeamRequest': createTeamRequestWidget.withRequest, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.LEAGUE,
@@ -132,6 +135,8 @@ class _LeagueCreateState extends State<LeagueCreate> {
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
+        createTeamRequestWidget,
+        createTeamPaymentWidget,
         dateTimePicker,
         TextField(
           controller: priceController,

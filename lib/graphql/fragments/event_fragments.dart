@@ -20,9 +20,13 @@ class EventFragments {
         }
       }
       joinConditions{
-        _id
-        withRequest
-        withPayment
+        data{
+          _id
+          withRequest
+          withPayment
+          forTeam
+          forEvent
+        }
       }
       price{                    
         _id

@@ -553,7 +553,8 @@ mixin EventMixin {
       dynamic event, dynamic userInput) {
     print(
         "userObjectDetails['roles']: " + userObjectDetails['roles'].toString());
-
+    dynamic eventJoinCondition = getEventJoinConditions(event['joinConditions']['data']);
+    print("eventJoinCondition: "+eventJoinCondition.toString());
     //if not already a player
     if (!userObjectDetails['roles'].contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");
@@ -568,8 +569,8 @@ mixin EventMixin {
         ));
       } else {
         //!withPayment&&!withRequest
-        if (!event['joinConditions']['withPayment'] &&
-            !event['joinConditions']['withRequest']) {
+        if (!eventJoinCondition['withPayment'] &&
+            !eventJoinCondition['withRequest']) {
           //price exists(join with paying or not paying)
           if (userObjectDetails['price'] != null) {
             return Container(
@@ -606,8 +607,8 @@ mixin EventMixin {
           }
         }
         //!withPayment&&withRequestt
-        else if (!event['joinConditions']['withPayment'] &&
-            event['joinConditions']['withRequest']) {
+        else if (!eventJoinCondition['withPayment'] &&
+            eventJoinCondition['withRequest']) {
           return sendOrganizerPlayerEventRequest(context, userObjectDetails);
           // return Container(
           //     child: GestureDetector(
@@ -621,8 +622,8 @@ mixin EventMixin {
           // ));
         }
         //withPayment && !withRequest
-        else if (event['joinConditions']['withPayment'] &&
-            !event['joinConditions']['withRequest']) {
+        else if (eventJoinCondition['withPayment'] &&
+            !eventJoinCondition['withRequest']) {
           //if amount is 0
 
           return Container(
@@ -717,12 +718,43 @@ mixin EventMixin {
     }
   }
 
+  dynamic getEventJoinConditions(dynamic joinConditions){
+    print("getEventJoinConditions");
+    print("joinConditions: "+joinConditions.toString());
+    dynamic joinConditionResp = null;
+    joinConditions.forEach((joinCondition) {
+      print("joinCondition: "+ joinCondition.toString());
+      if(joinCondition['forEvent']!=null){
+        print("in ifffff");
+        return joinCondition;
+      }
+      
+    });
+
+    return joinConditionResp;
+
+  }
+
+  dynamic getTeamJoinConditions(dynamic joinConditions){
+    print("getTeamJoinConditions");
+    print("joinConditions: "+joinConditions.toString());
+    joinConditions.forEach((joinCondition) {
+      print("joinCondition: "+ joinCondition.toString());
+      if(joinCondition['forTeam'] != null){
+        return joinCondition;
+      }
+      
+    });
+
+  }
+
   Container getJoinTeamWidget(BuildContext context, dynamic userObjectDetails,
       dynamic team, dynamic userInput) {
     print("getJoinTeamWidget");
     print(
         "userObjectDetails['roles']: " + userObjectDetails['roles'].toString());
-
+    dynamic teamJoinCondition = getTeamJoinConditions(team['joinConditions']['data']);
+    print("teamJoinCondition: "+teamJoinCondition.toString());
     //if not already a player
     if (!userObjectDetails['roles'].contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");
@@ -737,8 +769,8 @@ mixin EventMixin {
         ));
       } else {
         //!withPayment&&!withRequest
-        if (!team['joinConditions']['withPayment'] &&
-            !team['joinConditions']['withRequest']) {
+        if (!teamJoinCondition['withPayment'] &&
+            !teamJoinCondition['withRequest']) {
           //price exists(join with paying or not paying)
           if (userObjectDetails['price'] != null) {
             return Container(
@@ -775,8 +807,8 @@ mixin EventMixin {
           }
         }
         //!withPayment&&withRequestt
-        else if (!team['joinConditions']['withPayment'] &&
-            team['joinConditions']['withRequest']) {
+        else if (!teamJoinCondition['withPayment'] &&
+            teamJoinCondition['withRequest']) {
           return sendEventRequestForMyTeamWidget(context, userObjectDetails);
           // return Container(
           //     child: GestureDetector(
@@ -790,8 +822,8 @@ mixin EventMixin {
           // ));
         }
         //withPayment && !withRequest
-        else if (team['joinConditions']['withPayment'] &&
-            !team['joinConditions']['withRequest']) {
+        else if (teamJoinCondition['withPayment'] &&
+            !teamJoinCondition['withRequest']) {
           //if amount is 0
 
           return Container(

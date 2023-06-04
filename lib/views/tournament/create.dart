@@ -7,6 +7,7 @@ import '../../commands/tournament_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_team_payment.dart';
+import '../../components/create_team_request.dart';
 import '../../components/create_event_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/event_input_widget.dart';
@@ -47,6 +48,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
   CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
@@ -76,6 +78,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
         'withRequest': createEventRequestWidget.withRequest,
         'withPayment': createEventPaymentWidget.withPayment, 
         'withTeamPayment': createTeamPaymentWidget.withPayment, 
+        'withTeamRequest': createTeamRequestWidget.withRequest, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TOURNAMENT,
@@ -145,6 +148,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
+        createTeamRequestWidget,
         createTeamPaymentWidget,
         dateTimePicker,        
         TextField(

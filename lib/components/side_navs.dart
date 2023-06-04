@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/history.dart';
+import 'package:soccermadeeasy/components/playground_widget.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
 import '../commands/base_command.dart';
 import '../components/profile.dart';
@@ -122,6 +123,19 @@ class SideNavs extends StatefulWidget {
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {
                 return History(historyDetails: []);
+              },
+            ));
+          },
+        ),
+        ListTile(
+          leading: Icon(
+            Icons.history,
+          ),
+          title: const Text('Playground'),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return PlaygroundWidget();
               },
             ));
           },

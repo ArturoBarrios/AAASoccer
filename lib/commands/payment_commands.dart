@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../graphql/mutations/prices.dart';
 import '../graphql/mutations/users.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -351,6 +352,38 @@ class PaymentCommand extends BaseCommand {
   Future<void> createPaymentMethod() async {
     // final paymentMethod =
     //               await Stripe.instance.createPaymentMethod(PaymentMethodParams.card());
+  }
+
+  Future<Map<String, dynamic>> updatePrice(dynamic priceObject) async{
+    print("updatePrice");
+    print("priceObject: " + priceObject.toString());
+    Map<String, dynamic> updatePriceResp = {
+      "success": false,
+      "message": "",
+      "data": null
+    };
+    try{
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': PriceMutations()
+              .updatePrice(priceObject),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      Map<String, dynamic> updatedPrice = jsonDecode(response.body)['data']['updatePrice'];
+      return updatePriceResp;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return updatePriceResp;
+    }
+
+
   }
 
 }
