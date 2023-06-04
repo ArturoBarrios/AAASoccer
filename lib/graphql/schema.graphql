@@ -253,13 +253,15 @@ type Game {
 type JoinConditions {
   withRequest: Boolean
   withPayment: Boolean  
-  events: Event
+  forTeam: Boolean
+  forEvent: Boolean
+  event: Event
   team: Team
 }
 
 type Event   {
   name: String
-  joinConditions: JoinConditions
+  joinConditions: [JoinConditions] @relation
   isMainEvent: Boolean
   userParticipants: [EventUserParticipant] @relation
   # eventUserOrganizers: EventUserOrganizers
@@ -316,7 +318,7 @@ type Team   {
   chats: [Chat] @relation
   price: Price
   payments: [Payment] @relation
-  joinConditions: JoinConditions  
+  joinConditions: [JoinConditions] @relation  
   teamOrders: [TeamOrder] @relation
   
 

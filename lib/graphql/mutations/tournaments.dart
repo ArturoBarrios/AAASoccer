@@ -22,10 +22,19 @@ class TournamentMutations {
               createdAt: "${eventInput['createdAt']}",
 
               joinConditions: {
-                create: {
-                  withRequest: ${eventInput['withRequest']},
-                  withPayment: ${eventInput['withPayment']},
-                }
+                create: [
+                  {
+                    withRequest: ${eventInput['withRequest']},
+                    withPayment: ${eventInput['withPayment']},
+                    forEvent: true
+                  },
+                  {
+                    withRequest: ${eventInput['withTeamRequest']},
+                    withPayment: ${eventInput['withTeamPayment']},
+                    forTeam: true
+                  }
+
+                ]
               },
               userParticipants: {
                 create:
