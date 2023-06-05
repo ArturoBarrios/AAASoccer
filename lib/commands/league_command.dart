@@ -97,6 +97,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     };
 
     eventInput['user_id'] = appModel.currentUser['_id'];
+    print("eventInput: "+eventInput.toString());
     var rng = Random();
 
     List<dynamic> numberOfTeamsOptions = [2,4,8,16,32];
@@ -117,6 +118,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     );
     print("createLeague response: "+jsonDecode(response.body).toString());        
     Map<String, dynamic> createdLeague = jsonDecode(response.body)['data']['createLeague'];      
+    createLeagueResp['data'] = createdLeague;
     print("createdLeague: ");
     print(createdLeague);    
 

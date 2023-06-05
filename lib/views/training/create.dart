@@ -54,8 +54,8 @@ class _TrainingCreateState extends State<TrainingCreate> {
         'price':  double.parse(priceController.text.toString()),
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
-        'withRequest': createEventRequestWidget.withRequest,
-        'withPayment': createEventPaymentWidget.withPayment, 
+        'withRequest': createEventRequestWidget.withRequest.value,
+        'withPayment': createEventPaymentWidget.withPayment.value, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TRAINING

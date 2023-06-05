@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
 
 class CreateEventPayment extends StatefulWidget {
+  ValueNotifier<bool> withPayment;
+
+  CreateEventPayment({bool withPayment = false})
+      : withPayment = ValueNotifier(withPayment);
+
   @override
   _CreateEventPayment createState() => _CreateEventPayment();
-  bool withPayment = false;
 }
 
 class _CreateEventPayment extends State<CreateEventPayment> {
-  // State variables go here
-
   @override
   Widget build(BuildContext context) {
-    // Build method goes here
-    
-      return Container(
-      child: Column(children: [
-          
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text("Join With Payment?"), 
-            Checkbox(              
-              value: widget.withPayment, 
-              onChanged: (bool? value) {    
-                  setState(() {            
-                      widget.withPayment = value!;                
-                  });                               
-              },
-              
+    return ValueListenableBuilder(
+      valueListenable: widget.withPayment,
+      builder: (context, bool value, _) {
+        return Container(
+          child: Column(children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("Join With Payment?"),
+                Checkbox(
+                  value: value,
+                  onChanged: (bool? newValue) {
+                    widget.withPayment.value = newValue ?? false;
+                  },
+                ),
+              ],
             ),
-          ]
-        ),
-      ]),
+          ]),
+        );
+      },
     );
-    
   }
 }

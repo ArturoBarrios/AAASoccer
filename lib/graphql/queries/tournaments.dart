@@ -7,26 +7,8 @@ class TournamentQueries {
         query GetTournaments {
           allTournaments {
             data {      
-              _id              
-              numberOfTeams
-              groupPlay
-              tournamentStage{
-                _id    
-                numberOfTeams                                    
-                numberOfRoundsPerTeam                                    
-                tournament{
-                  _id
-                }
-                eventOrders{
-                  data{
-                    _id
-                    order                  
-                    event{
-                      _id
-                    }
-                  }
-                }
-              }              
+              ${TournamentFragments().tournamentFragment()}
+            }              
               groupStage{
                 ${TournamentFragments().groupStageFragment()}
               }
@@ -47,26 +29,7 @@ class TournamentQueries {
     String getTournament = """
       query getTournament {
             findTournamentByID(id: $tournamentId) {  
-              _id                        
-              numberOfTeams
-              groupPlay  
-              tournamentStage{
-                _id    
-                numberOfTeams                                    
-                numberOfRoundsPerTeam                                    
-                tournament{
-                  _id
-                }
-                eventOrders{
-                  data{
-                    _id
-                    order                  
-                    event{
-                      _id
-                    }
-                  }
-                }
-              } 
+             ${TournamentFragments().tournamentFragment()} 
               groupStage{
                 ${TournamentFragments().groupStageFragment()}
               }

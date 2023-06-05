@@ -6,6 +6,10 @@ import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/bracket_widget.dart';
+import '../../components/create_event_payment.dart';
+import '../../components/create_event_request.dart';
+import '../../components/create_team_payment.dart';
+import '../../components/create_team_request.dart';
 import '../../components/headers.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/teams_list_widget.dart';
@@ -41,6 +45,8 @@ class _TournamentViewState extends State<TournamentView> {
   //should add player as a free agent
   //should also handle sending team request
 
+  
+
   void goBack() {
     Navigator.pop(context);
   }
@@ -48,6 +54,8 @@ class _TournamentViewState extends State<TournamentView> {
   void loadEventPayment() {
     priceObject = userEventDetails['mainEvent']['price'];
   }
+
+  
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in TournamentView");
@@ -58,7 +66,7 @@ class _TournamentViewState extends State<TournamentView> {
     dynamic getEventDetailsResp =
         EventCommand().getUserEventDetails(widget.tournament['events']['data']);
     getEventDetailsResp['groupStage'] = widget.tournament['groupStage'];
-
+    widget.setupRequestWidgetData(getEventDetailsResp);
     getEventDetailsResp['tournamentStage'] =
         widget.tournament['tournamentStage'];
     widget.setupPlayerList();
@@ -162,9 +170,14 @@ class _TournamentViewState extends State<TournamentView> {
                               : Container(),
                         ],
                       ),
-                      //join game gesture detector for now
-                      widget.getJoinGameWidget(context, userEventDetails,
-                          userEventDetails['mainEvent'], widget.userObject),
+                      if (userEventDetails['isMine'])
+                      widget.createEventRequestWidget,
+                      if (userEventDetails['isMine'])
+                      widget.createEventPaymentWidget,
+                      if (userEventDetails['isMine'])
+                      widget.createTeamRequestWidget,
+                      if (userEventDetails['isMine'])
+                      widget.createTeamPaymentWidget,
                       widget.getChatWidget(
                           context, true, false, userEventDetails),
                       

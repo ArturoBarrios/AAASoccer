@@ -188,9 +188,11 @@ class TournamentCommand extends BaseCommand {
   Future<Map<String, dynamic>> createTournament(
       Map<String, dynamic> tournamentData,
       Map<String, dynamic> eventInput,
-      Map<String, dynamic> locationInput) async {
+      Map<String, dynamic> locationInput, 
+      dynamic league) async {
     print("createTournament");
     print("tournamentData: " + tournamentData.toString());
+    print("league: " + league.toString());
     Map<String, dynamic> createTournamentResp = {
       "success": false,
       "message": "Something went wrong with creating game relationships",
@@ -198,6 +200,7 @@ class TournamentCommand extends BaseCommand {
     };
 
     eventInput['user_id'] = appModel.currentUser['_id'];
+    print("eventInput: " + eventInput.toString());
     var rng = Random();
 
     int numberOfTeams = tournamentData['numberOfTeams'] as int;
@@ -224,7 +227,7 @@ class TournamentCommand extends BaseCommand {
       },
       body: jsonEncode(<String, String>{
         'query': TournamentMutations()
-            .createTournament(tournamentData, eventInput, locationInput),
+            .createTournament(tournamentData, eventInput, locationInput, league),
       }),
     );
     print("createTournament response: " + jsonDecode(response.body).toString());

@@ -21,6 +21,10 @@ import 'dart:convert';
 import '../home.dart';
 
 class TournamentCreate extends StatefulWidget {
+  dynamic league;
+  TournamentCreate({dynamic league = null})
+      : league = league;
+
   @override
   _TournamentCreateState createState() => _TournamentCreateState();
 }
@@ -75,14 +79,15 @@ class _TournamentCreateState extends State<TournamentCreate> {
         'teamPrice': double.parse(teamPriceController.text.toString()),
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
-        'withRequest': createEventRequestWidget.withRequest,
-        'withPayment': createEventPaymentWidget.withPayment, 
-        'withTeamPayment': createTeamPaymentWidget.withPayment, 
-        'withTeamRequest': createTeamRequestWidget.withRequest, 
+        'withRequest': createEventRequestWidget.withRequest.value,
+        'withPayment': createEventPaymentWidget.withPayment.value, 
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value, 
+        'withTeamRequest': createTeamRequestWidget.withRequest.value, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TOURNAMENT,
         'capacity': int.parse(capacityController.text.toString()),
+        
       };
       
         Map<String, dynamic> locationInput = {"latitude": AppModel().currentPosition.latitude, "longitude": AppModel().currentPosition.longitude};//generateRandomLocation["data"]["randomLocation"];
@@ -100,7 +105,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
 
         };
         Map<String, dynamic> createdTournament =
-            await TournamentCommand().createTournament(createTournamentInput, createEventInput, locationInput);
+            await TournamentCommand().createTournament(createTournamentInput, createEventInput, locationInput, widget.league);
         print("createdTournament: "+ createdTournament.toString());        
 
         if (createdTournament['success']) {
