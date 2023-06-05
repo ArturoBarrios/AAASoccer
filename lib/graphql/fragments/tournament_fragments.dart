@@ -1,7 +1,42 @@
+import 'package:soccermadeeasy/graphql/fragments/league_fragments.dart';
 import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
-import 'package:soccermadeeasy/graphql/fragments/chat_fragments.dart';
+import 'package:soccermadeeasy/graphql/fragments/league_fragments.dart';
 
 class TournamentFragments {
+  
+  String tournamentFragment() {
+    String tournamentFragmentString = """
+      _id              
+      numberOfTeams
+      groupPlay
+      leagues{
+        data{
+          ${LeagueFragments().leagueFragment()}
+
+        }
+      }
+      tournamentStage{
+        _id    
+        numberOfTeams                                    
+        numberOfRoundsPerTeam                                    
+        tournament{
+          _id
+        }
+        eventOrders{
+          data{
+            _id
+            order                  
+            event{
+              _id
+            }
+          }
+        }
+                  
+    """;
+
+    return tournamentFragmentString;
+  }
+
   String groupStageFragment() {
     String groupStageFragmentString = """
        _id    

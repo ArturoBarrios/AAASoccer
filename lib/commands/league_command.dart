@@ -118,6 +118,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     );
     print("createLeague response: "+jsonDecode(response.body).toString());        
     Map<String, dynamic> createdLeague = jsonDecode(response.body)['data']['createLeague'];      
+    createLeagueResp['data'] = createdLeague;
     print("createdLeague: ");
     print(createdLeague);    
 

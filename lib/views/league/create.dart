@@ -17,6 +17,7 @@ import '../../models/app_model.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
 import '../home.dart';
+import '../tournament/create.dart';
 
 class LeagueCreate extends StatefulWidget {
   @override
@@ -40,6 +41,8 @@ class _LeagueCreateState extends State<LeagueCreate> {
   
 
   bool _isLoading = false;
+  bool isHasTournamentChecked = false;
+
 
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
@@ -73,6 +76,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.LEAGUE,
         'capacity': int.parse(capacityController.text.toString()),
+        'hasTournament': isHasTournamentChecked,
       };
       
         Map<String, dynamic> locationInput = {"latitude": AppModel().currentPosition.latitude, "longitude": AppModel().currentPosition.longitude};//generateRandomLocation["data"]["randomLocation"];
@@ -83,20 +87,31 @@ class _LeagueCreateState extends State<LeagueCreate> {
           "numberOfTeams": int.parse(numberOfTeamsController.text.toString()),    
           "numberOfRoundsPerTeam": int.parse(numberOfRoundsPerTeamController.text.toString()),  
         };
-        Map<String, dynamic> createdLeague =
+        Map<String, dynamic> createdLeagueResp =
             await LeagueCommand().createLeague(createLeagueInput, createEventInput, locationInput);
-        print("createdTournament: "+ createdLeague.toString());        
+        print("createdLeagueResp: "+ createdLeagueResp.toString());        
 
-        if (createdLeague['success']) {
-          //update models that depend on tournament data
-           Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
+        if (createdLeagueResp['success']) {
+          dynamic createdLeague = createdLeagueResp['data'];
+          if(isHasTournamentChecked){
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => TournamentCreate(league: createdLeague),
+              ),
+            );
+          }
+          else{
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Home(),
+              ),
+            );
+          }
 
           createEventResponse['success'] = true;
         }
-      // }
+
+      
       return createEventResponse;
     } on ApiException catch (e) {
       return createEventResponse;
@@ -162,6 +177,21 @@ class _LeagueCreateState extends State<LeagueCreate> {
           controller: capacityController,
           decoration: new InputDecoration.collapsed(hintText: 'Capacity'),
         ),
+        Column(
+      children: [
+        Checkbox(
+          value: isHasTournamentChecked,
+          onChanged: (value) {
+            setState(() {
+              isHasTournamentChecked = value!;
+            });
+          },
+        ),
+        TextField(
+          decoration: InputDecoration.collapsed(hintText: 'Checkbox Field'),
+        ),
+      ],
+    ),
         GestureDetector(
             onTap: () {
               createLeague();

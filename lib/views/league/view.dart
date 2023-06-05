@@ -11,6 +11,7 @@ import '../../components/league_table_widget.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../constants.dart';
+import '../tournament/view.dart';
 
 class LeagueView extends StatefulWidget with EventMixin, PaymentMixin {
   LeagueView({Key? key, required this.league})
@@ -124,6 +125,31 @@ Widget build(BuildContext context) {
                   ),
                 )
               : Container(),
+              InkWell(
+      onTap: () {
+        // Handle navigation to tournament view here
+        // You can use Navigator.push to navigate to the tournament view
+
+         showAnimatedDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return TournamentView(tournament: widget.league['tournaments']['data'][0]);
+          },
+          animationType: DialogTransitionType.slideFromBottom,
+          curve: Curves.fastOutSlowIn,
+          duration: Duration(seconds: 1),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        color: Colors.blue,
+        child: Text(
+          'View Tournament',
+          style: TextStyle(color: Colors.white, fontSize: 16.0),
+        ),
+      ),
+    ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -1,4 +1,5 @@
 import '../fragments/event_fragments.dart';
+import '../fragments/league_fragments.dart';
 
 class LeagueQueries {
    String getLeagues()
@@ -7,13 +8,7 @@ class LeagueQueries {
         query GetLeagues {
           allLeagues {
             data {      
-              _id              
-              numberOfTeams                           
-              events{
-                data{                  
-                  ${EventFragments().fullEvent()}
-                }                  
-              } 
+              ${LeagueFragments().leagueFragment()}
             }
           }
         }
@@ -26,13 +21,7 @@ class LeagueQueries {
     String getLeague = """
       query getLeague {
             findLeagueByID(id: $leagueId) {  
-              _id                        
-              numberOfTeams
-              events{
-                data{
-                  ${EventFragments().fullEvent()}                                                                                   
-                }
-              }
+             ${LeagueFragments().leagueFragment()}
           }
         }
     """;

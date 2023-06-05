@@ -4,12 +4,24 @@ import '../fragments/event_fragments.dart';
 
 class TournamentMutations {
   String createTournament(Map<String, dynamic> tournamentInput,
-      Map<String, dynamic> eventInput, Map<String, dynamic> locationInput) {
+      Map<String, dynamic> eventInput, Map<String, dynamic> locationInput, 
+      dynamic league) {
+      String leagueConnect = league != null
+      ? 'leagues: { connect: ${league['_id']} }'
+      : '';
+    
     String createTournament = """
       mutation {
         createTournament(data: {      
           numberOfTeams: ${tournamentInput['numberOfTeams']},   
           groupPlay: ${tournamentInput['groupPlay']},                    
+          leagues: { 
+      connect: [
+        "${league['_id']}"
+
+      ]
+      },
+   
           events: {
             create: 
             {
