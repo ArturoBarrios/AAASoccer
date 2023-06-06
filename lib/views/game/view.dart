@@ -9,6 +9,8 @@ import '../../commands/user_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/Mixins/event_mixin.dart';
+import '../../components/chats_list_widget.dart';
+import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/profile.dart';
@@ -47,6 +49,7 @@ class _PickupViewState extends State<PickupView> {
   dynamic priceObject;
   dynamic userEventDetails;
   dynamic playerListWidgetDetails;
+  LocationSearchBar locationSearchBar = new LocationSearchBar();
 
   LatLng latLng(lat, lon) {
     return LatLng(lat, lon);
@@ -64,10 +67,11 @@ class _PickupViewState extends State<PickupView> {
     print("loadInitialData() in TeamView");
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
-    dynamic getEventDetailsResp =
-          EventCommand().getUserEventDetails([widget.game['event']]);
+    dynamic getEventDetailsResp = EventCommand().getUserEventDetails([widget.game['event']]);
+    widget.setupRequestWidgetData(getEventDetailsResp);
     widget.setupPlayerList();
     playerListWidgetDetails =  await widget.getPlayerListWidgetDetails(getEventDetailsResp);
+    // locationSearchBar = new LocationSearchBar(initialLocation: {"latitude": getEventDetailsResp['mainEvent']['latitude'], })
     setState(() {
       userEventDetails = getEventDetailsResp;
       _isLoading = false;
@@ -115,8 +119,17 @@ class _PickupViewState extends State<PickupView> {
                 numDots: 10),
       ),
     )
-          : ListView(
-              padding: EdgeInsets.all(16),
+          : SingleChildScrollView(
+            child: Center(
+              child: Expanded(
+                child: Column(
+
+                
+
+              
+
+            
+            
               children: [
                 Container(
                   margin: const EdgeInsets.all(10.0),
@@ -124,12 +137,15 @@ class _PickupViewState extends State<PickupView> {
                   width: MediaQuery.of(context).size.width -
                       (MediaQuery.of(context).size.width * .1), //10% padding
                   height: 200.0,
-                  child: MyMapPage(
+                  child:
+                  //map
+                   MyMapPage(
                       latitude: widget.game['event']['location']['data'][0]
                           ['latitude'],
                       longitude: widget.game['event']['location']['data'][0]
                           ['longitude']),
                 ),
+                locationSearchBar,
                 !userEventDetails['isMine']
                     ? widget.sendOrganizerPlayerEventRequest(context, userEventDetails)
                     : Container(),
@@ -137,8 +153,7 @@ class _PickupViewState extends State<PickupView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     widget.getPriceWidget(userEventDetails),
-                    // Text(
-                    //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                    
                     userEventDetails['isMine']
                         ? ElevatedButton(
                             onPressed: () {
@@ -149,10 +164,17 @@ class _PickupViewState extends State<PickupView> {
                         : Container(),
                   ],
                 ),
+                if (userEventDetails['isMine'])
+                  widget.createEventRequestWidget,
+                if (userEventDetails['isMine'])
+                  widget.createEventPaymentWidget,
                 //join game gesture detector for now
                 widget.getJoinGameWidget(context, userEventDetails,
                     widget.game['event'], widget.userObject),
                 widget.getChatWidget(context, true, false, userEventDetails),
+                ChatsListWidget(
+                  chats: userEventDetails['mainEvent']['chats']['data']
+                ),
           widget.sendPlayersRequestWidget(context, userEventDetails),
                 SizedBox(
             child: Container(
@@ -165,7 +187,7 @@ class _PickupViewState extends State<PickupView> {
 
 
               ],
-            ),
+            )))),
     );
   }
 }

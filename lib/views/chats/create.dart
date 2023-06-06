@@ -28,6 +28,8 @@ class _ChatCreateState extends State<ChatCreate> {
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
 
+  bool isPrivate = false;
+
   bool _isLoading = false;
 
 
@@ -57,6 +59,7 @@ class _ChatCreateState extends State<ChatCreate> {
     print("playersInput: $playersInput");
     dynamic chatInput = {
       "name": nameController.text.toString(),  
+      "isPrivate": isPrivate
 
     };    
     dynamic objectsToAttachInput = {
@@ -73,7 +76,7 @@ class _ChatCreateState extends State<ChatCreate> {
     if(createChatResp['success']){
       dynamic chatObject = createChatResp['data'];
       if(mounted){
-        Navigator.pop(context);
+        Navigator.pop(context, chatObject);
       }
     //   Navigator.push(context, MaterialPageRoute<void>(
     //   builder: (BuildContext context) {
@@ -139,7 +142,22 @@ class _ChatCreateState extends State<ChatCreate> {
           readOnly: true,
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),                
+        ),    
+        Column(
+      children: [
+        Checkbox(
+          value: isPrivate,
+          onChanged: (value) {
+            setState(() {
+              isPrivate = value!;
+            });
+          },
+        ),
+        TextField(
+          decoration: InputDecoration.collapsed(hintText: 'Checkbox Field'),
+        ),
+      ],
+    )   ,         
         IconButton(
             icon: const Icon(Icons.mark_chat_unread_rounded),
             tooltip: 'Chat',

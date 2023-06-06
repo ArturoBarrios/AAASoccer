@@ -514,6 +514,8 @@ type Chat  {
   event: Event
   team: Team
   archived: Boolean @default(value: false)
+  isPrivate: Boolean
+  IsMainChat: Boolean
 }
 
 type AppSubscription   {

@@ -165,7 +165,23 @@ class _TournamentViewState extends State<TournamentView> {
                                   onPressed: () {
                                     // Add button onPressed logic here
                                   },
-                                  child: Text('Update Payment'),
+                                  child: Text('Update Player Payment'),
+                                )
+                              : Container(),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          widget.getTeamPriceWidget(userEventDetails),
+                          // Text(
+                          //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                          userEventDetails['isMine']
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    // Add button onPressed logic here
+                                  },
+                                  child: Text('Update Team Payment'),
                                 )
                               : Container(),
                         ],
@@ -188,19 +204,8 @@ class _TournamentViewState extends State<TournamentView> {
                       TeamsListWidget(
                               teamsDetails: teamListWidgetDetails),
                       
+                      widget.sendPlayersRequestWidget(context, userEventDetails),
 
-                      // userEventDetails['isMine'] ?
-                      //   widget.sendPlayersRequestWidget(context, userEventDetails)
-                      //   : widget.sendOrganizerPlayerEventRequest(context, userEventDetails),
-                      // if(userEventDetails['isMine'])
-                      widget.sendPlayersRequestWidget(
-                          context, userEventDetails),
-
-                      // userEventDetails['isMine'] ?
-                      //   widget.sendTeamsRequestWidget(context, userEventDetails)
-                      //   : widget.sendEventRequestForMyTeamWidget(context, userEventDetails),
-
-                      // if (userEventDetails['isMine'])
                       widget.sendTeamsRequestWidget(context, userEventDetails),
 
                       Container(

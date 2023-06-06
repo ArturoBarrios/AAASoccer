@@ -2,6 +2,7 @@ import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/models/events_model.dart';
+import 'package:soccermadeeasy/models/home_page_model.dart';
 
 import '../graphql/mutations/users.dart';
 import 'base_command.dart';
@@ -1211,8 +1212,11 @@ class EventCommand extends BaseCommand {
       // await EventCommand().removeGame(game, true);
     }
     UserCommand().findMyUserById();
-    if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){
+    if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){      
+      homePageModel.selectedKey = Constants.LEAGUE;
       homePageModel.selectedObjects = List.from(eventsModel.games);
+      homePageModel.selectedKey = Constants.PICKUP;
+      
     }
     
     return updateViewModelsWithGameResp;

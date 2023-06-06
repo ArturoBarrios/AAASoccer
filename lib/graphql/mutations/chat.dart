@@ -16,6 +16,7 @@ class ChatMutations {
       createChat(
         data: {
           name: "${chatInput['name']}",
+          isPrivate: ${chatInput['isPrivate']},
           users: {
             connect:[
              ${objectsToAttachInput['playersIds']}
