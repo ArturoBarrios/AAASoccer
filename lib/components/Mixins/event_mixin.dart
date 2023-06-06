@@ -321,7 +321,7 @@ mixin EventMixin {
     return roles;
   }
 
-  void createChat(
+  Future<dynamic> createChat(
       BuildContext context,
       bool attachToEvent,
       bool attachToTeam,
@@ -341,17 +341,9 @@ mixin EventMixin {
             eventObject: attachToEvent ? userObjectDetails['mainEvent'] : null,
             teamObject: attachToTeam ? userObjectDetails['team'] : null,
             players: selectedPlayers)),
-);
-    // Navigator.push(context, MaterialPageRoute<void>(
-    //   builder: (BuildContext context) {
-    //     return ChatCreate(
-    //         eventObject: attachToEvent ? userObjectDetails['mainEvent'] : null,
-    //         teamObject: attachToTeam ? userObjectDetails['team'] : null,
-    //         players: selectedPlayers);
-    //   },
-    // ));
-
-    updateChatList(chatObject, userObjectDetails);
+);  
+    return chatObject;
+    // updateChatList(chatObject, userObjectDetails);
 
   }
 
@@ -369,7 +361,7 @@ mixin EventMixin {
   }
 
   Container getChatWidget(BuildContext context, bool attachToEvent,
-      bool attachToTeam, dynamic userObjectDetails) {
+      bool attachToTeam, dynamic userObjectDetails, Function? createdChatFunction) {
     print("getChatWidget");
 
     print("participationRoles: $participationRoles");
@@ -391,14 +383,19 @@ mixin EventMixin {
                     },
                   );
                   if (result.isNotEmpty) {
-                    createChat(context, attachToEvent, attachToTeam, result,
-                        primaryList, userObjectDetails);
+                    dynamic createdChat = await createChat(context, attachToEvent, attachToTeam, result,primaryList, userObjectDetails);
+                    if(createdChat != null){
+                      createdChatFunction!(createdChat);
+                    }
                   }
                   
                 }
                 else{
                   print("No players to add but yourself");
-                  createChat(context, attachToEvent, attachToTeam, {}, [], userObjectDetails);
+                  dynamic createdChat = await createChat(context, attachToEvent, attachToTeam, {}, [], userObjectDetails);
+                  if(createdChat != null){
+                      createdChatFunction!(createdChat);
+                    }
 
                 }
               },
