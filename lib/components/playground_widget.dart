@@ -7,6 +7,14 @@ class PlaygroundWidget extends StatefulWidget {
 
 class _PlaygroundWidgetState extends State<PlaygroundWidget> {
   // Add your state variables and methods here
+  List<String> items = []; // You can replace this with your actual data
+  
+  // This is a method to simulate adding more items to the list.
+  void addItem() {
+    setState(() {
+      items.add('New Item ${items.length + 1}');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +22,14 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       appBar: AppBar(
         title: Text('Playground Widget'),
       ),
-      body: Center(
-        child: Text('Your widget content goes here'),
+      body: SingleChildScrollView(
+        child: Column(
+          children: items.map((item) => Text(item)).toList(),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: addItem,
+        child: Icon(Icons.add),
       ),
     );
   }

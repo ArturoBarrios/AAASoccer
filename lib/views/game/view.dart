@@ -84,6 +84,12 @@ class _PickupViewState extends State<PickupView> {
 
   }
 
+  void updateChatsList(dynamic createdChat){
+    setState(() {
+      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -171,7 +177,7 @@ class _PickupViewState extends State<PickupView> {
                 //join game gesture detector for now
                 widget.getJoinGameWidget(context, userEventDetails,
                     widget.game['event'], widget.userObject),
-                widget.getChatWidget(context, true, false, userEventDetails),
+                widget.getChatWidget(context, true, false, userEventDetails, updateChatsList  ),
                 ChatsListWidget(
                   chats: userEventDetails['mainEvent']['chats']['data']
                 ),
