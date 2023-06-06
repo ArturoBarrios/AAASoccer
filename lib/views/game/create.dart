@@ -91,7 +91,10 @@ class _GameCreateState extends State<GameCreate> {
       if (createPickupGameResp['success']) {
 
         Map<String, dynamic> createdGame = createPickupGameResp['data'];
+        
         await EventCommand().updateViewModelsWithGame(createdGame, true);
+          
+        
         
         Navigator.push(
           context,

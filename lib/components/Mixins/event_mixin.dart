@@ -327,22 +327,37 @@ mixin EventMixin {
       bool attachToTeam,
       Map<int, dynamic> indexes,
       List<dynamic> primaryList,
-      dynamic userObjectDetails) {
+      dynamic userObjectDetails) async {
     print("createChat");
     List<dynamic> selectedPlayers = [];
-    indexes.forEach((mainIndex, secondaryIndexes) {
+    indexes.forEach((mainIndex, secondaryIndexes) async{
       dynamic playerChosen = primaryList[mainIndex];
       selectedPlayers.add(playerChosen);
     });
     selectedPlayers.add(userObject);
-    Navigator.push(context, MaterialPageRoute<void>(
-      builder: (BuildContext context) {
-        return ChatCreate(
+    var chatObject = await Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => ChatCreate(
             eventObject: attachToEvent ? userObjectDetails['mainEvent'] : null,
             teamObject: attachToTeam ? userObjectDetails['team'] : null,
-            players: selectedPlayers);
-      },
-    ));
+            players: selectedPlayers)),
+);
+    // Navigator.push(context, MaterialPageRoute<void>(
+    //   builder: (BuildContext context) {
+    //     return ChatCreate(
+    //         eventObject: attachToEvent ? userObjectDetails['mainEvent'] : null,
+    //         teamObject: attachToTeam ? userObjectDetails['team'] : null,
+    //         players: selectedPlayers);
+    //   },
+    // ));
+
+    updateChatList(chatObject, userObjectDetails);
+
+  }
+
+  void updateChatList(dynamic newChat, dynamic userObjectDetails){
+    print("updateChatList()");
+    userObjectDetails['mainEvent']['chats']['data'].add(newChat);
   }
 
   Container getChatsWidget(BuildContext context, dynamic userObjectDetails) {
@@ -362,21 +377,29 @@ mixin EventMixin {
       return Container(
           child: GestureDetector(
               onTap: () async {
-                print("Add New Chat Pressed");
-                List<dynamic> primaryList = playerList;
-                List<dynamic> secondaryList = [];
-                Map<int, dynamic> result = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AnimatedDialog(
-                        items: primaryList,
-                        singleSelect: false,
-                        secondaryItems: secondaryList);
-                  },
-                );
-                if (result.isNotEmpty) {
-                  createChat(context, attachToEvent, attachToTeam, result,
-                      primaryList, userObjectDetails);
+                if(!playerList.isEmpty){
+                  print("Add New Chat Pressed");
+                  List<dynamic> primaryList = playerList;
+                  List<dynamic> secondaryList = [];
+                  Map<int, dynamic> result = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AnimatedDialog(
+                          items: primaryList,
+                          singleSelect: false,
+                          secondaryItems: secondaryList);
+                    },
+                  );
+                  if (result.isNotEmpty) {
+                    createChat(context, attachToEvent, attachToTeam, result,
+                        primaryList, userObjectDetails);
+                  }
+                  
+                }
+                else{
+                  print("No players to add but yourself");
+                  createChat(context, attachToEvent, attachToTeam, {}, [], userObjectDetails);
+
                 }
               },
               child: Container(

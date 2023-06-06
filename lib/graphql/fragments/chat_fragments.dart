@@ -4,6 +4,7 @@ class ChatFragments{
      String chatObject = r'''      
         	_id
           name
+          isPrivate
           users{
             data{
               _id

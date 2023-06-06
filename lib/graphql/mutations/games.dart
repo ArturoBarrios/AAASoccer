@@ -79,10 +79,13 @@ class GameMutations {
               createdAt: "${eventInput['createdAt']}",
               capacity: ${eventInput['capacity']},
               joinConditions: {
-                create: {
-                  withRequest: ${eventInput['withRequest']},
-                  withPayment: ${eventInput['withPayment']},
-                }
+                create: [
+                  {
+                    withRequest: ${eventInput['withRequest']},
+                    withPayment: ${eventInput['withPayment']},
+                    forEvent: true
+                  },                  
+                ]                
               },
               userParticipants: {
                 create:
