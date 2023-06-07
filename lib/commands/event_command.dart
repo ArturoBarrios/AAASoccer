@@ -1212,15 +1212,23 @@ class EventCommand extends BaseCommand {
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
     if(add){
-      await EventCommand().addGame(game, true);      
+      await EventCommand().addGame(game, true); 
+      appModel.myEvents.add(game);     
     }
     else{
+      appModel.myEvents.remove(game);     
       // await EventCommand().removeGame(game, true);
     }
     UserCommand().findMyUserById();
     if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){      
       // homePageModel.selectedKey = Constants.LEAGUE;
       print("homePageModel.selectedObjects.length before: "+ homePageModel.selectedObjects.length.toString());
+      if(add){
+        homePageModel.selectedObjects.add(game);
+      }
+      else{
+        homePageModel.selectedObjects.remove(game);
+      }
       homePageModel.selectedObjects.add(game);
       print("homePageModel.selectedObjects.length after: "+ homePageModel.selectedObjects.length.toString());
       // homePageModel.selectedKey = Constants.PICKUP;
