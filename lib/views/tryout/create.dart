@@ -63,6 +63,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
 
       Map<String, dynamic> tryoutData = {};          
       Map<String, dynamic> locationInput = {
+        "name": locationSearchBar.address,
         "latitude": locationSearchBar.coordinates.latitude,
         "longitude": locationSearchBar.coordinates.longitude,
       };

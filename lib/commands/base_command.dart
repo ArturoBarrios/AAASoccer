@@ -62,6 +62,7 @@ class BaseCommand {
   //   appModel.twilioClient = twilioFlutterClient;
   // }
 
+  getHomePageModel() => homePageModel;
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";

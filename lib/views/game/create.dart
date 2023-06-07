@@ -78,6 +78,7 @@ class _GameCreateState extends State<GameCreate> {
       //     EventSeeder().getRandomPickupGameData();
       // Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
       Map<String, dynamic> locationInput = {
+        "name": locationSearchBar.address,
         "latitude": locationSearchBar.coordinates.latitude,
         "longitude": locationSearchBar.coordinates.longitude,
       };
@@ -86,19 +87,18 @@ class _GameCreateState extends State<GameCreate> {
 
       Map<String, dynamic> createPickupGameResp = await GameCommand()
           .createGame(pickupData, eventInput, locationInput);
-      print("createPickupGameResp: ");
+      print("createPickupGameResp: "+createPickupGameResp.toString());
       print(createPickupGameResp['data']);
       if (createPickupGameResp['success']) {
-
-        Map<String, dynamic> createdGame = createPickupGameResp['data'];
-        
+        Map<String, dynamic> createdGame = createPickupGameResp['data'];        
         await EventCommand().updateViewModelsWithGame(createdGame, true);
+
           
         
         
-        Navigator.push(
+        Navigator.pop(
           context,
-          MaterialPageRoute(builder: (context) => Home()),
+          
         );
       }
     } on ApiException catch (e) {}

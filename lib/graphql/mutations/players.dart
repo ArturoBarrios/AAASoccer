@@ -14,7 +14,7 @@ class PlayerMutations {
               birthdate: "${userInput['birthdate']}"
               location: {
                 create: 
-                {
+                {                  
                   latitude: ${locationInput['latitude']}
                   longitude: ${locationInput['longitude']}
                 }

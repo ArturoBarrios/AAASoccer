@@ -79,7 +79,11 @@ class _LeagueCreateState extends State<LeagueCreate> {
         'hasTournament': isHasTournamentChecked,
       };
       
-        Map<String, dynamic> locationInput = {"latitude": AppModel().currentPosition.latitude, "longitude": AppModel().currentPosition.longitude};//generateRandomLocation["data"]["randomLocation"];
+        Map<String, dynamic> locationInput = {
+          "name": locationSearchBar.address,
+          "latitude": AppModel().currentPosition.latitude, 
+          "longitude": AppModel().currentPosition.longitude
+        };
         List<dynamic> groupPlayOptions = [true, false];
         var rng = Random();        
         print("locationInputCheck: " + locationInput.toString());   

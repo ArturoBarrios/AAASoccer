@@ -32,6 +32,12 @@ class _TryoutViewState extends State<TryoutView> {
 
   bool _isLoading = false;
 
+  void updateChatsList(dynamic createdChat){
+    setState(() {
+      widget.userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+    });
+  }
+
   void goBack(){
     Navigator.pop(context);
   }
@@ -152,7 +158,7 @@ class _TryoutViewState extends State<TryoutView> {
                   ],
                 ),
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.tryout['event'], widget.userObject),
-                widget.getChatWidget(context, true, false, widget.userEventDetails),
+                widget.getChatWidget(context, true, false, widget.userEventDetails, updateChatsList),
 
                 widget.userEventDetails['isMine']
             ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)

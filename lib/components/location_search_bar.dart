@@ -6,9 +6,11 @@ import 'package:geocoder/geocoder.dart';
 
 class LocationSearchBar extends StatefulWidget {
   Coordinates coordinates = Coordinates(0, 0);
+  String address = "";
   final locationController = TextEditingController();
   final bool readonly;
-  final String initialValue;
+  final String initialValue;  
+
 
   LocationSearchBar({this.readonly = false, this.initialValue = ''});
 
@@ -19,11 +21,12 @@ class LocationSearchBar extends StatefulWidget {
 class _LocationSearchBar extends State<LocationSearchBar> {
   final locationController = TextEditingController();
   List<dynamic> addressPredictions = [];
+  
 
   @override
   void initState() {
     super.initState();
-    if (widget.initialValue.isNotEmpty) {
+    if (widget.initialValue.isNotEmpty) {      
       placesApiAutoComplete(widget.initialValue);
     }
   }
@@ -44,13 +47,14 @@ class _LocationSearchBar extends State<LocationSearchBar> {
   void chooseAddress(dynamic location) async {
     print("chooseAddress");
     locationController.text = location['description'];
+    widget.address = location['description'];
     List<Address> addresses =
         await Geocoder.local.findAddressesFromQuery(location['description']);
-    Address address = addresses.first;
+    Address addressToChoose = addresses.first;
     
 
-    print("address: " + address.toString());
-    widget.coordinates = address.coordinates;
+    print("addressToChoose: " + addressToChoose.toString());    
+    widget.coordinates = addressToChoose.coordinates;
     print("coordinates: " + widget.coordinates.toString());
     widget.coordinates.latitude;
     widget.coordinates.longitude;
@@ -62,7 +66,7 @@ class _LocationSearchBar extends State<LocationSearchBar> {
       children: <Widget>[
         TextField(
           controller: locationController,
-          decoration: InputDecoration.collapsed(hintText: 'Location'),
+          decoration: InputDecoration.collapsed(hintText: ''),
           onChanged: (value) async => {placesApiAutoComplete(value)},
           enabled: !widget.readonly,
         ),
@@ -100,7 +104,7 @@ class _LocationSearchBar extends State<LocationSearchBar> {
                     },
                   )
                 : Center(
-                    child: Text('Search'),
+                    child: Text('Add Address'),
                   ),
           ),
         ),

@@ -39,6 +39,12 @@ class _LeagueViewState extends State<LeagueView> {
   dynamic playerListWidgetDetails;
   dynamic teamListWidgetDetails;
 
+  void updateChatsList(dynamic createdChat){
+    setState(() {
+      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+    });
+  }
+
   void goBack() {
     Navigator.pop(context);
   }
@@ -174,7 +180,7 @@ Widget build(BuildContext context) {
               widget.createTeamPaymentWidget,
 
 
-            widget.getChatWidget(context, true, false, userEventDetails),
+            widget.getChatWidget(context, true, false, userEventDetails, updateChatsList),
             PlayerList(
                               playersDetails: playerListWidgetDetails),
             TeamsListWidget(

@@ -975,6 +975,7 @@ class EventCommand extends BaseCommand {
       // isMyEventResp['amountRemaining'] = "0.00";
       isMyEventResp['price'] = event['price'];
       if(event['price'] != null){        
+        print("event['price']: " + event['price'].toString());
         print("payments: " + payments.toString());      
         //get payment data
         double amountPaid = 0.00;
@@ -994,12 +995,17 @@ class EventCommand extends BaseCommand {
           }
 
         }
+        print("aaaaaaaaaaaaaaaaa");
         isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
-        isMyEventResp['amountRemaining'] = (double.parse(event['price']['amount']) - amountPaid).toStringAsFixed(2);
-        
+        print("bbbbbbbbbbbbbbbbbb");
+        isMyEventResp['amountRemaining'] = (double.parse(event['price']['amount']) - amountPaid).toStringAsFixed(2);        
+        print("cccccccccccccccccc");
         isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);
+        print("ddddddddddddddddddddd");        
         isMyEventResp['teamAmountRemaining'] = (double.parse(event['price']['teamAmount']) - teamAmountPaid).toStringAsFixed(2);
+        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
       }
+        print("successfully ran details function");
       isMyEventResp["success"] = true;
     } on Exception catch (e) {
       print('Mutation failed: $e');
@@ -1213,11 +1219,16 @@ class EventCommand extends BaseCommand {
     }
     UserCommand().findMyUserById();
     if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){      
-      homePageModel.selectedKey = Constants.LEAGUE;
-      homePageModel.selectedObjects = List.from(eventsModel.games);
-      homePageModel.selectedKey = Constants.PICKUP;
+      // homePageModel.selectedKey = Constants.LEAGUE;
+      print("homePageModel.selectedObjects.length before: "+ homePageModel.selectedObjects.length.toString());
+      homePageModel.selectedObjects.add(game);
+      print("homePageModel.selectedObjects.length after: "+ homePageModel.selectedObjects.length.toString());
+      // homePageModel.selectedKey = Constants.PICKUP;
       
     }
+
+    // updateViewModelsWithGameResp["data"]["homePageModel"]["selectedObjects"] 
+    //   = homePageModel.selectedObjects;
     
     return updateViewModelsWithGameResp;
   }

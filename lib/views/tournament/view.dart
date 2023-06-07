@@ -45,6 +45,11 @@ class _TournamentViewState extends State<TournamentView> {
   //should add player as a free agent
   //should also handle sending team request
 
+  void updateChatsList(dynamic createdChat){
+    setState(() {
+      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+    });
+  }
   
 
   void goBack() {
@@ -195,7 +200,7 @@ class _TournamentViewState extends State<TournamentView> {
                       if (userEventDetails['isMine'])
                       widget.createTeamPaymentWidget,
                       widget.getChatWidget(
-                          context, true, false, userEventDetails),
+                          context, true, false, userEventDetails, updateChatsList),
                       
                           PlayerList(
                               playersDetails: playerListWidgetDetails),

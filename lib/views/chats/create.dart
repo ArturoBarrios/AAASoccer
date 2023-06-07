@@ -154,7 +154,7 @@ class _ChatCreateState extends State<ChatCreate> {
           },
         ),
         TextField(
-          decoration: InputDecoration.collapsed(hintText: 'Checkbox Field'),
+          decoration: InputDecoration.collapsed(hintText: 'Make Chat Private'),
         ),
       ],
     )   ,         
