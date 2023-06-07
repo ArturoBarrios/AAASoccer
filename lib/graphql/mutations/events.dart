@@ -130,7 +130,7 @@ class EventMutations {
   Map<String, dynamic> eventInput,
 ) {
   // Check if 'teamAmount' is present in paymentInput, if not set it to 0
-  var teamAmount = paymentInput.containsKey('teamPrice') ? paymentInput['teamPrice'] : "0";
+  var teamAmount = paymentInput.containsKey('teamPrice') ? paymentInput['teamPrice'] : "0.00";
 
   String createPrice = """
    mutation {
@@ -144,6 +144,7 @@ class EventMutations {
         }) {
           _id    
           amount
+          teamAmount
           event {
             _id
             name

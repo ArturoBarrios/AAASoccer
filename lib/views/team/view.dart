@@ -131,6 +131,12 @@ class _TeamViewState extends State<TeamView> {
 
   }
 
+
+  void updateChatsList(dynamic createdChat){
+    setState(() {
+      userTeamDetails['team']['chats']['data'].add(createdChat);      
+    });
+  }
   
 
   @override 
@@ -263,7 +269,7 @@ class _TeamViewState extends State<TeamView> {
                   : Container(),
             ],
           ),
-          widget.getChatWidget(context, false, true, userTeamDetails),
+          widget.getChatWidget(context, false, true, userTeamDetails, updateChatsList),
           widget.sendPlayersRequestWidget(context, userTeamDetails),
           widget.getJoinTeamWidget(context, userTeamDetails, userTeamDetails['team'], widget.userObject),          
           SizedBox(

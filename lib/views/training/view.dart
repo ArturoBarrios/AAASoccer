@@ -33,6 +33,12 @@ class _TrainingViewState extends State<TrainingView> {
 
   bool _isLoading = true;
 
+  void updateChatsList(dynamic createdChat){
+    setState(() {
+      widget.userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+    });
+  }
+
   void goBack(){
     Navigator.pop(context);
   }
@@ -147,7 +153,7 @@ class _TrainingViewState extends State<TrainingView> {
                   ],
                 ),
                 widget.getJoinGameWidget(context, widget.userEventDetails, widget.training['event'], widget.userObject),
-                widget.getChatWidget(context, true, false, widget.userEventDetails),
+                widget.getChatWidget(context, true, false, widget.userEventDetails, updateChatsList),
 
                 widget.userEventDetails['isMine']
             ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)

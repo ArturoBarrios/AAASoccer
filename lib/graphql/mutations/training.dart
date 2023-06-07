@@ -36,6 +36,7 @@ class TrainingMutations{
               location: {
                 create: 
                 {
+                  name: "${locationInput['name']}",
                   latitude: ${locationInput['latitude']},
                   longitude: ${locationInput['longitude']},
                 }

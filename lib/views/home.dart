@@ -320,6 +320,7 @@ class _Home extends State<Home> {
     super.initState();
     _firstLoad();
     _selectEventController = ScrollController()..addListener(_loadMore);
+
   }
 
   @override
@@ -339,8 +340,10 @@ class _Home extends State<Home> {
 
     if (selectedKey == Constants.PICKUP) {
       print("selected pickup: " + selectedObject.toString());
+      print("before getEventDetails");
       dynamic getEventDetailsResp =
           EventCommand().getUserEventDetails([selectedObject['event']]);
+      print("after getEventDetails");
       card = PickupCard2(
           gameObject: selectedObject,
           svgImage: svgImage,
@@ -520,6 +523,7 @@ class _Home extends State<Home> {
         });
 
     print("selectedKey in build: " + selectedKey);
+    print("selectedObjects length in build: " + selectedObjects.length.toString());
 
     return (Scaffold(
       appBar: Headers().getMainHeader(context),

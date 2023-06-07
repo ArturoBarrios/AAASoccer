@@ -65,6 +65,7 @@ class EventFragments {
         }
       location{
         data{
+        name
         _id
         latitude
         longitude

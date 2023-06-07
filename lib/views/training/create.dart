@@ -64,6 +64,7 @@ class _TrainingCreateState extends State<TrainingCreate> {
 
       Map<String, dynamic> trainingData = {};
       Map<String, dynamic> locationInput = {
+        "name": locationSearchBar.address,
         "latitude": locationSearchBar.coordinates.latitude,
         "longitude": locationSearchBar.coordinates.longitude,
       };

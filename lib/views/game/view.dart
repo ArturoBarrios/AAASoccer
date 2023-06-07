@@ -85,6 +85,8 @@ class _PickupViewState extends State<PickupView> {
   }
 
   void updateChatsList(dynamic createdChat){
+    print("updateChatsList");
+    print("createdChat: " + createdChat.toString());
     setState(() {
       userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
     });
@@ -137,6 +139,8 @@ class _PickupViewState extends State<PickupView> {
             
             
               children: [
+                
+
                 Container(
                   margin: const EdgeInsets.all(10.0),
                   color: Colors.amber[600],
@@ -151,7 +155,10 @@ class _PickupViewState extends State<PickupView> {
                       longitude: widget.game['event']['location']['data'][0]
                           ['longitude']),
                 ),
-                locationSearchBar,
+                userEventDetails['isMine'] ? 
+                  locationSearchBar = LocationSearchBar(initialValue: userEventDetails['mainEvent']['location']['data'][0]['name'])
+                   :
+                  Text(userEventDetails['mainEvent']['location']['data'][0]['name']) ,
                 !userEventDetails['isMine']
                     ? widget.sendOrganizerPlayerEventRequest(context, userEventDetails)
                     : Container(),
