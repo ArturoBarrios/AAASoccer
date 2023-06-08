@@ -18,6 +18,10 @@ import '../commands/geolocation_command.dart';
 // import 'package:geolocator/geolocator.dart';
 
 class TournamentCommand extends BaseCommand {
+  updateTournamentNumberOfTeams(){
+    
+  }
+
   Future<Map<String, dynamic>> addTeamToTeamOrder(
       dynamic teamOrderInput) async {
     print("addTeamToGroup");

@@ -72,11 +72,11 @@ class _TeamCreateState extends State<TeamCreate> {
 
           dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(createdTeam);
           
-
+          TeamCommand().updateModelsWithTeam(createdTeam);
           //navigate home          
-          Navigator.push(
+          Navigator.pop(
             context,
-            MaterialPageRoute(builder: (context) => Home()),
+            // MaterialPageRoute(builder: (context) => Home()),
           );          
           Navigator.push(
             context,

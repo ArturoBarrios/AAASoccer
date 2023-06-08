@@ -15,12 +15,7 @@ class TournamentMutations {
         createTournament(data: {      
           numberOfTeams: ${tournamentInput['numberOfTeams']},   
           groupPlay: ${tournamentInput['groupPlay']},                    
-          leagues: { 
-      connect: [
-        "${league['_id']}"
-
-      ]
-      },
+          ${leagueConnect}
    
           events: {
             create: 

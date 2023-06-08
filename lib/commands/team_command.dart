@@ -163,7 +163,7 @@ class TeamCommand extends BaseCommand {
 
  
 
-  List<dynamic> getAppModelTeamsNearMe() {
+  Future<List<dynamic>> getAppModelTeamsNearMe() async {
     print("getAppModelTeamsNearMe");
     print("appModel.teamsNearMe: "+appModel.teamsNearMe.toString());
     return appModel.teamsNearMe;
@@ -625,7 +625,7 @@ class TeamCommand extends BaseCommand {
 
 
         
-        TeamCommand().updateModelsWithTeam(createdTeam);
+        createTeamResponse["data"] = createdTeam;
         createTeamResponse["success"] = true;
         createTeamResponse["message"] = "Location Created";
         

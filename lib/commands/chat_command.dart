@@ -143,6 +143,8 @@ class ChatCommand extends BaseCommand {
     }
   }
 
+
+
   Future<Map<String, dynamic>> removeChat(
       Map<String, dynamic> chatInput) async {
     print("removeChat for real");
@@ -152,38 +154,42 @@ class ChatCommand extends BaseCommand {
       "data": null
     };
     try {
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': ChatMutations().deleteChat(chatInput),
-        }),
-      );
+      if(!chatInput['isMainChat']){
+        http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': ChatMutations().deleteChat(chatInput),
+          }),
+        );
 
-      print("response body: ");
-      print(jsonDecode(response.body));
+        print("response body: ");
+        print(jsonDecode(response.body));
+
+        dynamic deletedChat = jsonDecode(response.body)['data']['deleteChat'];
+        print("deletedChat: $deletedChat");
+
+        removeChatResponse['success'] = true;
+        removeChatResponse['message'] = "Chat Removed";
+        removeChatResponse['data'] = deletedChat;
+
+      }
+      else{
+        removeChatResponse['success'] = false;
+        removeChatResponse['message'] = "Cannot remove main chat";
+        removeChatResponse['data'] = null;
+      }
 
       return removeChatResponse;
     } on ApiException catch (e) {
-      print('Mutation failed: $e');
+      print('Mutation failed: $e');      
       return removeChatResponse;
     }
   }
 
-// chatInput = [
-// chat data types to process: [normal, iterableDisconnect, iterableConnect]
-// ]
-// ignore: slash_for_doc_comments
-/** Example from chat_card.dart
- *  dynamic archiveChatIterableInput = [
-    {"dataType": "normal",
-    "data": chatObject['archived'],
-    "_id": chatObject['_id']
-    }
- */
   String getProcessedChatInput(dynamic chatInput) {
     print("getProcessedChatInput");
     print("chatInput: " + chatInput.toString());

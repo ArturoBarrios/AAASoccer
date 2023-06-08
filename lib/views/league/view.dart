@@ -55,7 +55,7 @@ class _LeagueViewState extends State<LeagueView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in LeagueView");
-    widget.setupTeamList();
+    await widget.setupTeamList();
     widget.setupMyTeams();
     
     dynamic getEventDetailsResp =  
