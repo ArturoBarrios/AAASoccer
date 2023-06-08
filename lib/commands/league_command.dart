@@ -85,6 +85,10 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     return getLeaguesNearLocationResp;
   }
 
+  updateLeagueNumberOfTeams(){
+    
+  }
+
 
 
  Future<Map<String, dynamic>> createLeague(Map<String, dynamic> leagueData, eventInput, Map<String, dynamic> locationInput ) async{
@@ -130,6 +134,7 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     //create games from bergerTable    
     for(int i = 0;i<bergerTable.length;i++){
       List<dynamic> roundGames = bergerTable[i];
+      print("roundGames: "+ roundGames.toString());
       for(int k = 0; k<roundGames.length;k++){
         if(i==0 && k<2){
           Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);

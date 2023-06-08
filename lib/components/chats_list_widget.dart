@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 
-class ChatsListWidget extends StatelessWidget {
+class ChatsListWidget extends StatefulWidget {
   final List<dynamic> chats;
 
   ChatsListWidget({required this.chats});
 
   @override
+  _ChatsListWidgetState createState() => _ChatsListWidgetState();
+}
+
+class _ChatsListWidgetState extends State<ChatsListWidget> {
+  void removeChat(chatToRemove) {
+    // Implement the logic to remove a chat from the list
+    setState(() {
+      widget.chats.remove(chatToRemove); // Remove the chat at index 0 as an example
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,  // You can adjust this height as needed
+      height: 300, // You can adjust this height as needed
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         border: Border.all(
@@ -29,21 +41,36 @@ class ChatsListWidget extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: chats.length,
+              itemCount: widget.chats.length,
               itemBuilder: (context, index) {
-                var chat = chats[index];
+                var chat = widget.chats[index];
                 var isPrivate = chat['isPrivate'];
                 return Card(
                   child: ListTile(
                     onTap: () {
                       // Do something when a chat row is clicked
+                      print('Chat row tapped!');
                     },
-                    title: Text(isPrivate ? 'Private Chat(No Details available)' : chat['name']),
+                    title: Text(
+                        isPrivate ? 'Private Chat(No Details available)' : chat['name']),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.ice_skating),  // Replace icon1 with your desired icon
-                        Icon(Icons.safety_check),  // Replace icon2 with your desired icon
+                        IconButton(
+                          icon: Icon(Icons.ice_skating), // Replace icon1 with your desired icon
+                          onPressed: () {
+                            // Do something when icon1 is pressed
+                            print('Icon 1 pressed!');
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete), // Replace icon2 with your desired icon
+                          onPressed: () {
+                            // Do something when delete icon is pressed
+                            print('Delete pressed!');
+                            removeChat(chat);
+                          },
+                        ),
                       ],
                     ),
                   ),

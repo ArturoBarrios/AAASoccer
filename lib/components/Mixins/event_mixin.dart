@@ -67,9 +67,13 @@ mixin EventMixin {
     userObject = UserCommand().getAppModelUser();
   }
 
-  void setupTeamList() {
+  Future<void> setupTeamList() async {
     print("setupTeamList");
-    teamList = TeamCommand().getAppModelTeamsNearMe();
+    teamList = await TeamCommand().getAppModelTeamsNearMe();
+    teamList.forEach((element) {
+      print("teamList element: " + element.toString());
+      
+    });
     //add teamInEvent property
   }
 
@@ -77,6 +81,7 @@ mixin EventMixin {
     print("setupMyTeams");
     teamList = UserCommand().getAppModelMyTeams();
     myTeamList = teamList;
+    
   }
 
   void setupEventTeamToChoose(int index) {
