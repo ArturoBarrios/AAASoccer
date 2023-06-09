@@ -15,23 +15,9 @@ class TournamentFragments {
 
         }
       }
-      tournamentStage{
-        _id    
-        numberOfTeams                                    
-        numberOfRoundsPerTeam                                    
-        tournament{
-          _id
-        }
-        eventOrders{
-          data{
-            _id
-            order                  
-            event{
-              _id
-            }
-          }
-        }
-                  
+      tournamentStage{        
+          ${tournamentStageFragment()}        
+      }         
     """;
 
     return tournamentFragmentString;

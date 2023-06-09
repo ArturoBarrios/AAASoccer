@@ -8,7 +8,7 @@ class TournamentQueries {
           allTournaments {
             data {      
               ${TournamentFragments().tournamentFragment()}
-            }              
+                   
               groupStage{
                 ${TournamentFragments().groupStageFragment()}
               }
@@ -20,6 +20,7 @@ class TournamentQueries {
             }
           }
         }
+        
       """;
 
     return getTournaments;
