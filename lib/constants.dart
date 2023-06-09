@@ -8,6 +8,7 @@ class Constants {
   static final String WAGER = "7";
   static final String FRIEND = "9";
   static final String MYEVENTS = "10";
+  static final String LOCATION = "11";
   //request type
   static final String GAMEREQUEST = "GAMEREQUEST";
   static final String TOURNAMENTREQUEST = "TOURNAMENTREQUEST";

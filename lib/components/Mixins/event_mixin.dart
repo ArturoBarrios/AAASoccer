@@ -433,7 +433,7 @@ mixin EventMixin {
   }
 
   Container getTeamPriceWidget(dynamic userObjectDetails) {
-    print("getPriceWidget()");
+    print("getTeamPriceWidget()");
     print("userObjectDetails: " + userObjectDetails.toString());
     if (userObjectDetails['price'] != null) {
       String teamAmount =
@@ -1256,4 +1256,6 @@ mixin EventMixin {
     };
     return res;
   }
+
+
 }

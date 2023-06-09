@@ -12,6 +12,7 @@ import '../../components/create_team_payment.dart';
 import '../../components/create_team_request.dart';
 import '../../components/headers.dart';
 import '../../components/players_list_widget.dart';
+import '../../components/price_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
@@ -59,6 +60,8 @@ class _TournamentViewState extends State<TournamentView> {
   void loadEventPayment() {
     priceObject = userEventDetails['mainEvent']['price'];
   }
+
+  
 
   
 
@@ -162,17 +165,9 @@ class _TournamentViewState extends State<TournamentView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          widget.getPriceWidget(userEventDetails),
-                          // Text(
-                          //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                          userEventDetails['isMine']
-                              ? ElevatedButton(
-                                  onPressed: () {
-                                    // Add button onPressed logic here
-                                  },
-                                  child: Text('Update Player Payment'),
-                                )
-                              : Container(),
+                          PriceWidget(userEventDetails: userEventDetails, teamPrice: false, eventPrice: true,)
+                          // widget.getPriceWidget(userEventDetails),                         
+                          
                         ],
                       ),
                       Row(

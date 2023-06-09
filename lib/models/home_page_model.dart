@@ -11,6 +11,7 @@ import '../views/tournament/create.dart';
 import '../views/training/create.dart';
 import '../views/tryout/create.dart';
 import '../views/team/create/create.dart';
+import '../views/locations/create.dart';
 
 
 class HomePageModel extends ChangeNotifier {
@@ -116,6 +117,14 @@ class HomePageModel extends ChangeNotifier {
       "image": SVGWidgets().getSoccerBallSVGImage(),
       "createWidget": LeagueCreate(),
     },
+    "6":{
+      "key": "6",
+      "enabled": false,
+      "name": StringConstants.LOCATIONSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "createWidget": LocationCreate(eventObject: null, teamObject: null,),
+    },
   };
   
 
@@ -182,6 +191,13 @@ class HomePageModel extends ChangeNotifier {
       "key": Constants.LEAGUE,
       "enabled": false,
       "name": StringConstants.LEAGUESTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },    
+    Constants.LOCATION:{
+      "key": Constants.LOCATION,
+      "enabled": false,
+      "name": StringConstants.LOCATIONSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
     },    
