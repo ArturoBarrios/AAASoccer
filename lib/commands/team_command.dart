@@ -169,6 +169,23 @@ class TeamCommand extends BaseCommand {
     return appModel.teamsNearMe;
   }
 
+  List<dynamic> sortTeams(List<dynamic> teams,String sortBy){
+    //assume teams are sorted by date for now
+    print("sortTeams()");
+    print("sortBy: " + sortBy);
+    List<dynamic> sortedTeams = List.from(teams);
+    sortedTeams.sort((a, b) {
+      int aCreatedAt = int.tryParse(a["createdAt"]) ?? 0;
+      int bCreatedAt = int.tryParse(b["createdAt"]) ?? 0;
+      print("aCreatedAt: " + aCreatedAt.toString());
+      print("bCreatedAt: " + bCreatedAt.toString());
+      return bCreatedAt.compareTo(aCreatedAt);
+    });
+
+    return sortedTeams;
+
+  }
+
   Future<Map<String, dynamic>> getTeamsNearLocation() async {
     print("getTeamsNearLocation");
     Map<String, dynamic> getTrainingsNearLocationResp = {
@@ -193,7 +210,10 @@ class TeamCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      final result = jsonDecode(response.body)['data']['allTeams']['data'];
+      dynamic result = jsonDecode(response.body)['data']['allTeams']['data'];
+      if(result.length>0){
+        result = sortTeams(result, Constants.CREATEDATE);
+      }
       getTrainingsNearLocationResp["success"] = true;
       getTrainingsNearLocationResp["message"] = "Games Retrieved";
       getTrainingsNearLocationResp["data"] = result;

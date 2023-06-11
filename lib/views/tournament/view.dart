@@ -6,6 +6,7 @@ import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/bracket_widget.dart';
+import '../../components/chats_list_widget.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
@@ -161,41 +162,41 @@ class _TournamentViewState extends State<TournamentView> {
                                 ),
                               ),
                             )
-                          : Container(),
+                          : Container(),                          
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          PriceWidget(userEventDetails: userEventDetails, teamPrice: false, eventPrice: true,)
-                          // widget.getPriceWidget(userEventDetails),                         
-                          
+                          PriceWidget(userEventDetails: userEventDetails, teamPrice: false, eventPrice: true)                                                    
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          widget.getTeamPriceWidget(userEventDetails),
-                          // Text(
-                          //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                          userEventDetails['isMine']
-                              ? ElevatedButton(
-                                  onPressed: () {
-                                    // Add button onPressed logic here
-                                  },
-                                  child: Text('Update Team Payment'),
-                                )
-                              : Container(),
+                          PriceWidget(userEventDetails: userEventDetails, teamPrice: true, eventPrice: false)
+                          // widget.getTeamPriceWidget(userEventDetails),                          
+                          // userEventDetails['isMine']
+                          //     ? ElevatedButton(
+                          //         onPressed: () {
+                          //           // Add button onPressed logic here
+                          //         },
+                          //         child: Text('Update Team Payment'),
+                          //       )
+                          //     : Container(),
                         ],
                       ),
-                      if (userEventDetails['isMine'])
-                      widget.createEventRequestWidget,
-                      if (userEventDetails['isMine'])
-                      widget.createEventPaymentWidget,
-                      if (userEventDetails['isMine'])
-                      widget.createTeamRequestWidget,
-                      if (userEventDetails['isMine'])
-                      widget.createTeamPaymentWidget,
+                      // if (userEventDetails['isMine'])
+                      // widget.createEventRequestWidget,
+                      // if (userEventDetails['isMine'])
+                      // widget.createEventPaymentWidget,
+                      // if (userEventDetails['isMine'])
+                      // widget.createTeamRequestWidget,
+                      // if (userEventDetails['isMine'])
+                      // widget.createTeamPaymentWidget,
                       widget.getChatWidget(
                           context, true, false, userEventDetails, updateChatsList),
+                          ChatsListWidget(
+                  chats: userEventDetails['mainEvent']['chats']['data']
+                ),
                       
                           PlayerList(
                               playersDetails: playerListWidgetDetails),

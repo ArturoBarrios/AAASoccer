@@ -14,14 +14,40 @@ class PriceWidget extends StatefulWidget {
 }
 
 class _PriceWidgetState extends State<PriceWidget> {
+  final priceController = TextEditingController();
 
-  Future<void> updatePrice(String newAmount) async{
-    dynamic priceObject = null;
+
+  @override
+  void initState() {
+    super.initState();
+    print("PriceWidget initState()");
+    loadPriceDetails();
+    
+
+  }
+
+  void loadPriceDetails(){
+    print("loadPriceDetails()");
     if(widget.eventPrice){
-      priceObject = widget.userEventDetails['price']['amount'];
+      print("if(widget.eventPrice)");
+      priceController.text = (double.parse(widget.userEventDetails['price']['amount'])).toStringAsFixed(2);
     }
     else{
-      priceObject = widget.userEventDetails['price']['teamAmount'];
+      print("else");
+      priceController.text = (double.parse(widget.userEventDetails['price']['teamAmount'])).toStringAsFixed(2);
+    }
+  }
+
+  Future<void> updatePrice() async{
+    print("updatePrice()");
+    String newAmount = priceController.text.toString();
+    print("newAmount: " + newAmount.toString());
+    dynamic priceObject = null;
+    if(widget.eventPrice){
+      priceObject = widget.userEventDetails['price'];
+    }
+    else{
+      priceObject = widget.userEventDetails['price'];
     }
     dynamic priceInput = {
       "_id": priceObject['_id'],
@@ -32,7 +58,7 @@ class _PriceWidgetState extends State<PriceWidget> {
     dynamic updatedPrice = updatePriceResp['data'];
     setState(() {
       if(widget.eventPrice){
-        widget.userEventDetails['price']['amount'] = updatedPrice['amount'];
+        widget.userEventDetails['price']['amount'] = (double.parse(updatedPrice['amount'])/2).toString();
       }
       else{
         widget.userEventDetails['price']['teamAmount'] = updatedPrice['teamAmount'];
@@ -44,13 +70,28 @@ class _PriceWidgetState extends State<PriceWidget> {
     print("getPriceWidget()");
     print("userObjectDetails: " + userObjectDetails.toString());
     if (userObjectDetails['price'] != null) {
-      String amount = (double.parse(userObjectDetails['price']['amount']) / 100)
-          .toStringAsFixed(2);
-      String amountPaid = (double.parse(userObjectDetails['amountPaid']) / 100)
-          .toStringAsFixed(2);
-      String amountRemaining =
-          (double.parse(userObjectDetails['amountRemaining']) / 100)
-              .toStringAsFixed(2);
+      String amount = "";
+      String amountPaid = "";
+      String amountRemaining = "";
+      if(widget.eventPrice){
+        amount = (double.parse(userObjectDetails['price']['amount']) / 100)
+            .toStringAsFixed(2);
+        amountPaid = (double.parse(userObjectDetails['amountPaid']) / 100)
+            .toStringAsFixed(2);
+        amountRemaining =
+            (double.parse(userObjectDetails['amountRemaining']) / 100)
+                .toStringAsFixed(2);
+
+      }
+      else{
+        amount = (double.parse(userObjectDetails['price']['teamAmount']) / 100)
+            .toStringAsFixed(2);
+        amountPaid = (double.parse(userObjectDetails['teamAmountPaid']) / 100)
+            .toStringAsFixed(2);
+        amountRemaining =
+            (double.parse(userObjectDetails['teamAmountRemaining']) / 100)
+                .toStringAsFixed(2);
+      }
       if (!userObjectDetails['roles'].contains("ORGANIZER")) {
         if (amountRemaining == "0.00") {
           return Container(
@@ -91,20 +132,33 @@ class _PriceWidgetState extends State<PriceWidget> {
         }
       } else {
         return Container(
-            child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // Align text to the left
-                children: [
-                  Text(
-                    "Set Price: \$${(amount)}",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ])
-          ],
-        ));
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      
+      
+        
+          Text("Set Price: "),
+          Container(
+            width: 100, // specify the width of the Container
+            child: TextField(
+              controller: priceController,
+              decoration: new InputDecoration.collapsed(hintText: '0.00'),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Add button onPressed logic here
+              updatePrice();
+            },
+            child: Text('Update Player Payment'),
+          ),
+        
+    ],
+  ),
+);
+
+
       }
     } else {
       return Container(
@@ -122,13 +176,7 @@ class _PriceWidgetState extends State<PriceWidget> {
         Column(
           children: [
             getPriceWidget(widget.userEventDetails),
-              ElevatedButton(
-                onPressed: () {
-                  // Add button onPressed logic here
-                  updatePrice("5");
-                },
-                child: Text('Update Player Payment'),
-              )
+              
 
           ]
       ),

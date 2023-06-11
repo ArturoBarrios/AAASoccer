@@ -6,15 +6,19 @@ class TeamFragments {
             _id
             name
             color
+            createdAt
             chats{
               data{
                 ${ChatFragments().chatObject()}
               }
             }
             location{
-              _id
-              latitude
-              longitude
+              data{
+                name
+                _id
+                latitude
+                longitude
+              }
             }    
             userParticipants{
               data{

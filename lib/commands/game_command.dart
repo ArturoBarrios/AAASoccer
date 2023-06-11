@@ -28,7 +28,9 @@ class GameCommand extends BaseCommand {
     sortedGames.sort((a, b) {
       int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
       int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
-      return aCreatedAt.compareTo(bCreatedAt);
+      print("aCreatedAt: " + aCreatedAt.toString());
+      print("bCreatedAt: " + bCreatedAt.toString());
+      return bCreatedAt.compareTo(aCreatedAt);
     });
 
     return sortedGames;
@@ -62,7 +64,7 @@ class GameCommand extends BaseCommand {
 
       dynamic result = jsonDecode(response.body)['data']['allGames']['data'];
       if(result.length>0){
-        result = sortGames(result, Constants.CREATEDAT.toString());
+        result = sortGames(result, Constants.CREATEDATE.toString());
       }
       getGamesNearLocationResp["success"] = true;
       getGamesNearLocationResp["message"] = "Games Retrieved";

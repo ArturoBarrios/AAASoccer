@@ -13,6 +13,8 @@ class TeamMutations {
             create: {
               withRequest: ${teamInput['withRequest']},
               withPayment: ${teamInput['withPayment']},
+              forTeam: true
+
             }
           },
           userParticipants: {
@@ -31,6 +33,7 @@ class TeamMutations {
             {
               latitude: ${locationInput['latitude']},
               longitude: ${locationInput ['longitude']},
+              name: "${locationInput['name']}",
             }
           } 
           }) {

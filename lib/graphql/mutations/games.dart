@@ -84,7 +84,12 @@ class GameMutations {
                     withRequest: ${eventInput['withRequest']},
                     withPayment: ${eventInput['withPayment']},
                     forEvent: true
-                  },                  
+                  },   
+                  {
+                    withRequest: ${eventInput['withTeamRequest']},
+                    withPayment: ${eventInput['withTeamPayment']},
+                    forTeam: true
+                  }               
                 ]                
               },
               userParticipants: {

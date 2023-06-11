@@ -1,3 +1,5 @@
+import 'package:soccermadeeasy/constants.dart';
+
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../graphql/mutations/tryouts.dart';
@@ -12,6 +14,22 @@ import '../commands/event_command.dart';
 
 class TryoutCommand extends BaseCommand {
 
+List<dynamic> sortTryouts(List<dynamic> tryouts,String sortBy){
+    //assume events are sorted by date for now
+    print("sortEvents()");
+    print("sortBy: " + sortBy);
+    List<dynamic> sortedtryouts = List.from(tryouts);
+    sortedtryouts.sort((a, b) {
+      int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
+      int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
+      print("aCreatedAt: " + aCreatedAt.toString());
+      print("bCreatedAt: " + bCreatedAt.toString());
+      return bCreatedAt.compareTo(aCreatedAt);
+    });
+
+    return sortedtryouts;
+
+  }
 
 Future<Map<String, dynamic>> getTryoutsNearLocation() async{
       print("getTryoutsNearLocation");
@@ -34,7 +52,10 @@ Future<Map<String, dynamic>> getTryoutsNearLocation() async{
         print(jsonDecode(response.body));
 
 
-      final result = jsonDecode(response.body)['data']['allTryouts']['data'];
+      dynamic result = jsonDecode(response.body)['data']['allTryouts']['data'];
+      print("result: "+ result.toString());
+      result = sortTryouts(result, Constants.CREATEDATE);
+
       getTryoutsNearLocationResp["success"] = true;
       getTryoutsNearLocationResp["message"] = "Tryouts Retrieved";
       getTryoutsNearLocationResp["data"] = result;

@@ -309,7 +309,7 @@ type Team   {
   images: [Image] @relation
   users: [User] @relation    
   sponsors: [Sponsor] @relation
-  location: Location    
+  location: [Location] @relation   
   userParticipants: [TeamUserParticipant] @relation
   status: String
   deleted: Boolean

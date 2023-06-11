@@ -7,6 +7,8 @@ import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/headers.dart';
 import '../../components/players_list_widget.dart';
+import '../../components/update_view_form.dart';
+import '../../components/update_view_team_form.dart';
 import '../../constants.dart';
 
 class TeamView extends StatefulWidget with EventMixin {
@@ -160,9 +162,11 @@ class _TeamViewState extends State<TeamView> {
    return Scaffold(
   appBar: Headers().getBackHeader(context, widget.teamObject['name']),
   body: !_isLoading
-      ? Center(
-          child: Column(
-            children: [
+      ? SingleChildScrollView(
+            child: Center(
+              child: Expanded(
+                child: Column(
+              children: [
               userTeamDetails['isMine']
                   ? Container(
                       height: 20,
@@ -255,6 +259,7 @@ class _TeamViewState extends State<TeamView> {
                               },
                               child: Text("Request to Join")),
                           )),
+                    UpdateViewTeamForm(userObjectDetails: userTeamDetails),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -278,7 +283,7 @@ class _TeamViewState extends State<TeamView> {
     child: PlayerList(playersDetails: playerListWidgetDetails),
   ),
           ),
-        ],
+        ])),
       ),
     )
   : Container(

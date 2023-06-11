@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:soccermadeeasy/graphql/queries/tournaments.dart';
 
+import '../constants.dart';
 import '../enums/EventType.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -152,6 +153,31 @@ class TournamentCommand extends BaseCommand {
     return getMainEvent;
   }
 
+  List<dynamic> sortTournaments(List<dynamic> tournaments, String sortBy){
+    print("sortTournaments()");      
+    print("sortBy: " + sortBy);
+    List<dynamic> sortedTournaments = List.from(tournaments);
+      
+      sortedTournaments.sort((a, b) {
+  dynamic mainEventA = EventCommand().getMainEvent(a['events']['data']);
+  dynamic mainEventB = EventCommand().getMainEvent(b['events']['data']);
+  print("mainEventA: " + mainEventA.toString());
+  print("mainEventB: " + mainEventB.toString());
+  if (mainEventA != null && mainEventB != null) {
+    DateTime startTimeA = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventA['startTime']));
+    DateTime startTimeB = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventB['startTime']));
+    return startTimeB.compareTo(startTimeA);
+  }
+
+  // Handle cases where main events are not available
+  return 0;
+});
+      return sortedTournaments;
+
+  }
+
+
+
   Future<Map<String, dynamic>> getTournamentsNearLocation() async {
     print("getTournamentsNearLocation");
     Map<String, dynamic> getTournamentsNearLocationResp = {
@@ -175,10 +201,14 @@ class TournamentCommand extends BaseCommand {
 
       print("response body: ");
       print(jsonDecode(response.body));
-
-      final allTournaments =
+      
+      dynamic allTournaments =
           jsonDecode(response.body)['data']['allTournaments']['data'];
       print("allTournaments length: " + allTournaments.length.toString());
+      if(allTournaments.length>0){
+        allTournaments = sortTournaments(allTournaments, Constants.CREATEDATE);
+      }
+
       getTournamentsNearLocationResp["success"] = true;
       getTournamentsNearLocationResp["message"] = "Tournaments Retrieved";
       getTournamentsNearLocationResp["data"] = allTournaments;
