@@ -1115,24 +1115,8 @@ class EventCommand extends BaseCommand {
     if (getTournamentsNearLocationResp['success']) {
 
       List<dynamic> tournaments = getTournamentsNearLocationResp['data'];
-      //sort tournaments
-      print("sort tournaments");      
       
-      tournaments.sort((a, b) {
-  dynamic mainEventA = EventCommand().getMainEvent(a['events']['data']);
-  dynamic mainEventB = EventCommand().getMainEvent(b['events']['data']);
-  print("mainEventA: " + mainEventA.toString());
-  print("mainEventB: " + mainEventB.toString());
-  if (mainEventA != null && mainEventB != null) {
-    DateTime startTimeA = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventA['startTime']));
-    DateTime startTimeB = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventB['startTime']));
-    return startTimeA.compareTo(startTimeB);
-  }
-
-  // Handle cases where main events are not available
-  return 0;
-});
-      print("afterrrrrr");
+      
 
       
       print("in if statement");

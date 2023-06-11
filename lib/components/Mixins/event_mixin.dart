@@ -775,7 +775,7 @@ mixin EventMixin {
     dynamic joinConditionResp = null;
     joinConditions.forEach((joinCondition) {
       print("joinCondition: "+ joinCondition.toString());
-      if(joinCondition['forTeam'] != null){
+      if(joinCondition['forEvent'] == null){
         joinConditionResp = joinCondition;
       }      
     });
@@ -784,20 +784,47 @@ mixin EventMixin {
 
   }
 
-  void setupRequestWidgetData(dynamic userObjectDetails){
+  Map<String,dynamic> setupRequestWidgetData(dynamic userObjectDetails){
     print("setupRequestWidgetData()");
+
+    CreateEventRequest createEventRequestWidget = new CreateEventRequest();
+    CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+    CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
+    CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
+    dynamic setupRequestWidgetDataResp = {
+      'createEventRequestWidget': createEventRequestWidget,
+      'createEventPaymentWidget': createEventPaymentWidget,
+      'createTeamRequestWidget': createTeamRequestWidget,
+      'createTeamPaymentWidget': createTeamPaymentWidget,
+    };
+    dynamic joinConditions = [];
     if(userObjectDetails['mainEvent']!=null){
-      userObjectDetails['mainEvent']['joinConditions']['data'].forEach((joinCondition) {
+      joinConditions = userObjectDetails['mainEvent']['joinConditions']['data'];
+    }
+    else{
+      joinConditions = userObjectDetails['team']['joinConditions']['data'];
+    }
+      joinConditions.forEach((joinCondition) {
         if(joinCondition['forEvent'] != null){
           createEventRequestWidget = new CreateEventRequest(withRequest: joinCondition['withRequest']);
           createEventPaymentWidget = new CreateEventPayment(withPayment: joinCondition['withPayment']);
+                    
         }
         else{
           createTeamRequestWidget = new CreateTeamRequest(withRequest: joinCondition['withRequest']);
           createTeamPaymentWidget = new CreateTeamPayment(withPayment: joinCondition['withPayment']);
-        }        
+        } 
+               
       });
-    }
+    
+    
+
+    setupRequestWidgetDataResp['createEventRequestWidget'] = createEventRequestWidget;
+    setupRequestWidgetDataResp['createEventPaymentWidget'] = createEventPaymentWidget;
+    setupRequestWidgetDataResp['createTeamRequestWidget'] = createTeamRequestWidget;
+    setupRequestWidgetDataResp['createTeamPaymentWidget'] = createTeamPaymentWidget;
+
+    return setupRequestWidgetDataResp;
   }
 
   Container getJoinTeamWidget(BuildContext context, dynamic userObjectDetails,

@@ -22,6 +22,7 @@ import '../../components/headers.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../components/update_view_form.dart';
 import '../../constants.dart';
 
 class PickupView extends StatefulWidget with EventMixin, PaymentMixin {
@@ -68,7 +69,7 @@ class _PickupViewState extends State<PickupView> {
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
     dynamic getEventDetailsResp = EventCommand().getUserEventDetails([widget.game['event']]);
-    widget.setupRequestWidgetData(getEventDetailsResp);
+    // widget.setupRequestWidgetData(getEventDetailsResp);
     widget.setupPlayerList();
     playerListWidgetDetails =  await widget.getPlayerListWidgetDetails(getEventDetailsResp);
     // locationSearchBar = new LocationSearchBar(initialLocation: {"latitude": getEventDetailsResp['mainEvent']['latitude'], })
@@ -139,26 +140,27 @@ class _PickupViewState extends State<PickupView> {
             
             
               children: [
+                UpdateViewForm(userObjectDetails: userEventDetails),
                 
 
-                Container(
-                  margin: const EdgeInsets.all(10.0),
-                  color: Colors.amber[600],
-                  width: MediaQuery.of(context).size.width -
-                      (MediaQuery.of(context).size.width * .1), //10% padding
-                  height: 200.0,
-                  child:
-                  //map
-                   MyMapPage(
-                      latitude: widget.game['event']['location']['data'][0]
-                          ['latitude'],
-                      longitude: widget.game['event']['location']['data'][0]
-                          ['longitude']),
-                ),
-                userEventDetails['isMine'] ? 
-                  locationSearchBar = LocationSearchBar(initialValue: userEventDetails['mainEvent']['location']['data'][0]['name'])
-                   :
-                  Text(userEventDetails['mainEvent']['location']['data'][0]['name']) ,
+                // Container(
+                //   margin: const EdgeInsets.all(10.0),
+                //   color: Colors.amber[600],
+                //   width: MediaQuery.of(context).size.width -
+                //       (MediaQuery.of(context).size.width * .1), //10% padding
+                //   height: 200.0,
+                //   child:
+                //   //map
+                //    MyMapPage(
+                //       latitude: widget.game['event']['location']['data'][0]
+                //           ['latitude'],
+                //       longitude: widget.game['event']['location']['data'][0]
+                //           ['longitude']),
+                // ),
+                // userEventDetails['isMine'] ? 
+                //   locationSearchBar = LocationSearchBar(initialValue: userEventDetails['mainEvent']['location']['data'][0]['name'])
+                //    :
+                //   Text(userEventDetails['mainEvent']['location']['data'][0]['name']) ,
                 !userEventDetails['isMine']
                     ? widget.sendOrganizerPlayerEventRequest(context, userEventDetails)
                     : Container(),
@@ -177,10 +179,10 @@ class _PickupViewState extends State<PickupView> {
                         : Container(),
                   ],
                 ),
-                if (userEventDetails['isMine'])
-                  widget.createEventRequestWidget,
-                if (userEventDetails['isMine'])
-                  widget.createEventPaymentWidget,
+                // if (userEventDetails['isMine'])
+                //   widget.createEventRequestWidget,
+                // if (userEventDetails['isMine'])
+                //   widget.createEventPaymentWidget,
                 //join game gesture detector for now
                 widget.getJoinGameWidget(context, userEventDetails,
                     widget.game['event'], widget.userObject),

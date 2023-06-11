@@ -50,6 +50,29 @@ void updateLeagueData(dynamic league){
   eventsModel.leagues.add(league);
 }
 
+List<dynamic> sortLeagues(List<dynamic> leagues, String sortBy){
+    print("sortLeagues()");      
+    print("sortBy: " + sortBy);
+    List<dynamic> sortedleagues = List.from(leagues);
+      
+      sortedleagues.sort((a, b) {
+  dynamic mainEventA = EventCommand().getMainEvent(a['events']['data']);
+  dynamic mainEventB = EventCommand().getMainEvent(b['events']['data']);
+  print("mainEventA: " + mainEventA.toString());
+  print("mainEventB: " + mainEventB.toString());
+  if (mainEventA != null && mainEventB != null) {
+    DateTime startTimeA = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventA['startTime']));
+    DateTime startTimeB = DateTime.fromMillisecondsSinceEpoch(int.parse(mainEventB['startTime']));
+    return startTimeB.compareTo(startTimeA);
+  }
+
+  // Handle cases where main events are not available
+  return 0;
+});
+      return sortedleagues;
+
+  }
+
 Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     print("getLeaguesNearLocation");
     Map<String, dynamic> getLeaguesNearLocationResp = {

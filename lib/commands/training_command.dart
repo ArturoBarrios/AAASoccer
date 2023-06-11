@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:soccermadeeasy/constants.dart';
+
 import '../enums/EventType.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -18,6 +20,23 @@ import '../graphql/queries/trainings.dart';
 
 class TrainingCommand extends BaseCommand {
   
+  List<dynamic> sortTrainings(List<dynamic> trainings,String sortBy){
+    //assume events are sorted by date for now
+    print("sortEvents()");
+    print("sortBy: " + sortBy);
+    List<dynamic> sortedtrainings = List.from(trainings);
+    sortedtrainings.sort((a, b) {
+      int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
+      int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
+      print("aCreatedAt: " + aCreatedAt.toString());
+      print("bCreatedAt: " + bCreatedAt.toString());
+      return bCreatedAt.compareTo(aCreatedAt);
+    });
+
+    return sortedtrainings;
+
+  }
+
   Future<Map<String, dynamic>> getTrainingsNearLocation() async{
       print("getTrainingNearLocation");
     Map<String, dynamic> getTrainingsNearLocationResp = {"success": false, "message": "Default Error", "data": null};
@@ -39,7 +58,9 @@ class TrainingCommand extends BaseCommand {
         print(jsonDecode(response.body));
 
 
-      final result = jsonDecode(response.body)['data']['allTrainings']['data'];
+      dynamic result = jsonDecode(response.body)['data']['allTrainings']['data'];
+      print("result: "+ result.toString());
+      result = sortTrainings(result, Constants.CREATEDATE);
       getTrainingsNearLocationResp["success"] = true;
       getTrainingsNearLocationResp["message"] = "Trainings Retrieved";
       getTrainingsNearLocationResp["data"] = result;

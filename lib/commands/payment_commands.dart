@@ -377,6 +377,7 @@ class PaymentCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
       Map<String, dynamic> updatedPrice = jsonDecode(response.body)['data']['updatePrice'];
+      updatePriceResp['data'] = updatedPrice;
       return updatePriceResp;
     } on Exception catch (e) {
       print('Mutation failed: $e');

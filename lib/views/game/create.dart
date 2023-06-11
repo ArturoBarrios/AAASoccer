@@ -7,6 +7,8 @@ import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
+import '../../components/create_team_payment.dart';
+import '../../components/create_team_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/headers.dart';
 import '../../components/location_search_bar.dart';
@@ -42,6 +44,8 @@ class _GameCreateState extends State<GameCreate> {
   bool _isLoading = false;
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
   
@@ -67,6 +71,8 @@ class _GameCreateState extends State<GameCreate> {
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest.value,
         'withPayment': createEventPaymentWidget.withPayment.value, 
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value, 
+        'withTeamRequest': createTeamRequestWidget.withRequest.value, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
@@ -124,10 +130,11 @@ class _GameCreateState extends State<GameCreate> {
           controller: hometeamController,
           decoration: new InputDecoration.collapsed(hintText: 'Home'),
         ),        
-
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
+        createTeamRequestWidget,
+        createTeamPaymentWidget,
         dateTimePicker,
         TextField(
           controller: priceController,

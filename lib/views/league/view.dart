@@ -5,6 +5,7 @@ import '../../commands/event_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
+import '../../components/chats_list_widget.dart';
 import '../../components/events_calendar.dart';
 import '../../components/headers.dart';
 import '../../components/league_table_widget.dart';
@@ -181,6 +182,8 @@ Widget build(BuildContext context) {
 
 
             widget.getChatWidget(context, true, false, userEventDetails, updateChatsList),
+            ChatsListWidget(
+                  chats: userEventDetails['mainEvent']['chats']['data']),
             PlayerList(
                               playersDetails: playerListWidgetDetails),
             TeamsListWidget(

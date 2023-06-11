@@ -56,6 +56,7 @@ class _TeamCreateState extends State<TeamCreate> {
         };
 
         Map<String, dynamic> locationInput = {
+          "name": locationSearchBar.address,
           "latitude": locationSearchBar.coordinates.latitude,
           "longitude": locationSearchBar.coordinates.longitude,
         };

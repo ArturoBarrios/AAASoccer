@@ -20,6 +20,7 @@ class TrainingMutations{
                 create: {
                   withRequest: ${eventInput['withRequest']},
                   withPayment: ${eventInput['withPayment']},
+                  forEvent: true
                 }
               },
                userParticipants: {

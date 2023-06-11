@@ -21,7 +21,6 @@ class LeagueMutations{
                   {
                     withRequest: ${eventInput['withRequest']},
                     withPayment: ${eventInput['withPayment']},
-                    forEvent: true
                   },
                   {
                     withRequest: ${eventInput['withTeamRequest']},

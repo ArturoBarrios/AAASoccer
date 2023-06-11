@@ -23,6 +23,7 @@ class _CreateEventRequest extends State<CreateEventRequest> {
               children: [
                 Text("Join With Request?"),
                 Checkbox(
+                  
                   value: value,
                   onChanged: (bool? newValue) {
                     widget.withRequest.value = newValue ?? false;
