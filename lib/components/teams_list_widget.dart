@@ -1,47 +1,42 @@
 import 'package:flutter/material.dart';
-
 import '../commands/event_command.dart';
 
 class TeamsListWidget extends StatefulWidget {
   final Map<String, dynamic> teamsDetails;
+  final void Function(dynamic) addTeam; // Optional function input parameter
 
-  TeamsListWidget({required this.teamsDetails});
+  TeamsListWidget({required this.teamsDetails, required this.addTeam}); // Include required modifier
   
   @override
   _TeamsListWidgetState createState() => _TeamsListWidgetState();
-
 }
 
 class _TeamsListWidgetState extends State<TeamsListWidget> {
-
-   Future<void> removeTeamFromEvent(dynamic team)async{
+  Future<void> removeTeamFromEvent(dynamic team) async {
     print("removeTeamFromEvent");
     print("team: " + team.toString());
     dynamic removeTeamFromEventInput = {
       'team_id': team['_id'],
       'event_id': widget.teamsDetails['mainEvent']['_id'],
     };
-    dynamic removeTeamFromEventResp = await EventCommand().removeTeamFromEvent(removeTeamFromEventInput);
+    dynamic removeTeamFromEventResp =
+        await EventCommand().removeTeamFromEvent(removeTeamFromEventInput);
     print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
-    if(removeTeamFromEventResp['success']){
+    if (removeTeamFromEventResp['success']) {
       widget.teamsDetails['teams'].forEach((teamItem) {
-        if(teamItem['_id'] == team['_id']){
+        if (teamItem['_id'] == team['_id']) {
           setState(() {
             widget.teamsDetails['teams'].remove(teamItem);
           });
         }
       });
-
     }
-    
   }
 
   @override
   Widget build(BuildContext context) {
     List<dynamic> teams = widget.teamsDetails['teams'] ?? [];
 
-   
-  
     return Container(
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -72,13 +67,21 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
                       title: Text(teamName),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[                          
+                        children: <Widget>[
                           IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () {
                               removeTeamFromEvent(teams[index]);
                             },
                           ),
+                          // Check if addTeam function exists before displaying the icon button
+                          if (widget.addTeam != null)
+                            IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () {
+                                widget.addTeam(teams[index]);
+                              },
+                            ),
                         ],
                       ),
                     );
