@@ -228,7 +228,7 @@ class _Home extends State<Home> {
 
   //pretty sure this is obsolete now
   void _firstLoad() async {
-    userObject = UserCommand().getAppModelUser();
+    
     // setState(() {
     //   _isFirstLoadRunning = true;
     // });
@@ -526,11 +526,11 @@ class _Home extends State<Home> {
     print("selectedObjects length in build: " + selectedObjects.length.toString());
 
     return (Scaffold(
-      appBar: Headers().getMainHeader(context),
-      drawer: Container(
-        width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
-        child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
-      ),
+      // appBar: Headers().getMainHeader(context),
+      // drawer: Container(
+      //   width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
+      //   child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
+      // ),
       body: Stack(children: <Widget>[
         Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Expanded(

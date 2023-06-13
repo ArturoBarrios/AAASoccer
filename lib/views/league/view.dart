@@ -163,20 +163,20 @@ class _LeagueViewState extends State<LeagueView> {
                 ),
               ),
               UpdateViewForm(userObjectDetails: userEventDetails),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  widget.getPriceWidget(userEventDetails),
-                  userEventDetails['isMine']
-                      ? ElevatedButton(
-                          onPressed: () {
-                            // Add button onPressed logic here
-                          },
-                          child: Text('Update Payment'),
-                        )
-                      : Container(),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     widget.getPriceWidget(userEventDetails),
+              //     userEventDetails['isMine']
+              //         ? ElevatedButton(
+              //             onPressed: () {
+              //               // Add button onPressed logic here
+              //             },
+              //             child: Text('Update Payment'),
+              //           )
+              //         : Container(),
+              //   ],
+              // ),
               // if (userEventDetails['isMine']) widget.createEventRequestWidget,
               // if (userEventDetails['isMine']) widget.createEventPaymentWidget,
               // if (userEventDetails['isMine']) widget.createTeamRequestWidget,
@@ -184,8 +184,8 @@ class _LeagueViewState extends State<LeagueView> {
               
               // PlayerList(playersDetails: playerListWidgetDetails),
               
-              widget.sendPlayersRequestWidget(context, userEventDetails),
-              widget.sendTeamsRequestWidget(context, userEventDetails),
+              // widget.sendPlayersRequestWidget(context, userEventDetails),
+              // widget.sendTeamsRequestWidget(context, userEventDetails),
               LeagueTableWidget(
                 leagueData: [],
               ),
