@@ -3,9 +3,9 @@ import '../commands/event_command.dart';
 
 class TeamsListWidget extends StatefulWidget {
   final Map<String, dynamic> teamsDetails;
-  final void Function(dynamic) addTeam; // Optional function input parameter
+  // final void Function(dynamic) addTeam; // Optional function input parameter
 
-  TeamsListWidget({required this.teamsDetails, required this.addTeam}); // Include required modifier
+  TeamsListWidget({required this.teamsDetails}); // Include required modifier
   
   @override
   _TeamsListWidgetState createState() => _TeamsListWidgetState();
@@ -75,13 +75,13 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
                             },
                           ),
                           // Check if addTeam function exists before displaying the icon button
-                          if (widget.addTeam != null)
-                            IconButton(
-                              icon: Icon(Icons.add),
-                              onPressed: () {
-                                widget.addTeam(teams[index]);
-                              },
-                            ),
+                          // if (widget.addTeam != null)
+                          //   IconButton(
+                          //     icon: Icon(Icons.add),
+                          //     onPressed: () {
+                          //       widget.addTeam(teams[index]);
+                          //     },
+                          //   ),
                         ],
                       ),
                     );

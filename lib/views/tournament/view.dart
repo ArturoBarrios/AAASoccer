@@ -15,6 +15,7 @@ import '../../components/headers.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/price_widget.dart';
 import '../../components/teams_list_widget.dart';
+import '../../components/update_view_form.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
 
@@ -39,19 +40,14 @@ class _TournamentViewState extends State<TournamentView> {
   bool _isLoading = true;
   dynamic priceObject;
   List<dynamic> tournamentEvents = [];
-  dynamic userEventDetails;
-  dynamic playerListWidgetDetails;
+  dynamic userEventDetails;  
   dynamic teamListWidgetDetails;
 
   //send player request for main tournament event
   //should add player as a free agent
   //should also handle sending team request
 
-  void updateChatsList(dynamic createdChat){
-    setState(() {
-      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
-    });
-  }
+  
   
 
   void goBack() {
@@ -78,9 +74,7 @@ class _TournamentViewState extends State<TournamentView> {
     widget.setupRequestWidgetData(getEventDetailsResp);
     getEventDetailsResp['tournamentStage'] =
         widget.tournament['tournamentStage'];
-    widget.setupPlayerList();
-    playerListWidgetDetails =
-        await widget.getPlayerListWidgetDetails(getEventDetailsResp);
+    widget.setupPlayerList();    
     teamListWidgetDetails = await widget.getTeamListWidgetDetails(getEventDetailsResp);
     setState(() {
       userEventDetails = getEventDetailsResp;
@@ -163,51 +157,33 @@ class _TournamentViewState extends State<TournamentView> {
                               ),
                             )
                           : Container(),                          
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PriceWidget(userEventDetails: userEventDetails, teamPrice: false, eventPrice: true)                                                    
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PriceWidget(userEventDetails: userEventDetails, teamPrice: true, eventPrice: false)
-                          // widget.getTeamPriceWidget(userEventDetails),                          
-                          // userEventDetails['isMine']
-                          //     ? ElevatedButton(
-                          //         onPressed: () {
-                          //           // Add button onPressed logic here
-                          //         },
-                          //         child: Text('Update Team Payment'),
-                          //       )
-                          //     : Container(),
-                        ],
-                      ),
-                      // if (userEventDetails['isMine'])
-                      // widget.createEventRequestWidget,
-                      // if (userEventDetails['isMine'])
-                      // widget.createEventPaymentWidget,
-                      // if (userEventDetails['isMine'])
-                      // widget.createTeamRequestWidget,
-                      // if (userEventDetails['isMine'])
-                      // widget.createTeamPaymentWidget,
-                      widget.getChatWidget(
-                          context, true, false, userEventDetails, updateChatsList),
-                          ChatsListWidget(
-                  chats: userEventDetails['mainEvent']['chats']['data']
-                ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     PriceWidget(userEventDetails: userEventDetails, teamPrice: false, eventPrice: true)                                                    
+                      //   ],
+                      // ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     PriceWidget(userEventDetails: userEventDetails, teamPrice: true, eventPrice: false)                          
+                      //   ],
+                      // ),
+
+                      UpdateViewForm(userObjectDetails: userEventDetails),
+
                       
-                          PlayerList(
-                              playersDetails: playerListWidgetDetails),
+                      
+                          // PlayerList(
+                          //     playersDetails: playerListWidgetDetails),
                         
                       
-                      TeamsListWidget(
-                              teamsDetails: teamListWidgetDetails),
+                      // TeamsListWidget(
+                      //         teamsDetails: teamListWidgetDetails),
                       
-                      widget.sendPlayersRequestWidget(context, userEventDetails),
+                      // widget.sendPlayersRequestWidget(context, userEventDetails),
 
-                      widget.sendTeamsRequestWidget(context, userEventDetails),
+                      // widget.sendTeamsRequestWidget(context, userEventDetails),
 
                       Container(
                         height: 400, // Provide a fixed height here
