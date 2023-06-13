@@ -16,7 +16,9 @@ import 'commands/base_command.dart';
 import 'commands/user_command.dart';
 import 'commands/player_command.dart';
 import 'commands/event_command.dart';
+import 'components/headers.dart';
 import 'components/location_search_bar.dart';
+import 'components/side_navs.dart';
 import 'models/app_model.dart';
 import 'models/chat_page_model.dart';
 import 'models/user_model.dart';
@@ -94,6 +96,7 @@ class _MyAppState extends State<MyApp> {
   final confirmSignInValueController = TextEditingController();
 
   late TabController _tabController;
+  
 
 
 
@@ -114,8 +117,10 @@ class _MyAppState extends State<MyApp> {
      if (configureAmplifyResp['message'] == "isSignedIn") {
       emailController.text = configureAmplifyResp['email'];      
       await startLoadToHomeTransition();   
+      
     }    
   }
+
 
   Future configureGraphQL() async{
     print("configureGraphQL");
@@ -666,7 +671,7 @@ class AppScaffold extends StatelessWidget {
         context.select<AppModel, Map<String, dynamic>>((value) => value.currentUser);
 
     bool isSignedIn =
-        context.select<AppModel, bool>((value) => value.isSignedIn);
+        context.select<AppModel, bool>((value) => value.isSignedIn);        
 
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
@@ -677,6 +682,7 @@ class AppScaffold extends StatelessWidget {
     print(isSignedIn);
     // Return the current view, based on the currentUser value:
     return Scaffold(
+      
       //replace first condition with loading screen
       body: initialConditionsMet == false ? 
         Container(
@@ -689,7 +695,21 @@ class AppScaffold extends StatelessWidget {
               LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
             )
           ) 
-          : Home(),
+          : 
+          RefreshIndicator(
+    onRefresh: () async {
+      print("Reload");
+    },
+    child: Scaffold(
+            appBar: Headers().getMainHeader(context),
+            drawer: Container(
+              width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
+              child: Drawer(child: SideNavs().getMainSideNav(context, currentUser)),
+            ),
+            body: Home(),          
+          ) ,
+  )
+          
       // body: currentUser != "" ?  Home() : LoginPage(),
     );
   }

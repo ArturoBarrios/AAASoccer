@@ -49,7 +49,7 @@ class _PickupViewState extends State<PickupView> {
   late LatLng _center = LatLng(45.521563, -122.677433);
   dynamic priceObject;
   dynamic userEventDetails;
-  dynamic playerListWidgetDetails;
+  
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
   LatLng latLng(lat, lon) {
@@ -71,7 +71,7 @@ class _PickupViewState extends State<PickupView> {
     dynamic getEventDetailsResp = EventCommand().getUserEventDetails([widget.game['event']]);
     // widget.setupRequestWidgetData(getEventDetailsResp);
     widget.setupPlayerList();
-    playerListWidgetDetails =  await widget.getPlayerListWidgetDetails(getEventDetailsResp);
+    
     // locationSearchBar = new LocationSearchBar(initialLocation: {"latitude": getEventDetailsResp['mainEvent']['latitude'], })
     setState(() {
       userEventDetails = getEventDetailsResp;
@@ -161,43 +161,43 @@ class _PickupViewState extends State<PickupView> {
                 //   locationSearchBar = LocationSearchBar(initialValue: userEventDetails['mainEvent']['location']['data'][0]['name'])
                 //    :
                 //   Text(userEventDetails['mainEvent']['location']['data'][0]['name']) ,
-                !userEventDetails['isMine']
-                    ? widget.sendOrganizerPlayerEventRequest(context, userEventDetails)
-                    : Container(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    widget.getPriceWidget(userEventDetails),
+                // !userEventDetails['isMine']
+                //     ? widget.sendOrganizerPlayerEventRequest(context, userEventDetails)
+                //     : Container(),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                    // widget.getPriceWidget(userEventDetails),
                     
-                    userEventDetails['isMine']
-                        ? ElevatedButton(
-                            onPressed: () {
-                              // Add button onPressed logic here
-                            },
-                            child: Text('Update Payment'),
-                          )
-                        : Container(),
-                  ],
-                ),
+                //     userEventDetails['isMine']
+                //         ? ElevatedButton(
+                //             onPressed: () {
+                //               // Add button onPressed logic here
+                //             },
+                //             child: Text('Update Payment'),
+                //           )
+                //         : Container(),
+                //   ],
+                // ),
                 // if (userEventDetails['isMine'])
                 //   widget.createEventRequestWidget,
                 // if (userEventDetails['isMine'])
                 //   widget.createEventPaymentWidget,
                 //join game gesture detector for now
-                widget.getJoinGameWidget(context, userEventDetails,
-                    widget.game['event'], widget.userObject),
-                widget.getChatWidget(context, true, false, userEventDetails, updateChatsList  ),
-                ChatsListWidget(
-                  chats: userEventDetails['mainEvent']['chats']['data']
-                ),
-          widget.sendPlayersRequestWidget(context, userEventDetails),
-                SizedBox(
-            child: Container(
-    height: 450,
-    child: PlayerList(playersDetails: playerListWidgetDetails),
-  ),
+                // widget.getJoinGameWidget(context, userEventDetails,
+                //     widget.game['event'], widget.userObject),
+                // widget.getChatWidget(context, true, false, userEventDetails, updateChatsList  ),
+                // ChatsListWidget(
+                //   chats: userEventDetails['mainEvent']['chats']['data']
+                // ),
+          // widget.sendPlayersRequestWidget(context, userEventDetails),
+  //               SizedBox(
+  //           child: Container(
+  //   height: 450,
+  //   child: PlayerList(playersDetails: userEventDetails),
+  // ),
   
-          ),
+  //         ),
 
 
 

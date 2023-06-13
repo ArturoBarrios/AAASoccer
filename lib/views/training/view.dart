@@ -6,6 +6,7 @@ import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/headers.dart';
 import '../../components/my_map_page.dart';
+import '../../components/update_view_form.dart';
 import '../../constants.dart';
 
 class TrainingView extends StatefulWidget with EventMixin {
@@ -77,18 +78,18 @@ class _TrainingViewState extends State<TrainingView> {
       : ListView(
         padding: EdgeInsets.all(16),
         children: [
-          Container(
-                  margin: const EdgeInsets.all(10.0),
-                  color: Colors.amber[600],
-                  width: MediaQuery.of(context).size.width -
-                      (MediaQuery.of(context).size.width * .1), //10% padding
-                  height: 200.0,
-                  child: MyMapPage(
-                      latitude: widget.training['event']['location']['data'][0]
-                          ['latitude'],
-                      longitude: widget.training['event']['location']['data'][0]
-                          ['longitude']),
-                ),
+          // Container(
+          //         margin: const EdgeInsets.all(10.0),
+          //         color: Colors.amber[600],
+          //         width: MediaQuery.of(context).size.width -
+          //             (MediaQuery.of(context).size.width * .1), //10% padding
+          //         height: 200.0,
+          //         child: MyMapPage(
+          //             latitude: widget.training['event']['location']['data'][0]
+          //                 ['latitude'],
+          //             longitude: widget.training['event']['location']['data'][0]
+          //                 ['longitude']),
+          //       ),
 
 
 
@@ -136,28 +137,30 @@ class _TrainingViewState extends State<TrainingView> {
                 ),
               ) :
               Container(),
-               Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    widget.getPriceWidget(widget.userEventDetails),
-                    // Text(
-                    //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-                    widget.userEventDetails['isMine']
-                        ? ElevatedButton(
-                            onPressed: () {
-                              // Add button onPressed logic here
-                            },
-                            child: Text('Update Payment'),
-                          )
-                        : Container(),
-                  ],
-                ),
-                widget.getJoinGameWidget(context, widget.userEventDetails, widget.training['event'], widget.userObject),
-                widget.getChatWidget(context, true, false, widget.userEventDetails, updateChatsList),
 
-                widget.userEventDetails['isMine']
-            ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-            : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
+              UpdateViewForm(userObjectDetails: widget.userEventDetails)
+            //    Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         widget.getPriceWidget(widget.userEventDetails),
+            //         // Text(
+            //         //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+            //         widget.userEventDetails['isMine']
+            //             ? ElevatedButton(
+            //                 onPressed: () {
+            //                   // Add button onPressed logic here
+            //                 },
+            //                 child: Text('Update Payment'),
+            //               )
+            //             : Container(),
+            //       ],
+            //     ),
+            //     widget.getJoinGameWidget(context, widget.userEventDetails, widget.training['event'], widget.userObject),
+            //     widget.getChatWidget(context, true, false, widget.userEventDetails, updateChatsList),
+
+            //     widget.userEventDetails['isMine']
+            // ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
+            // : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
         
      
 

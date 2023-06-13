@@ -1263,15 +1263,7 @@ mixin EventMixin {
     }
   }
 
-  Future<dynamic> getPlayerListWidgetDetails(userObjectDetails) async {
-    dynamic res = {
-      'players': userObjectDetails['players'],
-      'userParticipants': userObjectDetails['userParticipants'],
-      'team': userObjectDetails['team'],
-      'mainEvent': userObjectDetails['mainEvent'],
-    };
-    return res;
-  }
+  
   
   Future<dynamic> getTeamListWidgetDetails(userObjectDetails) async {
     dynamic res = {

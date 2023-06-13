@@ -7,6 +7,8 @@ import '../../commands/tryout_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
+import '../../components/create_team_payment.dart';
+import '../../components/create_team_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/profile.dart';
@@ -36,6 +38,8 @@ class _TryoutCreateState extends State<TryoutCreate> {
 
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
   
@@ -56,6 +60,8 @@ class _TryoutCreateState extends State<TryoutCreate> {
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest.value,
         'withPayment': createEventPaymentWidget.withPayment.value, 
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value, 
+        'withTeamRequest': createTeamRequestWidget.withRequest.value, 
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TRYOUT,
@@ -103,6 +109,8 @@ class _TryoutCreateState extends State<TryoutCreate> {
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
+        createTeamRequestWidget,
+        createTeamPaymentWidget, 
         dateTimePicker,
         
         TextField(

@@ -1196,8 +1196,8 @@ class EventCommand extends BaseCommand {
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
     if(add){
-      await EventCommand().addGame(game, true); 
-      appModel.myEvents.add(game);     
+      await addGame(game, true); 
+          
     }
     else{
       appModel.myEvents.remove(game);     

@@ -119,8 +119,7 @@ class _TeamViewState extends State<TeamView> {
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
     dynamic userTeamDetailsResp =  await TeamCommand().getUserTeamDetails(widget.teamObject);
-    widget.setupPlayerList();
-    playerListWidgetDetails =  await widget.getPlayerListWidgetDetails(userTeamDetailsResp);
+    widget.setupPlayerList();    
     setState(() {
       userTeamDetails = userTeamDetailsResp;
       _isLoading = false;

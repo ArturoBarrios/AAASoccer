@@ -17,11 +17,18 @@ class TryoutMutations{
               createdAt: "${eventInput['createdAt']}",
               capacity: ${eventInput['capacity']},
               joinConditions: {
-                create: {
-                  withRequest: ${eventInput['withRequest']},
-                  withPayment: ${eventInput['withPayment']},
-                  forEvent: true
-                }
+                create: [
+                  {
+                    withRequest: ${eventInput['withRequest']},
+                    withPayment: ${eventInput['withPayment']},
+                    forEvent: true
+                  },
+                  {
+                    withRequest: ${eventInput['withTeamRequest']},
+                    withPayment: ${eventInput['withTeamPayment']},
+                    forTeam: true
+                  }  
+                ]
               },
               userParticipants: {
                 create:
