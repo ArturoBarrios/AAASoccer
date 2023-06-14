@@ -1,9 +1,13 @@
 import 'dart:ui';
+import 'package:soccermadeeasy/components/history.dart';
+
 import '../commands/base_command.dart';
 import '../models/user_model.dart';
 import 'package:flutter/material.dart';
 import '../commands/images_command.dart';
 import 'package:provider/provider.dart';
+
+import 'Dialogues/animated_dialogu.dart';
 
 
 // Change color here
@@ -18,28 +22,42 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
     String profileImageUrl = "";
+    dynamic imageChoices = [
+      "Take a Picture",
+      "Choose from Phone Gallery",
+      "Choose from App Images",
+    ];
     
-    // void getProfileImage() {
-    //   print("profileImage()");
-    //   // profileImageUrl = BaseCommand().getProfileUrl();
-    //   print("profileImage: " + profileImageUrl);
-    // }
+    void chooseImage(Map<int, dynamic> indexes,      
+        List<dynamic> primaryList,
+        List<dynamic> secondaryList){
+      print("chooseImage");
+      print("indexes: " + indexes.toString());
+      print("primaryList: " + primaryList.toString());
+      print("secondaryList: " + secondaryList.toString());
+      indexes.forEach((mainIndex, secondaryIndexes) async {
+      dynamic imageChoiceChosen = primaryList[mainIndex];
+      print("imageChoiceChosen: " + imageChoiceChosen.toString());
+      //choose from phone gallery
+      if(imageChoiceChosen=="Choose from Phone Gallery"){
+        pickImage();
+      }
+      //take a picture
+      else if(imageChoiceChosen == "Take a Picture"){
 
-    @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // getProfileImage();
-  }
+      }
+      //choose from app images
+      else{
+
+      }
+
+      
+    });
 
 
-  @override
-  Widget build(BuildContext context) {
-    String profileImageUrl = context.
-      select<UserModel, String>((value) => value.profileImageUrl);
+    }
 
-
-    void pickImage() async {
+     void pickImage() async {
       Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true);  
       print("pickImageResp: " + pickImageResp.toString());
       dynamic data = pickImageResp['data'];
@@ -66,6 +84,22 @@ class _ProfileState extends State<Profile> {
       //add image to user profile    
     }
 
+    @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // getProfileImage();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    String profileImageUrl = context.
+      select<UserModel, String>((value) => value.profileImageUrl);
+
+
+   
+
     return  Scaffold(
       body: ListView(
         physics: NeverScrollableScrollPhysics(),
@@ -84,8 +118,23 @@ class _ProfileState extends State<Profile> {
           )),                
         // new Align(alignment: Alignment.centerLeft, child: new Text("left")),
                 GestureDetector(
-                  onTap: () {
-                    pickImage();                    
+                  onTap: () async {
+                    List<dynamic> primaryList = imageChoices;
+                    List<dynamic> secondaryList = [];
+                    Map<int, dynamic> result = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AnimatedDialog(
+                            items: primaryList,
+                            singleSelect: true,
+                            secondaryItems: secondaryList);
+                      },
+                    );
+                    if (result.isNotEmpty) {
+                      print("result: " + result.toString());
+                      chooseImage(result, primaryList, secondaryList);
+                      // pickImage();                    
+                    }
                   },
                   child: 
                 
@@ -224,14 +273,17 @@ class _ProfileState extends State<Profile> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      IconButton(icon: Icon(Icons.table_chart),onPressed: (){},),
-                      IconButton(
-                        icon: Icon(Icons.menu),
-                        onPressed: () {},
-                      )
+                      Text("History")
+                      // IconButton(icon: Icon(Icons.table_chart),onPressed: (){},),
+                      // IconButton(
+                      //   icon: Icon(Icons.menu),
+                      //   onPressed: () {},
+                      // )
                     ],
                   ),
                 ),
+
+                History(historyDetails: []),
 
                 InfoDetailListTile(
                     name:"Excellent Perfomance", value:"Top 1%", tooltip: "Today", date: "02/23/2019"),

@@ -49,32 +49,32 @@ class SideNavs extends StatefulWidget {
             ),
           ),
         ),
-        ListTile(
-          leading: Icon(
-            Icons.home,
-          ),
-          title: const Text('Home'),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return Home();
-              },
-            ));
-          },
-        ),
-        ListTile(
-          leading: Icon(
-            Icons.people_sharp,
-          ),
-          title: const Text('Friends'),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return FriendsView();
-              },
-            ));
-          },
-        ),
+        // ListTile(
+        //   leading: Icon(
+        //     Icons.home,
+        //   ),
+        //   title: const Text('Home'),
+        //   onTap: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return Home();
+        //       },
+        //     ));
+        //   },
+        // ),
+        // ListTile(
+        //   leading: Icon(
+        //     Icons.people_sharp,
+        //   ),
+        //   title: const Text('Friends'),
+        //   onTap: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return FriendsView();
+        //       },
+        //     ));
+        //   },
+        // ),
         ListTile(
           leading: Icon(
             Icons.message_outlined,
@@ -114,19 +114,19 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        ListTile(
-          leading: Icon(
-            Icons.history,
-          ),
-          title: const Text('History'),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return History(historyDetails: []);
-              },
-            ));
-          },
-        ),
+        // ListTile(
+        //   leading: Icon(
+        //     Icons.history,
+        //   ),
+        //   title: const Text('History'),
+        //   onTap: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return History(historyDetails: []);
+        //       },
+        //     ));
+        //   },
+        // ),
         ListTile(
           leading: Icon(
             Icons.history,
