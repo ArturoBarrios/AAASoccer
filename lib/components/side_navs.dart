@@ -10,6 +10,7 @@ import '../views/home.dart';
 import '../views/images/my_images.dart';
 import '../models/user_model.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);
@@ -49,45 +50,47 @@ class SideNavs extends StatefulWidget {
             ),
           ),
         ),
-        ListTile(
-          leading: Icon(
-            Icons.home,
+        // ListTile(
+        //   leading: Icon(
+        //     Icons.home,
+        //   ),
+        //   title: const Text('Home'),
+        //   onTap: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return Home();
+        //       },
+        //     ));
+        //   },
+        // ),
+        // ListTile(
+        //   leading: Icon(
+        //     Icons.people_sharp,
+        //   ),
+        //   title: const Text('Friends'),
+        //   onTap: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return FriendsView();
+        //       },
+        //     ));
+        //   },
+        // ),
+        //playground
+        if(dotenv.env["ENVIRONMENT"]=="DEVELOPMENT")
+          ListTile(
+            leading: Icon(
+              Icons.message_outlined,
+            ),
+            title: const Text('Chat'),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return ChatsView();
+                },
+              ));
+            },
           ),
-          title: const Text('Home'),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return Home();
-              },
-            ));
-          },
-        ),
-        ListTile(
-          leading: Icon(
-            Icons.people_sharp,
-          ),
-          title: const Text('Friends'),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return FriendsView();
-              },
-            ));
-          },
-        ),
-        ListTile(
-          leading: Icon(
-            Icons.message_outlined,
-          ),
-          title: const Text('Chat'),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return ChatsView();
-              },
-            ));
-          },
-        ),
         ListTile(
           leading: Icon(
             Icons.edit_notifications_sharp,
@@ -114,19 +117,19 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        ListTile(
-          leading: Icon(
-            Icons.history,
-          ),
-          title: const Text('History'),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return History(historyDetails: []);
-              },
-            ));
-          },
-        ),
+        // ListTile(
+        //   leading: Icon(
+        //     Icons.history,
+        //   ),
+        //   title: const Text('History'),
+        //   onTap: () {
+        //     Navigator.push(context, MaterialPageRoute<void>(
+        //       builder: (BuildContext context) {
+        //         return History(historyDetails: []);
+        //       },
+        //     ));
+        //   },
+        // ),        
         ListTile(
           leading: Icon(
             Icons.history,

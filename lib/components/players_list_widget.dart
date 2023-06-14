@@ -183,6 +183,8 @@ class _PlayerListState extends State<PlayerList> {
     super.initState();
     print("initState PlayerList Widget ");
     print("playerDetails: " + widget.playersDetails.toString());
+    print("playerDetails['userParticipants']: " +
+        widget.playersDetails['userParticipants'].toString());
   }
 
   List<String> getUserRoles(dynamic userParticipant) {
@@ -242,7 +244,7 @@ class _PlayerListState extends State<PlayerList> {
           Column(
             children: widget.playersDetails['userParticipants']
                 .where((userParticipant) {
-              List<String> userRoles = getUserRoles(userParticipant);
+              List<dynamic> userRoles = getUserRoles(userParticipant);
               return userRoles.contains(_selectedUserType);
             }).map<Widget>((userParticipant) {
               dynamic user = userParticipant['user'];

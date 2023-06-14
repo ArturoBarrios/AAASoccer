@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/players_list_widget.dart';
 
 import '../views/game/update.dart';
 import 'Mixins/event_mixin.dart';
@@ -25,9 +26,13 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
 
   void setupRequestWidgetData(){
-    print("setupRequestWidgetData()");
-    
-      
+    print("setupRequestWidgetData()");          
+  }
+
+  void updateChatsList(dynamic createdChat) {
+    setState(() {
+      widget.userObjectDetails['team']['chats']['data'].add(createdChat);
+    });
   }
 
 
@@ -75,6 +80,10 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
                 createTeamRequestWidget,
                 // if (widget.userObjectDetails['isMine'])
                 createTeamPaymentWidget,
+                widget.getChatWidget(context, false, true, widget.userObjectDetails, updateChatsList),
+                widget.sendPlayersRequestWidget(context, widget.userObjectDetails),
+                widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
+                PlayerList(playersDetails: widget.userObjectDetails),
         ]))));
   }
 }

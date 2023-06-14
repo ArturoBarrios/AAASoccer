@@ -42,7 +42,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
-import '../components/bottom_nav.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 // import 'package:twilio_flutter/twilio_flutter.dart'; 
 // import 'package:firebase_core/firebase_core.dart';
@@ -655,7 +654,7 @@ class _MyAppState extends State<MyApp> {
               child: 
               
               MaterialApp(
-                  builder: Authenticator.builder(), home: AppScaffold()));
+                  builder: Authenticator.builder(), home: AppScaffold(client: widget.client)));
             })
           );          
         
@@ -663,7 +662,17 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class AppScaffold extends StatelessWidget {
+class AppScaffold extends StatefulWidget {
+  AppScaffold({Key? key, required this.client}) : super(key: key);
+
+  final dynamic client;
+
+  @override
+  _AppScaffoldState createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends State<AppScaffold> {
+
   @override
   Widget build(BuildContext context) {
     // Bind to AppModel.currentUser
@@ -699,6 +708,12 @@ class AppScaffold extends StatelessWidget {
           RefreshIndicator(
     onRefresh: () async {
       print("Reload");
+      // Navigator.pushAndRemoveUntil(
+      //         context,
+      //         MaterialPageRoute(builder: (BuildContext context) => MyApp(client: widget.client)),
+      //         (route) => false,
+      //       );
+      
     },
     child: Scaffold(
             appBar: Headers().getMainHeader(context),

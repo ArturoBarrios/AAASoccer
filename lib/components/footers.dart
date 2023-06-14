@@ -3,6 +3,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
 import '../components/profile.dart';
 import '../views/game/create.dart';
+import '../views/images/my_images.dart';
 import '../views/tournament/create.dart';
 import '../views/league/create.dart';
 import '../views/training/create.dart';
@@ -107,13 +108,13 @@ BottomAppBar getMainBottomNav(BuildContext context){
                   selected: true,
                   onPressed: () {}),
               IconBottomBar(
-                  text: "friends",
-                  icon: Icons.person,
+                  text: "images",
+                  icon: Icons.image,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return FriendsView();
+                        return MyImagesView();
                       },
                     ));
                   }),

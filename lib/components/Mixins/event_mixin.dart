@@ -1039,9 +1039,9 @@ mixin EventMixin {
                   context: context,
                   builder: (BuildContext context) {
                     return AnimatedDialog(
-                        items: playerList,
+                        items: primaryList,
                         singleSelect: false,
-                        secondaryItems: requestUserTypes);
+                        secondaryItems: secondaryList);
                   },
                 );
                 if (result.isNotEmpty) {

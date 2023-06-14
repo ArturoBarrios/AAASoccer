@@ -57,11 +57,19 @@ void loadInitialData() async {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Event History'),
-      ),
-      body: !_isLoading ? ListView.builder(
+    return  !_isLoading ? 
+    SingleChildScrollView(
+        child: Center(
+            child: Expanded(
+                child: Column(children: [
+      Container(
+        margin: const EdgeInsets.all(10.0),
+        color: Colors.amber[600],
+        width: MediaQuery.of(context).size.width -
+            (MediaQuery.of(context).size.width * .1), //10% padding
+        height: 200.0,
+        child: 
+    ListView.builder(
         itemCount: listOfEvents.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
@@ -77,11 +85,11 @@ void loadInitialData() async {
             ),
           );
         },
-      ): 
+      ))])))): 
       Center(
         child: CircularProgressIndicator(),
-      ),
-    );
+      );
+    
   }
 
   String getFormattedDate(int endDate) {

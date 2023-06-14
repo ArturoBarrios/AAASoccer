@@ -6,7 +6,6 @@ import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import '../services/amplify_auth_service.dart' as AmplifyAuth;
 //import widgets
-import '../components/bottom_nav.dart';
 import '../components/select_icon_button.dart';
 import '../components/search_field.dart';
 import '../components/Dialogues/animated_dialogu.dart';
