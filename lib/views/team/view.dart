@@ -273,15 +273,15 @@ class _TeamViewState extends State<TeamView> {
                   : Container(),
             ],
           ),
-          widget.getChatWidget(context, false, true, userTeamDetails, updateChatsList),
-          widget.sendPlayersRequestWidget(context, userTeamDetails),
-          widget.getJoinTeamWidget(context, userTeamDetails, userTeamDetails['team'], widget.userObject),          
-          SizedBox(
-            child: Container(
-    height: 450,
-    child: PlayerList(playersDetails: playerListWidgetDetails),
-  ),
-          ),
+          // widget.getChatWidget(context, false, true, userTeamDetails, updateChatsList),
+          // widget.sendPlayersRequestWidget(context, userTeamDetails),
+          // widget.getJoinTeamWidget(context, userTeamDetails, userTeamDetails['team'], widget.userObject),          
+  //         SizedBox(
+  //           child: Container(
+  //   height: 450,
+  //   child: PlayerList(playersDetails: playerListWidgetDetails),
+  // ),
+  //         ),
         ])),
       ),
     )
