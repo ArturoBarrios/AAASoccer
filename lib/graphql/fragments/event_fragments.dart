@@ -14,6 +14,14 @@ class EventFragments {
       endTime  
       capacity
       createdAt
+      images{
+        data{
+          _id          
+          url
+          isMainImage
+          public          
+        }
+      }
       chats{
         data{
           ${ChatFragments().chatObject()}

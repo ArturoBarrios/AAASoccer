@@ -7,6 +7,7 @@ import 'create_event_payment.dart';
 import 'create_event_request.dart';
 import 'create_team_payment.dart';
 import 'create_team_request.dart';
+import 'events_list_widget.dart';
 import 'location_search_bar.dart';
 
 
@@ -84,6 +85,8 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
                 widget.sendPlayersRequestWidget(context, widget.userObjectDetails),
                 widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
                 PlayerList(playersDetails: widget.userObjectDetails),
+                EventsListWidget(teamsDetails: widget.userObjectDetails,),
+                //add image
         ]))));
   }
 }

@@ -56,8 +56,7 @@ mixin EventMixin {
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
   CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
-  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
-
+  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();  
 
   void setupPlayerList() {
     print("setupPlayerList");
@@ -224,13 +223,25 @@ mixin EventMixin {
   }
 
   Future<void> sendTeamsEventRequest(dynamic event, Map<int, dynamic> indexes,
-      List<dynamic> primaryList, List<dynamic> secondaryList) async {
+      List<dynamic> primaryList, List<dynamic> secondaryList, dynamic userObjectDetails) async {
     print("sendTeamsEventRequest");
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic teamChosen = primaryList[mainIndex];
-      await TeamCommand().sendTeamEventRequest(teamChosen, event);
+      bool isMyTeam = false;
+      isMyTeam = userObjectDetails['roles'].contains("ORGANIZER");
+      //check if player is a team and organizer, if so, add to list
+      if(event[userObjectDetails['isMine']] && isMyTeam){
+        print("isMyTeam");
+        teamList.remove(teamChosen);
+        await EventCommand().addTeamToEvent(event, teamChosen);
+        userObjectDetails['teams'].add(teamChosen);
+      }
+      else{
+        await TeamCommand().sendTeamEventRequest(teamChosen, event);
+
+      }
     });
   }
 
@@ -1027,8 +1038,8 @@ mixin EventMixin {
   Container sendPlayersRequestWidget(
       BuildContext context, dynamic userObjectDetails) {
     print("sendPlayersRequestWidget: " + userObjectDetails.toString());
-
-    
+    setupPlayerList();
+    print("playersList: " + playerList.length.toString());
     if(userObjectDetails['isMine']){
       return Container(
           child: GestureDetector(
@@ -1141,6 +1152,8 @@ mixin EventMixin {
 
   Container sendTeamsRequestWidget(
       BuildContext context, dynamic userObjectDetails) {
+    print("sendTeamsRequestWidget: " + userObjectDetails.toString());
+    setupTeamList();
         if(userObjectDetails['isMine']){
           return Container(
               child: GestureDetector(
@@ -1150,7 +1163,7 @@ mixin EventMixin {
                     List<dynamic> processedTeamList = teamList
                         .where((item1) => !userObjectDetails['teams']
                             .any((item2) => item2["_id"] == item1["_id"]))
-                        .map((item) => item['team'])
+                        .map((item) => item['name'])
                         .toList();
                     primaryList = processedTeamList;
                     //original list (just look at commented code below)
@@ -1167,7 +1180,7 @@ mixin EventMixin {
                     if (result.isNotEmpty) {
                       print('Selected items: $result');
                       sendTeamsEventRequest(userObjectDetails['mainEvent'], result,
-                          primaryList, secondaryList);
+                          primaryList, secondaryList, userObjectDetails);
                     }
                   },
                   child: Container(

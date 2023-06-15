@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../components/headers.dart';
 
-class MyImagesView extends StatefulWidget {
-  const MyImagesView({Key? key})
+class ImagesView extends StatefulWidget {
+  const ImagesView({Key? key, dynamic images})
       : super(key: key);
 
+
+
   @override
-  _MyImagesViewState createState() => _MyImagesViewState();
+  _ImagesViewState createState() => _ImagesViewState();
 }
 
-class _MyImagesViewState extends State<MyImagesView> {
+class _ImagesViewState extends State<ImagesView> {
   bool _isLoading = true;
 
   void getImage() async{

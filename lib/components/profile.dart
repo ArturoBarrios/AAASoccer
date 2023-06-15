@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:soccermadeeasy/components/history.dart';
 
 import '../commands/base_command.dart';
+import '../constants.dart';
 import '../models/user_model.dart';
 import 'package:flutter/material.dart';
 import '../commands/images_command.dart';
@@ -23,9 +24,9 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
     String profileImageUrl = "";
     dynamic imageChoices = [
-      "Take a Picture",
-      "Choose from Phone Gallery",
-      "Choose from App Images",
+      {Constants.CAMERA : "Take a Picture"},
+      {Constants.PHONEGALLERY: "Choose from Phone Gallery"},
+      {Constants.APPGALLERY:"Choose from App Images"},
     ];
     
     void chooseImage(Map<int, dynamic> indexes,      
@@ -36,18 +37,15 @@ class _ProfileState extends State<Profile> {
       print("primaryList: " + primaryList.toString());
       print("secondaryList: " + secondaryList.toString());
       indexes.forEach((mainIndex, secondaryIndexes) async {
-      dynamic imageChoiceChosen = primaryList[mainIndex];
+      dynamic imageChoiceChosen = imageChoices[mainIndex].keys.first;
       print("imageChoiceChosen: " + imageChoiceChosen.toString());
-      //choose from phone gallery
-      if(imageChoiceChosen=="Choose from Phone Gallery"){
-        pickImage();
-      }
-      //take a picture
-      else if(imageChoiceChosen == "Take a Picture"){
-
-      }
+      //choose from phone gallery||//take a picture
+      if(imageChoiceChosen==Constants.PHONEGALLERY||imageChoiceChosen == Constants.CAMERA){
+        pickImage(imageChoiceChosen);
+      }            
       //choose from app images
       else{
+        
 
       }
 
@@ -57,8 +55,8 @@ class _ProfileState extends State<Profile> {
 
     }
 
-     void pickImage() async {
-      Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true);  
+     void pickImage(String imageChoiceChosen ) async {
+      Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true, imageChoiceChosen);  
       print("pickImageResp: " + pickImageResp.toString());
       dynamic data = pickImageResp['data'];
       print("data: " + data.toString());
@@ -119,7 +117,8 @@ class _ProfileState extends State<Profile> {
         // new Align(alignment: Alignment.centerLeft, child: new Text("left")),
                 GestureDetector(
                   onTap: () async {
-                    List<dynamic> primaryList = imageChoices;
+                    List<dynamic> primaryList = imageChoices.map((choice) => choice.values.first).toList();
+
                     List<dynamic> secondaryList = [];
                     Map<int, dynamic> result = await showDialog(
                       context: context,

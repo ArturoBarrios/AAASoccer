@@ -7,7 +7,7 @@ import '../components/profile.dart';
 import '../views/chats/view.dart';
 import '../views/friends/view.dart';
 import '../views/home.dart';
-import '../views/images/my_images.dart';
+import '../views/images/view_images.dart';
 import '../models/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -112,7 +112,7 @@ class SideNavs extends StatefulWidget {
           onTap: () {
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {
-                return MyImagesView();
+                return ImagesView(images: []);
               },
             ));
           },

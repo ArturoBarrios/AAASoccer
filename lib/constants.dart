@@ -31,6 +31,12 @@ class Constants {
   static final String CREATEDATE = "CREATEDATE";
   static final String NAME = "STARTTIME";
 
+  //choose image 
+  static final String CAMERA = "CAMERA";
+  static final String PHONEGALLERY = "PHONEGALLERY";
+  static final String APPGALLERY = "APPGALLERY";
+
+
   
   
 }
