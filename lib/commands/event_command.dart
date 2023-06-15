@@ -1146,8 +1146,8 @@ class EventCommand extends BaseCommand {
         await PlayerCommand().getPlayersNearLocation();
     if (getPlayersNearLocationResp['success']) {
       List<dynamic> players = getPlayersNearLocationResp['data'];
-      print("players: ");
-      print(players);
+      print("players length: ");
+      print(players.length);
       //remove the current user from the list
       players.removeWhere((element) => element['_id'] == appModel.currentUser['_id']);
       appModel.players = players;

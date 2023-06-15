@@ -1,3 +1,5 @@
+import 'package:soccermadeeasy/constants.dart';
+
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:http/http.dart' as http;
@@ -218,7 +220,7 @@ class ImagesCommand extends BaseCommand {
   }
 
   //Image Picker
-  Future<Map<String, dynamic>> pickImage(bool storeAsProfile) async {
+  Future<Map<String, dynamic>> pickImage(bool storeAsProfile, String imageChoiceChosen) async {
     print("pickImage()");
     Map<String, dynamic> pickImageResponse = {
       "success": false,
@@ -226,7 +228,16 @@ class ImagesCommand extends BaseCommand {
       "data": null
     };
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      var image = null;
+      if(imageChoiceChosen == Constants.PHONEGALLERY){
+        image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      }
+      else if(imageChoiceChosen == Constants.CAMERA){
+        image = await ImagePicker().pickImage(source: ImageSource.camera);
+      }
+      
+
       if (image == null) return pickImageResponse;
       final imageTemp = File(image.path);
       print("imageTemp: " + imageTemp.toString());

@@ -62,7 +62,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
           SizedBox(height: 10.0),
           teams.isEmpty
               ? Center(
-                  child: Text('No Teams'),
+                  child: Text('No Events'),
                 )
               : Column(
                   children: List<Widget>.generate(teams.length, (index) {

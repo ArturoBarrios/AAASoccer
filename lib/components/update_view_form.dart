@@ -3,6 +3,7 @@ import 'package:soccermadeeasy/components/players_list_widget.dart';
 import 'package:soccermadeeasy/components/price_widget.dart';
 
 import '../views/game/update.dart';
+
 import 'Mixins/event_mixin.dart';
 import 'chats_list_widget.dart';
 import 'create_event_payment.dart';
@@ -10,6 +11,8 @@ import 'create_event_request.dart';
 import 'create_team_payment.dart';
 import 'create_team_request.dart';
 import 'location_search_bar.dart';
+import 'images.dart';
+
 
 class UpdateViewForm extends StatefulWidget with EventMixin {
   final dynamic userObjectDetails;
@@ -27,6 +30,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
   CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
+  dynamic images = [];
 
   void setupRequestWidgetData() {
     print("setupRequestWidgetData()");
@@ -39,6 +43,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
   }
 
   void loadInitialData() {
+    print("loadInitialData()");
     dynamic setupRequestWidgetResp =
         widget.setupRequestWidgetData(widget.userObjectDetails);
     print("setupRequestWidgetResp: $setupRequestWidgetResp");
@@ -48,6 +53,8 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
         setupRequestWidgetResp['createEventPaymentWidget'];
     createTeamPaymentWidget = setupRequestWidgetResp['createTeamPaymentWidget'];
     createTeamRequestWidget = setupRequestWidgetResp['createTeamRequestWidget'];
+    images = widget.userObjectDetails['mainEvent']['images']['data'];
+    print("images: " + images.toString());
   }
 
   @override
@@ -121,6 +128,26 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
               eventPrice: false)
         ],
       ),
+      // ImagesWidget(images: images)
+      // Row(
+      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //   children: [
+      // GestureDetector(
+      //             onTap: () {
+      //               // getImage();
+      //             },
+      //             child: Container(
+      //               height:50,
+      //               margin: const EdgeInsets.all(10.0),
+      //               decoration: BoxDecoration(
+      //                 color: Colors.amber[600],
+      //                 image: DecorationImage(
+      //                   image: NetworkImage('https://via.placeholder.com/150'), // Update this URL with your image url
+      //                   fit: BoxFit.cover,
+      //                 ),
+      //               ),
+      //             ),
+      //           )])
     ]))));
   }
 }

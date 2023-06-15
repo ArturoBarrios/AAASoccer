@@ -3,7 +3,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
 import '../components/profile.dart';
 import '../views/game/create.dart';
-import '../views/images/my_images.dart';
+import '../views/images/view_images.dart';
 import '../views/tournament/create.dart';
 import '../views/league/create.dart';
 import '../views/training/create.dart';
@@ -114,7 +114,7 @@ BottomAppBar getMainBottomNav(BuildContext context){
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return MyImagesView();
+                        return ImagesView(images: []);
                       },
                     ));
                   }),
