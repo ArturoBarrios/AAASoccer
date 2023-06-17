@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/players_list_widget.dart';
 import 'package:soccermadeeasy/components/price_widget.dart';
+import 'package:soccermadeeasy/components/send_players_request_widget.dart';
+import 'package:soccermadeeasy/components/send_teams_request_widget.dart';
+import 'package:soccermadeeasy/components/teams_list_widget.dart';
 
 import '../views/game/update.dart';
 
@@ -91,9 +94,10 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
                   ['data'][0]['name'])
           : Text(widget.userObjectDetails['mainEvent']['location']['data'][0]
               ['name']),
-      widget.sendPlayersRequestWidget(context, widget.userObjectDetails),
+      
 
-      widget.sendTeamsRequestWidget(context, widget.userObjectDetails),
+      SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails),
+      SendTeamsRequestWidget(userObjectDetails: widget.userObjectDetails),
       widget.getChatWidget(
           context, true, false, widget.userObjectDetails, updateChatsList),
       ChatsListWidget(
@@ -109,6 +113,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
       createTeamPaymentWidget,
 
       PlayerList(playersDetails: widget.userObjectDetails),
+      TeamsListWidget(teamsDetails: widget.userObjectDetails),
 
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

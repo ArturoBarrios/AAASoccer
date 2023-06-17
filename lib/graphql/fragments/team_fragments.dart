@@ -12,6 +12,13 @@ class TeamFragments {
                 ${ChatFragments().chatObject()}
               }
             }
+            events{
+              data{
+                _id
+                name
+                
+              }
+            }
             location{
               data{
                 name

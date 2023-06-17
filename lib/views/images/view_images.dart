@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import '../../components/headers.dart';
 
 class ImagesView extends StatefulWidget {
-  const ImagesView({Key? key, dynamic images})
+  const ImagesView({Key? key, dynamic this.images})
       : super(key: key);
 
 
+ final dynamic images;
 
   @override
   _ImagesViewState createState() => _ImagesViewState();

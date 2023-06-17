@@ -63,6 +63,20 @@ class BaseCommand {
   // }
 
   getHomePageModel() => homePageModel;
+  //calculate distance between two points
+  dynamic getObjectsNearMe(Map<String,dynamic> myLocation, Map<String,dynamic> otherLocation, dynamic objects){
+    print("getObjectsNearMe");
+    print("objects: $objects");
+    print("myLocation: $myLocation");
+    print("otherLocation: $otherLocation");
+
+    //calculate
+    double distanceInMeters = Geolocator.distanceBetween(myLocation['latitude'], myLocation['longitude'], otherLocation['latitude'], otherLocation['longitude']);
+    List<dynamic> objectsNearMe = [];
+
+
+    return objectsNearMe;
+  }
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
