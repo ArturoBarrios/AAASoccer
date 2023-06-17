@@ -122,47 +122,6 @@ type Request {
   
 }
 
-# type FriendRequest {
-#   sender: User
-#   receiver: User @relation(name: "friend_requests")
-#   status: RequestStatus @default(value: PENDING)
-#   requestAttempts: Int @default(value: 0)
-#   requestType: RequestType @default(value: FRIENDREQUEST)
-# }
-
-
-# # event request will be sent to event organizers
-# type EventRequest {
-#   organizers: [User!] @relation(name: "event_requests_organizers")  
-#   sender: User @relation(name: "event_requests_sent")
-#   acceptedBy: User @relation(name: "event_requests_acceptedBy")
-#   receivers: [User!] @relation(name: "event_requests_to_accept")  
-#   event: Event!  
-#   status: RequestStatus @default(value: PENDING)
-#   requestAttempts: Int @default(value: 0)  
-#   requestType: RequestType @default(value: EVENTREQUEST)
-# }
-
-# # event request will be sent to team organizers
-# type TeamRequest {
-#   organizers: [User!] @relation(name: "team_requests_organizers")  
-#   sender: User @relation(name: "team_requests_sent")
-#   acceptedBy: User @relation(name: "team_requests_acceptedBy")
-#   receivers: [User!] @relation(name: "team_requests_to_accept")  
-#   team: Team!  
-#   status: RequestStatus @default(value: PENDING)
-#   requestAttempts: Int @default(value: 0)
-#   requestType: RequestType @default(value: TEAMREQUEST)
-# }
-
-
-# type OrganizerRequest {
-#   from: User!
-#   to: User!
-#   status: RequestStatus @default(value: PENDING)
-#   requestAttempts: Int @default(value: 0)
-# }
-
 type StripeCustomer {
   customerId: String
   user: User
@@ -207,6 +166,7 @@ type User  {
   sentMessages: [Message] @relation(name: "messages_sent")
   messagesDirectedForMe: [Message] @relation(name: "messages_for")
   onboarded: Boolean @default(value: false)
+  ratings: [Rating] @relation
 }
 
 
@@ -214,21 +174,21 @@ type Player   {
   wagerRating: String
   wagers: [Wager] @relation  
   # events: [Event] @relation  
-  competitiveLevel: String
-  ratings: String
+  competitiveLevel: String  
   hasRating: String
   showRating: String
   hasSubscription: String
   user: User
   selfRating: Int
   sponsors: [Sponsor] @relation
-  # games: [Game] @relation  
+  ratings: [Rating] @relation
 }
 
 type EventUserParticipant {
   event: Event
   user: User
   roles: String
+  organization: Organization
 }
 
 type TeamUserParticipant {
@@ -299,7 +259,7 @@ type Event   {
   startTime: String
   endTime: String
   createdAt: String
-  capacity: Int
+  capacity: Int  
 }
 
 type Team   {
@@ -320,6 +280,8 @@ type Team   {
   payments: [Payment] @relation
   joinConditions: [JoinConditions] @relation  
   teamOrders: [TeamOrder] @relation
+  organization: Organization
+  ratings: [Rating] @relation
   
 
   
@@ -327,14 +289,17 @@ type Team   {
 
 type Coach   {  
   user: User
+  ratings: [Rating] @relation
 }
 
 type Referee   {  
   user: User
+  ratings: [Rating] @relation
 }
 
 type Organizer   {  
   user: User
+  ratings: [Rating] @relation
 }
 
 
@@ -355,8 +320,9 @@ type Payment   {
 type Organization   {  
   name: String
   images: [Image] @relation
-  rating: String
+  rating: [Rating] @relation
   events: [Event] @relation
+  teams: [Team] @relation
   # suborgs: [Organization] @relation
   # sponsor: Sponsor
   sponsors: [Sponsor] @relation
@@ -366,6 +332,8 @@ type Organization   {
   inviteOnly: Boolean
   private: Boolean #it won't show up in public search
   isMainOrg: Boolean
+  userParticipants: [EventUserParticipant] @relation
+  location: [Location] @relation
 }
 
 # sponsor is an org
@@ -537,11 +505,22 @@ type Location   {
   events: [Event] @relation
   user: User
   team: Team
+  organization: Organization
 }
 
 type Rating   {
-  id: ID!
-  event: Event
+  id: ID!  
+  rating: Int
+  organizations: [Organization] @relation
+  teams: [Team] @relation
+  events: [Event] @relation
+  users: [User] @relation
+  players: [Player] @relation
+  organizers: [Organizer] @relation
+  coaches: [Coach] @relation
+  referees: [Referee] @relation
+
+
 }
 
 type Price   {  
