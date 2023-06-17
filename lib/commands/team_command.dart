@@ -161,9 +161,7 @@ class TeamCommand extends BaseCommand {
 
   }
 
- 
-
-  Future<List<dynamic>> getAppModelTeamsNearMe() async {
+  List<dynamic> getAppModelTeamsNearMe()  {
     print("getAppModelTeamsNearMe");
     print("appModel.teamsNearMe: "+appModel.teamsNearMe.toString());
     return appModel.teamsNearMe;

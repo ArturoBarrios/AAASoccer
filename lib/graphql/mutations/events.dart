@@ -157,7 +157,7 @@ class EventMutations {
 }
 
   String addTeam(
-      Map<String, dynamic> eventInput, Map<String, dynamic> teamInput) {
+      dynamic eventInput, dynamic teamInput) {
     String addTeamString = """      
       mutation {
         updateEvent(id: ${eventInput['_id']},

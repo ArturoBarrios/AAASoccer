@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../commands/event_command.dart';
 import '../commands/team_command.dart';
+import '../commands/user_command.dart';
 import 'Dialogues/animated_dialogu.dart';
 
 // // // // // // // // // // // // // // //
@@ -21,27 +22,68 @@ class SendTeamsRequestWidget extends StatefulWidget {
 }
 
 class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
-  dynamic teamList = [];
+  List<dynamic> teamsNearMeList = [];
+  List<dynamic> myTeamList = [];
+  List<dynamic> objectTeamList = [];
+  List<dynamic> teamsSelectedList = [];
 
-  Future<void> sendTeamsEventRequest(dynamic event, Map<int, dynamic> indexes,
-      List<dynamic> primaryList, List<dynamic> secondaryList, dynamic userObjectDetails) async {
+  void setupMyTeams() {
+    print("setupMyTeams");
+    List<dynamic> myTeamsResp = UserCommand().getAppModelMyTeams();
+    myTeamList = myTeamsResp;
+    print("myTeamList: " + myTeamList.toString());
+    
+  }
+
+  void setupTeams(){
+    print("setupTeams");
+    List<dynamic> appModelTeams = TeamCommand().getAppModelTeamsNearMe();
+    print("appModelTeams: " + appModelTeams.toString());
+    teamsNearMeList = appModelTeams;
+    //sort by my teams first
+    teamsNearMeList.sort((a, b) => (myTeamList.contains(b) ? 1 : 0).compareTo(myTeamList.contains(a) ? 1 : 0));
+    print("teamsNearMeList: " + teamsNearMeList.toString());
+  }
+
+  void setupObjectTeamList(){
+    print("setupObjectTeamList");
+    objectTeamList = widget.userObjectDetails['teams'];
+  }
+
+  sendEventRequestForMyTeam(Map<int, dynamic> indexes, 
+      List<dynamic> primaryList, List<dynamic> secondaryList) {    
+    print("sendEventRequestForMyTeam: " + teamsSelectedList.toString());
+    indexes.forEach((mainIndex, secondaryIndexes) async {
+      dynamic teamChosen = primaryList[mainIndex];      
+      TeamCommand().sendEventRequestForMyTeam(
+          widget.userObjectDetails['mainEvent'], teamChosen);
+
+    });
+    
+  }
+  
+  Future<void> sendTeamsEventRequest(Map<int, dynamic> indexes,
+      List<dynamic> primaryList, List<dynamic> secondaryList) async {
     print("sendTeamsEventRequest");
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic teamChosen = primaryList[mainIndex];
       bool isMyTeam = false;
-      isMyTeam = userObjectDetails['roles'].contains("ORGANIZER");
+      isMyTeam = widget.userObjectDetails['roles'].contains("ORGANIZER");
+      print("isMyTeam: " + isMyTeam.toString());
       //check if player is a team and organizer, if so, add to list
-      if(event[userObjectDetails['isMine']] && isMyTeam){
+      if(widget.userObjectDetails['isMine'] && isMyTeam){
         print("isMyTeam");
-        teamList.remove(teamChosen);
-        await EventCommand().addTeamToEvent(event, teamChosen);
-        userObjectDetails['teams'].add(teamChosen);
+        teamsNearMeList.remove(teamChosen);
+        await EventCommand().addTeamToEvent(widget.userObjectDetails['mainEvent'], teamChosen);
+        print("team added to event");
+        setState(() {
+          widget.userObjectDetails['teams'].add(teamChosen);          
+        });
       }
       else{
-        await TeamCommand().sendTeamEventRequest(teamChosen, event);
-
+        await TeamCommand().sendTeamEventRequest(teamChosen, widget.userObjectDetails['mainEvent']);
       }
     });
   }
@@ -52,27 +94,29 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
         child: GestureDetector(
             onTap: () async {
               print("myTeamList before: " + myTeamList.toString());
-
+              List<dynamic> primaryList = [];
+              List<dynamic> secondaryList = [];
               List<dynamic> myProcessedTeamList = myTeamList
                   .where((item1) => !userObjectDetails['teams']
                       .any((item2) => item2["_id"] == item1["_id"]))
-                  .map((item) => item['team'])
+                  .map((item) => item)
                   .toList();
+              primaryList = myProcessedTeamList;
 
-              //  List<String> myTeamList = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+              
               Map<int, dynamic> result = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
-                      items: myProcessedTeamList,
+                      items: primaryList,
                       singleSelect: false,
-                      secondaryItems: []);
+                      secondaryItems: secondaryList);
                 },
               );
               if (result.isNotEmpty) {
                 print('Selected items: $result');
-                teamsSelected(result, myProcessedTeamList);
-                sendEventRequestForMyTeam(userObjectDetails);
+                // teamsSelected(result, myProcessedTeamList);
+                sendEventRequestForMyTeam(result, primaryList, secondaryList);
               }
             },
             child: Container(
@@ -83,10 +127,10 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
             )));
   }
 
-
+  //send request to all teams near me(excluding)
   Container sendTeamsRequestWidget(
       BuildContext context, dynamic userObjectDetails) {
-    print("sendTeamsRequestWidget: " + userObjectDetails.toString());
+    print("sendTeamsRequestWidgett: " + userObjectDetails.toString());
     // setupTeamList();
         if(userObjectDetails['isMine']){
           return Container(
@@ -94,10 +138,11 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                   onTap: () async {
                     List<dynamic> primaryList = [];
                     List<dynamic> secondaryList = [];
-                    List<dynamic> processedTeamList = teamList
+                    print("teamsNearMeList: "+ teamsNearMeList.toString());
+                    List<dynamic> processedTeamList = teamsNearMeList
                         .where((item1) => !userObjectDetails['teams']
                             .any((item2) => item2["_id"] == item1["_id"]))
-                        .map((item) => item['name'])
+                        .map((item) => item)
                         .toList();
                     primaryList = processedTeamList;
                     //original list (just look at commented code below)
@@ -113,8 +158,8 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                     );
                     if (result.isNotEmpty) {
                       print('Selected items: $result');
-                      sendTeamsEventRequest(userObjectDetails['mainEvent'], result,
-                          primaryList, secondaryList, userObjectDetails);
+                      sendTeamsEventRequest(result,
+                          primaryList, secondaryList);
                     }
                   },
                   child: Container(
@@ -130,7 +175,14 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    setupMyTeams();
+    setupTeams();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return sendTeamsRequestWidget(context, widget.game);
+    return sendTeamsRequestWidget(context, widget.userObjectDetails);
 }
 }

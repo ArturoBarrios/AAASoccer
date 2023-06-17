@@ -319,6 +319,7 @@ class _Home extends State<Home> {
     super.initState();
     _firstLoad();
     _selectEventController = ScrollController()..addListener(_loadMore);
+    userObject = UserCommand().getAppModelUser();
 
   }
 
@@ -525,11 +526,11 @@ class _Home extends State<Home> {
     print("selectedObjects length in build: " + selectedObjects.length.toString());
 
     return (Scaffold(
-      // appBar: Headers().getMainHeader(context),
-      // drawer: Container(
-      //   width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
-      //   child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
-      // ),
+      appBar: Headers().getMainHeader(context),
+      drawer: Container(
+        width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
+        child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
+      ),
       body: Stack(children: <Widget>[
         Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Expanded(

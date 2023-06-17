@@ -85,7 +85,7 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
                 widget.sendPlayersRequestWidget(context, widget.userObjectDetails),
                 widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
                 PlayerList(playersDetails: widget.userObjectDetails),
-                EventsListWidget(teamsDetails: widget.userObjectDetails,),
+                EventsListWidget(objectEventsDetails: widget.userObjectDetails,),
                 //add image
         ]))));
   }

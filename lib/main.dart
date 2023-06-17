@@ -715,14 +715,9 @@ class _AppScaffoldState extends State<AppScaffold> {
       //       );
       
     },
-    child: Scaffold(
-            appBar: Headers().getMainHeader(context),
-            drawer: Container(
-              width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
-              child: Drawer(child: SideNavs().getMainSideNav(context, currentUser)),
-            ),
-            body: Home(),          
-          ) ,
+    child: 
+            Home(),          
+          
   )
           
       // body: currentUser != "" ?  Home() : LoginPage(),
