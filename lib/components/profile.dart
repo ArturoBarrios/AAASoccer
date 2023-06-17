@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:soccermadeeasy/components/history.dart';
 
 import '../commands/base_command.dart';
+import '../commands/user_command.dart';
 import '../constants.dart';
 import '../models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import '../commands/images_command.dart';
 import 'package:provider/provider.dart';
 
 import 'Dialogues/animated_dialogu.dart';
+import 'object_profile_main_image.dart';
 
 
 // Change color here
@@ -16,85 +18,39 @@ const primaryColor = Color(0xff4338CA);
 // // // // // // // // // // // // // // //
 class Profile extends StatefulWidget {
   @override
-  _ProfileState createState() => _ProfileState();
+  _ProfileState createState() => _ProfileState();  
 
   
 }
 
-class _ProfileState extends State<Profile> {
-    String profileImageUrl = "";
-    dynamic imageChoices = [
-      {Constants.CAMERA : "Take a Picture"},
-      {Constants.PHONEGALLERY: "Choose from Phone Gallery"},
-      {Constants.APPGALLERY:"Choose from App Images"},
-    ];
+class _ProfileState extends State<Profile> {    
+  dynamic objectImageInput;
+  
     
-    void chooseImage(Map<int, dynamic> indexes,      
-        List<dynamic> primaryList,
-        List<dynamic> secondaryList){
-      print("chooseImage");
-      print("indexes: " + indexes.toString());
-      print("primaryList: " + primaryList.toString());
-      print("secondaryList: " + secondaryList.toString());
-      indexes.forEach((mainIndex, secondaryIndexes) async {
-      dynamic imageChoiceChosen = imageChoices[mainIndex].keys.first;
-      print("imageChoiceChosen: " + imageChoiceChosen.toString());
-      //choose from phone gallery||//take a picture
-      if(imageChoiceChosen==Constants.PHONEGALLERY||imageChoiceChosen == Constants.CAMERA){
-        pickImage(imageChoiceChosen);
-      }            
-      //choose from app images
-      else{
-        
-
-      }
-
-      
-    });
-
-
-    }
-
-     void pickImage(String imageChoiceChosen ) async {
-      Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true, imageChoiceChosen);  
-      print("pickImageResp: " + pickImageResp.toString());
-      dynamic data = pickImageResp['data'];
-      print("data: " + data.toString());
-      String key = data['key'];
-      print("keyyyyyy: " + key.toString());
-      String s3bucket = data['Bucket'];
-      Map<String, dynamic> imageInput = {
-        "isMainImage": true,
-        "key": key,  
-        "public": true,  
-        "s3bucket": s3bucket    
-      };
-
-      await ImagesCommand().removeProfileTagFromImage();
-      await ImagesCommand().storeImageInDatabase(imageInput);
-      await ImagesCommand().getAndSetUserProfileImage();
-      
-      
-      //place image as profile picture
-
-      //testing out getting image from cloudfront
-      // await ImagesCommand().getImage();
-      //add image to user profile    
-    }
+    
+    
+  void loadInitialData() async {
+    print("loadInitialData");
+    String imageUrl = UserCommand().getProfileImage();
+    objectImageInput = {
+      "imageUrl": imageUrl,
+      "containerType": Constants.IMAGECIRCLE
+    };
+    
+  }
 
     @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getProfileImage();
+    loadInitialData();
   }
 
 
   @override
   Widget build(BuildContext context) {
     String profileImageUrl = context.
-      select<UserModel, String>((value) => value.profileImageUrl);
-
+      select<UserModel, String>((value) => value.profileImageUrl);      
 
    
 
@@ -115,85 +71,7 @@ class _ProfileState extends State<Profile> {
             },
           )),                
         // new Align(alignment: Alignment.centerLeft, child: new Text("left")),
-                GestureDetector(
-                  onTap: () async {
-                    List<dynamic> primaryList = imageChoices.map((choice) => choice.values.first).toList();
-
-                    List<dynamic> secondaryList = [];
-                    Map<int, dynamic> result = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AnimatedDialog(
-                            items: primaryList,
-                            singleSelect: true,
-                            secondaryItems: secondaryList);
-                      },
-                    );
-                    if (result.isNotEmpty) {
-                      print("result: " + result.toString());
-                      chooseImage(result, primaryList, secondaryList);
-                      // pickImage();                    
-                    }
-                  },
-                  child: 
-                
-                Hero(
-                      tag: "profile",
-                child: Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: <Widget>[                    
-                    Container(
-                        child: Container(
-                            height: 190.0,
-                            width: 190.0,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(102.5),
-                                color: primaryColor.withOpacity(0.05)),
-                        )),
-                      
-                    Container(
-                        child: Container(
-                            height: 170.0,
-                            width: 170.0,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(102.5),
-                                gradient: RadialGradient(stops:[0.01,0.5],colors: [Colors.white,primaryColor.withOpacity(0.1)]),
-                        )),
-                      ),
-                    Container(
-                        child: Container(
-                            height: 150.0,
-                            width: 150.0,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(102.5),
-                                color: primaryColor
-                                    .withOpacity(0.4))),
-                      ),
-                      Container(
-                        child: Container(
-                            height: 132.0,
-                            width: 132.0,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(102.5),
-                                color: primaryColor
-                                    .withOpacity(0.5))),
-                      ),
-                    
-                    
-                                       Container(
-                        child: Container(
-                          height: 125.0,
-                          width: 125.0,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(62.5),
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(profileImageUrl))),
-                        ),
-                      ),
-                    
-                  ],
-                ),)),
+                ObjectProfileMainImage(objectImageInput: objectImageInput),
                 SizedBox(height: 25.0),
                 Text(
                   'Roboh Dash',

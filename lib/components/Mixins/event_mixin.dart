@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/views/request/view.dart';
 
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
+import '../../commands/images_command.dart';
 import '../../commands/player_command.dart';
 import '../../commands/team_command.dart';
 import '../../commands/user_command.dart';
@@ -58,6 +59,12 @@ mixin EventMixin {
   CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();  
 
+  dynamic imageChoices = [
+      {Constants.CAMERA : "Take a Picture"},
+      {Constants.PHONEGALLERY: "Choose from Phone Gallery"},
+      {Constants.APPGALLERY:"Choose from App Images"},
+    ];  
+
   void setupPlayerList() {
     print("setupPlayerList");
     playerList = PlayerCommand().getAppModelPlayersNearMe();
@@ -100,6 +107,8 @@ mixin EventMixin {
       setupTeamsToChooseFrom();
     }
   }
+
+
 
   void setupEventsToChooseFrom() {
     print("setupEventsToChooseFrom");

@@ -36,6 +36,9 @@ class Constants {
   static final String PHONEGALLERY = "PHONEGALLERY";
   static final String APPGALLERY = "APPGALLERY";
 
+  //image container types
+  static final String IMAGECIRCLE = "IMAGECIRCLE";
+
 
   
   
