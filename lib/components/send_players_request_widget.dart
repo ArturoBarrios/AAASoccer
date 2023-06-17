@@ -68,7 +68,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
 
-    String type = getRequestType(userObject['mainEvent']);
+    String type = getRequestType(widget.userObjectDetails['mainEvent']);
 
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic playerChosen = primaryList[mainIndex];

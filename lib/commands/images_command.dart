@@ -163,7 +163,7 @@ class ImagesCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': ImageMutations().createImage(imageInput),
+          'query': ImageMutations().createUserImage(imageInput),
         }),
       );
 

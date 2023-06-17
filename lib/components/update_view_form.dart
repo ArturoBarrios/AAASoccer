@@ -133,7 +133,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
               eventPrice: false)
         ],
       ),
-      // ImagesWidget(images: images)
+      ImagesWidget(images: images)
       // Row(
       //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
       //   children: [
