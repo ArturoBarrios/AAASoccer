@@ -39,7 +39,7 @@ class _GameCreateState extends State<GameCreate> {
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
   final priceController = TextEditingController();
-  final imagesController = TextEditingController();
+  final imageController = TextEditingController();
 
   bool _isLoading = false;
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
@@ -161,7 +161,7 @@ class _GameCreateState extends State<GameCreate> {
           decoration: new InputDecoration.collapsed(hintText: 'Private'),
         ),
         TextField(
-          controller: imagesController,
+          controller: imageController,
           decoration: new InputDecoration.collapsed(hintText: 'Images'),
         ),
         
