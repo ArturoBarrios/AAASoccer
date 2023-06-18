@@ -8,7 +8,7 @@ import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/images_mixin.dart';
 import '../../constants.dart';
 
-class ObjectProfileMainImage extends StatefulWidget {
+class ObjectProfileMainImage extends StatefulWidget with ImagesMixin {
   final dynamic objectImageInput;
   dynamic primaryColor = Color(0xff4338CA);
 
@@ -19,68 +19,7 @@ class ObjectProfileMainImage extends StatefulWidget {
 }
 
 class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
-  dynamic imageChoices = [
-      {Constants.CAMERA : "Take a Picture"},
-      {Constants.PHONEGALLERY: "Choose from Phone Gallery"},
-      {Constants.APPGALLERY:"Choose from App Images"},
-    ];
-
-    String imageUrl = "";
-
-  void chooseImage(Map<int, dynamic> indexes,      
-        List<dynamic> primaryList,
-        List<dynamic> secondaryList){
-      print("chooseImage");
-      print("indexes: " + indexes.toString());
-      print("primaryList: " + primaryList.toString());
-      print("secondaryList: " + secondaryList.toString());
-      indexes.forEach((mainIndex, secondaryIndexes) async {
-      dynamic imageChoiceChosen = imageChoices[mainIndex].keys.first;
-      print("imageChoiceChosen: " + imageChoiceChosen.toString());
-      //choose from phone gallery||//take a picture
-      if(imageChoiceChosen==Constants.PHONEGALLERY||imageChoiceChosen == Constants.CAMERA){
-        pickImage(imageChoiceChosen);
-      }            
-      //choose from app images
-      else{
-        
-
-      }
-
-      
-    });
-
-
-    }
-
-    void pickImage(String imageChoiceChosen ) async {
-      Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true, imageChoiceChosen);  
-      print("pickImageResp: " + pickImageResp.toString());
-      dynamic data = pickImageResp['data'];
-      print("data: " + data.toString());
-      String key = data['key'];
-      print("keyyyyyy: " + key.toString());
-      String s3bucket = data['Bucket'];
-      Map<String, dynamic> imageInput = {
-        "isMainImage": true,
-        "key": key,  
-        "public": true,  
-        "s3bucket": s3bucket    
-      };
-
-      imageUrl = key;
-
-      await ImagesCommand().removeProfileTagFromImage();
-      await ImagesCommand().storeImageInDatabase(imageInput);
-      await ImagesCommand().getAndSetUserProfileImage();
-      
-      
-      //place image as profile picture
-
-      //testing out getting image from cloudfront
-      // await ImagesCommand().getImage();
-      //add image to user profile    
-    }
+  
 
 
 
@@ -89,7 +28,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
       child: GestureDetector(
         onTap: () async {
           List<dynamic> primaryList =
-              imageChoices.map((choice) => choice.values.first).toList();
+              widget.imageChoices.map((choice) => choice.values.first).toList();
 
           List<dynamic> secondaryList = [];
           Map<int, dynamic> result = await showDialog(
@@ -103,7 +42,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
           );
           if (result.isNotEmpty) {
             print("result: " + result.toString());
-            chooseImage(result, primaryList, secondaryList);
+            widget.chooseImage({"for": Constants.USER},result, primaryList, secondaryList);
           }
         },
         child: Hero(

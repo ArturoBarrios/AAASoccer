@@ -14,7 +14,7 @@ import 'create_event_request.dart';
 import 'create_team_payment.dart';
 import 'create_team_request.dart';
 import 'location_search_bar.dart';
-import 'images.dart';
+import 'images_list.dart';
 
 
 class UpdateViewForm extends StatefulWidget with EventMixin {
@@ -133,7 +133,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
               eventPrice: false)
         ],
       ),
-      ImagesWidget(images: images)
+      ImagesListWidget(images: images, details: widget.userObjectDetails),
       // Row(
       //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
       //   children: [

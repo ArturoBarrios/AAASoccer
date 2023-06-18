@@ -57,13 +57,7 @@ mixin EventMixin {
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
   CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
-  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();  
-
-  dynamic imageChoices = [
-      {Constants.CAMERA : "Take a Picture"},
-      {Constants.PHONEGALLERY: "Choose from Phone Gallery"},
-      {Constants.APPGALLERY:"Choose from App Images"},
-    ];  
+  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();    
 
   void setupPlayerList() {
     print("setupPlayerList");
