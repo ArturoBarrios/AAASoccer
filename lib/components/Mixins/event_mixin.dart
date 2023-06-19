@@ -80,8 +80,8 @@ mixin EventMixin {
 
   void setupMyTeams() {
     print("setupMyTeams");
-    teamList = UserCommand().getAppModelMyTeams();
-    myTeamList = teamList;
+    dynamic getAppModelMyTeams = UserCommand().getAppModelMyTeams();
+    myTeamList = getAppModelMyTeams;
     
   }
 
