@@ -60,8 +60,21 @@ mixin ImagesMixin {
 
       if(objectDetails['for'] == Constants.USER){
         await ImagesCommand().removeProfileTagFromImage();
-        await ImagesCommand().storeImageInDatabase(imageInput);
+        dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForUser(imageInput);
+        dynamic storedImage = storeImageInDatabaseForUserResp['data'];
+        ImagesCommand().addImageToUser(storedImage);
         await ImagesCommand().getAndSetUserProfileImage();
+      }
+      else if(objectDetails['for'] == Constants.TEAM){
+        imageInput['team_id'] = objectDetails['team']['_id'];
+        dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForTeam(imageInput);
+        dynamic storedImage = storeImageInDatabaseForUserResp['data'];
+
+      }
+      else if(objectDetails['for'] == Constants.EVENT){
+        imageInput['event_id'] = objectDetails['mainEvent']['_id'];
+        dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForTeam(imageInput);
+        dynamic storedImage = storeImageInDatabaseForUserResp['data'];
       }
       
       

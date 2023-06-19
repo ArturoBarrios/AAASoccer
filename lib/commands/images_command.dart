@@ -143,9 +143,19 @@ class ImagesCommand extends BaseCommand {
     }
   }
 
+  void addImageToUser(dynamic imageToAdd){
+    appModel.currentUser['images']['data'].add(imageToAdd);
+  }
+  // void addImageToTeam(dynamic imageToAdd, dynamic team){
+  //   appModel.currentUser['images']['data'].add(imageToAdd);
+  // }
+  // void addImageToEvent(dynamic imageToAdd){
+  //   appModel.currentUser['images']['data'].add(imageToAdd);
+  // }
+
   
 
-  Future<Map<String, dynamic>> storeImageInDatabase(
+  Future<Map<String, dynamic>> storeImageInDatabaseForUser(
       Map<String, dynamic> imageInput) async {
     print("storeImage()");
     Map<String, dynamic> getImageResponse = {
@@ -168,13 +178,85 @@ class ImagesCommand extends BaseCommand {
       );
 
       print("response: " + json.decode(response.body).toString());
+      dynamic createImage = json.decode(response.body)['data']['createImage'];
+      getImageResponse['success'] = true;
+      getImageResponse['data'] = createImage;
+      
+      // appModel.currentUser['images']['data'].add(
+      //     json.decode(response.body)['data']['createImage']);
+      
+
+
+      return getImageResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return getImageResponse;
+    }
+  }
+  Future<Map<String, dynamic>> storeImageInDatabaseForEvent(
+      Map<String, dynamic> imageInput) async {
+    print("storeImageInDatabaseForEvent()");
+    Map<String, dynamic> getImageResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': ImageMutations().createEventImage(imageInput),
+        }),
+      );
+
+      print("response: " + json.decode(response.body).toString());
+      dynamic createImage = json.decode(response.body)['data']['createImage'];
 
       getImageResponse['success'] = true;
-      getImageResponse['data'] = {
-        'image': json.decode(response.body)['data']['createImage'],
-      };
-      appModel.currentUser['images']['data'].add(
-          json.decode(response.body)['data']['createImage']);
+      getImageResponse['data'] = createImage;
+     
+      
+
+
+      return getImageResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return getImageResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> storeImageInDatabaseForTeam(
+      Map<String, dynamic> imageInput) async {
+    print("storeImageInDatabaseForTeam()");
+    Map<String, dynamic> getImageResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': ImageMutations().createTeamImage(imageInput),
+        }),
+      );
+
+      print("response: " + json.decode(response.body).toString());
+      dynamic createImage = json.decode(response.body)['data']['createImage'];
+
+      getImageResponse['success'] = true;
+      getImageResponse['data'] = createImage;
+      
       
 
 

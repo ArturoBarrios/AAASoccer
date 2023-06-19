@@ -12,9 +12,10 @@ import 'package:soccermadeeasy/constants.dart';
 
 class PlayerCard extends StatefulWidget {
   const PlayerCard(
-      {Key? key, required this.playerObject, required this.svgImage})
+      {Key? key, required this.playerObject, required this.playerDetails , required this.svgImage})
       : super(key: key);
   final Map<String, dynamic> playerObject;
+  final dynamic playerDetails;
   final Svg svgImage;
   final double bevel = 10.0;
 
@@ -51,6 +52,7 @@ class _PlayerCard extends State<PlayerCard> {
     print("Player card: " + widget.playerObject.toString());
     print("widget name: ");
     print(widget.playerObject.toString());
+    print("widget.playerDetails: "+ widget.playerDetails.toString());
 
     return Listener(
         child: GestureDetector(

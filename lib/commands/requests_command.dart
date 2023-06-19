@@ -160,8 +160,8 @@ class RequestsCommand extends BaseCommand {
       print("createUserLink: " + createUserLink.toString());
       if (createUserLink['success']) {
         //add friend
-        dynamic newFriend = createUserLink['data']['user'];
-        newFriend['user'] = newFriend;
+        dynamic newFriend = createUserLink['data'];
+        // newFriend['user'] = newFriend;
         await UserCommand().updateModelsWithFriend(newFriend, true);
         //get sender information for push notification
         // Map<String, dynamic> findFriendRequestResp =

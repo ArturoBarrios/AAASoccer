@@ -129,6 +129,7 @@ type StripeCustomer {
 
 type UserLink {
    user: User     
+   
 }
 
 

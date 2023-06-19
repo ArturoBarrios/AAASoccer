@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import '../commands/player_command.dart';
 import '../services/amplify_auth_service.dart' as AmplifyAuth;
 //import widgets
 import '../components/select_icon_button.dart';
@@ -387,7 +388,8 @@ class _Home extends State<Home> {
           svgImage: svgImage,
           userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
-      card = PlayerCard(playerObject: selectedObject, svgImage: svgImage);
+      dynamic playerDetails = await PlayerCommand().getUserPlayerDetails(selectedObject);
+      card = PlayerCard(playerObject: selectedObject, playerDetails: playerDetails, svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {            
       dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject);
       card = TeamCard(

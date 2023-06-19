@@ -140,7 +140,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
               eventPrice: false)
         ],
       ),
-      ImagesListWidget(images: images, details: widget.userObjectDetails),
+      ImagesListWidget(details: widget.userObjectDetails),
       // Row(
       //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
       //   children: [

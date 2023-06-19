@@ -6,7 +6,7 @@ import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/images_mixin.dart';
 
 class ImagesListWidget extends StatefulWidget with ImagesMixin {
-  ImagesListWidget({Key? key, required this.images, required this.details})
+  ImagesListWidget({Key? key, required this.details})
       : super(key: key);
 
       final dynamic images;
@@ -20,6 +20,7 @@ class ImagesListWidget extends StatefulWidget with ImagesMixin {
 
 class _ImagesListWidgetState extends State<ImagesListWidget> {
   bool _isLoading = true;
+  dynamic images;
 
   void getImage() async{
     print("getImage");
@@ -28,6 +29,18 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
 
   void goBack() {
     Navigator.pop(context);
+  }
+
+  void loadInitialData() {
+    print("loadInitialData");
+  }
+
+  addImage(){
+
+  }
+
+  removeImage(){
+    
   }
 
   @override

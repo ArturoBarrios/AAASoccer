@@ -44,6 +44,28 @@ class ImageMutations {
     return createImage;
   }
 
+  String createTeamImage(
+      Map<String, dynamic> imageInput) {
+    String createImage = """
+      mutation {
+        createImage(data: {            
+              isMainImage: ${imageInput['isMainImage']},
+              public: ${imageInput['public']},
+              key: "${imageInput['key']}",
+              s3bucket: "${imageInput['s3bucket']}",
+              team: {
+                connect: "${imageInput['team_id']}", 
+              },
+          }) 
+          {
+              ${ImageFragments().fullImage()}
+          }   
+        }
+        """;
+
+    return createImage;
+  }
+
   String partialImageUpdate(Map<String, dynamic> imageInput) {
     String updateImageString = """
       mutation {
