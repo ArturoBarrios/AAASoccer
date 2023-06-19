@@ -44,6 +44,19 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
     createTeamRequestWidget = setupRequestWidgetResp['createTeamRequestWidget'];
   }
 
+  void addEventCallback(dynamic event){
+    setState(() {
+      widget.userObjectDetails['team']['events']['data'].add(event);
+    });
+
+  }
+  void removeEventCallback(dynamic event){
+    setState(() {
+      widget.userObjectDetails['team']['events']['data'].remove(event);
+    });
+
+  }
+
   @override 
   void initState() {
     super.initState();
@@ -83,6 +96,7 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
                 createTeamPaymentWidget,
                 widget.getChatWidget(context, false, true, widget.userObjectDetails, updateChatsList),
                 widget.sendPlayersRequestWidget(context, widget.userObjectDetails),
+                widget.sendMyEventsTeamRequestWidget(context, widget.userObjectDetails, addEventCallback),
                 widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
                 PlayerList(playersDetails: widget.userObjectDetails),
                 EventsListWidget(objectEventsDetails: widget.userObjectDetails,),

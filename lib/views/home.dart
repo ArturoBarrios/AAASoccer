@@ -342,7 +342,7 @@ class _Home extends State<Home> {
       print("selected pickup: " + selectedObject.toString());
       print("before getEventDetails");
       dynamic getEventDetailsResp =
-          EventCommand().getUserEventDetails([selectedObject['event']]);
+          await EventCommand().getUserEventDetails([selectedObject['event']]);
       print("after getEventDetails");
       card = PickupCard2(
           gameObject: selectedObject,
@@ -350,7 +350,7 @@ class _Home extends State<Home> {
           userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TRAINING) {
       dynamic getEventDetailsResp =
-          EventCommand().getUserEventDetails([selectedObject['event']]);
+         await EventCommand().getUserEventDetails([selectedObject['event']]);
       card = TrainingCard(
           trainingObject: selectedObject,
           svgImage: svgImage,
@@ -358,7 +358,7 @@ class _Home extends State<Home> {
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
       dynamic getEventDetailsResp =
-          EventCommand().getUserEventDetails([selectedObject['event']]);
+          await EventCommand().getUserEventDetails([selectedObject['event']]);
       card = TryoutCard(
           tryoutObject: selectedObject,
           svgImage: svgImage,
@@ -368,7 +368,7 @@ class _Home extends State<Home> {
       // TournamentCommand().currateTournamentData(selectedObject);
       print("else if tournament");
       dynamic getEventDetailsResp =
-          EventCommand().getUserEventDetails(selectedObject['events']['data']);
+          await EventCommand().getUserEventDetails(selectedObject['events']['data']);
       getEventDetailsResp['groupStage'] = selectedObject['groupStage'];
       print("a::");
       getEventDetailsResp['tournamentStage'] = selectedObject['tournamentStage'];
@@ -381,7 +381,7 @@ class _Home extends State<Home> {
       //process league data for card
       // LeagueCommand().currateLeagueData(selectedObject);
       dynamic getEventDetailsResp =
-          EventCommand().getUserEventDetails(selectedObject['events']['data']);
+          await EventCommand().getUserEventDetails(selectedObject['events']['data']);
       card = LeagueCard(
           leagueObject: selectedObject,
           svgImage: svgImage,
@@ -409,7 +409,7 @@ class _Home extends State<Home> {
         print("0");
         gameObject['event'] = selectedObject['event'];
         dynamic getEventDetailsResp =
-            EventCommand().getUserEventDetails([gameObject['event']]);
+            await EventCommand().getUserEventDetails([gameObject['event']]);
         card = PickupCard2(
             gameObject: gameObject,
             svgImage: svgImage,
@@ -440,7 +440,7 @@ class _Home extends State<Home> {
         print("0");
         tryoutObject['event'] = selectedObject['event'];
         dynamic getEventDetailsResp =
-            EventCommand().getUserEventDetails([tryoutObject['event']]);
+            await EventCommand().getUserEventDetails([tryoutObject['event']]);
         card = TryoutCard(
             tryoutObject: tryoutObject,
             svgImage: svgImage,
@@ -453,7 +453,7 @@ class _Home extends State<Home> {
             await TournamentCommand().findTournamentById(tournamentId);
         if (findTournamentByIdResp['success']) {
           dynamic tournament = findTournamentByIdResp['data'];
-          dynamic getEventDetailsResp = EventCommand()
+          dynamic getEventDetailsResp = await EventCommand()
               .getUserEventDetails(tournament['events']['data']);
           print("tournament['groupStage']: " + tournament['groupStage'].toString());
           getEventDetailsResp['groupStage'] = tournament['groupStage'];
@@ -471,7 +471,7 @@ class _Home extends State<Home> {
             await LeagueCommand().findLeagueById(leagueId);
         if (findLeagueByIdResp['success']) {
           dynamic league = findLeagueByIdResp['data'];
-          dynamic getEventDetailsResp = EventCommand()
+          dynamic getEventDetailsResp = await EventCommand()
               .getUserEventDetails(league['events']['data']);
           card = LeagueCard(
               leagueObject: league,

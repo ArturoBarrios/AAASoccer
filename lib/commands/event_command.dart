@@ -898,7 +898,7 @@ class EventCommand extends BaseCommand {
   }
   
   //gets isMyEvent, isMember
-  Map<String,dynamic> getUserEventDetails(List<dynamic> events){
+  Future<Map<String,dynamic>> getUserEventDetails(List<dynamic> events)async {
     print("getUserEventDetails()");
 
     dynamic isMyEventResp = {
@@ -953,6 +953,10 @@ class EventCommand extends BaseCommand {
         event = events[0];
 
       }         
+      //get updated event
+      dynamic updatedEventResp = await getEventGame(event);
+      event = updatedEventResp['data'];
+
       isMyEventResp['mainEvent'] = event;
       print("main event: " + event.toString());
       print("main event user participants: "+ event['userParticipants'].toString());

@@ -6,6 +6,7 @@ import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/images_command.dart';
 import '../../commands/player_command.dart';
+import '../../commands/requests_command.dart';
 import '../../commands/team_command.dart';
 import '../../commands/user_command.dart';
 import '../../constants.dart';
@@ -84,23 +85,6 @@ mixin EventMixin {
     
   }
 
-  void setupEventTeamToChoose(int index) {
-    eventTeamChosen = teamEventList[index];
-    if (eventTeamChosen == "Event") {
-      setupEventsToChooseFrom();
-    } else {
-      setupTeamsToChooseFrom();
-    }
-  }
-
-  void setupPlayersTeamsToChoose(int index) {
-    playersTeamsChosen = playersTeamsList[index];
-    if (eventTeamChosen == "Players") {
-      setupPlayerList();
-    } else {
-      setupTeamsToChooseFrom();
-    }
-  }
 
 
 
@@ -111,19 +95,47 @@ mixin EventMixin {
     choices = myEventsToChooseFrom;
   }
 
-  void setupTeamsToChooseFrom() {
-    print("setupTeamsToChooseFrom");
-    List<dynamic> myTeams = UserCommand().getAppModelMyTeams();
-    myTeamsToChooseFrom = myTeams;
-    choices = myTeamsToChooseFrom;
-  }
 
-  sendEventRequestForMyTeam(dynamic userObjectDetails) {
-    print("sendEventRequestForMyTeam: " + teamsSelectedList.toString());
-    for (int i = 0; i < teamsSelectedList.length; i++) {
-      TeamCommand().sendEventRequestForMyTeam(
-          userObjectDetails['mainEvent'], teamsSelectedList[i]);
-    }
+  
+  //used in Event View
+  //send my team an event request
+  sendEventRequestForMyTeam(Map<int, dynamic> indexes,
+      List<dynamic> primaryList, List<dynamic> secondaryList,
+      dynamic userObjectDetails  ) {
+    print("sendEventRequestForMyTeam: " + indexes.toString());
+    indexes.forEach((mainIndex, secondaryIndexesThatIsNull) async {
+      dynamic teamSelected = primaryList[mainIndex];
+      if(userObjectDetails['isMine']){
+        //add team to event
+        print("add team to event");
+      }
+      else{
+        TeamCommand().sendEventRequestForMyTeam(
+          userObjectDetails['mainEvent'], teamSelected);
+
+      }
+
+    });   
+  }
+  
+  //used in Team view
+  //send a team request to my events
+  Future<void> sendMyEventsRequestForTeam(Map<int, dynamic> indexes,
+      List<dynamic> primaryList, List<dynamic> secondaryList,
+      dynamic userObjectDetails, Function addEventcallback  ) async {
+    print("sendMyEventsRequestForTeam: " + indexes.toString());
+    indexes.forEach((mainIndex, secondaryIndexesThatIsNull) async {
+      dynamic eventSelected = primaryList[mainIndex];
+      if(userObjectDetails['isMine']){
+        //add team to event
+        await EventCommand().addTeamToEvent(eventSelected, userObjectDetails['team']);        
+        print("add team to event");
+        addEventcallback(eventSelected);
+      }
+      
+      //add team to my event
+
+    });   
   }
 
   Future<void> sendTeamRequest(dynamic teamObject) async {
@@ -1153,11 +1165,59 @@ mixin EventMixin {
             )));
   }
 
+  Container sendMyEventsTeamRequestWidget(
+    BuildContext context, dynamic userObjectDetails, Function callback
+  ){
+    print("sendMyEventsTeamRequestWidget");
+    setupEventsToChooseFrom();
+    return Container(
+        child: GestureDetector(
+            onTap: () async {
+              List<dynamic> primaryList = myEventsToChooseFrom;
+              List<dynamic> secondaryList = [];
+              print("primaryList: "+ primaryList.toString());
+              List<dynamic> myProcessedEventList = primaryList
+                  .where((item1) => !userObjectDetails['team']['events']['data']
+                      .any((item2) => item2["_id"] == item1["_id"]))
+                  .map((item) => item['event'])
+                  .toList();
+              primaryList = myProcessedEventList;
+              print("myProcessedEventList primaryList: " + primaryList.toString());
+              Map<int, dynamic> result = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AnimatedDialog(
+                      items: primaryList,
+                      singleSelect: false,
+                      secondaryItems: secondaryList);
+                },
+              );
+              if (result.isNotEmpty) {
+                print("result: " + result.toString());
+                sendMyEventsRequestForTeam(
+                    result, primaryList, secondaryList, userObjectDetails, callback);
+              }
+            },
+            child: Container(
+              width: 200,
+              height: 50,
+              color: Colors.blue,
+              child: Center(child: Text("Send Player Team Request")),
+            )));
+
+
+
+
+    
+
+  }
+
   Container sendTeamsRequestWidget(
       BuildContext context, dynamic userObjectDetails) {
     print("sendTeamsRequestWidget: " + userObjectDetails.toString());
     setupTeamList();
         if(userObjectDetails['isMine']){
+          print("isMine");
           return Container(
               child: GestureDetector(
                   onTap: () async {
@@ -1236,6 +1296,8 @@ mixin EventMixin {
 
   Container sendEventRequestForMyTeamWidget(
       BuildContext context, dynamic userObjectDetails) {
+    print("sendEventRequestForMyTeamWidget");
+    setupMyTeams();
     return Container(
         child: GestureDetector(
             onTap: () async {
@@ -1246,6 +1308,7 @@ mixin EventMixin {
                       .any((item2) => item2["_id"] == item1["_id"]))
                   .map((item) => item['team'])
                   .toList();
+              List<dynamic> secondaryList = [];
 
               //  List<String> myTeamList = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
               Map<int, dynamic> result = await showDialog(
@@ -1259,8 +1322,9 @@ mixin EventMixin {
               );
               if (result.isNotEmpty) {
                 print('Selected items: $result');
-                teamsSelected(result, myProcessedTeamList);
-                sendEventRequestForMyTeam(userObjectDetails);
+                // teamsSelected(result, myProcessedTeamList);
+                sendEventRequestForMyTeam(result, myProcessedTeamList,
+                    secondaryList, userObjectDetails);
               }
             },
             child: Container(

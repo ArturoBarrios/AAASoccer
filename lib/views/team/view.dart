@@ -118,6 +118,7 @@ class _TeamViewState extends State<TeamView> {
     print("loadInitialData() in TeamView");
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
+    print("widget.teamObject "+widget.teamObject['events']['data'].toString());
     dynamic userTeamDetailsResp =  await TeamCommand().getUserTeamDetails(widget.teamObject);
     widget.setupPlayerList();    
     setState(() {
@@ -125,6 +126,7 @@ class _TeamViewState extends State<TeamView> {
       _isLoading = false;
     });
       print("userTeamDetails: " + userTeamDetails.toString());
+      print("userTeamDetails['events']: " + userTeamDetails['events'].toString());
       print("loadInitialData() finished!");
       print("loadEventPayment() in loadInitialData()");
       loadEventPayment();
