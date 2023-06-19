@@ -68,7 +68,7 @@ class _TournamentViewState extends State<TournamentView> {
     widget.setupTeamList();
     widget.setupMyTeams();
 
-    dynamic getEventDetailsResp =
+    dynamic getEventDetailsResp = await 
         EventCommand().getUserEventDetails(widget.tournament['events']['data']);
     getEventDetailsResp['groupStage'] = widget.tournament['groupStage'];
     widget.setupRequestWidgetData(getEventDetailsResp);

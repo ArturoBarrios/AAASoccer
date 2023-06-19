@@ -19,6 +19,13 @@ import '../commands/notifications_command.dart';
 import '../enums/PaymentType.dart';
 
 class UserCommand extends BaseCommand {
+
+  String getProfileImage(){
+    print("getProfileImage");
+    print("appModel.currentUser.profileImage: " + userModel.profileImageUrl.toString());
+    return userModel.profileImageUrl;
+  }
+
   dynamic getAppModelUser() {
     print("getAppModelUser");
     print("appMOdel.currentUser: " + appModel.currentUser.toString());

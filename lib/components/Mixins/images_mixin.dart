@@ -17,7 +17,7 @@ mixin ImagesMixin {
       {Constants.APPGALLERY:"Choose from App Images"},
     ];
 
-  void chooseImage(Map<int, dynamic> indexes,      
+  void chooseImage(dynamic objectDetails,Map<int, dynamic> indexes,      
         List<dynamic> primaryList,
         List<dynamic> secondaryList){
       print("chooseImage");
@@ -29,7 +29,7 @@ mixin ImagesMixin {
       print("imageChoiceChosen: " + imageChoiceChosen.toString());
       //choose from phone gallery||//take a picture
       if(imageChoiceChosen==Constants.PHONEGALLERY||imageChoiceChosen == Constants.CAMERA){
-        pickImage(imageChoiceChosen);
+        pickImage(objectDetails, imageChoiceChosen);
       }            
       //choose from app images
       else{
@@ -43,7 +43,7 @@ mixin ImagesMixin {
 
     }
 
-    void pickImage(String imageChoiceChosen ) async {
+    void pickImage(dynamic objectDetails, String imageChoiceChosen ) async {
       Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true, imageChoiceChosen);  
       print("pickImageResp: " + pickImageResp.toString());
       dynamic data = pickImageResp['data'];
@@ -58,9 +58,11 @@ mixin ImagesMixin {
         "s3bucket": s3bucket    
       };
 
-      await ImagesCommand().removeProfileTagFromImage();
-      await ImagesCommand().storeImageInDatabase(imageInput);
-      await ImagesCommand().getAndSetUserProfileImage();
+      if(objectDetails['for'] == Constants.USER){
+        await ImagesCommand().removeProfileTagFromImage();
+        await ImagesCommand().storeImageInDatabase(imageInput);
+        await ImagesCommand().getAndSetUserProfileImage();
+      }
       
       
       //place image as profile picture

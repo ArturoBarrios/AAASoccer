@@ -58,7 +58,7 @@ class _LeagueViewState extends State<LeagueView> {
     await widget.setupTeamList();
     widget.setupMyTeams();
 
-    dynamic getEventDetailsResp =
+    dynamic getEventDetailsResp = await 
         EventCommand().getUserEventDetails(widget.league['events']['data']);
     widget.setupRequestWidgetData(getEventDetailsResp);
     leagueEvents = widget.league['events']['data'];

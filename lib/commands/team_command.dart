@@ -21,7 +21,12 @@ class TeamCommand extends BaseCommand {
 
 
   Future<dynamic> getUserTeamDetails(dynamic team) async{
+    
     print("getUserTeamDetails()");
+    //get team most up to date
+    dynamic teamResp = await findTeamById(team);
+    print("teamResp: " + teamResp.toString());
+    team = teamResp['data'];
     dynamic userTeamDetails = {
       "success": true,
       "isMine": false,

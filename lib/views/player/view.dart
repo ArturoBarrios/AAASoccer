@@ -45,7 +45,7 @@ class _PlayerViewState extends State<PlayerView> {
   // String eventTeamChosen = "";
 
   void setupEventTeamToChoose(int index) {
-    widget.setupEventTeamToChoose(index);
+    // widget.setupEventTeamToChoose(index);
     // eventTeamChosen = teamEventList[index];
     // if (eventTeamChosen == "Event") {
     //   setupEventsToChooseFrom();
@@ -104,7 +104,7 @@ class _PlayerViewState extends State<PlayerView> {
   void initState() {
     super.initState();
     widget.setupEventsToChooseFrom();
-    widget.setupTeamsToChooseFrom();
+    // widget.setupTeamsToChooseFrom();
   }
 
   @override

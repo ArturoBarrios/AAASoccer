@@ -64,11 +64,11 @@ class _PickupViewState extends State<PickupView> {
     priceObject = widget.game['event']['price'];
   }
 
-  void loadInitialData() async {
+  Future<void> loadInitialData() async {
     print("loadInitialData() in TeamView");
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
-    dynamic getEventDetailsResp = EventCommand().getUserEventDetails([widget.game['event']]);
+    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.game['event']]);
     // widget.setupRequestWidgetData(getEventDetailsResp);
     widget.setupPlayerList();
     
@@ -77,7 +77,7 @@ class _PickupViewState extends State<PickupView> {
       userEventDetails = getEventDetailsResp;
       _isLoading = false;
     });
-      print("userEventDetails: " + userEventDetails.toString());
+      print("userEventDetails['teams']: " + userEventDetails['teams'].toString());
       print("loadInitialData() finished!");
       print("loadEventPayment() in loadInitialData()");
       loadEventPayment();
