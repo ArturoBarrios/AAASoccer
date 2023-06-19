@@ -10,10 +10,11 @@ import 'Dialogues/animated_dialogu.dart';
 // // // // // // // // // // // // // // //
 class SendTeamsRequestWidget extends StatefulWidget {
 
-  SendTeamsRequestWidget({Key? key, required this.userObjectDetails})
+   SendTeamsRequestWidget({Key? key, required this.userObjectDetails, required this.addTeamCallback})
       : super(key: key);
 
   final dynamic userObjectDetails;
+  final Function addTeamCallback;
 
   @override
   _SendTeamsRequestWidgetState createState() => _SendTeamsRequestWidgetState();
@@ -57,13 +58,13 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
       dynamic teamChosen = primaryList[mainIndex];      
       TeamCommand().sendEventRequestForMyTeam(
           widget.userObjectDetails['mainEvent'], teamChosen);
-
+          
     });
     
   }
   
   Future<void> sendTeamsEventRequest(Map<int, dynamic> indexes,
-      List<dynamic> primaryList, List<dynamic> secondaryList) async {
+      List<dynamic> primaryList, List<dynamic> secondaryList, Function addTeamCallback) async {
     print("sendTeamsEventRequest");
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
@@ -79,8 +80,9 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
         await EventCommand().addTeamToEvent(widget.userObjectDetails['mainEvent'], teamChosen);
         print("team added to event");
         setState(() {
-          widget.userObjectDetails['teams'].add(teamChosen);          
+          widget.userObjectDetails['teams'].add(teamChosen);                    
         });
+
       }
       else{
         await TeamCommand().sendTeamEventRequest(teamChosen, widget.userObjectDetails['mainEvent']);
@@ -159,7 +161,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                     if (result.isNotEmpty) {
                       print('Selected items: $result');
                       sendTeamsEventRequest(result,
-                          primaryList, secondaryList);
+                          primaryList, secondaryList, widget.addTeamCallback);
                     }
                   },
                   child: Container(

@@ -45,6 +45,13 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     });
   }
 
+  void addTeamCallback(dynamic team){
+    setState(() {
+      widget.userObjectDetails['mainEvent']['teams']['data'].add(team);
+    });
+
+  }
+
   void loadInitialData() {
     print("loadInitialData()");
     dynamic setupRequestWidgetResp =
@@ -97,7 +104,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
       
 
       SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails),
-      SendTeamsRequestWidget(userObjectDetails: widget.userObjectDetails),
+      SendTeamsRequestWidget(userObjectDetails: widget.userObjectDetails, addTeamCallback: addTeamCallback),
       widget.getChatWidget(
           context, true, false, widget.userObjectDetails, updateChatsList),
       ChatsListWidget(
