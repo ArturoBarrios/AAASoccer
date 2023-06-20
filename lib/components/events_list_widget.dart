@@ -14,25 +14,33 @@ class EventsListWidget extends StatefulWidget {
 
 class _EventsListWidgetState extends State<EventsListWidget> {
 
-   Future<void> removeEventFromObject()async{
-    // print("removeEventFromObject");
-    // print("team: " + team.toString());
-    // dynamic removeTeamFromEventInput = {
-    //   'team_id': team['_id'],
-    //   'event_id': widget.teamsDetails['mainEvent']['_id'],
-    // };
-    // dynamic removeTeamFromEventResp = await EventCommand().removeTeamFromEvent(removeTeamFromEventInput);
-    // print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
-    // if(removeTeamFromEventResp['success']){
-    //   widget.teamsDetails['teams'].forEach((teamItem) {
-    //     if(teamItem['_id'] == team['_id']){
-    //       setState(() {
-    //         widget.teamsDetails['teams'].remove(teamItem);
-    //       });
-    //     }
-    //   });
+   Future<void> removeEventFromObject(dynamic event)async{
+    print("removeEventFromObject");  
+    
+    String teamId = "";
+    if(widget.objectEventsDetails['team'] != null){
+      teamId = widget.objectEventsDetails['team']['_id'];      
+    }
+    
+    dynamic removeTeamFromEventInput = {
+      'team_id': teamId,
+      'event_id': event['_id'],
+    };
+    dynamic removeTeamFromEventResp = await EventCommand().removeTeamFromEvent(removeTeamFromEventInput);
+    print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
+    if(removeTeamFromEventResp['success']){
+      setState(() {        
+        widget.objectEventsDetails['team']['events']['data'].remove(event);
+      });
+      // widget.objectEventsDetails['team']['events']['data'].forEach((teamItem) {
+      //   if(teamItem['_id'] == team['_id']){
+      //     setState(() {
+      //       widget.teamsDetails['teams'].remove(teamItem);
+      //     });
+      //   }
+      // });
 
-    // }
+    }
     
   }
 
@@ -82,7 +90,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
                           IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () {
-                              removeEventFromObject();
+                              removeEventFromObject(events[index]);
                             },
                           ),
                         ],

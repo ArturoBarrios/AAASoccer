@@ -324,6 +324,8 @@ class UserCommand extends BaseCommand {
     return addTeamResponse;
   }
 
+  
+
   Future<Map<String, dynamic>> addFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
     print("addFriend");
@@ -348,7 +350,7 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      dynamic friend = jsonDecode(response.body)['data']['createUserLink'];
+      dynamic friend = jsonDecode(response.body)['data']['updateUser'];
       print("friend: " + friend.toString());
 
       print("update currentUser friends");
@@ -358,8 +360,8 @@ class UserCommand extends BaseCommand {
 
       addFriendResponse["success"] = true;
       addFriendResponse["message"] = "Player for Team Created";
-      addFriendResponse["data"] =
-          jsonDecode(response.body)['data']['createUserLink'];
+      addFriendResponse["data"] = friend;
+          
     } catch (e) {
       print("error");
     }

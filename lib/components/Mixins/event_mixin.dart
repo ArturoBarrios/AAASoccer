@@ -80,8 +80,8 @@ mixin EventMixin {
 
   void setupMyTeams() {
     print("setupMyTeams");
-    teamList = UserCommand().getAppModelMyTeams();
-    myTeamList = teamList;
+    dynamic getAppModelMyTeams = UserCommand().getAppModelMyTeams();
+    myTeamList = getAppModelMyTeams;
     
   }
 
@@ -1176,9 +1176,10 @@ mixin EventMixin {
               List<dynamic> primaryList = myEventsToChooseFrom;
               List<dynamic> secondaryList = [];
               print("primaryList: "+ primaryList.toString());
+              print("userObjectDetails['team']['events']['data']: "+ userObjectDetails['team']['events']['data'].toString());
               List<dynamic> myProcessedEventList = primaryList
                   .where((item1) => !userObjectDetails['team']['events']['data']
-                      .any((item2) => item2["_id"] == item1["_id"]))
+                      .any((item2) => item2["_id"] == item1['event']["_id"]))
                   .map((item) => item['event'])
                   .toList();
               primaryList = myProcessedEventList;
@@ -1202,7 +1203,7 @@ mixin EventMixin {
               width: 200,
               height: 50,
               color: Colors.blue,
-              child: Center(child: Text("Send Player Team Request")),
+              child: Center(child: Text("Send My Event Request to Team")),
             )));
 
 

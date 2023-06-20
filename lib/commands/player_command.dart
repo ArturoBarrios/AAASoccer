@@ -22,6 +22,24 @@ class PlayerCommand extends BaseCommand {
     return appModel.playersNearMe;
   }
 
+  dynamic getUserPlayerDetails(dynamic user){
+    print("getUserPlayerDetails");
+    print("user: "+user.toString());
+    dynamic getUserPlayerDetailsResp = {
+      "isFriend": false,
+    };
+    dynamic currentUser = appModel.currentUser;
+    print("user: "+user.toString());
+    print("currentUser['friends']['data']: "+currentUser['friends']['data'].toString());
+    currentUser['friends']['data'].forEach((friend) {
+      if(friend['user']['_id'] == user['_id']){
+        getUserPlayerDetailsResp['isFriend'] = true;
+      }
+    });
+
+    return getUserPlayerDetailsResp;
+  }
+
   Future<Map<String, dynamic>> getPlayersNearLocation() async {
     print("getPlayersNearLocation");
     Map<String, dynamic> getTrainingsNearLocationResp = {
