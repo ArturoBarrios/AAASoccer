@@ -21,7 +21,10 @@ class ObjectProfileMainImage extends StatefulWidget with ImagesMixin {
 class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
   
 
+  addImageToProfile(dynamic imageAdded){
+    //do something
 
+  }
 
   Container returnImageContainer(String imageUrl){
     return Container(
@@ -42,7 +45,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
           );
           if (result.isNotEmpty) {
             print("result: " + result.toString());
-            widget.chooseImage({"for": Constants.USER},result, primaryList, secondaryList);
+            widget.chooseImage({"for": Constants.USER},result, primaryList, secondaryList, addImageToProfile);
           }
         },
         child: Hero(

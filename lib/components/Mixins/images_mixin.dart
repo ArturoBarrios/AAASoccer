@@ -19,8 +19,9 @@ mixin ImagesMixin {
 
   void chooseImage(dynamic objectDetails,Map<int, dynamic> indexes,      
         List<dynamic> primaryList,
-        List<dynamic> secondaryList){
+        List<dynamic> secondaryList, Function chooseImageCallback){
       print("chooseImage");
+      print("objectDetails: " + objectDetails.toString());
       print("indexes: " + indexes.toString());
       print("primaryList: " + primaryList.toString());
       print("secondaryList: " + secondaryList.toString());
@@ -29,7 +30,7 @@ mixin ImagesMixin {
       print("imageChoiceChosen: " + imageChoiceChosen.toString());
       //choose from phone gallery||//take a picture
       if(imageChoiceChosen==Constants.PHONEGALLERY||imageChoiceChosen == Constants.CAMERA){
-        pickImage(objectDetails, imageChoiceChosen);
+        pickImage(objectDetails, imageChoiceChosen, chooseImageCallback);
       }            
       //choose from app images
       else{
@@ -43,7 +44,8 @@ mixin ImagesMixin {
 
     }
 
-    void pickImage(dynamic objectDetails, String imageChoiceChosen ) async {
+    void pickImage(dynamic objectDetails, String imageChoiceChosen, 
+        Function chooseImageCallback) async {
       Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true, imageChoiceChosen);  
       print("pickImageResp: " + pickImageResp.toString());
       dynamic data = pickImageResp['data'];
@@ -57,24 +59,28 @@ mixin ImagesMixin {
         "public": true,  
         "s3bucket": s3bucket    
       };
-
+      print("imageInput: " + imageInput.toString());
       if(objectDetails['for'] == Constants.USER){
         await ImagesCommand().removeProfileTagFromImage();
         dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForUser(imageInput);
         dynamic storedImage = storeImageInDatabaseForUserResp['data'];
         ImagesCommand().addImageToUser(storedImage);
         await ImagesCommand().getAndSetUserProfileImage();
+        chooseImageCallback(storedImage);
       }
       else if(objectDetails['for'] == Constants.TEAM){
+        print("objectDetails['team']['_id']: " + objectDetails['team']['_id'].toString());
         imageInput['team_id'] = objectDetails['team']['_id'];
         dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForTeam(imageInput);
         dynamic storedImage = storeImageInDatabaseForUserResp['data'];
+        chooseImageCallback(storedImage);
 
       }
       else if(objectDetails['for'] == Constants.EVENT){
         imageInput['event_id'] = objectDetails['mainEvent']['_id'];
-        dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForTeam(imageInput);
+        dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForEvent(imageInput);
         dynamic storedImage = storeImageInDatabaseForUserResp['data'];
+        chooseImageCallback(storedImage);
       }
       
       

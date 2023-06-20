@@ -14,7 +14,7 @@ import 'create_event_request.dart';
 import 'create_team_payment.dart';
 import 'create_team_request.dart';
 import 'location_search_bar.dart';
-import 'images_list.dart';
+import 'images_list_widget.dart';
 
 
 class UpdateViewForm extends StatefulWidget with EventMixin {

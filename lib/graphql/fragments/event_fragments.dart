@@ -17,7 +17,7 @@ class EventFragments {
       images{
         data{
           _id          
-          url
+          key
           isMainImage
           public          
         }
