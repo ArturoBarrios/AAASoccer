@@ -7,6 +7,14 @@ class TeamFragments {
             name
             color
             createdAt
+            images{
+              data{
+                _id          
+                key
+                isMainImage
+                public          
+              }
+            }
             chats{
               data{
                 ${ChatFragments().chatObject()}
@@ -16,7 +24,7 @@ class TeamFragments {
               data{
                 _id
                 name
-                
+
               }
             }
             location{
