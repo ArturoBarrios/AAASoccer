@@ -40,6 +40,11 @@ class Constants {
 
   //image container types
   static final String IMAGECIRCLE = "IMAGECIRCLE";
+  //image select options
+  static final String IMAGEDELETE = "Delete";
+  static final String IMAGEREPLACE = "Replace Image";
+  
+
 
 
   

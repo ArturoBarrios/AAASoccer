@@ -39,7 +39,7 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
     images = widget.details['team']['images']['data'];
   } else {
     widget.details['for'] = Constants.USER;
-  }
+  } 
   
   print("images: " + images.toString());
 
@@ -57,8 +57,18 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
   });
 }
 
-  addImage(dynamic image) {
+  addImage(dynamic image) async {
     print("addImage");
+    print("image: " + image.toString());
+    Map<String, dynamic> getImageResp = await ImagesCommand().getImage(image['key']);
+    if(getImageResp['success']){
+      print("getImageResp: " + getImageResp.toString());
+      String signedUrl = getImageResp['data']['signedUrl'];
+      setState(() {
+        image['signedUrl'] = signedUrl;
+        images.add(image);      
+      });
+    }
   }
 
   removeImage() {}
@@ -131,7 +141,7 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
                           images[index]['signedUrl'].toString());
                       return GestureDetector(
                         onTap: () {
-                          getImage();
+                          // getImage();
                         },
                         child: Container(
                           margin: const EdgeInsets.all(10.0),

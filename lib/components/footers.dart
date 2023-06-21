@@ -114,7 +114,7 @@ BottomAppBar getMainBottomNav(BuildContext context){
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return ImagesView(images: []);
+                        return ImagesView();
                       },
                     ));
                   }),

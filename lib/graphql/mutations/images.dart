@@ -1,6 +1,8 @@
 import '../fragments/image_fragments.dart';
 
 class ImageMutations {
+
+
   String createUserImage(
       Map<String, dynamic> imageInput) {
     String createImage = """
@@ -80,6 +82,20 @@ class ImageMutations {
     """;
 
     return updateImageString;
+  }
+
+  String deleteImage(
+      Map<String, dynamic> imageInput) {
+    String removeImageString = """      
+      mutation {
+        deleteImage(id: "${imageInput['_id']}") {
+          _id
+          
+        }
+      }
+        """;
+
+    return removeImageString;
   }
 
 }
