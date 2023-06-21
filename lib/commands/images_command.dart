@@ -11,6 +11,84 @@ import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ImagesCommand extends BaseCommand {
+  Future<Map<String, dynamic>> deleteImageFromDatabase(dynamic imageInput) async {
+    print("deleteImageFromDatabase()");
+    Map<String, dynamic> deleteImageResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      //delete image from database
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': ImageMutations().deleteImage(imageInput),
+        }),
+      );
+
+
+      
+
+      return deleteImageResp;
+    } catch (e) {
+      print("getImages() error: " + e.toString());
+      return deleteImageResp;
+    }
+    
+  }
+
+  Future<Map<String, dynamic>> deleteImageFromS3(dynamic imageInput) async {
+    print("deleteImage()");
+    Map<String, dynamic> deleteImageFromS3Resp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      //delete image from database
+       final uri = Uri.https(
+          "us-central1-soccer-app-a9060.cloudfunctions.net", '/getImages');
+
+      final getSignedUrlResponse = await http.get(uri);
+      print("response: " + json.decode(getSignedUrlResponse.body).toString());
+
+      getImageResponse['success'] = true;
+
+
+      
+
+      return deleteImageResp;
+    } catch (e) {
+      print("getImages() error: " + e.toString());
+      return deleteImageResp;
+    }
+    
+  }
+
+  
+
+
+  Map<String,dynamic> allImagesFromUser(dynamic currentUser){
+    print("imagesFromMyUser");
+    Map<String,dynamic> imagesFromMyUserResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    dynamic currentUser = appModel.currentUser;
+    List<dynamic> userImages = currentUser['images']['data'];
+    imagesFromMyUserResponse['data'] = userImages;
+    imagesFromMyUserResponse['success'] = true;
+
+    return imagesFromMyUserResponse;
+
+  }
+
   Future<Map<String, dynamic>> getAndSetUserProfileImage() async {
     print("getUserProfileImage()");
     Map<String, dynamic> getUserProfileImageResp = {

@@ -141,7 +141,7 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
                           images[index]['signedUrl'].toString());
                       return GestureDetector(
                         onTap: () {
-                          getImage();
+                          // getImage();
                         },
                         child: Container(
                           margin: const EdgeInsets.all(10.0),

@@ -26,17 +26,17 @@ mixin ImagesMixin {
       print("primaryList: " + primaryList.toString());
       print("secondaryList: " + secondaryList.toString());
       indexes.forEach((mainIndex, secondaryIndexes) async {
-      dynamic imageChoiceChosen = imageChoices[mainIndex].keys.first;
-      print("imageChoiceChosen: " + imageChoiceChosen.toString());
-      //choose from phone gallery||//take a picture
-      if(imageChoiceChosen==Constants.PHONEGALLERY||imageChoiceChosen == Constants.CAMERA){
-        pickImage(objectDetails, imageChoiceChosen, chooseImageCallback);
-      }            
-      //choose from app images
-      else{
-        
+        dynamic imageChoiceChosen = imageChoices[mainIndex].keys.first;
+        print("imageChoiceChosen: " + imageChoiceChosen.toString());
+        //choose from phone gallery||//take a picture
+        if(imageChoiceChosen==Constants.PHONEGALLERY||imageChoiceChosen == Constants.CAMERA){
+          pickImage(objectDetails, imageChoiceChosen, chooseImageCallback);
+        }            
+        //choose from app images
+        else{
+          
 
-      }
+        }
 
       
     });
