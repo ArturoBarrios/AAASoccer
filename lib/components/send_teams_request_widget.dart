@@ -113,6 +113,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
+                      details: {"title": "Send Event Request For My Team"},
                       items: primaryList,
                       singleSelect: false,
                       secondaryItems: secondaryList);
@@ -157,6 +158,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                       context: context,
                       builder: (BuildContext context) {
                         return AnimatedDialog(
+                            details: {"title": "Send Teams Request"},
                             items: primaryList,
                             singleSelect: false,
                             secondaryItems: secondaryList);

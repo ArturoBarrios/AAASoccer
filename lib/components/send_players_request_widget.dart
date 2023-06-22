@@ -157,6 +157,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
+                      details: {"title": "Send Organizer Player Request"},
                       items: primaryList,
                       singleSelect: false,
                       secondaryItems: secondaryList);
@@ -194,6 +195,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
                   context: context,
                   builder: (BuildContext context) {
                     return AnimatedDialog(
+                        details: {"title": "Send Players Request"},
                         items: primaryList,
                         singleSelect: false,
                         secondaryItems: secondaryList);

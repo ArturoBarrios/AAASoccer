@@ -1,6 +1,8 @@
 import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
 import 'package:soccermadeeasy/graphql/fragments/chat_fragments.dart';
 
+import 'image_fragments.dart';
+
 class EventFragments {
   String fullEvent() {
     String fullEventReturn = """
@@ -16,10 +18,7 @@ class EventFragments {
       createdAt
       images{
         data{
-          _id          
-          key
-          isMainImage
-          public          
+          ${ImageFragments().fullImage()}              
         }
       }
       chats{

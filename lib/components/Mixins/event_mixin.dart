@@ -408,6 +408,7 @@ mixin EventMixin {
                     context: context,
                     builder: (BuildContext context) {
                       return AnimatedDialog(
+                          details: {"title": "IDK"},
                           items: primaryList,
                           singleSelect: false,
                           secondaryItems: secondaryList);
@@ -1065,6 +1066,7 @@ mixin EventMixin {
                   context: context,
                   builder: (BuildContext context) {
                     return AnimatedDialog(
+                        details: {"title": "Send Players Request"},
                         items: primaryList,
                         singleSelect: false,
                         secondaryItems: secondaryList);
@@ -1109,6 +1111,7 @@ mixin EventMixin {
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
+                      details: {"title": "Send Player Events Request"},
                       items: primaryList,
                       singleSelect: false,
                       secondaryItems: secondaryList);
@@ -1146,6 +1149,7 @@ mixin EventMixin {
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
+                      details: {"title": "Send Player Team Request"},
                       items: myTeamsToChooseFrom,
                       singleSelect: false,
                       secondaryItems: secondaryList);
@@ -1188,6 +1192,7 @@ mixin EventMixin {
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
+                      details: {"title": "Send My Event Request to Team"},
                       items: primaryList,
                       singleSelect: false,
                       secondaryItems: secondaryList);
@@ -1236,6 +1241,7 @@ mixin EventMixin {
                       context: context,
                       builder: (BuildContext context) {
                         return AnimatedDialog(
+                            details: {"title": "Send Teams Request"},
                             items: primaryList,
                             singleSelect: false,
                             secondaryItems: secondaryList);
@@ -1273,6 +1279,7 @@ mixin EventMixin {
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
+                      details: {"title": "Send Organizer Player Event Request"},
                       items: primaryList,
                       singleSelect: false,
                       secondaryItems: secondaryList);
@@ -1316,6 +1323,7 @@ mixin EventMixin {
                 context: context,
                 builder: (BuildContext context) {
                   return AnimatedDialog(
+                      details: {"title": "Send My Team Request"},
                       items: myProcessedTeamList,
                       singleSelect: false,
                       secondaryItems: []);

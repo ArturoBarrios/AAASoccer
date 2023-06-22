@@ -180,6 +180,7 @@ Widget build(BuildContext context) {
                     context: context,
                     builder: (BuildContext context) {
                       return AnimatedDialog(
+                        details: {"title": "Add Team"},
                         items: primaryList,
                         singleSelect: false,
                         secondaryItems: secondaryList

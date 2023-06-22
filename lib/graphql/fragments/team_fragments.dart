@@ -1,4 +1,5 @@
 import 'package:soccermadeeasy/graphql/fragments/chat_fragments.dart';
+import 'package:soccermadeeasy/graphql/fragments/image_fragments.dart';
 
 class TeamFragments {
   String fullTeam() {
@@ -9,10 +10,7 @@ class TeamFragments {
             createdAt
             images{
               data{
-                _id          
-                key
-                isMainImage
-                public          
+               ${ImageFragments().fullImage()}       
               }
             }
             chats{

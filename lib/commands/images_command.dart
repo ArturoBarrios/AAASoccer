@@ -57,15 +57,15 @@ class ImagesCommand extends BaseCommand {
       final getSignedUrlResponse = await http.get(uri);
       print("response: " + json.decode(getSignedUrlResponse.body).toString());
 
-      getImageResponse['success'] = true;
+      deleteImageFromS3Resp['success'] = true;
 
 
       
 
-      return deleteImageResp;
+      return deleteImageFromS3Resp;
     } catch (e) {
       print("getImages() error: " + e.toString());
-      return deleteImageResp;
+      return deleteImageFromS3Resp;
     }
     
   }
@@ -281,6 +281,7 @@ class ImagesCommand extends BaseCommand {
     };
 
     try {      
+            
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
