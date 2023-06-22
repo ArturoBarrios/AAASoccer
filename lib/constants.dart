@@ -10,6 +10,9 @@ class Constants {
   static final String MYEVENTS = "10";
   static final String LOCATION = "11";
   static final String EVENT = "EVENT";
+  static final String VIEWEVENT = "View Event";
+  static final String VIEWUSER = "View User";
+  static final String VIEWTEAM = "View Team";
   //request type
   static final String GAMEREQUEST = "GAMEREQUEST";
   static final String TOURNAMENTREQUEST = "TOURNAMENTREQUEST";

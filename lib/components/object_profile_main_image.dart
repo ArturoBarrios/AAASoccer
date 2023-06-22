@@ -38,6 +38,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
             context: context,
             builder: (BuildContext context) {
               return AnimatedDialog(
+                  details: {"title": "Image Options"},
                   items: primaryList,
                   singleSelect: true,
                   secondaryItems: secondaryList);

@@ -10,6 +10,7 @@ import '../commands/images_command.dart';
 import 'package:provider/provider.dart';
 
 import 'Dialogues/animated_dialogu.dart';
+import 'images_list_widget.dart';
 import 'object_profile_main_image.dart';
 
 
@@ -56,7 +57,7 @@ class _ProfileState extends State<Profile> {
 
     return  Scaffold(
       body: ListView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: ScrollPhysics(),
           children: <Widget>[
             Column(
               mainAxisSize: MainAxisSize.min,
@@ -161,6 +162,7 @@ class _ProfileState extends State<Profile> {
                 ),
 
                 History(historyDetails: []),
+                ImagesListWidget(details: {"for": Constants.USER}),
 
                 InfoDetailListTile(
                     name:"Excellent Perfomance", value:"Top 1%", tooltip: "Today", date: "02/23/2019"),

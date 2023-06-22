@@ -71,6 +71,9 @@ mixin ImagesMixin {
       else if(objectDetails['for'] == Constants.TEAM){
         print("objectDetails['team']['_id']: " + objectDetails['team']['_id'].toString());
         imageInput['team_id'] = objectDetails['team']['_id'];
+        //get current User
+        dynamic currentUser = await UserCommand().getAppModelUser();
+        imageInput['user_id'] = currentUser['_id'];
         dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForTeam(imageInput);
         dynamic storedImage = storeImageInDatabaseForUserResp['data'];
         chooseImageCallback(storedImage);
@@ -78,6 +81,9 @@ mixin ImagesMixin {
       }
       else if(objectDetails['for'] == Constants.EVENT){
         imageInput['event_id'] = objectDetails['mainEvent']['_id'];
+        //get current User
+        dynamic currentUser = await UserCommand().getAppModelUser();
+        imageInput['user_id'] = currentUser['_id'];
         dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForEvent(imageInput);
         dynamic storedImage = storeImageInDatabaseForUserResp['data'];
         chooseImageCallback(storedImage);

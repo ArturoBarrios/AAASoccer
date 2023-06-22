@@ -28,43 +28,6 @@ import 'package:intl/intl.dart';
 
 class EventCommand extends BaseCommand {
 
-  Future<Map<String,dynamic>> addImageToEvent(dynamic eventInput,dynamic imageInput)async{
-    print("addImageToEvent()");
-    Map<String, dynamic> addImageToEventResp = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    
-    try{
-      print("eventInput: " + eventInput.toString());
-      print("imageInput: " + imageInput.toString());
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': ImageMutations().createEventImage(imageInput),
-        }),
-      );
-
-      print("response body: ");
-      print(jsonDecode(response.body));
-      if (response.statusCode == 200) {
-        addImageToEventResp['success'] = true;
-        addImageToEventResp['message'] = "Image added to event successfully";
-        addImageToEventResp['data'] = jsonDecode(response.body)['data']['addImageToEvent'];
-        print("addImageToEventResp: " + addImageToEventResp.toString());
-      } 
-        return addImageToEventResp;
-    } on ApiException catch (e) {
-      print('Mutation failed: $e');
-      return addImageToEventResp;
-    }
-  }
-
   Future<Map<String, dynamic>> notifyEventParticipants(dynamic notifyEventParticipantInput
   ) async {
     Map<String, dynamic> notifyEventParticipantsResponse = {

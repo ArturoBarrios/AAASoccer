@@ -11,7 +11,19 @@ class ImageFragments{
             name
             email
             userType
-          }                                                   
+          }    
+          event{
+            _id
+            name
+          }     
+          team{
+            _id
+            name
+          }     
+          organization{
+            _id
+            name
+          }                                     
     ''';
 
     return fullImageReturn;

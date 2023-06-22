@@ -124,6 +124,7 @@ class _ImagesViewState extends State<ImagesView> {
                       context: context,
                       builder: (BuildContext context) {
                         return AnimatedDialog(
+                            details: {"title": "Image Options"},
                             items: primaryList,
                             singleSelect: false,
                             secondaryItems: secondaryList);

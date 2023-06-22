@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class AnimatedDialog extends StatefulWidget {
   AnimatedDialog({
     Key? key, 
+    required this.details,
     required this.items, 
     required this.singleSelect, 
     required this.secondaryItems
   }) : super(key: key);
 
+  final dynamic details;  
   final List<dynamic> items;
   final bool singleSelect;    
   final List<dynamic> secondaryItems;
@@ -53,7 +55,7 @@ class _AnimatedDialogState extends State<AnimatedDialog> {
   }
 
   Widget _handleSecondaryItemPressed(int index) {
-    return AnimatedDialog(items: widget.secondaryItems, singleSelect: false, secondaryItems: []);
+    return AnimatedDialog(details: widget.details, items: widget.secondaryItems, singleSelect: false, secondaryItems: []);
   }
 
   @override
@@ -69,7 +71,7 @@ class _AnimatedDialogState extends State<AnimatedDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Select Items',
+              widget.details['title'],
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.deepOrange),
             ),
             Divider(thickness: 2.0, color: Colors.deepOrange),

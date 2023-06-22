@@ -36,6 +36,9 @@ class ImageMutations {
               event: {
                 connect: "${imageInput['event_id']}", 
               },
+              user: {
+                connect: "${imageInput['user_id']}", 
+              },
           }) 
           {
               ${ImageFragments().fullImage()}
@@ -57,6 +60,9 @@ class ImageMutations {
               s3bucket: "${imageInput['s3bucket']}",
               team: {
                 connect: "${imageInput['team_id']}", 
+              },
+              user: {
+                connect: "${imageInput['user_id']}", 
               },
           }) 
           {

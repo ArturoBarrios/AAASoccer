@@ -407,6 +407,7 @@ class UserCommand extends BaseCommand {
     return removeFriendResp;
   }
 
+
   Future<void> updateModelsWithFriend(dynamic friend, bool add) async {
     print("updateModelsWithFriend");
     print("friend: " + friend.toString());
