@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:soccermadeeasy/components/events_list_widget.dart';
 import 'package:soccermadeeasy/components/history.dart';
+import 'package:soccermadeeasy/components/teams_list_widget.dart';
 
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
@@ -10,6 +12,7 @@ import '../commands/images_command.dart';
 import 'package:provider/provider.dart';
 
 import 'Dialogues/animated_dialogu.dart';
+import 'Loading/loading_screen.dart';
 import 'images_list_widget.dart';
 import 'object_profile_main_image.dart';
 
@@ -26,17 +29,35 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {    
   dynamic objectImageInput;
+  dynamic currentUser;
+  Map<String,dynamic> eventListDetails = {};
+  Map<String,dynamic> teamListDetails = {};
+  bool _isLoading = true;
   
     
     
     
-  void loadInitialData() async {
-    print("loadInitialData");
+  Future<void> loadInitialData() async {
+    print("loadInitialData Profile");
     String imageUrl = UserCommand().getProfileImage();
     objectImageInput = {
       "imageUrl": imageUrl,
       "containerType": Constants.IMAGECIRCLE
     };
+    Map<String,dynamic> findMyUserByIdResp = await UserCommand().findMyUserById();    
+    print("findMyUserByIdResp: " + findMyUserByIdResp.toString());
+    if(findMyUserByIdResp['success']){
+      currentUser = findMyUserByIdResp['data'];
+      print("currentUser eventUserParticipants: " + currentUser['eventUserParticipants'].toString());
+      eventListDetails['eventUserParticipants'] = currentUser['eventUserParticipants']['data'];
+      teamListDetails['teamUserParticipants'] = currentUser['teamUserParticipants']['data'];
+      print("eventListDetails: " + eventListDetails.toString());
+      print("teamListDetails: " + teamListDetails.toString());
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
     
   }
 
@@ -52,11 +73,26 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     String profileImageUrl = context.
       select<UserModel, String>((value) => value.profileImageUrl);      
+return 
+ 
 
-   
-
-    return  Scaffold(
-      body: ListView(
+  Scaffold(
+      body:
+      _isLoading ? Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.center,
+        child:
+            // BottomNav()//for times when user deleted in cognito but still signed into app
+            LoadingScreen(
+                currentDotColor: Colors.white,
+                defaultDotColor: Colors.black,
+                numDots: 10),
+      ),
+    ) :
+      
+       ListView(
         physics: ScrollPhysics(),
           children: <Widget>[
             Column(
@@ -161,7 +197,9 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
 
-                History(historyDetails: []),
+                // History(historyDetails: []),
+                TeamsListWidget(teamsDetails: teamListDetails),
+                EventsListWidget(objectEventsDetails: eventListDetails),
                 ImagesListWidget(details: {"for": Constants.USER}),
 
                 InfoDetailListTile(

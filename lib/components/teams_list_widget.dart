@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../commands/event_command.dart';
+import 'Loading/loading_screen.dart';
 
 class TeamsListWidget extends StatefulWidget {
-  final Map<String, dynamic> teamsDetails;
+  final Map<String, dynamic> teamsDetails;  
   // final void Function(dynamic) addTeam; // Optional function input parameter
 
   TeamsListWidget({required this.teamsDetails}); // Include required modifier
@@ -12,6 +13,9 @@ class TeamsListWidget extends StatefulWidget {
 }
 
 class _TeamsListWidgetState extends State<TeamsListWidget> {
+  List<dynamic> teams = [];
+  bool _isLoading = true;
+
   Future<void> removeTeamFromEvent(dynamic team) async {
     print("removeTeamFromEvent");
     print("team: " + team.toString());
@@ -33,11 +37,33 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
     }
   }
 
+  void loadInitialData(){
+    print("loadInitialData");
+    if(widget.teamsDetails['teams'] != null){
+      teams = widget.teamsDetails['teams'];
+    }
+    else{
+      List<dynamic> teamUserParticipants = widget.teamsDetails['teamUserParticipants'];
+      teamUserParticipants.forEach((teamUserParticipant) {
+        teams.add(teamUserParticipant['team']);
+      });
+
+    }
+
+  }
+
+  @override
+  initState() {
+    super.initState();
+    loadInitialData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<dynamic> teams = widget.teamsDetails['teams'] ?? [];
-
-    return Container(
+    // List<dynamic> teams = widget.teamsDetails['teams'] ?? [];
+    return
+  
+ Container(
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         border: Border.all(
