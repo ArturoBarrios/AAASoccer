@@ -41,7 +41,8 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
                   details: {"title": "Image Options"},
                   items: primaryList,
                   singleSelect: true,
-                  secondaryItems: secondaryList);
+                  secondaryItems: secondaryList,
+                  goToFunctions: []);
             },
           );
           if (result.isNotEmpty) {

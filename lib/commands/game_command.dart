@@ -92,14 +92,15 @@ class GameCommand extends BaseCommand {
 
       dynamic result = jsonDecode(response.body)['data']['allGames']['data'];
       print("getGamesNearLocation length: "+ result.length.toString());
-      if(result.length>0){
-        print("DateTime.parse(element['event']['endTime'].toString())"+ DateTime.parse(result[0]['event']['endTime'].toString()).toString());
+      // if(result.length>0){
+      //         DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(result[0]['event']['endTime'].toString());
+      //   print("datetime test"+ dateTime.toString());
         //remove games where endTime is before current time
         // result.removeWhere((element) => DateTime.parse(element['event']['endTime'].toString()).isBefore(DateTime.now()));
 
         //sort by date
         // result = sortGames(result, Constants.CREATEDATE.toString());
-      }
+      // }
       // print("getGamesNearLocation after result: "+ result.length.toString());
       getGamesNearLocationResp["success"] = true;
       getGamesNearLocationResp["message"] = "Games Retrieved";

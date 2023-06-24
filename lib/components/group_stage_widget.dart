@@ -183,7 +183,8 @@ Widget build(BuildContext context) {
                         details: {"title": "Add Team"},
                         items: primaryList,
                         singleSelect: false,
-                        secondaryItems: secondaryList
+                        secondaryItems: secondaryList,
+                        goToFunctions: [],
                       );
                     },
                   );

@@ -1090,7 +1090,7 @@ class EventCommand extends BaseCommand {
       //add games to eventsModel
       //filter out archived games
       Map<String, dynamic> filteredGamesResp =
-          await GameCommand().filterGames(games);
+          GameCommand().filterGames(games);
 
       print("started testing!");
       print("games: " + games.toString());
@@ -1171,23 +1171,28 @@ class EventCommand extends BaseCommand {
     List<dynamic> allMyEvents = appModel.currentUser['eventUserParticipants']['data'];
     print("allMyEvents: "+allMyEvents.toString());
     List myEvents = allMyEvents;
+    print("myEvents.length before: "+myEvents.length.toString());
     List myArchivedEvents = [];
     //filter out archived events
-    for(int i = 0; i < allMyEvents.length; i++){
-      print("eventUserParticipants['data'][i]['_id': "+allMyEvents[i]["_id"].toString());
-      print("allMyEvents[i]['event']: "+allMyEvents[i]['event'].toString());
-      String millisecondsString = allMyEvents[i]['event']['endTime'].toString();
-      DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
-      print("dateTime millisecondsString: "+millisecondsString.toString());
-      if(allMyEvents[i]['archived'] == true||
-        dateTime.isBefore(DateTime.now())      
-      ){
-        myArchivedEvents.add(allMyEvents[i]);
-        myEvents.remove(allMyEvents[i]);
-      }
-    }
-    appModel.myEvents = myEvents;//appModel.currentUser['eventUserParticipants']['data'];
+    myEvents.removeWhere((event) => BaseCommand().dateTimeFromMilliseconds(event['event']['endTime'].toString()).isBefore(DateTime.now()));
 
+    // for(int i = 0; i < allMyEvents.length; i++){
+    // print("event name: "+myEvents[i]['event']['name'].toString());
+      
+      
+    //   String millisecondsString = allMyEvents[i]['event']['endTime'].toString();
+    //   DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
+    //   print("dateTime.isBefore(DateTime.now()" + dateTime.isBefore(DateTime.now()).toString());
+    //   print("dateTime millisecondsString: "+millisecondsString.toString());
+    //   if(
+    //     dateTime.isBefore(DateTime.now())      
+    //   ){
+    //     myArchivedEvents.add(allMyEvents[i]);
+    //     myEvents.remove(allMyEvents[i]);
+    //   }
+    // }
+    appModel.myEvents = myEvents;//appModel.currentUser['eventUserParticipants']['data'];
+    print("myEvents.length after: "+myEvents.length.toString());
     return setupEventsResp;
   }  
 

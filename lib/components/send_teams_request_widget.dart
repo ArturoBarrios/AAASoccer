@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../commands/event_command.dart';
 import '../commands/team_command.dart';
 import '../commands/user_command.dart';
+import '../views/team/view.dart';
 import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/event_mixin.dart';
 
@@ -91,6 +92,18 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
     });
   }
 
+  void goToTeam(dynamic team) {
+    print("goToTeam");
+    print("team: " + team.toString());
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TeamView(teamObject: team),
+      ),
+    );
+  }
+
+
   Container sendEventRequestForMyTeamWidget(
       BuildContext context, dynamic userObjectDetails) {
         widget.setupMyTeams();
@@ -116,7 +129,8 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                       details: {"title": "Send Event Request For My Team"},
                       items: primaryList,
                       singleSelect: false,
-                      secondaryItems: secondaryList);
+                      secondaryItems: secondaryList,
+                      goToFunctions: [goToTeam]);
                 },
               );
               if (result.isNotEmpty) {
@@ -161,7 +175,8 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                             details: {"title": "Send Teams Request"},
                             items: primaryList,
                             singleSelect: false,
-                            secondaryItems: secondaryList);
+                            secondaryItems: secondaryList,
+                            goToFunctions: [goToTeam]);
                       },
                     );
                     if (result.isNotEmpty) {

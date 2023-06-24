@@ -146,7 +146,8 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
                             details: {"title": "Image Options"},
                             items: primaryList,
                             singleSelect: true,
-                            secondaryItems: secondaryList);
+                            secondaryItems: secondaryList,
+                            goToFunctions: []);
                       },
                     );
                     if (result.isNotEmpty) {
@@ -205,7 +206,8 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
                                   details: {"title": "Image Options"},
                                   items: primaryList,
                                   singleSelect: false,
-                                  secondaryItems: secondaryList);
+                                  secondaryItems: secondaryList,
+                                  goToFunctions: []);
                             },
                           );
                     if (result.isNotEmpty) {
