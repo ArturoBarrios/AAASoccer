@@ -412,6 +412,7 @@ class _Home extends State<Home> {
         gameObject['event'] = selectedObject['event'];
         dynamic getEventDetailsResp =
             await EventCommand().getUserEventDetails([gameObject['event']]);
+        print("getEventDetailsResp: " + getEventDetailsResp.toString());
         card = PickupCard2(
             gameObject: gameObject,
             svgImage: svgImage,
@@ -426,7 +427,7 @@ class _Home extends State<Home> {
         print("0");
         trainingObject['event'] = selectedObject['event'];
         dynamic getEventDetailsResp =
-            EventCommand().getUserEventDetails([trainingObject['event']]);
+            await EventCommand().getUserEventDetails([trainingObject['event']]);
         card = TrainingCard(
             trainingObject: trainingObject,
             svgImage: svgImage,

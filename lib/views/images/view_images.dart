@@ -127,7 +127,8 @@ class _ImagesViewState extends State<ImagesView> {
                             details: {"title": "Image Options"},
                             items: primaryList,
                             singleSelect: false,
-                            secondaryItems: secondaryList);
+                            secondaryItems: secondaryList,
+                            goToFunctions: []);
                       },
                     );
                     if (result.isNotEmpty) {

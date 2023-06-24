@@ -33,6 +33,34 @@ class GameCommand extends BaseCommand {
       return bCreatedAt.compareTo(aCreatedAt);
     });
 
+    // //now sort by your games first
+    // dynamic currentUser = appModel.currentUser;
+    // sortedGames.sort((a, b) {
+    //   List<dynamic> aUserParticipants = a['event']['userParticipants']['data'];
+    //   List<dynamic> bUserParticipants = b['event']['userParticipants']['data'];
+    //   bool aIsMyGame = false;
+    //   bool bIsMyGame = false;
+    //   aUserParticipants.forEach((element) {
+    //     if(element['user']['_id'] == currentUser['_id']){
+    //       aIsMyGame = true;
+    //     }
+    //   });
+    //   bUserParticipants.forEach((element) {
+    //     if(element['user']['_id'] == currentUser['_id']){
+    //       bIsMyGame = true;
+    //     }
+    //   });
+      
+    //   if(aIsMyGame && !bIsMyGame){
+    //     return -1;
+    //   }else if(!aIsMyGame && bIsMyGame){
+    //     return 1;
+    //   }else{
+    //     return 0;
+    //   }
+    // });
+
+
     return sortedGames;
 
   }
@@ -63,9 +91,17 @@ class GameCommand extends BaseCommand {
       
 
       dynamic result = jsonDecode(response.body)['data']['allGames']['data'];
-      if(result.length>0){
-        result = sortGames(result, Constants.CREATEDATE.toString());
-      }
+      print("getGamesNearLocation length: "+ result.length.toString());
+      // if(result.length>0){
+      //         DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(result[0]['event']['endTime'].toString());
+      //   print("datetime test"+ dateTime.toString());
+        //remove games where endTime is before current time
+        // result.removeWhere((element) => DateTime.parse(element['event']['endTime'].toString()).isBefore(DateTime.now()));
+
+        //sort by date
+        // result = sortGames(result, Constants.CREATEDATE.toString());
+      // }
+      // print("getGamesNearLocation after result: "+ result.length.toString());
       getGamesNearLocationResp["success"] = true;
       getGamesNearLocationResp["message"] = "Games Retrieved";
       getGamesNearLocationResp["data"] = result;
@@ -99,7 +135,7 @@ class GameCommand extends BaseCommand {
         || (dateTime.isBefore(DateTime.now()))
       ){
         print("event archived!");
-        archivedEvents.add(games[i]);               
+        archivedEvents.remove(games[i]);               
       }
       else{
          activeEvents.add(games[i]);

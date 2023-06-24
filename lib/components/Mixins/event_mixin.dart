@@ -411,7 +411,8 @@ mixin EventMixin {
                           details: {"title": "IDK"},
                           items: primaryList,
                           singleSelect: false,
-                          secondaryItems: secondaryList);
+                          secondaryItems: secondaryList,
+                          goToFunctions: [],);
                     },
                   );
                   if (result.isNotEmpty) {
@@ -1069,7 +1070,8 @@ mixin EventMixin {
                         details: {"title": "Send Players Request"},
                         items: primaryList,
                         singleSelect: false,
-                        secondaryItems: secondaryList);
+                        secondaryItems: secondaryList,
+                        goToFunctions: []);
                   },
                 );
                 if (result.isNotEmpty) {
@@ -1114,7 +1116,8 @@ mixin EventMixin {
                       details: {"title": "Send Player Events Request"},
                       items: primaryList,
                       singleSelect: false,
-                      secondaryItems: secondaryList);
+                      secondaryItems: secondaryList,
+                      goToFunctions: []);
                 },
               );
               if (result.isNotEmpty) {
@@ -1152,7 +1155,8 @@ mixin EventMixin {
                       details: {"title": "Send Player Team Request"},
                       items: myTeamsToChooseFrom,
                       singleSelect: false,
-                      secondaryItems: secondaryList);
+                      secondaryItems: secondaryList,
+                      goToFunctions: []);
                 },
               );
               if (result.isNotEmpty) {
@@ -1195,7 +1199,8 @@ mixin EventMixin {
                       details: {"title": "Send My Event Request to Team"},
                       items: primaryList,
                       singleSelect: false,
-                      secondaryItems: secondaryList);
+                      secondaryItems: secondaryList,
+                      goToFunctions: []);
                 },
               );
               if (result.isNotEmpty) {
@@ -1244,7 +1249,8 @@ mixin EventMixin {
                             details: {"title": "Send Teams Request"},
                             items: primaryList,
                             singleSelect: false,
-                            secondaryItems: secondaryList);
+                            secondaryItems: secondaryList,
+                            goToFunctions: []);
                       },
                     );
                     if (result.isNotEmpty) {
@@ -1282,7 +1288,8 @@ mixin EventMixin {
                       details: {"title": "Send Organizer Player Event Request"},
                       items: primaryList,
                       singleSelect: false,
-                      secondaryItems: secondaryList);
+                      secondaryItems: secondaryList,
+                      goToFunctions: []);
                 },
               );
               if (result.isNotEmpty) {
@@ -1326,7 +1333,8 @@ mixin EventMixin {
                       details: {"title": "Send My Team Request"},
                       items: myProcessedTeamList,
                       singleSelect: false,
-                      secondaryItems: []);
+                      secondaryItems: [],
+                      goToFunctions: []);
                 },
               );
               if (result.isNotEmpty) {

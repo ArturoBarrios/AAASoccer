@@ -160,7 +160,8 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
                       details: {"title": "Send Organizer Player Request"},
                       items: primaryList,
                       singleSelect: false,
-                      secondaryItems: secondaryList);
+                      secondaryItems: secondaryList,
+                      goToFunctions: []);
                 },
               );
               if (result.isNotEmpty) {
@@ -198,7 +199,8 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
                         details: {"title": "Send Players Request"},
                         items: primaryList,
                         singleSelect: false,
-                        secondaryItems: secondaryList);
+                        secondaryItems: secondaryList,
+                        goToFunctions: []);
                   },
                 );
                 if (result.isNotEmpty) {

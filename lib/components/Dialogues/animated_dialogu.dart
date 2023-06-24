@@ -6,13 +6,15 @@ class AnimatedDialog extends StatefulWidget {
     required this.details,
     required this.items, 
     required this.singleSelect, 
-    required this.secondaryItems
+    required this.secondaryItems,
+    required this.goToFunctions,
   }) : super(key: key);
 
   final dynamic details;  
   final List<dynamic> items;
   final bool singleSelect;    
-  final List<dynamic> secondaryItems;
+  final List<dynamic> secondaryItems;  
+  final List <Function> goToFunctions;
 
   @override
   _AnimatedDialogState createState() => _AnimatedDialogState();
@@ -39,6 +41,10 @@ class _AnimatedDialogState extends State<AnimatedDialog> {
     });
   }
 
+  void goTo(int functionIndex, dynamic object){
+    widget.goToFunctions[functionIndex](object);
+  }
+
   void addSecondaryItems(int index, Map<int,dynamic> secondaryChosenItems){
     resultItems[index] = secondaryChosenItems;
   }
@@ -55,74 +61,55 @@ class _AnimatedDialogState extends State<AnimatedDialog> {
   }
 
   Widget _handleSecondaryItemPressed(int index) {
-    return AnimatedDialog(details: widget.details, items: widget.secondaryItems, singleSelect: false, secondaryItems: []);
+    return AnimatedDialog(details: widget.details, items: widget.secondaryItems, singleSelect: false, secondaryItems: [], goToFunctions: [], );
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.details['title'],
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.deepOrange),
-            ),
-            Divider(thickness: 2.0, color: Colors.deepOrange),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.4,
-              child: ListView.builder(
-                itemCount: widget.items.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(widget.items[index].toString(), style: TextStyle(fontSize: 18.0)),
-                    leading: widget.singleSelect
-                        ? Radio(
-                            value: true,
-                            groupValue: _selectedItems[index],
-                            onChanged: (value) async {
-                              _handleItemPressed(index);
-                              if (widget.secondaryItems.length > 0) {
-                                Widget secondaryDialog = _handleSecondaryItemPressed(index);
-                                Map<int,dynamic> secondaryItems = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return secondaryDialog;
-                                  },
-                                );
-                                if (secondaryItems.isNotEmpty) {
-                                  addSecondaryItems(index, secondaryItems);
-                                }
-                              }
-                            },
-                            activeColor: Colors.deepOrange,
-                          )
-                        : Checkbox(
-                            value: _selectedItems[index],
-                            onChanged: (value) async {
-                              _handleItemPressed(index);
-                              if (widget.secondaryItems.length > 0) {
-                                Widget secondaryDialog = _handleSecondaryItemPressed(index);
-                                Map<int,dynamic> secondaryItems = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return secondaryDialog;
-                                  },
-                                );
-                                if (secondaryItems.isNotEmpty) {
-                                  addSecondaryItems(index, secondaryItems);
-                                }
-                              }
-                            },
-                            activeColor: Colors.deepOrange,
-                          ),
-                    trailing: widget.secondaryItems.length > 0
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20.0),
+  ),
+  child: Padding(
+    padding: EdgeInsets.all(16.0),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.details['title'],
+          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+        ),
+        Divider(thickness: 2.0, color: Colors.deepOrange),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.4,
+          child: ListView.builder(
+            itemCount: widget.items.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(widget.items[index].toString(), style: TextStyle(fontSize: 18.0)),
+                leading: widget.singleSelect
+                    ? Radio(
+                        value: true,
+                        groupValue: _selectedItems[index],
+                        onChanged: (value) async {
+                          _handleItemPressed(index);
+                          // Rest of your code
+                        },
+                        activeColor: Colors.deepOrange,
+                      )
+                    : Checkbox(
+                        value: _selectedItems[index],
+                        onChanged: (value) async {
+                          _handleItemPressed(index);
+                          // Rest of your code
+                        },
+                        activeColor: Colors.deepOrange,
+                      ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    widget.secondaryItems.length > 0
                         ? ElevatedButton(
                             onPressed: () async {
                               Widget secondaryDialog = _handleSecondaryItemPressed(index);
@@ -132,51 +119,50 @@ class _AnimatedDialogState extends State<AnimatedDialog> {
                               primary: Colors.deepOrange,
                             ),
                           )
-                        : null,
-                    onTap: () async {
-                      _handleItemPressed(index);
-                      if (widget.secondaryItems.length > 0) {
-                        Widget secondaryDialog = _handleSecondaryItemPressed(index);
-                        Map<int,dynamic> secondaryItems = await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return secondaryDialog;
-                          },
-                        );
-                        if (secondaryItems.isNotEmpty) {
-                          addSecondaryItems(index, secondaryItems);
-                        }
-                      }
-                    },
-                  );
+                        : Container(),
+                    IconButton(
+                      icon: Icon(Icons.arrow_forward_ios),
+                      onPressed: () {
+                        print("Right arrow button pressed");
+                        goTo(0, widget.items[index]);
+                      },
+                    ),
+                  ],
+                ),
+                onTap: () async {
+                  _handleItemPressed(index);
+                  // Rest of your code
                 },
-              ),
+              );
+            },
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              child: Text('CANCEL', style: TextStyle(color: Colors.deepOrange)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  child: Text('CANCEL', style: TextStyle(color: Colors.deepOrange)),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                SizedBox(width: 8.0),
-                ElevatedButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    processItemsSelected();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.deepOrange,
-                  ),
-                ),
-              ],
+            SizedBox(width: 8.0),
+            ElevatedButton(
+              child: Text('OK'),
+              onPressed: () {
+                processItemsSelected();
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.deepOrange,
+              ),
             ),
           ],
         ),
-      ),
-    );
+      ],
+    ),
+  ),
+);
+
   }
 }
