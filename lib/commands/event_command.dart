@@ -28,6 +28,8 @@ import 'package:intl/intl.dart';
 
 class EventCommand extends BaseCommand {
 
+ 
+
   Future<Map<String, dynamic>> notifyEventParticipants(dynamic notifyEventParticipantInput
   ) async {
     Map<String, dynamic> notifyEventParticipantsResponse = {
@@ -1176,7 +1178,7 @@ class EventCommand extends BaseCommand {
       print("allMyEvents[i]['event']: "+allMyEvents[i]['event'].toString());
       String millisecondsString = allMyEvents[i]['event']['endTime'].toString();
       DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
-      // print("myEvent: "+allMyEvents.toString());
+      print("dateTime millisecondsString: "+millisecondsString.toString());
       if(allMyEvents[i]['archived'] == true||
         dateTime.isBefore(DateTime.now())      
       ){
@@ -1184,7 +1186,7 @@ class EventCommand extends BaseCommand {
         myEvents.remove(allMyEvents[i]);
       }
     }
-    appModel.myEvents = appModel.currentUser['eventUserParticipants']['data'];
+    appModel.myEvents = myEvents;//appModel.currentUser['eventUserParticipants']['data'];
 
     return setupEventsResp;
   }  
@@ -1202,10 +1204,13 @@ class EventCommand extends BaseCommand {
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
     if(add){
-      await addGame(game, true); 
+      // await addGame(game, true); 
+      //appModel.myEvents = appModel.currentUser['eventUserParticipants']['data'];
+      appModel.myEvents.add(game['userParticipants']['data'][0]);
           
     }
     else{
+      //in BaseCommand
       appModel.myEvents.remove(game);     
       // await EventCommand().removeGame(game, true);
     }
@@ -1218,8 +1223,7 @@ class EventCommand extends BaseCommand {
       }
       else{
         homePageModel.selectedObjects.remove(game);
-      }
-      homePageModel.selectedObjects.add(game);
+      }      
       print("homePageModel.selectedObjects.length after: "+ homePageModel.selectedObjects.length.toString());
       // homePageModel.selectedKey = Constants.PICKUP;
       

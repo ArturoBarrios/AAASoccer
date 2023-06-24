@@ -7,6 +7,6 @@ class StringConstants {
   static final String TRYOUTSTITLE = "Tryouts";
   static final String PLAYERSTITLE = "Players";
   static final String FRIENDSTITLE = "Friends";
-  static final String MYEVENTSTITLE = "My Events";
+  static final String MYEVENTSTITLE = "Upcoming Events";
   static final String LOCATIONSTITLE = "Locations";
 }

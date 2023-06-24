@@ -13,6 +13,7 @@ import 'create_event_payment.dart';
 import 'create_event_request.dart';
 import 'create_team_payment.dart';
 import 'create_team_request.dart';
+import 'event_date_widget.dart';
 import 'location_search_bar.dart';
 import 'images_list_widget.dart';
 
@@ -81,6 +82,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
         child: Center(
             child: Expanded(
                 child: Column(children: [
+                  EventDateWidget(eventDetails: widget.userObjectDetails),
       Container(
         margin: const EdgeInsets.all(10.0),
         color: Colors.amber[600],
@@ -88,6 +90,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
             (MediaQuery.of(context).size.width * .1), //10% padding
         height: 200.0,
         child:
+        
             //map
             MyMapPage(
                 latitude: widget.userObjectDetails['mainEvent']['location']
