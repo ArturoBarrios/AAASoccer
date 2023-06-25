@@ -51,6 +51,8 @@ class _TrainingViewState extends State<TrainingView> {
     priceObject = widget.training['event']['price'];
   }
 
+  
+
 
   
 

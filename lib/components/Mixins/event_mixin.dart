@@ -117,6 +117,8 @@ mixin EventMixin {
 
     });   
   }
+
+  
   
   //used in Team view
   //send a team request to my events

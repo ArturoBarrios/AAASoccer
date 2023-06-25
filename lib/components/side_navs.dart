@@ -3,6 +3,7 @@ import 'package:soccermadeeasy/components/history.dart';
 import 'package:soccermadeeasy/components/playground_widget.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
 import '../commands/base_command.dart';
+import '../commands/user_command.dart';
 import '../components/profile.dart';
 import '../views/chats/view.dart';
 import '../views/friends/view.dart';
@@ -18,6 +19,11 @@ class SideNavs extends StatefulWidget {
   @override
   State<SideNavs> createState() => _SideNavs();
 
+  void loadUserProfileData(){
+    UserCommand().getAppModelUser();
+
+  }
+
   ListView getMainSideNav(BuildContext context, dynamic userObject) {
     String profileImageUrl =
         context.select<UserModel, String>((value) => value.profileImageUrl);
@@ -29,7 +35,11 @@ class SideNavs extends StatefulWidget {
           onTap: () {
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {
-                return Profile();
+                dynamic profileDetails = {
+                  "isMine": true,
+                  "user": userObject
+                };
+                return Profile(profileDetails: profileDetails,);
               },
             ));
           },
@@ -163,10 +173,12 @@ class SideNavs extends StatefulWidget {
   }
 }
 
+
 class _SideNavs extends State<SideNavs> {
   void onTapMenu() {}
   final title = "Jefferson";
   final upperTitle = "Welcome back,";
+
 
   @override
   Widget build(BuildContext context) {

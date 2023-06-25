@@ -21,6 +21,11 @@ import 'object_profile_main_image.dart';
 const primaryColor = Color(0xff4338CA);
 // // // // // // // // // // // // // // //
 class Profile extends StatefulWidget {
+  Profile({Key? key, required this.profileDetails})
+      : super(key: key);
+
+  final dynamic profileDetails;
+
   @override
   _ProfileState createState() => _ProfileState();  
 
@@ -39,12 +44,20 @@ class _ProfileState extends State<Profile> {
     
   Future<void> loadInitialData() async {
     print("loadInitialData Profile");
+    //get current user
+    
+    if(widget.profileDetails['isMine']){
+
+    }
+    
+
     String imageUrl = UserCommand().getProfileImage();
     objectImageInput = {
       "imageUrl": imageUrl,
       "containerType": Constants.IMAGECIRCLE
     };
-    Map<String,dynamic> findMyUserByIdResp = await UserCommand().findMyUserById();    
+    
+    Map<String,dynamic> findMyUserByIdResp = await UserCommand().findUserById(widget.profileDetails['user']);    
     print("findMyUserByIdResp: " + findMyUserByIdResp.toString());
     if(findMyUserByIdResp['success']){
       currentUser = findMyUserByIdResp['data'];
@@ -53,11 +66,11 @@ class _ProfileState extends State<Profile> {
       teamListDetails['teamUserParticipants'] = currentUser['teamUserParticipants']['data'];
       print("eventListDetails: " + eventListDetails.toString());
       print("teamListDetails: " + teamListDetails.toString());
+      setState(() {
+        _isLoading = false;
+      });
     }
 
-    setState(() {
-      _isLoading = false;
-    });
     
   }
 
