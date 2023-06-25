@@ -22,7 +22,7 @@ class HomePageCommand extends BaseCommand {
   void closeCard(){
     print("closeCard");
     homePageModel.isDialogueViewOpened = false;
-  }  
+  }    
 
   void eventTypeTapped(String key){
     print("eventTypeTapped");
@@ -66,7 +66,7 @@ class HomePageCommand extends BaseCommand {
     
     // HomePageModel.enabledEvents
     // if(Constants.LEAGUE=="kjkj")
-    
+      
       if(homePageModel.selectedKey==Constants.PICKUP){
         print("check games: ");
         print(eventsModel.games);
@@ -111,6 +111,12 @@ class HomePageCommand extends BaseCommand {
         print("check my events: ");
         print(appModel.myEvents);
         homePageModel.selectedObjects = appModel.myEvents;
+      }
+      else if(homePageModel.selectedKey==Constants.MYTEAMS){
+        print("check my teams: ");
+        print(appModel.myTeams);
+
+        homePageModel.selectedObjects = appModel.myTeams;
       }
       
       

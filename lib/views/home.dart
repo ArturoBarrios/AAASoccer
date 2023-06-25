@@ -226,28 +226,10 @@ class _Home extends State<Home> {
   List eventsList = [];
   List eventsEnabledList = [];
 
-  //pretty sure this is obsolete now
-  void _firstLoad() async {
-    
-    // setState(() {
-    //   _isFirstLoadRunning = true;
-    // });
-    // try {
-    //   final res =
-    //       await http.get(Uri.parse("$_baseUrl?_page=$_page&_limit=$_limit"));
-    //   setState(() {
-    //     getEventCards();
-    //     // _posts = json.decode(res.body);
-    //   });
-    // } catch (err) {
-    //   print("error");
-    //   print(err);
-    // }
+  String selectedKey = "";
+  List selectedObjects = [];
 
-    // setState(() {
-    //   _isFirstLoadRunning = false;
-    // });
-  }
+  
 
   // The controller for the ListView
   late ScrollController _selectEventTypeController = ScrollController();
@@ -314,15 +296,7 @@ class _Home extends State<Home> {
     return eventsList;
   }
 
-  @override
-  void initState() {
-    print("initState() in home");
-    super.initState();
-    _firstLoad();
-    _selectEventController = ScrollController()..addListener(_loadMore);
-    userObject = UserCommand().getAppModelUser();
-
-  }
+  
 
   @override
   void dispose() {
@@ -394,7 +368,15 @@ class _Home extends State<Home> {
       dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject);
       card = TeamCard(
           teamObject: selectedObject, svgImage: svgImage, userTeamDetails: userTeamDetails);
-    } else if (selectedKey == Constants.FRIEND) {
+    } else if (selectedKey == Constants.MYTEAMS){
+      print("selectedKey == MYTEAMS");
+      print("selectedObject: " + selectedObject.toString());
+      dynamic team = selectedObject['team'];
+      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team);      
+      card = TeamCard(
+          teamObject: team, svgImage: svgImage, userTeamDetails: userTeamDetails);
+    }
+    else if (selectedKey == Constants.FRIEND) {
       card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
     } 
     //My Events
@@ -491,6 +473,21 @@ class _Home extends State<Home> {
     print("testFunction");
   }
 
+  Future<void> loadInitialData() async{
+    _selectEventController = ScrollController()..addListener(_loadMore);
+    userObject = UserCommand().getAppModelUser();
+
+  }
+
+  @override
+  void initState() {
+    print("initState() in home");
+    super.initState();    
+    loadInitialData();
+    
+
+  }
+
   @override
   Widget build(BuildContext context) {
     int messagesLength =
@@ -499,10 +496,10 @@ class _Home extends State<Home> {
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
 
-    String selectedKey =
+    selectedKey =
         context.select<HomePageModel, String>((value) => value.selectedKey);
 
-    List selectedObjects =
+    selectedObjects =
         context.select<HomePageModel, List>((value) => value.selectedObjects);
 
     userObjectSelections = context
@@ -520,10 +517,10 @@ class _Home extends State<Home> {
 
     context.select<AppModel, List<dynamic>>((value) => value.teams);
 
-    HomePageModel().enabledSelections2.forEach((k, v) => {
-          context.select<HomePageModel, bool>(
-              (value) => value.enabledSelections2[k]['enabled'])
-        });
+    // HomePageModel().enabledSelections2.forEach((k, v) => {
+    //       context.select<HomePageModel, bool>(
+    //           (value) => value.enabledSelections2[k]['enabled'])
+        // });
 
     print("selectedKey in build: " + selectedKey);
     print("selectedObjects length in build: " + selectedObjects.length.toString());

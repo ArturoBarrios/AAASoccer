@@ -9,6 +9,7 @@ class Constants {
   static final String FRIEND = "9";
   static final String MYEVENTS = "10";
   static final String LOCATION = "11";
+  static final String MYTEAMS = "12";
   static final String EVENT = "EVENT";
   static final String VIEWEVENT = "View Event";
   static final String VIEWUSER = "View User";

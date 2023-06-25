@@ -26,6 +26,8 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 
+import 'home_page_command.dart';
+
 class EventCommand extends BaseCommand {
 
  
@@ -1104,9 +1106,8 @@ class EventCommand extends BaseCommand {
       print("done parsing roles!");
       eventsModel.games = filteredGamesResp['activeEvents'];      
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
-      eventsModel.events.addAll(games);
-      homePageModel.selectedObjects =
-          json.decode(json.encode(filteredGamesResp['activeEvents']));
+      eventsModel.events.addAll(games);      
+      
       print("length of games: " + games.length.toString());
     }
     Map<String, dynamic> getLeaguesNearLocationResp =

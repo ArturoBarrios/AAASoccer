@@ -53,7 +53,7 @@ class HomePageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _selectedKey = Constants.PICKUP;
+  String _selectedKey = Constants.MYEVENTS;
   String get selectedKey => _selectedKey;
   set selectedKey(String selectedKey){
     _selectedKey = selectedKey;
@@ -61,90 +61,31 @@ class HomePageModel extends ChangeNotifier {
   }
 
   
-  Map<String, dynamic> createEventTypes = {
-     "0": {
-      "key": "0",
-      "enabled": true,
-      "name": StringConstants.PICKUPGAMESTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-      "createWidget": GameCreate(),            
-    },
-    "6": {
-      "key": "6",
-      "enabled": false,
-      "name": StringConstants.TRAININGSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-      "createWidget": TrainingCreate(),
-    },
-     "1": {
-      "key": "1",
-      "enabled": false,
-      "name": StringConstants.PLAYERSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-     "2": {
-      "key": "2",
-      "enabled": false,
-      "name": StringConstants.TEAMSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-      "createWidget": TeamCreate(),
-    },
-    "3": {
-      "key": "3",
-      "enabled": false,
-      "name": StringConstants.TRYOUTSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-      "createWidget": TryoutCreate(),
-    },
-    "4":{
-      "key": "4",
-      "enabled": false,
-      "name": StringConstants.TOURNAMENTSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-      "createWidget": TournamentCreate(),
-    },
-    "5":{
-      "key": "5",
-      "enabled": false,
-      "name": StringConstants.LEAGUESTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-      "createWidget": LeagueCreate(),
-    },
-    "6":{
-      "key": "6",
-      "enabled": false,
-      "name": StringConstants.LOCATIONSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-      "createWidget": LocationCreate(eventObject: null, teamObject: null,),
-    },
-  };
-  
 
 
   Map<String, dynamic> _enabledSelections2 = {
+    Constants.MYEVENTS: {
+      "key": Constants.MYEVENTS,
+      "enabled": true,
+      "name": StringConstants.MYEVENTSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    Constants.MYTEAMS: {
+      "key": Constants.MYTEAMS,
+      "enabled": false,
+      "name": StringConstants.MYTEAMSTITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
     Constants.PICKUP: {
       "key": Constants.PICKUP,
-      "enabled": true,
+      "enabled": false,
       "name": StringConstants.PICKUPGAMESTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
       
     },    
-    Constants.MYEVENTS: {
-      "key": Constants.MYEVENTS,
-      "enabled": false,
-      "name": StringConstants.MYEVENTSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
     Constants.FRIEND: {
       "key": Constants.FRIEND,
       "enabled": false,
