@@ -25,39 +25,7 @@ void goHome(BuildContext context) {
           child: Text("Find Soccer Near You")),
       backgroundColor: Colors.orange.shade500,
       actions: <Widget>[
-        // IconButton(
-        //   icon: const Icon(Icons.notifications_active),
-        //   tooltip: 'Notifications',
-        //   onPressed: () {
-        //     Navigator.push(context, MaterialPageRoute<void>(
-        //       builder: (BuildContext context) {
-        //         return ChatsView();
-        //       },
-        //     ));
-        //   },
-        // ),
-        // IconButton(
-        //   icon: const Icon(Icons.message),
-        //   tooltip: 'Messages',
-        //   onPressed: () {
-        //     Navigator.push(context, MaterialPageRoute<void>(
-        //       builder: (BuildContext context) {
-        //         return ChatsView();
-        //       },
-        //     ));
-        //   },
-        // ),
-        // IconButton(
-        //   icon: const Icon(Icons.account_circle),
-        //   tooltip: 'Go to the next page',
-        //   onPressed: () {
-        //     Navigator.push(context, MaterialPageRoute<void>(
-        //       builder: (BuildContext context) {
-        //         return Profile();
-        //       },
-        //     ));
-        //   },
-        // ),
+        
       ],
     );
     return appBar;

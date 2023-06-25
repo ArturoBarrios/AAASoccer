@@ -33,6 +33,8 @@ import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 
+import 'home_page_command.dart';
+
 
 
 late BuildContext _mainContext;
@@ -360,7 +362,7 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
 
           await EventCommand().setupEventsFromCurrentUser(appModel.currentUser);
           await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
-            
+          HomePageCommand().getSelectedObjects();
           //setup events(league, tournament, tryout, training)
           //,teams, players near me data. 
           //get location and update user location
@@ -384,7 +386,7 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
 
             
             // 
-          // }
+          // } 
          
             resp["success"] = true;
             resp["message"] = "setup successfull";

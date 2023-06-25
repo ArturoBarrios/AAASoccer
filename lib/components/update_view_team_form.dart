@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/SendMyEventsTeamRequestWidget.dart';
 import 'package:soccermadeeasy/components/players_list_widget.dart';
+import 'package:soccermadeeasy/components/send_players_request_widget.dart';
+import 'package:soccermadeeasy/components/send_teams_request_widget.dart';
 
 import '../views/game/update.dart';
 import 'Mixins/event_mixin.dart';
+import 'chats_list_widget.dart';
 import 'create_event_payment.dart';
 import 'create_event_request.dart';
 import 'create_team_payment.dart';
 import 'create_team_request.dart';
 import 'events_list_widget.dart';
+import 'get_chat_widget.dart';
 import 'images_list_widget.dart';
 import 'location_search_bar.dart';
 import 'Mixins/images_mixin.dart';
@@ -56,8 +61,16 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
     setState(() {
       widget.userObjectDetails['team']['events']['data'].remove(event);
     });
+  }
+
+  void addTeamCallback(dynamic team){
+    setState(() {
+      widget.userObjectDetails['team']['teams']['data'].add(team);
+    });
 
   }
+
+
 
   @override 
   void initState() {
@@ -66,6 +79,7 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
     print("userObjectDetails: " + widget.userObjectDetails.toString());
     loadInitialData();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,13 +106,14 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
                    :
                   Text(widget.userObjectDetails['team']['location']['data'][0]['name']) ,
                
-                // if (widget.userObjectDetails['isMine'])
-                createTeamRequestWidget,
-                // if (widget.userObjectDetails['isMine'])
-                createTeamPaymentWidget,
-                widget.getChatWidget(context, false, true, widget.userObjectDetails, updateChatsList),
-                widget.sendPlayersRequestWidget(context, widget.userObjectDetails),
-                widget.sendMyEventsTeamRequestWidget(context, widget.userObjectDetails, addEventCallback),
+                
+                createTeamRequestWidget,                
+                createTeamPaymentWidget,                
+                GetChatWidget(objectEventsDetails: widget.userObjectDetails, updatechatsList: updateChatsList),
+                ChatsListWidget(
+                  chats: widget.userObjectDetails['team']['chats']['data']),
+                SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails),                
+                SendMyEventsTeamRequestWidget(userObjectDetails: widget.userObjectDetails, addEventcallback: addEventCallback),                
                 widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
                 PlayerList(playersDetails: widget.userObjectDetails),
                 EventsListWidget(objectEventsDetails: widget.userObjectDetails,),

@@ -163,6 +163,7 @@ class TeamCommand extends BaseCommand {
     }
 
     appModel.myTeams = user['teamUserParticipants']['data'];
+    
 
   }
 

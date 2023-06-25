@@ -117,6 +117,8 @@ mixin EventMixin {
 
     });   
   }
+
+  
   
   //used in Team view
   //send a team request to my events
@@ -916,17 +918,7 @@ mixin EventMixin {
         //!withPayment&&withRequestt
         else if (!teamJoinCondition['withPayment'] &&
             teamJoinCondition['withRequest']) {
-          return sendEventRequestForMyTeamWidget(context, userObjectDetails);
-          // return Container(
-          //     child: GestureDetector(
-          //   onTap: () {
-          //     print("!withPayment&&!withRequest");
-          //     selectedRequestTypeObjects.add("PLAYER");
-          //     sendTeamRequest(team, {0: {}}, requestUserTypes, []);
-          //     selectedRequestTypeObjects = [];
-          //   },
-          //   child: Text("Send Request to Join(No Payment required to join)"),
-          // ));
+          return sendEventRequestForMyTeamWidget(context, userObjectDetails);          
         }
         //withPayment && !withRequest
         else if (teamJoinCondition['withPayment'] &&
@@ -989,28 +981,9 @@ mixin EventMixin {
             } else {
               return sendEventRequestForMyTeamWidget(
                   context, userObjectDetails);
-              // return Container(
-              //     child: GestureDetector(
-              //   onTap: () {
-              //     selectedRequestTypeObjects.add("PLAYER");
-              //     sendTeamRequest(team, {0: {}}, requestUserTypes, []);
-              //     selectedRequestTypeObjects = [];
-              //   },
-              //   child: Text("Request Denied, Resend Request"),
-              // ));
             }
           } else {
-            return sendEventRequestForMyTeamWidget(context, userObjectDetails);
-            // return Container(
-            //     child: GestureDetector(
-            //   onTap: () {
-            //     print("withPayment && withRequest");
-            //     selectedRequestTypeObjects.add("PLAYER");
-            //     sendTeamRequest(team, {0: {}}, requestUserTypes, []);
-            //     selectedRequestTypeObjects = [];
-            //   },
-            //   child: Text("Send Request to Join(Payment required to join)"),
-            // ));
+            return sendEventRequestForMyTeamWidget(context, userObjectDetails);            
           }
         }
       }
@@ -1215,12 +1188,6 @@ mixin EventMixin {
               color: Colors.blue,
               child: Center(child: Text("Send My Event Request to Team")),
             )));
-
-
-
-
-    
-
   }
 
   Container sendTeamsRequestWidget(

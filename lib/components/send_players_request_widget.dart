@@ -1,12 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/profile.dart';
 
 import '../commands/event_command.dart';
 import '../commands/player_command.dart';
 import '../commands/team_command.dart';
 import '../commands/user_command.dart';
 import '../constants.dart';
+import '../views/player/view.dart';
 import 'Dialogues/animated_dialogu.dart';
 
 // // // // // // // // // // // // // // //
@@ -143,6 +145,21 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     // }
   }
 
+  void goToPlayer(dynamic player) {
+    print("goToPlayer");
+    print("player: " + player.toString());
+    dynamic profileDetails = {
+      "user": player,
+      "isMine": false,
+    };
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Profile(profileDetails: profileDetails),
+      ),
+    );
+  }
+
   Container sendOrganizerPlayerEventRequest(
       BuildContext context) {
     return Container(
@@ -161,7 +178,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
                       items: primaryList,
                       singleSelect: false,
                       secondaryItems: secondaryList,
-                      goToFunctions: []);
+                      goToFunctions: [goToPlayer]);
                 },
               );
               if (result.isNotEmpty) {
@@ -200,7 +217,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
                         items: primaryList,
                         singleSelect: false,
                         secondaryItems: secondaryList,
-                        goToFunctions: []);
+                        goToFunctions: [goToPlayer]);
                   },
                 );
                 if (result.isNotEmpty) {
