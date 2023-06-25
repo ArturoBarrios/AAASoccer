@@ -14,6 +14,7 @@ import 'create_event_request.dart';
 import 'create_team_payment.dart';
 import 'create_team_request.dart';
 import 'event_date_widget.dart';
+import 'get_chat_widget.dart';
 import 'location_search_bar.dart';
 import 'images_list_widget.dart';
 
@@ -108,8 +109,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
 
       SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails),
       SendTeamsRequestWidget(userObjectDetails: widget.userObjectDetails, addTeamCallback: addTeamCallback),
-      widget.getChatWidget(
-          context, true, false, widget.userObjectDetails, updateChatsList),
+      GetChatWidget(objectEventsDetails: widget.userObjectDetails, updatechatsList: updateChatsList),      
       ChatsListWidget(
           chats: widget.userObjectDetails['mainEvent']['chats']['data']),
 

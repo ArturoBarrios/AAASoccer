@@ -7,7 +7,7 @@ class AnimatedDialog extends StatefulWidget {
     required this.items, 
     required this.singleSelect, 
     required this.secondaryItems,
-    required this.goToFunctions,
+    required this.goToFunctions,    
   }) : super(key: key);
 
   final dynamic details;  
