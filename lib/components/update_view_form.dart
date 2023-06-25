@@ -144,25 +144,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
         ],
       ),
       ImagesListWidget(details: widget.userObjectDetails),
-      // Row(
-      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //   children: [
-      // GestureDetector(
-      //             onTap: () {
-      //               // getImage();
-      //             },
-      //             child: Container(
-      //               height:50,
-      //               margin: const EdgeInsets.all(10.0),
-      //               decoration: BoxDecoration(
-      //                 color: Colors.amber[600],
-      //                 image: DecorationImage(
-      //                   image: NetworkImage('https://via.placeholder.com/150'), // Update this URL with your image url
-      //                   fit: BoxFit.cover,
-      //                 ),
-      //               ),
-      //             ),
-      //           )])
+      
     ]))));
   }
 }

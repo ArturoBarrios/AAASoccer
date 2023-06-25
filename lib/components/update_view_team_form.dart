@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/SendMyEventsTeamRequestWidget.dart';
 import 'package:soccermadeeasy/components/players_list_widget.dart';
+import 'package:soccermadeeasy/components/send_players_request_widget.dart';
+import 'package:soccermadeeasy/components/send_teams_request_widget.dart';
 
 import '../views/game/update.dart';
 import 'Mixins/event_mixin.dart';
@@ -56,8 +59,16 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
     setState(() {
       widget.userObjectDetails['team']['events']['data'].remove(event);
     });
+  }
+
+  void addTeamCallback(dynamic team){
+    setState(() {
+      widget.userObjectDetails['team']['teams']['data'].add(team);
+    });
 
   }
+
+
 
   @override 
   void initState() {
@@ -66,6 +77,7 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
     print("userObjectDetails: " + widget.userObjectDetails.toString());
     loadInitialData();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,8 +109,10 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
                 // if (widget.userObjectDetails['isMine'])
                 createTeamPaymentWidget,
                 widget.getChatWidget(context, false, true, widget.userObjectDetails, updateChatsList),
-                widget.sendPlayersRequestWidget(context, widget.userObjectDetails),
-                widget.sendMyEventsTeamRequestWidget(context, widget.userObjectDetails, addEventCallback),
+                SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails),                
+                SendMyEventsTeamRequestWidget(userObjectDetails: widget.userObjectDetails, addEventcallback: addEventCallback),
+                // widget.sendPlayersRequestWidget(context, widget.userObjectDetails),
+                // widget.sendMyEventsTeamRequestWidget(context, widget.userObjectDetails, addEventCallback),
                 widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
                 PlayerList(playersDetails: widget.userObjectDetails),
                 EventsListWidget(objectEventsDetails: widget.userObjectDetails,),

@@ -1217,12 +1217,6 @@ mixin EventMixin {
               color: Colors.blue,
               child: Center(child: Text("Send My Event Request to Team")),
             )));
-
-
-
-
-    
-
   }
 
   Container sendTeamsRequestWidget(
