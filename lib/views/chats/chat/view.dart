@@ -13,10 +13,10 @@ import '../../../components/bottom_text_box.dart';
 // import 'create.dart';
 
 class ChatView extends StatefulWidget {
-  const ChatView({Key? key, required this.index, required this.chatObject})
+  const ChatView({Key? key, required this.chatObject})
       : super(key: key);
   final Map<String, dynamic> chatObject;
-  final int index;
+  
 
   @override
   _ChatViewState createState() => _ChatViewState();
@@ -126,6 +126,7 @@ class _ChatViewState extends State<ChatView> {
                       })),
               BottomTextBox(
                 chatObject: widget.chatObject,
+                
               ),
             ]),
     );

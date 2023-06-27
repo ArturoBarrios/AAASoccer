@@ -8,6 +8,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
 import '../../views/player/view.dart';
 import '../../views/send_player_request_view.dart';
+import '../profile.dart';
 
 class FriendCard extends StatefulWidget {
   const FriendCard(
@@ -44,15 +45,35 @@ Future<Map<String, dynamic>> removeFriend(dynamic friendObject) async {
   return deleteFriendResp;
 }
 
+
+
 class _FriendCard extends State<FriendCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
+  
 
   final ButtonStyle style = ElevatedButton.styleFrom(
       primary: Colors.orange.shade500,
       textStyle: const TextStyle(fontSize: 20));
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
+
+      goToPlayer() {
+    print("goToPlayer");
+    dynamic profileDetails = {
+      "user": widget.friendObject['user'],
+      "isMine": false,
+    };
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Profile(
+                profileDetails: profileDetails,
+              )),
+    );
+  }
+
+  
   @override
   Widget build(BuildContext context) {
     print("widget name: ");
@@ -60,16 +81,17 @@ class _FriendCard extends State<FriendCard> {
     return Listener(
         child: GestureDetector(
       onTap: () {
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return PlayerView(userPlayerObject: widget.friendObject);
-          },
-          animationType: DialogTransitionType.slideFromBottom,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 1),
-        );
+        goToPlayer();
+        // showAnimatedDialog(
+        //   context: context,
+        //   barrierDismissible: true,
+        //   builder: (BuildContext context) {
+        //     return PlayerView(userPlayerObject: widget.friendObject);
+        //   },
+        //   animationType: DialogTransitionType.slideFromBottom,
+        //   curve: Curves.fastOutSlowIn,
+        //   duration: Duration(seconds: 1),
+        // );
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../views/chats/chat/view.dart';
+
 class ChatsListWidget extends StatefulWidget {
   final List<dynamic> chats;
 
@@ -15,6 +17,19 @@ class _ChatsListWidgetState extends State<ChatsListWidget> {
     setState(() {
       widget.chats.remove(chatToRemove); // Remove the chat at index 0 as an example
     });
+  }
+
+  void goToChat(chat) {
+    // Implement the logic to go to the chat page
+    dynamic chatObjectDetails = {      
+      "chatObject": chat
+    };
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatView(chatObject: chat),
+      ),
+    );
   }
 
   @override
@@ -50,6 +65,8 @@ class _ChatsListWidgetState extends State<ChatsListWidget> {
                     onTap: () {
                       // Do something when a chat row is clicked
                       print('Chat row tapped!');
+                      goToChat(chat);
+
                     },
                     title: Text(
                         isPrivate ? 'Private Chat(No Details available)' : chat['name']),

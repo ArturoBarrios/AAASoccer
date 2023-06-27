@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../commands/event_command.dart';
+import '../views/team/view.dart';
 import 'Loading/loading_screen.dart';
 
 class TeamsListWidget extends StatefulWidget {
@@ -52,6 +53,17 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
 
   }
 
+  void goToTeam(dynamic team) {
+    print("goToTeam");
+    print("team: " + team.toString());
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TeamView(teamObject: team),
+      ),
+    );
+  }
+
   @override
   initState() {
     super.initState();
@@ -59,62 +71,67 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    // List<dynamic> teams = widget.teamsDetails['teams'] ?? [];
-    return
-  
- Container(
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey,
+  Widget build(BuildContext context) {    
+    return Container(
+  padding: EdgeInsets.all(8.0),
+  decoration: BoxDecoration(
+    border: Border.all(
+      color: Colors.grey,
+    ),
+    borderRadius: BorderRadius.circular(5.0),
+  ),
+  child: Column(
+    children: <Widget>[
+      Text(
+        'Team List',
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
         ),
-        borderRadius: BorderRadius.circular(5.0),
       ),
-      child: Column(
-        children: <Widget>[
-          Text(
-            'Team List',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 10.0),
-          teams.isEmpty
-              ? Center(
-                  child: Text('No Teams'),
-                )
-              : Column(
-                  children: List<Widget>.generate(teams.length, (index) {
-                    String teamName = teams[index]['name'] ?? '';
+      SizedBox(height: 10.0),
+      teams.isEmpty
+          ? Center(
+              child: Text('No Teams'),
+            )
+          : Column(
+              children: List<Widget>.generate(teams.length, (index) {
+                String teamName = teams[index]['name'] ?? '';
 
-                    return ListTile(
-                      title: Text(teamName),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () {
-                              removeTeamFromEvent(teams[index]);
-                            },
-                          ),
-                          // Check if addTeam function exists before displaying the icon button
-                          // if (widget.addTeam != null)
-                          //   IconButton(
-                          //     icon: Icon(Icons.add),
-                          //     onPressed: () {
-                          //       widget.addTeam(teams[index]);
-                          //     },
-                          //   ),
-                        ],
-                      ),
-                    );
-                  }),
-                ),
-        ],
-      ),
-    );
+                return InkWell(
+                  onTap: () {
+                    print('Team pressed');
+                    goToTeam(teams[index]);
+                    // Implement your logic here when ListTile is clicked.
+                  },
+                  child: ListTile(
+                    title: Text(teamName),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      //can add multiple buttons here
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            removeTeamFromEvent(teams[index]);
+                          },
+                        ),
+                        // Check if addTeam function exists before displaying the icon button
+                        // if (widget.addTeam != null)
+                        //   IconButton(
+                        //     icon: Icon(Icons.add),
+                        //     onPressed: () {
+                        //       widget.addTeam(teams[index]);
+                        //     },
+                        //   ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+    ],
+  ),
+);
   }
 }

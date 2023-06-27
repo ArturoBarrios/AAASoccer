@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/views/request/view.dart';
 import '../components/profile.dart';
 import '../views/game/create.dart';
 import '../views/images/view_images.dart';
+import '../views/organization/create.dart';
 import '../views/tournament/create.dart';
 import '../views/league/create.dart';
 import '../views/training/create.dart';
@@ -29,7 +30,8 @@ BottomAppBar getMainBottomNav(BuildContext context){
     "Tournament",
     "League",
     "Training", 
-    "Tryout"
+    "Tryout",
+    "Organization"
 
   ];
 
@@ -79,6 +81,13 @@ BottomAppBar getMainBottomNav(BuildContext context){
         Navigator.push(context, MaterialPageRoute<void>(
           builder: (BuildContext context) {
             return TryoutCreate();
+          },
+        ));
+        break;      
+        case 6:
+        Navigator.push(context, MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return OrganizationCreate();
           },
         ));
         break;      
