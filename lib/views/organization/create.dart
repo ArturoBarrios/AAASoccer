@@ -11,16 +11,17 @@ import '../../../testing/seeding/team_seeder.dart';
 import '../../../testing/seeding/location_seeder.dart';
 import '../../../components/profile.dart';
 import '../../../models/app_model.dart';
+import '../../commands/organization_command.dart';
 
-class OrganizerCreate extends StatefulWidget {
+class OrganizationCreate extends StatefulWidget {
   @override
-  _OrganizerCreateState createState() => _OrganizerCreateState();
+  _OrganizationCreateState createState() => _OrganizationCreateState();
 }
 
-class _OrganizerCreateState extends State<OrganizerCreate> {
-  final nameController = TextEditingController();
-  final colorController = TextEditingController();
-  final logoController = TextEditingController();        
+class _OrganizationCreateState extends State<OrganizationCreate> {
+  final nameController = TextEditingController();  
+  final logoController = TextEditingController();     
+  //name, location,    
   LocationSearchBar locationSearchBar = new LocationSearchBar();
   
 
@@ -43,6 +44,11 @@ class _OrganizerCreateState extends State<OrganizerCreate> {
           "latitude": locationSearchBar.coordinates.latitude,
           "longitude": locationSearchBar.coordinates.longitude,
         };
+        createOrganizationInput['location'] = locationInput;
+
+        OrganizationCommand().createOrganization(createOrganizationInput);
+
+        
       
       // return createEventResponse;
     } on ApiException catch (e) {
@@ -78,10 +84,6 @@ class _OrganizerCreateState extends State<OrganizerCreate> {
         TextField(
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Name'),
-        ),
-        TextField(
-          controller: colorController,
-          decoration: new InputDecoration.collapsed(hintText: 'Color'),
         ),
         locationSearchBar,        
         

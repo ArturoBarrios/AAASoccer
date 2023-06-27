@@ -135,6 +135,7 @@ class ChatCommand extends BaseCommand {
 
       createTextResponse['success'] = true;
       createTextResponse['message'] = "Text Created";
+      createTextResponse['data'] = chat;
 
       return createTextResponse;
     } on ApiException catch (e) {

@@ -101,11 +101,16 @@ class _RequestsViewState extends State<RequestsView> {
   final Color color = Colors.grey.shade200;
   final Color selectedColor = Colors.orange.shade500;
 
+  void loadInitialData(){
+    requestTypeTapped(selectedRequestType);
+  }
+
   @override
   void initState() {
     print("init state");
     super.initState();
-    requestTypeTapped(selectedRequestType);
+    loadInitialData();
+    
   }
 
   @override

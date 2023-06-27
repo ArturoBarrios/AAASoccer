@@ -32,12 +32,20 @@ class _ConversationListState extends State<ConversationList> {
     // ignore: use_build_context_synchronously
     Navigator.push(context, MaterialPageRoute<void>(
       builder: (BuildContext context) {
-        return ChatView(index: widget.index,chatObject: widget.chatObject);
+        return ChatView(chatObject: widget.chatObject);
       },
     ));
-    // Navigator.push(context, MaterialPageRoute(builder: (context){
-    //    return ChatView(index: widget.index,chatObject: widget.chatObject);
-    // }));
+    
+  }
+
+  loadInitialData(){
+    print("loadInitialData ConversationList");
+  }
+
+  @override 
+  initState(){
+    super.initState();
+    print("ConversationList initState");
   }
 
   @override

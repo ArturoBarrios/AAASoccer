@@ -10,6 +10,8 @@ import '../../views/player/view.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/constants.dart';
 
+import '../profile.dart';
+
 class PlayerCard extends StatefulWidget {
   const PlayerCard(
       {Key? key, required this.playerObject, required this.playerDetails , required this.svgImage})
@@ -47,6 +49,21 @@ class _PlayerCard extends State<PlayerCard> {
     HomePageCommand().removePlayerToObjectSelection(widget.playerObject);
   }
 
+  goToPlayer() {
+    print("goToPlayer");
+    dynamic profileDetails = {
+      "user": widget.playerObject,
+      "isMine": false,
+    };
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Profile(
+                profileDetails: profileDetails,
+              )),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Player card: " + widget.playerObject.toString());
@@ -57,16 +74,17 @@ class _PlayerCard extends State<PlayerCard> {
     return Listener(
         child: GestureDetector(
       onTap: () {
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return PlayerView(userPlayerObject: widget.playerObject);
-          },
-          animationType: DialogTransitionType.slideFromBottom,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 1),
-        );
+        goToPlayer();
+        // showAnimatedDialog(
+        //   context: context,
+        //   barrierDismissible: true,
+        //   builder: (BuildContext context) {
+        //     return PlayerView(userPlayerObject: widget.playerObject);
+        //   },
+        //   animationType: DialogTransitionType.slideFromBottom,
+        //   curve: Curves.fastOutSlowIn,
+        //   duration: Duration(seconds: 1),
+        // );
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),

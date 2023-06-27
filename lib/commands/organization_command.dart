@@ -14,6 +14,24 @@ import 'package:url_launcher/url_launcher.dart';
 
 class OrganizationCommand extends BaseCommand {
 
+  Future<Map<String,dynamic>> createOrganization(dynamic organizationInput)async {
+    print("createOrganization()");
+    Map<String, dynamic> createOrganizationResp = {
+      "success": false, 
+      "message": "Default", 
+      "data": null
+    };
+
+    try{
+
+      return createOrganizationResp;
+    } catch (e){
+      print(e);
+      return createOrganizationResp;
+    }
+
+  }
+
 
 
 }
