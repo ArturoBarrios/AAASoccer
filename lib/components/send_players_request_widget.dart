@@ -203,7 +203,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     print("sendPlayersRequestWidget: " + userObjectDetails.toString());
     setupPlayerList();
     print("playersList: " + playerList.length.toString());
-    if(userObjectDetails['isMine']){
+    // if(userObjectDetails['isMine']){
       return Container(
           child: GestureDetector(
               onTap: () async {
@@ -238,11 +238,11 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
                 child: Center(child: Text("Send Players Request")),
               )));
 
-    }
-    else{
-      return sendOrganizerPlayerEventRequest(context);                
+    // }
+    // else{
+    //   return sendOrganizerPlayerEventRequest(context);                
 
-    }
+    // }
   }
   
   void loadInitialData(){

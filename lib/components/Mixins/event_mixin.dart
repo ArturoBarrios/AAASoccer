@@ -1291,8 +1291,7 @@ mixin EventMixin {
                   .map((item) => item['team'])
                   .toList();
               List<dynamic> secondaryList = [];
-
-              //  List<String> myTeamList = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+              
               Map<int, dynamic> result = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
