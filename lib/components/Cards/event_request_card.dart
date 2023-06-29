@@ -7,8 +7,9 @@ import '../../commands/game_command.dart';
 import '../../commands/requests_command.dart';
 import '../../views/game/view.dart';
 import '../../assets/icons/plus.svg';
+import '../Mixins/request_mixin.dart';
 
-class EventRequestCard extends StatefulWidget {
+class EventRequestCard extends StatefulWidget with RequestMixin {
   const EventRequestCard(
       {Key? key, required this.eventRequestObject, 
       required this.svgImage, 

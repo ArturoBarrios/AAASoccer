@@ -13,6 +13,7 @@ import 'create_team_payment.dart';
 import 'create_team_request.dart';
 import 'events_list_widget.dart';
 import 'get_chat_widget.dart';
+import 'get_join_team_widget.dart';
 import 'images_list_widget.dart';
 import 'location_search_bar.dart';
 import 'Mixins/images_mixin.dart';
@@ -112,9 +113,14 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
                 GetChatWidget(objectEventsDetails: widget.userObjectDetails, updatechatsList: updateChatsList),
                 ChatsListWidget(
                   chats: widget.userObjectDetails['team']['chats']['data']),
-                SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails),                
+                  
+                widget.userObjectDetails['isMine'] ?
+                SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails)
+                : Container(),    
+
                 SendMyEventsTeamRequestWidget(userObjectDetails: widget.userObjectDetails, addEventcallback: addEventCallback),                
-                widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
+                GetJoinTeamWidget(userObjectDetails: widget.userObjectDetails),
+                // widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
                 PlayerList(playersDetails: widget.userObjectDetails),
                 EventsListWidget(objectEventsDetails: widget.userObjectDetails,),
                 ImagesListWidget(details: widget.userObjectDetails),

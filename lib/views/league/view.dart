@@ -38,6 +38,7 @@ class _LeagueViewState extends State<LeagueView> {
   dynamic leagueEvents = [];
   dynamic userEventDetails;  
   dynamic teamListWidgetDetails;
+  dynamic leagueTableData = [];
 
   void updateChatsList(dynamic createdChat) {
     setState(() {
@@ -53,6 +54,39 @@ class _LeagueViewState extends State<LeagueView> {
     priceObject = userEventDetails['mainEvent']['price'];
   }
 
+  dynamic getLeagueTableData(){
+    print("getLeagueTableData()");
+    dynamic leagueTableDataResp = {};
+    leagueTableDataResp['data'] = [];
+    print("userEventDetails: "+ userEventDetails.toString());
+    int numberOfTeams = widget.league['numberOfTeams'];
+    print("numberOfTeams: "+ numberOfTeams.toString());
+    print("userEventDetails['mainEvent']['teams']: "+ userEventDetails['mainEvent']['teams'].toString());
+    leagueTableDataResp['numberOfTeamsInLeague'] = numberOfTeams;
+    for (var i = 0; i < userEventDetails['mainEvent']['teams']['data'].length; i++) {
+      dynamic team = userEventDetails['mainEvent']['teams']['data'][i];
+      dynamic teamData = {
+        'name': team['name'],
+        "points": (i + 1) * 3,
+        "gamesPlayed": 2,
+        "goalsFor": 10,
+        "goalAgainst": 6,
+        "wins": 2,
+        "losses": 0,
+        "draws": 0,
+      };
+      leagueTableDataResp['data'].add(teamData);
+    }
+    leagueTableDataResp["columns"] = [
+      "name", "points", "gamesPlayed", "goalsFor", "goalAgainst", "wins", "losses", "draws"      
+    ];
+    
+    print("leagueTableDataResp: "+ leagueTableDataResp.toString());
+
+    return leagueTableDataResp;
+  }
+
+
   Future<void> loadInitialData() async {
     print("loadInitialData() in LeagueView");
     await widget.setupTeamList();
@@ -65,8 +99,9 @@ class _LeagueViewState extends State<LeagueView> {
     widget.setupPlayerList();    
     teamListWidgetDetails =
         await widget.getTeamListWidgetDetails(getEventDetailsResp);
-    setState(() {
       userEventDetails = getEventDetailsResp;
+    leagueTableData = getLeagueTableData();
+    setState(() {
       _isLoading = false;
     });
     loadEventPayment();
@@ -187,7 +222,7 @@ class _LeagueViewState extends State<LeagueView> {
               // widget.sendPlayersRequestWidget(context, userEventDetails),
               // widget.sendTeamsRequestWidget(context, userEventDetails),
               LeagueTableWidget(
-                leagueData: [],
+                leagueData: leagueTableData,
               ),
             ]))
           : Container(
