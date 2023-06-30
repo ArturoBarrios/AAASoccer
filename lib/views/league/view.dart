@@ -54,37 +54,7 @@ class _LeagueViewState extends State<LeagueView> {
     priceObject = userEventDetails['mainEvent']['price'];
   }
 
-  dynamic getLeagueTableData(){
-    print("getLeagueTableData()");
-    dynamic leagueTableDataResp = {};
-    leagueTableDataResp['data'] = [];
-    print("userEventDetails: "+ userEventDetails.toString());
-    int numberOfTeams = widget.league['numberOfTeams'];
-    print("numberOfTeams: "+ numberOfTeams.toString());
-    print("userEventDetails['mainEvent']['teams']: "+ userEventDetails['mainEvent']['teams'].toString());
-    leagueTableDataResp['numberOfTeamsInLeague'] = numberOfTeams;
-    for (var i = 0; i < userEventDetails['mainEvent']['teams']['data'].length; i++) {
-      dynamic team = userEventDetails['mainEvent']['teams']['data'][i];
-      dynamic teamData = {
-        'name': team['name'],
-        "points": (i + 1) * 3,
-        "gamesPlayed": 2,
-        "goalsFor": 10,
-        "goalAgainst": 6,
-        "wins": 2,
-        "losses": 0,
-        "draws": 0,
-      };
-      leagueTableDataResp['data'].add(teamData);
-    }
-    leagueTableDataResp["columns"] = [
-      "name", "points", "gamesPlayed", "goalsFor", "goalAgainst", "wins", "losses", "draws"      
-    ];
-    
-    print("leagueTableDataResp: "+ leagueTableDataResp.toString());
-
-    return leagueTableDataResp;
-  }
+ 
 
 
   Future<void> loadInitialData() async {
@@ -94,13 +64,14 @@ class _LeagueViewState extends State<LeagueView> {
 
     dynamic getEventDetailsResp = await 
         EventCommand().getUserEventDetails(widget.league['events']['data']);
+    getEventDetailsResp['league'] = widget.league;
     widget.setupRequestWidgetData(getEventDetailsResp);
     leagueEvents = widget.league['events']['data'];
     widget.setupPlayerList();    
     teamListWidgetDetails =
         await widget.getTeamListWidgetDetails(getEventDetailsResp);
       userEventDetails = getEventDetailsResp;
-    leagueTableData = getLeagueTableData();
+    print("mainEvent type: "+ userEventDetails['mainEvent']['type']);    
     setState(() {
       _isLoading = false;
     });
@@ -221,9 +192,7 @@ class _LeagueViewState extends State<LeagueView> {
               
               // widget.sendPlayersRequestWidget(context, userEventDetails),
               // widget.sendTeamsRequestWidget(context, userEventDetails),
-              LeagueTableWidget(
-                leagueData: leagueTableData,
-              ),
+              
             ]))
           : Container(
               height: double.infinity,

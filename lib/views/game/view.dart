@@ -66,13 +66,13 @@ class _PickupViewState extends State<PickupView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in TeamView");
-    //wait for 3 seconds
-    await Future.delayed(const Duration(seconds: 2));
     dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.game['event']]);
     // widget.setupRequestWidgetData(getEventDetailsResp);
     widget.setupPlayerList();
     
     // locationSearchBar = new LocationSearchBar(initialLocation: {"latitude": getEventDetailsResp['mainEvent']['latitude'], })
+    //wait for 3 seconds
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       userEventDetails = getEventDetailsResp;
       _isLoading = false;

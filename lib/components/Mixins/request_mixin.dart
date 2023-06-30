@@ -8,23 +8,60 @@ import '../../commands/team_command.dart';
 import '../../commands/user_command.dart';
 import '../../constants.dart';
 import '../../views/game/view.dart';
+import '../../views/league/view.dart';
 import '../../views/team/view.dart';
+import '../../views/tournament/view.dart';
+import '../../views/training/view.dart';
+import '../../views/tryout/view.dart';
 import '../profile.dart';
 
 mixin RequestMixin {
 
-  goToGame(BuildContext context, dynamic event){
-    print("goToGame");        
-    dynamic eventToNavigateTo = event;
+  goToEvent(BuildContext context, dynamic event){
+    print("goToEvent");        
+    print("event: " + event.toString());
     //what event view should you go to? 
     //for training, tryout, league, tournament
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PickupView(game: event),
-      ),
-    );
-  
+    if(event['type']==Constants.PICKUP){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PickupView(game: event),
+        ),
+      );
+    }
+    else if(event['type']==Constants.TRYOUT){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TryoutView(tryout: event),
+        ),
+      );
+    }
+    else if(event['type']==Constants.TRAINING){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TrainingView(training: event),
+        ),
+      );
+    }
+    else if(event['type']==Constants.TOURNAMENT){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TournamentView(tournament: event),
+        ),
+      );
+    }
+    else if(event['type']==Constants.LEAGUE){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LeagueView(league: event),
+        ),
+      );
+    }      
 
   }
   goToTeam(BuildContext context, dynamic team){      

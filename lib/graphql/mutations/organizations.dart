@@ -1,17 +1,16 @@
-class LocationMutations {
+import '../fragments/organization_fragments.dart';
+
+class OrganizationMutations {
   String createOrganization(
-      Map<String, dynamic> locationInput) {
+      Map<String, dynamic> organizationInput) {
     String createLocation = """
       mutation {
         createLocation(data: {            
-              name: "${locationInput['name']}",
-              latitude: ${locationInput['latitude']},
-              longitude: ${locationInput['longitude']},                                    
+              name: "${organizationInput['name']}",
+              latitude: ${organizationInput['location']['latitude']},
+              longitude: ${organizationInput['location']['longitude']},                                    
           }) {
-            _id
-            name
-            latitude
-            longitude    
+            ${OrganizationFragments().fullOrganization()}}  
           }   
         }
         """;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../commands/event_command.dart';
+import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/headers.dart';
@@ -11,10 +12,9 @@ import '../../constants.dart';
 
 class TrainingView extends StatefulWidget with EventMixin {
   TrainingView(
-    {Key? key, required this.userEventDetails, required this.training })
+    {Key? key, required this.training })
     : super(key: key);
-
-    final dynamic userEventDetails;
+    
     final dynamic training;
 
   @override
@@ -30,13 +30,14 @@ class _TrainingViewState extends State<TrainingView> {
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
   
+  dynamic userEventDetails;
 
 
   bool _isLoading = true;
 
   void updateChatsList(dynamic createdChat){
     setState(() {
-      widget.userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
     });
   }
 
@@ -52,21 +53,30 @@ class _TrainingViewState extends State<TrainingView> {
   }
 
   
-
+  Future<void> loadInitialData() async{
+    print("loadInitialData");
+    loadEventPayment();    
+    widget.setupPlayerList();    
+    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.training['event']]);
+    print("getEventDetailsResp: " + getEventDetailsResp.toString());
+    //wait for 3 seconds
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      userEventDetails = getEventDetailsResp;
+      _isLoading = false;
+      print("setState finished");
+    });
+    print("loadInitialData finished");
+  }
 
   
 
   @override
   void initState() {
-    super.initState();
-
+    super.initState();  
     print("initState");
-    print("training: " + widget.training.toString());    
-    loadEventPayment();
-    // widget.loadEventInfo(widget.training['event']);
-    widget.setupPlayerList();
-    // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
-    _isLoading = false;
+    print("training: " + widget.training.toString());  
+    loadInitialData();          
   }
 
   @override
@@ -76,7 +86,19 @@ class _TrainingViewState extends State<TrainingView> {
     return Scaffold(
       appBar: Headers().getBackHeader(context, widget.training['event']['name']),
       body: _isLoading 
-      ? Text("Loading...")
+      ? Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.center,
+        child:
+            // BottomNav()//for times when user deleted in cognito but still signed into app
+            LoadingScreen(
+                currentDotColor: Colors.white,
+                defaultDotColor: Colors.black,
+                numDots: 10),
+      ),
+    )
       : ListView(
         padding: EdgeInsets.all(16),
         children: [
@@ -103,7 +125,7 @@ class _TrainingViewState extends State<TrainingView> {
 
           
           
-            !widget.userEventDetails['isMine'] ? 
+            !userEventDetails['isMine'] ? 
             Container(
                 height: 20,
                 child: ClipRRect(
@@ -140,7 +162,7 @@ class _TrainingViewState extends State<TrainingView> {
               ) :
               Container(),
 
-              UpdateViewForm(userObjectDetails: widget.userEventDetails)
+              UpdateViewForm(userObjectDetails: userEventDetails)
             //    Row(
             //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
             //       children: [

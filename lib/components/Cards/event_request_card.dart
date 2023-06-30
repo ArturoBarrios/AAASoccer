@@ -46,9 +46,23 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
+
+
+
 class _EventRequestCard extends State<EventRequestCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
+
+  void goToEvent(BuildContext context){
+  dynamic event = widget.eventRequestObject["event"];  
+  widget.goToEvent(context, event);
+}
+
+void goToPlayer(BuildContext context){
+
+  dynamic senderUser = widget.eventRequestObject['sender'];
+  widget.goToPlayer(context, senderUser);
+}
 
   final ButtonStyle style = ElevatedButton.styleFrom(
       primary: Colors.orange.shade500,

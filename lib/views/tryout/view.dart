@@ -3,6 +3,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/components/price_widget.dart';
 
 import '../../commands/event_command.dart';
+import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/headers.dart';
 import '../../components/my_map_page.dart';
@@ -11,10 +12,9 @@ import '../../constants.dart';
 
 class TryoutView extends StatefulWidget with EventMixin {
    TryoutView(
-    { Key? key, required this.userEventDetails, required this.tryout })
+    { Key? key, required this.tryout })
     : super(key: key);
-
-    final dynamic userEventDetails;
+    
     final dynamic tryout;
 
   @override
@@ -29,14 +29,16 @@ class _TryoutViewState extends State<TryoutView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
+
+  dynamic userEventDetails;
   
 
 
-  bool _isLoading = false;
+  bool _isLoading = true;
 
   void updateChatsList(dynamic createdChat){
     setState(() {
-      widget.userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
     });
   }
 
@@ -62,17 +64,31 @@ class _TryoutViewState extends State<TryoutView> {
   ];  
   List<String> selectedRequestTypeObjects = [];
 
+
+  Future<void> loadInitialData() async{
+    print("loadInitialData");
+    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.tryout['event']]);
+    widget.setupPlayerList();    
+    print("getEventDetailsResp: " + getEventDetailsResp.toString());
+    //wait for 3 seconds
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      userEventDetails = getEventDetailsResp;
+      _isLoading = false;
+      print("setState finished");
+    });
+    loadEventPayment();    
+    print("loadInitialData finished");
+  }
+
+
   @override
   void initState() {
     super.initState();
-
     print("initState");
     print("training: " + widget.tryout.toString());    
-    loadEventPayment();
-    // widget.loadEventInfo(widget.tryout['event']);
-    widget.setupPlayerList();
-    // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
-    _isLoading = false;
+    loadInitialData();
+        
   }
 
   @override
@@ -80,11 +96,23 @@ class _TryoutViewState extends State<TryoutView> {
     return Scaffold(
       appBar: Headers().getBackHeader(context, widget.tryout['event']['name']),
       body: _isLoading 
-      ? Text("Loading...")
+      ? Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.center,
+        child:
+            // BottomNav()//for times when user deleted in cognito but still signed into app
+            LoadingScreen(
+                currentDotColor: Colors.white,
+                defaultDotColor: Colors.black,
+                numDots: 10),
+      ),
+    )
       : ListView(
         padding: EdgeInsets.all(16),
         children: [          
-            !widget.userEventDetails['isMine'] ? 
+            !userEventDetails['isMine'] ? 
             Container(
                 height: 20,
                 child: ClipRRect(
@@ -120,7 +148,7 @@ class _TryoutViewState extends State<TryoutView> {
                 ),
               ) :
               Container(),
-              UpdateViewForm(userObjectDetails: widget.userEventDetails)
+              UpdateViewForm(userObjectDetails: userEventDetails)
             //    Row(
             //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
             //       children: [
