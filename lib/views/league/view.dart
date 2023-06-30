@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:provider/provider.dart';
 
+import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
@@ -13,6 +15,7 @@ import '../../components/players_list_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
+import '../../models/app_model.dart';
 import '../tournament/view.dart';
 
 class LeagueView extends StatefulWidget with EventMixin, PaymentMixin {
@@ -35,13 +38,13 @@ class _LeagueViewState extends State<LeagueView> {
 
   bool _isLoading = true;
   dynamic priceObject;
-  dynamic leagueEvents = [];
-  dynamic userEventDetails;  
+  dynamic leagueEvents = [];  
   dynamic teamListWidgetDetails;
   dynamic leagueTableData = [];
 
   void updateChatsList(dynamic createdChat) {
     setState(() {
+      dynamic userEventDetails = BaseCommand().getUserEventDetailsModel();
       userEventDetails['mainEvent']['chats']['data'].add(createdChat);
     });
   }
@@ -51,6 +54,7 @@ class _LeagueViewState extends State<LeagueView> {
   }
 
   void loadEventPayment() {
+    dynamic userEventDetails = BaseCommand().getUserEventDetailsModel();
     priceObject = userEventDetails['mainEvent']['price'];
   }
 
@@ -70,8 +74,9 @@ class _LeagueViewState extends State<LeagueView> {
     widget.setupPlayerList();    
     teamListWidgetDetails =
         await widget.getTeamListWidgetDetails(getEventDetailsResp);
-      userEventDetails = getEventDetailsResp;
+    dynamic userEventDetails = getEventDetailsResp;
     print("mainEvent type: "+ userEventDetails['mainEvent']['type']);    
+    BaseCommand().updateUserEventDetailsModel(userEventDetails);
     setState(() {
       _isLoading = false;
     });
@@ -90,6 +95,8 @@ class _LeagueViewState extends State<LeagueView> {
 
   @override
   Widget build(BuildContext context) {
+    dynamic userEventDetails = context.watch<AppModel>().userEventDetails;
+
     return Scaffold(
       appBar: Headers().getBackHeader(context, "League"),
       body: !_isLoading

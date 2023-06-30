@@ -22,7 +22,7 @@ class OrganizationCommand extends BaseCommand {
       "message": "Default", 
       "data": null
     };
-
+    
     try{
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),

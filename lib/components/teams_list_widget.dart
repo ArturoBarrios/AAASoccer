@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/commands/base_command.dart';
 import '../commands/event_command.dart';
 import '../views/team/view.dart';
 import 'Loading/loading_screen.dart';
 
 class TeamsListWidget extends StatefulWidget {
-  final Map<String, dynamic> teamsDetails;  
+  final Map<String, dynamic> userObjectDetails;  
   // final void Function(dynamic) addTeam; // Optional function input parameter
 
-  TeamsListWidget({required this.teamsDetails}); // Include required modifier
+  TeamsListWidget({required this.userObjectDetails}); // Include required modifier
   
   @override
   _TeamsListWidgetState createState() => _TeamsListWidgetState();
@@ -22,29 +23,32 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
     print("team: " + team.toString());
     dynamic removeTeamFromEventInput = {
       'team_id': team['_id'],
-      'event_id': widget.teamsDetails['mainEvent']['_id'],
+      'event_id': widget.userObjectDetails['mainEvent']['_id'],
     };
     dynamic removeTeamFromEventResp =
         await EventCommand().removeTeamFromEvent(removeTeamFromEventInput);
     print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
     if (removeTeamFromEventResp['success']) {
-      widget.teamsDetails['teams'].forEach((teamItem) {
-        if (teamItem['_id'] == team['_id']) {
+      print("userObjectDetailsCopy['teams']: "+ widget.userObjectDetails['teams'].toString());
+      // dynamic userObjectDetailsCopy  = Map.from(widget.userObjectDetails);
+      // userObjectDetailsCopy['teams'].forEach((teamItem) {
+      //   if (teamItem['_id'] == team['_id']) {
           setState(() {
-            widget.teamsDetails['teams'].remove(teamItem);
+            widget.userObjectDetails['teams'].removeWhere((teamItem) => teamItem['_id'] == team['_id']);
           });
-        }
-      });
+      //   }
+      // });
+      BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
     }
   }
 
   void loadInitialData(){
     print("loadInitialData");
-    if(widget.teamsDetails['teams'] != null){
-      teams = widget.teamsDetails['teams'];
+    if(widget.userObjectDetails['teams'] != null){
+      teams = widget.userObjectDetails['teams'];
     }
     else{
-      List<dynamic> teamUserParticipants = widget.teamsDetails['teamUserParticipants'];
+      List<dynamic> teamUserParticipants = widget.userObjectDetails['teamUserParticipants'];
       teamUserParticipants.forEach((teamUserParticipant) {
         teams.add(teamUserParticipant['team']);
       });

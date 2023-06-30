@@ -211,7 +211,7 @@ return
                 ),
 
                 // History(historyDetails: []),
-                TeamsListWidget(teamsDetails: teamListDetails),
+                TeamsListWidget(userObjectDetails: teamListDetails),
                 EventsListWidget(objectEventsDetails: eventListDetails),
                 ImagesListWidget(details: {"for": Constants.USER}),
 

@@ -33,10 +33,6 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   } 
     
-  
-  
-  
-
   Map<String, dynamic> _currentUser = {};
   Map<String, dynamic> get currentUser => _currentUser;
   set currentUser(Map<String, dynamic> currentUser) {
@@ -130,4 +126,13 @@ class AppModel extends ChangeNotifier {
     _myArchivedEvents = myArchivedEvents;
     notifyListeners();
   }
+  
+  dynamic _userEventDetails = [];
+  dynamic get userEventDetails => _userEventDetails;
+  set userEventDetails(dynamic userEventDetails) {
+    print("in AppModel() set userEventDetails");
+    _userEventDetails = userEventDetails;
+    notifyListeners();
+  }
+  
 }

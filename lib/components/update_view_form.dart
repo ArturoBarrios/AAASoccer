@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/components/send_players_request_widget.dart';
 import 'package:soccermadeeasy/components/send_teams_request_widget.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
 
+import '../commands/base_command.dart';
 import '../constants.dart';
 import '../views/game/update.dart';
 
@@ -45,12 +46,14 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
   void updateChatsList(dynamic createdChat) {
     setState(() {
       widget.userObjectDetails['mainEvent']['chats']['data'].add(createdChat);
+      BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
     });
   }
 
   void addTeamCallback(dynamic team) {
     setState(() {
       widget.userObjectDetails['mainEvent']['teams']['data'].add(team);
+      BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
     });
   }
 
@@ -111,7 +114,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
             )
           : Container(),
       PlayerList(playersDetails: widget.userObjectDetails),
-      TeamsListWidget(teamsDetails: widget.userObjectDetails),
+      TeamsListWidget(userObjectDetails: widget.userObjectDetails),
       SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails),
       SendTeamsRequestWidget(
           userObjectDetails: widget.userObjectDetails,

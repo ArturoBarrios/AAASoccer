@@ -517,10 +517,7 @@ class _Home extends State<Home> {
 
     context.select<AppModel, List<dynamic>>((value) => value.teams);
 
-    // HomePageModel().enabledSelections2.forEach((k, v) => {
-    //       context.select<HomePageModel, bool>(
-    //           (value) => value.enabledSelections2[k]['enabled'])
-        // });
+    
 
     print("selectedKey in build: " + selectedKey);
     print("selectedObjects length in build: " + selectedObjects.length.toString());
