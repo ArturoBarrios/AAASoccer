@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../models/app_model.dart';
 import 'Loading/loading_screen.dart';
 
 class LeagueTableWidget extends StatefulWidget {
@@ -73,7 +75,7 @@ class _LeagueTableWidgetState extends State<LeagueTableWidget> {
   }
 
   void loadInitialData() {
-    print("loadInitialData");
+    print("loadInitialData LeagueTableWidget()");
 
     setState(() {
       leagueTableData = getLeagueTableData();
@@ -84,11 +86,14 @@ class _LeagueTableWidgetState extends State<LeagueTableWidget> {
   @override
   initState() {
     super.initState();
-    loadInitialData();
+    // loadInitialData();
   }
 
   @override
   Widget build(BuildContext context) {
+    dynamic userEventDetails = context.watch<AppModel>().userEventDetails;
+    loadInitialData();
+
     return _isLoading
         ? Container(
             height: double.infinity,

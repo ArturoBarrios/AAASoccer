@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
@@ -24,6 +25,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
+import '../../models/app_model.dart';
 
 class PickupView extends StatefulWidget with EventMixin, PaymentMixin {
   PickupView({Key? key, required this.game})
@@ -48,7 +50,7 @@ class _PickupViewState extends State<PickupView> {
   bool _isLoading = true;
   late LatLng _center = LatLng(45.521563, -122.677433);
   dynamic priceObject;
-  dynamic userEventDetails;
+  
   
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
@@ -66,18 +68,15 @@ class _PickupViewState extends State<PickupView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in TeamView");
-    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.game['event']]);
-    // widget.setupRequestWidgetData(getEventDetailsResp);
-    widget.setupPlayerList();
-    
-    // locationSearchBar = new LocationSearchBar(initialLocation: {"latitude": getEventDetailsResp['mainEvent']['latitude'], })
+    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.game['event']]);    
+    widget.setupPlayerList();    
     //wait for 3 seconds
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));    
+    dynamic userEventDetails = getEventDetailsResp;
+    BaseCommand().updateUserEventDetailsModel(userEventDetails);
     setState(() {
-      userEventDetails = getEventDetailsResp;
       _isLoading = false;
-    });
-      print("userEventDetails['teams']: " + userEventDetails['teams'].toString());
+    });      
       print("loadInitialData() finished!");
       print("loadEventPayment() in loadInitialData()");
       loadEventPayment();
@@ -89,7 +88,9 @@ class _PickupViewState extends State<PickupView> {
     print("updateChatsList");
     print("createdChat: " + createdChat.toString());
     setState(() {
+      dynamic userEventDetails = BaseCommand().getUserEventDetailsModel();
       userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+      BaseCommand().updateUserEventDetailsModel(userEventDetails);
     });
   }
 
@@ -111,6 +112,9 @@ class _PickupViewState extends State<PickupView> {
   Widget build(BuildContext context) {
     print("build()");
     print("game: " + widget.game.toString());
+
+    dynamic userEventDetails = context.select<AppModel, dynamic>((value) => value.userEventDetails);
+
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: Headers().getBackHeader(context, widget.game['event']['name']),

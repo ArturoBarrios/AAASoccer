@@ -128,7 +128,7 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
   Widget build(BuildContext context) {
     print("build()");
     return _isLoading
-        ? Text("Loading...")
+        ? Text("Loading Images...")
         : Center(
             child: Column(
               children: [

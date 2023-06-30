@@ -64,6 +64,14 @@ class BaseCommand {
   //   appModel.twilioClient = twilioFlutterClient;
   // }
 
+  void updateUserEventDetailsModel(dynamic userEventDetails){
+    appModel.userEventDetails = userEventDetails;
+    // appModel.updateUserEventDetails(userEventDetails);
+  }
+  dynamic getUserEventDetailsModel(){
+    return appModel.userEventDetails;
+  }
+
   getHomePageModel() => homePageModel;
   //calculate distance between two points
   dynamic getObjectsNearMe(Map<String,dynamic> myLocation, Map<String,dynamic> otherLocation, dynamic objects){
