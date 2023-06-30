@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../graphql/mutations/organizations.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../models/Location.dart';
@@ -23,6 +24,24 @@ class OrganizationCommand extends BaseCommand {
     };
 
     try{
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': OrganizationMutations().createOrganization(organizationInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      Map<String, dynamic> createOrganization =
+            jsonDecode(response.body)['data']['createOrganization'];
+      createOrganizationResp["success"] = true;
+      createOrganizationResp["data"] = createOrganization;
 
       return createOrganizationResp;
     } catch (e){

@@ -174,7 +174,7 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
                   ),
                 ),
                 Container(
-                  height: 500, // specify the height as per your requirement
+                  height: 300, // specify the height as per your requirement
                   child: GridView.builder(
                     itemCount: images.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

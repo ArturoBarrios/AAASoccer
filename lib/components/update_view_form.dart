@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/components/send_players_request_widget.dart';
 import 'package:soccermadeeasy/components/send_teams_request_widget.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
 
+import '../constants.dart';
 import '../views/game/update.dart';
 
 import 'Mixins/event_mixin.dart';
@@ -15,9 +16,9 @@ import 'create_team_payment.dart';
 import 'create_team_request.dart';
 import 'event_date_widget.dart';
 import 'get_chat_widget.dart';
+import 'league_table_widget.dart';
 import 'location_search_bar.dart';
 import 'images_list_widget.dart';
-
 
 class UpdateViewForm extends StatefulWidget with EventMixin {
   final dynamic userObjectDetails;
@@ -47,11 +48,10 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     });
   }
 
-  void addTeamCallback(dynamic team){
+  void addTeamCallback(dynamic team) {
     setState(() {
       widget.userObjectDetails['mainEvent']['teams']['data'].add(team);
     });
-
   }
 
   void loadInitialData() {
@@ -83,7 +83,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
         child: Center(
             child: Expanded(
                 child: Column(children: [
-                  EventDateWidget(eventDetails: widget.userObjectDetails),
+      EventDateWidget(eventDetails: widget.userObjectDetails),
       Container(
         margin: const EdgeInsets.all(10.0),
         color: Colors.amber[600],
@@ -91,7 +91,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
             (MediaQuery.of(context).size.width * .1), //10% padding
         height: 200.0,
         child:
-        
+
             //map
             MyMapPage(
                 latitude: widget.userObjectDetails['mainEvent']['location']
@@ -105,11 +105,20 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
                   ['data'][0]['name'])
           : Text(widget.userObjectDetails['mainEvent']['location']['data'][0]
               ['name']),
-      
-
+      widget.userObjectDetails['mainEvent']['type'].toString() == "LEAGUE"
+          ? LeagueTableWidget(
+              userEventDetails: widget.userObjectDetails,
+            )
+          : Container(),
+      PlayerList(playersDetails: widget.userObjectDetails),
+      TeamsListWidget(teamsDetails: widget.userObjectDetails),
       SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails),
-      SendTeamsRequestWidget(userObjectDetails: widget.userObjectDetails, addTeamCallback: addTeamCallback),
-      GetChatWidget(objectEventsDetails: widget.userObjectDetails, updatechatsList: updateChatsList),      
+      SendTeamsRequestWidget(
+          userObjectDetails: widget.userObjectDetails,
+          addTeamCallback: addTeamCallback),
+      GetChatWidget(
+          objectEventsDetails: widget.userObjectDetails,
+          updatechatsList: updateChatsList),
       ChatsListWidget(
           chats: widget.userObjectDetails['mainEvent']['chats']['data']),
 
@@ -122,8 +131,6 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
       // if (widget.userObjectDetails['isMine'])
       createTeamPaymentWidget,
 
-      PlayerList(playersDetails: widget.userObjectDetails),
-      TeamsListWidget(teamsDetails: widget.userObjectDetails),
 
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,7 +151,6 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
         ],
       ),
       ImagesListWidget(details: widget.userObjectDetails),
-      
     ]))));
   }
 }
