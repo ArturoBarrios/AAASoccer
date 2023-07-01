@@ -46,12 +46,17 @@ class _BottomTextBoxState extends State<BottomTextBox> {
     };
     Map<String, dynamic> sendMessageResp =
         await ChatCommand().createText(messageInput);
-    print("createTextResp: $sendMessageResp");
     if(sendMessageResp['success']){
-      setState(() {
-        messageController.text = "";
-        // widget.chatObject = sendMessageResp['data'];
-      });
+      dynamic chat = sendMessageResp['data'];
+      ChatCommand().updateChatModel(chat);
+      print("createTextResp: $sendMessageResp");
+      if(sendMessageResp['success']){
+        setState(() {
+          messageController.text = "";
+          // widget.chatObject = sendMessageResp['data'];
+        });
+
+    }
 
     }
   }

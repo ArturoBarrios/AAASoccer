@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../commands/chat_command.dart';
+import '../../components/Loading/loading_screen.dart';
 import '../../components/profile.dart';
 import '../../components/footers.dart';
 import '../../components/headers.dart';
@@ -28,36 +30,58 @@ class _ChatsViewState extends State<ChatsView> {
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
 
-  bool _isLoading = false;
+  bool _isLoading = true;
   late ScrollController _selectEventController = ScrollController();
 
   void goBack() {
     Navigator.pop(context);
   }
 
-  void _firstLoad() async {
+  Future<void> loadInitialData() async {
     print("first load");
     //get user chats    
-
-    await UserCommand().findMyUserById();
-
+    dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
+    
+   
+    ChatCommand().setupChatModels();
+    
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   void initState() {
     print("chat/view.dart init state");
     super.initState();
-    _firstLoad();
+    loadInitialData();
+    
   }
 
   @override
   Widget build(BuildContext context) {
     print("build() in chats view.dart page");
-    List chats = context.select<UserModel, List>((value) => value.chats);
-    // print("chats: "+ chats.toString());
+    List chats = context.watch<ChatPageModel>().chats;
+    
+    
+    print("chats: "+ chats.toString());
     // int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
     return Scaffold(
-      body: SafeArea(
+      body: 
+      _isLoading ? Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.center,
+        child:
+            // BottomNav()//for times when user deleted in cognito but still signed into app
+            LoadingScreen(
+                currentDotColor: Colors.white,
+                defaultDotColor: Colors.black,
+                numDots: 10),
+      ),
+    ) :
+      SafeArea(
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -77,12 +101,7 @@ class _ChatsViewState extends State<ChatsView> {
                  String messageContent = messages.length>0 ? messages[(messages.length)-1]['textObject']['content'] : "No Messages Yet";
                 return ConversationList(
                   index: index,
-                  chatObject: chats[index],
-                  name: chats[index]['name'],
-                  messageText: messageContent,
-                  imageUrl: "imageUrl",//chats[index].imageURL,
-                  time: "time",//chats[index].time,
-                  isMessageRead: (index == 0 || index == 3) ? true : false,
+                  chatObject: chats[index],                  
                 );
               },
             )),

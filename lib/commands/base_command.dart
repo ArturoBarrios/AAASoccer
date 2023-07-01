@@ -33,6 +33,7 @@ import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 
+import 'chat_command.dart';
 import 'home_page_command.dart';
 
 
@@ -208,7 +209,7 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
     };
 
     try{
-      await ImagesCommand().getAndSetUserProfileImage();      
+      // await ImagesCommand().getAndSetUserProfileImage();      
 
       return loadUserImagesResponse;
     } catch(e){
@@ -371,6 +372,8 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
           await EventCommand().setupEventsFromCurrentUser(appModel.currentUser);
           await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
           HomePageCommand().getSelectedObjects();
+          ImagesCommand().setUserProfileImage();
+          
           //setup events(league, tournament, tryout, training)
           //,teams, players near me data. 
           //get location and update user location

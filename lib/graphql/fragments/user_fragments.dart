@@ -16,6 +16,7 @@ class UserFragments{
               birthdate              
               gender
               OSPID
+              mainImageKey
               images{
                 data{
                   ${ImageFragments().fullImage()}

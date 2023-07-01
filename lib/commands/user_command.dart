@@ -563,7 +563,7 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
-      print("appModel.currentUser: " + appModel.currentUser.toString());
+      // print("appModel.currentUser: " + appModel.currentUser.toString());
 
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -579,7 +579,7 @@ class UserCommand extends BaseCommand {
       print("response: ");
       print(jsonDecode(response.body));
       final result = jsonDecode(response.body)['data']['findUserByID'];
-      appModel.currentUser = result;
+      // appModel.currentUser = result;
       // if (result != null) {
       getUserResp["success"] = true;
       getUserResp["message"] = "user found";
