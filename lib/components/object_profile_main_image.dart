@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:soccermadeeasy/constants.dart';
 
 import '../commands/images_command.dart';
+import '../commands/user_command.dart';
 import '../models/user_model.dart';
 import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/images_mixin.dart';
@@ -21,8 +22,15 @@ class ObjectProfileMainImage extends StatefulWidget with ImagesMixin {
 class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
   
 
-  addImageToProfile(dynamic imageAdded){
+  Future<void> addImageToProfile(dynamic imageAdded) async{
     //do something
+    //get the user
+    dynamic user = UserCommand().getAppModelUser();
+    dynamic addImageToUserProfileResp = await ImagesCommand().addImageToUserProfile(user ,imageAdded);
+    if(addImageToUserProfileResp['success']){      
+      Map<String,dynamic> setUserProfileImageResp = await ImagesCommand().setUserProfileImage();
+
+    }
 
   }
 
@@ -48,6 +56,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
           if (result.isNotEmpty) {
             print("result: " + result.toString());
             widget.chooseImage({"for": Constants.USER},result, primaryList, secondaryList, addImageToProfile);
+
           }
         },
         child: Hero(

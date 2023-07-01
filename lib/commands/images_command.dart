@@ -1,5 +1,6 @@
 import 'package:soccermadeeasy/constants.dart';
 
+import '../graphql/mutations/users.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:http/http.dart' as http;
@@ -89,7 +90,7 @@ class ImagesCommand extends BaseCommand {
 
   }
 
-  Future<Map<String, dynamic>> getAndSetUserProfileImage() async {
+  Future<Map<String, dynamic>> setUserProfileImage() async {
     print("getUserProfileImage()");
     Map<String, dynamic> getUserProfileImageResp = {
       "success": false,
@@ -97,26 +98,21 @@ class ImagesCommand extends BaseCommand {
       "data": null
     };
     try {
-      String profileImageUrl = "";
-      String key = "";
-      print("appModel.currentUser['images']['data]: " +
-          appModel.currentUser['images'].toString());
-      appModel.currentUser['images']['data'].forEach((image) {
-        if (image['isMainImage']) {
-          print("isMainImage: " + image.toString());
-          key = image['key'];
-        }
-      });
-      if (key != "") {
-        Map<String, dynamic> getImageResp = await getImage(key);
+      String profileImageUrl = "";      
+            
+      
+        Map<String, dynamic> getImageResp = await getImage(appModel.currentUser['mainImageKey']);
         print("getImageResp: " + getImageResp.toString());
         if (getImageResp['success']) {
           profileImageUrl = getImageResp['data']['signedUrl'];
           //set presigned cloudfront image url
           userModel.profileImageUrl = profileImageUrl;
           print("profileImageUrl: " + profileImageUrl.toString());
+          getUserProfileImageResp['success'] = true;
+          getUserProfileImageResp['message'] = "Profile Image Set";
+          getUserProfileImageResp['data'] = profileImageUrl;
         }
-      }
+      
       return getUserProfileImageResp;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
@@ -224,15 +220,55 @@ class ImagesCommand extends BaseCommand {
   void addImageToUser(dynamic imageToAdd){
     appModel.currentUser['images']['data'].add(imageToAdd);
   }
-  // void addImageToTeam(dynamic imageToAdd, dynamic team){
-  //   appModel.currentUser['images']['data'].add(imageToAdd);
-  // }
-  // void addImageToEvent(dynamic imageToAdd){
-  //   appModel.currentUser['images']['data'].add(imageToAdd);
-  // }
+ 
+  Future<Map<String,dynamic>> addImageToUserProfile(dynamic userInput, dynamic imageAdded)async{
+      print("addImageToProfile");
+      print("imageAdded: " + imageAdded.toString());
+      Map<String,dynamic> addImageToProfileResponse = {
+        "success": false,
+        "message": "Default Error",
+        "data": null
+      };
+      try{
+        Map<String, dynamic> getImageResp = await getImage(imageAdded['key']);
+        print("getImageResp: " + getImageResp.toString());
+        userInput['mainImageKey'] = imageAdded['key'];
+        http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': UserMutations().updateUserProfileImage(userInput),
+          }),
+        );
 
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      if(response.statusCode == 200){
+        Map<String, dynamic> user =
+            jsonDecode(response.body)['data']['updateUser'];
+        appModel.currentUser['mainImageKey'] = imageAdded['key'];
+        addImageToProfileResponse["success"] = true;
+        addImageToProfileResponse["message"] = "Image Added";
+        addImageToProfileResponse["data"] = user;
+        
+      }
+
+      
+
+      return addImageToProfileResponse;
+
+        
+      } catch(e){
+        print("addImageToProfile error: " + e.toString());
+        return addImageToProfileResponse;
+      }
+      
+    }
   
-
   Future<Map<String, dynamic>> storeImageInDatabaseForUser(
       Map<String, dynamic> imageInput) async {
     print("storeImage()");

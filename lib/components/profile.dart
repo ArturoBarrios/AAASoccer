@@ -45,31 +45,44 @@ class _ProfileState extends State<Profile> {
   Future<void> loadInitialData() async {
     print("loadInitialData Profile");
     //get current user
+    String imageUrl = "";
     
     if(widget.profileDetails['isMine']){
-
+      imageUrl = UserCommand().getProfileImage();
+      currentUser = UserCommand().getAppModelUser();
     }
+    else{
+      Map<String,dynamic> findMyUserByIdResp = await UserCommand().findUserById(widget.profileDetails['user']);    
+      print("findMyUserByIdResp: " + findMyUserByIdResp.toString());
+      if(findMyUserByIdResp['success']){
+        currentUser = findMyUserByIdResp['data'];
+        String key = currentUser['mainImageKey'];
+        print("key: " + key);
+        Map<String, dynamic> getUserProfileImageResp = await UserCommand().getUserProfileImage(currentUser);
+        if(getUserProfileImageResp['success']){
+          imageUrl = getUserProfileImageResp['data'];
+        }
+        
+      }
+    }
+
+    print("loadInitialData Profile imageUrl: " + imageUrl);
     
 
-    String imageUrl = UserCommand().getProfileImage();
     objectImageInput = {
       "imageUrl": imageUrl,
       "containerType": Constants.IMAGECIRCLE
     };
+        
+    print("currentUser eventUserParticipants: " + currentUser['eventUserParticipants'].toString());
+    eventListDetails['eventUserParticipants'] = currentUser['eventUserParticipants']['data'];
+    teamListDetails['teamUserParticipants'] = currentUser['teamUserParticipants']['data'];
+    print("eventListDetails: " + eventListDetails.toString());
+    print("teamListDetails: " + teamListDetails.toString());
+    setState(() {
+      _isLoading = false;
+    });
     
-    Map<String,dynamic> findMyUserByIdResp = await UserCommand().findUserById(widget.profileDetails['user']);    
-    print("findMyUserByIdResp: " + findMyUserByIdResp.toString());
-    if(findMyUserByIdResp['success']){
-      currentUser = findMyUserByIdResp['data'];
-      print("currentUser eventUserParticipants: " + currentUser['eventUserParticipants'].toString());
-      eventListDetails['eventUserParticipants'] = currentUser['eventUserParticipants']['data'];
-      teamListDetails['teamUserParticipants'] = currentUser['teamUserParticipants']['data'];
-      print("eventListDetails: " + eventListDetails.toString());
-      print("teamListDetails: " + teamListDetails.toString());
-      setState(() {
-        _isLoading = false;
-      });
-    }
 
     
   }

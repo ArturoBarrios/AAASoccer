@@ -168,6 +168,7 @@ type User  {
   messagesDirectedForMe: [Message] @relation(name: "messages_for")
   onboarded: Boolean @default(value: false)
   ratings: [Rating] @relation
+  mainImageKey: String
 }
 
 
@@ -485,6 +486,7 @@ type Chat  {
   archived: Boolean @default(value: false)
   isPrivate: Boolean
   IsMainChat: Boolean
+  imageUrl: String
 }
 
 type AppSubscription   {

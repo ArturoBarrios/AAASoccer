@@ -47,14 +47,28 @@ class _ChatViewState extends State<ChatView> {
     Navigator.pop(context);
   }
 
-  Future<void> _firstLoad() async {
+  void scrollToEnd() {
+  if (scrollController.hasClients) {
+    scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
+  }
+}
+
+  Future<void> loadInitialData() async {
     print("first load for chat data");
     dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
     print("findMyUserByIdResp: $findMyUserByIdResp");
     dynamic newUser = findMyUserByIdResp['data'];
+    // call this function whenever new data is loaded
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollToEnd();
+      });
+
     setState(() {
       user = newUser;
-
       _isLoading = false;
     });
   }
@@ -64,7 +78,7 @@ class _ChatViewState extends State<ChatView> {
     print("chats/chat/view.dart init state");
     print("widget.chatObject: ${widget.chatObject}");
     super.initState();
-    _firstLoad();
+    loadInitialData();
   }
 
   @override
@@ -76,59 +90,62 @@ class _ChatViewState extends State<ChatView> {
     //     context.select<ChatPageModel, int>((value) => value.messagesLength);
     print("build() messages: $messages");
     return Scaffold(
-      appBar: Headers().getChatDetailHeader(context, widget.chatObject),
-      body: _isLoading
-          ? Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: Align(
-                  alignment: Alignment.center,
-                  child:
-                      // BottomNav()//for times when user deleted in cognito but still signed into app
-                      LoadingScreen(
-                          currentDotColor: Colors.white,
-                          defaultDotColor: Colors.black,
-                          numDots: 10)))
-          : Stack(children: <Widget>[
-              // Text("messagesLength: $messagesLength"),
-              Expanded(
-                  child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: messages.length,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemBuilder: (_, index) {
-                        return Container(
-                            padding: EdgeInsets.only(
-                                left: 14, right: 14, top: 10, bottom: 10),
-                            child: Align(
-                              alignment: (messages[index]['sender']['_id'] !=
+  appBar: Headers().getChatDetailHeader(context, widget.chatObject),
+  body: _isLoading
+      ? Container(
+          height: double.infinity,
+          width: double.infinity,
+          child: Align(
+              alignment: Alignment.center,
+              child:
+                  // BottomNav()//for times when user deleted in cognito but still signed into app
+                  LoadingScreen(
+                      currentDotColor: Colors.white,
+                      defaultDotColor: Colors.black,
+                      numDots: 10)))
+      : Column(
+          children: <Widget>[
+            // Text("messagesLength: $messagesLength"),
+            Expanded(
+              child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: messages.length,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  physics: AlwaysScrollableScrollPhysics(),
+                  itemBuilder: (_, index) {
+                    return Container(
+                        padding: EdgeInsets.only(
+                            left: 14, right: 14, top: 10, bottom: 10),
+                        child: Align(
+                          alignment: (messages[index]['sender']['_id'] !=
+                                  user['_id']
+                              ? Alignment.topLeft
+                              : Alignment.topRight),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: (messages[index]['sender']['_id'] !=
                                       user['_id']
-                                  ? Alignment.topLeft
-                                  : Alignment.topRight),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: (messages[index]['sender']['_id'] !=
-                                          user['_id']
-                                      ? Colors.grey.shade200
-                                      : Colors.blue[200]),
-                                ),
-                                padding: EdgeInsets.all(16),
-                                child: Text(
-                                  messages[index]['textObject']['content'],
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                // child: Text(chatUsers[index]['messageContent'], style: TextStyle(fontSize: 15),),
-                              ),
-                            ));
-                      })),
-              BottomTextBox(
-                chatObject: widget.chatObject,
-                
-              ),
-            ]),
-    );
+                                  ? Colors.grey.shade200
+                                  : Colors.blue[200]),
+                            ),
+                            padding: EdgeInsets.all(16),
+                            child: Text(
+                              messages[index]['textObject']['content'],
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            // child: Text(chatUsers[index]['messageContent'], style: TextStyle(fontSize: 15),),
+                          ),
+                        ));
+                  }),
+            ),
+            BottomTextBox(
+              chatObject: widget.chatObject,
+            ),
+          ],
+        ),
+);
+
   }
 }

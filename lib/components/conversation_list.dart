@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/chat_page_model.dart';
 import '../views/chats/chat/view.dart';
 import '../commands/chat_command.dart';
 
@@ -6,22 +8,22 @@ class ConversationList extends StatefulWidget{
   ConversationList(
     {
       Key? key,
-      required this.index, required this.chatObject,required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead
+      required this.index, required this.chatObject
     }
-    ) : super(key: key);
+  ) : super(key: key);
   @override
   _ConversationListState createState() => _ConversationListState();
   final int index;
-  final dynamic chatObject;
-  final String name;
-  final String messageText;
-  final String imageUrl;
-  final String time;
-  final bool isMessageRead;
+  final dynamic chatObject;  
 }
 
 class _ConversationListState extends State<ConversationList> {
-  
+  String name = "";
+  String messageText = "";
+  String imageUrl = "";
+  String time = "";
+  bool isMessageRead = false;
+
   Future<void> setChatMessages() async{
     print("setChatMessages");
     await ChatCommand().setChatMessages(widget.chatObject, widget.index);    
@@ -40,6 +42,15 @@ class _ConversationListState extends State<ConversationList> {
 
   loadInitialData(){
     print("loadInitialData ConversationList");
+    name = widget.chatObject['name'];
+    //get last message
+    print("widget.chatObject['messages']['data']: "+ widget.chatObject['messages']['data'].toString());
+    messageText = widget.chatObject['messages']['data'].length>0 ? 
+      widget.chatObject['messages']['data'][widget.chatObject['messages']['data'].length-1]['textObject']['content']
+      : "";
+    print("messageText: "+ messageText);
+    imageUrl = widget.chatObject['imageUrl'];
+    time ="";    
   }
 
   @override 
@@ -50,8 +61,12 @@ class _ConversationListState extends State<ConversationList> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      
+    List chats =
+        context.select<ChatPageModel, List>((value) => value.chats);
+    loadInitialData();
+
+
+    return GestureDetector(      
       onTap: (){
         goToChat();
       },
@@ -63,7 +78,7 @@ class _ConversationListState extends State<ConversationList> {
               child: Row(
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundImage: NetworkImage(widget.imageUrl),
+                    backgroundImage: NetworkImage(""),
                     maxRadius: 30,
                   ),
                   SizedBox(width: 16,),
@@ -73,9 +88,9 @@ class _ConversationListState extends State<ConversationList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.name, style: TextStyle(fontSize: 16),),
+                          Text(name, style: TextStyle(fontSize: 16),),
                           SizedBox(height: 6,),
-                          Text(widget.messageText,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
+                          Text(messageText,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: isMessageRead?FontWeight.bold:FontWeight.normal),),
                         ],
                       ),
                     ),
@@ -83,7 +98,7 @@ class _ConversationListState extends State<ConversationList> {
                 ],
               ),
             ),
-            Text(widget.time,style: TextStyle(fontSize: 12,fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
+            Text(time,style: TextStyle(fontSize: 12,fontWeight: isMessageRead?FontWeight.bold:FontWeight.normal),),
           ],
         ),
       ),

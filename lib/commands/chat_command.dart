@@ -82,6 +82,21 @@ class ChatCommand extends BaseCommand {
     }
   }
 
+  void updateChatModel(dynamic chat){
+    print("updateChatModel");
+    print("chat: $chat");
+    int indexOfChat = getIndexOfChat(chat['_id']);
+    print("indexOfChat: $indexOfChat");
+    chatPageModel.chats.remove(chat);
+    chatPageModel.chats.insert(indexOfChat, chat);
+  }
+
+  void setupChatModels(){
+    print("setupChatModels");
+    chatPageModel.chats = appModel.currentUser['chats']['data'];
+
+  }
+
   Future<Map<String, dynamic>> createText(
       Map<String, dynamic> chatInput) async {
     print("createText");
@@ -123,6 +138,8 @@ class ChatCommand extends BaseCommand {
       appModel.currentUser['chats']['data'][indexOfChat] = chat;
 
       userModel.chats[indexOfChat] = chat;
+
+
 
       print("chat test length before: " +
           chatPageModel.messages.length.toString());

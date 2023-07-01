@@ -44,6 +44,8 @@ mixin ImagesMixin {
 
     }
 
+    
+
     void pickImage(dynamic objectDetails, String imageChoiceChosen, 
         Function chooseImageCallback) async {
       Map<String, dynamic> pickImageResp = await ImagesCommand().pickImage(true, imageChoiceChosen);  
@@ -61,12 +63,13 @@ mixin ImagesMixin {
       };
       print("imageInput: " + imageInput.toString());
       if(objectDetails['for'] == Constants.USER){
-        await ImagesCommand().removeProfileTagFromImage();
+        // await ImagesCommand().removeProfileTagFromImage();
         dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForUser(imageInput);
-        dynamic storedImage = storeImageInDatabaseForUserResp['data'];
-        ImagesCommand().addImageToUser(storedImage);
-        await ImagesCommand().getAndSetUserProfileImage();
-        chooseImageCallback(storedImage);
+        if(storeImageInDatabaseForUserResp['success']){
+          dynamic storedImage = storeImageInDatabaseForUserResp['data'];        
+          chooseImageCallback(storedImage);
+
+        }
       }
       else if(objectDetails['for'] == Constants.TEAM){
         print("objectDetails['team']['_id']: " + objectDetails['team']['_id'].toString());
