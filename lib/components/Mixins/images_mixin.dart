@@ -62,6 +62,15 @@ mixin ImagesMixin {
         "s3bucket": s3bucket    
       };
       print("imageInput: " + imageInput.toString());
+      if(objectDetails['for'] == Constants.CHAT){        
+        imageInput['chat_id'] = objectDetails['chat']['_id'];
+        dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForChat(imageInput);
+        if(storeImageInDatabaseForUserResp['success']){
+          dynamic storedImage = storeImageInDatabaseForUserResp['data'];        
+          chooseImageCallback(storedImage);
+
+        }
+      }
       if(objectDetails['for'] == Constants.USER){
         // await ImagesCommand().removeProfileTagFromImage();
         dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForUser(imageInput);

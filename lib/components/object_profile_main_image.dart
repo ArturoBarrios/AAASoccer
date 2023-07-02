@@ -33,8 +33,19 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
     }
 
   }
+  
+  Future<void> addImageToChat(dynamic imageAdded) async{
+    //do something
+    //get the user    
+    dynamic addImageTochatResp = await ImagesCommand().addImageToChat(widget.objectImageInput['chat'] ,imageAdded);
+    if(addImageTochatResp['success']){      
+      Map<String,dynamic> setUserProfileImageResp = await ImagesCommand().setUserProfileImage();
 
-  Container returnImageContainer(String imageUrl){
+    }
+
+  }
+
+  Container returnProfileImageContainer(String imageUrl){
     return Container(
       child: GestureDetector(
         onTap: () async {
@@ -117,6 +128,89 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
     );
   }
 
+  Container returnChatImageContainer(String imageUrl){
+    return Container(
+      child: GestureDetector(
+        onTap: () async {
+          List<dynamic> primaryList =
+              widget.imageChoices.map((choice) => choice.values.first).toList();
+
+          List<dynamic> secondaryList = [];
+          Map<int, dynamic> result = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AnimatedDialog(
+                  details: {"title": "Image Options"},
+                  items: primaryList,
+                  singleSelect: true,
+                  secondaryItems: secondaryList,
+                  goToFunctions: []);
+            },
+          );
+          if (result.isNotEmpty) {
+            print("result: " + result.toString());
+            widget.chooseImage({"for": Constants.CHAT, "chat": widget.objectImageInput['chat']},result, primaryList, secondaryList, addImageToChat);
+
+          }
+        },
+        child: Hero(
+          tag: "profile",
+          child: Stack(
+            alignment: AlignmentDirectional.center,
+            children: <Widget>[
+              Container(
+                  child: Container(
+                height: 190.0,
+                width: 190.0,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(102.5),
+                    color: widget.primaryColor.withOpacity(0.05)),
+              )),
+              Container(
+                  child: Container(
+                height: 170.0,
+                width: 170.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(102.5),
+                  gradient: RadialGradient(stops:[0.01,0.5],colors: [Colors.white, widget.primaryColor.withOpacity(0.1)]),
+                ),
+              )),
+              Container(
+                  child: Container(
+                height: 150.0,
+                width: 150.0,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(102.5),
+                    color: widget.primaryColor.withOpacity(0.4)),
+              )),
+              Container(
+                child: Container(
+                    height: 132.0,
+                    width: 132.0,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(102.5),
+                        color: widget.primaryColor.withOpacity(0.5))),
+              ),
+              Container(
+                child: Container(
+                  height: 125.0,
+                  width: 125.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(62.5),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(imageUrl.toString()),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   loadInitialData(){
     print("loadInitialData");
     setState(() {
@@ -136,8 +230,10 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
     String profileImageUrl = context
         .select<UserModel, String>((value) => value.profileImageUrl);
     print("widget.objectImageInput['containerType']: " + widget.objectImageInput['containerType'].toString());
-    if (widget.objectImageInput['containerType'] == Constants.IMAGECIRCLE.toString())
-      return returnImageContainer(profileImageUrl);
+    if (widget.objectImageInput['containerType'] == Constants.PROFILEIMAGECIRCLE.toString())
+      return returnProfileImageContainer(profileImageUrl);
+    else if (widget.objectImageInput['containerType'] == Constants.CHATIMAGECIRCLE.toString())
+      return returnChatImageContainer(profileImageUrl);
     else
       return Text("Nothing to show here");
   }

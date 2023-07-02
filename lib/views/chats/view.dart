@@ -30,6 +30,8 @@ class _ChatsViewState extends State<ChatsView> {
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
 
+  dynamic objectImageInput;
+
   bool _isLoading = true;
   late ScrollController _selectEventController = ScrollController();
 
@@ -40,14 +42,14 @@ class _ChatsViewState extends State<ChatsView> {
   Future<void> loadInitialData() async {
     print("first load");
     //get user chats    
-    dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
-    
-   
-    ChatCommand().setupChatModels();
-    
-    setState(() {
-      _isLoading = false;
-    });
+    dynamic findMyUserByIdResp = await UserCommand().findMyUserById();       
+    Map<String,dynamic> setupChatModelsResp = await ChatCommand().setupChatModels();
+    print("setupChatModelsResp: "+ setupChatModelsResp.toString());
+    if(setupChatModelsResp['success'] == true){
+      setState(() {
+        _isLoading = false;
+      });     
+    }    
   }
 
   @override

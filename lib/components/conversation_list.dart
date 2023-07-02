@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../constants.dart';
 import '../models/chat_page_model.dart';
 import '../views/chats/chat/view.dart';
 import '../commands/chat_command.dart';
+import 'object_profile_main_image.dart';
 
 class ConversationList extends StatefulWidget{
   ConversationList(
@@ -23,6 +25,7 @@ class _ConversationListState extends State<ConversationList> {
   String imageUrl = "";
   String time = "";
   bool isMessageRead = false;
+  dynamic objectImageInput;
 
   Future<void> setChatMessages() async{
     print("setChatMessages");
@@ -49,8 +52,14 @@ class _ConversationListState extends State<ConversationList> {
       widget.chatObject['messages']['data'][widget.chatObject['messages']['data'].length-1]['textObject']['content']
       : "";
     print("messageText: "+ messageText);
-    imageUrl = widget.chatObject['imageUrl'];
+    imageUrl = widget.chatObject['mainImageUrl'];
     time ="";    
+
+    objectImageInput = {
+      "imageUrl": imageUrl,
+      "containerType": Constants.CHATIMAGECIRCLE,
+      "chat": widget.chatObject
+    };
   }
 
   @override 
@@ -77,10 +86,11 @@ class _ConversationListState extends State<ConversationList> {
             Expanded(
               child: Row(
                 children: <Widget>[
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(""),
-                    maxRadius: 30,
-                  ),
+                  ObjectProfileMainImage(objectImageInput: objectImageInput),
+                  // CircleAvatar(
+                  //   backgroundImage: NetworkImage(""),
+                  //   maxRadius: 30,
+                  // ),
                   SizedBox(width: 16,),
                   Expanded(
                     child: Container(

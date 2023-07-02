@@ -3,6 +3,28 @@ import '../fragments/image_fragments.dart';
 class ImageMutations {
 
 
+  String createChatImage(
+      Map<String, dynamic> imageInput) {
+    String createImage = """
+      mutation {
+        createImage(data: {            
+              isMainImage: ${imageInput['isMainImage']},
+              public: ${imageInput['public']},
+              key: "${imageInput['key']}",
+              s3bucket: "${imageInput['s3bucket']}",
+              user: {
+                connect: "${imageInput['chat_id']}", 
+              },
+          }) 
+          {
+              ${ImageFragments().fullImage()}
+          }   
+        }
+        """;
+
+    return createImage;
+  }
+
   String createUserImage(
       Map<String, dynamic> imageInput) {
     String createImage = """

@@ -96,6 +96,7 @@ class UserMutations {
     return updateUserString;
   }
   
+  
   String updateUserProfileImage(Map<String, dynamic> userInput) {
     String updateUserString = """      
       mutation {

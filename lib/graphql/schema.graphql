@@ -451,6 +451,7 @@ type Image   {
   key: String
   user: User
   event: Event
+  chat: Chat
   team: Team
   location: Location
   organization: Organization
@@ -486,7 +487,7 @@ type Chat  {
   archived: Boolean @default(value: false)
   isPrivate: Boolean
   IsMainChat: Boolean
-  imageUrl: String
+  mainImageKey: String
 }
 
 type AppSubscription   {

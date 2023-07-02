@@ -6,6 +6,10 @@ class ImageFragments{
           url
           key
           isMainImage
+          chat{
+            _id
+            name
+          }
           user{
             _id
             name

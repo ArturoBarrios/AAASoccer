@@ -1,5 +1,6 @@
 import 'package:soccermadeeasy/constants.dart';
 
+import '../graphql/mutations/chat.dart';
 import '../graphql/mutations/users.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -217,6 +218,30 @@ class ImagesCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String,dynamic>> getImageUrl(dynamic imageInput)async {
+    print("getUserProfileImage");
+    Map<String,dynamic> getUserProfileImageResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try{
+      Map<String, dynamic> getImageResp = await ImagesCommand().getImage(imageInput['key']);
+      if(getImageResp['success']){
+        String imageUrl = getImageResp['data'];
+        getUserProfileImageResponse['success'] = true;
+        getUserProfileImageResponse['message'] = "Successfully found user";
+        getUserProfileImageResponse['data'] = imageUrl;
+      }
+
+      return getUserProfileImageResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return getUserProfileImageResponse;
+    }
+    
+  }
+
   void addImageToUser(dynamic imageToAdd){
     appModel.currentUser['images']['data'].add(imageToAdd);
   }
@@ -269,6 +294,92 @@ class ImagesCommand extends BaseCommand {
       
     }
   
+  Future<Map<String,dynamic>> addImageToChat(dynamic chatInput, dynamic imageAdded)async{
+      print("addImageToProfile");
+      print("imageAdded: " + imageAdded.toString());
+      Map<String,dynamic> addImageToProfileResponse = {
+        "success": false,
+        "message": "Default Error",
+        "data": null
+      };
+      try{
+        Map<String, dynamic> getImageResp = await getImage(imageAdded['key']);
+        print("getImageResp: " + getImageResp.toString());
+        chatInput['mainImageKey'] = imageAdded['key'];
+        http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': ChatMutations().updateChatImage(chatInput),
+          }),
+        );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      if(response.statusCode == 200){
+        Map<String, dynamic> user =
+            jsonDecode(response.body)['data']['updateChat'];
+        appModel.currentUser['mainImageKey'] = imageAdded['key'];
+        addImageToProfileResponse["success"] = true;
+        addImageToProfileResponse["message"] = "Image Added";
+        addImageToProfileResponse["data"] = user;
+        
+      }
+
+      
+
+      return addImageToProfileResponse;
+
+        
+      } catch(e){
+        print("addImageToProfile error: " + e.toString());
+        return addImageToProfileResponse;
+      }
+      
+    }
+
+    Future<Map<String, dynamic>> storeImageInDatabaseForChat(
+      Map<String, dynamic> imageInput) async {
+    print("storeImage()");
+    Map<String, dynamic> getImageResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': ImageMutations().createUserImage(imageInput),
+        }),
+      );
+
+      print("response: " + json.decode(response.body).toString());
+      dynamic createImage = json.decode(response.body)['data']['createImage'];
+      getImageResponse['success'] = true;
+      getImageResponse['data'] = createImage;
+      
+      // appModel.currentUser['images']['data'].add(
+      //     json.decode(response.body)['data']['createImage']);
+      
+
+
+      return getImageResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return getImageResponse;
+    }
+  }
+  
   Future<Map<String, dynamic>> storeImageInDatabaseForUser(
       Map<String, dynamic> imageInput) async {
     print("storeImage()");
@@ -307,6 +418,7 @@ class ImagesCommand extends BaseCommand {
       return getImageResponse;
     }
   }
+
   Future<Map<String, dynamic>> storeImageInDatabaseForEvent(
       Map<String, dynamic> imageInput) async {
     print("storeImageInDatabaseForEvent()");

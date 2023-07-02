@@ -24,6 +24,7 @@ class Constants {
   static final String TEAMREQUEST = "TEAMREQUEST";
   //user type
   static final String USER = "USER";
+  static final String CHAT = "CHAT";
   static final String PLAYER = "PLAYER";
   static final String ORGANIZER = "ORGANIZER";
   static final String MANAGER = "MANAGER";
@@ -43,7 +44,8 @@ class Constants {
   static final String APPGALLERY = "APPGALLERY";
 
   //image container types
-  static final String IMAGECIRCLE = "IMAGECIRCLE";
+  static final String PROFILEIMAGECIRCLE = "PROFILEIMAGECIRCLE";
+  static final String CHATIMAGECIRCLE = "CHATIMAGECIRCLE";
   //image select options
   static final String IMAGEDELETE = "Delete";
   static final String IMAGEREPLACE = "Replace Image";

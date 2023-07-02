@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/user_command.dart';
+import 'images_command.dart';
 
 class ChatCommand extends BaseCommand {
   int getIndexOfChat(String chatId) {
@@ -82,6 +83,11 @@ class ChatCommand extends BaseCommand {
     }
   }
 
+  List getChatsPageModel(){
+    print("getChatsPageModel");
+    return chatPageModel.chats;
+  }
+
   void updateChatModel(dynamic chat){
     print("updateChatModel");
     print("chat: $chat");
@@ -91,9 +97,38 @@ class ChatCommand extends BaseCommand {
     chatPageModel.chats.insert(indexOfChat, chat);
   }
 
-  void setupChatModels(){
-    print("setupChatModels");
-    chatPageModel.chats = appModel.currentUser['chats']['data'];
+  Future<Map<String,dynamic>> setupChatModels() async{
+    print("setupChatModels");    
+    Map<String,dynamic> setupChatModelsResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try{
+      appModel.currentUser['chats']['data'].forEach((chat) async {
+        String imageKey = chat['mainImageKey'];
+        dynamic imageInput = {
+          "imageKey": imageKey      
+        };
+        if(imageKey != null){
+          Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
+          if(getImageUrlResp['success']){
+            chat['mainImageUrl'] = getImageUrlResp['data'];
+          }
+        }
+        chatPageModel.chats.add(chat);
+      });
+
+      setupChatModelsResp['success'] = true;      
+
+      print("finished setupChatModels");
+
+      return setupChatModelsResp;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return setupChatModelsResp;
+    }
+
 
   }
 
