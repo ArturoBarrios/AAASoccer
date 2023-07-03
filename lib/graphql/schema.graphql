@@ -262,6 +262,7 @@ type Event   {
   endTime: String
   createdAt: String
   capacity: Int  
+  mainImageKey: String
 }
 
 type Team   {
@@ -488,6 +489,7 @@ type Chat  {
   isPrivate: Boolean
   IsMainChat: Boolean
   mainImageKey: String
+  images: [Image] @relation
 }
 
 type AppSubscription   {

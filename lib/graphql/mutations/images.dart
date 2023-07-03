@@ -12,7 +12,7 @@ class ImageMutations {
               public: ${imageInput['public']},
               key: "${imageInput['key']}",
               s3bucket: "${imageInput['s3bucket']}",
-              user: {
+              chat: {
                 connect: "${imageInput['chat_id']}", 
               },
           }) 

@@ -41,7 +41,7 @@ class ChatMutations {
   String updateChatImage(Map<String, dynamic> chatInput) {
     String updateUserString = """      
       mutation {
-        updateUser(id: ${chatInput['_id']},
+        updateChat(id: ${chatInput['_id']},
   				data: {            
             mainImageKey: "${chatInput['mainImageKey']}"                                                                                
           }                      

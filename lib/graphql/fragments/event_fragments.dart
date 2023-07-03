@@ -11,6 +11,7 @@ class EventFragments {
       type                  
       archived
       isMainEvent
+      mainImageKey
       deleted  
       startTime
       endTime  

@@ -46,6 +46,7 @@ class Constants {
   //image container types
   static final String PROFILEIMAGECIRCLE = "PROFILEIMAGECIRCLE";
   static final String CHATIMAGECIRCLE = "CHATIMAGECIRCLE";
+  static final String CHATIMAGEBANNER = "CHATIMAGEBANNER";
   //image select options
   static final String IMAGEDELETE = "Delete";
   static final String IMAGEREPLACE = "Replace Image";

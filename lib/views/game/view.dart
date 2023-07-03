@@ -1,6 +1,4 @@
-import 'dart:ffi';
-
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
@@ -11,8 +9,10 @@ import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/chats_list_widget.dart';
+import '../../components/image_header.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
+import '../../components/object_profile_main_image.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/profile.dart';
 import '../../components/payment_screen.dart';
@@ -28,11 +28,9 @@ import '../../constants.dart';
 import '../../models/app_model.dart';
 
 class PickupView extends StatefulWidget with EventMixin, PaymentMixin {
-  PickupView({Key? key, required this.game})
-      : super(key: key);
+  PickupView({Key? key, required this.game}) : super(key: key);
 
   final dynamic game;
-  
 
   @override
   _PickupViewState createState() => _PickupViewState();
@@ -50,8 +48,13 @@ class _PickupViewState extends State<PickupView> {
   bool _isLoading = true;
   late LatLng _center = LatLng(45.521563, -122.677433);
   dynamic priceObject;
-  
-  
+  dynamic objectImageInput = {
+      "imageUrl": "",
+      "containerType": Constants.CHATIMAGEBANNER,
+      "chat": null
+    };
+  String imageUrl = "";
+
   LocationSearchBar locationSearchBar = new LocationSearchBar();
 
   LatLng latLng(lat, lon) {
@@ -68,28 +71,34 @@ class _PickupViewState extends State<PickupView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in TeamView");
-    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.game['event']]);    
-    widget.setupPlayerList();    
+    dynamic getEventDetailsResp =
+        await EventCommand().getUserEventDetails([widget.game['event']]);
+    widget.setupPlayerList();
     //wait for 3 seconds
-    await Future.delayed(const Duration(seconds: 2));    
+    await Future.delayed(const Duration(seconds: 2));
     dynamic userEventDetails = getEventDetailsResp;
     BaseCommand().updateUserEventDetailsModel(userEventDetails);
+    imageUrl = userEventDetails['mainEvent']['mainImageUrl'];
+    objectImageInput = {
+      "imageUrl": imageUrl,
+      "containerType": Constants.CHATIMAGEBANNER,
+      "chat": userEventDetails['mainEvent']
+    };
     setState(() {
       _isLoading = false;
-    });      
-      print("loadInitialData() finished!");
-      print("loadEventPayment() in loadInitialData()");
-      loadEventPayment();
-      print("loadEventPayment() finished in loadInitialData()");
-
+    });
+    print("loadInitialData() finished!");
+    print("loadEventPayment() in loadInitialData()");
+    loadEventPayment();
+    print("loadEventPayment() finished in loadInitialData()");
   }
 
-  void updateChatsList(dynamic createdChat){
+  void updateChatsList(dynamic createdChat) {
     print("updateChatsList");
     print("createdChat: " + createdChat.toString());
     setState(() {
       dynamic userEventDetails = BaseCommand().getUserEventDetailsModel();
-      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+      userEventDetails['mainEvent']['chats']['data'].add(createdChat);
       BaseCommand().updateUserEventDetailsModel(userEventDetails);
     });
   }
@@ -113,98 +122,44 @@ class _PickupViewState extends State<PickupView> {
     print("build()");
     print("game: " + widget.game.toString());
 
-    dynamic userEventDetails = context.select<AppModel, dynamic>((value) => value.userEventDetails);
+    dynamic userEventDetails =
+        context.select<AppModel, dynamic>((value) => value.userEventDetails);
 
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: Headers().getBackHeader(context, widget.game['event']['name']),
+      appBar: PreferredSize(
+    preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
+    child: ObjectProfileMainImage(
+          objectImageInput:
+              objectImageInput),  //ImageHeader(dataLoaded: _isLoading, objectImageInput: objectImageInput, )//ObjectProfileMainImage(objectImageInput: objectImageInput),
+  ),//Headers().getBackImageHeader(context, 
+        // widget.game['event']['name'], 
+        //   ObjectProfileMainImage(
+        //     objectImageInput:x
+        //       objectImageInput)),
+      // ObjectProfileMainImage(
+      //     objectImageInput:
+      //         objectImageInput), 
       body: _isLoading
-          ?  Container(
-      height: double.infinity,
-      width: double.infinity,
-      child: Align(
-        alignment: Alignment.center,
-        child:
-            // BottomNav()//for times when user deleted in cognito but still signed into app
-            LoadingScreen(
-                currentDotColor: Colors.white,
-                defaultDotColor: Colors.black,
-                numDots: 10),
-      ),
-    )
+          ? Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Align(
+                alignment: Alignment.center,
+                child:
+                    // BottomNav()//for times when user deleted in cognito but still signed into app
+                    LoadingScreen(
+                        currentDotColor: Colors.white,
+                        defaultDotColor: Colors.black,
+                        numDots: 10),
+              ),
+            )
           : SingleChildScrollView(
-            child: Center(
-              child: Expanded(
-                child: Column(
-
-                
-
-              
-
-            
-            
+              child: Center(
+                  child: Expanded(
+                      child: Column(
               children: [
                 UpdateViewForm(userObjectDetails: userEventDetails),
-                
-
-                // Container(
-                //   margin: const EdgeInsets.all(10.0),
-                //   color: Colors.amber[600],
-                //   width: MediaQuery.of(context).size.width -
-                //       (MediaQuery.of(context).size.width * .1), //10% padding
-                //   height: 200.0,
-                //   child:
-                //   //map
-                //    MyMapPage(
-                //       latitude: widget.game['event']['location']['data'][0]
-                //           ['latitude'],
-                //       longitude: widget.game['event']['location']['data'][0]
-                //           ['longitude']),
-                // ),
-                // userEventDetails['isMine'] ? 
-                //   locationSearchBar = LocationSearchBar(initialValue: userEventDetails['mainEvent']['location']['data'][0]['name'])
-                //    :
-                //   Text(userEventDetails['mainEvent']['location']['data'][0]['name']) ,
-                // !userEventDetails['isMine']
-                //     ? widget.sendOrganizerPlayerEventRequest(context, userEventDetails)
-                //     : Container(),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                    // widget.getPriceWidget(userEventDetails),
-                    
-                //     userEventDetails['isMine']
-                //         ? ElevatedButton(
-                //             onPressed: () {
-                //               // Add button onPressed logic here
-                //             },
-                //             child: Text('Update Payment'),
-                //           )
-                //         : Container(),
-                //   ],
-                // ),
-                // if (userEventDetails['isMine'])
-                //   widget.createEventRequestWidget,
-                // if (userEventDetails['isMine'])
-                //   widget.createEventPaymentWidget,
-                //join game gesture detector for now
-                // widget.getJoinGameWidget(context, userEventDetails,
-                //     widget.game['event'], widget.userObject),
-                // widget.getChatWidget(context, true, false, userEventDetails, updateChatsList  ),
-                // ChatsListWidget(
-                //   chats: userEventDetails['mainEvent']['chats']['data']
-                // ),
-          // widget.sendPlayersRequestWidget(context, userEventDetails),
-  //               SizedBox(
-  //           child: Container(
-  //   height: 450,
-  //   child: PlayerList(playersDetails: userEventDetails),
-  // ),
-  
-  //         ),
-
-
-
               ],
             )))),
     );

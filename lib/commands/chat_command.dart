@@ -32,12 +32,18 @@ class ChatCommand extends BaseCommand {
     chatPageModel.messagesLength += 1;
   }
 
-  Future<void> setChatMessages(dynamic chat, int index) async {
+  Future<void> setChatMessages(dynamic chat) async {
     print("setChatMessages");
     //get updated chat first?????
     dynamic findMyUser = await UserCommand().findMyUserById();
     dynamic user = findMyUser['data'];
-    chatPageModel.messages = user['chats']['data'][index]['messages']['data'];
+    int index = getIndexOfChat(chat['_id']);
+    for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {
+      if (appModel.currentUser['chats']['data'][i]['_id'] == chat['_id']) {
+        chatPageModel.messages = user['chats']['data'][i]['messages']['data'];
+       
+      }
+    }
   }
 
 
@@ -105,19 +111,24 @@ class ChatCommand extends BaseCommand {
       "data": null
     };
     try{
-      appModel.currentUser['chats']['data'].forEach((chat) async {
-        String imageKey = chat['mainImageKey'];
+      chatPageModel.chats = [];
+      for(int i = 0;i<appModel.currentUser['chats']['data'].length;i++){
+        String imageKey = appModel.currentUser['chats']['data'][i]['mainImageKey'];
         dynamic imageInput = {
-          "imageKey": imageKey      
+          "key": imageKey      
         };
         if(imageKey != null){
+          print("imageKey: $imageKey");
           Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
           if(getImageUrlResp['success']){
-            chat['mainImageUrl'] = getImageUrlResp['data'];
+            appModel.currentUser['chats']['data'][i]['mainImageUrl'] = getImageUrlResp['data'];
           }
         }
-        chatPageModel.chats.add(chat);
-      });
+        chatPageModel.chats.add(appModel.currentUser['chats']['data'][i]);
+
+      }
+      
+      
 
       setupChatModelsResp['success'] = true;      
 

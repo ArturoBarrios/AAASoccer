@@ -10,12 +10,11 @@ class ConversationList extends StatefulWidget{
   ConversationList(
     {
       Key? key,
-      required this.index, required this.chatObject
+      required this.chatObject
     }
   ) : super(key: key);
   @override
-  _ConversationListState createState() => _ConversationListState();
-  final int index;
+  _ConversationListState createState() => _ConversationListState();  
   final dynamic chatObject;  
 }
 
@@ -29,7 +28,7 @@ class _ConversationListState extends State<ConversationList> {
 
   Future<void> setChatMessages() async{
     print("setChatMessages");
-    await ChatCommand().setChatMessages(widget.chatObject, widget.index);    
+    await ChatCommand().setChatMessages(widget.chatObject);    
   }
 
   void goToChat() async{

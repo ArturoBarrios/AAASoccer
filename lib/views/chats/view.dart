@@ -99,15 +99,13 @@ class _ChatsViewState extends State<ChatsView> {
               physics: ScrollPhysics(),
               
               itemBuilder: (context, index) {
-                 dynamic messages = chats[index]['messages']['data'];
-                 String messageContent = messages.length>0 ? messages[(messages.length)-1]['textObject']['content'] : "No Messages Yet";
-                return ConversationList(
-                  index: index,
+                dynamic messages = chats[index]['messages']['data'];
+                String messageContent = messages.length>0 ? messages[(messages.length)-1]['textObject']['content'] : "No Messages Yet";
+                return ConversationList(                  
                   chatObject: chats[index],                  
                 );
               },
             )),
-            
           ])),
       bottomNavigationBar: const Footers().getChatBottomNav(context),
     );

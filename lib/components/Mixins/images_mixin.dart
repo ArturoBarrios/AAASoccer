@@ -57,13 +57,15 @@ mixin ImagesMixin {
       String s3bucket = data['Bucket'];
       Map<String, dynamic> imageInput = {
         "isMainImage": true,
-        "key": key,  
+        "key": key,   
         "public": true,  
         "s3bucket": s3bucket    
       };
       print("imageInput: " + imageInput.toString());
-      if(objectDetails['for'] == Constants.CHAT){        
+      if(objectDetails['for'] == Constants.CHAT){      
+        print("for chat");  
         imageInput['chat_id'] = objectDetails['chat']['_id'];
+        print("imageInput: " + imageInput.toString());
         dynamic storeImageInDatabaseForUserResp = await ImagesCommand().storeImageInDatabaseForChat(imageInput);
         if(storeImageInDatabaseForUserResp['success']){
           dynamic storedImage = storeImageInDatabaseForUserResp['data'];        
