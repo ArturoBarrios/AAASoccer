@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/user_command.dart';
+import 'images_command.dart';
 
 class ChatCommand extends BaseCommand {
   int getIndexOfChat(String chatId) {
@@ -31,12 +32,18 @@ class ChatCommand extends BaseCommand {
     chatPageModel.messagesLength += 1;
   }
 
-  Future<void> setChatMessages(dynamic chat, int index) async {
+  Future<void> setChatMessages(dynamic chat) async {
     print("setChatMessages");
     //get updated chat first?????
     dynamic findMyUser = await UserCommand().findMyUserById();
     dynamic user = findMyUser['data'];
-    chatPageModel.messages = user['chats']['data'][index]['messages']['data'];
+    int index = getIndexOfChat(chat['_id']);
+    for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {
+      if (appModel.currentUser['chats']['data'][i]['_id'] == chat['_id']) {
+        chatPageModel.messages = user['chats']['data'][i]['messages']['data'];
+       
+      }
+    }
   }
 
 
@@ -82,6 +89,11 @@ class ChatCommand extends BaseCommand {
     }
   }
 
+  List getChatsPageModel(){
+    print("getChatsPageModel");
+    return chatPageModel.chats;
+  }
+
   void updateChatModel(dynamic chat){
     print("updateChatModel");
     print("chat: $chat");
@@ -91,9 +103,43 @@ class ChatCommand extends BaseCommand {
     chatPageModel.chats.insert(indexOfChat, chat);
   }
 
-  void setupChatModels(){
-    print("setupChatModels");
-    chatPageModel.chats = appModel.currentUser['chats']['data'];
+  Future<Map<String,dynamic>> setupChatModels() async{
+    print("setupChatModels");    
+    Map<String,dynamic> setupChatModelsResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try{
+      chatPageModel.chats = [];
+      for(int i = 0;i<appModel.currentUser['chats']['data'].length;i++){
+        String imageKey = appModel.currentUser['chats']['data'][i]['mainImageKey'];
+        dynamic imageInput = {
+          "key": imageKey      
+        };
+        if(imageKey != null){
+          print("imageKey: $imageKey");
+          Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
+          if(getImageUrlResp['success']){
+            appModel.currentUser['chats']['data'][i]['mainImageUrl'] = getImageUrlResp['data'];
+          }
+        }
+        chatPageModel.chats.add(appModel.currentUser['chats']['data'][i]);
+
+      }
+      
+      
+
+      setupChatModelsResp['success'] = true;      
+
+      print("finished setupChatModels");
+
+      return setupChatModelsResp;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return setupChatModelsResp;
+    }
+
 
   }
 

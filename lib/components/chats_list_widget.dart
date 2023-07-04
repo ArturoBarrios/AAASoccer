@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../views/chats/chat/view.dart';
+import 'conversation_list.dart';
 
 class ChatsListWidget extends StatefulWidget {
   final List<dynamic> chats;
@@ -60,38 +61,41 @@ class _ChatsListWidgetState extends State<ChatsListWidget> {
               itemBuilder: (context, index) {
                 var chat = widget.chats[index];
                 var isPrivate = chat['isPrivate'];
-                return Card(
-                  child: ListTile(
-                    onTap: () {
-                      // Do something when a chat row is clicked
-                      print('Chat row tapped!');
-                      goToChat(chat);
-
-                    },
-                    title: Text(
-                        isPrivate ? 'Private Chat(No Details available)' : chat['name']),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.ice_skating), // Replace icon1 with your desired icon
-                          onPressed: () {
-                            // Do something when icon1 is pressed
-                            print('Icon 1 pressed!');
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete), // Replace icon2 with your desired icon
-                          onPressed: () {
-                            // Do something when delete icon is pressed
-                            print('Delete pressed!');
-                            removeChat(chat);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                return ConversationList(                  
+                  chatObject: chat,                  
                 );
+                // return Card(
+                //   child: ListTile(
+                //     onTap: () {
+                //       // Do something when a chat row is clicked
+                //       print('Chat row tapped!');
+                //       goToChat(chat);
+
+                //     },
+                //     title: Text(
+                //         isPrivate ? 'Private Chat(No Details available)' : chat['name']),
+                //     trailing: Row(
+                //       mainAxisSize: MainAxisSize.min,
+                //       children: [
+                //         IconButton(
+                //           icon: Icon(Icons.ice_skating), // Replace icon1 with your desired icon
+                //           onPressed: () {
+                //             // Do something when icon1 is pressed
+                //             print('Icon 1 pressed!');
+                //           },
+                //         ),
+                //         IconButton(
+                //           icon: Icon(Icons.delete), // Replace icon2 with your desired icon
+                //           onPressed: () {
+                //             // Do something when delete icon is pressed
+                //             print('Delete pressed!');
+                //             removeChat(chat);
+                //           },
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // );
               },
             ),
           ),

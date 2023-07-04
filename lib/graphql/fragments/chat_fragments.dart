@@ -5,7 +5,7 @@ class ChatFragments{
         	_id
           name
           isPrivate
-          imageUrl
+          mainImageKey
           users{
             data{
               _id

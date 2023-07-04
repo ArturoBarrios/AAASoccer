@@ -27,29 +27,7 @@ class UserCommand extends BaseCommand {
     return userModel.profileImageUrl;
   }
 
-  Future<Map<String,dynamic>> getUserProfileImage(dynamic userInput)async {
-    print("getUserProfileImage");
-    Map<String,dynamic> getUserProfileImageResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    try{
-      Map<String, dynamic> getImageResp = await ImagesCommand().getImage(userInput['key']);
-      if(getImageResp['success']){
-        String imageUrl = getImageResp['data'];
-        getUserProfileImageResponse['success'] = true;
-        getUserProfileImageResponse['message'] = "Successfully found user";
-        getUserProfileImageResponse['data'] = imageUrl;
-      }
-
-      return getUserProfileImageResponse;
-    } on ApiException catch (e) {
-      print('Mutation failed: $e');
-      return getUserProfileImageResponse;
-    }
-    
-  }
+  
 
   dynamic getAppModelUser() {
     print("getAppModelUser");

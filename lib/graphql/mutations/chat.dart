@@ -38,6 +38,22 @@ class ChatMutations {
     return createChatString;
   }
 
+  String updateChatImage(Map<String, dynamic> chatInput) {
+    String updateUserString = """      
+      mutation {
+        updateChat(id: ${chatInput['_id']},
+  				data: {            
+            mainImageKey: "${chatInput['mainImageKey']}"                                                                                
+          }                      
+        ){
+          ${ChatFragments().chatObject()}                              			
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
   String createTextMessage(Map<String, dynamic> messageInput) {
     String createTextMessageString = """
      mutation {

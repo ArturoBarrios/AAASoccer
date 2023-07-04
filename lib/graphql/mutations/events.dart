@@ -41,6 +41,22 @@ class EventMutations {
     return addPlayerToEvent;
   }
 
+  String updateEventImage(Map<String, dynamic> eventInput) {
+    String updateUserString = """      
+      mutation {
+        updateEvent(id: ${eventInput['_id']},
+  				data: {            
+            mainImageKey: "${eventInput['mainImageKey']}"                                                                                
+          }                      
+        ){
+          ${EventFragments().fullEvent()}                              			
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
   String addUserToEvent(Map<String, dynamic> eventInput,
       Map<String, dynamic> userInput, String roles) {
     String addPlayerToEvent = """      
