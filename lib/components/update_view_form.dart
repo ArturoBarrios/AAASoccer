@@ -6,6 +6,7 @@ import 'package:soccermadeeasy/components/send_teams_request_widget.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
 
 import '../commands/base_command.dart';
+import '../commands/user_command.dart';
 import '../constants.dart';
 import '../views/game/update.dart';
 
@@ -70,6 +71,20 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     createTeamRequestWidget = setupRequestWidgetResp['createTeamRequestWidget'];
     images = widget.userObjectDetails['mainEvent']['images']['data'];
     print("images: " + images.toString());
+
+    //remove chats that don't belong to you
+    dynamic appModelUser = UserCommand().getAppModelUser();
+    var chats = widget.userObjectDetails['mainEvent']['chats']['data'];
+    var filteredChats = [];
+
+    for (var chat in chats) {
+      var users = chat['users']['data'];
+      if (users.any((user) => user['_id'] == appModelUser['_id'])) {
+        filteredChats.add(chat);
+      }
+    }
+    widget.userObjectDetails['mainEvent']['chats']['data'] = filteredChats;
+
   }
 
   @override
@@ -77,6 +92,8 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     super.initState();
     loadInitialData();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +140,8 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
           objectEventsDetails: widget.userObjectDetails,
           updatechatsList: updateChatsList),
       ChatsListWidget(
-          chats: widget.userObjectDetails['mainEvent']['chats']['data']),
+          chats: widget.userObjectDetails['mainEvent']['chats']['data'],
+          ),
 
       // if (widget.userObjectDetails['isMine'])
       createEventRequestWidget,

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
+import '../../commands/images_command.dart';
 import '../../commands/user_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/payment_mixin.dart';
@@ -50,8 +51,9 @@ class _PickupViewState extends State<PickupView> {
   dynamic priceObject;
   dynamic objectImageInput = {
       "imageUrl": "",
-      "containerType": Constants.CHATIMAGEBANNER,
-      "chat": null
+      "containerType": Constants.IMAGEBANNER,
+      "mainEvent": null,
+      "isMyEvent": false
     };
   String imageUrl = "";
 
@@ -70,7 +72,7 @@ class _PickupViewState extends State<PickupView> {
   }
 
   Future<void> loadInitialData() async {
-    print("loadInitialData() in TeamView");
+    print("loadInitialData() in GameView");
     dynamic getEventDetailsResp =
         await EventCommand().getUserEventDetails([widget.game['event']]);
     widget.setupPlayerList();
@@ -78,11 +80,26 @@ class _PickupViewState extends State<PickupView> {
     await Future.delayed(const Duration(seconds: 2));
     dynamic userEventDetails = getEventDetailsResp;
     BaseCommand().updateUserEventDetailsModel(userEventDetails);
-    imageUrl = userEventDetails['mainEvent']['mainImageUrl'];
+    //setup image
+    String imageKey = userEventDetails['mainEvent']['mainImageKey'];
+    if(imageKey != null){
+      dynamic imageInput = {
+          "key": imageKey      
+        };
+      print("imageKey: $imageKey");
+      Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
+      if(getImageUrlResp['success']){
+        imageUrl = getImageUrlResp['data'];
+        userEventDetails['mainEvent']['mainImageUrl'] = imageUrl;
+      }
+    }
+
     objectImageInput = {
       "imageUrl": imageUrl,
-      "containerType": Constants.CHATIMAGEBANNER,
-      "chat": userEventDetails['mainEvent']
+      "containerType": Constants.IMAGEBANNER,
+      "mainEvent": userEventDetails['mainEvent'],
+      "isMine": userEventDetails['isMine'],
+
     };
     setState(() {
       _isLoading = false;
@@ -108,11 +125,7 @@ class _PickupViewState extends State<PickupView> {
     super.initState();
 
     print("initState");
-    print("game: " + widget.game.toString());
-    // loadEventPayment();
-    // widget.loadEventInfo(widget.game['event']);
-    // widget.setupPlayerList();
-    // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
+    print("game: " + widget.game.toString());    
     loadInitialData();
     // _isLoading = false;
   }

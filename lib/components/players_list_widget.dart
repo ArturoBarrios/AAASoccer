@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/profile.dart';
 
 import '../commands/base_command.dart';
 import '../commands/event_command.dart';
@@ -248,7 +249,23 @@ class _PlayerListState extends State<PlayerList> {
               return userRoles.contains(_selectedUserType);
             }).map<Widget>((userParticipant) {
               dynamic user = userParticipant['user'];
-              return Card(
+              dynamic profileDetails = {
+                "user": user,
+                "isMine": false,
+              };
+              return 
+              InkWell(
+                onTap: () {
+Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Profile(
+                profileDetails: profileDetails,
+              )),
+    );
+                },
+                child:
+              Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -266,6 +283,9 @@ class _PlayerListState extends State<PlayerList> {
                     ],
                   ),
                 ),
+              )
+
+                
               );
             }).toList(),
           ),

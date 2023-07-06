@@ -54,7 +54,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
     dynamic addImageTochatResp = await ImagesCommand().addImageToEvent(widget.objectImageInput['mainEvent'] ,imageAdded);
     if(addImageTochatResp['success']){    
       dynamic updatedEvent = addImageTochatResp['data'];  
-      // ImagesCommand().setEventImage(updatedChat);
+      ImagesCommand().setEventImage(updatedEvent);
 
     }
 
@@ -198,6 +198,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
   return Container(
     child: GestureDetector(
       onTap: () async {
+      if(widget.objectImageInput['isMine']){
          List<dynamic> primaryList =
               widget.imageChoices.map((choice) => choice.values.first).toList();
 
@@ -215,14 +216,16 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
           );
           if (result.isNotEmpty) {
             print("result: " + result.toString());
-            widget.chooseImage({"for": Constants.EVENT, "chat": widget.objectImageInput['mainEvent']},result, primaryList, secondaryList, addImageToEvent);
+            widget.chooseImage({"for": Constants.EVENT, "mainEvent": widget.objectImageInput['mainEvent']},result, primaryList, secondaryList, addImageToEvent);
           }
+        }
       },
       child: Stack(
         children: [
           // Full Width Image or Gradient
           imageUrl != null
-            ? Container(
+            ?             
+            Container(
                 width: double.infinity,
                 height: 200.0,
                 decoration: BoxDecoration(
@@ -279,7 +282,8 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
   @override
   void initState() {
     super.initState();
-    print("ObjectProfileMainImage");
+    print("initState() ObjectProfileMainImage");
+    print("widget.objectImageInput.toString() "+ widget.objectImageInput.toString());
     loadInitialData();
     
   }
@@ -293,7 +297,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
       return returnProfileImageContainer(profileImageUrl);
     else if (widget.objectImageInput['containerType'] == Constants.CHATIMAGECIRCLE.toString())
       return returnChatImageContainer(widget.objectImageInput['imageUrl']);
-    else if (widget.objectImageInput['containerType'] == Constants.CHATIMAGEBANNER.toString())
+    else if (widget.objectImageInput['containerType'] == Constants.IMAGEBANNER.toString())
       return returnEventImageContainer(widget.objectImageInput['imageUrl']);
     else
       return Text("Nothing to show here");

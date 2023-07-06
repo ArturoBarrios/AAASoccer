@@ -94,6 +94,7 @@ mixin ImagesMixin {
 
       }
       else if(objectDetails['for'] == Constants.EVENT){
+        print("else if for event: "+ objectDetails.toString().toString());
         imageInput['event_id'] = objectDetails['mainEvent']['_id'];
         //get current User
         dynamic currentUser = await UserCommand().getAppModelUser();
