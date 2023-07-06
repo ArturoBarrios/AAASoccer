@@ -57,10 +57,14 @@ class _ProfileState extends State<Profile> {
       if(findMyUserByIdResp['success']){
         currentUser = findMyUserByIdResp['data'];
         String key = currentUser['mainImageKey'];
-        print("key: " + key);
-        Map<String, dynamic> getUserProfileImageResp = await ImagesCommand().getImage(currentUser);
-        if(getUserProfileImageResp['success']){
-          imageUrl = getUserProfileImageResp['data'];
+        print("key: " + key.toString());
+        if(key != null){
+          Map<String, dynamic> getUserProfileImageResp = await ImagesCommand().getImage(key);
+          print("getUserProfileImageResp: " + getUserProfileImageResp.toString());
+          if(getUserProfileImageResp['success']){
+            imageUrl = getUserProfileImageResp['data']['signedUrl'];
+          }
+
         }
         
       }

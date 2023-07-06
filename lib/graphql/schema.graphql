@@ -169,6 +169,7 @@ type User  {
   onboarded: Boolean @default(value: false)
   ratings: [Rating] @relation
   mainImageKey: String
+  subscription: Subscription
 }
 
 
@@ -178,8 +179,7 @@ type Player   {
   # events: [Event] @relation  
   competitiveLevel: String  
   hasRating: String
-  showRating: String
-  hasSubscription: String
+  showRating: String  
   user: User
   selfRating: Int
   sponsors: [Sponsor] @relation
@@ -492,7 +492,7 @@ type Chat  {
   images: [Image] @relation
 }
 
-type AppSubscription   {
+type Subscription   {
   id: ID!
   tier: String
 }
@@ -514,8 +514,7 @@ type Location   {
   organization: Organization
 }
 
-type Rating   {
-  id: ID!  
+type Rating   {  
   rating: Int
   organizations: [Organization] @relation
   teams: [Team] @relation

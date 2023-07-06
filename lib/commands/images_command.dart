@@ -260,11 +260,12 @@ class ImagesCommand extends BaseCommand {
       }
 
     }
-    
-    
-
-    
-
+  }
+  
+  void setEventImage(dynamic event){
+    print("setEventImage()");
+    print("event: " + event.toString());  
+    appModel.userEventDetails['mainEvent'] = event;    
   }
  
   Future<Map<String,dynamic>> addImageToUserProfile(dynamic userInput, dynamic imageAdded)async{
@@ -390,12 +391,11 @@ class ImagesCommand extends BaseCommand {
       print(jsonDecode(response.body));
 
       if(response.statusCode == 200){
-        Map<String, dynamic> user =
-            jsonDecode(response.body)['data']['updateChat'];
-        appModel.currentUser['mainImageKey'] = imageAdded['key'];
+        Map<String, dynamic> updatedEvent =
+            jsonDecode(response.body)['data']['updateEvent'];        
         addImageToProfileResponse["success"] = true;
         addImageToProfileResponse["message"] = "Image Added";
-        addImageToProfileResponse["data"] = user;
+        addImageToProfileResponse["data"] = updatedEvent;
         
       }
 

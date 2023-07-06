@@ -121,6 +121,12 @@ class UserFragments{
               birthdate              
               gender
               OSPID
+              ratings{
+                data{
+                  _id
+                  rating                  
+                }
+              }
               player{
                 _id
               }
