@@ -194,7 +194,8 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
   }
   
   Container returnEventImageContainer(String imageUrl){
-  print("imageurl: " + imageUrl.toString());
+  print("returnEventImageContainer() imageurl: " + imageUrl.toString());
+  print("imageurl equality: " +imageUrl.toString() == "");
   return Container(
     child: GestureDetector(
       onTap: () async {
@@ -223,7 +224,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
       child: Stack(
         children: [
           // Full Width Image or Gradient
-          imageUrl != null
+          imageUrl != null && imageUrl != ""
             ?             
             Container(
                 width: double.infinity,

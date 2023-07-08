@@ -228,39 +228,7 @@ class _TeamViewState extends State<TeamView> {
                             },
                             child: Text("Invite Players")),
                       ),
-                    ),
-                  // : Container(
-                  //     height: 20,
-                  //     child: ClipRRect(
-                  //         borderRadius: BorderRadius.circular(20.0),
-                  //         child: GestureDetector(
-                  //             onTap: () async {
-                  //               List<int>? requestIndexes =
-                  //                   await showAnimatedDialog<dynamic>(
-                  //                 context: context,
-                  //                 barrierDismissible: true,
-                  //                 builder: (BuildContext context) {
-                  //                   return ClassicListDialogWidget<dynamic>(
-                  //                       selectedIndexes: widget.selectedRequestTypeIndexes,
-                  //                       titleText: 'Choose User Type',
-                  //                       positiveText: "Send Request",
-                  //                       listType: ListType.multiSelect,
-                  //                       activeColor: Colors.green,
-                  //                       dataList: widget.requestUserTypes);
-                  //                 },
-                  //                 animationType: DialogTransitionType.size,
-                  //                 curve: Curves.linear,
-                  //               );
-
-                  //               widget.selectedRequestTypeIndexes =
-                  //                   requestIndexes ?? widget.selectedRequestTypeIndexes;
-                  //               print(
-                  //                   'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                  //               await requestTypeSelected(widget.selectedRequestTypeIndexes);
-                  //               await sendTeamRequest();
-                  //             },
-                  //             child: Text("Request to Join")),
-                  //         )),
+                    ),                  
                     UpdateViewTeamForm(userObjectDetails: userTeamDetails),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -275,16 +243,7 @@ class _TeamViewState extends State<TeamView> {
                     )
                   : Container(),
             ],
-          ),
-          // widget.getChatWidget(context, false, true, userTeamDetails, updateChatsList),
-          // widget.sendPlayersRequestWidget(context, userTeamDetails),
-          // widget.getJoinTeamWidget(context, userTeamDetails, userTeamDetails['team'], widget.userObject),          
-  //         SizedBox(
-  //           child: Container(
-  //   height: 450,
-  //   child: PlayerList(playersDetails: playerListWidgetDetails),
-  // ),
-  //         ),
+          ),         
         ])),
       ),
     )

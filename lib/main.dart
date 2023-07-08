@@ -177,6 +177,11 @@ class _MyAppState extends State<MyApp> {
     
   }
 
+  void continueAsGuest(){
+    print("continueAsGuest");
+
+  }
+
 
 
   void signOut(AuthenticatorState state) async {
@@ -441,6 +446,18 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [                
+                TextButton(
+                  onPressed: () => continueAsGuest(),
+                  child: Text(
+                    'Continue as Guest',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -581,6 +598,18 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [                
+                TextButton(
+                  onPressed: () => continueAsGuest(),
+                  child: Text(
+                    'Continue as Guest',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -609,23 +638,12 @@ class _MyAppState extends State<MyApp> {
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.blue, // background
                                   onPrimary: Colors.white, // foreground
-                                ),
-                                //emailController, passwordController, usernameController, phoneController
+                                ),                               
                                 onPressed: () {
                                   confirmSignIn(state);
                                 },
                                 child: Text('Confirm'),
                               )
-                              // SignUpForm.custom(
-                              //   fields: [
-                              //     SignUpFormField.username(),
-                              //     SignUpFormField.email(required: true),
-                              //     SignUpFormField.phoneNumber(),
-                              //     SignUpFormField.password(),
-
-                              //   ],
-
-                              // ),
                             ],
                           ),
                         ),
