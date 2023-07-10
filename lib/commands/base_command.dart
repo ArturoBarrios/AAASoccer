@@ -1,5 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
+import '../constants.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
 import '/models/app_model.dart';
@@ -36,8 +37,6 @@ import 'package:http/http.dart' as http;
 import 'chat_command.dart';
 import 'home_page_command.dart';
 
-
-
 late BuildContext _mainContext;
 // The commands will use this to access the Provided models and services.
 void init(BuildContext c) => _mainContext = c;
@@ -46,45 +45,49 @@ void init(BuildContext c) => _mainContext = c;
 class BaseCommand {
   // Models
   UserModel userModel = _mainContext.read();
-  PaymentModel paymentModel = _mainContext.read();  
+  PaymentModel paymentModel = _mainContext.read();
   AppModel appModel = _mainContext.read();
-  EventsModel eventsModel = _mainContext.read();  
-  GamesModel gamesModel = _mainContext.read();  
+  EventsModel eventsModel = _mainContext.read();
+  GamesModel gamesModel = _mainContext.read();
   HomePageModel homePageModel = _mainContext.read();
-  RequestsModel requestsModel = _mainContext.read();  
-  RequestsPageModel requestsPageModel = _mainContext.read();  
-  FriendsPageModel friendsPageModel = _mainContext.read();  
-  ChatPageModel chatPageModel = _mainContext.read();  
-  // Services  
+  RequestsModel requestsModel = _mainContext.read();
+  RequestsPageModel requestsPageModel = _mainContext.read();
+  FriendsPageModel friendsPageModel = _mainContext.read();
+  ChatPageModel chatPageModel = _mainContext.read();
+  // Services
   GeoLocationServices geoLocationServices = _mainContext.read();
   // TwilioServices twilioServices = _mainContext.read();
-  
 
   // void configureTwilio(){
   //   TwilioFlutter twilioFlutterClient = twilioServices.configureTwilio();
   //   appModel.twilioClient = twilioFlutterClient;
   // }
 
-  void updateUserEventDetailsModel(dynamic userEventDetails){
+  void updateUserEventDetailsModel(dynamic userEventDetails) {
     appModel.userEventDetails = userEventDetails;
     // appModel.updateUserEventDetails(userEventDetails);
   }
-  dynamic getUserEventDetailsModel(){
+
+  dynamic getUserEventDetailsModel() {
     return appModel.userEventDetails;
   }
 
   getHomePageModel() => homePageModel;
   //calculate distance between two points
-  dynamic getObjectsNearMe(Map<String,dynamic> myLocation, Map<String,dynamic> otherLocation, dynamic objects){
+  dynamic getObjectsNearMe(Map<String, dynamic> myLocation,
+      Map<String, dynamic> otherLocation, dynamic objects) {
     print("getObjectsNearMe");
     print("objects: $objects");
     print("myLocation: $myLocation");
     print("otherLocation: $otherLocation");
 
     //calculate
-    double distanceInMeters = Geolocator.distanceBetween(myLocation['latitude'], myLocation['longitude'], otherLocation['latitude'], otherLocation['longitude']);
+    double distanceInMeters = Geolocator.distanceBetween(
+        myLocation['latitude'],
+        myLocation['longitude'],
+        otherLocation['latitude'],
+        otherLocation['longitude']);
     List<dynamic> objectsNearMe = [];
-
 
     return objectsNearMe;
   }
@@ -95,56 +98,59 @@ class BaseCommand {
 
   //"{"test1", "test2", "test3"} => ["test1", "test2", "test3"]
   List<String> parseRoles(String inputString) {
-  // Remove curly braces and split string into individual words
-  List<String> words = inputString.replaceAll('{', '').replaceAll('}', '').split(', ');
-  print("words: $words");
-  return words;
-}
+    // Remove curly braces and split string into individual words
+    List<String> words =
+        inputString.replaceAll('{', '').replaceAll('}', '').split(', ');
+    print("words: $words");
+    return words;
+  }
+
   //["test1", "test2", "test3"] => {"test1", "test2", "test3"}
   String stringifyRoles(List<String> inputList) {
+    String rolesString = inputList.toSet().toString();
 
-  String rolesString = inputList.toSet().toString();
-
-  return rolesString;
-}
+    return rolesString;
+  }
 
   //remove all data
-void nukeData(){
-  WidgetsFlutterBinding.ensureInitialized();
-  //nuke data
-  userModel = _mainContext.read();
-  paymentModel = _mainContext.read();
-  appModel = _mainContext.read();
-  eventsModel = _mainContext.read();
-  gamesModel = _mainContext.read();
-  homePageModel = _mainContext.read();
-  requestsModel = _mainContext.read();
-  requestsPageModel = _mainContext.read();
-  friendsPageModel = _mainContext.read();
-  chatPageModel = _mainContext.read();
-  
-  //services
-  geoLocationServices = _mainContext.read();
+  void nukeData() {
+    WidgetsFlutterBinding.ensureInitialized();
+    //nuke data
+    userModel = _mainContext.read();
+    paymentModel = _mainContext.read();
+    appModel = _mainContext.read();
+    eventsModel = _mainContext.read();
+    gamesModel = _mainContext.read();
+    homePageModel = _mainContext.read();
+    requestsModel = _mainContext.read();
+    requestsPageModel = _mainContext.read();
+    friendsPageModel = _mainContext.read();
+    chatPageModel = _mainContext.read();
 
-  appModel.initialConditionsMet = false;
+    homePageModel.nukeData();
 
-}
+    //services
+    geoLocationServices = _mainContext.read();
 
-Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) async{
-  print("createUserAttributesCheck()");
-  print("userAttributes: $userAttributes");
-  bool createUserAttributesCheckResponse = true;
-  try{
-    String email = userAttributes['email'];
-    String username = userAttributes['username'];
-    String phone = userAttributes['phone'];
-    dynamic userInput = {
-      "email": email,
-      "username": username,
-      "phone": phone    
-    };
-    print("userInput: $userInput");
-    http.Response response = await http.post(
+    appModel.initialConditionsMet = false;
+  }
+
+  Future<bool> uniquenessUserAttributesCheck(
+      Map<String, dynamic> userAttributes) async {
+    print("createUserAttributesCheck()");
+    print("userAttributes: $userAttributes");
+    bool createUserAttributesCheckResponse = true;
+    try {
+      String email = userAttributes['email'];
+      String username = userAttributes['username'];
+      String phone = userAttributes['phone'];
+      dynamic userInput = {
+        "email": email,
+        "username": username,
+        "phone": phone
+      };
+      print("userInput: $userInput");
+      http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
           'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
@@ -162,36 +168,31 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
       dynamic getUserByUsernameResponse = data['getUserByUsername'];
       dynamic getUserByPhoneResponse = data['getUserByPhone'];
 
-      if(getUserByEmailResponse != null){
+      if (getUserByEmailResponse != null) {
         print("email already exists");
         createUserAttributesCheckResponse = false;
       }
-      if(getUserByUsernameResponse != null){
+      if (getUserByUsernameResponse != null) {
         print("username already exists");
         createUserAttributesCheckResponse = false;
       }
-      if(getUserByPhoneResponse != null){
+      if (getUserByPhoneResponse != null) {
         print("phone already exists");
-        if(dotenv.env['ENVIRONMENT'] == "PRODUCTION"){
+        if (dotenv.env['ENVIRONMENT'] == "PRODUCTION") {
           //if in production, don't allow user to create account with phone number that already exists
           createUserAttributesCheckResponse = false;
-        
         }
       }
+    } catch (e) {
+      print("createUserAttributesCheck error: ");
+      print(e);
+      createUserAttributesCheckResponse = false;
+    }
 
-  } catch(e){
-    print("createUserAttributesCheck error: ");
-    print(e);
-    createUserAttributesCheckResponse = false;
+    return createUserAttributesCheckResponse;
   }
-  
 
-  return createUserAttributesCheckResponse;
-
-}
-
-
-  void updateChatViewModels(dynamic chat, eventOrTeamObject){
+  void updateChatViewModels(dynamic chat, eventOrTeamObject) {
     print("updateChatViewModels()");
     print("chat: $chat");
     print("eventOrTeamObject: $eventOrTeamObject");
@@ -200,7 +201,7 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
   }
 
   //will load profile, team, and other user images
-  Future<Map<String, dynamic>> loadUserImagesFromAWS() async{
+  Future<Map<String, dynamic>> loadUserImagesFromAWS() async {
     print("loadUserImagesFromAWS()");
     Map<String, dynamic> loadUserImagesResponse = {
       "success": false,
@@ -208,69 +209,78 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
       "data": null
     };
 
-    try{
-      // await ImagesCommand().getAndSetUserProfileImage();      
+    try {
+      // await ImagesCommand().getAndSetUserProfileImage();
 
       return loadUserImagesResponse;
-    } catch(e){
+    } catch (e) {
       print("loadUserImages error: ");
       print(e);
       return loadUserImagesResponse;
     }
   }
 
-  String getProfileUrl(){
+  String getProfileUrl() {
     return userModel.profileImageUrl;
   }
 
   // Future<String> getProfileImage() async{
   //   String profileImageURL = "";
   //   String signedUrl = await ImagesCommand().getUserProfileImage();
-    
 
   //   return profileImageURL;
   // }
 
-  Future <Map<String, dynamic>> reloadUser() async{
+  Future<Map<String, dynamic>> reloadUser() async {
     print("reloadUser");
-    Map<String, dynamic> reloadUserResponse = {"success": false, "message": "Something went wrong with reloading user data", "data": null};
+    Map<String, dynamic> reloadUserResponse = {
+      "success": false,
+      "message": "Something went wrong with reloading user data",
+      "data": null
+    };
 
     return reloadUserResponse;
   }
 
-  void signOut() async{
+  void setIsGuest(bool isGuest) {
+    appModel.isGuest = isGuest;
+  }
+
+  void signOut() async {
     BaseCommand().nukeData();
     await AmplifyAuthService().signOut();
   }
 
-  Future <Map<String, dynamic>> setupInitialAppConfigs() async{
+  Future<Map<String, dynamic>> setupInitialAppConfigs() async {
     print("setupInitialAppConfigs");
-    Map<String, dynamic> setupInitialAppConfigsResponse = {"success": false, "message": "Something went wrong with setting up initial app configs", "data": Map<String, dynamic>()};
-    try{
+    Map<String, dynamic> setupInitialAppConfigsResponse = {
+      "success": false,
+      "message": "Something went wrong with setting up initial app configs",
+      "data": Map<String, dynamic>()
+    };
+    try {
       // Position userPosition = await geoLocationServices.determinePosition();
       // userModel.position = userPosition;
       try {
-        
-      // List<Placemark> placemarks = await placemarkFromCoordinates(
-      //   userPosition.latitude,
-      //   userPosition.longitude,
-      //   localeIdentifier: 'en_US',
-      // );
+        // List<Placemark> placemarks = await placemarkFromCoordinates(
+        //   userPosition.latitude,
+        //   userPosition.longitude,
+        //   localeIdentifier: 'en_US',
+        // );
 
-      // Placemark place = placemarks[0];
-      // print("place: ");
-      // print(place);
-      
-    } catch (e) {
-      print(e);
-    }
-      
+        // Placemark place = placemarks[0];
+        // print("place: ");
+        // print(place);
+      } catch (e) {
+        print(e);
+      }
+
       setupInitialAppConfigsResponse["success"] = true;
       setupInitialAppConfigsResponse["message"] = "Setup initial app configs";
       // setupInitialAppConfigsResponse["data"]["position"] = userPosition;
       print("position: ");
       // print(userPosition);
-    }catch(e){
+    } catch (e) {
       print(e.toString());
     }
     return setupInitialAppConfigsResponse;
@@ -287,47 +297,45 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
 
     var deviceState = await OneSignal.shared.getDeviceState();
 
-        //return if no deviceState is found
-        if (deviceState == null || deviceState.userId == null){
-          print("no deviceState found");
-          return updateUserOSPIDResponse;
-        }
+    //return if no deviceState is found
+    if (deviceState == null || deviceState.userId == null) {
+      print("no deviceState found");
+      return updateUserOSPIDResponse;
+    } else {
+      //coming out to null
+      print("deviceState found for userID: " + appModel.currentUser['_id']);
+      var playerId = deviceState.userId!;
+      Map<String, dynamic> userInput = {
+        '_id': appModel.currentUser['_id'],
+        "OSPID": playerId
+      };
+      await UserCommand().updateUser(userInput);
 
-        else{
-          //coming out to null
-          print("deviceState found for userID: "+appModel.currentUser['_id']);
-          var playerId = deviceState.userId!;
-          Map<String,dynamic>userInput = {
-            '_id': appModel.currentUser['_id'],
-            "OSPID": playerId
-          };
-          await UserCommand().updateUser(userInput);
+      updateUserOSPIDResponse["success"] = true;
 
-          updateUserOSPIDResponse["success"] = true;
-
-          return updateUserOSPIDResponse;
-        }
-
-            
-
-
+      return updateUserOSPIDResponse;
+    }
   }
 
-  Future <Map<String, dynamic>> setupInitialAppModels(String email) async{
+  Future<Map<String, dynamic>> setupInitialAppModels(String email) async {
     print("setupInitialAppModels");
-    print("email: "+email);
-    Map<String, dynamic> resp = {"success": false, "message": "setup unsuccessfull", "data": null};
-    try{            
-      Map<String, dynamic> getUserInput = {
-        "email": email
-      };
-      Map<String, dynamic> getUserResp = await UserCommand().getUserByEmail(getUserInput);     
+    print("email: " + email);
+    Map<String, dynamic> resp = {
+      "success": false,
+      "message": "setup unsuccessfull",
+      "data": null
+    };
+    try {
+      Map<String, dynamic> getUserInput = {"email": email};
+      if (!appModel.isGuest) {
+        Map<String, dynamic> getUserResp =
+            await UserCommand().getUserByEmail(getUserInput);
         print("getUserResp: ");
         print(getUserResp);
-      if(getUserResp["success"] == true){
-        if(getUserResp["success"]){          
+
+        if (getUserResp["success"]) {
           dynamic user = getUserResp["data"];
-          if(user==null){
+          if (user == null) {
             Map<String, dynamic> userInput = {
               "name": "no name",
               "email": email,
@@ -337,139 +345,133 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
               "gender": "male",
               "address": "random address",
               "status": "SignedUp"
-            };      
-            Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};      
-            Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
+            };
+            Map<String, dynamic> locationInput = {
+              "latitude": 0,
+              "longitude": 0
+            };
+            Map<String, dynamic> createPlayerResp = await PlayerCommand()
+                .createPlayer(userInput, {}, locationInput, false);
             user = createPlayerResp['data'];
           }
           appModel.currentUser = user;
           print("app model user: ");
           print(appModel.currentUser);
-          print("user['chats']['data']: "+user['chats']['data'].toString());
+          print("user['chats']['data']: " + user['chats']['data'].toString());
           userModel.chats = user['chats']['data'];
-
           //setup onesignal
           await UserCommand().configureOneSignalUserDetails();
-
           print("testing some shit out!");
-          
-          await loadUserImagesFromAWS();
-          await EventCommand().setupMappedEvents();
-          print("get friends and myEvents from currentUser object: " +appModel.currentUser.toString());
+          //not being used so commented out
+          // await loadUserImagesFromAWS();
+          print("get friends and myEvents from currentUser object: " +
+              appModel.currentUser.toString());
           List<dynamic> friends = appModel.currentUser['friends']['data'];
-          List<dynamic> myEvents = appModel.currentUser['eventUserParticipants']['data'];
-          List<dynamic> myTeams = appModel.currentUser['teamUserParticipants']['data'];
+          List<dynamic> myEvents =
+              appModel.currentUser['eventUserParticipants']['data'];
+          List<dynamic> myTeams =
+              appModel.currentUser['teamUserParticipants']['data'];
           List<dynamic> myArchivedEvents = [];
           List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
-          print("friendss: "+friends.toString());                              
-          
-          print("setting appModel.myEvents, appModel.friends, and appModel.myArchivedEvents ");
-          // appModel.myEvents = myEvents;
-          // appModel.friends = friends;
-          // appModel.myArchivedEvents = myArchivedEvents;
-          print("set");
-
-          await EventCommand().setupEventsFromCurrentUser(appModel.currentUser);
-          await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
-          HomePageCommand().getSelectedObjects();
+          HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
           ImagesCommand().setUserProfileImage();
-          
-          //setup events(league, tournament, tryout, training)
-          //,teams, players near me data. 
-          //get location and update user location
-          Position userPosition = await GeoLocationCommand().determinePosition();
-          appModel.currentPosition = userPosition;
-          print("userPosition: "+userPosition.toString());                    
-          appModel.currentUser['currentPosition'] = userPosition;
-          await GeoLocationCommand().setUserAddress(userPosition.latitude, userPosition.longitude);
-          print("check appModel after setting userPosition: "+ appModel.currentUser['currentPosition'].toString());
-          //assume you have the latest events
-          Map<String, dynamic> findEventsNearPointResp = await EventCommand().findEventsNearPoint(eventsModel.events, 50);
-          print("findEventsNearPointResp: "+findEventsNearPointResp.toString());
-          if(findEventsNearPointResp["success"]){
-            dynamic eventsNearPoint = findEventsNearPointResp["data"];
-            print("eventsNearPoint: "+eventsNearPoint.toString());
-            eventsModel.eventsNearMe = eventsNearPoint;
-
-          }
-            
-            print("Setup Events");
-
-            
-            // 
-          // } 
-         
-            resp["success"] = true;
-            resp["message"] = "setup successfull";
-            
-         
-
-         
-        }
-        else{
+        } else {
           print("something went wrong in fetching user");
         }
-
+      } else {
+        print("is guest");
+        HomePageCommand().eventTypeTapped(Constants.PICKUP);
       }      
+
+      await EventCommand().setupEventsFromCurrentUser(appModel.currentUser);
+      await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
       
-    }catch(e){
+      //,teams, players near me data.
+      //get location and update user location
+      Position userPosition = await GeoLocationCommand().determinePosition();
+      appModel.currentPosition = userPosition;
+      print("userPosition: " + userPosition.toString());
+      appModel.currentUser['currentPosition'] = userPosition;
+      await GeoLocationCommand()
+          .setUserAddress(userPosition.latitude, userPosition.longitude);
+      print("check appModel after setting userPosition: " +
+          appModel.currentUser['currentPosition'].toString());
+      //assume you have the latest events
+      Map<String, dynamic> findEventsNearPointResp =
+          await EventCommand().findEventsNearPoint(eventsModel.events, 50);
+      print("findEventsNearPointResp: " + findEventsNearPointResp.toString());
+      if (findEventsNearPointResp["success"]) {
+        dynamic eventsNearPoint = findEventsNearPointResp["data"];
+        print("eventsNearPoint: " + eventsNearPoint.toString());
+        eventsModel.eventsNearMe = eventsNearPoint;
+      }
+      print("Setup Events");
+
+      resp["success"] = true;
+      resp["message"] = "setup successfull";
+    } catch (e) {
       print("errorrrrrrrr: ");
       print(e);
       // userModel.userSetup.value = false;
     }
-    
 
     return resp;
-  
   }
 
-  DateTime dateTimeFromMilliseconds(String millisecondsString){
+  bool isGuest(){
+    return appModel.isGuest;
+  }
+
+  DateTime dateTimeFromMilliseconds(String millisecondsString) {
     int millisecondsSinceEpoch = int.parse(millisecondsString);
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+    DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
 
     return dateTime;
   }
-  
-  Future<Map<String, dynamic>> purgeProfile(Map<String, dynamic> data) async{
+
+  Future<Map<String, dynamic>> purgeProfile(Map<String, dynamic> data) async {
     print("purgeProfile");
-    Map<String, dynamic> resp = {"success": false, "message": "profile not purged", "data": null};
-    try{
+    Map<String, dynamic> resp = {
+      "success": false,
+      "message": "profile not purged",
+      "data": null
+    };
+    try {
       UserCommand().deleteUser(data['userId']);
-    }on ApiException catch(e){
+    } on ApiException catch (e) {
       print("handle exception");
     }
 
-    return resp; 
-
+    return resp;
   }
 
-  void initialConditionsMet(){
+  void initialConditionsMet() {
     appModel.initialConditionsMet = true;
   }
-  
 
-  void setUserId(String userId){
+  void setUserId(String userId) {
     userModel.userID = userId;
-}
+  }
 
-  void setUser(User user){
+  void setUser(User user) {
     // userModel.user = user;
   }
 
-  void setIsSigned(bool signedIn){
+  void setIsSigned(bool signedIn) {
     appModel.isSignedIn = signedIn;
   }
 
   //expects list of user objects with ids
-  String formDisconnectUserIdsString(List<dynamic> users){
+  String formDisconnectUserIdsString(List<dynamic> users) {
     print("formDisconnectUserIdsString");
 
     String disconnectUserIdsString = "";
-    for(int i = 0; i < users.length; i++){
+    for (int i = 0; i < users.length; i++) {
       disconnectUserIdsString += """
           "${users[i]['id']}\n"        
       """;
-      if(i < users.length - 1){
+      if (i < users.length - 1) {
         disconnectUserIdsString += ",";
       }
     }
@@ -479,16 +481,11 @@ Future<bool> uniquenessUserAttributesCheck(Map<String, dynamic> userAttributes) 
 
   bool checkElementExists(List<dynamic> list1, List<dynamic> list2) {
     print("checkElementExists");
-  for (var item1 in list1) {
-    if (list2.any((item2) => item2['_id'] == item1['_id'])) {
-      return true;
+    for (var item1 in list1) {
+      if (list2.any((item2) => item2['_id'] == item1['_id'])) {
+        return true;
+      }
     }
+    return false;
   }
-  return false;
-}
-  
-
-  
-
-  
 }

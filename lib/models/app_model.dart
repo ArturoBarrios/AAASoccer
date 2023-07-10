@@ -12,6 +12,8 @@ class AppModel extends ChangeNotifier {
     
   }
 
+
+
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
   set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
@@ -60,6 +62,13 @@ class AppModel extends ChangeNotifier {
   bool get amplifyConfigured => _amplifyConfigured;
   set amplifyConfigured(bool amplifyConfigured){
     _amplifyConfigured = amplifyConfigured;
+    notifyListeners();
+  }
+  
+  bool _isGuest = false;
+  bool get isGuest => _isGuest;
+  set isGuest(bool isGuest){
+    _isGuest = isGuest;
     notifyListeners();
   }
 

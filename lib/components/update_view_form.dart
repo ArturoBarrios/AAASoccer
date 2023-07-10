@@ -104,6 +104,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
             child: Expanded(
                 child: Column(children: [
       EventDateWidget(eventDetails: widget.userObjectDetails),
+      
       Container(
         margin: const EdgeInsets.all(10.0),
         color: Colors.amber[600],

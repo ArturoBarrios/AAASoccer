@@ -25,6 +25,8 @@ class SideNavs extends StatefulWidget {
   }
 
   ListView getMainSideNav(BuildContext context, dynamic userObject) {
+    print("userObject: " + userObject.toString());
+    bool isGuest = BaseCommand().isGuest();
     String profileImageUrl =
         context.select<UserModel, String>((value) => value.profileImageUrl);
     ListView appBar = ListView(
@@ -55,7 +57,8 @@ class SideNavs extends StatefulWidget {
                   maxRadius: 50,
                 ),
                 SizedBox(height: 10),
-                Text(userObject['username']),
+                userObject['username']!=null ? 
+                Text(userObject['username']) : Text("Guest"),
               ],
             ),
           ),
@@ -153,19 +156,33 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        Container(
-          margin: EdgeInsets.all(25),
-          child: ElevatedButton(
-            onPressed: () {
-              BaseCommand().signOut();
-            },
-            // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-            style: ElevatedButton.styleFrom(
-                elevation: 12.0,
-                textStyle: const TextStyle(color: Colors.white)),
-            child: const Text('Sign Out'),
-          ),
-        ),
+        !isGuest ?         
+          Container(
+            margin: EdgeInsets.all(25),
+            child: ElevatedButton(
+              onPressed: () {
+                BaseCommand().signOut();
+              },
+              // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+              style: ElevatedButton.styleFrom(
+                  elevation: 12.0,
+                  textStyle: const TextStyle(color: Colors.white)),
+              child: const Text('Sign Out'),
+            ),
+          ) : 
+          Container(
+            margin: EdgeInsets.all(25),
+            child: ElevatedButton(
+              onPressed: () {
+                BaseCommand().signOut();
+              },
+              // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+              style: ElevatedButton.styleFrom(
+                  elevation: 12.0,
+                  textStyle: const TextStyle(color: Colors.white)),
+              child: const Text('Go to Sign Up'),
+            ),
+          )
       ],
     );
 
