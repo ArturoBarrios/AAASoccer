@@ -19,12 +19,16 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../enums/EventRequestType.dart';
 
-class RequestsView extends StatefulWidget {
+class RequestsList extends StatefulWidget {
+  final dynamic objectDetails;
+
+  RequestsList({required this.objectDetails});
+
   @override
-  _RequestsViewState createState() => _RequestsViewState();
+  _RequestsListState createState() => _RequestsListState();
 }
 
-class _RequestsViewState extends State<RequestsView> {
+class _RequestsListState extends State<RequestsList> {
   Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
 
   bool _isLoading = true;

@@ -79,8 +79,7 @@ class PaymentCommand extends BaseCommand {
         'customerId': appModel.currentUser['stripeCustomers']['data'][0]
                 ['customerId']
             .toString(),
-      };
-      // var endpointUrl = "https://us-central1-soccer-app-a9060.cloudfunctions.net/getCustomerDetails";
+      };      
       final uri = Uri.https('us-central1-soccer-app-a9060.cloudfunctions.net',
           '/getCustomerDetails', queryParams);
       final getCustomerResult = await http.get(uri);

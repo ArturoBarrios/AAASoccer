@@ -213,7 +213,7 @@ class ImagesCommand extends BaseCommand {
       };
 
       return getImageResponse;
-    } on ApiException catch (e) {
+    }  catch (e) {
       print('Mutation failed: $e');
       return getImageResponse;
     }

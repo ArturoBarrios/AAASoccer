@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
+import '../commands/home_page_command.dart';
 import '../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../constants.dart';
@@ -17,6 +18,11 @@ import '../views/locations/create.dart';
 class HomePageModel extends ChangeNotifier {
 
 
+  nukeData(){
+    print("nuking data");
+    HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
+
+  }
 
   String _testText = "";
   String get testText => _testText;

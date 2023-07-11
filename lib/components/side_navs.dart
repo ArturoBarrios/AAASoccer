@@ -13,6 +13,8 @@ import '../models/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../views/subscriptions_list.dart';
+
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);
 
@@ -25,6 +27,8 @@ class SideNavs extends StatefulWidget {
   }
 
   ListView getMainSideNav(BuildContext context, dynamic userObject) {
+    print("userObject: " + userObject.toString());
+    bool isGuest = BaseCommand().isGuest();
     String profileImageUrl =
         context.select<UserModel, String>((value) => value.profileImageUrl);
     ListView appBar = ListView(
@@ -55,7 +59,8 @@ class SideNavs extends StatefulWidget {
                   maxRadius: 50,
                 ),
                 SizedBox(height: 10),
-                Text(userObject['username']),
+                userObject['username']!=null ? 
+                Text(userObject['username']) : Text("Guest"),
               ],
             ),
           ),
@@ -127,6 +132,19 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
+        ListTile(
+          leading: Icon(
+            Icons.attach_money_outlined,
+          ),
+          title: const Text('Subscriptions'),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return SubscriptionsList();
+              },
+            ));
+          },
+        ),
         // ListTile(
         //   leading: Icon(
         //     Icons.history,
@@ -153,19 +171,33 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        Container(
-          margin: EdgeInsets.all(25),
-          child: ElevatedButton(
-            onPressed: () {
-              BaseCommand().signOut();
-            },
-            // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-            style: ElevatedButton.styleFrom(
-                elevation: 12.0,
-                textStyle: const TextStyle(color: Colors.white)),
-            child: const Text('Sign Out'),
-          ),
-        ),
+        !isGuest ?         
+          Container(
+            margin: EdgeInsets.all(25),
+            child: ElevatedButton(
+              onPressed: () {
+                BaseCommand().signOut();
+              },
+              // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+              style: ElevatedButton.styleFrom(
+                  elevation: 12.0,
+                  textStyle: const TextStyle(color: Colors.white)),
+              child: const Text('Sign Out'),
+            ),
+          ) : 
+          Container(
+            margin: EdgeInsets.all(25),
+            child: ElevatedButton(
+              onPressed: () {
+                BaseCommand().signOut();
+              },
+              // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+              style: ElevatedButton.styleFrom(
+                  elevation: 12.0,
+                  textStyle: const TextStyle(color: Colors.white)),
+              child: const Text('Go to Sign Up'),
+            ),
+          )
       ],
     );
 

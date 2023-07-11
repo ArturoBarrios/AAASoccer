@@ -30,6 +30,10 @@ class AmplifyAuthService {
     return fetchUserAuthResponse;
   }
 
+  static void skipVerifyUser(AuthenticatorState state){
+    state.skipVerifyUser();
+  }
+
   
 
   static void changeAuthenticatorStep(String nextStep, AuthenticatorState state) {

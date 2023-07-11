@@ -88,19 +88,21 @@ class _PickupViewState extends State<PickupView> {
         };
       print("imageKey: $imageKey");
       Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
+      print("getImageUrlRespppp: $getImageUrlResp");
       if(getImageUrlResp['success']){
         imageUrl = getImageUrlResp['data'];
         userEventDetails['mainEvent']['mainImageUrl'] = imageUrl;
+      
+      objectImageInput = {
+        "imageUrl": imageUrl,
+        "containerType": Constants.IMAGEBANNER,
+        "mainEvent": userEventDetails['mainEvent'],
+        "isMine": userEventDetails['isMine'],
+
+      };
       }
     }
 
-    objectImageInput = {
-      "imageUrl": imageUrl,
-      "containerType": Constants.IMAGEBANNER,
-      "mainEvent": userEventDetails['mainEvent'],
-      "isMine": userEventDetails['isMine'],
-
-    };
     setState(() {
       _isLoading = false;
     });

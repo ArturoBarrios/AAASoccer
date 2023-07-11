@@ -162,7 +162,9 @@ class TeamCommand extends BaseCommand {
       appModel.teamsNearMe = teams;
     }
 
-    appModel.myTeams = user['teamUserParticipants']['data'];
+    if(!appModel.isGuest){
+      appModel.myTeams = user['teamUserParticipants']['data'];
+    }
     
 
   }

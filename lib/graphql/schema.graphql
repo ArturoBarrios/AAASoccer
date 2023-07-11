@@ -492,9 +492,9 @@ type Chat  {
   images: [Image] @relation
 }
 
-type Subscription   {
-  id: ID!
+type Subscription   {  
   tier: String
+  price: String
 }
 
 type Location   {  

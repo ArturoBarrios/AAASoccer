@@ -1094,13 +1094,14 @@ class EventCommand extends BaseCommand {
 
       print("started testing!");
       print("games: " + games.toString());
-      for(int i = 0;i<games.length;i++){
-        List<dynamic> userParticipants =  games[i]['event']['userParticipants']['data'];
-        for(int j = 0;j<userParticipants.length;j++){
-          dynamic roles = userParticipants[j]['roles'];                    
-          BaseCommand().parseRoles(roles);          
-        }        
-      }
+
+      // for(int i = 0;i<games.length;i++){
+      //   List<dynamic> userParticipants =  games[i]['event']['userParticipants']['data'];
+      //   for(int j = 0;j<userParticipants.length;j++){
+      //     dynamic roles = userParticipants[j]['roles'];                    
+      //     BaseCommand().parseRoles(roles);          
+      //   }        
+      // }
       print("done parsing roles!");
       eventsModel.games = filteredGamesResp['activeEvents'];      
       eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
@@ -1165,33 +1166,21 @@ class EventCommand extends BaseCommand {
     //currentUser is setup by this point. Either from login,
     // or getting user again at top of function
     print("friends: ");
-    print(appModel.currentUser['friends']['data']);
-    appModel.friends = appModel.currentUser['friends']['data'];
-    List<dynamic> allMyEvents = appModel.currentUser['eventUserParticipants']['data'];
-    print("allMyEvents: "+allMyEvents.toString());
-    List myEvents = allMyEvents;
-    print("myEvents.length before: "+myEvents.length.toString());
-    List myArchivedEvents = [];
-    //filter out archived events
-    myEvents.removeWhere((event) => BaseCommand().dateTimeFromMilliseconds(event['event']['endTime'].toString()).isBefore(DateTime.now()));
+    if(!appModel.isGuest){
+      print(appModel.currentUser['friends']['data']);
+      appModel.friends = appModel.currentUser['friends']['data'];
+      List<dynamic> allMyEvents = appModel.currentUser['eventUserParticipants']['data'];
+      print("allMyEvents: "+allMyEvents.toString());
+      List myEvents = allMyEvents;
+      print("myEvents.length before: "+myEvents.length.toString());
+      List myArchivedEvents = [];
+      //filter out archived events
+      myEvents.removeWhere((event) => BaseCommand().dateTimeFromMilliseconds(event['event']['endTime'].toString()).isBefore(DateTime.now()));
+      appModel.myEvents = myEvents;//appModel.currentUser['eventUserParticipants']['data'];
+      print("myEvents.length after: "+myEvents.length.toString());
+    }
 
-    // for(int i = 0; i < allMyEvents.length; i++){
-    // print("event name: "+myEvents[i]['event']['name'].toString());
-      
-      
-    //   String millisecondsString = allMyEvents[i]['event']['endTime'].toString();
-    //   DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
-    //   print("dateTime.isBefore(DateTime.now()" + dateTime.isBefore(DateTime.now()).toString());
-    //   print("dateTime millisecondsString: "+millisecondsString.toString());
-    //   if(
-    //     dateTime.isBefore(DateTime.now())      
-    //   ){
-    //     myArchivedEvents.add(allMyEvents[i]);
-    //     myEvents.remove(allMyEvents[i]);
-    //   }
-    // }
-    appModel.myEvents = myEvents;//appModel.currentUser['eventUserParticipants']['data'];
-    print("myEvents.length after: "+myEvents.length.toString());
+    
     return setupEventsResp;
   }  
 
@@ -1475,26 +1464,7 @@ class EventCommand extends BaseCommand {
     return removeEventResp;
   }
 
-  Future<Map<String, dynamic>> setupMappedEvents() async {
-    Map<String, dynamic> setupMappedEventsResp = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    try {
-      EventsModel().mappedEvents = {
-        "0": EventsModel().games,
-        "3": EventsModel().tryouts,
-        "4": EventsModel().tournaments,
-        "5": EventsModel().leagues,
-      };
-    } on Exception catch (e) {
-      print('Could not setup mapped events: $e');
-      return setupMappedEventsResp;
-    }
-
-    return setupMappedEventsResp;
-  }
+  
 
   Future<Map<String, dynamic>> removeUsersRolesFromEvent(dynamic event ,List<dynamic> users, List<dynamic>roles ) async {
     print("removePlayersFromTeam");
