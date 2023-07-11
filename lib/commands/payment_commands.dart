@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../constants.dart';
 import '../graphql/mutations/prices.dart';
 import '../graphql/mutations/users.dart';
 import 'base_command.dart';
@@ -93,32 +94,35 @@ class PaymentCommand extends BaseCommand {
   }
 
   Future<Map<String, dynamic>> createPaymentIntent(
-      PaymentCreateIntent event, dynamic eventInput) async {
+      dynamic createPaymentIntentInput) async {
     print("createPaymentIntent");
-    print("event: " + event.toString());
-    print("eventInput: " + eventInput.toString());
+    print("createPaymentIntentInput: " + createPaymentIntentInput.toString());    
     Map<String, dynamic> createPaymentIntentResp = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
+    
     try {
+      PaymentCreateIntent paymentEvent = createPaymentIntentInput['paymentCreateIntent'];
       paymentModel.status = PaymentType.loading;
       final paymentMethod = await Stripe.instance.createPaymentMethod(
         params: PaymentMethodParams.card(
           paymentMethodData:
-              PaymentMethodData(billingDetails: event.billingDetails),
+              PaymentMethodData(billingDetails: paymentEvent.billingDetails),
         ),
       );
+      dynamic price = createPaymentIntentInput['price'];
 
       print("paymentMethod: " + paymentMethod.toString());
+
 
       final paymentIntentResults = await _callPayEndpointMethodId(
           useStripeSdk: true,
           paymentMethodId: paymentMethod.id,
           currency: 'usd',
-          items: event.items,
-          priceInput: eventInput['price']['amount']);
+          items: paymentEvent.items,
+          priceInput: price['amount']);
       print("paymentIntentResults: " + paymentIntentResults.toString());
       print("paymentIntentResults['customer']: " +
           paymentIntentResults['customer'].toString());
@@ -179,32 +183,7 @@ class PaymentCommand extends BaseCommand {
               .createUserCustomer(userInput, stripeCustomerInput);
           print("createUserCustomerResp: " + createUserCustomerResp.toString());
         }
-
-        //create payment
-        DateTime now = DateTime.now();
-        String timestamp = now.millisecondsSinceEpoch.toString();
-
-        print(timestamp);
-
-        dynamic paymentInput = {
-          "amount": eventInput['price']['amount'],
-          "paidAt": timestamp,
-        };
-        print("paymentInput: " + paymentInput.toString());
-        http.Response response = await http.post(
-          Uri.parse('https://graphql.fauna.com/graphql'),
-          headers: <String, String>{
-            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-            'Content-Type': 'application/json'
-          },
-          body: jsonEncode(<String, String>{
-            'query': UserMutations()
-                .createUserEventPayment(userInput, eventInput, paymentInput),
-          }),
-        );
-        print("createUserEventPayment response: " + response.body.toString());
-
-        // UserCommand().addEvent(userInput, priceInput['event']);
+                
       }
 
       createPaymentIntentResp["success"] = true;
@@ -215,6 +194,52 @@ class PaymentCommand extends BaseCommand {
     }
 
     return createPaymentIntentResp;
+  }
+
+  Future<Map<String,dynamic>> createUserObjectPayment(dynamic createUserObjectPaymentInput) async{
+    Map<String,dynamic> createUserObjectPaymentResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null    
+    };
+    print("createUserObjectPaymentInput: " + createUserObjectPaymentInput.toString());
+    try{
+      DateTime now = DateTime.now();
+        String timestamp = now.millisecondsSinceEpoch.toString();
+      //event payment
+      if(createUserObjectPaymentInput['type'] == Constants.PICKUP){
+        dynamic createUserEventPaymentInput = {
+          'event_id': createUserObjectPaymentInput['mainEvent']['_id'],
+          'user_id': appModel.currentUser['_id'],
+          'amount': createUserObjectPaymentInput['price']['amount'],
+          'paidAt': timestamp,
+        };
+        http.Response response = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': UserMutations()
+                .createUserEventPayment(createUserEventPaymentInput),
+          }),
+        );
+        print("createUserEventPayment response: " + response.body.toString());
+      }
+      //team payment
+      else if(createUserObjectPaymentInput['type'] == Constants.TEAM){
+      
+
+      }
+
+
+      return createUserObjectPaymentResp;
+    } catch (e) {
+      print('Mutation failed: $e');
+      return createUserObjectPaymentResp;
+    }
+
   }
 
   bool doesCustomerExist(String customerId) {

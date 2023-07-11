@@ -1000,27 +1000,27 @@ mixin EventMixin {
 
   void purchaseTeam(BuildContext context, dynamic team, String roles,
       dynamic userObjectDetails) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CardFormScreen(
-              priceObject: team,
-              roles: roles,
-              userObjectDetails: userObjectDetails)),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => CardFormScreen(
+    //           priceObject: team,
+    //           roles: roles,
+    //           userObjectDetails: userObjectDetails)),
+    // );
     // await AdaptyPaymentService().makePurchase();
   }
 
   void purchaseEvent(BuildContext context, dynamic event, String roles,
       dynamic userObjectDetails) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CardFormScreen(
-              priceObject: event['price'],
-              roles: roles,
-              userObjectDetails: userObjectDetails)),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => CardFormScreen(
+    //           priceObject: event['price'],
+    //           roles: roles,
+    //           userObjectDetails: userObjectDetails)),
+    // );
     // await AdaptyPaymentService().makePurchase();
   }
 

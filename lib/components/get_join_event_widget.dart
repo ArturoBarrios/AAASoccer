@@ -67,13 +67,17 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
   void purchaseEvent(BuildContext context, dynamic event, String roles,
       dynamic userObjectDetails) async {
     print("purchaseEvent");
+     dynamic subscriptionDetails = {
+      "price": userObjectDetails['mainEvent']['price'],
+      "objectToPurchase": userObjectDetails['mainEvent'],
+      "objectType": Constants.EVENT,      
+    };
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => CardFormScreen(
-              priceObject: event['price'],
-              roles: roles,
-              userObjectDetails: userObjectDetails)),
+              paymentDetails: subscriptionDetails
+              )),
     );
     // await AdaptyPaymentService().makePurchase();
   }

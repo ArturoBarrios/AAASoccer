@@ -19,9 +19,9 @@ import 'package:flip_card/flip_card_controller.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
-  const CardFormScreen({Key? key, required this.subscriptionDetails}) : super(key: key);
+  const CardFormScreen({Key? key, required this.paymentDetails}) : super(key: key);
   
-  final dynamic subscriptionDetails;
+  final dynamic paymentDetails;
 
   @override
   _CardFormScreen createState() => _CardFormScreen();
@@ -38,11 +38,11 @@ class _CardFormScreen extends State<CardFormScreen> {
     Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
     print("currentUser: " + currentUser.toString());
     print("createPaymentIntent");
-    print("priceObject in CardFormScreen: " + widget.priceObject.toString());
-
-    Map<String, dynamic> createPaymentIntentResp =
-        await PaymentCommand().createPaymentIntent(
-            PaymentCreateIntent(
+    print("priceObject in CardFormScreen: " + widget.paymentDetails['price'].toString());
+    dynamic createPaymentIntentInput = {
+      'price': widget.paymentDetails['price'],      
+      'event': widget.paymentDetails,
+      'paymentCreateIntent':  PaymentCreateIntent(
                 billingDetails: BillingDetails(
                   email: currentUser['email'],
                   name: currentUser['username'],
@@ -52,12 +52,15 @@ class _CardFormScreen extends State<CardFormScreen> {
                   {'id': 0},
                   {'id': 1}
                 ]),
-              widget.priceObject
+    };
+    Map<String, dynamic> createPaymentIntentResp =
+        await PaymentCommand().createPaymentIntent(           
+              createPaymentIntentInput
             );
 
     print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
     if (createPaymentIntentResp['success'] ||
-        widget.priceObject['amount'] == '0') {
+        widget.paymentDetails['price']['amount'] == '0') {
       print(
           "if(createPaymentIntentResp['success'] || widget.priceObject['amount'] == '0')");
       print("now addEvent");
@@ -65,12 +68,7 @@ class _CardFormScreen extends State<CardFormScreen> {
       Map<String, dynamic> userInput = {
         '_id': currentUser['_id'],
       };
-      print("currentUser:" + currentUser.toString());
-      print("userInput: " + userInput.toString());
-      print("widget.priceObject: " + widget.priceObject.toString());
-      //these two methods shouldn't be called here lol
-      // EventCommand().addUserToEvent(widget.priceObject, userInput, widget.roles);
-      // UserCommand().updatePaymentStatus(PaymentType.success);
+
       print("move on to next screen");
       
     }
@@ -179,7 +177,7 @@ class _CardFormScreen extends State<CardFormScreen> {
     super.initState();
     isLoading = true;
     print("card form screen initState()");
-    print("widget.priceObject: " + widget.priceObject.toString());
+    print("widget.priceObject: " + widget.paymentDetails.toString());
     //get customers associated with email
     //foreach customer, get payment methods
 

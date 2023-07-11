@@ -47,18 +47,19 @@ class UserMutations {
   }
 
   String createUserEventPayment(
-      dynamic userInput, dynamic eventInput, dynamic paymentInput) {
+      dynamic createUserEventPaymentInput
+      ) {
     String createUserEventPaymentString = """      
       mutation {
         createPayment(data: {
-          amount: "${paymentInput['amount']}",, 
+          amount: "${createUserEventPaymentInput['amount']}",, 
           user: {
-            connect: "${userInput['_id']}"            
+            connect: "${createUserEventPaymentInput['user']['_id']}"            
           } 
           event: {
-            connect: "${eventInput['_id']}"            
+            connect: "${createUserEventPaymentInput['event']['_id']}"            
           }
-          paidAt: "${paymentInput['paidAt']}"
+          paidAt: "${createUserEventPaymentInput['paidAt']}"
           }) {
             _id
             amount

@@ -119,7 +119,7 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
             SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () {
-                purchaseSubscription(context, subscriptions[_currentPage]);
+                purchaseSubscription(context);
               },
               child: Text('Subscribe'),
             ),
