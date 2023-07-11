@@ -32,6 +32,8 @@ class _RequestsListState extends State<RequestsList> {
   Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
 
   bool _isLoading = true;
+  List requests = [];
+
 
   late ScrollController _selectEventController = ScrollController();
 
@@ -106,7 +108,8 @@ class _RequestsListState extends State<RequestsList> {
   final Color selectedColor = Colors.orange.shade500;
 
   void loadInitialData(){
-    requestTypeTapped(selectedRequestType);
+    // requestTypeTapped(selectedRequestType);
+    requests = widget.objectDetails['requests'];
   }
 
   @override
@@ -261,14 +264,14 @@ class _RequestsListState extends State<RequestsList> {
                                   defaultDotColor: Colors.black,
                                   numDots: 10)))
                   : 
-                  selectedObjects.length>0 ? 
+                  requests.length>0 ? 
                   ListView.builder(
   controller: _selectEventController,
-  itemCount: selectedObjects.length,
+  itemCount: requests.length,
   itemBuilder: (_, index) {
     return FutureBuilder(
       future: getRequestCard(
-          selectedKey, selectedObjects[index], svgImage),
+          selectedKey, requests[index], svgImage),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());

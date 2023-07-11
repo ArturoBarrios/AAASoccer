@@ -7,7 +7,6 @@ import 'package:soccermadeeasy/components/teams_list_widget.dart';
 
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
-import '../constants.dart';
 import '../views/game/update.dart';
 
 import 'Mixins/event_mixin.dart';
@@ -18,6 +17,7 @@ import 'create_team_payment.dart';
 import 'create_team_request.dart';
 import 'event_date_widget.dart';
 import 'get_chat_widget.dart';
+import 'get_join_event_widget.dart';
 import 'league_table_widget.dart';
 import 'location_search_bar.dart';
 import 'images_list_widget.dart';
@@ -104,7 +104,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
             child: Expanded(
                 child: Column(children: [
       EventDateWidget(eventDetails: widget.userObjectDetails),
-      
+
       Container(
         margin: const EdgeInsets.all(10.0),
         color: Colors.amber[600],
@@ -120,6 +120,10 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
                 longitude: widget.userObjectDetails['mainEvent']['location']
                     ['data'][0]['longitude']),
       ),
+      GetJoinEventWidget(
+        userObjectDetails: widget.userObjectDetails
+      ),
+      // RequestsList(objectDetails: {"requests": widget.userObjectDetails['mainEvent']['requests']['data']}),
       widget.userObjectDetails['isMine']
           ? locationSearchBar = LocationSearchBar(
               initialValue: widget.userObjectDetails['mainEvent']['location']

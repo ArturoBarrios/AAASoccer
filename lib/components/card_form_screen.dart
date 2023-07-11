@@ -19,11 +19,9 @@ import 'package:flip_card/flip_card_controller.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
-  const CardFormScreen({Key? key, required this.priceObject, required this.roles, required this.userObjectDetails}) : super(key: key);
-
-  final dynamic priceObject;
-  final String roles;
-  final String userObjectDetails;
+  const CardFormScreen({Key? key, required this.subscriptionDetails}) : super(key: key);
+  
+  final dynamic subscriptionDetails;
 
   @override
   _CardFormScreen createState() => _CardFormScreen();

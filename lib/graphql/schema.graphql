@@ -169,7 +169,7 @@ type User  {
   onboarded: Boolean @default(value: false)
   ratings: [Rating] @relation
   mainImageKey: String
-  subscription: Subscription
+  subscription: SubscriptionType
 }
 
 
@@ -228,7 +228,7 @@ type Event   {
   userParticipants: [EventUserParticipant] @relation
   # eventUserOrganizers: EventUserOrganizers
   price: Price @relation(name: "event_price")
-  request: [Request] @relation
+  requests: [Request] @relation
   # organization: Organization
   #need org to create events? nah. allow user to create events,
   #if user has orgs, they can select which org to create event for                
@@ -492,7 +492,7 @@ type Chat  {
   images: [Image] @relation
 }
 
-type Subscription   {  
+type SubscriptionType {  
   tier: String
   price: String
 }

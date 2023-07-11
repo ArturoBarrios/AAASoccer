@@ -647,6 +647,39 @@ class EventCommand extends BaseCommand {
 
 
 
+  Future<Map<String, dynamic>> getEvent(
+      Map<String, dynamic> eventInput) async {
+    print("getEventt()");
+    print("eventInput: " + eventInput.toString());
+    Map<String, dynamic> getEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations().getEvent(eventInput),
+        }),
+      );
+
+      print("response: "+ response.body);
+      dynamic event = jsonDecode(response.body)['data']['findEventByID'];
+      print("event: " + event.toString());
+      
+      getEventResponse["success"] = true;
+      getEventResponse["message"] = "Event Found";
+      getEventResponse["data"] = event;
+    
+
+    return getEventResponse;
+  }
+
   Future<Map<String, dynamic>> getEventGame(
       Map<String, dynamic> eventRequest) async {
     print("getGameEvent()");
@@ -925,6 +958,12 @@ class EventCommand extends BaseCommand {
       isMyEventResp['mainEvent'] = event;
       print("main event: " + event.toString());
       print("main event user participants: "+ event['userParticipants'].toString());
+
+      //get main event requests
+      Map<String,dynamic> getMainEventResp = await getEvent(event);
+      print("getMainEventResp: " + getMainEventResp.toString());
+      print("requestssss: "+ getMainEventResp['data']['requests']['data'].toString());
+
 
       //get chats
       dynamic chats = event['chats']['data'];
