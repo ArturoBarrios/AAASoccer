@@ -13,6 +13,8 @@ import '../models/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../views/subscriptions_list.dart';
+
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);
 
@@ -126,6 +128,19 @@ class SideNavs extends StatefulWidget {
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {
                 return ImagesView();
+              },
+            ));
+          },
+        ),
+        ListTile(
+          leading: Icon(
+            Icons.attach_money_outlined,
+          ),
+          title: const Text('Subscriptions'),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return SubscriptionsList();
               },
             ));
           },
