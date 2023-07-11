@@ -373,18 +373,20 @@ class BaseCommand {
               appModel.currentUser['teamUserParticipants']['data'];
           List<dynamic> myArchivedEvents = [];
           List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
-          HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
           ImagesCommand().setUserProfileImage();
         } else {
           print("something went wrong in fetching user");
         }
       } else {
         print("is guest");
-        HomePageCommand().eventTypeTapped(Constants.PICKUP);
+        // HomePageCommand().eventTypeTapped(Constants.PICKUP);
       }      
 
       await EventCommand().setupEventsFromCurrentUser(appModel.currentUser);
       await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
+      !appModel.isGuest ? 
+        HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
+        : HomePageCommand().eventTypeTapped(Constants.PICKUP);
       
       //,teams, players near me data.
       //get location and update user location
