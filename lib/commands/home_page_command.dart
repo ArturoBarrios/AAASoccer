@@ -1,10 +1,27 @@
+import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/commands/player_command.dart';
+import 'package:soccermadeeasy/commands/team_command.dart';
+import 'package:soccermadeeasy/commands/tournament_command.dart';
+
+
 import 'base_command.dart';
+import 'league_command.dart';
 import 'refresh_posts_command.dart';
 import 'event_command.dart';
 import '../models/home_page_model.dart';
 import '../models/events_model.dart';
 import 'package:flutter/foundation.dart';
 import '../constants.dart';
+import '../components/Cards/pickup_card2.dart';
+import '../components/Cards/player_card.dart';
+import '../components/Cards/training_card.dart';
+import '../components/Cards/tryout_card.dart';
+import '../components/Cards/tournament_card.dart';
+import '../components/Cards/league_card.dart';
+import '../components/Cards/team_card.dart';
+import '../components/Cards/friend_card.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:soccermadeeasy/svg_widgets.dart';
 
 
 class HomePageCommand extends BaseCommand {
@@ -24,7 +41,187 @@ class HomePageCommand extends BaseCommand {
     homePageModel.isDialogueViewOpened = false;
   }    
 
-  void eventTypeTapped(String key){
+  Future<Widget> getCard(
+      String selectedKey, dynamic selectedObject, Svg svgImage) async {
+    
+    
+    print("getCard()");
+    print("selectedKey: " + selectedKey);
+    print("selectedObject: " + selectedObject.toString());
+
+    Widget card = Text(
+        "null"); //PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
+
+    if (selectedKey == Constants.PICKUP) {
+      print("selected pickup: " + selectedObject.toString());
+      print("before getEventDetails");
+      dynamic getEventDetailsResp =
+          await EventCommand().getUserEventDetails([selectedObject['event']]);
+      print("after getEventDetails");
+      card = PickupCard2(
+          gameObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
+    } else if (selectedKey == Constants.TRAINING) {
+      dynamic getEventDetailsResp =
+         await EventCommand().getUserEventDetails([selectedObject['event']]);
+      card = TrainingCard(
+          trainingObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
+    } else if (selectedKey == Constants.TRYOUT) {
+      print("selected tryout");
+      dynamic getEventDetailsResp =
+          await EventCommand().getUserEventDetails([selectedObject['event']]);
+      card = TryoutCard(
+          tryoutObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
+    } else if (selectedKey == Constants.TOURNAMENT) {
+      //process tournament data for card
+      // TournamentCommand().currateTournamentData(selectedObject);
+      print("else if tournament");
+      dynamic getEventDetailsResp =
+          await EventCommand().getUserEventDetails(selectedObject['events']['data']);
+      getEventDetailsResp['groupStage'] = selectedObject['groupStage'];
+      print("a::");
+      getEventDetailsResp['tournamentStage'] = selectedObject['tournamentStage'];
+      print("b::");
+      card = TournamentCard(
+          tournamentObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
+    } else if (selectedKey == Constants.LEAGUE) {
+      //process league data for card
+      // LeagueCommand().currateLeagueData(selectedObject);
+      dynamic getEventDetailsResp =
+          await EventCommand().getUserEventDetails(selectedObject['events']['data']);
+      card = LeagueCard(
+          leagueObject: selectedObject,
+          svgImage: svgImage,
+          userEventDetails: getEventDetailsResp);
+    } else if (selectedKey == Constants.PLAYER) {
+      dynamic playerDetails = await PlayerCommand().getUserPlayerDetails(selectedObject);
+      card = PlayerCard(playerObject: selectedObject, playerDetails: playerDetails, svgImage: svgImage);
+    } else if (selectedKey == Constants.TEAM) {            
+      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject);
+      card = TeamCard(
+          teamObject: selectedObject, svgImage: svgImage, userTeamDetails: userTeamDetails);
+    } else if (selectedKey == Constants.MYTEAMS){
+      print("selectedKey == MYTEAMS");
+      print("selectedObject: " + selectedObject.toString());
+      dynamic team = selectedObject['team'];
+      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team);      
+      card = TeamCard(
+          teamObject: team, svgImage: svgImage, userTeamDetails: userTeamDetails);
+    }
+    else if (selectedKey == Constants.FRIEND) {
+      card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
+    } 
+    //My Events
+    else if (selectedKey == Constants.MYEVENTS) {
+      print("testing EventType.GAME===Game.type ");
+      print("GAME" == selectedObject['event']['type'].toString());
+      if (selectedObject['event']['type'].toString() 
+        == "GAME") {
+        print("IN IF");
+        print("selectedObject['event']['games']: " +
+            selectedObject['event']['games'].toString());
+        //get game object first
+        dynamic gameObject = selectedObject['event']['games']['data'][0];
+        print("0");
+        gameObject['event'] = selectedObject['event'];
+        dynamic getEventDetailsResp =
+            await EventCommand().getUserEventDetails([gameObject['event']]);
+        print("getEventDetailsResp: " + getEventDetailsResp.toString());
+        card = PickupCard2(
+            gameObject: gameObject,
+            svgImage: svgImage,
+            userEventDetails: getEventDetailsResp);
+      } else if (selectedObject['event']['type'].toString() 
+        == "TRAINING") {
+        print("selectedObject['event']['trainings']: " +
+            selectedObject['event']['trainings'].toString());
+        //get game object first
+        dynamic trainingObject =
+            selectedObject['event']['trainings']['data'][0];
+        print("0");
+        trainingObject['event'] = selectedObject['event'];
+        dynamic getEventDetailsResp =
+            await EventCommand().getUserEventDetails([trainingObject['event']]);
+        card = TrainingCard(
+            trainingObject: trainingObject,
+            svgImage: svgImage,
+            userEventDetails: getEventDetailsResp);
+      
+      } else if (selectedObject['event']['type'].toString() 
+        == "TRYOUT") {
+        print("selectedObject['event']['tryouts']: " +
+            selectedObject['event']['trainings'].toString());
+        //get game object first
+        dynamic tryoutObject =
+            selectedObject['event']['tryouts']['data'][0];
+        print("0");
+        tryoutObject['event'] = selectedObject['event'];
+        dynamic getEventDetailsResp =
+            await EventCommand().getUserEventDetails([tryoutObject['event']]);
+        card = TryoutCard(
+            tryoutObject: tryoutObject,
+            svgImage: svgImage,
+            userEventDetails: getEventDetailsResp);
+      }      
+      else if (selectedObject['event']['type'].toString() 
+      == "TOURNAMENT") {
+        String tournamentId = selectedObject['event']['tournaments']['data'][0]['_id'];
+        dynamic findTournamentByIdResp =
+            await TournamentCommand().findTournamentById(tournamentId);
+        if (findTournamentByIdResp['success']) {
+          dynamic tournament = findTournamentByIdResp['data'];
+          dynamic getEventDetailsResp = await EventCommand()
+              .getUserEventDetails(tournament['events']['data']);
+          print("tournament['groupStage']: " + tournament['groupStage'].toString());
+          getEventDetailsResp['groupStage'] = tournament['groupStage'];
+          card = TournamentCard(
+              tournamentObject: tournament,
+              svgImage: svgImage,
+              userEventDetails: getEventDetailsResp);
+           
+        }
+      }
+      else if (selectedObject['event']['type'].toString()
+       == "LEAGUE") {
+        String leagueId = selectedObject['event']['leagues']['data'][0]['_id'];
+        dynamic findLeagueByIdResp =
+            await LeagueCommand().findLeagueById(leagueId);
+        if (findLeagueByIdResp['success']) {
+          dynamic league = findLeagueByIdResp['data'];
+          dynamic getEventDetailsResp = await EventCommand()
+              .getUserEventDetails(league['events']['data']);
+          card = LeagueCard(
+              leagueObject: league,
+              svgImage: svgImage,
+              userEventDetails: getEventDetailsResp);
+        }       
+      }
+    }
+
+    return card;
+  }
+
+  Future<void> setCards() async{
+    print("setCards()");    
+    homePageModel.cards = [];
+    homePageModel.cardsLoading = true;
+    Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
+    for(int i = 0;i<homePageModel.selectedObjects.length;i++){
+      Widget card = await getCard(homePageModel.selectedKey, homePageModel.selectedObjects[i], svgImage);
+      homePageModel.cards.add(card);
+
+    }
+    homePageModel.cardsLoading = false;
+  }
+
+  Future<void> eventTypeTapped(String key) async{
     print("eventTypeTapped");
     print(key);
     print(homePageModel.enabledSelections2[key]['enabled']);
@@ -34,6 +231,7 @@ class HomePageCommand extends BaseCommand {
     homePageModel.enabledSelections2[key]['enabled'] = !homePageModel.enabledSelections2[key]['enabled'];
     homePageModel.selectedKey = key;    
     getSelectedObjects();
+    
     
   }
 

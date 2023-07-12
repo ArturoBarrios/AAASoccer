@@ -5,6 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import '../commands/player_command.dart';
+import '../components/Loading/loading_screen.dart';
 import '../services/amplify_auth_service.dart' as AmplifyAuth;
 //import widgets
 import '../components/select_icon_button.dart';
@@ -229,8 +230,6 @@ class _Home extends State<Home> {
   String selectedKey = "";
   List selectedObjects = [];
 
-  
-
   // The controller for the ListView
   late ScrollController _selectEventTypeController = ScrollController();
   late ScrollController _selectEventController = ScrollController();
@@ -296,196 +295,27 @@ class _Home extends State<Home> {
     return eventsList;
   }
 
-  
-
   @override
   void dispose() {
     _selectEventController.removeListener(_loadMore);
     super.dispose();
   }
 
-  Future<Widget> getCard(
-      String selectedKey, dynamic selectedObject, Svg svgImage) async {
-    print("getCard()");
-    print("selectedKey: " + selectedKey);
-    print("selectedObject: " + selectedObject.toString());
-
-    Widget card = Text(
-        "null"); //PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
-
-    if (selectedKey == Constants.PICKUP) {
-      print("selected pickup: " + selectedObject.toString());
-      print("before getEventDetails");
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject['event']]);
-      print("after getEventDetails");
-      card = PickupCard2(
-          gameObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.TRAINING) {
-      dynamic getEventDetailsResp =
-         await EventCommand().getUserEventDetails([selectedObject['event']]);
-      card = TrainingCard(
-          trainingObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.TRYOUT) {
-      print("selected tryout");
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject['event']]);
-      card = TryoutCard(
-          tryoutObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.TOURNAMENT) {
-      //process tournament data for card
-      // TournamentCommand().currateTournamentData(selectedObject);
-      print("else if tournament");
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails(selectedObject['events']['data']);
-      getEventDetailsResp['groupStage'] = selectedObject['groupStage'];
-      print("a::");
-      getEventDetailsResp['tournamentStage'] = selectedObject['tournamentStage'];
-      print("b::");
-      card = TournamentCard(
-          tournamentObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.LEAGUE) {
-      //process league data for card
-      // LeagueCommand().currateLeagueData(selectedObject);
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails(selectedObject['events']['data']);
-      card = LeagueCard(
-          leagueObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.PLAYER) {
-      dynamic playerDetails = await PlayerCommand().getUserPlayerDetails(selectedObject);
-      card = PlayerCard(playerObject: selectedObject, playerDetails: playerDetails, svgImage: svgImage);
-    } else if (selectedKey == Constants.TEAM) {            
-      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject);
-      card = TeamCard(
-          teamObject: selectedObject, svgImage: svgImage, userTeamDetails: userTeamDetails);
-    } else if (selectedKey == Constants.MYTEAMS){
-      print("selectedKey == MYTEAMS");
-      print("selectedObject: " + selectedObject.toString());
-      dynamic team = selectedObject['team'];
-      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team);      
-      card = TeamCard(
-          teamObject: team, svgImage: svgImage, userTeamDetails: userTeamDetails);
-    }
-    else if (selectedKey == Constants.FRIEND) {
-      card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
-    } 
-    //My Events
-    else if (selectedKey == Constants.MYEVENTS) {
-      print("testing EventType.GAME===Game.type ");
-      print("GAME" == selectedObject['event']['type'].toString());
-      if (selectedObject['event']['type'].toString() 
-        == "GAME") {
-        print("IN IF");
-        print("selectedObject['event']['games']: " +
-            selectedObject['event']['games'].toString());
-        //get game object first
-        dynamic gameObject = selectedObject['event']['games']['data'][0];
-        print("0");
-        gameObject['event'] = selectedObject['event'];
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([gameObject['event']]);
-        print("getEventDetailsResp: " + getEventDetailsResp.toString());
-        card = PickupCard2(
-            gameObject: gameObject,
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
-      } else if (selectedObject['event']['type'].toString() 
-        == "TRAINING") {
-        print("selectedObject['event']['trainings']: " +
-            selectedObject['event']['trainings'].toString());
-        //get game object first
-        dynamic trainingObject =
-            selectedObject['event']['trainings']['data'][0];
-        print("0");
-        trainingObject['event'] = selectedObject['event'];
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([trainingObject['event']]);
-        card = TrainingCard(
-            trainingObject: trainingObject,
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
-      
-      } else if (selectedObject['event']['type'].toString() 
-        == "TRYOUT") {
-        print("selectedObject['event']['tryouts']: " +
-            selectedObject['event']['trainings'].toString());
-        //get game object first
-        dynamic tryoutObject =
-            selectedObject['event']['tryouts']['data'][0];
-        print("0");
-        tryoutObject['event'] = selectedObject['event'];
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([tryoutObject['event']]);
-        card = TryoutCard(
-            tryoutObject: tryoutObject,
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
-      }      
-      else if (selectedObject['event']['type'].toString() 
-      == "TOURNAMENT") {
-        String tournamentId = selectedObject['event']['tournaments']['data'][0]['_id'];
-        dynamic findTournamentByIdResp =
-            await TournamentCommand().findTournamentById(tournamentId);
-        if (findTournamentByIdResp['success']) {
-          dynamic tournament = findTournamentByIdResp['data'];
-          dynamic getEventDetailsResp = await EventCommand()
-              .getUserEventDetails(tournament['events']['data']);
-          print("tournament['groupStage']: " + tournament['groupStage'].toString());
-          getEventDetailsResp['groupStage'] = tournament['groupStage'];
-          card = TournamentCard(
-              tournamentObject: tournament,
-              svgImage: svgImage,
-              userEventDetails: getEventDetailsResp);
-           
-        }
-      }
-      else if (selectedObject['event']['type'].toString()
-       == "LEAGUE") {
-        String leagueId = selectedObject['event']['leagues']['data'][0]['_id'];
-        dynamic findLeagueByIdResp =
-            await LeagueCommand().findLeagueById(leagueId);
-        if (findLeagueByIdResp['success']) {
-          dynamic league = findLeagueByIdResp['data'];
-          dynamic getEventDetailsResp = await EventCommand()
-              .getUserEventDetails(league['events']['data']);
-          card = LeagueCard(
-              leagueObject: league,
-              svgImage: svgImage,
-              userEventDetails: getEventDetailsResp);
-        }       
-      }
-    }
-
-    return card;
-  }
-
   void testFunction() {
     print("testFunction");
   }
 
-  Future<void> loadInitialData() async{
+  Future<void> loadInitialData() async {
     _selectEventController = ScrollController()..addListener(_loadMore);
     userObject = UserCommand().getAppModelUser();
-
+    await HomePageCommand().setCards();    
   }
 
   @override
   void initState() {
     print("initState() in home");
-    super.initState();    
+    super.initState();
     loadInitialData();
-    
-
   }
 
   @override
@@ -509,18 +339,21 @@ class _Home extends State<Home> {
         context.select<HomePageModel, Map<String, dynamic>>(
             (value) => value.enabledSelections2);
 
-    context.select<EventsModel, List<dynamic>>((value) => value.games);
+    List cards = context.select<HomePageModel, List>((value) => value.cards);
     
+    bool cardsLoading = context.select<HomePageModel, bool>((value) => value.cardsLoading);
+
+    context.select<EventsModel, List<dynamic>>((value) => value.games);
+
     context.select<AppModel, List<dynamic>>((value) => value.friends);
 
     context.select<AppModel, List<dynamic>>((value) => value.myEvents);
 
     context.select<AppModel, List<dynamic>>((value) => value.teams);
 
-    
-
     print("selectedKey in build: " + selectedKey);
-    print("selectedObjects length in build: " + selectedObjects.length.toString());
+    print("selectedObjects length in build: " +
+        selectedObjects.length.toString());
 
     return (Scaffold(
       appBar: Headers().getMainHeader(context),
@@ -529,11 +362,10 @@ class _Home extends State<Home> {
         child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
       ),
       body: Stack(children: <Widget>[
-        Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          Expanded(
-              child: Column(children: <Widget>[
-            Expanded(
-                child: ListView.builder(
+        Column(children: [
+          Container(
+            height: 200, // Define the height you want for your card section
+            child: ListView.builder(
               scrollDirection: Axis.horizontal,
               controller: _selectEventTypeController,
               itemCount: enabledSelections2.length,
@@ -543,13 +375,14 @@ class _Home extends State<Home> {
                   margin:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                   child: SelectIconButton(
-                      eventObject: enabledSelections2[key],
-                      svgImage: svgImage,
-                      index: index),
+                    eventObject: enabledSelections2[key],
+                    svgImage: svgImage,
+                    index: index,
+                  ),
                 );
               },
-            )),
-          ])),
+            ),
+          ),
           //logic/button for sending team/event requests to
           // multiple players
           userObjectSelections.isNotEmpty
@@ -633,29 +466,30 @@ class _Home extends State<Home> {
                     child: Center(child: Text("Send Event/Team Request")),
                   ))
               : Container(),
-          //list view
-          Expanded(
-            child: ListView.builder(
-              controller: _selectEventController,
-              itemCount: selectedObjects.length,
-              itemBuilder: (_, index) => FutureBuilder(
-                future: getCard(selectedKey, selectedObjects[index], svgImage),
-                builder: (_, snapshot) {
-                  if (snapshot.hasData) {
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 10,
-                      ),
-                      child: snapshot.data as Widget,
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
-            ),
-          ),
+          !cardsLoading
+              ?
+              //list view
+              Expanded(
+                  child: ListView.builder(
+                      controller: _selectEventController,
+                      itemCount: cards.length,
+                      itemBuilder: (_, index) => Card(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 10,
+                            ),
+                            child: cards[index],
+                          )),
+                )
+              : Container(
+                  height: 100,
+                  width: 100,
+                  child: Align(
+                      alignment: Alignment.center,
+                      child: LoadingScreen(
+                          currentDotColor: Colors.white,
+                          defaultDotColor: Colors.black,
+                          numDots: 10)))
         ])
       ]),
       bottomNavigationBar: const Footers().getMainBottomNav(context),

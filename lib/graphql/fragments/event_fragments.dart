@@ -62,6 +62,11 @@ class EventFragments {
           _id
         }
       }
+      tryouts{
+        data{
+          _id
+        }
+      }
       tournaments{
         data{
           _id
