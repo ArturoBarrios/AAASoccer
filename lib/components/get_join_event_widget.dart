@@ -70,7 +70,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
      dynamic subscriptionDetails = {
       "price": userObjectDetails['mainEvent']['price'],
       "objectToPurchase": userObjectDetails['mainEvent'],
-      "objectType": Constants.EVENT,      
+      "objectType": Constants.EVENT,    
+      "roles": roles,  
+      "forRole": Constants.PLAYER,
     };
     Navigator.push(
       context,

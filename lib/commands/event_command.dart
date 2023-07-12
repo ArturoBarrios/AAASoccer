@@ -123,12 +123,13 @@ class EventCommand extends BaseCommand {
     return roles;
   }
 
-  Map<String, dynamic> checkIfUpdateRole(dynamic event, dynamic userObject, String role){    
+  Map<String, dynamic> checkIfUpdateRole(dynamic event, dynamic userObject){    
         print("checkIfUpdateRole");
         dynamic checkIfUpdateRoleResp = {
           "updateRole": false,
           "eventRequestId": ""
         };        
+        print("event: " + event.toString());
         userObject['eventUserParticipants']['data']
             .forEach((eventUserParticipantElement) {
           if (eventUserParticipantElement['event']['_id'] == event['_id']) {
@@ -153,7 +154,7 @@ class EventCommand extends BaseCommand {
     };
     try {      
       dynamic userObject = UserCommand().getAppModelUser();
-      dynamic updateRoleResp = EventCommand().checkIfUpdateRole(eventInput, userObject, eventInput['forRole']);
+      dynamic updateRoleResp = EventCommand().checkIfUpdateRole(eventInput, userObject);
       if(updateRoleResp['updateRole']){
         updateUserRolesInEvent(eventInput, userInput, roles, updateRoleResp['eventUserParticipant']);
       }

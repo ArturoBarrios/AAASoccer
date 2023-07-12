@@ -54,8 +54,10 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
       dynamic userObjectDetails) async {
     dynamic subscriptionDetails = {
       "price": userObjectDetails['team']['price'],
-      "objectToPurchase": team,
-      "objectType": Constants.TEAM,      
+      "objectToPurchase": userObjectDetails['team'],
+      "objectType": Constants.TEAM,     
+      "roles": roles,
+      "forRole": Constants.PLAYER, 
     };
     Navigator.push(
       context,

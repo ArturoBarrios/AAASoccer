@@ -44,13 +44,13 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
     dynamic paymentDetails = {
       "price": subscriptions[_currentPage]["price"],
       "objectToPurchase": subscriptions[_currentPage],
-      "objectType": Constants.SUBSCRIPTION,
+      "objectType": Constants.SUBSCRIPTION,      
     };
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => CardFormScreen(
-              subscriptionDetails: paymentDetails)),
+              paymentDetails: paymentDetails)),
     );
     // await AdaptyPaymentService().makePurchase();
   }

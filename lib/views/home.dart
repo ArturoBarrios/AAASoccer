@@ -532,9 +532,6 @@ class _Home extends State<Home> {
         Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Expanded(
               child: Column(children: <Widget>[
-            // Padding(
-            //     padding: EdgeInsets.all(10.0),
-            //     child: SearchField(testText: testText)),
             Expanded(
                 child: ListView.builder(
               scrollDirection: Axis.horizontal,
