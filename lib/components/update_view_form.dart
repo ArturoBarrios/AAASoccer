@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/players_list_widget.dart';
 import 'package:soccermadeeasy/components/price_widget.dart';
+import 'package:soccermadeeasy/components/requests_list.dart';
 import 'package:soccermadeeasy/components/send_players_request_widget.dart';
 import 'package:soccermadeeasy/components/send_teams_request_widget.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';

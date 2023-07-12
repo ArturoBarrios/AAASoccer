@@ -36,6 +36,14 @@ class _CardFormScreen extends State<CardFormScreen> {
   late ScrollController _selectPaymentController = ScrollController();
   final FlipCardController flipCardController = FlipCardController();
 
+  List waysToPay = [
+    "Pay With Existing Card",
+    "Pay With New Card",
+    "PayPal", 
+    "Apple Card"
+  ];
+  String? _selectedPayment;
+
   void createPaymentIntent() async {
     Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
     print("currentUser: " + currentUser.toString());
@@ -114,18 +122,6 @@ class _CardFormScreen extends State<CardFormScreen> {
                     onPressed: () {
                       (controller.details.complete)
                           ? createPaymentIntent()
-
-                          // context.read<PaymentBloc>().add(
-                          //     const PaymentCreateIntent(
-                          //       billingDetails: BillingDetails(
-                          //         email: 'testingflutter@dev.com'
-                          //       ),
-                          //       items: [
-                          //         {'id': 0},
-                          //         {'id': 1}
-                          //       ],
-                          //     ),
-                          //   )
                           : ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('The form is not complete.'),
@@ -191,22 +187,24 @@ class _CardFormScreen extends State<CardFormScreen> {
     }
   }
 
+  void loadInitialData(){
+    //get customers associated with email
+    //foreach customer, get payment methods
+    //todo check if customer exists, if so show credit card options.
+    dynamic customerResponse = getCustomerPaymentMethods();
+
+    print("customerResponse: " + customerResponse.toString());
+
+  }
+
   @override
   void initState() {
     super.initState();
     isLoading = true;
     print("card form screen initState()");
-    print("widget.priceObject: " + widget.paymentDetails.toString());
-    //get customers associated with email
-    //foreach customer, get payment methods
+        
+    loadInitialData();
 
-    //todo check if customer exists, if so show credit card options.
-    dynamic customerResponse = getCustomerPaymentMethods();
-
-    print("customerResponse: " + customerResponse.toString());
-    // if(customerResponse['success']){
-    //allow adding new card button
-    // }
   }
 
   void toggleShowCardForm() {
@@ -229,11 +227,46 @@ class _CardFormScreen extends State<CardFormScreen> {
         appBar: AppBar(),
         body: !isLoading
             ? Center(
-                child: Column(children: [
-                Text("Payment Methods"),
-                //list view
-                // Expanded(
-                // child:
+  child: Column(
+    children: [
+      Padding(
+        padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0), // Define your own padding
+        child: Container(
+          height: 50, // Adjust this to make your cards slim
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: waysToPay.length,
+            itemBuilder: (context, index) {
+              return Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Radio<String>(
+                  value: waysToPay[index],
+                  groupValue: _selectedPayment,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedPayment = value;
+                    });
+                  },
+                ),
+                Text(
+                  waysToPay[index],
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+              
+          );
+        },
+      ),
+    ),
+      ),
+    _selectedPayment == waysToPay[0] ?    
+    Padding(
+        padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0), // Define your own padding
+        child:            
                 FlipCard(
                   fill: Fill.fillBack,
                   direction: FlipDirection.HORIZONTAL,
@@ -365,15 +398,17 @@ class _CardFormScreen extends State<CardFormScreen> {
                       ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    print("Add New Card pressed");
-                    toggleShowCardForm();
-                  },
-                  child: Text("Add New Card"),
-                ),
-                if (showCardForm) paymentWidgetToShow(status)
+                 ) )
+                : 
+                // GestureDetector(
+                //   onTap: () {
+                //     print("Add New Card pressed");
+                //     toggleShowCardForm();
+                //   },
+                //   child: Text("Add New Card"),
+                // ),
+                // if (showCardForm)
+                 paymentWidgetToShow(status)
               ]))
             : Center(child: CircularProgressIndicator())
 

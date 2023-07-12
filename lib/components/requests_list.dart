@@ -143,155 +143,144 @@ class _RequestsListState extends State<RequestsList> {
 
     print("selectedObjects to build:: " + selectedObjects.toString());
 
-    return Scaffold(
-        appBar: Headers().getBackHeader(context, "Requests"),
-        body: Stack(children: <Widget>[
-          Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            Expanded(
-                child: Column(children: <Widget>[
-              // Padding(
-              //     padding: EdgeInsets.all(10.0),
-              //     child: SearchField(testText: testText)),
-              Expanded(
-                  child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                controller: _selectRequestTypeController,
-                itemCount: requestTypes.length,
-                itemBuilder: (_, index) {
-                  return Card(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                    child: Listener(
-                        child: GestureDetector(
-                      onTap: () {
-                        print("onTap EventType");
-                        requestTypeTapped(requestTypes[index]);
-                      },
-                      child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
-                          padding: EdgeInsets.all(12.5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0 * 1),
-                            gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  requestTypes[index] == selectedRequestType
-                                      ? selectedColor
-                                      : color,
-                                  requestTypes[index] == selectedRequestType
-                                      ? selectedColor
-                                      : color,
-                                  requestTypes[index] == selectedRequestType
-                                      ? selectedColor
-                                      : color,
-                                  requestTypes[index] == selectedRequestType
-                                      ? selectedColor
-                                      : color,
-                                ],
-                                stops: const [
-                                  0.0,
-                                  .3,
-                                  .6,
-                                  1.0,
-                                ]),
-                            boxShadow: false
-                                ? null
-                                : [
-                                    BoxShadow(
-                                      blurRadius: 10.0,
-                                      offset: -Offset(10.0 / 2, 10.0 / 2),
-                                      color: Colors.white,
-                                    ),
-                                    BoxShadow(
-                                      blurRadius: bevel,
-                                      offset: Offset(10.0 / 2, 10.0 / 2),
-                                      color: Colors.black,
-                                    )
-                                  ],
-                          ),
-                          child: Container(
-                            child: Container(
-                              width: cardWidth,
-                              height: cardHeight,
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                children: [
-                                  Image(
-                                    width: cardImageWidth,
-                                    height: cardImageHeight,
-                                    image: svgImage,
-                                    color: Colors.white,
-                                  ),
-                                  const Spacer(),
-                                  Text(requestTypes[index],
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      )),
-                                  Text(
-                                    "",
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )),
-                    )),
-                  );
-                },
-              )),
-            ])),
-
-            //list view
-            Expanded(
-              child: _isLoading == true
-                  ? Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      child: Align(
-                          alignment: Alignment.center,
-                          child:
-                              // BottomNav()//for times when user deleted in cognito but still signed into app
-                              LoadingScreen(
-                                  currentDotColor: Colors.white,
-                                  defaultDotColor: Colors.black,
-                                  numDots: 10)))
-                  : 
-                  requests.length>0 ? 
-                  ListView.builder(
-  controller: _selectEventController,
-  itemCount: requests.length,
-  itemBuilder: (_, index) {
-    return FutureBuilder(
-      future: getRequestCard(
-          selectedKey, requests[index], svgImage),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
+    return Column(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
+    Container(
+      height: 200,  // Set this to the desired height
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        controller: _selectRequestTypeController,
+        itemCount: requestTypes.length,
+        itemBuilder: (_, index) {
           return Card(
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-            child: snapshot.data,
-          );
-        }
-      },
-    );
-  },
-)
- :
-                          Text("No Requests Yet")
-                          
+            child: GestureDetector(
+              onTap: () {
+                print("onTap EventType");
+                requestTypeTapped(requestTypes[index]);
+              },
+              child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  padding: EdgeInsets.all(12.5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0 * 1),
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          requestTypes[index] == selectedRequestType
+                              ? selectedColor
+                              : color,
+                          requestTypes[index] == selectedRequestType
+                              ? selectedColor
+                              : color,
+                          requestTypes[index] == selectedRequestType
+                              ? selectedColor
+                              : color,
+                          requestTypes[index] == selectedRequestType
+                              ? selectedColor
+                              : color,
+                        ],
+                        stops: const [
+                          0.0,
+                          .3,
+                          .6,
+                          1.0,
+                        ]),
+                    boxShadow: false
+                        ? null
+                        : [
+                            BoxShadow(
+                              blurRadius: 10.0,
+                              offset: -Offset(10.0 / 2, 10.0 / 2),
+                              color: Colors.white,
+                            ),
+                            BoxShadow(
+                              blurRadius: bevel,
+                              offset: Offset(10.0 / 2, 10.0 / 2),
+                              color: Colors.black,
+                            )
+                          ],
+                  ),
+                  child: Container(
+                    child: Container(
+                      width: cardWidth,
+                      height: cardHeight,
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          Image(
+                            width: cardImageWidth,
+                            height: cardImageHeight,
+                            image: svgImage,
+                            color: Colors.white,
+                          ),
+                          const Spacer(),
+                          Text(requestTypes[index],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              )),
+                          Text(
+                            "",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
             ),
-          ]),
-        ]));
+          );
+        },
+      ),
+    ),
+    Expanded(
+      child: _isLoading == true
+          ? Container(
+              height: 100,
+              width: 100,
+              child: Align(
+                  alignment: Alignment.center,
+                  child: LoadingScreen(
+                      currentDotColor: Colors.white,
+                      defaultDotColor: Colors.black,
+                      numDots: 10)))
+          : requests.length > 0
+              ? ListView.builder(
+                  controller: _selectEventController,
+                  itemCount: requests.length,
+                  itemBuilder: (_, index) {
+                    return FutureBuilder(
+                      future: getRequestCard(
+                          selectedKey, requests[index], svgImage),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else {
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 10),
+                            child: snapshot.data,
+                          );
+                        }
+                      },
+                    );
+                  },
+                )
+              : Text("No Requests Yet"),
+    ),
+  ],
+);
+
   }
 }
