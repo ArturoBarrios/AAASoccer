@@ -42,7 +42,7 @@ class _CardFormScreen extends State<CardFormScreen> {
     "PayPal", 
     "Apple Card"
   ];
-  String? _selectedPayment;
+  String? _selectedPayment = "Pay With Existing Card";
 
   void createPaymentIntent() async {
     Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
@@ -264,7 +264,8 @@ class _CardFormScreen extends State<CardFormScreen> {
     ),
       ),
     _selectedPayment == waysToPay[0] ?    
-    Padding(
+    Column(children: [
+      Padding(
         padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0), // Define your own padding
         child:            
                 FlipCard(
@@ -398,7 +399,21 @@ class _CardFormScreen extends State<CardFormScreen> {
                       ),
                     ),
                   ),
-                 ) )
+                 )),
+                Padding(
+  padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0), // Define your own padding
+  child: Container(
+    width: double.infinity,
+    child: ElevatedButton(
+      onPressed: () {
+        createPaymentIntent();
+      },
+      child: const Text('Pay'),
+    ),
+  ),
+)
+    ],)
+    
                 : 
                 // GestureDetector(
                 //   onTap: () {
