@@ -37,63 +37,62 @@ class _BracketWidgetState extends State<BracketWidget> {
   bool _isLoading = true;
   List<Round> rounds = [];
 
-  @override
-  void initState() {
-    super.initState();
-    print("BracketWidget initState");    
-    loadInitialData();
-  }
-
-void loadInitialData() {
-  print("loadInitialData");
-  print("widget.bracketDetails: " + widget.bracketDetails.toString());
-
-  // Get the initial number of teams
-  int initialTeamCount = widget.bracketDetails['numberOfTeams'];
-  print("initialTeamCount: " + initialTeamCount.toString());
-
-  int roundsLeft = (initialTeamCount == 2) ? 1 : (initialTeamCount ~/ 2);
-  print("roundsLeft: " + roundsLeft.toString());
-
-  for (int i = 0; i < roundsLeft; i++) {
-    // Adjust teamCount calculation to handle the 'Final' case
-    int teamCount = (i == roundsLeft - 1) ? 2 : pow(2, (roundsLeft - i)).toInt();
-
-    // Adjust roundName calculation to handle the 'Final' case
-    String roundName = (i == roundsLeft - 1) ? 'Final' : 'Round of $teamCount';
-
-    List<Match> matches = [];
-    for (int j = 0; j < teamCount ~/ 2; j++) {
-      // Create random team names
-      String team1Name = 'Team ${(i * teamCount) + (j * 2) + 1}';
-      String team2Name = 'Team ${(i * teamCount) + (j * 2) + 2}';
-      
-      Team team1 = Team(team1Name, (j * 2) + 1);
-      Team team2 = Team(team2Name, (j * 2) + 2);
-      matches.add(Match(team1, team2));
-    }
-
-    rounds.add(Round(roundName, matches));
-  }
-
-  setState(() {
-    _isLoading = false;
-  });
-  print("done loading initial data");
-}
-
-
-
-
-
-
-
-
   void simulateMatchResult(Match match, String result) {
     setState(() {
       match.isComplete = true;
       match.result = result;
     });
+  }
+
+  void loadInitialData() {
+  print("loadInitialData");
+  print("widget.bracketDetails: " + widget.bracketDetails.toString());
+
+  List<dynamic> eventOrders = widget.bracketDetails['eventOrders']['data'];
+  print("eventOrders: " + eventOrders.toString());
+  //order eventOrders by eventOrders['order']
+  eventOrders.sort((a, b) => a['order'].compareTo(b['order']));
+
+  // Get the initial number of teams
+  // int initialTeamCount = widget.bracketDetails['numberOfTeams'];
+  // print("initialTeamCount: " + initialTeamCount.toString());
+
+  // int roundsLeft = (initialTeamCount == 2) ? 1 : (initialTeamCount ~/ 2);
+  // print("roundsLeft: " + roundsLeft.toString());
+
+  // for (int i = 0; i < roundsLeft; i++) {
+  //   // Adjust teamCount calculation to handle the 'Final' case
+  //   int teamCount = (i == roundsLeft - 1) ? 2 : pow(2, (roundsLeft - i)).toInt();
+
+  //   // Adjust roundName calculation to handle the 'Final' case
+  //   String roundName = (i == roundsLeft - 1) ? 'Final' : 'Round of $teamCount';
+
+  //   List<Match> matches = [];
+  //   for (int j = 0; j < teamCount ~/ 2; j++) {
+  //     // Create random team names
+  //     String team1Name = 'Team ${(i * teamCount) + (j * 2) + 1}';
+  //     String team2Name = 'Team ${(i * teamCount) + (j * 2) + 2}';
+      
+  //     Team team1 = Team(team1Name, (j * 2) + 1);
+  //     Team team2 = Team(team2Name, (j * 2) + 2);
+  //     matches.add(Match(team1, team2));
+  //   }
+
+  //   rounds.add(Round(roundName, matches));
+  // }
+
+  setState(() {
+    _isLoading = false;
+  });
+  print("done loading initial data");
+
+}
+
+@override
+  void initState() {
+    super.initState();
+    print("BracketWidget initState");    
+    loadInitialData();
   }
 
   @override

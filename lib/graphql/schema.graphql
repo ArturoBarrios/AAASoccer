@@ -425,6 +425,7 @@ type TournamentStage {
   numberOfRoundsPerTeam: Int  
   tournament: Tournament
   eventOrders: [EventOrder] @relation
+  
 }
 
 type Tournament   {

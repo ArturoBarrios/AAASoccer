@@ -88,6 +88,12 @@ class TournamentFragments {
                 order                  
                 event{
                   _id
+                  teams{
+                    data{
+                      _id
+                      name
+                    }
+                  }
                 }
               }
             }
