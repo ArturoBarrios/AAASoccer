@@ -17,12 +17,7 @@ class Match {
   Match(this.team1, this.team2);
 }
 
-class Round {
-  final String roundName;
-  final List<Match> matches;
 
-  Round(this.roundName, this.matches);
-}
 
 class BracketWidget extends StatefulWidget {
   final dynamic bracketDetails;
@@ -34,8 +29,8 @@ class BracketWidget extends StatefulWidget {
 }
 
 class _BracketWidgetState extends State<BracketWidget> {
-  bool _isLoading = true;
-  List<Round> rounds = [];
+  bool _isLoading = true;  
+  List<dynamic> eventOrders = [];
 
   void simulateMatchResult(Match match, String result) {
     setState(() {
@@ -48,7 +43,7 @@ class _BracketWidgetState extends State<BracketWidget> {
   print("loadInitialData");
   print("widget.bracketDetails: " + widget.bracketDetails.toString());
 
-  List<dynamic> eventOrders = widget.bracketDetails['eventOrders']['data'];
+  eventOrders = widget.bracketDetails['eventOrders']['data'];
   print("eventOrders: " + eventOrders.toString());
   //order eventOrders by eventOrders['order']
   eventOrders.sort((a, b) => a['order'].compareTo(b['order']));
@@ -108,53 +103,54 @@ class _BracketWidgetState extends State<BracketWidget> {
           : Container(
               margin: EdgeInsets.all(16.0),
               child: ListView.builder(
-                itemCount: rounds.length,
-                itemBuilder: (context, roundIndex) {
+                itemCount: eventOrders.length,
+                itemBuilder: (context, eventIndex) {
                   return Column(
                     children: [
                       Text(
-                        rounds[roundIndex].roundName,
+                        "Some Round",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18.0,
                         ),
                       ),
                       SizedBox(height: 16.0),
-                      ...rounds[roundIndex].matches.map(
-                        (match) => Container(
+                      ...eventOrders[eventIndex]['event'].map(
+                        (event) => Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
                             borderRadius: BorderRadius.circular(8.0),
-                            color: match.isComplete ? Colors.green : null,
+                            color: false ? Colors.green : null,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: Text(
-                                  match.team1.name,
+                                  "team 1",
                                   style: TextStyle(fontSize: 16.0),
                                 ),
                               ),
                               SizedBox(width: 8.0),
                               Expanded(
                                 child: Text(
-                                  match.team2.name,
+                                  "team 2",
                                   style: TextStyle(fontSize: 16.0),
                                 ),
                               ),
                               SizedBox(width: 8.0),
-                              if (match.isComplete)
+                              if (true)
                                 Text(
-                                  match.result,
+                                  "1-1",
                                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                                 ),
-                              if (!match.isComplete)
-                                ElevatedButton(
-                                  onPressed: () => simulateMatchResult(match, 'Result'),
-                                  child: Text('Simulate Result'),
-                                ),
+                              if (false)
+                              Text("no match played"),
+                                // ElevatedButton(
+                                //   onPressed: () => simulateMatchResult(match, 'Result'),
+                                //   child: Text('Simulate Result'),
+                                // ),
                             ],
                           ),
                         ),

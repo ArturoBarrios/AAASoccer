@@ -124,7 +124,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
       GetJoinEventWidget(
         userObjectDetails: widget.userObjectDetails
       ),
-      // RequestsList(objectDetails: {"requests": widget.userObjectDetails['mainEvent']['requests']['data']}),
+      RequestsList(objectDetails: {"requests": widget.userObjectDetails['mainEvent']['requests']['data']}),
       widget.userObjectDetails['isMine']
           ? locationSearchBar = LocationSearchBar(
               initialValue: widget.userObjectDetails['mainEvent']['location']

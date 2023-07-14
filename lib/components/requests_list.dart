@@ -110,6 +110,10 @@ class _RequestsListState extends State<RequestsList> {
   void loadInitialData(){
     // requestTypeTapped(selectedRequestType);
     requests = widget.objectDetails['requests'];
+    print("requestsss: " + requests.toString());
+    setState(() {
+      _isLoading = false;      
+    });
   }
 
   @override
@@ -241,11 +245,10 @@ class _RequestsListState extends State<RequestsList> {
         },
       ),
     ),
-    Expanded(
-      child: _isLoading == true
+    
+      _isLoading == true
           ? Container(
-              height: 100,
-              width: 100,
+              height: 100,              
               child: Align(
                   alignment: Alignment.center,
                   child: LoadingScreen(
@@ -253,32 +256,37 @@ class _RequestsListState extends State<RequestsList> {
                       defaultDotColor: Colors.black,
                       numDots: 10)))
           : requests.length > 0
-              ? ListView.builder(
-                  controller: _selectEventController,
-                  itemCount: requests.length,
-                  itemBuilder: (_, index) {
-                    return FutureBuilder(
-                      future: getRequestCard(
-                          selectedKey, requests[index], svgImage),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else {
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 10),
-                            child: snapshot.data,
-                          );
-                        }
+              ?
+              Container(
+                height:100,
+                child: 
+                  ListView.builder(
+                      controller: _selectEventController,
+                      itemCount: requests.length,
+                      itemBuilder: (_, index) {
+                        return FutureBuilder(
+                          future: getRequestCard(
+                              selectedKey, requests[index], svgImage),
+                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else {
+                              return Card(
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 10),
+                                child: snapshot.data,
+                              );
+                            }
+                          },
+                        );
                       },
-                    );
-                  },
-                )
+                    )
+              ) 
               : Text("No Requests Yet"),
-    ),
+    
   ],
 );
 
