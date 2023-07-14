@@ -201,7 +201,7 @@ type TeamUserParticipant {
 
 type Game {
   hometeam: Team
-  awayTeam: Team
+  awayteam: Team
   teamA: String 
   teamB: String
   round: Int
@@ -425,7 +425,7 @@ type TournamentStage {
   numberOfRoundsPerTeam: Int  
   tournament: Tournament
   eventOrders: [EventOrder] @relation
-  
+
 }
 
 type Tournament   {

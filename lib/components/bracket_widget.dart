@@ -105,18 +105,30 @@ class _BracketWidgetState extends State<BracketWidget> {
               child: ListView.builder(
                 itemCount: eventOrders.length,
                 itemBuilder: (context, eventIndex) {
+                  dynamic eventOrder = eventOrders[eventIndex];
+                  int round = eventOrder['order'];
+                  dynamic game = eventOrder['event']['games']['data'].length>0 ? 
+                  eventOrder['event']['games']['data'][0] : null;
+                  dynamic team1 = game != null ? 
+                    game['hometeam'] : null;
+                  dynamic team2 = game != null ? 
+                    game['awayteam'] : null;
+                  print("event in ListView: " + eventOrder.toString());
+                  print("round: " + round.toString());
+                  print("game: " + game.toString());
+                  print("team1: " + team1.toString());
+                  print("team2: " + team2.toString());
                   return Column(
                     children: [
                       Text(
-                        "Some Round",
+                        round.toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18.0,
                         ),
                       ),
-                      SizedBox(height: 16.0),
-                      ...eventOrders[eventIndex]['event'].map(
-                        (event) => Container(
+                      SizedBox(height: 16.0),                      
+                        Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
@@ -128,24 +140,25 @@ class _BracketWidgetState extends State<BracketWidget> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  "team 1",
+                                  team1!= null ? team1['name'] : "No Team",
                                   style: TextStyle(fontSize: 16.0),
                                 ),
                               ),
                               SizedBox(width: 8.0),
                               Expanded(
                                 child: Text(
-                                  "team 2",
+                                  team2!= null ? team2['name'] : "No Team",
                                   style: TextStyle(fontSize: 16.0),
                                 ),
                               ),
                               SizedBox(width: 8.0),
-                              if (true)
+                              if (game != null)
                                 Text(
-                                  "1-1",
+                                  game['homescore'].toString()+ "-"+ 
+                                    game['awayscore'].toString() ,
                                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                                 ),
-                              if (false)
+                              if(game == null)
                               Text("no match played"),
                                 // ElevatedButton(
                                 //   onPressed: () => simulateMatchResult(match, 'Result'),
@@ -154,7 +167,7 @@ class _BracketWidgetState extends State<BracketWidget> {
                             ],
                           ),
                         ),
-                      ),
+                      
                       SizedBox(height: 24.0),
                     ],
                   );
