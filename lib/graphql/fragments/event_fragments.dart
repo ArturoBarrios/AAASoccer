@@ -1,3 +1,4 @@
+import 'package:soccermadeeasy/graphql/fragments/request_fragments.dart';
 import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
 import 'package:soccermadeeasy/graphql/fragments/chat_fragments.dart';
 
@@ -17,6 +18,11 @@ class EventFragments {
       endTime  
       capacity
       createdAt
+      requests{
+        data{
+          ${RequestFragments().fullRequest()}
+        }
+      }
       images{
         data{
           ${ImageFragments().fullImage()}              
@@ -52,6 +58,11 @@ class EventFragments {
         }
       }
       trainings{
+        data{
+          _id
+        }
+      }
+      tryouts{
         data{
           _id
         }

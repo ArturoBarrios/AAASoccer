@@ -50,6 +50,8 @@ class Constants {
   //image select options
   static final String IMAGEDELETE = "Delete";
   static final String IMAGEREPLACE = "Replace Image";
+
+  static final String SUBSCRIPTION = "SUBSCRIPTION";
   
 
 

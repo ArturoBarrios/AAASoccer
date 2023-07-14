@@ -38,6 +38,13 @@ class HomePageModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  bool _cardsLoading = true;
+  bool get cardsLoading => _cardsLoading;
+  set cardsLoading(bool cardsLoading){
+    _cardsLoading = cardsLoading;
+    notifyListeners();
+  }
+
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
   set isSignedIn(bool isSignedIn){
@@ -64,9 +71,7 @@ class HomePageModel extends ChangeNotifier {
   set selectedKey(String selectedKey){
     _selectedKey = selectedKey;
     notifyListeners();
-  }
-
-  
+  }  
 
 
   Map<String, dynamic> _enabledSelections2 = {
@@ -162,6 +167,14 @@ class HomePageModel extends ChangeNotifier {
   set selectedObjects(List selectedObjects){
     print("set selected objects!");
     _selectedObjects = selectedObjects;
+    notifyListeners();
+  }
+
+  List _cards = [];
+  List get cards => _cards;
+  set cards(List cards){
+    print("set homePageModel cards!");
+    _cards = cards;
     notifyListeners();
   }
   

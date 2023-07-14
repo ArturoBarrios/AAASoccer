@@ -1,6 +1,23 @@
 import '../fragments/event_fragments.dart';
 
 class EventMutations {
+
+  String getEvent(
+      Map<String, dynamic> eventInput) {
+    String getEvent = """      
+      query {
+        findEventByID(id: ${eventInput['_id']}) {
+          ${EventFragments().fullEvent()}
+        }
+      }
+      """;
+
+    return getEvent;
+  
+  
+
+  }
+
   String addPlayerToEventDoesntWork(
       Map<String, dynamic> eventInput, Map<String, dynamic> playerInput) {
     String addPlayerToEvent = """      

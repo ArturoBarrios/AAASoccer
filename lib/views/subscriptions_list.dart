@@ -1,6 +1,9 @@
+import '../components/card_form_screen.dart';
 import '../components/headers.dart';
 
 import 'package:flutter/material.dart';
+
+import '../constants.dart';
 
 class SubscriptionsList extends StatefulWidget {
   @override
@@ -34,6 +37,23 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
   ];
 
   int _currentPage = 0;
+
+  void purchaseSubscription(BuildContext context,
+      ) async {
+    print("purchaseEvent");
+    dynamic paymentDetails = {
+      "price": subscriptions[_currentPage]["price"],
+      "objectToPurchase": subscriptions[_currentPage],
+      "objectType": Constants.SUBSCRIPTION,      
+    };
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CardFormScreen(
+              paymentDetails: paymentDetails)),
+    );
+    // await AdaptyPaymentService().makePurchase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +118,9 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                purchaseSubscription(context);
+              },
               child: Text('Subscribe'),
             ),
           ],

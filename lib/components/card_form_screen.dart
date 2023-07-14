@@ -6,6 +6,8 @@ import 'package:soccermadeeasy/models/Payment.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
+import '../commands/team_command.dart';
+import '../constants.dart';
 import '../enums/PaymentType.dart';
 import '../models/payment_model.dart';
 import '../components/Cards/payment_card.dart';
@@ -19,11 +21,9 @@ import 'package:flip_card/flip_card_controller.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
-  const CardFormScreen({Key? key, required this.priceObject, required this.roles, required this.userObjectDetails}) : super(key: key);
-
-  final dynamic priceObject;
-  final String roles;
-  final String userObjectDetails;
+  const CardFormScreen({Key? key, required this.paymentDetails}) : super(key: key);
+  
+  final dynamic paymentDetails;
 
   @override
   _CardFormScreen createState() => _CardFormScreen();
@@ -36,44 +36,67 @@ class _CardFormScreen extends State<CardFormScreen> {
   late ScrollController _selectPaymentController = ScrollController();
   final FlipCardController flipCardController = FlipCardController();
 
+  List waysToPay = [
+    "Pay With Existing Card",
+    "Pay With New Card",
+    "PayPal", 
+    "Apple Card"
+  ];
+  String? _selectedPayment = "Pay With Existing Card";
+
   void createPaymentIntent() async {
     Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
     print("currentUser: " + currentUser.toString());
     print("createPaymentIntent");
-    print("priceObject in CardFormScreen: " + widget.priceObject.toString());
-
+    print("priceObject in CardFormScreen: " + widget.paymentDetails['price'].toString());
+    dynamic createPaymentIntentInput = {
+      'price': widget.paymentDetails['price'],      
+      'event': widget.paymentDetails,
+      'paymentCreateIntent':  PaymentCreateIntent(
+        billingDetails: BillingDetails(
+          email: currentUser['email'],
+          name: currentUser['username'],
+          phone: currentUser['phone'],
+        ),
+        items: [
+          {'id': 0},
+          {'id': 1}
+        ]),
+    };
     Map<String, dynamic> createPaymentIntentResp =
-        await PaymentCommand().createPaymentIntent(
-            PaymentCreateIntent(
-                billingDetails: BillingDetails(
-                  email: currentUser['email'],
-                  name: currentUser['username'],
-                  phone: currentUser['phone'],
-                ),
-                items: [
-                  {'id': 0},
-                  {'id': 1}
-                ]),
-              widget.priceObject
+        await PaymentCommand().createPaymentIntent(           
+              createPaymentIntentInput
             );
 
     print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
     if (createPaymentIntentResp['success'] ||
-        widget.priceObject['amount'] == '0') {
+        widget.paymentDetails['price']['amount'] == '0') {
       print(
           "if(createPaymentIntentResp['success'] || widget.priceObject['amount'] == '0')");
       print("now addEvent");
+      if(widget.paymentDetails['objectType'] == Constants.EVENT){        
+        dynamic addEventResp = await EventCommand().addUserToEvent(
+            widget.paymentDetails['objectToPurchase'],
+            currentUser, 
+            widget.paymentDetails['roles']);
+        print("addEventResp: " + addEventResp.toString());
+
+      }
+      else if(widget.paymentDetails['objectType'] == Constants.TEAM){
+        dynamic addEventResp = await TeamCommand().addUserToTeam(
+            widget.paymentDetails['objectToPurchase'],
+            currentUser, 
+            widget.paymentDetails['roles']);
+        print("addEventResp: " + addEventResp.toString());
+      }
       //move on to next screen
-      Map<String, dynamic> userInput = {
-        '_id': currentUser['_id'],
-      };
-      print("currentUser:" + currentUser.toString());
-      print("userInput: " + userInput.toString());
-      print("widget.priceObject: " + widget.priceObject.toString());
-      //these two methods shouldn't be called here lol
-      // EventCommand().addUserToEvent(widget.priceObject, userInput, widget.roles);
-      // UserCommand().updatePaymentStatus(PaymentType.success);
+
+      
+
       print("move on to next screen");
+
+      //go back
+      Navigator.pop(context);
       
     }
   }
@@ -99,18 +122,6 @@ class _CardFormScreen extends State<CardFormScreen> {
                     onPressed: () {
                       (controller.details.complete)
                           ? createPaymentIntent()
-
-                          // context.read<PaymentBloc>().add(
-                          //     const PaymentCreateIntent(
-                          //       billingDetails: BillingDetails(
-                          //         email: 'testingflutter@dev.com'
-                          //       ),
-                          //       items: [
-                          //         {'id': 0},
-                          //         {'id': 1}
-                          //       ],
-                          //     ),
-                          //   )
                           : ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('The form is not complete.'),
@@ -176,22 +187,24 @@ class _CardFormScreen extends State<CardFormScreen> {
     }
   }
 
+  void loadInitialData(){
+    //get customers associated with email
+    //foreach customer, get payment methods
+    //todo check if customer exists, if so show credit card options.
+    dynamic customerResponse = getCustomerPaymentMethods();
+
+    print("customerResponse: " + customerResponse.toString());
+
+  }
+
   @override
   void initState() {
     super.initState();
     isLoading = true;
     print("card form screen initState()");
-    print("widget.priceObject: " + widget.priceObject.toString());
-    //get customers associated with email
-    //foreach customer, get payment methods
+        
+    loadInitialData();
 
-    //todo check if customer exists, if so show credit card options.
-    dynamic customerResponse = getCustomerPaymentMethods();
-
-    print("customerResponse: " + customerResponse.toString());
-    // if(customerResponse['success']){
-    //allow adding new card button
-    // }
   }
 
   void toggleShowCardForm() {
@@ -214,11 +227,47 @@ class _CardFormScreen extends State<CardFormScreen> {
         appBar: AppBar(),
         body: !isLoading
             ? Center(
-                child: Column(children: [
-                Text("Payment Methods"),
-                //list view
-                // Expanded(
-                // child:
+  child: Column(
+    children: [
+      Padding(
+        padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0), // Define your own padding
+        child: Container(
+          height: 50, // Adjust this to make your cards slim
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: waysToPay.length,
+            itemBuilder: (context, index) {
+              return Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Radio<String>(
+                  value: waysToPay[index],
+                  groupValue: _selectedPayment,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedPayment = value;
+                    });
+                  },
+                ),
+                Text(
+                  waysToPay[index],
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+              
+          );
+        },
+      ),
+    ),
+      ),
+    _selectedPayment == waysToPay[0] ?    
+    Column(children: [
+      Padding(
+        padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0), // Define your own padding
+        child:            
                 FlipCard(
                   fill: Fill.fillBack,
                   direction: FlipDirection.HORIZONTAL,
@@ -350,148 +399,35 @@ class _CardFormScreen extends State<CardFormScreen> {
                       ),
                     ),
                   ),
-// )
-
-                  // ListView.builder(
-                  //   controller: _selectPaymentController,
-                  //   itemCount: 1,
-                  //   itemBuilder: (_, index) =>
-                  //           FlipCard(
-                  //             fill: Fill.fillFront,
-                  //             direction: FlipDirection.HORIZONTAL,
-                  //             controller: flipCardController,
-                  //             onFlip: () {
-                  //               print('Flip');
-                  //             },
-                  //             flipOnTouch: false,
-                  //             onFlipDone: (isFront) {
-                  //               print('isFront: $isFront');
-                  //             },
-                  //             front: Padding(
-                  //               padding: const EdgeInsets.symmetric(horizontal: 10),
-                  //               child: buildCreditCard(
-                  //               color: Colors.red,
-                  //               cardNumber: "4242 4242 4242 4242",
-                  //               cardHolder: "Arturo Barrios",
-                  //               cardExpiration: "12/24",
-                  //             ),
-                  //             ),
-                  //             back: Padding(
-                  //               padding: const EdgeInsets.symmetric(horizontal: 10),
-                  //               child:
-                  //                 Card(
-                  //   child: Column(
-                  //     mainAxisSize: MainAxisSize.min,
-                  //     children: <Widget>[
-                  //       const ListTile(
-                  //         leading: Icon(Icons.album),
-                  //         title: Text('The Enchanted Nightingale'),
-                  //         subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-                  //       ),
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.end,
-                  //         children: <Widget>[
-                  //           TextButton(
-                  //             child: const Text('BUY TICKETS'),
-                  //             onPressed: () {/* ... */},
-                  //           ),
-                  //           const SizedBox(width: 8),
-                  //           TextButton(
-                  //             child: const Text('LISTEN'),
-                  //             onPressed: () {/* ... */},
-                  //           ),
-                  //           const SizedBox(width: 8),
-                  //         ],
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
-                  //             )
-
-                  //           ),
-
-                  // ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    print("Add New Card pressed");
-                    toggleShowCardForm();
-                  },
-                  child: Text("Add New Card"),
-                ),
-                if (showCardForm) paymentWidgetToShow(status)
+                 )),
+                Padding(
+  padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0), // Define your own padding
+  child: Container(
+    width: double.infinity,
+    child: ElevatedButton(
+      onPressed: () {
+        createPaymentIntent();
+      },
+      child: const Text('Pay'),
+    ),
+  ),
+)
+    ],)
+    
+                : 
+                // GestureDetector(
+                //   onTap: () {
+                //     print("Add New Card pressed");
+                //     toggleShowCardForm();
+                //   },
+                //   child: Text("Add New Card"),
+                // ),
+                // if (showCardForm)
+                 paymentWidgetToShow(status)
               ]))
             : Center(child: CircularProgressIndicator())
 
-        // PaymentModel().status == PaymentStatus.initial?
-
-        // if( state.status== PaymentStatus.initial){
-        //       child = return Padding(
-        //         padding: const EdgeInsets.all(20),
-        //         child: Column(
-        //           mainAxisAlignment: MainAxisAlignment.start,
-        //           crossAxisAlignment: CrossAxisAlignment.stretch,
-        //           children: [
-        //             Text(
-        //               'Card Form',
-        //               style: Theme.of(context).textTheme.headline5
-        //             ),
-        //             const SizedBox(height: 20),
-        //             CardFormField(
-        //               controller: controller,
-        //             ),
-        //             const SizedBox(height: 10),
-        //             ElevatedButton(
-        //               onPressed: () {
-        //                 (controller.details.complete)
-        //                   ? context.read<PaymentBloc>().add(
-        //                       const PaymentCreateIntent(
-        //                         billingDetails: BillingDetails(
-        //                           email: 'testingflutter@dev.com'
-        //                         ),
-        //                         items: [
-        //                           {'id': 0},
-        //                           {'id': 1}
-        //                         ],
-        //                       ),
-        //                     )
-        //                       : ScaffoldMessenger.of(context).showSnackBar(
-        //                         const SnackBar(
-        //                           content: Text('The form is not complete.'),
-        //                         ),
-        //                       );
-        //               },
-        //               child: const Text('Pay')
-        //             )
-        //           ]
-        //         )
-        //       );
-        //     }
-        //     if(state.status == PaymentStatus.success){
-        //       child = return Column(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           const Text('The payment is successful.'),
-        //           const SizedBox(
-        //             height: 10,
-        //             width: double.infinity,
-        //           ),
-        //           ElevatedButton(
-        //             onPressed: () {
-        //               context.read<PaymentBloc>().add(PaymentStart());
-        //             },
-        //             child: const Text('Back to Home')
-        //           ),
-        //         ],
-        //       );
-
-        //     }
-        //     else{
-        //       child = return const Center(child: CircularProgressIndicator());
-
-        //     }
-        //      child;
+        
 
         );
   }

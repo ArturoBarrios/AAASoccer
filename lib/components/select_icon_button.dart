@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:soccermadeeasy/views/home.dart';
 import '../commands/home_page_command.dart';
 import '../models/home_page_model.dart';
 
@@ -41,6 +42,7 @@ class _SelectIconButton extends State<SelectIconButton> {
         onTap: () {
           print("onTap EventType");          
           HomePageCommand().eventTypeTapped(widget.eventObject['key']);
+          HomePageCommand().setCards();
 
         },
         child: AnimatedContainer(   

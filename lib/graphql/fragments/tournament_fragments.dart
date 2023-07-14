@@ -88,6 +88,27 @@ class TournamentFragments {
                 order                  
                 event{
                   _id
+                  games{
+                    data{
+                      _id
+                      homegoals
+                      awaygoals
+                      hometeam{
+                        _id
+                        name                        
+                      }
+                      awayteam{
+                        _id
+                        name                        
+                      }
+                    }
+                  }
+                  teams{
+                    data{
+                      _id
+                      name
+                    }
+                  }
                 }
               }
             }
