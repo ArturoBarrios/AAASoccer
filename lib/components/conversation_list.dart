@@ -85,11 +85,7 @@ class _ConversationListState extends State<ConversationList> {
             Expanded(
               child: Row(
                 children: <Widget>[
-                  ObjectProfileMainImage(objectImageInput: objectImageInput),
-                  // CircleAvatar(
-                  //   backgroundImage: NetworkImage(""),
-                  //   maxRadius: 30,
-                  // ),
+                  ObjectProfileMainImage(objectImageInput: objectImageInput),                  
                   SizedBox(width: 16,),
                   Expanded(
                     child: Container(
@@ -108,6 +104,12 @@ class _ConversationListState extends State<ConversationList> {
               ),
             ),
             Text(time,style: TextStyle(fontSize: 12,fontWeight: isMessageRead?FontWeight.bold:FontWeight.normal),),
+            IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            // removeTeamFromEvent(teams[index]);
+                          },
+                        ),
           ],
         ),
       ),

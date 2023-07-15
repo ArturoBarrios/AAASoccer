@@ -21,9 +21,10 @@ import 'package:flip_card/flip_card_controller.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
-  const CardFormScreen({Key? key, required this.paymentDetails}) : super(key: key);
+  const CardFormScreen({Key? key, required this.paymentDetails, required this.callbackFunction}) : super(key: key);
   
   final dynamic paymentDetails;
+  final Function callbackFunction;
 
   @override
   _CardFormScreen createState() => _CardFormScreen();
@@ -96,7 +97,8 @@ class _CardFormScreen extends State<CardFormScreen> {
       print("move on to next screen");
 
       //go back
-      Navigator.pop(context);
+      // Navigator.pop(context);
+      widget.callbackFunction();
       
     }
   }

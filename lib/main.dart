@@ -665,7 +665,19 @@ class _MyAppState extends State<MyApp> {
               },
               child: MaterialApp(
                   builder: Authenticator.builder(),
-                  home: AppScaffold(client: widget.client)));
+                  home: AppScaffold(client: widget.client),
+                  routes: {
+                    // When navigating to the "/" route, build the HomeScreen widget.
+                    '/home': (context) => Home(),
+                    // When navigating to the "/details" route, build the DetailsScreen widget.
+                    // '/details': (context) => DetailsScreen(),
+                    // Add more routes as needed.
+                  },
+                  
+                  ),
+                  
+
+                  );
         }));
   }
 }

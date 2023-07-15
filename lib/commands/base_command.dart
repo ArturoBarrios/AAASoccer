@@ -72,6 +72,12 @@ class BaseCommand {
     return appModel.userEventDetails;
   }
 
+  void popToHome(BuildContext context){
+    // Navigator.of(context).popUntil(ModalRoute.withName('/home'));
+    Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+
+  }
+
   getHomePageModel() => homePageModel;
   //calculate distance between two points
   dynamic getObjectsNearMe(Map<String, dynamic> myLocation,

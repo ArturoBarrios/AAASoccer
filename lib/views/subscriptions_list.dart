@@ -1,3 +1,6 @@
+import 'package:soccermadeeasy/commands/base_command.dart';
+
+import '../components/Dialogues/congrats_dialogue.dart';
 import '../components/card_form_screen.dart';
 import '../components/headers.dart';
 
@@ -17,21 +20,21 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
       "title": "Regular",
       "description": "High-quality, ad-free music streaming",
       "bulletPoints": ["Unlimited Skips", "Offline Listening"],
-      "price": 9.99,
+      "price": {"amount": ".999"},
     },
     {
       "icon": Icons.rocket,
       "title": "Supercharged",
       "description": "Stream thousands of movies and series",
       "bulletPoints": ["HD Quality", "No Advertisements"],
-      "price": 14.99,
+      "price": {"amount": ".1499"},
     },
     {
       "icon": Icons.rocket_launch,
       "title": "Unlimited",
       "description": "Stream thousands of movies and series",
       "bulletPoints": ["HD Quality", "No Advertisements"],
-      "price": 19.99,
+      "price": {"amount": ".1999"},
     },
     //... add more subscriptions
   ];
@@ -50,9 +53,39 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
       context,
       MaterialPageRoute(
           builder: (context) => CardFormScreen(
-              paymentDetails: paymentDetails)),
+              paymentDetails: paymentDetails,
+              callbackFunction: goToCongratsScreen,)),
     );
     // await AdaptyPaymentService().makePurchase();
+  }
+
+  void popToHome(){
+    BaseCommand().popToHome(context);    
+    // Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+
+  }
+
+  void goToCongratsScreen(){
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return CongratsDialogue(popToHome: popToHome,);
+      },
+    );    
+
+  }
+
+
+  Future<void> loadInitialData() async{
+    print("loadInitialData()");
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadInitialData();
   }
 
   @override

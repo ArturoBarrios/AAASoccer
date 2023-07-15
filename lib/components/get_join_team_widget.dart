@@ -50,6 +50,10 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
     return roles;
   }
 
+  void goToTeam(){
+    Navigator.pop(context);
+  }
+
   void purchaseTeam(BuildContext context, dynamic team, String roles,
       dynamic userObjectDetails) async {
     dynamic subscriptionDetails = {
@@ -63,7 +67,9 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
       context,
       MaterialPageRoute(
           builder: (context) => CardFormScreen(
-              paymentDetails: subscriptionDetails)),
+              paymentDetails: subscriptionDetails,
+              callbackFunction: goToTeam,
+              )),
     );
     // await AdaptyPaymentService().makePurchase();
   }

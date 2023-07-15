@@ -53,7 +53,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     dynamic joinConditionResp = null;
     joinConditions.forEach((joinCondition) {
       print("joinCondition: "+ joinCondition.toString());
-      if(joinCondition['forEvent']!=null){
+      if(joinCondition['forTeam']!=null){
         print("in ifffff");
         joinConditionResp = joinCondition;
       }
@@ -62,6 +62,11 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
     return joinConditionResp;
 
+  }
+
+  void goToEvent(){
+    print("goToEvent");
+    Navigator.pop(context);
   }
 
   void purchaseEvent(BuildContext context, dynamic event, String roles,
@@ -78,7 +83,8 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
       context,
       MaterialPageRoute(
           builder: (context) => CardFormScreen(
-              paymentDetails: subscriptionDetails
+              paymentDetails: subscriptionDetails,
+              callbackFunction: goToEvent,
               )),
     );
     // await AdaptyPaymentService().makePurchase();
