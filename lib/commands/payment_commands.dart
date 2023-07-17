@@ -47,13 +47,25 @@ class PaymentCommand extends BaseCommand {
       final uri = Uri.https("us-central1-soccer-app-a9060.cloudfunctions.net",
           '/listPaymentMethods', queryParams);
 
-      final listPaymentMethodsResp = await http.get(uri);
-      print("response: " + json.decode(listPaymentMethodsResp.body).toString());
-      List listPaymentMethods = json.decode(listPaymentMethodsResp.body);
-      if (listPaymentMethods.length > 0) {
+      dynamic listPaymentMethodsResp = await http.get(uri);
+      listPaymentMethodsResp = json.decode(listPaymentMethodsResp.body);
+      print("response: " + listPaymentMethodsResp.toString());
+      if(listPaymentMethodsResp['success']){
+
+        print("listPaymentMethodsResp['paymentMethods']: " +
+            listPaymentMethodsResp['paymentMethods'].toString());
+        dynamic listPaymentMethods = listPaymentMethodsResp['paymentMethods']['data'];
+        if (listPaymentMethods.length > 0) {
+          getCustomerPaymentMethodsResultResp['success'] = true;
+          getCustomerPaymentMethodsResultResp['message'] = "Success";
+          getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods;
+        }
+      }
+      else{
         getCustomerPaymentMethodsResultResp['success'] = true;
-        getCustomerPaymentMethodsResultResp['message'] = "Success";
-        getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods;
+        getCustomerPaymentMethodsResultResp['message'] = "Something wrong happened";
+        getCustomerPaymentMethodsResultResp['data'] = [];
+
       }
 
       return getCustomerPaymentMethodsResultResp;

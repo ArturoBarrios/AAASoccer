@@ -144,6 +144,51 @@ class EventCommand extends BaseCommand {
         return checkIfUpdateRoleResp;
   }
 
+  Future<Map<String, dynamic>> removeUserFromEvent(
+      dynamic eventInput, dynamic userInput) async {
+    print("removeUserFromEvent");
+    print("eventInput: " + eventInput['userParticipants'].toString());
+    Map<String, dynamic> removeUserFromEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {      
+      dynamic userObject = UserCommand().getAppModelUser();
+      
+        //get userParticipant where user is the user
+        dynamic userParticipant = eventInput['userParticipants']['data']
+            .firstWhere((element) => element['user']['_id'] == userInput['_id']);
+        print("userParticipant: " + userParticipant.toString());
+        eventInput['userParticipantId']  = userParticipant['_id'];
+
+        http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations().removeUserFromEvent(eventInput),
+        }),
+      );
+
+
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+      
+      addEventToMyEvents(jsonDecode(response.body)['data']['updateEvent']);
+
+      
+
+      return removeUserFromEventResponse;      
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return removeUserFromEventResponse;
+    }
+  }
+
   Future<Map<String, dynamic>> addUserToEvent(
       dynamic eventInput, dynamic userInput, String roles) async {
     print("addUserToEvent");

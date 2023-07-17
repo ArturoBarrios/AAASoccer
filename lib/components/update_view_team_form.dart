@@ -108,22 +108,21 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm> {
                   Text(widget.userObjectDetails['team']['location']['data'][0]['name']) ,
                
                 
-                createTeamRequestWidget,                
-                createTeamPaymentWidget,                
-                GetChatWidget(objectEventsDetails: widget.userObjectDetails, updatechatsList: updateChatsList),
-                ChatsListWidget(
-                  chats: widget.userObjectDetails['team']['chats']['data']),
-                  
+                SendMyEventsTeamRequestWidget(userObjectDetails: widget.userObjectDetails, addEventcallback: addEventCallback),                
                 widget.userObjectDetails['isMine'] ?
                 SendPlayersRequestWidget(userObjectDetails: widget.userObjectDetails)
                 : Container(),    
-
-                SendMyEventsTeamRequestWidget(userObjectDetails: widget.userObjectDetails, addEventcallback: addEventCallback),                
-                GetJoinTeamWidget(userObjectDetails: widget.userObjectDetails),
-                // widget.getJoinTeamWidget(context, widget.userObjectDetails, widget.userObjectDetails['team'], widget.userObject),          
-                PlayerList(playersDetails: widget.userObjectDetails),
                 EventsListWidget(objectEventsDetails: widget.userObjectDetails,),
                 ImagesListWidget(details: widget.userObjectDetails),
+                GetJoinTeamWidget(userObjectDetails: widget.userObjectDetails),               
+                PlayerList(playersDetails: widget.userObjectDetails),
+                GetChatWidget(objectEventsDetails: widget.userObjectDetails, updatechatsList: updateChatsList),
+                ChatsListWidget(
+                  chats: widget.userObjectDetails['team']['chats']['data']
+                ),
+                createTeamRequestWidget,                
+                createTeamPaymentWidget,                
+                  
                 //add image
         ]))));
   }

@@ -103,6 +103,50 @@ class ChatCommand extends BaseCommand {
     chatPageModel.chats.insert(indexOfChat, chat);
   }
 
+
+
+
+  //seperate for now because I don't feel like refactoring
+  Future<Map<String,dynamic>> setupChats(List<dynamic> chats) async{
+    print("setupChats");    
+    Map<String,dynamic> setupChatsResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try{      
+      for(int i = 0;i<chats.length;i++){
+        String imageKey = chats[i]['mainImageKey'];
+        dynamic imageInput = {
+          "key": imageKey      
+        };
+        print("imageKeyy: $imageKey");
+        if(imageKey != null){
+          print("imageKey: $imageKey");
+          Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
+          print("getImageUrlResppp: "+getImageUrlResp.toString());
+          if(getImageUrlResp['success']){
+            chats[i]['mainImageUrl'] = getImageUrlResp['data'];
+          }
+        }        
+      }
+      
+      
+
+      setupChatsResp['success'] = true;    
+      setupChatsResp['data'] = chats;  
+
+      print("finished setupChats");
+
+      return setupChatsResp;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return setupChatsResp;
+    }
+
+
+  }
+
   Future<Map<String,dynamic>> setupChatModels() async{
     print("setupChatModels");    
     Map<String,dynamic> setupChatModelsResp = {
