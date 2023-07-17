@@ -90,6 +90,22 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     // await AdaptyPaymentService().makePurchase();
   }
 
+  Future<void> removeUserFromEvent(dynamic event, dynamic userObject) async{
+    dynamic removeUserFromEventResp = await 
+      EventCommand().removeUserFromEvent(event, userObject);
+    //remove event from user and user from event
+    if(removeUserFromEventResp['success']){
+      print("removeUserFromEventResp: "+removeUserFromEventResp.toString());
+      dynamic eventToRemove = removeUserFromEventResp['data'];
+      EventCommand().removeEventFromMyEvents(eventToRemove);
+      setState(() {
+        event['userParticipants']['data'].removeWhere((element) => element['user']['_id']==userObject['_id']);
+        
+      });
+    }
+
+  }
+
   String getRequestType(eventObject) {
     String type = "GAMEREQUEST";
     if (eventObject['type'] == "GAME") {
@@ -327,7 +343,8 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         onTap: () {
           print("onTap Leave Game");
           print("onTap Join My Game");
-            EventCommand().removeUserFromEvent(event, userObject);
+          removeUserFromEvent(event, userObject);
+            
         },
         child: Text("Leave Game"),
       ));

@@ -36,6 +36,7 @@ class _CardFormScreen extends State<CardFormScreen> {
   bool isLoading = true;
   bool showCardForm = true;
   List paymentMethods = [];
+  dynamic selectedPaymentMethod;
   late ScrollController _selectPaymentController = ScrollController();
   final FlipCardController flipCardController = FlipCardController();
 
@@ -67,6 +68,9 @@ class _CardFormScreen extends State<CardFormScreen> {
             {'id': 1}
           ]),
     };
+    if(_selectedPayment == "Pay with Existing Card"){
+      createPaymentIntentInput['paymentMethod']['id'] = paymentMethods[0]['id'];
+    }
     Map<String, dynamic> createPaymentIntentResp =
         await PaymentCommand().createPaymentIntent(createPaymentIntentInput);
 
@@ -269,6 +273,7 @@ class _CardFormScreen extends State<CardFormScreen> {
                           Container(
                             height:200,
                             child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
                                 itemCount: paymentMethods.length,
                                 itemBuilder: (_, index) => Padding(
                                     padding: EdgeInsets.only(
