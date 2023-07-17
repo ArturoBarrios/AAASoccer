@@ -39,7 +39,7 @@ class _SelectIconButton extends State<SelectIconButton> {
     return Listener(
       
       child: GestureDetector(
-        onTap: () {
+        onTap: () async {
           print("onTap EventType");          
           HomePageCommand().eventTypeTapped(widget.eventObject['key']);
           HomePageCommand().setCards();

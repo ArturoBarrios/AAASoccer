@@ -112,6 +112,8 @@ class HomePageCommand extends BaseCommand {
       print("selectedObject: " + selectedObject.toString());
       dynamic team = selectedObject['team'];
       dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team);      
+      print("teammmmmm: " + team.toString());
+      print("userTeamDetails: " + userTeamDetails.toString());
       card = TeamCard(
           teamObject: team, svgImage: svgImage, userTeamDetails: userTeamDetails);
     }
@@ -224,7 +226,7 @@ class HomePageCommand extends BaseCommand {
   Future<void> eventTypeTapped(String key) async{
     print("eventTypeTapped");
     print(key);
-    print(homePageModel.enabledSelections2[key]['enabled']);
+    print(homePageModel.enabledSelections2[key]['enabled']);    
     homePageModel.enabledSelections2.forEach((k, v) => {
       homePageModel.enabledSelections2[k]['enabled'] = false
     });

@@ -41,6 +41,7 @@ class _ChatsListWidgetState extends State<ChatsListWidget> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData()");
+    print("widget.chats: "+ widget.chats.toString());
     // Implement the logic to load chat data from the API
     Map<String,dynamic> setupChatsResp = 
       await ChatCommand().setupChats(widget.chats);

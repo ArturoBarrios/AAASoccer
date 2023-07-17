@@ -103,6 +103,24 @@ class EventMutations {
     return addPlayerToEvent;
   }
 
+  String removeUserFromEvent(Map<String, dynamic> event,
+    ) {
+    String addPlayerToEvent = """      
+      mutation {
+        deleteEventUserParticipant(
+          id: ${event['eventUserParticipantId']}
+        )
+        {
+          _id
+              
+    				  
+          }
+        }
+        """;
+
+    return addPlayerToEvent;
+  }
+
   String updateEventUserParticipant(
       dynamic updateEventUserParticipantInput){
       String updateEventUserParticipantString = """

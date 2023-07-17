@@ -72,10 +72,8 @@ class BaseCommand {
     return appModel.userEventDetails;
   }
 
-  void popToHome(BuildContext context){
-    // Navigator.of(context).popUntil(ModalRoute.withName('/home'));
+  void popToHome(BuildContext context){    
     Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-
   }
 
   getHomePageModel() => homePageModel;

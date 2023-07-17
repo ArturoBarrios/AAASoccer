@@ -60,9 +60,7 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
   }
 
   void popToHome(){
-    BaseCommand().popToHome(context);    
-    // Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-
+    BaseCommand().popToHome(context);        
   }
 
   void goToCongratsScreen(){

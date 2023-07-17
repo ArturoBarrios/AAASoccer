@@ -326,6 +326,8 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
           child: GestureDetector(
         onTap: () {
           print("onTap Leave Game");
+          print("onTap Join My Game");
+            EventCommand().removeUserFromEvent(event, userObject);
         },
         child: Text("Leave Game"),
       ));
