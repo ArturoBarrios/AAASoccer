@@ -1,5 +1,6 @@
 import 'package:soccermadeeasy/commands/base_command.dart';
 
+import '../commands/subscriptions_command.dart';
 import '../components/Dialogues/congrats_dialogue.dart';
 import '../components/card_form_screen.dart';
 import '../components/headers.dart';
@@ -77,6 +78,7 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
 
   Future<void> loadInitialData() async{
     print("loadInitialData()");
+    await SubscriptionsCommand().getSubscriptions();
 
   }
 
