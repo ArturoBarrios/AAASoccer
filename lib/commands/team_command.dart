@@ -50,7 +50,8 @@ class TeamCommand extends BaseCommand {
 
 
     List<dynamic> myTeamRoles = getMyTeamRoles(team,appModel.currentUser);
-    print("myTeamRoles: " + myTeamRoles.toString());
+    print("myTeamRoless: " + myTeamRoles.toString());
+    print("myTeamRoles.contains organizer: " + myTeamRoles.contains("ORGANIZER").toString());
 
     userTeamDetails['roles'] = myTeamRoles;
     userTeamDetails['isMine'] = myTeamRoles.contains("ORGANIZER");

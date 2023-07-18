@@ -5,6 +5,7 @@ type Query {
   allTryouts: [Tryout!]  
   allLeagues: [League!]  
   allTournaments: [Tournament!]  
+  allSubscriptionTypes: [SubscriptionType!]  
   allUsers: [User!]
   allPlayers: [Player!]
   allRequests: [Request!]
@@ -169,7 +170,7 @@ type User  {
   onboarded: Boolean @default(value: false)
   ratings: [Rating] @relation
   mainImageKey: String
-  subscription: SubscriptionType
+  subscriptions: [SubscriptionType] @relation
 }
 
 
@@ -494,8 +495,11 @@ type Chat  {
 }
 
 type SubscriptionType {  
-  tier: String
+  name: String
+  description: String
   price: String
+  user: User
+
 }
 
 type Location   {  

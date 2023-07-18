@@ -44,8 +44,11 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
     print("secondaryList: " + secondaryList.toString());
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic teamChosen = primaryList[mainIndex];
+      print("teamChosen: " + teamChosen.toString());
+      dynamic user = UserCommand().getAppModelUser();
+      List<dynamic> myTeamRoles = TeamCommand().getMyTeamRoles(teamChosen, user);
       bool isMyTeam = false;
-      isMyTeam = widget.userObjectDetails['roles'].contains("ORGANIZER");
+      isMyTeam = myTeamRoles.contains("ORGANIZER");
       print("isMyTeam: " + isMyTeam.toString());
       //check if player is a team and organizer, if so, add to list
       if(widget.userObjectDetails['isMine'] && isMyTeam){
