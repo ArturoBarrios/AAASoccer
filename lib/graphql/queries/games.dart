@@ -1,7 +1,7 @@
 import '../fragments/event_fragments.dart';
 
 class GameQueries {
-  String getGames(bool pickup) {
+  String getGames(bool pickup, String eventFragment) {
     String getGames = """
         query GetGames {
           allGames(pickup: $pickup) {
@@ -9,7 +9,7 @@ class GameQueries {
               _id
               pickup
               event{
-                  ${EventFragments().fullEvent()}
+                  ${eventFragment}
 
               }  
 

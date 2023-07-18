@@ -65,7 +65,7 @@ class GameCommand extends BaseCommand {
 
   }
 
-  Future<Map<String, dynamic>> getGamesNearLocation() async {
+  Future<Map<String, dynamic>> getGamesNearLocation(String gameFragment) async {
     print("getGamesNearLocation");
     Map<String, dynamic> getGamesNearLocationResp = {
       "success": false,
@@ -82,7 +82,7 @@ class GameCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': GameQueries().getGames(true),
+          'query': GameQueries().getGames(true, gameFragment),
         }),
       );
 

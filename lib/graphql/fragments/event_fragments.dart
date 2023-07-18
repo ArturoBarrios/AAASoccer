@@ -133,4 +133,58 @@ class EventFragments {
 
     return fullEventReturn;
   }
+  String minimalEvent() {
+    String minimalEventReturn = """
+      name        	
+      _id  
+      type                  
+      archived
+      isMainEvent
+      mainImageKey
+      deleted  
+      startTime
+      endTime  
+      capacity
+      createdAt                  
+      
+      teams{
+          data{
+            _id
+          }
+        }
+      location{
+        data{
+        name
+        _id
+        latitude
+        longitude
+        }
+      }
+      userParticipants{     
+        data{
+          _id
+          event{                        
+            _id
+            name
+          }
+          user{
+            _id
+            name
+            email
+            username
+            userType
+            teams{
+              data{
+                _id
+              }
+
+            }
+          }          
+          roles
+        }                                                              
+      }      
+    """;
+
+    return minimalEventReturn;
+  }
 }

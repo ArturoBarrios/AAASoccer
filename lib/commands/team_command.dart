@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../graphql/fragments/team_fragments.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:faunadb_http/faunadb_http.dart';
@@ -154,7 +155,7 @@ class TeamCommand extends BaseCommand {
   Future<void> setupTeamsFromCurrentUser(dynamic user) async {
     print("setupTeamsFromUser()");
     Map<String, dynamic> getTeamsNearLocationResp =
-        await TeamCommand().getTeamsNearLocation();
+        await TeamCommand().getTeamsNearLocation(TeamFragments().minimalTeam());
     if (getTeamsNearLocationResp['success']) {
       List<dynamic> teams = getTeamsNearLocationResp['data'];
       print("teams: ");
@@ -193,7 +194,7 @@ class TeamCommand extends BaseCommand {
 
   }
 
-  Future<Map<String, dynamic>> getTeamsNearLocation() async {
+  Future<Map<String, dynamic>> getTeamsNearLocation(String teamFragment) async {
     print("getTeamsNearLocation");
     Map<String, dynamic> getTrainingsNearLocationResp = {
       "success": false,
@@ -210,7 +211,7 @@ class TeamCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': TeamQueries().getTeams(),
+          'query': TeamQueries().getTeams(teamFragment),
         }),
       );
 
