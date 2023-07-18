@@ -153,14 +153,13 @@ class EventCommand extends BaseCommand {
       "message": "Default Error",
       "data": null
     };
-    try {      
-      dynamic userObject = UserCommand().getAppModelUser();
+    try {            
       
         //get userParticipant where user is the user
         dynamic userParticipant = eventInput['userParticipants']['data']
             .firstWhere((element) => element['user']['_id'] == userInput['_id']);
         print("userParticipant: " + userParticipant.toString());
-        eventInput['userParticipantId']  = userParticipant['_id'];
+        eventInput['eventUserParticipantId']  = userParticipant['_id'];
 
         http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -178,8 +177,11 @@ class EventCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
       
-      addEventToMyEvents(jsonDecode(response.body)['data']['updateEvent']);
-
+      // addEventToMyEvents(jsonDecode(response.body)['data']['deleteEventUserParticipant']);
+      removeUserFromEventResponse["success"] = true;
+      removeUserFromEventResponse["message"] = "User removed from event";
+      removeUserFromEventResponse["data"] = jsonDecode(response.body)['data']['deleteEventUserParticipant'];
+      
       
 
       return removeUserFromEventResponse;      
@@ -757,6 +759,29 @@ class EventCommand extends BaseCommand {
     
 
     return getEventResponse;
+  }
+
+  Future<Map<String, dynamic>> removeEventFromMyEvents(
+      Map<String, dynamic> eventRequestInput) async {
+    print("removeEventFromMyEvents");
+    Map<String, dynamic> removeEventFromMyEventsResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    print("before getEvent");
+    print("eventRequestInput: " + eventRequestInput.toString());
+    
+    
+      
+      print("before appModel.myEvents: " + appModel.myEvents.toString());
+      //remove where _id == eventRequestInput['_id']
+      appModel.myEvents.removeWhere((event) => event['_id'] == eventRequestInput['_id']);
+      
+      print("after appModel.myEvents: " + appModel.myEvents.toString());
+      removeEventFromMyEventsResponse["success"] = true;    
+
+    return removeEventFromMyEventsResponse;
   }
 
   Future<Map<String, dynamic>> addEventToMyEvents(

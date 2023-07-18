@@ -105,6 +105,7 @@ class PaymentCommand extends BaseCommand {
     }
   }
 
+
   Future<Map<String, dynamic>> createPaymentIntent(
       dynamic createPaymentIntentInput) async {
     print("createPaymentIntent");
@@ -116,22 +117,34 @@ class PaymentCommand extends BaseCommand {
     };
     
     try {
+      String paymentMethodId = "";
       PaymentCreateIntent paymentEvent = createPaymentIntentInput['paymentCreateIntent'];
-      paymentModel.status = PaymentType.loading;
-      final paymentMethod = await Stripe.instance.createPaymentMethod(
-        params: PaymentMethodParams.card(
-          paymentMethodData:
-              PaymentMethodData(billingDetails: paymentEvent.billingDetails),
-        ),
-      );
+
+      if(createPaymentIntentInput['paymentMethodId'] != null){
+        print("createPaymentIntentInput['paymentMethod']: " + createPaymentIntentInput['paymentMethodId']);
+        paymentMethodId = createPaymentIntentInput['paymentMethodId'];
+
+      }
+      else{
+        paymentModel.status = PaymentType.loading;
+        final paymentMethod = await Stripe.instance.createPaymentMethod(
+          params: PaymentMethodParams.card(
+            paymentMethodData:
+                PaymentMethodData(billingDetails: paymentEvent.billingDetails),
+          ),
+        );
+      print("paymentMethod: " + paymentMethod.toString());
+
+      paymentMethodId = paymentMethod.id;
+
+      }
       dynamic price = createPaymentIntentInput['price'];
 
-      print("paymentMethod: " + paymentMethod.toString());
 
 
       final paymentIntentResults = await _callPayEndpointMethodId(
           useStripeSdk: true,
-          paymentMethodId: paymentMethod.id,
+          paymentMethodId: paymentMethodId,
           currency: 'usd',
           items: paymentEvent.items,
           priceInput: price['amount']);
@@ -147,7 +160,7 @@ class PaymentCommand extends BaseCommand {
         print("attach payment method to customer");
         Map<String, dynamic> attachPaymentMethodToCustomerResp =
             await _callStripeAttachPaymentMethod(
-                paymentMethodId: paymentMethod.id,
+                paymentMethodId: paymentMethodId,
                 customerId: paymentIntentResults['customer']);
         print("attachPaymentMethodToCustomerResp: " +
             attachPaymentMethodToCustomerResp.toString());

@@ -63,6 +63,12 @@ class BaseCommand {
   //   appModel.twilioClient = twilioFlutterClient;
   // }
 
+  void initializeData(){
+
+  }
+
+  
+
   void updateUserEventDetailsModel(dynamic userEventDetails) {
     appModel.userEventDetails = userEventDetails;
     // appModel.updateUserEventDetails(userEventDetails);
