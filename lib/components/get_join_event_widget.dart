@@ -100,7 +100,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
       EventCommand().removeEventFromMyEvents(eventToRemove);
       setState(() {
         event['userParticipants']['data'].removeWhere((element) => element['user']['_id']==userObject['_id']);
-        
+        widget.userObjectDetails['roles'] = [];        
       });
     }
 

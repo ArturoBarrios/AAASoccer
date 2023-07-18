@@ -54,6 +54,8 @@ class _CardFormScreen extends State<CardFormScreen> {
     print("createPaymentIntent");
     print("priceObject in CardFormScreen: " +
         widget.paymentDetails['price'].toString());
+    print("_selectedPayment: " + _selectedPayment.toString());
+
     dynamic createPaymentIntentInput = {
       'price': widget.paymentDetails['price'],
       'event': widget.paymentDetails,
@@ -68,8 +70,8 @@ class _CardFormScreen extends State<CardFormScreen> {
             {'id': 1}
           ]),
     };
-    if(_selectedPayment == "Pay with Existing Card"){
-      createPaymentIntentInput['paymentMethod']['id'] = paymentMethods[0]['id'];
+    if(_selectedPayment == "Pay With Existing Card"){
+      createPaymentIntentInput['paymentMethodId'] = paymentMethods[0]['id'];
     }
     Map<String, dynamic> createPaymentIntentResp =
         await PaymentCommand().createPaymentIntent(createPaymentIntentInput);

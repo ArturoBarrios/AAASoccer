@@ -108,6 +108,7 @@ flutter:
     - lib/assets/icons/soccer_ball.svg
     - lib/assets/icons/delete.svg
     - lib/assets/icons/plus.svg
+    - lib/assets/subscriptions.json
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

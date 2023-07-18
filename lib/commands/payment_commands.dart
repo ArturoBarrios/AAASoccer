@@ -120,8 +120,9 @@ class PaymentCommand extends BaseCommand {
       String paymentMethodId = "";
       PaymentCreateIntent paymentEvent = createPaymentIntentInput['paymentCreateIntent'];
 
-      if(createPaymentIntentInput['paymentMethod'] != null){
-        // paymentMethodId = createPaymentIntentInput['paymentMethod']['id'];
+      if(createPaymentIntentInput['paymentMethodId'] != null){
+        print("createPaymentIntentInput['paymentMethod']: " + createPaymentIntentInput['paymentMethodId']);
+        paymentMethodId = createPaymentIntentInput['paymentMethodId'];
 
       }
       else{
