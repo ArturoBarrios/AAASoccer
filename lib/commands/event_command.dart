@@ -1,6 +1,7 @@
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
+import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
 import 'package:soccermadeeasy/models/events_model.dart';
 import 'package:soccermadeeasy/models/home_page_model.dart';
 
@@ -1191,7 +1192,7 @@ class EventCommand extends BaseCommand {
 
     print("getGamesNearLocation in setupEvents()");
     Map<String, dynamic> getGamesNearLocationResp =
-        await GameCommand().getGamesNearLocation();
+        await GameCommand().getGamesNearLocation(EventFragments().minimalEvent());
     if (getGamesNearLocationResp['success']) {
       List<dynamic> games = getGamesNearLocationResp['data'];
       print("in if statement");

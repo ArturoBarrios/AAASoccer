@@ -5,7 +5,8 @@ class SubscriptionFragments{
         	_id
           name
           description
-          price        
+          price    
+          lengths    
     ''';
 
     return subscriptionObjectString;

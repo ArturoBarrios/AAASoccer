@@ -1,6 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import '../constants.dart';
+import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
 import '/models/app_model.dart';

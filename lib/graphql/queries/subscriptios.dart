@@ -1,9 +1,9 @@
 import '../fragments/subscription_fragments.dart';
 
 class SubscriptionQueries {   
-   String getSubscriptions() {
-    String getSubscriptions = """
-          query getSubscriptions {
+   String getSubscriptionTypes() {
+    String getSubscriptionTypes = """
+          query getSubscriptionTypes {
             allSubscriptionTypes {
               data {      
                ${SubscriptionFragments().subscriptionObject()}  
@@ -14,7 +14,7 @@ class SubscriptionQueries {
               }
           """;
 
-    return getSubscriptions;
+    return getSubscriptionTypes;
   }
 
 }
