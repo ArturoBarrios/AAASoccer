@@ -1,7 +1,9 @@
 import 'package:soccermadeeasy/commands/base_command.dart';
 
 import '../commands/subscriptions_command.dart';
+import '../commands/user_command.dart';
 import '../components/Dialogues/congrats_dialogue.dart';
+import '../components/Loading/loading_screen.dart';
 import '../components/card_form_screen.dart';
 import '../components/headers.dart';
 
@@ -15,28 +17,30 @@ class SubscriptionsList extends StatefulWidget {
 }
 
 class _SubscriptionsListState extends State<SubscriptionsList> {
-  final List<Map<String, dynamic>> subscriptions = [
-    {
-      "icon": Icons.airplanemode_active,
-      "title": "Regular",
-      "description": "High-quality, ad-free music streaming",
-      "bulletPoints": ["Unlimited Skips", "Offline Listening"],
-      "price": {"amount": ".999"},
-    },
-    {
-      "icon": Icons.rocket,
-      "title": "Supercharged",
-      "description": "Stream thousands of movies and series",
-      "bulletPoints": ["HD Quality", "No Advertisements"],
-      "price": {"amount": ".1499"},
-    },
-    {
-      "icon": Icons.rocket_launch,
-      "title": "Unlimited",
-      "description": "Stream thousands of movies and series",
-      "bulletPoints": ["HD Quality", "No Advertisements"],
-      "price": {"amount": ".1999"},
-    },
+  bool _isLoading = true;
+
+  final List<dynamic> subscriptions = [
+    // {
+    //   "icon": Icons.airplanemode_active,
+    //   "title": "Regular",
+    //   "description": "High-quality, ad-free music streaming",
+    //   "bulletPoints": ["Unlimited Skips", "Offline Listening"],
+    //   "price": {"amount": ".999"},
+    // },
+    // {
+    //   "icon": Icons.rocket,
+    //   "title": "Supercharged",
+    //   "description": "Stream thousands of movies and series",
+    //   "bulletPoints": ["HD Quality", "No Advertisements"],
+    //   "price": {"amount": ".1499"},
+    // },
+    // {
+    //   "icon": Icons.rocket_launch,
+    //   "title": "Unlimited",
+    //   "description": "Stream thousands of movies and series",
+    //   "bulletPoints": ["HD Quality", "No Advertisements"],
+    //   "price": {"amount": ".1999"},
+    // },
     //... add more subscriptions
   ];
 
@@ -64,7 +68,28 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
     BaseCommand().popToHome(context);        
   }
 
-  void goToCongratsScreen(){
+  
+
+  Future<void> createSubscriptionTypeUserModel() async{
+    print("createSubscriptionTypeUserModel()");
+    dynamic user = UserCommand().getAppModelUser();
+    dynamic subscriptionInput = {
+      "user_id": user['_id'],
+      "subscription_type_id": subscriptions[_currentPage]['_id'],
+
+    };
+    dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand().createSubscriptionTypeUser(subscriptionInput);
+    if(createSubscriptionTypeUserResp['success']){
+      print("createSubscriptionTypeUserResp: " + createSubscriptionTypeUserResp.toString());
+      
+      goToCongratsScreen();
+    }
+
+
+  }
+
+  Future<void> goToCongratsScreen() async{
+    print("goToCongratsScreen()");
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -80,6 +105,14 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
     print("loadInitialData()");
     Map<String,dynamic> getSubscriptionsResp = await SubscriptionsCommand().getSubscriptionTypes();
     print("getSubscriptionsResp: " + getSubscriptionsResp.toString());
+    if(getSubscriptionsResp["success"]){
+      print("getSubscriptionsResp['data']: " + getSubscriptionsResp['data'].toString());
+      setState(() {
+        subscriptions.clear();
+        subscriptions.addAll(getSubscriptionsResp["data"]);
+        _isLoading = false;
+      });
+    }
 
 
   }
@@ -93,13 +126,29 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: Headers().getBackHeader(context, "subscriptions"),
-      body: Padding(
+      body: _isLoading
+          ? Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Align(
+                alignment: Alignment.center,
+                child:
+                    // BottomNav()//for times when user deleted in cognito but still signed into app
+                    LoadingScreen(
+                        currentDotColor: Colors.white,
+                        defaultDotColor: Colors.black,
+                        numDots: 10),
+              ),
+            ) : 
+            Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
+            
             Expanded(
               child: PageView.builder(
                 itemCount: subscriptions.length,
@@ -116,14 +165,12 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Icon(subscriptions[index]["icon"], size: 50.0),
-                            Text(subscriptions[index]["title"], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                            Text(subscriptions[index]["description"]),
-                            ...subscriptions[index]["bulletPoints"].map((item) => ListTile(
-                                  leading: Icon(Icons.check),
-                                  title: Text(item),
-                                )),
+                            Icon(Icons.star, size: 50.0),                            
+                            Container(height: screenHeight*.3),
+                            Text(subscriptions[index]["name"], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            Text(subscriptions[index]["description"]),                            
                             Divider(color: Colors.grey),
                             Text("\$${subscriptions[index]["price"]}/month", style: TextStyle(fontWeight: FontWeight.bold)),
                           ],
