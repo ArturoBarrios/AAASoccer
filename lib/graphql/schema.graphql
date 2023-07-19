@@ -170,7 +170,7 @@ type User  {
   onboarded: Boolean @default(value: false)
   ratings: [Rating] @relation
   mainImageKey: String
-  subscriptions: [SubscriptionType] @relation
+  subscriptionTypeUsers: [SubscriptionTypeUser] @relation
 }
 
 
@@ -497,9 +497,17 @@ type Chat  {
 type SubscriptionType {  
   name: String
   description: String
-  price: String
-  user: User
+  price: String  
+  lengths: String
+  subscriptions: [SubscriptionTypeUser] @relation
+}
 
+type SubscriptionTypeUser  {
+  subscriptionType: SubscriptionType
+  user: User @relation  
+  startDate: String
+  endDate: String
+  length: Int  
 }
 
 type Location   {  

@@ -78,7 +78,9 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
 
   Future<void> loadInitialData() async{
     print("loadInitialData()");
-    await SubscriptionsCommand().getSubscriptions();
+    Map<String,dynamic> getSubscriptionsResp = await SubscriptionsCommand().getSubscriptionTypes();
+    print("getSubscriptionsResp: " + getSubscriptionsResp.toString());
+
 
   }
 
