@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/components/group_stage_widget.dart';
 import '../../commands/event_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
+import '../../components/Mixins/images_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/bracket_widget.dart';
 import '../../components/chats_list_widget.dart';
@@ -12,6 +13,7 @@ import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
 import '../../components/create_team_request.dart';
 import '../../components/headers.dart';
+import '../../components/object_profile_main_image.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/price_widget.dart';
 import '../../components/teams_list_widget.dart';
@@ -19,7 +21,7 @@ import '../../components/update_view_form.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
 
-class TournamentView extends StatefulWidget with EventMixin, PaymentMixin {
+class TournamentView extends StatefulWidget with EventMixin, PaymentMixin, ImagesMixin {
   TournamentView({Key? key, required this.tournament}) : super(key: key);
 
   final dynamic tournament;
@@ -36,6 +38,13 @@ class _TournamentViewState extends State<TournamentView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
+
+  dynamic objectImageInput = {
+    "imageUrl": "",
+    "containerType": Constants.IMAGEBANNER,
+    "mainEvent": null,
+    "isMyEvent": false
+  };
 
   bool _isLoading = true;
   dynamic priceObject;
@@ -70,6 +79,9 @@ class _TournamentViewState extends State<TournamentView> {
 
     dynamic getEventDetailsResp = await 
         EventCommand().getUserEventDetails(widget.tournament['events']['data']);
+    userEventDetails = getEventDetailsResp;
+    //setup image
+    objectImageInput = await widget.loadEventMainImage(userEventDetails);
     getEventDetailsResp['groupStage'] = widget.tournament['groupStage'];
     widget.setupRequestWidgetData(getEventDetailsResp);
     getEventDetailsResp['tournamentStage'] =
@@ -77,7 +89,6 @@ class _TournamentViewState extends State<TournamentView> {
     widget.setupPlayerList();    
     teamListWidgetDetails = await widget.getTeamListWidgetDetails(getEventDetailsResp);
     setState(() {
-      userEventDetails = getEventDetailsResp;
       _isLoading = false;
     });
     print("userEventDetails: " + userEventDetails.toString());
@@ -98,7 +109,12 @@ class _TournamentViewState extends State<TournamentView> {
     // print("TournamentView build() widget.tournament: " +
     //     widget.tournament.toString());
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "Tournament"),
+      appBar: PreferredSize(
+    preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
+    child: ObjectProfileMainImage(
+          objectImageInput:
+              objectImageInput), 
+  ),
       body: !_isLoading
           ? SingleChildScrollView(
               child: Center(
