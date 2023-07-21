@@ -44,6 +44,39 @@ mixin ImagesMixin {
 
     }
 
+    Future<dynamic> loadEventMainImage(dynamic userEventDetails) async{
+      String imageKey = userEventDetails['mainEvent']['mainImageKey'];
+      String imageUrl = "";
+      dynamic objectImageInput = {
+        "imageUrl": "",
+        "containerType": Constants.IMAGEBANNER,
+        "mainEvent": null,
+        "isMyEvent": false
+      };
+
+    if(imageKey != null){
+      dynamic imageInput = {
+          "key": imageKey      
+        };
+      print("imageKey: $imageKey");
+      Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
+      print("getImageUrlRespppp: $getImageUrlResp");
+      if(getImageUrlResp['success']){
+        imageUrl = getImageUrlResp['data'];
+        userEventDetails['mainEvent']['mainImageUrl'] = imageUrl;
+      
+      objectImageInput = {
+        "imageUrl": imageUrl,
+        "containerType": Constants.IMAGEBANNER,
+        "mainEvent": userEventDetails['mainEvent'],
+        "isMine": userEventDetails['isMine'],
+
+      };
+      }
+    }
+    return objectImageInput;
+    }
+
     
 
     void pickImage(dynamic objectDetails, String imageChoiceChosen, 

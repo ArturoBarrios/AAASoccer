@@ -146,15 +146,8 @@ class _PickupViewState extends State<PickupView> {
     preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
     child: ObjectProfileMainImage(
           objectImageInput:
-              objectImageInput),  //ImageHeader(dataLoaded: _isLoading, objectImageInput: objectImageInput, )//ObjectProfileMainImage(objectImageInput: objectImageInput),
-  ),//Headers().getBackImageHeader(context, 
-        // widget.game['event']['name'], 
-        //   ObjectProfileMainImage(
-        //     objectImageInput:x
-        //       objectImageInput)),
-      // ObjectProfileMainImage(
-      //     objectImageInput:
-      //         objectImageInput), 
+              objectImageInput), 
+  ),
       body: _isLoading
           ? Container(
               height: double.infinity,
