@@ -6,6 +6,7 @@ import 'package:soccermadeeasy/models/Payment.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
+import '../commands/subscriptions_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
 import '../enums/PaymentType.dart';
@@ -88,7 +89,19 @@ class _CardFormScreen extends State<CardFormScreen> {
             currentUser,
             widget.paymentDetails['roles']);
         print("addEventResp: " + addEventResp.toString());
-      } else if (widget.paymentDetails['objectType'] == Constants.TEAM) {
+      }
+      else if (widget.paymentDetails['objectType'] == Constants.SUBSCRIPTION) {
+        dynamic subscriptionInput = {
+          "user_id": currentUser['_id'],
+          "subscription_type_id": widget.paymentDetails['objectToPurchase']['_id'],
+        };
+        print("subscriptionInputt: " + subscriptionInput.toString());
+        dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand().createSubscriptionTypeUser(
+          subscriptionInput    
+        );
+        print("createSubscriptionTypeUserResp: " + createSubscriptionTypeUserResp.toString());
+      }
+       else if (widget.paymentDetails['objectType'] == Constants.TEAM) {
         dynamic addEventResp = await TeamCommand().addUserToTeam(
             widget.paymentDetails['objectToPurchase'],
             currentUser,

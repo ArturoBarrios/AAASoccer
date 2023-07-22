@@ -54,6 +54,7 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
       "objectToPurchase": subscriptions[_currentPage],
       "objectType": Constants.SUBSCRIPTION,      
     };
+    
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -81,7 +82,7 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
     dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand().createSubscriptionTypeUser(subscriptionInput);
     if(createSubscriptionTypeUserResp['success']){
       print("createSubscriptionTypeUserResp: " + createSubscriptionTypeUserResp.toString());
-      
+
       goToCongratsScreen();
     }
 
@@ -172,7 +173,7 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
                             Text(subscriptions[index]["name"], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                             Text(subscriptions[index]["description"]),                            
                             Divider(color: Colors.grey),
-                            Text("\$${subscriptions[index]["price"]}/month", style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text("\$${subscriptions[index]["price"]['amount']}/month", style: TextStyle(fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ),

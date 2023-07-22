@@ -9,7 +9,11 @@ class SubscriptionMutations {
         createSubscriptionType(data: {                       
           name: "${subscriptionInput['name']}",      
           description: "${subscriptionInput['description']}",      
-          price: "${subscriptionInput['price']}",    
+          price: {
+            create: {
+              amount: "${subscriptionInput['price']}",
+            }
+          },    
           lengths: "${subscriptionInput['lengths']}",  
         }                      
         ){
@@ -26,14 +30,12 @@ class SubscriptionMutations {
     // var teamAmount = priceInput.containsKey('teamAmount') ? priceInput['teamAmount'] : "0";
     String createSubscriptionTypeUserString = """
       mutation {
-        createSubscriptionTypeUser(data: {                       
-          startDate: "${subscriptionInput['startDate']}",
-          endDate: "${subscriptionInput['endDate']}",
+        createSubscriptionTypeUser(data: {                                 
           length: 30,
           subscriptionType: {
             connect: "${subscriptionInput['subscription_type_id']}"
           },
-          user{
+          user: {
             connect: "${subscriptionInput['user_id']}"
           }
         }                      
@@ -45,4 +47,6 @@ class SubscriptionMutations {
 
     return createSubscriptionTypeUserString;
   }
+
+
 }

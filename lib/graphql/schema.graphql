@@ -497,14 +497,14 @@ type Chat  {
 type SubscriptionType {  
   name: String
   description: String
-  price: String  
+  price: Price  
   lengths: String
   subscriptions: [SubscriptionTypeUser] @relation
 }
 
 type SubscriptionTypeUser  {
   subscriptionType: SubscriptionType
-  user: User @relation  
+  user: User 
   startDate: String
   endDate: String
   length: Int  
@@ -545,5 +545,6 @@ type Price   {
   amount: String
   event: Event @relation(name: "event_price")
   team: Team
+  subscriptionType: SubscriptionType
   teamAmount: String
 }

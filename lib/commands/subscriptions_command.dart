@@ -41,6 +41,8 @@ class SubscriptionsCommand extends BaseCommand {
         print("createSubscriptionResp: " + jsonDecode(createSubscriptionResp.body).toString());
 
         
+
+        
       }
       print("jsonResult: $jsonResult");
 
