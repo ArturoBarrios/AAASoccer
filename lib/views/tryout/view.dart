@@ -5,12 +5,14 @@ import 'package:soccermadeeasy/components/price_widget.dart';
 import '../../commands/event_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
+import '../../components/Mixins/images_mixin.dart';
 import '../../components/headers.dart';
 import '../../components/my_map_page.dart';
+import '../../components/object_profile_main_image.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
 
-class TryoutView extends StatefulWidget with EventMixin {
+class TryoutView extends StatefulWidget with EventMixin, ImagesMixin {
    TryoutView(
     { Key? key, required this.tryout })
     : super(key: key);
@@ -31,6 +33,13 @@ class _TryoutViewState extends State<TryoutView> {
   final privateController = TextEditingController();
 
   dynamic userEventDetails;
+
+  dynamic objectImageInput = {
+    "imageUrl": "",
+    "containerType": Constants.IMAGEBANNER,
+    "mainEvent": null,
+    "isMyEvent": false
+  };
   
 
 
@@ -68,12 +77,14 @@ class _TryoutViewState extends State<TryoutView> {
   Future<void> loadInitialData() async{
     print("loadInitialData");
     dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.tryout['event']]);
+    userEventDetails = getEventDetailsResp;
     widget.setupPlayerList();    
     print("getEventDetailsResp: " + getEventDetailsResp.toString());
+    //setup image
+    objectImageInput = await widget.loadEventMainImage(userEventDetails);
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
     setState(() {
-      userEventDetails = getEventDetailsResp;
       _isLoading = false;
       print("setState finished");
     });
@@ -94,7 +105,12 @@ class _TryoutViewState extends State<TryoutView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Headers().getBackHeader(context, widget.tryout['event']['name']),
+      appBar: PreferredSize(
+    preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
+    child: ObjectProfileMainImage(
+          objectImageInput:
+              objectImageInput), 
+  ),
       body: _isLoading 
       ? Container(
       height: double.infinity,

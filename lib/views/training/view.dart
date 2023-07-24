@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:soccermadeeasy/components/Mixins/images_mixin.dart';
 import '../../commands/event_command.dart';
+import '../../commands/images_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/headers.dart';
 import '../../components/my_map_page.dart';
+import '../../components/object_profile_main_image.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
 
-class TrainingView extends StatefulWidget with EventMixin {
+class TrainingView extends StatefulWidget with EventMixin, ImagesMixin {
   TrainingView(
     {Key? key, required this.training })
     : super(key: key);
@@ -31,6 +34,13 @@ class _TrainingViewState extends State<TrainingView> {
   final privateController = TextEditingController();
   
   dynamic userEventDetails;
+  String imageUrl = "";
+  dynamic objectImageInput = {
+      "imageUrl": "",
+      "containerType": Constants.IMAGEBANNER,
+      "mainEvent": null,
+      "isMyEvent": false
+    };
 
 
   bool _isLoading = true;
@@ -58,11 +68,14 @@ class _TrainingViewState extends State<TrainingView> {
     loadEventPayment();    
     widget.setupPlayerList();    
     dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.training['event']]);
-    print("getEventDetailsResp: " + getEventDetailsResp.toString());
+    userEventDetails = getEventDetailsResp;
+    print("getEventDetailsResp: " + userEventDetails.toString());
+    //setup image
+   objectImageInput = await widget.loadEventMainImage(userEventDetails);
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
     setState(() {
-      userEventDetails = getEventDetailsResp;
+      
       _isLoading = false;
       print("setState finished");
     });
@@ -84,7 +97,12 @@ class _TrainingViewState extends State<TrainingView> {
     print("TrainingView build() widget.training: "+ widget.training.toString());
 
     return Scaffold(
-      appBar: Headers().getBackHeader(context, widget.training['event']['name']),
+      appBar: PreferredSize(
+    preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
+    child: ObjectProfileMainImage(
+          objectImageInput:
+              objectImageInput), 
+  ),
       body: _isLoading 
       ? Container(
       height: double.infinity,
@@ -102,29 +120,6 @@ class _TrainingViewState extends State<TrainingView> {
       : ListView(
         padding: EdgeInsets.all(16),
         children: [
-          // Container(
-          //         margin: const EdgeInsets.all(10.0),
-          //         color: Colors.amber[600],
-          //         width: MediaQuery.of(context).size.width -
-          //             (MediaQuery.of(context).size.width * .1), //10% padding
-          //         height: 200.0,
-          //         child: MyMapPage(
-          //             latitude: widget.training['event']['location']['data'][0]
-          //                 ['latitude'],
-          //             longitude: widget.training['event']['location']['data'][0]
-          //                 ['longitude']),
-          //       ),
-
-
-
-
-
-
-
-
-
-          
-          
             !userEventDetails['isMine'] ? 
             Container(
                 height: 20,

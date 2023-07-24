@@ -20,7 +20,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
 
   Future<void> createSubscriptions() async{
     print("createSubscriptions()");
-    Map<String,dynamic> createSubscriptionsResp = await SubscriptionsCommand().createSubscriptions();
+    Map<String,dynamic> createSubscriptionsResp = await SubscriptionsCommand().createSubscriptionTypes();
     print("createSubscriptionsResp: $createSubscriptionsResp");
     
   }

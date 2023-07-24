@@ -6,11 +6,13 @@ import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/event_mixin.dart';
+import '../../components/Mixins/images_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/chats_list_widget.dart';
 import '../../components/events_calendar.dart';
 import '../../components/headers.dart';
 import '../../components/league_table_widget.dart';
+import '../../components/object_profile_main_image.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
@@ -18,7 +20,7 @@ import '../../constants.dart';
 import '../../models/app_model.dart';
 import '../tournament/view.dart';
 
-class LeagueView extends StatefulWidget with EventMixin, PaymentMixin {
+class LeagueView extends StatefulWidget with EventMixin, PaymentMixin, ImagesMixin {
   LeagueView({Key? key, required this.league}) : super(key: key);
 
   final dynamic league;
@@ -35,6 +37,13 @@ class _LeagueViewState extends State<LeagueView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
+
+  dynamic objectImageInput = {
+    "imageUrl": "",
+    "containerType": Constants.IMAGEBANNER,
+    "mainEvent": null,
+    "isMyEvent": false
+  };
 
   bool _isLoading = true;
   dynamic priceObject;
@@ -68,13 +77,15 @@ class _LeagueViewState extends State<LeagueView> {
 
     dynamic getEventDetailsResp = await 
         EventCommand().getUserEventDetails(widget.league['events']['data']);
+    dynamic userEventDetails = getEventDetailsResp;
+    //setup image
+    objectImageInput = await widget.loadEventMainImage(userEventDetails);
     getEventDetailsResp['league'] = widget.league;
     widget.setupRequestWidgetData(getEventDetailsResp);
     leagueEvents = widget.league['events']['data'];
     widget.setupPlayerList();    
     teamListWidgetDetails =
         await widget.getTeamListWidgetDetails(getEventDetailsResp);
-    dynamic userEventDetails = getEventDetailsResp;
     print("mainEvent type: "+ userEventDetails['mainEvent']['type']);    
     BaseCommand().updateUserEventDetailsModel(userEventDetails);
     setState(() {
@@ -98,7 +109,12 @@ class _LeagueViewState extends State<LeagueView> {
     dynamic userEventDetails = context.watch<AppModel>().userEventDetails;
 
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "League"),
+      appBar: PreferredSize(
+    preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
+    child: ObjectProfileMainImage(
+          objectImageInput:
+              objectImageInput), 
+  ),
       body: !_isLoading
           ? SingleChildScrollView(
               child: Column(children: [

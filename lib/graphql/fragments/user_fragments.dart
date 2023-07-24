@@ -17,6 +17,18 @@ class UserFragments{
               gender
               OSPID
               mainImageKey
+              subscriptionTypeUsers{
+                data{
+                  _id
+                  startDate
+                  endDate                  
+                  length
+                  subscriptionType{
+                    _id
+                    name
+                  }
+                }
+              }
               images{
                 data{
                   ${ImageFragments().fullImage()}

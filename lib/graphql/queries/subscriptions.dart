@@ -6,7 +6,7 @@ class SubscriptionQueries {
           query getSubscriptionTypes {
             allSubscriptionTypes {
               data {      
-               ${SubscriptionFragments().subscriptionObject()}  
+               ${SubscriptionFragments().subscriptionTypeObject()}  
 
                     
                   }

@@ -7,6 +7,7 @@ import '../../commands/event_command.dart';
 import '../../commands/images_command.dart';
 import '../../commands/user_command.dart';
 import '../../components/Loading/loading_screen.dart';
+import '../../components/Mixins/images_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/chats_list_widget.dart';
@@ -28,7 +29,7 @@ import '../../components/update_view_form.dart';
 import '../../constants.dart';
 import '../../models/app_model.dart';
 
-class PickupView extends StatefulWidget with EventMixin, PaymentMixin {
+class PickupView extends StatefulWidget with EventMixin, ImagesMixin {
   PickupView({Key? key, required this.game}) : super(key: key);
 
   final dynamic game;
@@ -81,27 +82,7 @@ class _PickupViewState extends State<PickupView> {
     dynamic userEventDetails = getEventDetailsResp;
     BaseCommand().updateUserEventDetailsModel(userEventDetails);
     //setup image
-    String imageKey = userEventDetails['mainEvent']['mainImageKey'];
-    if(imageKey != null){
-      dynamic imageInput = {
-          "key": imageKey      
-        };
-      print("imageKey: $imageKey");
-      Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
-      print("getImageUrlRespppp: $getImageUrlResp");
-      if(getImageUrlResp['success']){
-        imageUrl = getImageUrlResp['data'];
-        userEventDetails['mainEvent']['mainImageUrl'] = imageUrl;
-      
-      objectImageInput = {
-        "imageUrl": imageUrl,
-        "containerType": Constants.IMAGEBANNER,
-        "mainEvent": userEventDetails['mainEvent'],
-        "isMine": userEventDetails['isMine'],
-
-      };
-      }
-    }
+    objectImageInput = await widget.loadEventMainImage(userEventDetails);
 
     setState(() {
       _isLoading = false;
@@ -146,15 +127,8 @@ class _PickupViewState extends State<PickupView> {
     preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
     child: ObjectProfileMainImage(
           objectImageInput:
-              objectImageInput),  //ImageHeader(dataLoaded: _isLoading, objectImageInput: objectImageInput, )//ObjectProfileMainImage(objectImageInput: objectImageInput),
-  ),//Headers().getBackImageHeader(context, 
-        // widget.game['event']['name'], 
-        //   ObjectProfileMainImage(
-        //     objectImageInput:x
-        //       objectImageInput)),
-      // ObjectProfileMainImage(
-      //     objectImageInput:
-      //         objectImageInput), 
+              objectImageInput), 
+  ),
       body: _isLoading
           ? Container(
               height: double.infinity,
