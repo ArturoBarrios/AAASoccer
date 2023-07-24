@@ -173,10 +173,10 @@ class GameMutations {
   }
 
   String archiveEventGame(
-      String event_id) {
+      dynamic game) {
     String archiveEventString = """      
       mutation {
-        updateEvent(id: ${event_id},
+        updateEvent(id: ${game['event']['_id']},
           data: {
             archived: true
                

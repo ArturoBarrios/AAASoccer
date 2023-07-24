@@ -36,11 +36,11 @@ Future<Map<String, dynamic>> archivePickup(dynamic gameObject) async {
     "message": "Pickup deleted successfully"
   };
   Map<String, dynamic> archivePickupResponse = await GameCommand()
-      .archiveGame(gameObject['event']['_id'], gameObject["_id"]);
+      .archiveGame(gameObject);
   print("archivePickupResponse: $archivePickupResponse");
   if (archivePickupResponse["success"]) {
     dynamic archivedGame = archivePickupResponse["data"];
-    EventCommand().updateViewModelsWithGame(archivedGame, false);
+    EventCommand().updateViewModelsWithGame(gameObject, false);
     archivePickupResp["success"] = true;
   }
 

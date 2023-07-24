@@ -393,7 +393,7 @@ class BaseCommand {
         // HomePageCommand().eventTypeTapped(Constants.PICKUP);
       }      
 
-      await EventCommand().setupEventsFromCurrentUser(appModel.currentUser);
+      await EventCommand().setupEvents();
       await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
       !appModel.isGuest ? 
         HomePageCommand().eventTypeTapped(Constants.MYEVENTS)

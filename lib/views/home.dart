@@ -343,7 +343,7 @@ class _Home extends State<Home> {
     
     bool cardsLoading = context.select<HomePageModel, bool>((value) => value.cardsLoading);
 
-    context.select<EventsModel, List<dynamic>>((value) => value.games);
+    List<dynamic> games = context.watch<EventsModel>().games;
 
     context.select<AppModel, List<dynamic>>((value) => value.friends);
 

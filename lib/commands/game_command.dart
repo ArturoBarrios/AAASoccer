@@ -194,9 +194,9 @@ class GameCommand extends BaseCommand {
   }
 
   Future<Map<String, dynamic>> archiveGame(
-      String eventId, String gameId) async {
+      dynamic game) async {
     print("archiveGame");
-    print("eventId: " + eventId);
+    print("game: " + game.toString());
     Map<String, dynamic> archiveGameResponse = {
       "success": false,
       "message": "Default Error",
@@ -209,7 +209,7 @@ class GameCommand extends BaseCommand {
         'Content-Type': 'application/json'
       },
       body: jsonEncode(<String, String>{
-        'query': GameMutations().archiveEventGame(eventId),
+        'query': GameMutations().archiveEventGame(game),
       }),
     );
 
@@ -219,7 +219,7 @@ class GameCommand extends BaseCommand {
     archiveGameResponse["success"] = true;
     archiveGameResponse["message"] = "Game archived";
     archiveGameResponse["data"] =
-        jsonDecode(response.body)['data']['updateGame'];
+        jsonDecode(response.body)['data']['updateEvent'];
     // await EventCommand().archiveGame(jsonDecode(response.body), true);
 
     return archiveGameResponse;

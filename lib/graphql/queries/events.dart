@@ -1,14 +1,28 @@
+import '../../enums/EventType.dart';
 import '../fragments/event_fragments.dart';
 
 class EventQueries {
-   String getEvents(String startTime, String endTime, String type, String eventFragment) {
+   String allEventsOfType(String startTime, EventType type, String eventFragment) {
+    String enumValue = type.toString().split('.').last;
   String getEvents = """
     query GetEvents {
-      allEvents(startTime: "$startTime", endTime: "$endTime", type: "GAME") {
-        data {
-          _id
+      allEventsOftype(startTime: "$startTime", type: $enumValue) {
+        
+          
           ${eventFragment}
-        }
+        
+      }
+    }
+  """;
+
+  return getEvents;
+}
+
+   String allEventsOfAllTypes(String startTime, String eventFragment) {    
+  String getEvents = """
+    query GetEvents {
+      allEventsOfAllTypes(startTime: "$startTime") {                  
+          ${eventFragment}        
       }
     }
   """;

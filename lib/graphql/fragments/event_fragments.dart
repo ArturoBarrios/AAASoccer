@@ -12,6 +12,7 @@ class EventFragments {
       type                        
       isMainEvent
       mainImageKey
+      archived
       deleted  
       startTime
       endTime  

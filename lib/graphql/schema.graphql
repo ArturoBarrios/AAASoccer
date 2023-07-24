@@ -1,5 +1,6 @@
 type Query {  
-  allEvents(startTime: String!, type: EventType!): [Event!] @resolver(name: "allEvents")
+  allEventsOfType(startTime: String!, type: EventType!): [Event!] @resolver(name: "allEventsOfType")
+  allEventsOfAllTypes(startTime: String!): [Event!] @resolver(name: "allEventsOfAllTypes")
   allGames(pickup: Boolean): [Game!]  
   allTrainings: [Training!]  
   allTryouts: [Tryout!]  

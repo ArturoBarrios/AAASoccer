@@ -7,6 +7,7 @@ import 'package:soccermadeeasy/models/home_page_model.dart';
 
 import '../graphql/mutations/images.dart';
 import '../graphql/mutations/users.dart';
+import '../graphql/queries/events.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../commands/game_command.dart';
@@ -841,36 +842,75 @@ class EventCommand extends BaseCommand {
     return addPlayerToEventResponse;
   }
 
-  Future<Map<String, dynamic>> getEventsNearLocation(String eventType) async {
-    print("getGamesNearLocation");
+  Future<Map<String, dynamic>> getEventsOfTypeNearLocation(EventType eventType, String eventFragment, String startDateTimestamp) async {
+    print("getEventsNearLocation()");
     Map<String, dynamic> getGamesNearLocationResp = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
-    try {
-      print("my position");
-      // Position myPosition = await GeoLocationCommand().determinePosition();
-      // http.Response response = await http.post(
-      //   Uri.parse('https://graphql.fauna.com/graphql'),
-      //   headers: <String, String>{
-      //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: jsonEncode(<String, String>{
-      //     'query': GameQueries().getAllEvents(true, gameFragment),
-      //   }),
-      // );
+    try {               
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventQueries().allEventsOfType(startDateTimestamp, eventType, eventFragment),
+        }),
+      );
 
-      // print("response body: ");
-      // print(jsonDecode(response.body));
+      print("getEventsNearLocation response body: ");
+      print(jsonDecode(response.body));
 
-      // dynamic result = jsonDecode(response.body)['data']['allGames']['data'];
-      // print("getGamesNearLocation length: " + result.length.toString());
+      if(response.statusCode == 200){
+        dynamic allEvents = jsonDecode(response.body)['data']['allEvents'];
+        print("allEvents length: " + allEvents.length.toString());
+        getGamesNearLocationResp["success"] = true;
+        getGamesNearLocationResp["message"] = "events Retrieved";
+        getGamesNearLocationResp["data"] = allEvents;
 
-      getGamesNearLocationResp["success"] = true;
-      getGamesNearLocationResp["message"] = "Games Retrieved";
-      // getGamesNearLocationResp["data"] = result;
+      }
+
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+    }
+
+    return getGamesNearLocationResp;
+  }
+  
+  Future<Map<String, dynamic>> getEventsOfAllTypesNearLocation(String eventFragment, String startDateTimestamp) async {
+    print("getEventsOfAllTypesNearLocation()");
+    Map<String, dynamic> getGamesNearLocationResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {               
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventQueries().allEventsOfAllTypes(startDateTimestamp, eventFragment),
+        }),
+      );
+
+      print("getEventsNearLocation response body: ");
+      print(jsonDecode(response.body));
+
+      if(response.statusCode == 200){
+        dynamic allEvents = jsonDecode(response.body)['data']['allEvents'];
+        print("allEvents length: " + allEvents.length.toString());
+        getGamesNearLocationResp["success"] = true;
+        getGamesNearLocationResp["message"] = "events Retrieved";
+        getGamesNearLocationResp["data"] = allEvents;
+
+      }
+
     } on Exception catch (e) {
       print('Mutation failed: $e');
     }
@@ -1181,7 +1221,9 @@ class EventCommand extends BaseCommand {
 
 
 
-  Future<Map<String, dynamic>> setupEventsFromCurrentUser(dynamic user) async {
+  Future<Map<String, dynamic>> setupEvents() async {
+
+
     print("setupEvents()()");
     
     Map<String, dynamic> setupEventsResp = {
@@ -1189,8 +1231,14 @@ class EventCommand extends BaseCommand {
       "message": "Default Error",
       "data": []
     };
-    //think of sorting friends by location
-    //
+    //first part is to get all events
+    print("testing getEventsNearLocation");
+    DateTime oneHourAgo = DateTime.now().subtract(Duration(hours: 1));
+    String oneHourAgoTimestamp = oneHourAgo.millisecondsSinceEpoch.toString();
+    print("oneHourAgoTimestamp before getEventsNearLocation: " + oneHourAgoTimestamp);
+    Map<String, dynamic> getEventsNearLocationResp = 
+      await EventCommand().getEventsOfTypeNearLocation(EventType.GAME, EventFragments().minimalEvent(), oneHourAgoTimestamp);
+    print("getEventsNearLocationResp: " + getEventsNearLocationResp.toString());
 
 
     print("getGamesNearLocation in setupEvents()");
@@ -1306,12 +1354,20 @@ class EventCommand extends BaseCommand {
     print("length of homePageModel selectedObjects: ");
     if(add){      
       appModel.myEvents.add(game['event']['userParticipants']['data'][0]);    
+      eventsModel.games.add(game);
+      if(homePageModel.selectedKey == Constants.PICKUP){
+        // homePageModel.selectedObjects.add(game);
+      }
             
     }
     else{
       //in BaseCommand
       appModel.myEvents.remove(game);     
-      // await EventCommand().removeGame(game, true);
+      eventsModel.games.remove(game);
+      if(homePageModel.selectedKey == Constants.PICKUP){
+        // homePageModel.selectedObjects.remove(game);
+      }
+      
     }
     UserCommand().findMyUserById();
     // if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){            
