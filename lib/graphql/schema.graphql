@@ -1,5 +1,5 @@
-type Query {
-  allEvents(type: EventType): [Event!]  
+type Query {  
+  allEvents(startTime: String!, type: EventType!): [Event!] @resolver(name: "allEvents")
   allGames(pickup: Boolean): [Game!]  
   allTrainings: [Training!]  
   allTryouts: [Tryout!]  
@@ -211,6 +211,7 @@ type Game {
   awaygoals: Int
   pickup: Boolean
   event: Event  
+  # event(archived: Boolean = false): Event
 }
 
 type JoinConditions {
@@ -242,10 +243,6 @@ type Event   {
   type: EventType
   payments: [Payment] @relation
   chats: [Chat] @relation
-  # training: Training
-  # tournament: Tournament
-  # league: League
-  # tryout: Tryout
   teams: [Team] @relation
   games: [Game] @relation
   users: [User] @relation  

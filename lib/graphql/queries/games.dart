@@ -8,7 +8,7 @@ class GameQueries {
             data {      
               _id
               pickup
-              event{
+              event(archived: false){
                   ${eventFragment}
 
               }  

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
+import '../../commands/event_command.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/game_command.dart';
@@ -38,6 +39,8 @@ Future<Map<String, dynamic>> archivePickup(dynamic gameObject) async {
       .archiveGame(gameObject['event']['_id'], gameObject["_id"]);
   print("archivePickupResponse: $archivePickupResponse");
   if (archivePickupResponse["success"]) {
+    dynamic archivedGame = archivePickupResponse["data"];
+    EventCommand().updateViewModelsWithGame(archivedGame, false);
     archivePickupResp["success"] = true;
   }
 
@@ -143,20 +146,12 @@ class _PickupCard2 extends State<PickupCard2> {
     return Listener(
         child: GestureDetector(
       onTap: () {
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return 
-            // widget.isMyEvent ? 
-              // GameUpdate(game: widget.gameObject);
-              // :
-              PickupView(game: widget.gameObject);
-          },
-          animationType: DialogTransitionType.slideFromBottom,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 0),
-        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PickupView(game: widget.gameObject)
+          ),
+        );        
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
@@ -199,8 +194,7 @@ class _PickupCard2 extends State<PickupCard2> {
                     onPressed: () {
                       print("inside container onPressed");
                     })),
-                  
-                                                
+                                                     
                     GestureDetector(
                       onTap: () {
                         showAnimatedDialog(
@@ -214,8 +208,7 @@ class _PickupCard2 extends State<PickupCard2> {
                                 Navigator.of(context).pop();
                                 //delete event aaa
                                 print(widget.gameObject.toString());
-                                archivePickup(widget.gameObject);
-                                // removePickup(widget.eventObject);
+                                archivePickup(widget.gameObject);                                
                               },
                               onNegativeClick: () {
                                 Navigator.of(context).pop();

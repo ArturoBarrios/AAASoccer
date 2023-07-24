@@ -19,8 +19,7 @@ import '../../commands/payment_commands.dart';
 import '../../models/types_models.dart';
 
 class GameCommand extends BaseCommand {
-
-  List<dynamic> sortGames(List<dynamic> games,String sortBy){
+  List<dynamic> sortGames(List<dynamic> games, String sortBy) {
     //assume events are sorted by date for now
     print("sortEvents()");
     print("sortBy: " + sortBy);
@@ -33,36 +32,7 @@ class GameCommand extends BaseCommand {
       return bCreatedAt.compareTo(aCreatedAt);
     });
 
-    // //now sort by your games first
-    // dynamic currentUser = appModel.currentUser;
-    // sortedGames.sort((a, b) {
-    //   List<dynamic> aUserParticipants = a['event']['userParticipants']['data'];
-    //   List<dynamic> bUserParticipants = b['event']['userParticipants']['data'];
-    //   bool aIsMyGame = false;
-    //   bool bIsMyGame = false;
-    //   aUserParticipants.forEach((element) {
-    //     if(element['user']['_id'] == currentUser['_id']){
-    //       aIsMyGame = true;
-    //     }
-    //   });
-    //   bUserParticipants.forEach((element) {
-    //     if(element['user']['_id'] == currentUser['_id']){
-    //       bIsMyGame = true;
-    //     }
-    //   });
-      
-    //   if(aIsMyGame && !bIsMyGame){
-    //     return -1;
-    //   }else if(!aIsMyGame && bIsMyGame){
-    //     return 1;
-    //   }else{
-    //     return 0;
-    //   }
-    // });
-
-
     return sortedGames;
-
   }
 
   Future<Map<String, dynamic>> getGamesNearLocation(String gameFragment) async {
@@ -88,20 +58,10 @@ class GameCommand extends BaseCommand {
 
       print("response body: ");
       print(jsonDecode(response.body));
-      
 
       dynamic result = jsonDecode(response.body)['data']['allGames']['data'];
-      print("getGamesNearLocation length: "+ result.length.toString());
-      // if(result.length>0){
-      //         DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(result[0]['event']['endTime'].toString());
-      //   print("datetime test"+ dateTime.toString());
-        //remove games where endTime is before current time
-        // result.removeWhere((element) => DateTime.parse(element['event']['endTime'].toString()).isBefore(DateTime.now()));
+      print("getGamesNearLocation length: " + result.length.toString());
 
-        //sort by date
-        // result = sortGames(result, Constants.CREATEDATE.toString());
-      // }
-      // print("getGamesNearLocation after result: "+ result.length.toString());
       getGamesNearLocationResp["success"] = true;
       getGamesNearLocationResp["message"] = "Games Retrieved";
       getGamesNearLocationResp["data"] = result;
@@ -112,53 +72,51 @@ class GameCommand extends BaseCommand {
     return getGamesNearLocationResp;
   }
 
-    Map<String, dynamic> filterGames(List<dynamic> games){
+  Map<String, dynamic> filterGames(List<dynamic> games) {
     print("filterGames()");
-    print("games: "+games.toString());
+    print("games: " + games.toString());
     Map<String, dynamic> filteredEventsResp = {
       "archived": [],
       "active": [],
-      "success": false,      
+      "success": false,
     };
     List<dynamic> archivedEvents = [];
     List<dynamic> activeEvents = [];
     print("before for loop");
-    for(int i = 0; i < games.length; i++){
+    for (int i = 0; i < games.length; i++) {
       print("check if event is archived");
-      print("DateTime.parse(games[i]['event']['endTime']: "+games[i]['event']['endTime'].toString());
+      print("DateTime.parse(games[i]['event']['endTime']: " +
+          games[i]['event']['endTime'].toString());
       String millisecondsString = games[i]['event']['endTime'].toString();
-      DateTime dateTime = BaseCommand().dateTimeFromMilliseconds(millisecondsString);      
+      DateTime dateTime =
+          BaseCommand().dateTimeFromMilliseconds(millisecondsString);
       //if game is marked as archived or
       //active but time is past
-      print("dateTime: "+dateTime.toString());
-      if(games[i]['event']['archived']!=false
-        || (dateTime.isBefore(DateTime.now()))
-      ){
+      print("dateTime: " + dateTime.toString());
+      if (
+          (dateTime.isBefore(DateTime.now()))) {
         print("event archived!");
-        archivedEvents.remove(games[i]);               
-      }
-      else{
-         activeEvents.add(games[i]);
+        archivedEvents.remove(games[i]);
+      } else {
+        activeEvents.add(games[i]);
       }
     }
     print("after for loop");
-    print("archivedEvents: "+archivedEvents.toString());
-    print("activeEvents: "+activeEvents.toString());
-    
+    print("archivedEvents: " + archivedEvents.toString());
+    print("activeEvents: " + activeEvents.toString());
+
     filteredEventsResp["archivedEvents"] = archivedEvents;
     filteredEventsResp["activeEvents"] = activeEvents;
     filteredEventsResp["success"] = true;
-  
 
     return filteredEventsResp;
-  } 
+  }
 
   //create
   Future<Map<String, dynamic>> createGame(
       Map<String, dynamic> gameInput,
       Map<String, dynamic> eventInput,
       Map<String, dynamic> locationInput) async {
-        
     print("createGame");
     print(gameInput);
     Map<String, dynamic> createGameResponse = {
@@ -168,64 +126,41 @@ class GameCommand extends BaseCommand {
     };
     try {
       print("appModel.currentUser['_id']: ");
-      print(appModel.currentUser['_id']);            
+      print(appModel.currentUser['_id']);
       Map<String, dynamic> userInput = {
         "_id": appModel.currentUser['_id'],
-      };      
-        print("eventtttttttttt input: "+eventInput.toString());
-        http.Response response = await http.post(
-          Uri.parse('https://graphql.fauna.com/graphql'),
-          headers: <String, String>{
-            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-            'Content-Type': 'application/json'
-          },
+      };
+      eventInput['price'] = eventInput['price'] * 100;
+      print("eventtttttttttt input: " + eventInput.toString());
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': GameMutations()
+              .createGame(gameInput, eventInput, locationInput, userInput),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
 
-          body: jsonEncode(<String, String>{
-            'query':
-                GameMutations().createGame(gameInput, eventInput, locationInput, userInput),
-          }),
-        );
-        print("response body: ");
-        print(jsonDecode(response.body));
-        
-          Map<String, dynamic> createdGame =
-            jsonDecode(response.body)['data']['createGame'];
-        eventInput['_id'] = createdGame['event']['_id'];
+      Map<String, dynamic> createdGame =
+          jsonDecode(response.body)['data']['createGame'];
+      eventInput['_id'] = createdGame['event']['_id'];
 
-        //todo add error handling here, if game is not created, dont create price, etc
-        
-          eventInput['price'] = eventInput['price']*100;
-          Map<String, dynamic> paymentInput = {
-            'price': eventInput['price'].toStringAsFixed(2)
-            };
-          print("create price event input: "+ eventInput.toString());
-          print("create price input: " + paymentInput['price'].toString());
-          Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
-          print("createPaymentResp: "+createPriceResp.toString());
+      createGameResponse["success"] = true;
+      createGameResponse["message"] = "Game Created";
+      createGameResponse["data"] = createdGame;
 
-          dynamic createPrice = createPriceResp['data'];
-
-          createdGame['event']['price'] = createPrice;
-          // await EventCommand().addGame(createdGame, true);
-        
-          // EventCommand().updateViewModelsWithGame(createdGame, true);
-
-          createGameResponse["success"] = true;
-          createGameResponse["message"] = "Game Created";
-          createGameResponse["data"] = createdGame;
-
-        // }
-          return createGameResponse;
-      
-
-
+      // }
+      return createGameResponse;
     } on Exception catch (e) {
       print('Mutation failed: $e');
       return createGameResponse;
     }
   }
-
-
 
   Future<Map<String, dynamic>> addPlayerToGame(
       Map<String, dynamic> gameInput, Map<String, dynamic> playerInput) async {
@@ -258,8 +193,8 @@ class GameCommand extends BaseCommand {
     return addPlayerToGameResponse;
   }
 
-
-   Future<Map<String, dynamic>> archiveGame(String eventId, String gameId) async {
+  Future<Map<String, dynamic>> archiveGame(
+      String eventId, String gameId) async {
     print("archiveGame");
     print("eventId: " + eventId);
     Map<String, dynamic> archiveGameResponse = {
@@ -281,22 +216,6 @@ class GameCommand extends BaseCommand {
     print("response body: ");
     print(jsonDecode(response.body));
 
-    //remove game from eventsModel.games
-    print("remove game from eventsModel.games");
-    var i = 0;
-    var found = false;
-    while(i < eventsModel.games.length-1 && !found){
-      if(eventsModel.games[i]['id'] == jsonDecode(response.body)['id']){
-        var removed = eventsModel.games.removeAt(i);        
-        print("removedGameObject: ");
-        print(removed);
-        found = true;
-      }            
-      i+=1;
-    }
-    print("length of games after archiving game: ");
-    print(eventsModel.games.length);    
-
     archiveGameResponse["success"] = true;
     archiveGameResponse["message"] = "Game archived";
     archiveGameResponse["data"] =
@@ -305,8 +224,8 @@ class GameCommand extends BaseCommand {
 
     return archiveGameResponse;
   }
-   
-   Future<Map<String, dynamic>> removeGame(String eventId, String gameId) async {
+
+  Future<Map<String, dynamic>> removeGame(String eventId, String gameId) async {
     print("removeGame");
     print("eventId: " + eventId);
     Map<String, dynamic> removeGameResponse = {
@@ -318,10 +237,8 @@ class GameCommand extends BaseCommand {
       "_id": appModel.currentUser['_id'],
     };
     Map<String, dynamic> eventInput = {
-      "_id": eventId,    
+      "_id": eventId,
     };
-    
-
 
     http.Response response = await http.post(
       Uri.parse('https://graphql.fauna.com/graphql'),
@@ -341,22 +258,22 @@ class GameCommand extends BaseCommand {
     print("remove game from eventsModel.games");
     var i = 0;
     var found = false;
-    while(i < eventsModel.games.length-1 && !found){
-      if(eventsModel.games[i]['id'] == jsonDecode(response.body)['id']){
-        var removed = eventsModel.games.removeAt(i);        
+    while (i < eventsModel.games.length - 1 && !found) {
+      if (eventsModel.games[i]['id'] == jsonDecode(response.body)['id']) {
+        var removed = eventsModel.games.removeAt(i);
         print("removedGameObject: ");
         print(removed);
         found = true;
-      }            
-      i+=1;
+      }
+      i += 1;
     }
     print("length of games after archiving game: ");
-    print(eventsModel.games.length);    
+    print(eventsModel.games.length);
 
     removeGameResponse["success"] = true;
     removeGameResponse["message"] = "Game Removed";
     removeGameResponse["data"] =
-        jsonDecode(response.body)['data']['updateGame'];    
+        jsonDecode(response.body)['data']['updateGame'];
 
     return removeGameResponse;
   }

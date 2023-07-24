@@ -841,38 +841,41 @@ class EventCommand extends BaseCommand {
     return addPlayerToEventResponse;
   }
 
-  Future<Map<String, dynamic>> getEvents() async {
-    Map<String, dynamic> getEventsResp = {
+  Future<Map<String, dynamic>> getEventsNearLocation(String eventType) async {
+    print("getGamesNearLocation");
+    Map<String, dynamic> getGamesNearLocationResp = {
       "success": false,
       "message": "Default Error",
-      "data": []
+      "data": null
     };
     try {
+      print("my position");
+      // Position myPosition = await GeoLocationCommand().determinePosition();
       // http.Response response = await http.post(
       //   Uri.parse('https://graphql.fauna.com/graphql'),
       //   headers: <String, String>{
-      //     'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+      //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
       //     'Content-Type': 'application/json'
       //   },
       //   body: jsonEncode(<String, String>{
-      //     'query': EventQueries().getEvents(),
+      //     'query': GameQueries().getAllEvents(true, gameFragment),
       //   }),
       // );
 
       // print("response body: ");
       // print(jsonDecode(response.body));
-      // getEventsResp["success"] = true;
-      // getEventsResp["message"] = "Events Retrieved";
-      // getEventsResp["data"] = jsonDecode(response.body)['data']['allEvent']['data'];
 
-    } on Exception catch (e) {
-      print('Mutation failed: $e');
-      return getEventsResp;
+      // dynamic result = jsonDecode(response.body)['data']['allGames']['data'];
+      // print("getGamesNearLocation length: " + result.length.toString());
+
+      getGamesNearLocationResp["success"] = true;
+      getGamesNearLocationResp["message"] = "Games Retrieved";
+      // getGamesNearLocationResp["data"] = result;
     } on Exception catch (e) {
       print('Mutation failed: $e');
     }
 
-    return getEventsResp;
+    return getGamesNearLocationResp;
   }
 
   Future<Map<String, dynamic>> getGames(bool pickup) async {
@@ -1206,16 +1209,9 @@ class EventCommand extends BaseCommand {
       print("started testing!");
       print("games: " + games.toString());
 
-      // for(int i = 0;i<games.length;i++){
-      //   List<dynamic> userParticipants =  games[i]['event']['userParticipants']['data'];
-      //   for(int j = 0;j<userParticipants.length;j++){
-      //     dynamic roles = userParticipants[j]['roles'];                    
-      //     BaseCommand().parseRoles(roles);          
-      //   }        
-      // }
       print("done parsing roles!");
       eventsModel.games = filteredGamesResp['activeEvents'];      
-      eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
+      // eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
       eventsModel.events.addAll(games);      
       
       print("length of games: " + games.length.toString());
@@ -1296,6 +1292,7 @@ class EventCommand extends BaseCommand {
   }  
 
   // updates models for views dependent on EventsModel
+  //
   Future<Map<String, dynamic>> updateViewModelsWithGame(
       Map<String, dynamic> game, bool add) async {
     print("updateViewModelsWithGame()");
@@ -1307,11 +1304,9 @@ class EventCommand extends BaseCommand {
     print("length of events modeL games: ");
     print(eventsModel.games.length);
     print("length of homePageModel selectedObjects: ");
-    if(add){
-      // await addGame(game, true); 
-      //appModel.myEvents = appModel.currentUser['eventUserParticipants']['data'];
-      appModel.myEvents.add(game['userParticipants']['data'][0]);
-          
+    if(add){      
+      appModel.myEvents.add(game['event']['userParticipants']['data'][0]);    
+            
     }
     else{
       //in BaseCommand
@@ -1319,22 +1314,17 @@ class EventCommand extends BaseCommand {
       // await EventCommand().removeGame(game, true);
     }
     UserCommand().findMyUserById();
-    if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){      
-      // homePageModel.selectedKey = Constants.LEAGUE;
-      print("homePageModel.selectedObjects.length before: "+ homePageModel.selectedObjects.length.toString());
-      if(add){
-        homePageModel.selectedObjects.add(game);
-      }
-      else{
-        homePageModel.selectedObjects.remove(game);
-      }      
-      print("homePageModel.selectedObjects.length after: "+ homePageModel.selectedObjects.length.toString());
-      // homePageModel.selectedKey = Constants.PICKUP;
+    // if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){            
+    //   print("homePageModel.selectedObjects.length before: "+ homePageModel.selectedObjects.length.toString());
+    //   if(add){
+    //     homePageModel.selectedObjects.add(game);
+    //   }
+    //   else{
+    //     homePageModel.selectedObjects.remove(game);
+    //   }      
+    //   print("homePageModel.selectedObjects.length after: "+ homePageModel.selectedObjects.length.toString());     
       
-    }
-
-    // updateViewModelsWithGameResp["data"]["homePageModel"]["selectedObjects"] 
-    //   = homePageModel.selectedObjects;
+    // }
     
     return updateViewModelsWithGameResp;
   }
@@ -1474,8 +1464,7 @@ class EventCommand extends BaseCommand {
     print("length of games after adding game: ");
     print(eventsModel.games.length);
     print("updateViewModelsBool: ");
-    print(updateViewModelsBool);
-    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
+    print(updateViewModelsBool);    
 
     return addGameResp;
   }
@@ -1491,8 +1480,7 @@ class EventCommand extends BaseCommand {
     print(eventsModel.tournaments.length);
     eventsModel.tournaments.insert(0,tournament);
     print("length of trainings after adding tournaments: ");
-    print(eventsModel.tournaments.length);    
-    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
+    print(eventsModel.tournaments.length);        
 
     return addtournamentResp;
   }
@@ -1509,8 +1497,7 @@ class EventCommand extends BaseCommand {
     print(eventsModel.leagues.length);
     eventsModel.leagues.insert(0,league);
     print("length of trainings after adding leagues: ");
-    print(eventsModel.leagues.length);    
-    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
+    print(eventsModel.leagues.length);        
 
     return addLeagueResp;
   }
@@ -1529,8 +1516,7 @@ class EventCommand extends BaseCommand {
     print("length of trainings after adding training: ");
     print(eventsModel.trainings.length);
     print("updateViewModelsBool: ");
-    print(updateViewModelsBool);
-    // if (updateViewModelsBool) await updateViewModelsWithGame(game);
+    print(updateViewModelsBool);    
 
     return addtrainingResp;
   }
@@ -1549,8 +1535,7 @@ class EventCommand extends BaseCommand {
     print("length of tryouts after adding game: ");
     print(eventsModel.tryouts.length);
     print("updateViewModelsBool: ");
-    print(updateViewModelsBool);
-    // if (updateViewModelsBool) await updateViewModelsWithTryout(tryout);
+    print(updateViewModelsBool);    
 
     return addTryoutResp;
   }
