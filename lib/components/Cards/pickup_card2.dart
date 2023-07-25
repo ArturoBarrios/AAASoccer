@@ -110,7 +110,7 @@ class _PickupCard2 extends State<PickupCard2> {
   }
 
   void loadEventPayment() {
-    priceObject = widget.gameObject['event']['price'];
+    priceObject = widget.gameObject['price'];
   }
 
 
@@ -131,10 +131,8 @@ class _PickupCard2 extends State<PickupCard2> {
 
     print("initState");
     print("game: " + widget.gameObject.toString());    
-    loadEventPayment();
-    // widget.loadEventInfo(widget.gameObject['event'], widget.userEventDetails);
-    widget.setupPlayerList();
-    // _center = latLng(widget.game['event']['location']['data'][0]['latitude'], widget.game['event']['location']['data'][0]['longitude']);
+    loadEventPayment();    
+    widget.setupPlayerList();    
     _isLoading = false;
   }
 
@@ -186,9 +184,9 @@ class _PickupCard2 extends State<PickupCard2> {
             Container(
                 child: InnerNeumorphicCardFb1(
                   //todo IDK you may have to change this.....
-                    text: widget.gameObject['event']['name'], //widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'],
+                    text: widget.gameObject['name'], //widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'],
                     svgImage: widget.svgImage,
-                    subtitle: widget.gameObject['event']['name']
+                    subtitle: widget.gameObject['name']
                         //widget.eventObject.containsKey("event") ? widget.eventObject['event']['name'] : widget.eventObject['name'], //widget.eventObject['description'],
                         ,
                     onPressed: () {

@@ -18,15 +18,14 @@ class EventQueries {
   return getEvents;
 }
 
-   String allEventsOfAllTypes(String startTime, String eventFragment) {    
-  String getEvents = """
-    query GetEvents {
-      allEventsOfAllTypes(startTime: "$startTime") {                  
-          ${eventFragment}        
+  String allEventsOfAllTypes(String startTime, String eventFragment) {    
+    String getEvents = """
+      query GetEvents {
+        allEventsOfAllTypes(startTime: "$startTime") {                  
+            ${eventFragment}        
+        }
       }
-    }
-  """;
-
+    """;
   return getEvents;
 }
 

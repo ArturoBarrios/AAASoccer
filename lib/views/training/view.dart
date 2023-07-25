@@ -59,7 +59,7 @@ class _TrainingViewState extends State<TrainingView> {
 
 
   void loadEventPayment() {
-    priceObject = widget.training['event']['price'];
+    priceObject = widget.training['price'];
   }
 
   
@@ -67,7 +67,7 @@ class _TrainingViewState extends State<TrainingView> {
     print("loadInitialData");
     loadEventPayment();    
     widget.setupPlayerList();    
-    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.training['event']]);
+    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.training]);
     userEventDetails = getEventDetailsResp;
     print("getEventDetailsResp: " + userEventDetails.toString());
     //setup image

@@ -55,8 +55,11 @@ class HomePageCommand extends BaseCommand {
     if (selectedKey == Constants.PICKUP) {
       print("selected pickup: " + selectedObject.toString());
       print("before getEventDetails");
+      //first approach
+      // dynamic game = selectedObject['games']['data'][0];
+      // game['event'] = selectedObject;
       dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject['event']]);
+          await EventCommand().getUserEventDetails([selectedObject]);
       print("after getEventDetails");
       card = PickupCard2(
           gameObject: selectedObject,
@@ -64,7 +67,7 @@ class HomePageCommand extends BaseCommand {
           userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TRAINING) {
       dynamic getEventDetailsResp =
-         await EventCommand().getUserEventDetails([selectedObject['event']]);
+         await EventCommand().getUserEventDetails([selectedObject]);
       card = TrainingCard(
           trainingObject: selectedObject,
           svgImage: svgImage,
@@ -72,7 +75,7 @@ class HomePageCommand extends BaseCommand {
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
       dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject['event']]);
+          await EventCommand().getUserEventDetails([selectedObject]);
       card = TryoutCard(
           tryoutObject: selectedObject,
           svgImage: svgImage,
@@ -81,12 +84,13 @@ class HomePageCommand extends BaseCommand {
       //process tournament data for card
       // TournamentCommand().currateTournamentData(selectedObject);
       print("else if tournament");
+      print("selectedObject: " + selectedObject.toString());
       dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails(selectedObject['events']['data']);
-      getEventDetailsResp['groupStage'] = selectedObject['groupStage'];
-      print("a::");
-      getEventDetailsResp['tournamentStage'] = selectedObject['tournamentStage'];
-      print("b::");
+          await EventCommand().getUserEventDetails([selectedObject]);
+      // getEventDetailsResp['groupStage'] = selectedObject['groupStage'];
+      
+      // getEventDetailsResp['tournamentStage'] = selectedObject['tournamentStage'];
+      
       card = TournamentCard(
           tournamentObject: selectedObject,
           svgImage: svgImage,
@@ -122,53 +126,35 @@ class HomePageCommand extends BaseCommand {
     } 
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {
-      print("testing EventType.GAME===Game.type ");
-      print("GAME" == selectedObject['event']['type'].toString());
+      print("MYEVENTS");
       if (selectedObject['event']['type'].toString() 
         == "GAME") {
-        print("IN IF");
-        print("selectedObject['event']['games']: " +
-            selectedObject['event']['games'].toString());
-        //get game object first
-        dynamic gameObject = selectedObject['event']['games']['data'][0];
-        print("0");
-        gameObject['event'] = selectedObject['event'];
+        print("TYPE GAME");
+
         dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([gameObject['event']]);
+            await EventCommand().getUserEventDetails([selectedObject['event']]);
         print("getEventDetailsResp: " + getEventDetailsResp.toString());
         card = PickupCard2(
-            gameObject: gameObject,
+            gameObject: selectedObject['event'],
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
       } else if (selectedObject['event']['type'].toString() 
         == "TRAINING") {
         print("selectedObject['event']['trainings']: " +
             selectedObject['event']['trainings'].toString());
-        //get game object first
-        dynamic trainingObject =
-            selectedObject['event']['trainings']['data'][0];
-        print("0");
-        trainingObject['event'] = selectedObject['event'];
         dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([trainingObject['event']]);
+            await EventCommand().getUserEventDetails([selectedObject['event']]);
         card = TrainingCard(
-            trainingObject: trainingObject,
+            trainingObject: selectedObject['event'],
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
       
       } else if (selectedObject['event']['type'].toString() 
         == "TRYOUT") {
-        print("selectedObject['event']['tryouts']: " +
-            selectedObject['event']['trainings'].toString());
-        //get game object first
-        dynamic tryoutObject =
-            selectedObject['event']['tryouts']['data'][0];
-        print("0");
-        tryoutObject['event'] = selectedObject['event'];
         dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([tryoutObject['event']]);
+            await EventCommand().getUserEventDetails([selectedObject['event']]);
         card = TryoutCard(
-            tryoutObject: tryoutObject,
+            tryoutObject: selectedObject['event'],
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
       }      
