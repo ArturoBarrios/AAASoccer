@@ -131,7 +131,7 @@ requestTypeSelected(List<int>? indexes) {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.trainingObject['event']['name'],
+                    text: widget.trainingObject['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.trainingObject['description'],

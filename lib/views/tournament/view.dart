@@ -47,8 +47,7 @@ class _TournamentViewState extends State<TournamentView> {
   };
 
   bool _isLoading = true;
-  dynamic priceObject;
-  List<dynamic> tournamentEvents = [];
+  dynamic priceObject;  
   dynamic userEventDetails;  
   dynamic teamListWidgetDetails;
 
@@ -72,20 +71,19 @@ class _TournamentViewState extends State<TournamentView> {
   
 
   Future<void> loadInitialData() async {
-    print("loadInitialData() in TournamentView");
-    tournamentEvents = widget.tournament['events']['data'];
+    print("loadInitialData() in TournamentView");    
     widget.setupTeamList();
     widget.setupMyTeams();
 
     dynamic getEventDetailsResp = await 
-        EventCommand().getUserEventDetails(widget.tournament['events']['data']);
+        EventCommand().getUserEventDetails([widget.tournament]);
     userEventDetails = getEventDetailsResp;
     //setup image
     objectImageInput = await widget.loadEventMainImage(userEventDetails);
-    getEventDetailsResp['groupStage'] = widget.tournament['groupStage'];
+    // getEventDetailsResp['groupStage'] = widget.tournament['groupStage'];
     widget.setupRequestWidgetData(getEventDetailsResp);
-    getEventDetailsResp['tournamentStage'] =
-        widget.tournament['tournamentStage'];
+    // getEventDetailsResp['tournamentStage'] =
+    //     widget.tournament['tournamentStage'];
     widget.setupPlayerList();    
     teamListWidgetDetails = await widget.getTeamListWidgetDetails(getEventDetailsResp);
     setState(() {

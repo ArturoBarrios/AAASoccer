@@ -75,7 +75,7 @@ class _PickupViewState extends State<PickupView> {
   Future<void> loadInitialData() async {
     print("loadInitialData() in GameView");
     dynamic getEventDetailsResp =
-        await EventCommand().getUserEventDetails([widget.game['event']]);
+        await EventCommand().getUserEventDetails([widget.game]);
     widget.setupPlayerList();
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));

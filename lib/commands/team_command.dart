@@ -706,59 +706,6 @@ class TeamCommand extends BaseCommand {
     }
 
   }
-  //change this to celete team
-  // Future<Map<String, dynamic>> removeTeam(String teamId) async {
-  //   print("removeTeam");
-  //   print("teamId: " + teamId);
-  //   Map<String, dynamic> removeTeamResponse = {
-  //     "success": false,
-  //     "message": "Default Error",
-  //     "data": null
-  //   };
-  //   Map<String, dynamic> userInput = {
-  //     "_id": appModel.currentUser['_id'],
-  //   };
-  //   Map<String, dynamic> teamInput = {
-  //     "_id": teamId,
-  //   };
-
-  //   http.Response response = await http.post(
-  //     Uri.parse('https://graphql.fauna.com/graphql'),
-  //     headers: <String, String>{
-  //       'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: jsonEncode(<String, String>{
-  //       'query': UserMutations().removeTeamFromUser(userInput, teamInput),
-  //     }),
-  //   );
-
-  //   print("response body: ");
-  //   print(jsonDecode(response.body));
-
-  //   //remove team from eventsModel.teams
-  //   print("remove team from appModel.teams: " + appModel.teams.toString());
-  //   var i = 0;
-  //   var found = false;
-  //   while (i < appModel.teams.length - 1 && !found) {
-  //     if (appModel.teams[i]['id'] == jsonDecode(response.body)['id']) {
-  //       var removed = appModel.teams.removeAt(i);
-  //       print("removedTeamObject: ");
-  //       print(removed);
-  //       found = true;
-  //     }
-  //     i += 1;
-  //   }
-  //   print("length of teams after archiving team: ");
-  //   print(appModel.teams.length);
-
-  //   removeTeamResponse["success"] = true;
-  //   removeTeamResponse["message"] = "Team Removed";
-  //   removeTeamResponse["data"] =
-  //       jsonDecode(response.body)['data']['updateTeam'];
-
-  //   return removeTeamResponse;
-  // }
 
   Future<Map<String, dynamic>> removeUsersFromTeam(dynamic team, List<dynamic>users ) async {
     print("removePlayersFromTeam");

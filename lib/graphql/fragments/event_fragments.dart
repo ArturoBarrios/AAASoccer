@@ -9,10 +9,10 @@ class EventFragments {
     String fullEventReturn = """
       name        	
       _id  
-      type                  
-      archived
+      type                        
       isMainEvent
       mainImageKey
+      archived
       deleted  
       startTime
       endTime  

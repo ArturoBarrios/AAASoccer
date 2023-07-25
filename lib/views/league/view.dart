@@ -76,13 +76,12 @@ class _LeagueViewState extends State<LeagueView> {
     widget.setupMyTeams();
 
     dynamic getEventDetailsResp = await 
-        EventCommand().getUserEventDetails(widget.league['events']['data']);
+        EventCommand().getUserEventDetails([widget.league]);
     dynamic userEventDetails = getEventDetailsResp;
     //setup image
     objectImageInput = await widget.loadEventMainImage(userEventDetails);
-    getEventDetailsResp['league'] = widget.league;
-    widget.setupRequestWidgetData(getEventDetailsResp);
-    leagueEvents = widget.league['events']['data'];
+    // getEventDetailsResp['league'] = widget.league;
+    widget.setupRequestWidgetData(getEventDetailsResp);    
     widget.setupPlayerList();    
     teamListWidgetDetails =
         await widget.getTeamListWidgetDetails(getEventDetailsResp);
@@ -192,29 +191,6 @@ class _LeagueViewState extends State<LeagueView> {
                 ),
               ),
               UpdateViewForm(userObjectDetails: userEventDetails),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     widget.getPriceWidget(userEventDetails),
-              //     userEventDetails['isMine']
-              //         ? ElevatedButton(
-              //             onPressed: () {
-              //               // Add button onPressed logic here
-              //             },
-              //             child: Text('Update Payment'),
-              //           )
-              //         : Container(),
-              //   ],
-              // ),
-              // if (userEventDetails['isMine']) widget.createEventRequestWidget,
-              // if (userEventDetails['isMine']) widget.createEventPaymentWidget,
-              // if (userEventDetails['isMine']) widget.createTeamRequestWidget,
-              // if (userEventDetails['isMine']) widget.createTeamPaymentWidget,
-              
-              // PlayerList(playersDetails: playerListWidgetDetails),
-              
-              // widget.sendPlayersRequestWidget(context, userEventDetails),
-              // widget.sendTeamsRequestWidget(context, userEventDetails),
               
             ]))
           : Container(

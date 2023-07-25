@@ -122,7 +122,7 @@ class _TryoutCard extends State<TryoutCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.tryoutObject['event']['name'],
+                    text: widget.tryoutObject['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.tryoutObject['description'],

@@ -59,7 +59,7 @@ class _TryoutViewState extends State<TryoutView> {
 
 
   void loadEventPayment() {
-    priceObject = widget.tryout['event']['price'];
+    priceObject = widget.tryout['price'];
   }
 
   List<int>? selectedRequestTypeIndexes;
@@ -76,7 +76,7 @@ class _TryoutViewState extends State<TryoutView> {
 
   Future<void> loadInitialData() async{
     print("loadInitialData");
-    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.tryout['event']]);
+    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.tryout]);
     userEventDetails = getEventDetailsResp;
     widget.setupPlayerList();    
     print("getEventDetailsResp: " + getEventDetailsResp.toString());

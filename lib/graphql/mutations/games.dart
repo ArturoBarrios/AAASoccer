@@ -63,6 +63,7 @@ class GameMutations {
 
   String createGame(Map<String, dynamic> gameInput,
       Map<String, dynamic> eventInput, Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
+    var teamAmount = eventInput.containsKey('teamPrice') ? eventInput['teamPrice'] : "0.00";
     String createGame = """
       mutation {
         createGame(data: {
@@ -78,6 +79,12 @@ class GameMutations {
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
               capacity: ${eventInput['capacity']},
+              price: {
+                create: {
+                  amount: "${eventInput['price']}",
+                  teamAmount: "$teamAmount",                  
+                }
+              },
               joinConditions: {
                 create: [
                   {
@@ -166,15 +173,14 @@ class GameMutations {
   }
 
   String archiveEventGame(
-      String event_id) {
+      dynamic game) {
     String archiveEventString = """      
       mutation {
-        updateEvent(id: ${event_id},
+        updateEvent(id: ${game['event']['_id']},
           data: {
             archived: true
                
-          }
-  				                  
+          }  				                  
         ){
             _id   
             name
@@ -192,7 +198,8 @@ class GameMutations {
                   _id
                   pickup
                 }
-              }                       
+              }     
+
     			  
   }
 }
