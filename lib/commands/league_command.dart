@@ -285,15 +285,14 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
 
       print("response: ");
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['findLeagueByID'];
-      // appModel.currentUser = result;
-      // if (result != null) {
-      findLeagueByIdResp["success"] = true;
-      findLeagueByIdResp["message"] = "League found";
-      findLeagueByIdResp["data"] = result;
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['findLeagueByID'];        
+        findLeagueByIdResp["success"] = true;
+        findLeagueByIdResp["message"] = "League found";
+        findLeagueByIdResp["data"] = result;
+      }
 
-      return findLeagueByIdResp;
-      // }
+      return findLeagueByIdResp;      
     } catch (e) {
       print('Query failed: $e');
     }

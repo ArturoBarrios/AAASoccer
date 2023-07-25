@@ -177,7 +177,6 @@ class TournamentCommand extends BaseCommand {
   }
 
 
-
   Future<Map<String, dynamic>> getTournamentsNearLocation() async {
     print("getTournamentsNearLocation");
     Map<String, dynamic> getTournamentsNearLocationResp = {
@@ -535,12 +534,14 @@ class TournamentCommand extends BaseCommand {
 
       print("response: ");
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['findTournamentByID'];
-      // appModel.currentUser = result;
-      // if (result != null) {
-      findTournamentByIdResp["success"] = true;
-      findTournamentByIdResp["message"] = "Tournament found";
-      findTournamentByIdResp["data"] = result;
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['findTournamentByID'];
+
+        findTournamentByIdResp["success"] = true;
+        findTournamentByIdResp["message"] = "Tournament found";
+        findTournamentByIdResp["data"] = result;
+
+      }
 
       return findTournamentByIdResp;
       // }

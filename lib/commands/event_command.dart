@@ -1062,8 +1062,7 @@ class EventCommand extends BaseCommand {
       "teams": [],
       "roles": [],
       "chats": [],
-      "allEvents": [],
-      "groupData": [],
+      "allEvents": [],      
       "groupStage": [],  
       "tournamentStage": [],
       "userParticipants": [],
@@ -1082,6 +1081,25 @@ class EventCommand extends BaseCommand {
       //get updated event
       dynamic updatedEventResp = await getEventGame(event);
       event = updatedEventResp['data'];
+
+      print("event type: " + event['type'].toString());
+      if(event['type'] == "TOURNAMENT"){
+        print("type is tournament");
+        dynamic findTournamentByIdResp = await TournamentCommand().findTournamentById(event['tournaments']['data'][0]['_id']);
+        if(findTournamentByIdResp['success']){
+          dynamic tournament = findTournamentByIdResp['data'];
+          isMyEventResp['groupStage'] = tournament['groupStage'];      
+          isMyEventResp['tournamentStage'] = tournament['tournamentStage'];
+        }
+      }
+      if(event['type'] == "LEAGUE"){
+        print("type is league");
+        dynamic findLeagueByIdResp = await LeagueCommand().findLeagueById(event['leagues']['data'][0]['_id']);
+        if(findLeagueByIdResp['success']){
+          dynamic league = findLeagueByIdResp['data'];
+          isMyEventResp['league'] = league;          
+        }
+      }
 
       isMyEventResp['mainEvent'] = event;
       print("main event: " + event.toString());
