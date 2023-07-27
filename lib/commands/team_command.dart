@@ -17,6 +17,7 @@ import '../commands/notifications_command.dart';
 import '../commands/user_command.dart';
 import '../constants.dart';
 import '../graphql/mutations/users.dart';
+import 'home_page_command.dart';
 
 class TeamCommand extends BaseCommand {
 
@@ -593,12 +594,20 @@ class TeamCommand extends BaseCommand {
     return sendTeamRequestResponse;
   }
 
-  void updateModelsWithTeam(dynamic team) {
+  void updateModelsWithTeam(dynamic team, bool add) {
     print("updateModelsWithTeam");
     print(team);
 
-    appModel.teams.add(team);
-    appModel.myTeams.add(team);
+    if(add){
+      appModel.teams.add(team);
+      appModel.myTeams.add(team);
+    }
+    else{
+      appModel.teams.removeWhere((element) => element['_id'] == team['_id']);
+      appModel.myTeams.removeWhere((element) => element['_id'] == team['_id']);
+    }
+
+    HomePageCommand().updateUpdatedCards(true);    
     
 
     // appModel.currentUser['teamUserParticipants']['data'].add(userParticipantObject);

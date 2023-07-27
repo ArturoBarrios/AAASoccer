@@ -30,50 +30,26 @@ void trainingClicked() {
   print("Training Clicked");
 }
 
+void archiveTraining(){
+  print("archive training");
+  
+}
 
-// Future<void> sendEventRequest(dynamic trainingObject) async {
-//   print("send event request for event: :"+trainingObject.toString());
 
-//   await EventCommand().sendOrganizerEventRequest(trainingObject, "PLAYER", Constants.TRAININGREQUEST.toString());
-// }
 
 class _TrainingCard extends State<TrainingCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
-//   List<int>? selectedRequestTypeIndexes;
-//   List requestUserTypes = [
-//     Constants.PLAYER.toString(),
-//     Constants.ORGANIZER.toString(),
-//     Constants.MANAGER.toString(),
-//     Constants.MAINCOACH.toString(),
-//     Constants.ASSISTANTCOACH.toString(),
-//     Constants.REF.toString(),
-//   ];
 
-//   List<String> selectedRequestTypeObjects = [];
   
 requestTypeSelected(List<int>? indexes) {
       widget.requestTypeSelected(indexes);
-      // print("requestTypeSelected: " + indexes.toString());
-      // selectedRequestTypeIndexes = indexes;
-      //  for(int i = 0; i < indexes!.length; i++){
-      //     selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
-      //   }      
+   
 
     }
   Future<void> sendEventRequest() async {
     widget.sendEventRequest(widget.trainingObject, {0: {}}, widget.requestUserTypes, []);
-    // print("sendEventRequest");
-    // print("selectedRequestTypeObjects.length: " +
-    //     selectedRequestTypeObjects.length.toString());
-    // print(
-    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    // print("send player event request");
-    // for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
-    //   await EventCommand().sendOrganizerEventRequest(widget.trainingObject,
-    //       selectedRequestTypeObjects[i], Constants.TRAININGREQUEST.toString());
-    // }
   }
 
   final ButtonStyle style = ElevatedButton.styleFrom(
@@ -148,7 +124,9 @@ requestTypeSelected(List<int>? indexes) {
                       titleText:
                           'Are you sure you want to delete this training?',
                       contentText: '',
-                      onPositiveClick: () {},
+                      onPositiveClick: () {
+                        archiveTraining();
+                      },
                       onNegativeClick: () {
                         Navigator.of(context).pop();
                       },
