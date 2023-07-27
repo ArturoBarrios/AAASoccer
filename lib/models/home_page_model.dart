@@ -65,6 +65,13 @@ class HomePageModel extends ChangeNotifier {
     _isDialogueViewOpened = isDialogueViewOpened;
     notifyListeners();
   }
+  
+  bool _updatedCards = false;
+  bool get updatedCards => _updatedCards;
+  set updatedCards(bool updatedCards){
+    _updatedCards = updatedCards;
+    notifyListeners();
+  }
 
   String _selectedKey = Constants.MYEVENTS;
   String get selectedKey => _selectedKey;

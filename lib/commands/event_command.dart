@@ -32,6 +32,31 @@ import 'home_page_command.dart';
 
 class EventCommand extends BaseCommand {
 
+
+  Future<Map<String, dynamic>> archiveEvent(dynamic eventObject) async {
+    Map<String, dynamic> archiveEventResp = {
+      "success": false,
+      "message": "Pickup deleted successfully"
+    };
+    print("eventObject: $eventObject");
+    if(eventObject['type'] == "GAME"){
+      print("type GAME");
+      Map<String, dynamic> archivePickupResponse = await GameCommand()
+        .archiveGame(eventObject);
+      print("archivePickupResponse: $archivePickupResponse");
+      if (archivePickupResponse["success"]) {
+        dynamic archivedGame = archivePickupResponse["data"];
+        EventCommand().updateViewModelsWithGame(eventObject, false);
+        archiveEventResp["success"] = true;
+      }
+
+    }
+
+    return archiveEventResp;
+
+  }
+
+
   Future<Map<String, dynamic>> notifyEventParticipants(dynamic notifyEventParticipantInput
   ) async {
     Map<String, dynamic> notifyEventParticipantsResponse = {
@@ -1287,70 +1312,7 @@ class EventCommand extends BaseCommand {
     }
 
 
-    // print("getGamesNearLocation in setupEvents()");
-    // Map<String, dynamic> getGamesNearLocationResp =
-    //     await GameCommand().getGamesNearLocation(EventFragments().minimalEvent());
-    // if (getGamesNearLocationResp['success']) {
-    //   List<dynamic> games = getGamesNearLocationResp['data'];
-    //   print("in if statement");
-    //   print("games: " + games.toString());
-    //   print("length of games: " + games.length.toString());
-    //   //add games to eventsModel
-    //   //filter out archived games
-    //   Map<String, dynamic> filteredGamesResp =
-    //       GameCommand().filterGames(games);
-
-    //   print("started testing!");
-    //   print("games: " + games.toString());
-
-    //   print("done parsing roles!");
-    //   eventsModel.games = filteredGamesResp['activeEvents'];      
-    //   // eventsModel.archivedGames = filteredGamesResp['archivedEvents'];
-    //   eventsModel.events.addAll(games);      
-      
-    //   print("length of games: " + games.length.toString());
-    // }
-    // Map<String, dynamic> getLeaguesNearLocationResp =
-    //     await LeagueCommand().getLeaguesNearLocation();
-    // if (getLeaguesNearLocationResp['success']) {
-    //   List<dynamic> leagues = getLeaguesNearLocationResp['data'];
-    //   print("in if statement");
-    //   print("leagues: " + leagues.toString());
-    //   eventsModel.leagues = leagues;
-    //   eventsModel.events.addAll(leagues);
-    // }
-    // Map<String, dynamic> getTournamentsNearLocationResp =
-    //     await TournamentCommand().getTournamentsNearLocation();
-    // if (getTournamentsNearLocationResp['success']) {
-
-    //   List<dynamic> tournaments = getTournamentsNearLocationResp['data'];
-      
-      
-
-      
-    //   print("in if statement");
-    //   print("tournaments: " + tournaments.toString());
-    //   eventsModel.tournaments = tournaments;
-    //   eventsModel.events.addAll(tournaments);
-    // }
-    // Map<String, dynamic> getTrainingsNearLocationResp =
-    //     await TrainingCommand().getTrainingsNearLocation();
-    // if (getTrainingsNearLocationResp['success']) {
-    //   List<dynamic> trainings = getTrainingsNearLocationResp['data'];
-    //   print("trainings: ");
-    //   print(trainings);
-    //   eventsModel.trainings = trainings;
-    //   eventsModel.events.addAll(trainings);
-    // }
-    // Map<String, dynamic> getTryoutsNearLocationResp =
-    //     await TryoutCommand().getTryoutsNearLocation();
-    // if (getTryoutsNearLocationResp['success']) {
-    //   List<dynamic> tryouts = getTryoutsNearLocationResp['data'];
-    //   print("tryouts: ");
-    //   print(tryouts);
-    //   eventsModel.tryouts = tryouts;
-    //   eventsModel.events.addAll(tryouts);
-    // }
+    
     Map<String, dynamic> getPlayersNearLocationResp =
         await PlayerCommand().getPlayersNearLocation();
     if (getPlayersNearLocationResp['success']) {
@@ -1400,7 +1362,7 @@ class EventCommand extends BaseCommand {
     print("length of homePageModel selectedObjects: ");
     if(add){      
       appModel.myEvents.add(game['event']['userParticipants']['data'][0]);    
-      eventsModel.games.add(game);
+      eventsModel.games.add(game['event']);
       if(homePageModel.selectedKey == Constants.PICKUP){
         // homePageModel.selectedObjects.add(game);
       }
@@ -1408,14 +1370,23 @@ class EventCommand extends BaseCommand {
     }
     else{
       //in BaseCommand
-      appModel.myEvents.remove(game);     
-      eventsModel.games.remove(game);
-      if(homePageModel.selectedKey == Constants.PICKUP){
-        // homePageModel.selectedObjects.remove(game);
+      // appModel.myEvents.remove(game['event']);     '
+      int indexToRemove = -1;
+      for(int i = 0;i<eventsModel.games.length;i++){
+        if(eventsModel.games[i]['_id'] == game['_id']){
+          indexToRemove = i;      
+          break;
+        }
+      }
+      if(indexToRemove != -1){
+        eventsModel.games.removeAt(indexToRemove);
       }
       
+      
     }
-    UserCommand().findMyUserById();
+    HomePageCommand().updateUpdatedCards(true);    
+
+    // UserCommand().findMyUserById();
     // if(homePageModel.selectedKey.toString() == Constants.PICKUP.toString()){            
     //   print("homePageModel.selectedObjects.length before: "+ homePageModel.selectedObjects.length.toString());
     //   if(add){

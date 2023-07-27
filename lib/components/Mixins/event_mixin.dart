@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/views/request/view.dart';
 
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
+import '../../commands/game_command.dart';
 import '../../commands/images_command.dart';
 import '../../commands/player_command.dart';
 import '../../commands/requests_command.dart';
@@ -59,6 +60,10 @@ mixin EventMixin {
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
   CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();    
+
+
+  
+
 
   void setupPlayerList() {
     print("setupPlayerList");

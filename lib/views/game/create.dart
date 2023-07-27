@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/views/game/view.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
@@ -101,12 +102,17 @@ class _GameCreateState extends State<GameCreate> {
 
           
         
-        
         Navigator.pop(
-          context,
-          
+          context,          
         );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PickupView(game: createdGame['event'])
+          ),
+        );     
       }
+
     } on ApiException catch (e) {}
   }
 

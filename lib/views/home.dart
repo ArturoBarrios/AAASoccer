@@ -305,10 +305,17 @@ class _Home extends State<Home> {
     print("testFunction");
   }
 
+  void updateUpdatedCards(bool value){
+    HomePageCommand().updateUpdatedCards(value);    
+    
+  }
+
   Future<void> loadInitialData() async {
-    _selectEventController = ScrollController()..addListener(_loadMore);
+    print("loadInitialData");
+    _selectEventController = ScrollController()..addListener(_loadMore);    
     userObject = UserCommand().getAppModelUser();
-    await HomePageCommand().setCards();    
+    await HomePageCommand().setCards();   
+    updateUpdatedCards(false);     
   }
 
   @override
@@ -320,6 +327,7 @@ class _Home extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    
     int messagesLength =
         context.select<ChatPageModel, int>((value) => value.messagesLength);
     print("buildDDDDDD");
@@ -329,8 +337,8 @@ class _Home extends State<Home> {
     selectedKey =
         context.select<HomePageModel, String>((value) => value.selectedKey);
 
-    selectedObjects =
-        context.select<HomePageModel, List>((value) => value.selectedObjects);
+    List selectedObjects =
+        context.watch<HomePageModel>().selectedObjects;
 
     userObjectSelections = context
         .select<HomePageModel, List>((value) => value.userObjectSelections);
@@ -340,6 +348,8 @@ class _Home extends State<Home> {
             (value) => value.enabledSelections2);
 
     List cards = context.select<HomePageModel, List>((value) => value.cards);
+    
+    bool updatedCards = context.select<HomePageModel, bool>((value) => value.updatedCards);
     
     bool cardsLoading = context.select<HomePageModel, bool>((value) => value.cardsLoading);
 
@@ -354,6 +364,13 @@ class _Home extends State<Home> {
     print("selectedKey in build: " + selectedKey);
     print("selectedObjects length in build: " +
         selectedObjects.length.toString());
+
+    
+    if(updatedCards) {
+      print("updatedCards");
+      loadInitialData();
+        
+    }
 
     return (Scaffold(
       appBar: Headers().getMainHeader(context),

@@ -30,36 +30,11 @@ void pickupClicked() {
 }
 
 Future<Map<String, dynamic>> archivePickup(dynamic gameObject) async {
-  print("archivePickup for gameobject: $gameObject");
-  Map<String, dynamic> archivePickupResp = {
-    "success": false,
-    "message": "Pickup deleted successfully"
-  };
-  Map<String, dynamic> archivePickupResponse = await GameCommand()
-      .archiveGame(gameObject);
-  print("archivePickupResponse: $archivePickupResponse");
-  if (archivePickupResponse["success"]) {
-    dynamic archivedGame = archivePickupResponse["data"];
-    EventCommand().updateViewModelsWithGame(gameObject, false);
-    archivePickupResp["success"] = true;
-  }
+  print("archive pickup");
+  
+  Map<String, dynamic> archivePickupResponse = await EventCommand().archiveEvent(gameObject);
 
-  return archivePickupResp;
-}
-Future<Map<String, dynamic>> removePickup(dynamic gameObject) async {
-  print("removePickup for gameobject: $gameObject");
-  Map<String, dynamic> removePickupResp = {
-    "success": false,
-    "message": "Pickup removed successfully"
-  };
-  Map<String, dynamic> removePickupRespResponse = await GameCommand()
-      .removeGame(gameObject["_id"], gameObject["games"]["data"][0]["_id"]);
-  print("removePickupRespResponse: $removePickupRespResponse");
-  if (removePickupRespResponse["success"]) {
-    removePickupRespResponse["success"] = true;
-  }
-
-  return removePickupRespResponse;
+  return archivePickupResponse;
 }
 
 

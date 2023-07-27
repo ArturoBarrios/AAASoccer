@@ -169,6 +169,12 @@ class HomePageCommand extends BaseCommand {
     return card;
   }
 
+  void updateUpdatedCards(bool value){
+    print("updateUpdatedCards");
+    homePageModel.updatedCards = value;
+
+  }
+
   Future<void> setCards() async {
     print("setCards()");
     homePageModel.cards = [];
