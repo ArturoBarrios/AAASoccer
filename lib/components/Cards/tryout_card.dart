@@ -33,39 +33,22 @@ class _TryoutCard extends State<TryoutCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
-  // List<int>? selectedRequestTypeIndexes;
-  // List requestUserTypes = [
-  //   Constants.PLAYER.toString(),
-  //   Constants.ORGANIZER.toString(),
-  //   Constants.MANAGER.toString(),
-  //   Constants.MAINCOACH.toString(),
-  //   Constants.ASSISTANTCOACH.toString(),
-  //   Constants.REF.toString(),
-  // ];
 
-  // List<String> selectedRequestTypeObjects = [];
+  Future<Map<String, dynamic>> archiveTryout(dynamic tryoutObject) async {
+  print("archive tryout");
+  
+  Map<String, dynamic> archiveTryoutResponse = await EventCommand().archiveEvent(tryoutObject);
+
+  return archiveTryoutResponse;
+}
+
 
   requestTypeSelected(List<int>? indexes) {
-      widget.requestTypeSelected(indexes);
-      // print("requestTypeSelected: " + indexes.toString());
-      // selectedRequestTypeIndexes = indexes;
-      //  for(int i = 0; i < indexes!.length; i++){
-      //     selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
-      //   }      
+      widget.requestTypeSelected(indexes);  
     }
 
     Future<void> sendEventRequest() async {
       widget.sendEventRequest(widget.tryoutObject, {0: {}}, widget.requestUserTypes, []);
-    // print("sendEventRequest");
-    // print("selectedRequestTypeObjects.length: " +
-    //     selectedRequestTypeObjects.length.toString());
-    // print(
-    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    // print("send player event request");
-    // for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
-    //   await EventCommand().sendOrganizerEventRequest(widget.tryoutObject,
-    //       selectedRequestTypeObjects[i], Constants.TRYOUTREQUEST.toString());
-    // }
   }
 
   final ButtonStyle style = ElevatedButton.styleFrom(
@@ -139,7 +122,8 @@ class _TryoutCard extends State<TryoutCard> {
                       titleText: 'Are you sure you want to delete this tryout?',
                       contentText: '',
                       onPositiveClick: () {                        
-                       
+                        Navigator.of(context).pop();
+                        archiveTryout(widget.tryoutObject);
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();

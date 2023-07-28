@@ -9,6 +9,7 @@ class TournamentMutations {
       String leagueConnect = league != null
       ? 'leagues: { connect: ${league['_id']} }'
       : '';
+      var teamAmount = eventInput.containsKey('teamPrice') ? eventInput['teamPrice'] : "0.00";
     
     String createTournament = """
       mutation {
@@ -27,7 +28,12 @@ class TournamentMutations {
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
-
+              price: {
+                create: {
+                  amount: "${eventInput['price']}",
+                  teamAmount: "$teamAmount",                  
+                }
+              },
               joinConditions: {
                 create: [
                   {

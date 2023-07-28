@@ -231,7 +231,8 @@ class TournamentCommand extends BaseCommand {
       "message": "Something went wrong with creating game relationships",
       "data": null,
     };
-
+    eventInput['price'] = eventInput['price']*100;
+    eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
     eventInput['user_id'] = appModel.currentUser['_id'];
     print("eventInput: " + eventInput.toString());
     var rng = Random();
@@ -472,41 +473,14 @@ class TournamentCommand extends BaseCommand {
       tournament['tournamentStage'] = createdTournamentStage;
       tournament['groupStage'] = createdGroupStage;
       print("tournamenttt: " + tournament.toString());
-      //get tournament
-      //add price
-      // if (eventInput['price'] > 0) {
 
-        eventInput['price'] = eventInput['price'] * 100;
-        eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
-        Map<String, dynamic> paymentInput = {
-          'price': eventInput['price'].toStringAsFixed(2),
-          'teamPrice': eventInput['teamPrice'].toStringAsFixed(2)
-
-        };
-        print("create price,,,, event input: " + priceEventInput.toString());
-        print("create price input: " + paymentInput['price'].toString());
-        Map<String, dynamic> createPriceResp =
-            await EventCommand().createPrice(paymentInput, priceEventInput);
-        print("createPaymentResp: " + createPriceResp.toString());
-
-        dynamic createPrice = createPriceResp['data'];
-        tournament['events']['data'].forEach((tournamentEvent) {
-          if (tournamentEvent['isMainEvent']) {
-            tournamentEvent['price'] = createPrice;
-          }
-        });
-        // dynamic mainTournamentEvent = EventCommand().getMainEvent(tournament['events']['data']);
-        // print("mainTournamentEvent: "+mainTournamentEvent.toString());
-        //assumes first event is main event
-        // mainTournamentEvent['price'] = createPrice;
-        // await EventCommand().addGame(createdGame, true);
-      // }
       print("tournament: " + tournament.toString());
       EventCommand().updateViewModelsWithTournament(tournament, true);
     }
 
     createTournamentResp["success"] = true;
     createTournamentResp["message"] = "Tournament Created";
+    createTournamentResp["data"] = createdTournament;
 
     return createTournamentResp;
   }

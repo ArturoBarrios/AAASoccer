@@ -53,7 +53,8 @@ class EventCommand extends BaseCommand {
 
     if (response.statusCode == 200) {
       dynamic archivedEvent = jsonDecode(response.body)['data']['updateEvent'];
-      if (eventObject['type'] == "GAME" || eventObject['type'] == "TRAINING") {
+      if (eventObject['type'] == "GAME" || eventObject['type'] == "TRAINING"
+          || eventObject['type'] == "TRYOUT") {
         print("type GAME");
         EventCommand().updateViewModelsWithEvent(archivedEvent, false);
         archiveEventResp["success"] = true;
@@ -1056,8 +1057,8 @@ class EventCommand extends BaseCommand {
 
       print("getEventGame(): " + event.toString());
       //get updated event
-      dynamic updatedEventResp = await getEventGame(event);
-      event = updatedEventResp['data'];
+      // dynamic updatedEventResp = await getEventGame(event);
+      // event = updatedEventResp['data'];
 
       print("event type: " + event['type'].toString());
       if (event['type'] == "TOURNAMENT") {
@@ -1341,6 +1342,23 @@ class EventCommand extends BaseCommand {
         }
       }
     }
+    else if (event['type'] == "TRYOUT") {
+      if (add) {
+        eventsModel.tryouts.add(event);
+      } else {
+        int indexToRemove = -1;
+        for (int i = 0; i < eventsModel.tryouts.length; i++) {
+          if (eventsModel.tryouts[i]['_id'] == event['_id']) {
+            indexToRemove = i;
+            break;
+          }
+        }
+        if (indexToRemove != -1) {
+          eventsModel.tryouts.removeAt(indexToRemove);
+        }
+      }
+    }
+    
     HomePageCommand().updateUpdatedCards(true);
 
     return updateViewModelsWithGameResp;
