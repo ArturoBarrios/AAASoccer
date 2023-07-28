@@ -30,9 +30,12 @@ void trainingClicked() {
   print("Training Clicked");
 }
 
-void archiveTraining(){
+Future<Map<String, dynamic>> archiveTraining(dynamic trainingObject) async {
   print("archive training");
   
+  Map<String, dynamic> archiveTrainingResponse = await EventCommand().archiveEvent(trainingObject);
+
+  return archiveTrainingResponse;
 }
 
 
@@ -125,7 +128,8 @@ requestTypeSelected(List<int>? indexes) {
                           'Are you sure you want to delete this training?',
                       contentText: '',
                       onPositiveClick: () {
-                        archiveTraining();
+                        Navigator.of(context).pop();
+                        archiveTraining(widget.trainingObject);
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();

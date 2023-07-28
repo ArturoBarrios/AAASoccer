@@ -249,4 +249,22 @@ class EventMutations {
   return removeTeamString;
 }
 
+String archiveEvent(
+      dynamic event) {
+    String archiveEventString = """      
+      mutation {
+        updateEvent(id: ${event['_id']},
+          data: {
+            archived: true
+               
+          }  				                  
+        ){
+          ${EventFragments().fullEvent()}    			  
+  }
+}
+        """;
+
+    return archiveEventString;
+  }
+
 }

@@ -51,7 +51,7 @@ mixin ImagesMixin {
         "imageUrl": "",
         "containerType": Constants.IMAGEBANNER,
         "mainEvent": null,
-        "isMyEvent": false
+        "isMine": userEventDetails['isMine']
       };
 
     if(imageKey != null){

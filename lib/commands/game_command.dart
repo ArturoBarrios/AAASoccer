@@ -147,8 +147,7 @@ class GameCommand extends BaseCommand {
       print(jsonDecode(response.body));
 
       Map<String, dynamic> createdGame =
-          jsonDecode(response.body)['data']['createGame'];
-      eventInput['_id'] = createdGame['event']['_id'];
+          jsonDecode(response.body)['data']['createGame'];      
 
       createGameResponse["success"] = true;
       createGameResponse["message"] = "Game Created";
@@ -193,37 +192,6 @@ class GameCommand extends BaseCommand {
     return addPlayerToGameResponse;
   }
 
-  Future<Map<String, dynamic>> archiveGame(
-      dynamic game) async {
-    print("archiveGame");
-    print("game: " + game.toString());
-    Map<String, dynamic> archiveGameResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    http.Response response = await http.post(
-      Uri.parse('https://graphql.fauna.com/graphql'),
-      headers: <String, String>{
-        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-        'Content-Type': 'application/json'
-      },
-      body: jsonEncode(<String, String>{
-        'query': GameMutations().archiveEventGame(game),
-      }),
-    );
-
-    print("response body: ");
-    print(jsonDecode(response.body));
-
-    archiveGameResponse["success"] = true;
-    archiveGameResponse["message"] = "Game archived";
-    archiveGameResponse["data"] =
-        jsonDecode(response.body)['data']['updateEvent'];
-    // await EventCommand().archiveGame(jsonDecode(response.body), true);
-
-    return archiveGameResponse;
-  }
 
   Future<Map<String, dynamic>> removeGame(String eventId, String gameId) async {
     print("removeGame");

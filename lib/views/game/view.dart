@@ -54,7 +54,7 @@ class _PickupViewState extends State<PickupView> {
       "imageUrl": "",
       "containerType": Constants.IMAGEBANNER,
       "mainEvent": null,
-      "isMyEvent": false
+      "isMine": false
     };
   String imageUrl = "";
 
@@ -69,7 +69,7 @@ class _PickupViewState extends State<PickupView> {
   }
 
   void loadEventPayment() {
-    priceObject = widget.game['event']['price'];
+    priceObject = widget.game['price'];
   }
 
   Future<void> loadInitialData() async {
