@@ -172,7 +172,7 @@ class GameMutations {
     return addPlayerToGame;
   }
 
-  String archiveEventGame(
+  String archiveEvent(
       dynamic game) {
     String archiveEventString = """      
       mutation {
@@ -182,23 +182,7 @@ class GameMutations {
                
           }  				                  
         ){
-            _id   
-            name
-            archived
-            isMainEvent 				
-            location{
-                data{
-                  _id
-                  latitude
-                  longitude
-                }
-              } 
-              games{   
-                data{
-                  _id
-                  pickup
-                }
-              }     
+          ${EventFragments().fullEvent()}
 
     			  
   }

@@ -35,6 +35,7 @@ class TrainingCommand extends BaseCommand {
 
     return sortedtrainings;
 
+
   }
 
   Future<Map<String, dynamic>> getTrainingsNearLocation() async{
@@ -103,28 +104,15 @@ class TrainingCommand extends BaseCommand {
 
       print("response body: ");
       print(jsonDecode(response.body));
-      Map<String, dynamic> createdTraining =
-            jsonDecode(response.body)['data']['createTraining'];
-      eventInput['_id'] = createdTraining['event']['_id'];
-      // await EventCommand().addTraining(createdTraining, true);
 
-      // if(eventInput['price']>0){
-        Map<String, dynamic> paymentInput = {
-          'price': eventInput['price'].toStringAsFixed(2)
-        };
-        print("create price event input: "+ eventInput.toString());
-        print("create price input: " + paymentInput['price'].toString());
-        Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, eventInput);
-        print("createPaymentResp: "+createPriceResp.toString());
-
-        dynamic createPrice = createPriceResp['data'];
-        createdTraining['event']['price'] = createPrice;
-      // }
-        EventCommand().updateViewModelsWithTraining(createdTraining);
-        
-        createTrainingResponse["success"] = true;
-        createTrainingResponse["message"] = "Game Created";
-        createTrainingResponse["data"] = jsonDecode(response.body)['data']['createTraining'];
+      if(response.statusCode == 200){
+        Map<String, dynamic> createdTraining =
+              jsonDecode(response.body)['data']['createTraining'];
+                
+          createTrainingResponse["success"] = true;
+          createTrainingResponse["message"] = "Game Created";
+          createTrainingResponse["data"] = createdTraining;       
+      }
         
       
       

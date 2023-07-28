@@ -3,6 +3,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/views/training/view.dart';
 import '../../commands/training_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
@@ -77,13 +78,22 @@ class _TrainingCreateState extends State<TrainingCreate> {
       print("locationInputCheck: " + locationInput.toString());  
 
       Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(trainingData, eventInput, locationInput);                                      
+      
       print("createTrainingResp: "+ createTrainingResp.toString());
-
       if (createTrainingResp['success']) {
+        dynamic createdTraining = createTrainingResp['data'];
+        await EventCommand().updateViewModelsWithEvent(createdTraining['event'], true);
+      
+        Navigator.pop(
+            context,          
+          );
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
+          MaterialPageRoute(
+            builder: (context) => TrainingView(training: createdTraining['event'])
+          ),
+        );  
+        
       }            
       
       }

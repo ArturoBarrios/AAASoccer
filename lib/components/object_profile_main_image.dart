@@ -194,8 +194,8 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
   }
   
   Container returnEventImageContainer(String imageUrl){
-  print("returnEventImageContainer() imageurl: " + imageUrl.toString());
-  print("imageurl equality: " +imageUrl.toString() == "");
+  print("returnEventImageContainer() imageurl: " + imageUrl.toString());  
+  print("widget.objectImageInput: " + widget.objectImageInput.toString());
   return Container(
     child: GestureDetector(
       onTap: () async {

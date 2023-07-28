@@ -1,7 +1,12 @@
 import '../fragments/event_fragments.dart';
 
-class TrainingMutations{
-  String createTraining(Map<String, dynamic> trainingInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
+class TrainingMutations {
+  String createTraining(
+      Map<String, dynamic> trainingInput,
+      Map<String, dynamic> eventInput,
+      Map<String, dynamic> locationInput,
+      Map<String, dynamic> userInput) {
+    var teamAmount = eventInput.containsKey('teamPrice') ? eventInput['teamPrice'] : "0.00";
     String createTraining = """
       mutation {
         createTraining(data: {                    
@@ -16,6 +21,12 @@ class TrainingMutations{
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
               capacity: ${eventInput['capacity']},
+              price: {
+                create: {
+                  amount: "${eventInput['price']}",
+                  teamAmount: "$teamAmount",                  
+                }
+              },
               joinConditions: {
                 create: [
                   {
