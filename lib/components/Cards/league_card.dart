@@ -71,6 +71,13 @@ class _LeagueCard extends State<LeagueCard> {
     }
   }
 
+   Future<Map<String, dynamic>> archiveLeague(dynamic leagueObject) async {
+  print("archiveLeague()");  
+  Map<String, dynamic> archiveTournamentResponse = await EventCommand().archiveEvent(leagueObject);
+
+  return archiveTournamentResponse;
+}
+
   @override
   Widget build(BuildContext context) {
     print("widget name: ");
@@ -136,7 +143,9 @@ class _LeagueCard extends State<LeagueCard> {
                     return ClassicGeneralDialogWidget(
                       titleText: 'Are you sure you want to delete this league?',
                       contentText: '',
-                      onPositiveClick: () {                        
+                      onPositiveClick: () {          
+                        Navigator.of(context).pop();
+                        archiveLeague(widget.leagueObject);              
                        
                       },
                       onNegativeClick: () {

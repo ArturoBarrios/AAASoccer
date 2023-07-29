@@ -143,13 +143,13 @@ class TournamentCommand extends BaseCommand {
 
   dynamic getMainTournamentEvent(dynamic tournament) {
     print("getMainTournamentEvent");
-    Map<String, dynamic>? getMainEvent = null;
+    dynamic getMainEvent;
     tournament['events']['data'].forEach((event) {
       if (event['isMainEvent'] == true) {
         getMainEvent = event;
       }
     });
-
+    
     return getMainEvent;
   }
 
@@ -231,7 +231,8 @@ class TournamentCommand extends BaseCommand {
       "message": "Something went wrong with creating game relationships",
       "data": null,
     };
-
+    eventInput['price'] = eventInput['price']*100;
+    eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
     eventInput['user_id'] = appModel.currentUser['_id'];
     print("eventInput: " + eventInput.toString());
     var rng = Random();
@@ -264,252 +265,231 @@ class TournamentCommand extends BaseCommand {
       }),
     );
     print("createTournament response: " + jsonDecode(response.body).toString());
-    Map<String, dynamic> createdTournament =
-        jsonDecode(response.body)['data']['createTournament'];
-    print("createdTournament: ");
-    print(createdTournament);
 
-    dynamic priceEventInput = {
-      "_id": createdTournament['events']['data'][0]['_id'],
-    };
-    String groupsString = "";
-    //create group games from bergerTable
-    for (int a = 0; a < bergerTables.length; a++) {
-      dynamic bergerTable = bergerTables[a];
-      dynamic groupInput = {
-        "groupNumber": (a + 1),        
-      };
+    if(response.statusCode == 200){            
+      Map<String, dynamic> createdTournament =
+          jsonDecode(response.body)['data']['createTournament'];
+      print("createdTournament: ");
+      print(createdTournament);
 
-      http.Response createGroupResponse = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': TournamentMutations().createGroup(groupInput),
-        }),
-      );
-
-      print("createGroupResponse: " +
-          jsonDecode(createGroupResponse.body).toString());
-      Map<String, dynamic> createdGroup =
-          jsonDecode(createGroupResponse.body)['data']['createGroup'];
-
-      print("createdGroup: " + createdGroup.toString());
-      groupsString += createdGroup['_id'] + ", ";
-
-      //create TeamOrders inside group
-      for(int i = 0;i<tournamentData['numberOfTeamsPerGroup'];i++){
-        dynamic teamOrderInput = {
-          "group_id": createdGroup['_id'],
-          "points": 0,
-          "order": i+1,
+    
+      String groupsString = "";
+      //create group games from bergerTable
+      for (int a = 0; a < bergerTables.length; a++) {
+        dynamic bergerTable = bergerTables[a];
+        dynamic groupInput = {
+          "groupNumber": (a + 1),        
         };
-        http.Response createTeamOrdersResponse = await http.post(
+
+        http.Response createGroupResponse = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{
             'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
             'Content-Type': 'application/json'
           },
           body: jsonEncode(<String, String>{
-            'query': TournamentMutations().createTeamOrder(teamOrderInput),
+            'query': TournamentMutations().createGroup(groupInput),
           }),
         );
 
-        dynamic createdTeamOrder = jsonDecode(createTeamOrdersResponse.body)['data']['createTeamOrder'];
-        createdGroup['teamOrders']['data'].add(createdTeamOrder);
-      }
+        print("createGroupResponse: " +
+            jsonDecode(createGroupResponse.body).toString());
+        Map<String, dynamic> createdGroup =
+            jsonDecode(createGroupResponse.body)['data']['createGroup'];
 
+        print("createdGroup: " + createdGroup.toString());
+        groupsString += createdGroup['_id'] + ", ";
 
-      for (int i = 0; i < bergerTable.length; i++) {
-        List<dynamic> roundGames = bergerTable[i];
-        for (int k = 0; k < roundGames.length; k++) {
-          // if (i == 0 && k < 2) {
-          Map<String, dynamic> generateRandomLocation = await LocationSeeder()
-              .generateRandomLocation(LocationSeeder().locations[0]);
-          Map<String, dynamic> locationInput =
-              generateRandomLocation["data"]["randomLocation"];
-          Map<String, dynamic> eventInput = {
-            "name": "Game: ${bergerTable[i][k]['game']}",
-            "isMainEvent": false,
-            "price": 0,
-            'startTime': DateTime.fromMillisecondsSinceEpoch(
-                    DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000)
-                .millisecondsSinceEpoch
-                .toString(),
-            'endTime': DateTime.fromMillisecondsSinceEpoch(
-                    DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000)
-                .millisecondsSinceEpoch
-                .toString(),
-            'withRequest': false,
-            'withPayment': false,
-            'roles': "{PLAYER, ORGANIZER}",
-            'createdAt': DateTime.fromMillisecondsSinceEpoch(
-                    DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000)
-                .millisecondsSinceEpoch
-                .toString(),
-            'type': EventType.GAME,
+        //create TeamOrders inside group
+        for(int i = 0;i<tournamentData['numberOfTeamsPerGroup'];i++){
+          dynamic teamOrderInput = {
+            "group_id": createdGroup['_id'],
+            "points": 0,
+            "order": i+1,
           };
-          Map<String, dynamic> gameInput = {
-            "pickup": false,
-            "teamA": bergerTable[i][k]['teamA'].toString(),
-            "teamB": bergerTable[i][k]['teamB'].toString(),
-            "round": bergerTable[i][k]['round'],
-            "gameNumber": bergerTable[i][k]['game'],
-          };
-
-          Map<String, dynamic> gameResp = await GameCommand()
-              .createGame(gameInput, eventInput, locationInput);
-          print("create gameResp: ");
-          print(gameResp);
-          Map<String, dynamic> createdEvent = gameResp['data']['event'];
-          //attach game to tournament
-          http.Response response = await http.post(
+          http.Response createTeamOrdersResponse = await http.post(
             Uri.parse('https://graphql.fauna.com/graphql'),
             headers: <String, String>{
-              'Authorization':
-                  'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+              'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
               'Content-Type': 'application/json'
             },
             body: jsonEncode(<String, String>{
-              'query': TournamentMutations()
-                  .addEventToTournament(createdTournament, createdEvent),
+              'query': TournamentMutations().createTeamOrder(teamOrderInput),
             }),
           );
 
-          print("addEventtoTournament response body: ");
-          print(jsonDecode(response.body));
-          // }
+          dynamic createdTeamOrder = jsonDecode(createTeamOrdersResponse.body)['data']['createTeamOrder'];
+          createdGroup['teamOrders']['data'].add(createdTeamOrder);
+        }
+
+
+        for (int i = 0; i < bergerTable.length; i++) {
+          List<dynamic> roundGames = bergerTable[i];
+          for (int k = 0; k < roundGames.length; k++) {
+            // if (i == 0 && k < 2) {
+            Map<String, dynamic> generateRandomLocation = await LocationSeeder()
+                .generateRandomLocation(LocationSeeder().locations[0]);
+            Map<String, dynamic> locationInput =
+                generateRandomLocation["data"]["randomLocation"];
+            Map<String, dynamic> eventInput = {
+              "name": "Game: ${bergerTable[i][k]['game']}",
+              "isMainEvent": false,
+              "price": 0,
+              'startTime': DateTime.fromMillisecondsSinceEpoch(
+                      DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000)
+                  .millisecondsSinceEpoch
+                  .toString(),
+              'endTime': DateTime.fromMillisecondsSinceEpoch(
+                      DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000)
+                  .millisecondsSinceEpoch
+                  .toString(),
+              'withRequest': false,
+              'withPayment': false,
+              'roles': "{PLAYER, ORGANIZER}",
+              'createdAt': DateTime.fromMillisecondsSinceEpoch(
+                      DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000)
+                  .millisecondsSinceEpoch
+                  .toString(),
+              'type': EventType.GAME,
+            };
+            Map<String, dynamic> gameInput = {
+              "pickup": false,
+              "teamA": bergerTable[i][k]['teamA'].toString(),
+              "teamB": bergerTable[i][k]['teamB'].toString(),
+              "round": bergerTable[i][k]['round'],
+              "gameNumber": bergerTable[i][k]['game'],
+            };
+
+            Map<String, dynamic> gameResp = await GameCommand()
+                .createGame(gameInput, eventInput, locationInput);
+            print("create gameResp: ");
+            print(gameResp);
+            Map<String, dynamic> createdEvent = gameResp['data']['event'];
+            //attach game to tournament
+            http.Response response = await http.post(
+              Uri.parse('https://graphql.fauna.com/graphql'),
+              headers: <String, String>{
+                'Authorization':
+                    'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+                'Content-Type': 'application/json'
+              },
+              body: jsonEncode(<String, String>{
+                'query': TournamentMutations()
+                    .addEventToTournament(createdTournament, createdEvent),
+              }),
+            );
+
+            print("addEventtoTournament response body: ");
+            print(jsonDecode(response.body));
+            // }
+          }
         }
       }
-    }
 
-    //create groupstage
-    Map<String, dynamic> groupStageInput = {
-      "tournament_id": createdTournament['_id'],
-      "numberOfTeams": tournamentData['numberOfTeams'],
-      "groups": groupsString,
-    };
-    print("groupStageInput: " + groupStageInput.toString());
-    http.Response createGroupStageResponse = await http.post(
-      Uri.parse('https://graphql.fauna.com/graphql'),
-      headers: <String, String>{
-        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-        'Content-Type': 'application/json'
-      },
-      body: jsonEncode(<String, String>{
-        'query': TournamentMutations().createGroupStage(groupStageInput)
-      }),
-    );
-
-    print("createGroupStageResponse: " +
-        jsonDecode(createGroupStageResponse.body).toString());
-    Map<String, dynamic> createdGroupStage =
-        jsonDecode(createGroupStageResponse.body)['data']['createGroupStage'];
-
-    //create TournamentStage
-    dynamic tournamentStageInput = {
-      "numberOfTeams": tournamentData['roundOfX'],
-      "tournament_id": createdTournament['_id'],
-      "numberOfRoundsPerTeam": tournamentData['knockoutRounds'],
-    };
-
-    http.Response createTournamentStageResponse = await http.post(
-      Uri.parse('https://graphql.fauna.com/graphql'),
-      headers: <String, String>{
-        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-        'Content-Type': 'application/json'
-      },
-      body: jsonEncode(<String, String>{
-        'query':
-            TournamentMutations().createTournamentStage(tournamentStageInput)
-      }),
-    );
-
-    print("createTournamentStageResponse: " +
-        jsonDecode(createTournamentStageResponse.body).toString());
-
-    dynamic createdTournamentStage =
-        jsonDecode(createTournamentStageResponse.body)['data']
-            ['createTournamentStage'];
-    print("createdTournamentStage: " + createdTournamentStage.toString());
-
-    //createEventOrder
-    for (int i = 0; i < tournamentData['roundOfX'] / 2; i++) {
-      //create EventOrder
-      dynamic eventOrderInput = {
-        "order": i + 1,
-        "name": "Round ${i + 1}",
-        "tournamentStage_id": createdTournamentStage['_id'],
+      //create groupstage
+      Map<String, dynamic> groupStageInput = {
+        "tournament_id": createdTournament['_id'],
+        "numberOfTeams": tournamentData['numberOfTeams'],
+        "groups": groupsString,
       };
-
-      http.Response createEventOrderResponse = await http.post(
+      print("groupStageInput: " + groupStageInput.toString());
+      http.Response createGroupStageResponse = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
           'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': TournamentMutations().createEventOrder(eventOrderInput)
+          'query': TournamentMutations().createGroupStage(groupStageInput)
         }),
       );
 
-      print("createEventOrderResponse: " +
-          jsonDecode(createEventOrderResponse.body).toString());
-      dynamic createdEventOrder =
-          jsonDecode(createEventOrderResponse.body)['data']['createEventOrder'];
-      print("createdEventOrder: " + createdEventOrder.toString());
-    }
+      print("createGroupStageResponse: " +
+          jsonDecode(createGroupStageResponse.body).toString());
+      Map<String, dynamic> createdGroupStage =
+          jsonDecode(createGroupStageResponse.body)['data']['createGroupStage'];
 
-    dynamic findTournamentByIdResponse =
-        await findTournamentById(createdTournament['_id']);
-    print(
-        "findTournamentByIdResponse: " + findTournamentByIdResponse.toString());
-    if (findTournamentByIdResponse['success']) {
-      //update tournament models
-      dynamic tournament = findTournamentByIdResponse['data'];
-      tournament['tournamentStage'] = createdTournamentStage;
-      tournament['groupStage'] = createdGroupStage;
-      print("tournamenttt: " + tournament.toString());
-      //get tournament
-      //add price
-      // if (eventInput['price'] > 0) {
+      //create TournamentStage
+      dynamic tournamentStageInput = {
+        "numberOfTeams": tournamentData['roundOfX'],
+        "tournament_id": createdTournament['_id'],
+        "numberOfRoundsPerTeam": tournamentData['knockoutRounds'],
+      };
 
-        eventInput['price'] = eventInput['price'] * 100;
-        eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
-        Map<String, dynamic> paymentInput = {
-          'price': eventInput['price'].toStringAsFixed(2),
-          'teamPrice': eventInput['teamPrice'].toStringAsFixed(2)
+      http.Response createTournamentStageResponse = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query':
+              TournamentMutations().createTournamentStage(tournamentStageInput)
+        }),
+      );
 
+      print("createTournamentStageResponse: " +
+          jsonDecode(createTournamentStageResponse.body).toString());
+
+      dynamic createdTournamentStage =
+          jsonDecode(createTournamentStageResponse.body)['data']
+              ['createTournamentStage'];
+      print("createdTournamentStage: " + createdTournamentStage.toString());
+
+      //createEventOrder
+      for (int i = 0; i < tournamentData['roundOfX'] / 2; i++) {
+        //create EventOrder
+        dynamic eventOrderInput = {
+          "order": i + 1,
+          "name": "Round ${i + 1}",
+          "tournamentStage_id": createdTournamentStage['_id'],
         };
-        print("create price,,,, event input: " + priceEventInput.toString());
-        print("create price input: " + paymentInput['price'].toString());
-        Map<String, dynamic> createPriceResp =
-            await EventCommand().createPrice(paymentInput, priceEventInput);
-        print("createPaymentResp: " + createPriceResp.toString());
 
-        dynamic createPrice = createPriceResp['data'];
-        tournament['events']['data'].forEach((tournamentEvent) {
-          if (tournamentEvent['isMainEvent']) {
-            tournamentEvent['price'] = createPrice;
-          }
-        });
-        // dynamic mainTournamentEvent = EventCommand().getMainEvent(tournament['events']['data']);
-        // print("mainTournamentEvent: "+mainTournamentEvent.toString());
-        //assumes first event is main event
-        // mainTournamentEvent['price'] = createPrice;
-        // await EventCommand().addGame(createdGame, true);
-      // }
-      print("tournament: " + tournament.toString());
-      EventCommand().updateViewModelsWithTournament(tournament, true);
+        http.Response createEventOrderResponse = await http.post(
+          Uri.parse('https://graphql.fauna.com/graphql'),
+          headers: <String, String>{
+            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            'query': TournamentMutations().createEventOrder(eventOrderInput)
+          }),
+        );
+
+        print("createEventOrderResponse: " +
+            jsonDecode(createEventOrderResponse.body).toString());
+        dynamic createdEventOrder =
+            jsonDecode(createEventOrderResponse.body)['data']['createEventOrder'];
+        print("createdEventOrder: " + createdEventOrder.toString());
+      }
+
+      dynamic findTournamentByIdResponse =
+          await findTournamentById(createdTournament['_id']);
+      print(
+          "findTournamentByIdResponse: " + findTournamentByIdResponse.toString());
+      if (findTournamentByIdResponse['success']) {
+        //update tournament models
+        dynamic tournament = findTournamentByIdResponse['data'];
+        tournament['tournamentStage'] = createdTournamentStage;
+        tournament['groupStage'] = createdGroupStage;        
+
+        print("tournament: " + tournament.toString());
+        
+      }
+
+      createTournamentResp["success"] = true;
+      createTournamentResp["message"] = "Tournament Created";
+      createTournamentResp["data"] = createdTournament;
+      
+
     }
-
-    createTournamentResp["success"] = true;
-    createTournamentResp["message"] = "Tournament Created";
 
     return createTournamentResp;
   }
+
+
+
+
 
   Future<Map<String, dynamic>> findTournamentById(String tournamentId) async {
     print("getUser");

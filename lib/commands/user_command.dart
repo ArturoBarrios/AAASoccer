@@ -418,9 +418,7 @@ class UserCommand extends BaseCommand {
     print("homePageModel.selectedObjects in updateModelsWithFriend: " + homePageModel.selectedObjects.toString());
     
     if (add) {
-      dynamic friends = appModel.currentUser['friends']['data'];
-      friends.add(friend);
-      // appModel.friends.add(friend);
+            
 
       //
     } else {

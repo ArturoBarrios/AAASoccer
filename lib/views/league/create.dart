@@ -4,6 +4,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/views/league/view.dart';
 import '../../commands/league_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
@@ -38,11 +39,9 @@ class _LeagueCreateState extends State<LeagueCreate> {
   final numberOfRoundsPerTeamController = TextEditingController();
   final teamPriceController = TextEditingController();
   final capacityController = TextEditingController();
-  
 
   bool _isLoading = false;
   bool isHasTournamentChecked = false;
-
 
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
@@ -50,9 +49,6 @@ class _LeagueCreateState extends State<LeagueCreate> {
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
-
-
-
 
   Future<Map<String, dynamic>> createLeague() async {
     print("createLeague");
@@ -63,59 +59,67 @@ class _LeagueCreateState extends State<LeagueCreate> {
     try {
       Map<String, dynamic> createEventInput = {
         "name": nameController.text.trim(),
-        'isMainEvent': true,           
+        'isMainEvent': true,
         'price': double.parse(priceController.text.toString()),
         'teamPrice': double.parse(teamPriceController.text.toString()),
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest.value,
-        'withPayment': createEventPaymentWidget.withPayment.value, 
-        'withTeamPayment': createTeamPaymentWidget.withPayment.value, 
-        'withTeamRequest': createTeamRequestWidget.withRequest.value, 
+        'withPayment': createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
+        'withTeamRequest': createTeamRequestWidget.withRequest.value,
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.LEAGUE,
         'capacity': int.parse(capacityController.text.toString()),
         'hasTournament': isHasTournamentChecked,
       };
-      
-        Map<String, dynamic> locationInput = {
-          "name": locationSearchBar.address,
-          "latitude": AppModel().currentPosition.latitude, 
-          "longitude": AppModel().currentPosition.longitude
-        };
-        List<dynamic> groupPlayOptions = [true, false];
-        var rng = Random();        
-        print("locationInputCheck: " + locationInput.toString());   
-        Map<String, dynamic> createLeagueInput = {
-          "numberOfTeams": int.parse(numberOfTeamsController.text.toString()),    
-          "numberOfRoundsPerTeam": int.parse(numberOfRoundsPerTeamController.text.toString()),  
-        };
-        Map<String, dynamic> createdLeagueResp =
-            await LeagueCommand().createLeague(createLeagueInput, createEventInput, locationInput);
-        print("createdLeagueResp: "+ createdLeagueResp.toString());        
 
-        if (createdLeagueResp['success']) {
-          dynamic createdLeague = createdLeagueResp['data'];
-          if(isHasTournamentChecked){
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => TournamentCreate(league: createdLeague),
-              ),
-            );
-          }
-          else{
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => Home(),
-              ),
-            );
-          }
+      Map<String, dynamic> locationInput = {
+        "name": locationSearchBar.address,
+        "latitude": AppModel().currentPosition.latitude,
+        "longitude": AppModel().currentPosition.longitude
+      };
+      List<dynamic> groupPlayOptions = [true, false];
+      var rng = Random();
+      print("locationInputCheck: " + locationInput.toString());
+      Map<String, dynamic> createLeagueInput = {
+        "numberOfTeams": int.parse(numberOfTeamsController.text.toString()),
+        "numberOfRoundsPerTeam":
+            int.parse(numberOfRoundsPerTeamController.text.toString()),
+      };
+      Map<String, dynamic> createdLeagueResp = await LeagueCommand()
+          .createLeague(createLeagueInput, createEventInput, locationInput);
+      print("createdLeagueResp: " + createdLeagueResp.toString());
 
-          createEventResponse['success'] = true;
+      if (createdLeagueResp['success']) {
+        dynamic createdLeague = createdLeagueResp['data'];
+        dynamic mainEvent =
+            EventCommand().getMainEvent(createdLeague['events']['data']);
+        print("mainEvent: " + mainEvent.toString());
+        if (isHasTournamentChecked) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => TournamentCreate(league: createdLeague),
+            ),
+          );
+        } else {
+          await EventCommand().updateViewModelsWithEvent(mainEvent, true);
+          
+          Navigator.pop(
+            context,
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LeagueView(league: mainEvent)),
+          );
         }
 
-      
+        createEventResponse['success'] = true;
+      }
+
       return createEventResponse;
     } on ApiException catch (e) {
       return createEventResponse;
@@ -167,35 +171,37 @@ class _LeagueCreateState extends State<LeagueCreate> {
         ),
         TextField(
           controller: numberOfTeamsController,
-          decoration: new InputDecoration.collapsed(hintText: 'Number of Teams'),
-        ),        
+          decoration:
+              new InputDecoration.collapsed(hintText: 'Number of Teams'),
+        ),
         TextField(
           controller: locationController,
           decoration: new InputDecoration.collapsed(hintText: 'Location'),
         ),
         TextField(
           controller: numberOfRoundsPerTeamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Number of Rounds Per Team'),
+          decoration: new InputDecoration.collapsed(
+              hintText: 'Number of Rounds Per Team'),
         ),
         TextField(
           controller: capacityController,
           decoration: new InputDecoration.collapsed(hintText: 'Capacity'),
         ),
         Column(
-      children: [
-        Checkbox(
-          value: isHasTournamentChecked,
-          onChanged: (value) {
-            setState(() {
-              isHasTournamentChecked = value!;
-            });
-          },
+          children: [
+            Checkbox(
+              value: isHasTournamentChecked,
+              onChanged: (value) {
+                setState(() {
+                  isHasTournamentChecked = value!;
+                });
+              },
+            ),
+            TextField(
+              decoration: InputDecoration.collapsed(hintText: 'Checkbox Field'),
+            ),
+          ],
         ),
-        TextField(
-          decoration: InputDecoration.collapsed(hintText: 'Checkbox Field'),
-        ),
-      ],
-    ),
         GestureDetector(
             onTap: () {
               createLeague();

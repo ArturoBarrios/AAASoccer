@@ -2,6 +2,7 @@ import '../fragments/event_fragments.dart';
 
 class TryoutMutations{
   String createTryout(Map<String, dynamic> tryoutInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
+    var teamAmount = eventInput.containsKey('teamPrice') ? eventInput['teamPrice'] : "0.00";
     String createTryout = """
       mutation {
         createTryout(data: {                    
@@ -16,6 +17,12 @@ class TryoutMutations{
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
               capacity: ${eventInput['capacity']},
+              price: {
+                create: {
+                  amount: "${eventInput['price']}",
+                  teamAmount: "$teamAmount",                  
+                }
+              },
               joinConditions: {
                 create: [
                   {

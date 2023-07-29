@@ -3,6 +3,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/views/tryout/view.dart';
 import '../../commands/tryout_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
@@ -42,7 +43,6 @@ class _TryoutCreateState extends State<TryoutCreate> {
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
-  
 
   Future<Map<String, dynamic>> createTryout() async {
     print("createGame");
@@ -59,15 +59,15 @@ class _TryoutCreateState extends State<TryoutCreate> {
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest.value,
-        'withPayment': createEventPaymentWidget.withPayment.value, 
-        'withTeamPayment': createTeamPaymentWidget.withPayment.value, 
-        'withTeamRequest': createTeamRequestWidget.withRequest.value, 
+        'withPayment': createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
+        'withTeamRequest': createTeamRequestWidget.withRequest.value,
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TRYOUT,
       };
 
-      Map<String, dynamic> tryoutData = {};          
+      Map<String, dynamic> tryoutData = {};
       Map<String, dynamic> locationInput = {
         "name": locationSearchBar.address,
         "latitude": locationSearchBar.coordinates.latitude,
@@ -78,11 +78,18 @@ class _TryoutCreateState extends State<TryoutCreate> {
       Map<String, dynamic> createTryoutResp = await TryoutCommand()
           .createTryout(tryoutData, eventInput, locationInput);
       print("createTryoutResp: " + createTryoutResp.toString());
-      if(createTryoutResp['success']){         
+      if (createTryoutResp['success']) {
+        dynamic createdTryout = createTryoutResp['data'];
+        await EventCommand().updateViewModelsWithEvent(createdTryout['event'], true);
+        Navigator.pop(
+          context,
+        );
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
+          MaterialPageRoute(
+            builder: (context) => TryoutView(tryout: createdTryout['event'])
+          ),
+        ); 
       }
 
       return createEventResponse;
@@ -105,18 +112,16 @@ class _TryoutCreateState extends State<TryoutCreate> {
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Name'),
         ),
-        
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
         createTeamRequestWidget,
-        createTeamPaymentWidget, 
+        createTeamPaymentWidget,
         dateTimePicker,
-        
         TextField(
           controller: priceController,
           decoration: new InputDecoration.collapsed(hintText: 'Price'),
-        ),        
+        ),
         TextField(
           controller: imagesController,
           decoration: new InputDecoration.collapsed(hintText: 'Images'),
@@ -126,7 +131,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
               createTryout();
             },
             child: Text("tap me")),
-            GestureDetector(
+        GestureDetector(
             onTap: () {
               goBack();
             },

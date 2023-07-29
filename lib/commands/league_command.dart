@@ -124,6 +124,8 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
     };
 
     eventInput['user_id'] = appModel.currentUser['_id'];
+    eventInput['price'] = eventInput['price']*100;
+      eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
     print("eventInput: "+eventInput.toString());
     var rng = Random();
 
@@ -144,116 +146,85 @@ Future<Map<String, dynamic>> getLeaguesNearLocation() async {
       }),
     );
     print("createLeague response: "+jsonDecode(response.body).toString());        
-    Map<String, dynamic> createdLeague = jsonDecode(response.body)['data']['createLeague'];      
-    createLeagueResp['data'] = createdLeague;
-    print("createdLeague: ");
-    print(createdLeague);    
+    if(response.statusCode == 200){
+      Map<String, dynamic> createdLeague = jsonDecode(response.body)['data']['createLeague'];      
+      createLeagueResp['data'] = createdLeague;
+      print("createdLeague: ");
+      print(createdLeague);    
 
-    dynamic priceEventInput = {
-      "_id": createdLeague['events']['data'][0]['_id'],
-    };
-
-    
-    //create games from bergerTable    
-    for(int i = 0;i<bergerTable.length;i++){
-      List<dynamic> roundGames = bergerTable[i];
-      print("roundGames: "+ roundGames.toString());
-      for(int k = 0; k<roundGames.length;k++){
-        if(i==0 && k<2){
-          Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-          Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
-          Map<String, dynamic> eventInput = {
-            "name": "Game: ${bergerTable[i][k]['game']}",
-            "isMainEvent": false,
-            "price": 0,
-            'startTime': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
-            'endTime': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
-            'withRequest': false,
-            'withPayment': false, 
-            'roles': "{PLAYER, ORGANIZER}",
-            'createdAt': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
-            'type': EventType.GAME,
-          };
-          Map<String, dynamic> gameInput = {
-            "pickup": false,
-            "teamA": bergerTable[i][k]['teamA'].toString(),
-            "teamB": bergerTable[i][k]['teamB'].toString(),
-            "round": bergerTable[i][k]['round'],
-            "gameNumber": bergerTable[i][k]['game'],
-          };
-          
-          Map<String, dynamic> gameResp = await GameCommand().createGame(gameInput, eventInput, locationInput);
-          print("create gameResp: ");
-          print(gameResp);                     
-          Map<String, dynamic> createdEvent = gameResp['data']['event'];
-          //attach game to league     
-          http.Response response = await http.post(
-          Uri.parse('https://graphql.fauna.com/graphql'),
-          headers: <String, String>{
-            'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
-            'Content-Type': 'application/json'
-          },
-          body: jsonEncode(<String, String>{
-            'query': LeagueMutations().addEventToLeague(createdLeague, createdEvent),
-            }),
-          );
-
-          print("addEventtoLeague response body: ");
-          print(jsonDecode(response.body));
-
-        
-
-      }
-
-    }
-  }
-
-
-
-  dynamic findLeagueByIdResponse = await findLeagueById(createdLeague['_id']);
-  print("findLeagueByIdResponse: "+findLeagueByIdResponse.toString());
-  if(findLeagueByIdResponse['success']){
-    //update league models
-    dynamic league = findLeagueByIdResponse['data'];
-    print("leaguett: "+league.toString());
-    //get league
-    //add price
-    // if(eventInput['price']>0){
-      eventInput['price'] = eventInput['price']*100;
-      eventInput['teamPrice'] = eventInput['teamPrice'] * 100;
-      Map<String, dynamic> paymentInput = {
-        'price': eventInput['price'].toStringAsFixed(2),
-        'teamPrice': eventInput['teamPrice'].toStringAsFixed(2),
+      dynamic priceEventInput = {
+        "_id": createdLeague['events']['data'][0]['_id'],
       };
-      print("create price,,,, event input: "+ priceEventInput.toString());
-      print("create price input: " + paymentInput['price'].toString());
-      Map<String, dynamic> createPriceResp = await EventCommand().createPrice(paymentInput, priceEventInput);
-      print("createPaymentResp: "+createPriceResp.toString());
 
-      dynamic createPrice = createPriceResp['data'];
-      league['events']['data'].forEach((leagueEvent) {
-        if(leagueEvent['isMainEvent']){
-          leagueEvent['price'] = createPrice;
+      
+      //create games from bergerTable    
+      for(int i = 0;i<bergerTable.length;i++){
+        List<dynamic> roundGames = bergerTable[i];
+        print("roundGames: "+ roundGames.toString());
+        for(int k = 0; k<roundGames.length;k++){
+          if(i==0 && k<2){
+            Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
+            Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
+            Map<String, dynamic> eventInput = {
+              "name": "Game: ${bergerTable[i][k]['game']}",
+              "isMainEvent": false,
+              "price": 0,
+              'startTime': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
+              'endTime': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
+              'withRequest': false,
+              'withPayment': false, 
+              'roles': "{PLAYER, ORGANIZER}",
+              'createdAt': DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000).millisecondsSinceEpoch.toString(),
+              'type': EventType.GAME,
+            };
+            Map<String, dynamic> gameInput = {
+              "pickup": false,
+              "teamA": bergerTable[i][k]['teamA'].toString(),
+              "teamB": bergerTable[i][k]['teamB'].toString(),
+              "round": bergerTable[i][k]['round'],
+              "gameNumber": bergerTable[i][k]['game'],
+            };
+            
+            Map<String, dynamic> gameResp = await GameCommand().createGame(gameInput, eventInput, locationInput);
+            print("create gameResp: ");
+            print(gameResp);                     
+            Map<String, dynamic> createdEvent = gameResp['data']['event'];
+            //attach game to league     
+            http.Response response = await http.post(
+            Uri.parse('https://graphql.fauna.com/graphql'),
+            headers: <String, String>{
+              'Authorization': 'Bearer '+ dotenv.env['FAUNADBSECRET'].toString(),
+              'Content-Type': 'application/json'
+            },
+            body: jsonEncode(<String, String>{
+              'query': LeagueMutations().addEventToLeague(createdLeague, createdEvent),
+              }),
+            );
+
+            print("addEventtoLeague response body: ");
+            print(jsonDecode(response.body));
+
+          
+
         }
 
-      });
-      // dynamic mainLeagueEvent = EventCommand().getMainEvent(league['events']['data']);
-      // print("mainLeagueEvent: "+mainLeagueEvent.toString());
-      //assumes first event is main event
-      // mainLeagueEvent['price'] = createPrice;      
-      // await EventCommand().addGame(createdGame, true);
-    // }
-    print("league: "+league.toString());
-    EventCommand().updateViewModelsWithLeague(league, true);
+      }
+    }
 
-  }
-
-
-  
+    dynamic findLeagueByIdResponse = await findLeagueById(createdLeague['_id']);
+    print("findLeagueByIdResponse: "+findLeagueByIdResponse.toString());
+    if(findLeagueByIdResponse['success']){
+      //update league models
+      dynamic league = findLeagueByIdResponse['data'];
+      print("leaguett: "+league.toString());    
+      print("league: "+league.toString());    
+    }
 
 
-  createLeagueResp["success"] = true;
-  createLeagueResp["message"] = "League Created";
+    createLeagueResp["success"] = true;
+    createLeagueResp["message"] = "League Created";
+
+    }
 
 
     return createLeagueResp;

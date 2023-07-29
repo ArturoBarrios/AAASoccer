@@ -376,8 +376,7 @@ class BaseCommand {
           //not being used so commented out
           // await loadUserImagesFromAWS();
           print("get friends and myEvents from currentUser object: " +
-              appModel.currentUser.toString());
-          List<dynamic> friends = appModel.currentUser['friends']['data'];
+              appModel.currentUser.toString());          
           List<dynamic> myEvents =
               appModel.currentUser['eventUserParticipants']['data'];
           List<dynamic> myTeams =

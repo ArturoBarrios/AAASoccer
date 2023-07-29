@@ -129,10 +129,10 @@ type StripeCustomer {
   user: User
 }
 
-type UserLink {
-   user: User     
-   
-}
+
+
+
+
 
 
 type User  {  
@@ -147,7 +147,6 @@ type User  {
   username: String
   birthdate: String
   age: Int
-  friends: [UserLink]! @relation(name: "user_friends")
   teams: [Team] @relation
   gender: GenderType
   location: Location

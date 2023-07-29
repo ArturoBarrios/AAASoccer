@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
+import 'package:soccermadeeasy/views/tournament/view.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/create_event_payment.dart';
@@ -108,16 +109,27 @@ class _TournamentCreateState extends State<TournamentCreate> {
           "knockoutRounds": int.parse(knockoutRoundsController.text.toString()),
 
         };
-        Map<String, dynamic> createdTournament =
+        Map<String, dynamic> createdTournamentResp =
             await TournamentCommand().createTournament(createTournamentInput, createEventInput, locationInput, widget.league);
-        print("createdTournament: "+ createdTournament.toString());        
+        print("createdTournamentResp: "+ createdTournamentResp.toString());        
 
-        if (createdTournament['success']) {
-          //update models that depend on tournament data
-           Navigator.push(
+        if (createdTournamentResp['success']) {
+
+        dynamic createdTournament = createdTournamentResp['data'];
+        dynamic mainEvent = EventCommand().getMainEvent(createdTournament['events']['data']);
+        print("mainEventt: "+ mainEvent.toString());
+        await EventCommand().updateViewModelsWithEvent(mainEvent, true);
+
+          Navigator.pop(
+            context,          
+          );
+
+          Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
+          MaterialPageRoute(
+            builder: (context) => TournamentView(tournament: mainEvent)
+          ),
+        ); 
 
           createEventResponse['success'] = true;
         }
