@@ -9,6 +9,11 @@ class TeamMutations {
           color: "${teamInput['color']}",          
           status: "ACTIVE"
           createdAt: "${teamInput['createdAt']}",
+          price: {
+                create: {
+                  amount: "${teamInput['price']}",                                
+                }
+              },
           joinConditions: {
             create: {
               withRequest: ${teamInput['withRequest']},

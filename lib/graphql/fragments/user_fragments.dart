@@ -82,17 +82,7 @@ class UserFragments{
                   customerId
                 }
               }
-              friends{   
-                data{
-                  _id
-                  user{
-                    _id
-                    username
-                    email   
-                    OSPID                
-                  }                  
-                }                  
-              }
+              
               stripeCustomers{
                 data{
                   _id
@@ -158,17 +148,7 @@ class UserFragments{
                   customerId
                 }
               }
-              friends{   
-                data{
-                  _id
-                  user{
-                    _id
-                    name
-                    email   
-                    OSPID                
-                  }                  
-                }                  
-              }
+              
               stripeCustomers{
                 data{
                   _id

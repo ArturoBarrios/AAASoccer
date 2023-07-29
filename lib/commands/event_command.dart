@@ -53,12 +53,11 @@ class EventCommand extends BaseCommand {
 
     if (response.statusCode == 200) {
       dynamic archivedEvent = jsonDecode(response.body)['data']['updateEvent'];
-      if (eventObject['type'] == "GAME" || eventObject['type'] == "TRAINING"
-          || eventObject['type'] == "TRYOUT") {
+      
         print("type GAME");
         EventCommand().updateViewModelsWithEvent(archivedEvent, false);
         archiveEventResp["success"] = true;
-      }
+      
     }
 
     return archiveEventResp;
@@ -1166,20 +1165,15 @@ class EventCommand extends BaseCommand {
               teamAmountPaid += double.parse(payments[i]['amount']);
             }
           }
-        }
-        print("aaaaaaaaaaaaaaaaa");
-        isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
-        print("bbbbbbbbbbbbbbbbbb");
+        }        
+        isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);        
         isMyEventResp['amountRemaining'] =
             (double.parse(event['price']['amount']) - amountPaid)
-                .toStringAsFixed(2);
-        print("cccccccccccccccccc");
-        isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);
-        print("ddddddddddddddddddddd");
+                .toStringAsFixed(2);        
+        isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);        
         isMyEventResp['teamAmountRemaining'] =
             (double.parse(event['price']['teamAmount']) - teamAmountPaid)
-                .toStringAsFixed(2);
-        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                .toStringAsFixed(2);        
       }
       print("successfully ran details function");
       isMyEventResp["success"] = true;
@@ -1278,9 +1272,7 @@ class EventCommand extends BaseCommand {
     //currentUser is setup by this point. Either from login,
     // or getting user again at top of function
     print("friends: ");
-    if (!appModel.isGuest) {
-      print(appModel.currentUser['friends']['data']);
-      appModel.friends = appModel.currentUser['friends']['data'];
+    if (!appModel.isGuest) {      
       List<dynamic> allMyEvents =
           appModel.currentUser['eventUserParticipants']['data'];
       print("allMyEvents: " + allMyEvents.toString());
@@ -1358,7 +1350,43 @@ class EventCommand extends BaseCommand {
         }
       }
     }
-    
+    else if (event['type'] == "TOURNAMENT") {
+      print("event type tournament");
+      print("eventModel.tournaments.length: " + eventsModel.tournaments.length.toString());
+      if (add) {
+        eventsModel.tournaments.add(event);
+      } else {
+        int indexToRemove = -1;
+        for (int i = 0; i < eventsModel.tournaments.length; i++) {
+          if (eventsModel.tournaments[i]['_id'] == event['_id']) {
+            indexToRemove = i;
+            break;
+          }
+        }
+        if (indexToRemove != -1) {
+          eventsModel.tournaments.removeAt(indexToRemove);
+        }
+      }
+    }
+    else if (event['type'] == "LEAGUE") {
+      print("event type league");
+      print("eventModel.leagues.length: " + eventsModel.leagues.length.toString());
+      if (add) {
+        eventsModel.leagues.add(event);
+      } else {
+        int indexToRemove = -1;
+        for (int i = 0; i < eventsModel.leagues.length; i++) {
+          if (eventsModel.leagues[i]['_id'] == event['_id']) {
+            indexToRemove = i;
+            break;
+          }
+        }
+        if (indexToRemove != -1) {
+          eventsModel.leagues.removeAt(indexToRemove);
+        }
+      }
+    }
+          
     HomePageCommand().updateUpdatedCards(true);
 
     return updateViewModelsWithGameResp;

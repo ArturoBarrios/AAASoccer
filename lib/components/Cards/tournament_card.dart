@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import '../../commands/tournament_command.dart';
 import '../../constants.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -11,7 +12,10 @@ import '../../views/tournament/view.dart';
 
 class TournamentCard extends StatefulWidget {
   const TournamentCard(
-      {Key? key, required this.tournamentObject, required this.svgImage, required this.userEventDetails})
+      {Key? key,
+      required this.tournamentObject,
+      required this.svgImage,
+      required this.userEventDetails})
       : super(key: key);
   final Map<String, dynamic> tournamentObject;
   final Svg svgImage;
@@ -26,14 +30,14 @@ void tournamentClicked() {
   print("Tournament Clicked");
 }
 
-Future<void> sendEventRequest(dynamic tournamentObject) async {  
-  print("send event request for event: :"+tournamentObject.toString());
+Future<void> sendEventRequest(dynamic tournamentObject) async {
+  print("send event request for event: :" + tournamentObject.toString());
 
-  await EventCommand().sendOrganizerTournamentRequest(tournamentObject, "PLAYER");                
+  await EventCommand()
+      .sendOrganizerTournamentRequest(tournamentObject, "PLAYER");
 }
 
 class _TournamentCard extends State<TournamentCard> {
-
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
@@ -56,14 +60,14 @@ class _TournamentCard extends State<TournamentCard> {
   List<String> selectedRequestTypeObjects = [];
 
   requestTypeSelected(List<int>? indexes) {
-      print("requestTypeSelected: " + indexes.toString());
-      selectedRequestTypeIndexes = indexes;
-       for(int i = 0; i < indexes!.length; i++){
-          selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
-        }      
+    print("requestTypeSelected: " + indexes.toString());
+    selectedRequestTypeIndexes = indexes;
+    for (int i = 0; i < indexes!.length; i++) {
+      selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
     }
+  }
 
-    Future<void> sendEventRequest() async {
+  Future<void> sendEventRequest() async {
     print("sendEventRequest");
     print("selectedRequestTypeObjects.length: " +
         selectedRequestTypeObjects.length.toString());
@@ -71,12 +75,22 @@ class _TournamentCard extends State<TournamentCard> {
         "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
     print("send player event request");
     for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
-      await EventCommand().sendOrganizerEventRequest(widget.tournamentObject,
-          selectedRequestTypeObjects[i], Constants.TOURNAMENTREQUEST.toString());
+      await EventCommand().sendOrganizerEventRequest(
+          widget.tournamentObject,
+          selectedRequestTypeObjects[i],
+          Constants.TOURNAMENTREQUEST.toString());
     }
   }
 
+  Future<Map<String, dynamic>> archiveTournament(
+      dynamic tournamentObject) async {
+    print("archiveTournament()");
+    // dynamic mainEvent = TournamentCommand().getMainTournamentEvent(tournamentObject);
+    Map<String, dynamic> archiveTournamentResponse =
+        await EventCommand().archiveEvent(tournamentObject);
 
+    return archiveTournamentResponse;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,10 +155,13 @@ class _TournamentCard extends State<TournamentCard> {
                   barrierDismissible: true,
                   builder: (BuildContext context) {
                     return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this tournament?',
+                      titleText:
+                          'Are you sure you want to delete this tournament?',
                       contentText: '',
-                      onPositiveClick: () {                        
-                       
+                      onPositiveClick: () {
+                        print("onPositiveClick: ");
+                        Navigator.of(context).pop();
+                        archiveTournament(widget.tournamentObject);
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();
@@ -168,45 +185,43 @@ class _TournamentCard extends State<TournamentCard> {
                 ),
               ),
             ),
-             !widget.userEventDetails['isMine'] ? 
-                    Container(
-                height: 20,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: GestureDetector(
-                      onTap: () async {
-                        print("onTap: ");
-                        List<int>? requestIndexes =
-                            await showAnimatedDialog<dynamic>(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            
+            !widget.userEventDetails['isMine']
+                ? Container(
+                    height: 20,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: GestureDetector(
+                          onTap: () async {
+                            print("onTap: ");
+                            List<int>? requestIndexes =
+                                await showAnimatedDialog<dynamic>(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) {
+                                return ClassicListDialogWidget<dynamic>(
+                                    selectedIndexes: selectedRequestTypeIndexes,
+                                    titleText: 'Choose User Type',
+                                    positiveText: "Send Request",
+                                    listType: ListType.multiSelect,
+                                    activeColor: Colors.green,
+                                    dataList: requestUserTypes);
+                              },
+                              animationType: DialogTransitionType.size,
+                              curve: Curves.linear,
+                            );
 
-                            return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: selectedRequestTypeIndexes,
-                                titleText: 'Choose User Type',
-                                positiveText: "Send Request",
-                                listType: ListType.multiSelect,
-                                activeColor: Colors.green,
-                                dataList: requestUserTypes);
+                            selectedRequestTypeIndexes =
+                                requestIndexes ?? selectedRequestTypeIndexes;
+                            print(
+                                'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                            await requestTypeSelected(
+                                selectedRequestTypeIndexes);
+                            await sendEventRequest();
                           },
-                          animationType: DialogTransitionType.size,
-                          curve: Curves.linear,
-                        );
-
-                        selectedRequestTypeIndexes =
-                            requestIndexes ?? selectedRequestTypeIndexes;
-                        print(
-                            'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                        await requestTypeSelected(selectedRequestTypeIndexes);
-                        await sendEventRequest();
-                      },
-                      child: Text("Send Request")),
-                ),
-              )
-                    : 
-                    Text("Join Your Game")
+                          child: Text("Send Request")),
+                    ),
+                  )
+                : Text("Join Your Game")
           ])),
     ));
   }

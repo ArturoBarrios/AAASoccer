@@ -2,6 +2,7 @@ import '../fragments/event_fragments.dart';
 
 class LeagueMutations{
   String createLeague(Map<String, dynamic> leagueInput, Map<String, dynamic> eventInput ,Map<String, dynamic> locationInput) {
+    var teamAmount = eventInput.containsKey('teamPrice') ? eventInput['teamPrice'] : "0.00";
     String createLeague = """
       mutation {
         createLeague(data: {      
@@ -15,7 +16,13 @@ class LeagueMutations{
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}", 
-              type: LEAGUE,             
+              type: LEAGUE,    
+               price: {
+                create: {
+                  amount: "${eventInput['price']}",
+                  teamAmount: "$teamAmount",                  
+                }
+              },         
               joinConditions: {
                 create: [
                   {

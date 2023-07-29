@@ -30,12 +30,7 @@ class PlayerCommand extends BaseCommand {
     };
     dynamic currentUser = appModel.currentUser;
     print("user: "+user.toString());
-    print("currentUser['friends']['data']: "+currentUser['friends']['data'].toString());
-    currentUser['friends']['data'].forEach((friend) {
-      if(friend['user']['_id'] == user['_id']){
-        getUserPlayerDetailsResp['isFriend'] = true;
-      }
-    });
+    
 
     return getUserPlayerDetailsResp;
   }

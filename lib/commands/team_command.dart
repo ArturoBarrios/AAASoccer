@@ -628,6 +628,7 @@ class TeamCommand extends BaseCommand {
       print("team input: ");
       print(teamInput);
       teamInput['user_id'] = appModel.currentUser['_id'];
+      teamInput['price'] = teamInput['price'] * 100;
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -646,19 +647,9 @@ class TeamCommand extends BaseCommand {
         createTeamResponse["data"] =
             jsonDecode(response.body)['data']['createTeam'];
 
-        //create price
-        teamInput['price'] = teamInput['price']*100;
-          Map<String, dynamic> paymentInput = {
-            'price': teamInput['price'].toStringAsFixed(2)
-            };
-          print("create price event input: "+ teamInput.toString());
-          print("create price input: " + paymentInput['price'].toString());
-          Map<String, dynamic> createPriceResp = await TeamCommand().createPrice(paymentInput, createdTeam);
-          print("createPaymentResp: "+createPriceResp.toString());
+        
 
-          dynamic createPrice = createPriceResp['data'];
-
-          createdTeam['price'] = createPrice;
+                
 
 
         

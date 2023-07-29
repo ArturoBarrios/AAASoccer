@@ -109,13 +109,17 @@ class _TournamentCreateState extends State<TournamentCreate> {
           "knockoutRounds": int.parse(knockoutRoundsController.text.toString()),
 
         };
-        Map<String, dynamic> createdTournament =
+        Map<String, dynamic> createdTournamentResp =
             await TournamentCommand().createTournament(createTournamentInput, createEventInput, locationInput, widget.league);
-        dynamic mainEvent = TournamentCommand().getMainTournamentEvent(createdTournament);
-        await EventCommand().updateViewModelsWithEvent(mainEvent, true);
-        print("createdTournament: "+ createdTournament.toString());        
+        print("createdTournamentResp: "+ createdTournamentResp.toString());        
 
-        if (createdTournament['success']) {
+        if (createdTournamentResp['success']) {
+
+        dynamic createdTournament = createdTournamentResp['data'];
+        dynamic mainEvent = EventCommand().getMainEvent(createdTournament['events']['data']);
+        print("mainEventt: "+ mainEvent.toString());
+        await EventCommand().updateViewModelsWithEvent(mainEvent, true);
+
           Navigator.pop(
             context,          
           );
@@ -123,7 +127,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
           Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TournamentView(tournament: createdTournament['events']['data'][0])
+            builder: (context) => TournamentView(tournament: mainEvent)
           ),
         ); 
 
