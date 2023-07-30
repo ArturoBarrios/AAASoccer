@@ -135,11 +135,8 @@ type FollowRelation {
 }
 
 
-
-
-
 type User  {  
-  stripeCustomers: [StripeCustomer] @relation
+  stripeCustomers: [StripeCustomer] @relation 
   payments: [Payment] @relation
   userType: UserType
   OSPID: String
