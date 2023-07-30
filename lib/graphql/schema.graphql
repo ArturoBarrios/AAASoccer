@@ -129,14 +129,14 @@ type StripeCustomer {
   user: User
 }
 
-
-
-
-
+type FollowRelation {
+  follower: User @relation(name: "user_follower")
+  following: User @relation(name: "user_following")
+}
 
 
 type User  {  
-  stripeCustomers: [StripeCustomer] @relation
+  stripeCustomers: [StripeCustomer] @relation 
   payments: [Payment] @relation
   userType: UserType
   OSPID: String
@@ -149,6 +149,8 @@ type User  {
   age: Int
   teams: [Team] @relation
   gender: GenderType
+  followers: [FollowRelation] @relation(name: "user_following")
+  following: [FollowRelation] @relation(name: "user_follower")
   location: Location
   player: Player
   organizer: Organizer
