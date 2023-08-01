@@ -47,7 +47,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.soccermadeeasy"
-        minSdkVersion 20 //was 21 before adding google_maps_flutter
+        minSdkVersion 21 //was 21 before adding google_maps_flutter
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

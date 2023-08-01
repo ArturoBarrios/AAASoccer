@@ -11,101 +11,98 @@ import '../commands/user_command.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';
 
-
 class AmplifyAuthService {
-
-  static Future<Map<String, dynamic>> fetchUserAuthSession()async {
+  static Future<Map<String, dynamic>> fetchUserAuthSession() async {
     print("fetchUserAuthSession");
-    Map<String, dynamic> fetchUserAuthResponse = {"success": 0, "message": "Something went wrong with fetching User", "data": null};
-    try{
-    AuthSession authSessionRes = await Amplify.Auth.fetchAuthSession();
-    print("authSessionRes: "+ authSessionRes.isSignedIn.toString());
-    fetchUserAuthResponse["data"] = authSessionRes;
-    fetchUserAuthResponse["success"] = 1;
-    fetchUserAuthResponse["message"] = "Fetched User";
-    }catch(e){
+    Map<String, dynamic> fetchUserAuthResponse = {
+      "success": 0,
+      "message": "Something went wrong with fetching User",
+      "data": null
+    };
+    try {
+      AuthSession authSessionRes = await Amplify.Auth.fetchAuthSession();
+      print("authSessionRes: ${authSessionRes.isSignedIn}");
+      fetchUserAuthResponse["data"] = authSessionRes;
+      fetchUserAuthResponse["success"] = 1;
+      fetchUserAuthResponse["message"] = "Fetched User";
+    } catch (e) {
       print(e.toString());
     }
-     
+
     return fetchUserAuthResponse;
   }
 
-  static void skipVerifyUser(AuthenticatorState state){
+  static void skipVerifyUser(AuthenticatorState state) {
     state.skipVerifyUser();
   }
 
-  
-
-  static void changeAuthenticatorStep(String nextStep, AuthenticatorState state) {
-      print("changeAuthenticatorStep");
-      print(nextStep);
-      if(nextStep.contains("An account with the given email already exists.")){
-        print("An account with the given email already exists.");
-        state.changeStep(AuthenticatorStep.signIn);
-      }
-      else if(nextStep.contains("User is not confirmed")){
-        print("User is not confirmed");
-        state.changeStep(AuthenticatorStep.confirmSignUp);
-      }
-      else if(nextStep.contains("User does not exist")){
-        print("User does not exist");
-        state.changeStep(AuthenticatorStep.signUp);
-      }
-      else if(nextStep.contains("CONFIRM_SIGN_UP_STEP")){
-        print("CONFIRM_SIGN_UP_STEP");
-        state.changeStep(AuthenticatorStep.confirmSignUp);
-      }
-      else if(nextStep.contains("DONE")){
-        print("DONE");
-        state.skipVerifyUser();
-      }
-      else{
-        print("else");
-        // state.changeStep(AuthenticatorStep.)
-      }
+  static void changeAuthenticatorStep(
+      String nextStep, AuthenticatorState state) {
+    print("changeAuthenticatorStep");
+    print(nextStep);
+    if (nextStep.contains("An account with the given email already exists.")) {
+      print("An account with the given email already exists.");
+      state.changeStep(AuthenticatorStep.signIn);
+    } else if (nextStep.contains("User is not confirmed")) {
+      print("User is not confirmed");
+      state.changeStep(AuthenticatorStep.confirmSignUp);
+    } else if (nextStep.contains("User does not exist")) {
+      print("User does not exist");
+      state.changeStep(AuthenticatorStep.signUp);
+    } else if (nextStep.contains("CONFIRM_SIGN_UP_STEP")) {
+      print("CONFIRM_SIGN_UP_STEP");
+      state.changeStep(AuthenticatorStep.confirmSignUp);
+    } else if (nextStep.contains("DONE")) {
+      print("DONE");
+      state.skipVerifyUser();
+    } else {
+      print("else");
+      // state.changeStep(AuthenticatorStep.)
+    }
   }
-
-
 
   static Future<Map<String, dynamic>> configureAmplify() async {
     print("configureAmplify");
-    Map<String, dynamic> configureAmplifyResp = {"success": false, "message": "Default Error"};
+    Map<String, dynamic> configureAmplifyResp = {
+      "success": false,
+      "message": "Default Error"
+    };
     /////////////////////////addback in when shortcode is ready
     await Amplify.addPlugin(AmplifyAuthCognito());
     await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
     // Add the following lines to your app initialization to add the DataStore plugin
-    AmplifyDataStore datastorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance);
+    AmplifyDataStore datastorePlugin =
+        AmplifyDataStore(modelProvider: ModelProvider.instance);
     await Amplify.addPlugin(datastorePlugin);
     try {
       // Add the following line to add Auth plugin to your app.
-      
+
       // call Amplify.configure to use the initialized categories in your app
       await Amplify.configure(amplifyconfig);
       print("amplify configured");
       Map<String, dynamic> authSessionRes = await fetchUserAuthSession();
 
-      if(authSessionRes["data"].isSignedIn){
+      if (authSessionRes["data"].isSignedIn) {
         print("isSignedIn!!!!");
-        List<AuthUserAttribute> userAttributes = await Amplify.Auth.fetchUserAttributes();
-        int indexOfEmail = userAttributes.indexWhere((f) => f.userAttributeKey.key == "email");
-        
+        List<AuthUserAttribute> userAttributes =
+            await Amplify.Auth.fetchUserAttributes();
+        int indexOfEmail =
+            userAttributes.indexWhere((f) => f.userAttributeKey.key == "email");
+
         print("indexOfEmail: ");
         print(indexOfEmail);
         String email = userAttributes[indexOfEmail].value;
         print("email");
         print(email);
-        UserModel().userEmail = email;        
-        print("authSessionRes: "+authSessionRes.toString());
+        UserModel().userEmail = email;
+        print("authSessionRes: $authSessionRes");
         print("amplify configured end of function!");
-        configureAmplifyResp["success"] =  true;
+        configureAmplifyResp["success"] = true;
         configureAmplifyResp["message"] = "isSignedIn";
-        configureAmplifyResp["data"] = authSessionRes["data"];    
-        configureAmplifyResp["email"] = email;    
-      
+        configureAmplifyResp["data"] = authSessionRes["data"];
+        configureAmplifyResp["email"] = email;
       }
       AppModel().amplifyConfigured = true;
-      
-      
     } on Exception catch (e) {
       print('An error occurred configuring Amplify: $e');
     }
@@ -113,31 +110,38 @@ class AmplifyAuthService {
     return configureAmplifyResp;
   }
 
-   Future<void> signOut() async {
+  Future<void> signOut() async {
     try {
-      await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
+      await Amplify.Auth.signOut(
+          options: const SignOutOptions(globalSignOut: true));
       //base_command set initial app models to reflect signout
-   
     } on AuthException catch (e) {
       print(e.message);
     }
   }
 
-  static Future<SignInResult> signIn(emailController, passwordController) async {
+  static Future<SignInResult> signIn(
+      emailController, passwordController) async {
     SignInResult res = await Amplify.Auth.signIn(
       username: emailController.text.trim(),
       password: passwordController.text.trim(),
     );
 
-    print("signIn res: " + res.toString());
+    print("signIn res: $res");
 
     //
 
     return res;
   }
 
-  static Future<SignUpResult> signUp(emailController, passwordController,
-      usernameController, phoneController, birthdateController, genderController, addressController) async {
+  static Future<SignUpResult> signUp(
+      emailController,
+      passwordController,
+      usernameController,
+      phoneController,
+      birthdateController,
+      genderController,
+      addressController) async {
     Map<CognitoUserAttributeKey, String> userAttributes = {
       CognitoUserAttributeKey.name: usernameController.text.trim(),
       CognitoUserAttributeKey.email: emailController.text.trim(),
@@ -156,11 +160,11 @@ class AmplifyAuthService {
     return res;
   }
 
-  static Future<SignUpResult> confirmSignUp(String confirmValue, String email) async {
+  static Future<SignUpResult> confirmSignUp(
+      String confirmValue, String email) async {
     print("confirmSignIn");
     SignUpResult res = await Amplify.Auth.confirmSignUp(
-        username: email,
-        confirmationCode: confirmValue);
+        username: email, confirmationCode: confirmValue);
 
     return res;
   }

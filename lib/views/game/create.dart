@@ -22,9 +22,7 @@ import '../../testing/seeding/event_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
 import '../../views/home.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-
 
 class GameCreate extends StatefulWidget {
   @override
@@ -49,11 +47,6 @@ class _GameCreateState extends State<GameCreate> {
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
-  
-
-  
-
-
 
   Future<void> createPickupGame() async {
     print("createGame");
@@ -71,9 +64,9 @@ class _GameCreateState extends State<GameCreate> {
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest.value,
-        'withPayment': createEventPaymentWidget.withPayment.value, 
-        'withTeamPayment': createTeamPaymentWidget.withPayment.value, 
-        'withTeamRequest': createTeamRequestWidget.withRequest.value, 
+        'withPayment': createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
+        'withTeamRequest': createTeamRequestWidget.withRequest.value,
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
@@ -92,30 +85,26 @@ class _GameCreateState extends State<GameCreate> {
       // Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
       print("locationInputCheaheck: " + locationInput.toString());
 
-      Map<String, dynamic> createPickupGameResp = await GameCommand()
-          .createGame(pickupData, eventInput, locationInput);
-      print("createPickupGameResp: "+createPickupGameResp.toString());
+      Map<String, dynamic> createPickupGameResp =
+          await GameCommand().createGame(pickupData, eventInput, locationInput);
+      print("createPickupGameResp: " + createPickupGameResp.toString());
       print(createPickupGameResp['data']);
       if (createPickupGameResp['success']) {
-        Map<String, dynamic> createdGame = createPickupGameResp['data'];        
-        await EventCommand().updateViewModelsWithEvent(createdGame['event'], true);
+        Map<String, dynamic> createdGame = createPickupGameResp['data'];
+        await EventCommand()
+            .updateViewModelsWithEvent(createdGame['event'], true);
 
-          
-        
         Navigator.pop(
-          context,          
+          context,
         );
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PickupView(game: createdGame['event'])
-          ),
-        );     
+              builder: (context) => PickupView(game: createdGame['event'])),
+        );
       }
-
     } on ApiException catch (e) {}
   }
-
 
   void goBack() {
     Navigator.pop(context);
@@ -123,7 +112,6 @@ class _GameCreateState extends State<GameCreate> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: Headers().getBackHeader(context, "Create Game"),
       body: Center(
@@ -135,7 +123,7 @@ class _GameCreateState extends State<GameCreate> {
         TextField(
           controller: hometeamController,
           decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),        
+        ),
         locationSearchBar,
         createEventRequestWidget,
         createEventPaymentWidget,
@@ -170,7 +158,6 @@ class _GameCreateState extends State<GameCreate> {
           controller: imageController,
           decoration: new InputDecoration.collapsed(hintText: 'Images'),
         ),
-        
         GestureDetector(
             onTap: () {
               createPickupGame();
