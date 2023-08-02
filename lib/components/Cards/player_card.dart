@@ -25,9 +25,6 @@ class PlayerCard extends StatefulWidget {
   State<PlayerCard> createState() => _PlayerCard();
 }
 
-void playerClicked() {
-  print("Player Clicked");
-}
 
 class _PlayerCard extends State<PlayerCard> {
   final bool _isPressed = false;
@@ -38,6 +35,16 @@ class _PlayerCard extends State<PlayerCard> {
       textStyle: const TextStyle(fontSize: 20));
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
+
+  void followPlayer() {
+    print("Player Clicked");
+    dynamic user = UserCommand().getAppModelUser();
+    dynamic followUserInput = {
+      "followerId": user['_id'],
+      "followingId": widget.playerObject['_id']
+    };
+    UserCommand().followUser(followUserInput);
+  }
 
   addPlayerToObjectSelection() {
     print("addPlayerToSelectedList");
@@ -143,7 +150,7 @@ class _PlayerCard extends State<PlayerCard> {
             onTap: () {
               //potentially show dialogue
               //with different request options
-              UserCommand().sendFriendRequest(widget.playerObject);
+              followPlayer();
             },
             child: Container(
               child: ClipRRect(

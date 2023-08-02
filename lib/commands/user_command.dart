@@ -329,14 +329,15 @@ class UserCommand extends BaseCommand {
 
   
 
-  Future<Map<String, dynamic>> addFriend(
-      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
-    print("addFriend");
-    Map<String, dynamic> addFriendResponse = {
+  Future<Map<String, dynamic>> followUser(
+      dynamic followUserInput) async {
+    print("followUser");
+    Map<String, dynamic> followUserResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
+
 
     try {
       http.Response response = await http.post(
@@ -346,30 +347,30 @@ class UserCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().addFriend(userInput, friendInput),
+          'query': UserMutations().followUser(followUserInput),
         }),
       );
 
       print("response body: ");
       print(jsonDecode(response.body));
 
-      dynamic friend = jsonDecode(response.body)['data']['updateUser'];
-      print("friend: " + friend.toString());
+      if(response.statusCode == 200){
+        dynamic createdFollowRelation = jsonDecode(response.body)['data']['createFollowRelation'];
+        print("createdFollowRelation: " + createdFollowRelation.toString());
+        followUserResponse["success"] = true;
+        followUserResponse["message"] = "Followed Player";
+        followUserResponse["data"] = createdFollowRelation;
+      }
+      
 
-      print("update currentUser friends");
-      print("currentUser: " + appModel.currentUser.toString());
+      
 
-      // updateModelsWithFriend(friend, true);
-
-      addFriendResponse["success"] = true;
-      addFriendResponse["message"] = "Player for Team Created";
-      addFriendResponse["data"] = friend;
           
     } catch (e) {
       print("error");
     }
 
-    return addFriendResponse;
+    return followUserResponse;
   }
 
   Future<Map<String, dynamic>> removeFriend(dynamic friendInput) async {
