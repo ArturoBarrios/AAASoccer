@@ -2,8 +2,12 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:math';
 import 'package:amplify_api/amplify_api.dart';
+import 'package:another_stepper/dto/stepper_data.dart';
+import 'package:another_stepper/widgets/another_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/components/Validator.dart';
+import 'package:soccermadeeasy/components/custom_textfield.dart';
 import 'package:soccermadeeasy/views/game/view.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/create_event_payment.dart';
@@ -24,7 +28,9 @@ import '../../components/profile.dart';
 import '../../views/home.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-
+import '../../styles/colors.dart';
+import '../../strings.dart';
+import '../../styles/static_decoration.dart';
 
 class GameCreate extends StatefulWidget {
   @override
@@ -42,6 +48,16 @@ class _GameCreateState extends State<GameCreate> {
   final priceController = TextEditingController();
   final imageController = TextEditingController();
 
+  final startTimeController = TextEditingController();
+  final endTimeController = TextEditingController();
+  final numberOfTeamsController = TextEditingController();
+  final numberOfRoundsPerTeamController = TextEditingController();
+  final numberOfTeamsPerGroupController = TextEditingController();
+  final roundOfXController = TextEditingController();
+  final knockoutRoundsController = TextEditingController();
+  final teamPriceController = TextEditingController();
+  final capacityController = TextEditingController();
+
   bool _isLoading = false;
   CreateEventRequest createEventRequestWidget = new CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
@@ -49,11 +65,19 @@ class _GameCreateState extends State<GameCreate> {
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
-  
 
-  
-
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  DateTime startTime = DateTime.now();
+  DateTime endTime = DateTime.now();
+  String startTimestamp = "";
+  String endTimestamp = "";
+  DateTime rightNow = DateTime.fromMillisecondsSinceEpoch(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000 * 1000);
+  DateTime twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(
+      DateTime.now().add(const Duration(hours: 2)).millisecondsSinceEpoch ~/
+          1000 *
+          1000);
+  bool startTimeSet = false;
 
   Future<void> createPickupGame() async {
     print("createGame");
@@ -68,12 +92,12 @@ class _GameCreateState extends State<GameCreate> {
         "name": nameController.text.toString(),
         'isMainEvent': true,
         'price': double.parse(priceController.text.toString()),
-        'startTime': dateTimePicker.startTimestamp,
-        'endTime': dateTimePicker.endTimestamp,
+        'startTime': startTimestamp,
+        'endTime': endTimestamp,
         'withRequest': createEventRequestWidget.withRequest.value,
-        'withPayment': createEventPaymentWidget.withPayment.value, 
-        'withTeamPayment': createTeamPaymentWidget.withPayment.value, 
-        'withTeamRequest': createTeamRequestWidget.withRequest.value, 
+        'withPayment': createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
+        'withTeamRequest': createTeamRequestWidget.withRequest.value,
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
@@ -92,96 +116,446 @@ class _GameCreateState extends State<GameCreate> {
       // Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
       print("locationInputCheaheck: " + locationInput.toString());
 
-      Map<String, dynamic> createPickupGameResp = await GameCommand()
-          .createGame(pickupData, eventInput, locationInput);
-      print("createPickupGameResp: "+createPickupGameResp.toString());
+      Map<String, dynamic> createPickupGameResp =
+          await GameCommand().createGame(pickupData, eventInput, locationInput);
+      print("createPickupGameResp: " + createPickupGameResp.toString());
       print(createPickupGameResp['data']);
       if (createPickupGameResp['success']) {
-        Map<String, dynamic> createdGame = createPickupGameResp['data'];        
-        await EventCommand().updateViewModelsWithEvent(createdGame['event'], true);
+        Map<String, dynamic> createdGame = createPickupGameResp['data'];
+        await EventCommand()
+            .updateViewModelsWithEvent(createdGame['event'], true);
 
-          
-        
         Navigator.pop(
-          context,          
+          context,
         );
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PickupView(game: createdGame['event'])
-          ),
-        );     
+              builder: (context) => PickupView(game: createdGame['event'])),
+        );
       }
-
     } on ApiException catch (e) {}
   }
-
 
   void goBack() {
     Navigator.pop(context);
   }
 
+  void setStartTime(DateTime time) {
+    startTime = time;
+    startTimestamp = time.millisecondsSinceEpoch.toString();
+    startTimeController.text = '${time.day}/${time.month}/${time.year} '
+        ' ${time.hour}:${time.minute}';
+    twoHoursFromStart = DateTime.fromMillisecondsSinceEpoch(
+        time.add(const Duration(hours: 2)).millisecondsSinceEpoch ~/
+            1000 *
+            1000);
+    startTimeSet = true;
+    setEndTime(twoHoursFromStart);
+  }
+
+  void setEndTime(DateTime time) {
+    endTime = time;
+    endTimestamp = time.millisecondsSinceEpoch.toString();
+    endTimeController.text = '${time.day}/${time.month}/${time.year} '
+        ' ${time.hour}:${time.minute}';
+  }
+
+  var index = 0;
+
+  List<StepperData> stepperData() => [
+        StepperData(
+            iconWidget: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: index >= 0
+                  ? AppColors.orangeColorShade500
+                  : AppColors.grayColor,
+              borderRadius: const BorderRadius.all(Radius.circular(30))),
+          child: const Center(
+            child: Text(
+              "1",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: AppColors.whiteColor),
+            ),
+          ),
+        )),
+        StepperData(
+            iconWidget: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: index >= 1
+                  ? AppColors.orangeColorShade500
+                  : AppColors.grayColor,
+              borderRadius: const BorderRadius.all(Radius.circular(30))),
+          child: const Center(
+            child: Text(
+              "2",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: AppColors.whiteColor),
+            ),
+          ),
+        )),
+        StepperData(
+            iconWidget: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: index >= 2
+                  ? AppColors.orangeColorShade500
+                  : AppColors.grayColor,
+              borderRadius: const BorderRadius.all(Radius.circular(30))),
+          child: const Center(
+            child: Text(
+              "3",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: AppColors.whiteColor),
+            ),
+          ),
+        )),
+      ];
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "Create Game"),
-      body: Center(
-          child: Column(children: [
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Name'),
+      appBar: const Headers()
+          .getBackHeader(context, StringConstants.headingCreateGame),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: AnotherStepper(
+            stepperList: stepperData(),
+            stepperDirection: Axis.horizontal,
+            iconWidth: 40,
+            iconHeight: 40,
+            activeBarColor: AppColors.orangeColorShade500,
+            inActiveBarColor: AppColors.grayColor,
+            inverted: true,
+            verticalGap: 30,
+            activeIndex: index,
+            barThickness: 8,
+          ),
         ),
-        TextField(
-          controller: hometeamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),        
-        locationSearchBar,
-        createEventRequestWidget,
-        createEventPaymentWidget,
-        createTeamRequestWidget,
-        createTeamPaymentWidget,
-        dateTimePicker,
-        TextField(
-          controller: priceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Price'),
+        customHeight(10),
+          
+        (index == 0)
+        ? Column(
+            children: [
+              CustomTextFormField(
+                label: StringConstants.nameLabel,
+                keyboardType: TextInputType.name,
+                hintText: StringConstants.nameHint,
+                validator: (value) => Validators.validateRequired(
+                    value!, StringConstants.nameErrorValue),
+                controller: nameController,
+              ),
+              // locationSearchBar,
+              CustomTextFormField(
+                label: StringConstants.startDateTimeLabel,
+                hintText: StringConstants.startDateTimeHint,
+                keyboardType: TextInputType.datetime,
+                controller: startTimeController,
+                isSuffixIcon: true,
+                validator: (value) => Validators.validateRequired(
+                    value!, StringConstants.startDateTimeErrorValue),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      DatePicker.showDateTimePicker(context,
+                          showTitleActions: true,
+                          onChanged: (date) {}, onConfirm: (date) {
+                        setStartTime(date);
+                      },
+                          currentTime:
+                              !startTimeSet ? rightNow : startTime);
+                    },
+                    icon: const Icon(Icons.calendar_today_outlined)),
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context,
+                      showTitleActions: true,
+                      onChanged: (date) {}, onConfirm: (date) {
+                    setStartTime(date);
+                  }, currentTime: !startTimeSet ? rightNow : startTime);
+                },
+              ),
+              CustomTextFormField(
+                label: StringConstants.endDateTimeLabel,
+                hintText: StringConstants.endDateTimeHint,
+                controller: endTimeController,
+                keyboardType: TextInputType.datetime,
+                isSuffixIcon: true,
+                validator: (value) => Validators.validateRequired(
+                    value!, StringConstants.endDateTimeErrorValue),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      DatePicker.showDateTimePicker(context,
+                          showTitleActions: true,
+                          onChanged: (date) {}, onConfirm: (date) {
+                        setEndTime(date);
+                      },
+                          currentTime:
+                              !startTimeSet ? rightNow : startTime);
+                    },
+                    icon: const Icon(Icons.calendar_today_outlined)),
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context,
+                      showTitleActions: true,
+                      onChanged: (date) {}, onConfirm: (date) {
+                    setEndTime(date);
+                  }, currentTime: !startTimeSet ? rightNow : startTime);
+                },
+              ),
+              CustomTextFormField(
+                label: StringConstants.priceLabel,
+                hintText: StringConstants.priceHint,
+                keyboardType: const TextInputType.numberWithOptions(
+                    signed: true, decimal: true),
+                controller: priceController,
+                validator: (value) => Validators.validateRequired(
+                    value!, StringConstants.priceErrorValue),
+              ),
+            ],
+          )
+        : (index == 1)
+            ? Column(
+                children: [
+                  CustomTextFormField(
+                    label: StringConstants.awayLabel,
+                    keyboardType: TextInputType.name,
+                    hintText: StringConstants.awayHint,
+                    validator: (value) => Validators.validateRequired(
+                        value!, StringConstants.awayErrorValue),
+                    controller: awayteamController,
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.pickupLabel,
+                    hintText: StringConstants.pickupHint,
+                    keyboardType: TextInputType.name,
+                    controller: isPickupController,
+                    validator: (value) => Validators.validateRequired(
+                        value!, StringConstants.pickupErrorValue),
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.surfaceLabel,
+                    hintText: StringConstants.surfaceHint,
+                    controller: surfaceController,
+                    keyboardType: TextInputType.name,
+                    validator: (value) => Validators.validateRequired(
+                        value!, StringConstants.surfaceErrorValue),
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.fieldSizeLabel,
+                    hintText: StringConstants.fieldSizeHint,
+                    keyboardType: const TextInputType.numberWithOptions(
+                        signed: true, decimal: true),
+                    controller: fieldSizeController,
+                    validator: (value) => Validators.validateRequired(
+                        value!, StringConstants.fieldSizeErrorValue),
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.privateLabel,
+                    hintText: StringConstants.privateHint,
+                    keyboardType: TextInputType.name,
+                    controller: privateController,
+                    validator: (value) => Validators.validateRequired(
+                        value!, StringConstants.privateErrorValue),
+                  ),
+                ],
+              )
+            : Column(
+                children: [
+                  CustomTextFormField(
+                    label: StringConstants.teamPriceLabel,
+                    keyboardType: TextInputType.number,
+                    hintText: StringConstants.teamPriceHint,
+                    validator: (value) => Validators.validateRequired(
+                        value!, StringConstants.teamPriceErrorValue),
+                    controller: teamPriceController,
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.numberOfTeamsLabel,
+                    hintText: StringConstants.numberOfTeamsHint,
+                    keyboardType: TextInputType.number,
+                    controller: numberOfTeamsController,
+                    validator: (value) => Validators.validateRequired(
+                        value!,
+                        StringConstants.numberOfTeamsErrorValue),
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.numberOfRoundsPerTeamsLabel,
+                    hintText:
+                        StringConstants.numberOfRoundsPerTeamsHint,
+                    controller: numberOfRoundsPerTeamController,
+                    keyboardType: TextInputType.number,
+                    validator: (value) => Validators.validateRequired(
+                        value!,
+                        StringConstants
+                            .numberOfRoundsPerTeamsErrorValue),
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.numberOfTeamsPerGroupLabel,
+                    hintText: StringConstants.numberOfTeamsPerGroupHint,
+                    keyboardType: TextInputType.number,
+                    controller: numberOfTeamsPerGroupController,
+                    validator: (value) => Validators.validateRequired(
+                        value!,
+                        StringConstants
+                            .numberOfTeamsPerGroupErrorValue),
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.roundOfXLabel,
+                    hintText: StringConstants.roundOfXHint,
+                    keyboardType: TextInputType.number,
+                    controller: roundOfXController,
+                    validator: (value) => Validators.validateRequired(
+                        value!, StringConstants.roundOfXErrorValue),
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.knockoutRoundsLabel,
+                    hintText: StringConstants.knockoutRoundsHint,
+                    keyboardType: TextInputType.number,
+                    controller: knockoutRoundsController,
+                    validator: (value) => Validators.validateRequired(
+                        value!,
+                        StringConstants.knockoutRoundsErrorValue),
+                  ),
+                  CustomTextFormField(
+                    label: StringConstants.capacityLabel,
+                    hintText: StringConstants.capacityHint,
+                    keyboardType: TextInputType.number,
+                    controller: capacityController,
+                    validator: (value) => Validators.validateRequired(
+                        value!, StringConstants.capacityErrorValue),
+                  ),
+                ],
+              ),
+       
+        customHeight(50),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width / 2.2,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: FloatingActionButton.extended(
+                isExtended: true,
+                label: Text(
+                  (index == 0)
+                      ? StringConstants.cancelBtn
+                      : StringConstants.backBtn,
+                  style: const TextStyle(
+                      color: AppColors.whiteColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400),
+                ),
+                backgroundColor: AppColors.orangeColorShade500,
+                onPressed: () {
+                  (index == 0)
+                      ? Navigator.of(context).pop()
+                      : setState(() {
+                          index = index - 1;
+                        });
+                },
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width / 2.2,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: FloatingActionButton.extended(
+                isExtended: true,
+                label: Text(
+                  (index == 2)
+                      ? StringConstants.createGameBtn
+                      : StringConstants.nextBtn,
+                  style: const TextStyle(
+                      color: AppColors.whiteColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400),
+                ),
+                backgroundColor: AppColors.orangeColorShade500,
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    (index == 2)
+                        ? {createPickupGame(), goBack()}
+                        : setState(() {
+                            index = index + 1;
+                          });
+                  }
+                },
+              ),
+            ),
+          ],
         ),
-        TextField(
-          controller: awayteamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Away'),
+        customHeight(20),
+
+        // Container(
+        //   child: Text,
+        //   decoration: BoxDecoration(color: Colors.amber),
+        // )
+
+        // TextField(
+        //   controller: nameController,
+        //   decoration: new InputDecoration.collapsed(hintText: 'Name'),
+        // ),
+        //       TextField(
+        // controller: hometeamController,
+        // decoration: new InputDecoration.collapsed(hintText: 'Home'),
+        //       ),
+        //       locationSearchBar,
+        //       createEventRequestWidget,
+        //       createEventPaymentWidget,
+        //       createTeamRequestWidget,
+        //       createTeamPaymentWidget,
+        // dateTimePicker,
+        //       TextField(
+        // controller: priceController,
+        // decoration: new InputDecoration.collapsed(hintText: 'Price'),
+        //       ),
+        //       TextField(
+        // controller: awayteamController,
+        // decoration: new InputDecoration.collapsed(hintText: 'Away'),
+        //       ),
+        //       TextField(
+        // controller: isPickupController,
+        // decoration: new InputDecoration.collapsed(hintText: 'Pickup'),
+        //       ),
+        //       TextField(
+        // controller: surfaceController,
+        // decoration: new InputDecoration.collapsed(hintText: 'Surface'),
+        //       ),
+        //       TextField(
+        // controller: fieldSizeController,
+        // decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
+        //       ),
+        //       TextField(
+        // controller: privateController,
+        // decoration: new InputDecoration.collapsed(hintText: 'Private'),
+        //       ),
+        //       TextField(
+        // controller: imageController,
+        // decoration: new InputDecoration.collapsed(hintText: 'Images'),
+        //       ),
+
+        //     GestureDetector(
+        // onTap: () {
+        //   createPickupGame();
+        // },
+        // child: Text("Create")),
+        //     GestureDetector(
+        // onTap: () {
+        //   goBack();
+        // },
+        // child: Text("Back to Home")),
+      ]),
         ),
-        TextField(
-          controller: isPickupController,
-          decoration: new InputDecoration.collapsed(hintText: 'Pickup'),
-        ),
-        TextField(
-          controller: surfaceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Surface'),
-        ),
-        TextField(
-          controller: fieldSizeController,
-          decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
-        ),
-        TextField(
-          controller: privateController,
-          decoration: new InputDecoration.collapsed(hintText: 'Private'),
-        ),
-        TextField(
-          controller: imageController,
-          decoration: new InputDecoration.collapsed(hintText: 'Images'),
-        ),
-        
-        GestureDetector(
-            onTap: () {
-              createPickupGame();
-            },
-            child: Text("Create")),
-        GestureDetector(
-            onTap: () {
-              goBack();
-            },
-            child: Text("Back to Home")),
-      ])),
+      ),
     );
   }
 }
