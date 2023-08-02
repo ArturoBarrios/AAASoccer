@@ -45,7 +45,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
 }
 
 Future<void> updateFriendRequest(dynamic friendRequestObject, BuildContext context) async {
-  await RequestsCommand().updateFriendRequest(friendRequestObject);
+  // await RequestsCommand().updateFriendRequest(friendRequestObject);
   //go back
   Navigator.push(
     context,
