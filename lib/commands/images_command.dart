@@ -37,6 +37,7 @@ class ImagesCommand extends BaseCommand {
           'query': ImageMutations().deleteImage(imageInput),
         }),
       );
+      print(response.body);
       if (response.statusCode == 200) {
         deleteImageResp['success'] = true;
         deleteImageResp['message'] = 'Image deleted';
@@ -480,6 +481,7 @@ class ImagesCommand extends BaseCommand {
       }),
     );
     log(response.body);
+    log(response.statusCode.toString());
     return response.statusCode >= 200 && response.statusCode <= 299;
   }
 

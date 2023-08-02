@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
@@ -30,6 +31,14 @@ class UserCommand extends BaseCommand {
   dynamic getAppModelUser() {
     print("getAppModelUser");
     print("appMOdel.currentUser: " + appModel.currentUser.toString());
+
+    return appModel.currentUser;
+  }
+
+  dynamic setAppModelUser(dynamic userData) {
+    print("setAppModelUser");
+    print("appModel.currentUser: $userData");
+    appModel.currentUser = userData;
 
     return appModel.currentUser;
   }
@@ -73,7 +82,7 @@ class UserCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -163,6 +172,7 @@ class UserCommand extends BaseCommand {
       dynamic processedUserInput) async {
     print("partialUpdateUser");
     print("processedUserInput: " + processedUserInput.toString());
+
     Map<String, dynamic> partialUpdateUserResponse = {
       "success": false,
       "message": "Default Error",
@@ -173,7 +183,7 @@ class UserCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{

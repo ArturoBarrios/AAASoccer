@@ -63,18 +63,22 @@ class _ImagesViewState extends State<ImagesView> with ImagesMixin {
     Map<int, dynamic> indexes,
     List<dynamic> primaryList,
     List<dynamic> secondaryList,
-    String imageUrl,
+    dynamic image,
   ) {
     print("imageOptionSelect");
     print("indexes: $indexes");
     print("primaryList: $primaryList");
     print("secondaryList: $secondaryList");
+    print("image: $image");
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic optionChosen = primaryList[mainIndex];
       print("optionChosen: $optionChosen");
       if (optionChosen == Constants.IMAGEDELETE) {
-        final key = Uri.parse(imageUrl).pathSegments.last;
-        deleteImage(key);
+        final key = image['key'];
+        await deleteImage(key);
+        setState(() {
+          images.remove(image);
+        });
       } else if (optionChosen == Constants.IMAGEREPLACE) {}
     });
   }
@@ -123,7 +127,7 @@ class _ImagesViewState extends State<ImagesView> with ImagesMixin {
                         result,
                         primaryList,
                         secondaryList,
-                        images[index]['signedUrl'].toString(),
+                        images[index],
                       );
                     }
                   },

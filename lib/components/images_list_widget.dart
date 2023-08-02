@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import '../commands/images_command.dart';
 import '../commands/user_command.dart';
@@ -52,6 +54,8 @@ class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
       Map<String, dynamic> allImagesFromUserResp =
           ImagesCommand().allImagesFromUser(currentUser);
       images = allImagesFromUserResp['data'];
+      print('imagessss');
+      log(images.toString());
       details['for'] = Constants.USER;
     }
 
@@ -90,7 +94,7 @@ class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
     Map<int, dynamic> indexes,
     List<dynamic> primaryList,
     List<dynamic> secondaryList,
-    String signedUrl,
+    dynamic image,
   ) {
     print("imageOptionSelect");
     print("indexes: $indexes");
@@ -100,15 +104,16 @@ class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
       dynamic optionChosen = primaryList[mainIndex];
       print("optionChosen: $optionChosen");
       if (optionChosen == Constants.IMAGEDELETE) {
-        final key = Uri.parse(signedUrl).pathSegments.last;
-        deleteImage(key);
+        final key = image['key'];
+        await deleteImage(key);
+        setState(() {
+          images.remove(image);
+        });
       } else if (optionChosen == Constants.IMAGEREPLACE) {}
     });
 
     imageOptions.removeAt(imageOptions.length - 1);
   }
-
-  removeImage() {}
 
   @override
   void initState() {
@@ -222,7 +227,7 @@ class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
                               result!,
                               primaryList,
                               secondaryList,
-                              images[index]['signedUrl'].toString(),
+                              images[index],
                             );
                           } else {
                             setState(() {

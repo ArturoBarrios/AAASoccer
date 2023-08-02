@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
@@ -140,14 +143,34 @@ mixin ImagesMixin {
     //add image to user profile
   }
 
-  Future<void> deleteImage(String key) async {
+  Future<void> deleteImage(String key, {bool isProfileImage = false}) async {
     final deletedFromBucket = await ImagesCommand().deleteImageFromBucket(key);
     if (deletedFromBucket) {
-      /// TODO
-      /// deleteImage api requires ID to delete the image from database
-      /// we need to create an API or modify this api to delete the document from database using key only
-      final deletedFromDatabase =
-          await ImagesCommand().deleteImageFromDatabase({"_id": key});
+      dynamic currentUser = UserCommand().getAppModelUser();
+
+      Map<String, dynamic> allImagesFromUserResp =
+          ImagesCommand().allImagesFromUser(currentUser);
+      final images = allImagesFromUserResp['data'] as List<dynamic>;
+      final image = images.firstWhereOrNull((e) => e['key'] == key);
+
+      if (image != null) {
+        final deletedFromDatabase =
+            await ImagesCommand().deleteImageFromDatabase(image);
+        if (deletedFromDatabase['success'] && isProfileImage) {
+          Map<String, dynamic> partialUserInput = {
+            'user': {
+              '_id': currentUser['_id'],
+              'dataToUpdate': """
+          {
+            mainImageKey: null
+          }
+          """,
+            },
+          };
+
+          await UserCommand().partialUpdateUser(partialUserInput);
+        }
+      }
     }
   }
 }

@@ -84,7 +84,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage>
           if (result.keys.first == 3) {
             final key = Uri.parse(imageUrl).pathSegments.last;
             print("KEY : $key");
-            deleteImage(key);
+            deleteImage(key, isProfileImage: true);
           } else {
             chooseImage(
               {"for": Constants.USER},
