@@ -114,26 +114,31 @@ class UserMutations {
     return updateUserString;
   }
 
-  String addFriend( 
-       Map<String, dynamic> userInput,Map<String, dynamic> friendInput) {
+  String followUser( 
+       dynamic followUserInput) {
     String addFriendString = """      
       mutation {
-       updateUser(id: ${userInput['_id']},
-  				data: {   
-            friends:{  
-              create:
-              {
-                user:   {              
-                  connect: 
-                    ${friendInput['_id']}                                                                                                                                                                                              
-                }   
-              }       
-            }        
-          }                      
-        ){
-        _id
-    		name      
-  }
+        createFollowRelation(data: {
+          follower: {
+            connect: "${followUserInput['followerId']}"            
+          }
+          following: {
+            connect: "${followUserInput['followingId']}"            
+          }          
+          }) {
+           _id
+           follower{
+            _id
+            name
+            email
+           }
+            following{
+              _id
+              name
+              email
+            }            
+          }   
+        
 }
         """;
 

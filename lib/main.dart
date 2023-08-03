@@ -4,6 +4,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:soccermadeeasy/components/Dialogues/animated_dialogu.dart';
 import 'package:soccermadeeasy/models/home_page_model.dart';
+import 'package:soccermadeeasy/services/firebase_service.dart';
 import 'package:soccermadeeasy/services/network_services.dart';
 import 'package:soccermadeeasy/services/onesignal_service.dart';
 import 'package:soccermadeeasy/services/stripe_service.dart';
@@ -65,6 +66,8 @@ void main() async {
   await NetworkServices().enableLocationService();
   await OneSignalService().configureOneSignal();
   await StripeServices().configureStripeService();
+  await FirebaseServices().initializeFirebase();
+  FirebaseServices().initializeFirebaseAnalytics();
   print("===============================================");
 
   runApp(MyApp(client: client));
@@ -267,7 +270,7 @@ class _MyAppState extends State<MyApp> {
   //assumes you're signed in/up
   Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    await TwilioServices().configureTwilio();
+    await TwilioServices().configureTwilio();    
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if (otherConfigurationResp['success']) {
       /////////////////////////addback in when shortcode is ready
