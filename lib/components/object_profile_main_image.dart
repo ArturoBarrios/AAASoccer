@@ -7,60 +7,60 @@ import '../commands/user_command.dart';
 import '../models/user_model.dart';
 import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/images_mixin.dart';
-import '../../constants.dart';
+import 'app_images_gallery.dart';
 
 class ObjectProfileMainImage extends StatefulWidget with ImagesMixin {
   final dynamic objectImageInput;
-  dynamic primaryColor = Color(0xff4338CA);
+  dynamic primaryColor = const Color(0xff4338CA);
 
-  ObjectProfileMainImage({required this.objectImageInput});
+  ObjectProfileMainImage({Key? key, required this.objectImageInput})
+      : super(key: key);
 
   @override
   _ObjectProfileMainImageState createState() => _ObjectProfileMainImageState();
 }
 
 class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
-  
-
-  Future<void> addImageToProfile(dynamic imageAdded) async{
+  Future<void> addImageToProfile(dynamic imageAdded) async {
     //do something
     //get the user
+    print('imageAdded');
+    print(imageAdded.runtimeType);
+    print(imageAdded.toString());
     dynamic user = UserCommand().getAppModelUser();
-    dynamic addImageToUserProfileResp = await ImagesCommand().addImageToUserProfile(user ,imageAdded);
-    if(addImageToUserProfileResp['success']){      
-      Map<String,dynamic> setUserProfileImageResp = await ImagesCommand().setUserProfileImage();
-
+    dynamic addImageToUserProfileResp =
+        await ImagesCommand().addImageToUserProfile(user, imageAdded);
+    if (addImageToUserProfileResp['success']) {
+      Map<String, dynamic> setUserProfileImageResp =
+          await ImagesCommand().setUserProfileImage();
     }
-
   }
-  
-  Future<void> addImageToChat(dynamic imageAdded) async{
+
+  Future<void> addImageToChat(dynamic imageAdded) async {
     //do something
-    //get the user    
+    //get the user
     print("addImageToChat");
-    dynamic addImageTochatResp = await ImagesCommand().addImageToChat(widget.objectImageInput['chat'] ,imageAdded);
-    if(addImageTochatResp['success']){    
-      dynamic updatedChat = addImageTochatResp['data'];  
+    dynamic addImageTochatResp = await ImagesCommand()
+        .addImageToChat(widget.objectImageInput['chat'], imageAdded);
+    if (addImageTochatResp['success']) {
+      dynamic updatedChat = addImageTochatResp['data'];
       ImagesCommand().setChatImage(updatedChat);
-
     }
-
   }
-  
-  Future<void> addImageToEvent(dynamic imageAdded) async{
+
+  Future<void> addImageToEvent(dynamic imageAdded) async {
     //do something
-    //get the user    
+    //get the user
     print("addImageToEvent");
-    dynamic addImageTochatResp = await ImagesCommand().addImageToEvent(widget.objectImageInput['mainEvent'] ,imageAdded);
-    if(addImageTochatResp['success']){    
-      dynamic updatedEvent = addImageTochatResp['data'];  
+    dynamic addImageTochatResp = await ImagesCommand()
+        .addImageToEvent(widget.objectImageInput['mainEvent'], imageAdded);
+    if (addImageTochatResp['success']) {
+      dynamic updatedEvent = addImageTochatResp['data'];
       ImagesCommand().setEventImage(updatedEvent);
-
     }
-
   }
 
-  Container returnProfileImageContainer(String imageUrl){
+  Container returnProfileImageContainer(String imageUrl) {
     return Container(
       child: GestureDetector(
         onTap: () async {
@@ -68,21 +68,47 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
               widget.imageChoices.map((choice) => choice.values.first).toList();
 
           List<dynamic> secondaryList = [];
-          Map<int, dynamic> result = await showDialog(
+          Map<int, dynamic>? result = await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AnimatedDialog(
-                  details: {"title": "Image Options"},
+                  details: const {"title": "Image Options"},
                   items: primaryList,
                   singleSelect: true,
                   secondaryItems: secondaryList,
-                  goToFunctions: []);
+                  goToFunctions: const []);
             },
           );
-          if (result.isNotEmpty) {
-            print("result: " + result.toString());
-            widget.chooseImage({"for": Constants.USER},result, primaryList, secondaryList, addImageToProfile);
-
+          if (result != null && result.isNotEmpty) {
+            if (result.entries.first.key == 2) {
+              dynamic currentUser = UserCommand().getAppModelUser();
+              Map<String, dynamic> allImagesFromUserResp =
+                  ImagesCommand().allImagesFromUser(currentUser);
+              var imagesData = allImagesFromUserResp['data'] as List;
+              var imagesUrls =
+                  imagesData.map((e) => e['signedUrl'] as String).toList();
+              final result = await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => AppImagesGallery(
+                    imagesUrls: imagesUrls,
+                  ),
+                  fullscreenDialog: true,
+                ),
+              );
+              if (result != null) {
+                var selectedIndex = result as int;
+                var imageToadd = imagesData[selectedIndex];
+                addImageToProfile(imageToadd);
+              }
+            } else {
+              widget.chooseImage(
+                {"for": Constants.USER},
+                result,
+                primaryList,
+                secondaryList,
+                addImageToProfile,
+              );
+            }
           }
         },
         child: Hero(
@@ -104,7 +130,13 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
                 width: 170.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(102.5),
-                  gradient: RadialGradient(stops:[0.01,0.5],colors: [Colors.white, widget.primaryColor.withOpacity(0.1)]),
+                  gradient: RadialGradient(stops: const [
+                    0.01,
+                    0.5
+                  ], colors: [
+                    Colors.white,
+                    widget.primaryColor.withOpacity(0.1)
+                  ]),
                 ),
               )),
               Container(
@@ -143,7 +175,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
     );
   }
 
-  Container returnChatImageContainer(String imageUrl){
+  Container returnChatImageContainer(String imageUrl) {
     return Container(
       child: GestureDetector(
         onTap: () async {
@@ -155,16 +187,19 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
             context: context,
             builder: (BuildContext context) {
               return AnimatedDialog(
-                  details: {"title": "Image Options"},
+                  details: const {"title": "Image Options"},
                   items: primaryList,
                   singleSelect: true,
                   secondaryItems: secondaryList,
-                  goToFunctions: []);
+                  goToFunctions: const []);
             },
           );
           if (result.isNotEmpty) {
-            print("result: " + result.toString());
-            widget.chooseImage({"for": Constants.CHAT, "chat": widget.objectImageInput['chat']},result, primaryList, secondaryList, addImageToChat);
+            print("result: $result");
+            widget.chooseImage({
+              "for": Constants.CHAT,
+              "chat": widget.objectImageInput['chat']
+            }, result, primaryList, secondaryList, addImageToChat);
           }
         },
         child: Hero(
@@ -172,7 +207,6 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: <Widget>[
-              
               Container(
                 child: Container(
                   height: 50.0,
@@ -192,115 +226,121 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
       ),
     );
   }
-  
-  Container returnEventImageContainer(String imageUrl){
-  print("returnEventImageContainer() imageurl: " + imageUrl.toString());  
-  print("widget.objectImageInput: " + widget.objectImageInput.toString());
-  return Container(
-    child: GestureDetector(
-      onTap: () async {
-      if(widget.objectImageInput['isMine']){
-         List<dynamic> primaryList =
-              widget.imageChoices.map((choice) => choice.values.first).toList();
 
-          List<dynamic> secondaryList = [];
-          Map<int, dynamic> result = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AnimatedDialog(
-                  details: {"title": "Image Options"},
-                  items: primaryList,
-                  singleSelect: true,
-                  secondaryItems: secondaryList,
-                  goToFunctions: []);
-            },
-          );
-          if (result.isNotEmpty) {
-            print("result: " + result.toString());
-            widget.chooseImage({"for": Constants.EVENT, "mainEvent": widget.objectImageInput['mainEvent']},result, primaryList, secondaryList, addImageToEvent);
-          }
-        }
-      },
-      child: Stack(
-        children: [
-          // Full Width Image or Gradient
-          imageUrl != null && imageUrl != ""
-            ?             
-            Container(
-                width: double.infinity,
-                height: 200.0,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(imageUrl),
-                  ),
-                ),
-              )
-            : Container(
-                width: double.infinity,
-                height: 200.0,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      Colors.blue,
-                      Colors.red,
-                    ],
-                  ),
-                ),
-              ),
-          // Title and Back Button
-          AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            centerTitle: true,
-            title: Text(
-              "Some Title",
-              style: TextStyle(fontSize: 20.0, color: Colors.white),
-            ),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.pop(context);
+  Container returnEventImageContainer(String imageUrl) {
+    print("returnEventImageContainer() imageurl: $imageUrl");
+    print("widget.objectImageInput: ${widget.objectImageInput}");
+    return Container(
+      child: GestureDetector(
+        onTap: () async {
+          if (widget.objectImageInput['isMine']) {
+            List<dynamic> primaryList = widget.imageChoices
+                .map((choice) => choice.values.first)
+                .toList();
+
+            List<dynamic> secondaryList = [];
+            Map<int, dynamic> result = await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AnimatedDialog(
+                    details: const {"title": "Image Options"},
+                    items: primaryList,
+                    singleSelect: true,
+                    secondaryItems: secondaryList,
+                    goToFunctions: const []);
               },
+            );
+            if (result.isNotEmpty) {
+              print("result: $result");
+              widget.chooseImage({
+                "for": Constants.EVENT,
+                "mainEvent": widget.objectImageInput['mainEvent']
+              }, result, primaryList, secondaryList, addImageToEvent);
+            }
+          }
+        },
+        child: Stack(
+          children: [
+            // Full Width Image or Gradient
+            imageUrl != ""
+                ? Container(
+                    width: double.infinity,
+                    height: 200.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(imageUrl),
+                      ),
+                    ),
+                  )
+                : Container(
+                    width: double.infinity,
+                    height: 200.0,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [
+                          Colors.blue,
+                          Colors.red,
+                        ],
+                      ),
+                    ),
+                  ),
+            // Title and Back Button
+            AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+              centerTitle: true,
+              title: const Text(
+                "Some Title",
+                style: TextStyle(fontSize: 20.0, color: Colors.white),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-
-  loadInitialData(){
+  loadInitialData() {
     print("loadInitialData");
     setState(() {
       // String imageUrl = widget.objectImageInput['imageUrl'];
     });
-  }  
+  }
 
   @override
   void initState() {
     super.initState();
     print("initState() ObjectProfileMainImage");
-    print("widget.objectImageInput.toString() "+ widget.objectImageInput.toString());
+    print("widget.objectImageInput.toString() ${widget.objectImageInput}");
     loadInitialData();
-    
   }
 
   @override
   Widget build(BuildContext context) {
-    String profileImageUrl = context
-        .select<UserModel, String>((value) => value.profileImageUrl);
-    print("widget.objectImageInput['containerType']: " + widget.objectImageInput['containerType'].toString());
-    if (widget.objectImageInput['containerType'] == Constants.PROFILEIMAGECIRCLE.toString())
+    String profileImageUrl =
+        context.select<UserModel, String>((value) => value.profileImageUrl);
+    print(
+        "widget.objectImageInput['containerType']: ${widget.objectImageInput['containerType']}");
+    if (widget.objectImageInput['containerType'] ==
+        Constants.PROFILEIMAGECIRCLE.toString()) {
       return returnProfileImageContainer(profileImageUrl);
-    else if (widget.objectImageInput['containerType'] == Constants.CHATIMAGECIRCLE.toString())
+    } else if (widget.objectImageInput['containerType'] ==
+        Constants.CHATIMAGECIRCLE.toString()) {
       return returnChatImageContainer(widget.objectImageInput['imageUrl']);
-    else if (widget.objectImageInput['containerType'] == Constants.IMAGEBANNER.toString())
+    } else if (widget.objectImageInput['containerType'] ==
+        Constants.IMAGEBANNER.toString()) {
       return returnEventImageContainer(widget.objectImageInput['imageUrl']);
-    else
-      return Text("Nothing to show here");
+    } else {
+      return const Text("Nothing to show here");
+    }
   }
 }
