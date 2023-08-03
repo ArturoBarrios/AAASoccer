@@ -105,8 +105,8 @@ class EventCommand extends BaseCommand {
   }
 
   void addEventToEventModels(dynamic event) {
-    print("addEventtoEventModels()");
-    print("event: " + event.toString());
+    // print("addEventtoEventModels()");
+    // print("event: " + event.toString());
     String enumValue = event['type'].toString().split('.').last;
 
     switch (enumValue) {
@@ -1086,10 +1086,10 @@ class EventCommand extends BaseCommand {
           event['userParticipants'].toString());
 
       //get main event requests
-      Map<String, dynamic> getMainEventResp = await getEvent(event);
-      print("getMainEventResp: " + getMainEventResp.toString());
-      print("requestssss: " +
-          getMainEventResp['data']['requests']['data'].toString());
+      // Map<String, dynamic> getMainEventResp = await getEvent(event);
+      // print("getMainEventResp: " + getMainEventResp.toString());
+      // print("requestssss: " +
+      //     getMainEventResp['data']['requests']['data'].toString());
 
       //get chats
       dynamic chats = event['chats']['data'];

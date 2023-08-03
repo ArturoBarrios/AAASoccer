@@ -293,6 +293,23 @@ class UserCommand extends BaseCommand {
     return addEventResponse;
   }
 
+  bool isCurrentUserFollowingUser(dynamic userObject){
+  print("isUserFollowingUser");
+  print("userObject: " + userObject.toString());
+  dynamic currentUser = appModel.currentUser;
+  List<dynamic> followings = currentUser['following']['data'];
+  return followings.any((relation) => relation['following']['_id'] == userObject['_id']);
+}
+
+  bool isCurrentUserFollowedByUser(dynamic userObject){
+    print("isUserFollowedByUser");    
+    dynamic currentUser = appModel.currentUser;
+    List<dynamic> followings = currentUser['followers']['data'];
+    return followings.any((relation) => relation['follower']['_id'] == userObject['_id']);
+    
+
+  }
+
   Future<Map<String, dynamic>> addTeam(
       Map<String, dynamic> userInput, Map<String, dynamic> teamInput, String role) async {
     print("addTeam");
@@ -325,6 +342,22 @@ class UserCommand extends BaseCommand {
     }
 
     return addTeamResponse;
+  }
+
+  dynamic getUserDetails(dynamic user){
+    print("getUserPlayerDetails");
+    print("user: "+user.toString());
+    dynamic getUserPlayerDetailsResp = {
+      "isFriend": false,
+      "followers": user['followers']['data'].length,
+      "following": user['following']['data'].length,
+    };
+
+    dynamic currentUser = appModel.currentUser;
+    print("user: "+user.toString());
+    
+
+    return getUserPlayerDetailsResp;
   }
 
   

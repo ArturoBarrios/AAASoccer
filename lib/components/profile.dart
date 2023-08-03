@@ -161,14 +161,31 @@ return
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      '34',
+                      widget.profileDetails['userDetails']['followers'].toString(),
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 5.0),
                     Text(
-                      'Friends',
+                      'Followers',
+                      style: TextStyle(
+                          fontFamily: 'Montserrat', color: Colors.grey),
+                    )
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      widget.profileDetails['userDetails']['following'].toString(),
+                      style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      'Following',
                       style: TextStyle(
                           fontFamily: 'Montserrat', color: Colors.grey),
                     )

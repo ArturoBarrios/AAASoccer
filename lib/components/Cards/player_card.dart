@@ -14,7 +14,10 @@ import '../profile.dart';
 
 class PlayerCard extends StatefulWidget {
   const PlayerCard(
-      {Key? key, required this.playerObject, required this.playerDetails , required this.svgImage})
+      {Key? key,
+      required this.playerObject,
+      required this.playerDetails,
+      required this.svgImage})
       : super(key: key);
   final Map<String, dynamic> playerObject;
   final dynamic playerDetails;
@@ -24,7 +27,6 @@ class PlayerCard extends StatefulWidget {
   @override
   State<PlayerCard> createState() => _PlayerCard();
 }
-
 
 class _PlayerCard extends State<PlayerCard> {
   final bool _isPressed = false;
@@ -61,6 +63,7 @@ class _PlayerCard extends State<PlayerCard> {
     dynamic profileDetails = {
       "user": widget.playerObject,
       "isMine": false,
+      "userDetails": widget.playerDetails
     };
     Navigator.push(
       context,
@@ -71,12 +74,83 @@ class _PlayerCard extends State<PlayerCard> {
     );
   }
 
+  Container followUserContainer(dynamic userObject) {
+    bool isUserFollowingPlayer =
+        UserCommand().isCurrentUserFollowingUser(userObject);
+    bool isUserFollowedByPlayer =
+        UserCommand().isCurrentUserFollowedByUser(userObject);
+
+    //follow
+    if (!isUserFollowingPlayer && !isUserFollowedByPlayer) {
+      return Container(
+          child: GestureDetector(
+        onTap: () {
+          //potentially show dialogue
+          //with different request options
+          followPlayer();
+        },
+        child: Container(
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0), child: Text("Follow")),
+        ),
+      ));
+    }
+    //follow back
+    else if (isUserFollowedByPlayer && !isUserFollowingPlayer) {
+      return Container(
+          child: GestureDetector(
+        onTap: () {
+          //potentially show dialogue
+          //with different request options
+          followPlayer();
+        },
+        child: Container(
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Text("Follow Back")),
+        ),
+      ));
+    }
+    //unfollow
+    else if (!isUserFollowedByPlayer && isUserFollowingPlayer) {
+      return Container(
+          child: GestureDetector(
+        onTap: () {
+          //potentially show dialogue
+          //with different request options
+          followPlayer();
+        },
+        child: Container(
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Text("Unfollow")),
+        ),
+      ));
+    }
+    //friends
+    else {
+      return Container(
+          child: GestureDetector(
+        onTap: () {
+          //potentially show dialogue
+          //with different request options
+          followPlayer();
+        },
+        child: Container(
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Text("Unfollow")),
+        ),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Player card: " + widget.playerObject.toString());
     print("widget name: ");
     print(widget.playerObject.toString());
-    print("widget.playerDetails: "+ widget.playerDetails.toString());
+    print("widget.playerDetails: " + widget.playerDetails.toString());
 
     return Listener(
         child: GestureDetector(
@@ -146,18 +220,8 @@ class _PlayerCard extends State<PlayerCard> {
                   }),
             ],
           ),
-          GestureDetector(
-            onTap: () {
-              //potentially show dialogue
-              //with different request options
-              followPlayer();
-            },
-            child: Container(
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: const Icon(Icons.person_add_alt_1)),
-            ),
-          ),
+
+          followUserContainer(widget.playerObject)
         ]),
       ),
     ));
