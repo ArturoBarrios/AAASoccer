@@ -55,6 +55,19 @@ class ChatMutations {
   }
 
   String createTextMessage(Map<String, dynamic> messageInput) {
+    String image = messageInput['image_url'] != null
+        ? """
+    imageObject: {
+      create:{
+        s3bucket: "${messageInput['s3bucket']}"
+        key: "${messageInput['image_key']}"
+        url: "${messageInput['image_url']}"
+      }
+    }
+    messageType: IMAGE 
+  """
+        : "";
+
     String createTextMessageString = """
      mutation {
       createMessage(
@@ -67,6 +80,7 @@ class ChatMutations {
               content: "${messageInput['content']}"
             }
           }
+          $image
           sender: {
             connect: ${messageInput['sender_id']}
           }

@@ -644,4 +644,56 @@ class ImagesCommand extends BaseCommand {
       return pickImageResponse;
     }
   }
+
+  
+   //Image pick from device. Returns image path.
+  Future<String?> pickImageFromDevice(String imageChoiceChosen) async {
+    try {
+      XFile? image;
+      if (imageChoiceChosen == Constants.PHONEGALLERY) {
+        image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      } else if (imageChoiceChosen == Constants.CAMERA) {
+        image = await ImagePicker().pickImage(source: ImageSource.camera);
+      }
+
+      if (image == null) return '';
+
+      return image.path;
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+
+      return '';
+    }
+  }
+
+  //Image upload with given image path.
+  Future<Map<String, dynamic>> uploadImage(String? imagePath) async {
+    print("pickImage()");
+    Map<String, dynamic> pickImageResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      if (imagePath == null) return pickImageResponse;
+      final imageTemp = File(imagePath);
+      String filename = imageTemp.path;
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('http://localhost:3000/uploadImage'));
+
+      http.MultipartFile file =
+          await http.MultipartFile.fromPath('image', filename);
+      request.files.add(file);
+      http.StreamedResponse res = await request.send();
+      var response = await http.Response.fromStream(res);
+
+      pickImageResponse['success'] = true;
+      pickImageResponse['data'] = json.decode(response.body)['data'];
+
+      return pickImageResponse;
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+      return pickImageResponse;
+    }
+  }
 }

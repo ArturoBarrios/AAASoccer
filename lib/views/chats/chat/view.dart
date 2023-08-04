@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/chat_buble.dart';
+import 'package:soccermadeeasy/models/chat_item.dart';
+import '../../../commands/chat_command.dart';
+import '../../../commands/images_command.dart';
 import '../../../components/Loading/loading_screen.dart';
-import '../../../views/home.dart';
+import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
+import '../../../components/image_preview_for_upload.dart';
+import '../../../constants.dart';
 // import '../../components/payment_screen.dart';
 // import '../../components/card_form_screen.dart';
 import '../../../commands/user_command.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../../models/chat_page_model.dart';
 import 'package:provider/provider.dart';
 import '../../../components/headers.dart';
-import '../../../components/conversation_list.dart';
 import '../../../components/bottom_text_box.dart';
 // import 'create.dart';
 
 class ChatView extends StatefulWidget {
-  const ChatView({Key? key, required this.chatObject})
-      : super(key: key);
+  const ChatView({Key? key, required this.chatObject}) : super(key: key);
   final Map<String, dynamic> chatObject;
-  
 
   @override
-  _ChatViewState createState() => _ChatViewState();
+  State<ChatView> createState() => _ChatViewState();
 }
 
 class _ChatViewState extends State<ChatView> {
@@ -30,6 +32,8 @@ class _ChatViewState extends State<ChatView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
+  final messageController = TextEditingController();
+  String? selectedImagePath;
 
   dynamic user = {};
 
@@ -39,39 +43,10 @@ class _ChatViewState extends State<ChatView> {
   ];
 
   bool _isLoading = true;
+  bool _isLoadingImage = false;
   late ScrollController scrollController = ScrollController();
 
   dynamic chatMessages = [];
-
-  void goBack() {
-    Navigator.pop(context);
-  }
-
-  void scrollToEnd() {
-  if (scrollController.hasClients) {
-    scrollController.animateTo(
-      scrollController.position.maxScrollExtent,
-      duration: Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-    );
-  }
-}
-
-  Future<void> loadInitialData() async {
-    print("first load for chat data");
-    dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
-    print("findMyUserByIdResp: $findMyUserByIdResp");
-    dynamic newUser = findMyUserByIdResp['data'];
-    // call this function whenever new data is loaded
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        scrollToEnd();
-      });
-
-    setState(() {
-      user = newUser;
-      _isLoading = false;
-    });
-  }
 
   @override
   void initState() {
@@ -81,71 +56,202 @@ class _ChatViewState extends State<ChatView> {
     loadInitialData();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    List messages =
-        context.select<ChatPageModel, List>((value) => value.messages);
+  void goBack() {
+    Navigator.pop(context);
+  }
 
-    // int messagesLength =
-    //     context.select<ChatPageModel, int>((value) => value.messagesLength);
-    print("build() messages: $messages");
-    return Scaffold(
-  appBar: Headers().getChatDetailHeader(context, widget.chatObject),
-  body: _isLoading
-      ? Container(
-          height: double.infinity,
-          width: double.infinity,
-          child: Align(
-              alignment: Alignment.center,
-              child:
-                  // BottomNav()//for times when user deleted in cognito but still signed into app
-                  LoadingScreen(
-                      currentDotColor: Colors.white,
-                      defaultDotColor: Colors.black,
-                      numDots: 10)))
-      : Column(
-          children: <Widget>[
-            // Text("messagesLength: $messagesLength"),
-            Expanded(
-              child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: messages.length,
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                  physics: AlwaysScrollableScrollPhysics(),
-                  itemBuilder: (_, index) {
-                    return Container(
-                        padding: EdgeInsets.only(
-                            left: 14, right: 14, top: 10, bottom: 10),
-                        child: Align(
-                          alignment: (messages[index]['sender']['_id'] !=
-                                  user['_id']
-                              ? Alignment.topLeft
-                              : Alignment.topRight),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: (messages[index]['sender']['_id'] !=
-                                      user['_id']
-                                  ? Colors.grey.shade200
-                                  : Colors.blue[200]),
-                            ),
-                            padding: EdgeInsets.all(16),
-                            child: Text(
-                              messages[index]['textObject']['content'],
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            // child: Text(chatUsers[index]['messageContent'], style: TextStyle(fontSize: 15),),
-                          ),
-                        ));
-                  }),
+  Future<void> loadInitialData() async {
+    print("first load for chat data");
+    dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
+    print("findMyUserByIdResp: $findMyUserByIdResp");
+    dynamic newUser = findMyUserByIdResp['data'];
+
+    setState(() {
+      user = newUser;
+      _isLoading = false;
+    });
+  }
+
+  void sendMessage() async {
+    String? signedUrl;
+    if (selectedImagePath != null) {
+      signedUrl = await uploadImageForChat();
+    }
+
+    dynamic currentUser = UserCommand().getAppModelUser();
+    dynamic messageInput = {
+      "content": messageController.text.toString(),
+      "chat_id": widget.chatObject['_id'],
+      "sender_id": currentUser['_id'],
+      "image_url": signedUrl,
+    };
+    Map<String, dynamic> sendMessageResp =
+        await ChatCommand().createText(messageInput);
+    if (sendMessageResp['success']) {
+      dynamic chat = sendMessageResp['data'];
+      ChatCommand().updateChatModel(chat);
+      print("createTextResp: $sendMessageResp");
+      if (sendMessageResp['success']) {
+        setState(() {
+          messageController.text = "";
+          selectedImagePath = null;
+        });
+      }
+    }
+  }
+
+  toggleLoading(final value) {
+    setState(() {
+      _isLoadingImage = value;
+    });
+  }
+
+  Future<String?> uploadImageForChat() async {
+    toggleLoading(true);
+    final uploadResult = await ImagesCommand().uploadImage(selectedImagePath);
+    final signedUrl =
+        await ImagesCommand().getImage(uploadResult['data']['key']);
+
+    toggleLoading(false);
+
+    return signedUrl['data']['signedUrl'];
+  }
+
+  Future pickImageFromDevice({final bool isCamera = true}) async {
+    selectedImagePath = await ImagesCommand().pickImageFromDevice(
+      isCamera ? Constants.CAMERA : Constants.PHONEGALLERY,
+    );
+    setState(() {});
+  }
+
+  Future _showAttachmentOptions(BuildContext context) async {
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera),
+              title: const Text('Camera'),
+              onTap: () async {
+                Navigator.of(context).pop();
+
+                return pickImageFromDevice();
+              },
             ),
-            BottomTextBox(
-              chatObject: widget.chatObject,
+            ListTile(
+              leading: const Icon(Icons.photo),
+              title: const Text('Gallery'),
+              onTap: () async {
+                Navigator.of(context).pop();
+
+                return pickImageFromDevice(isCamera: false);
+              },
             ),
           ],
-        ),
-);
+        );
+      },
+    );
+  }
 
+  void onTapCancel() {
+    setState(() {
+      selectedImagePath = null;
+      messageController.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final messages = context
+        .select<ChatPageModel, List>((value) => value.messages)
+        .map((e) => ChatItem(
+              text: e['textObject']['content'] ?? '',
+              imageUrl: e['imageObject'] != null ? e['imageObject']['url'] : '',
+              isOwner: e['sender']['_id'] == user['_id'],
+            ))
+        .toList()
+        .reversed
+        .toList();
+
+    return WillPopScope(
+      onWillPop: () async {
+        if (selectedImagePath != null) {
+          ScaffoldMessenger.of(context).show(
+            type: SnackBarType.failure,
+            message: 'Are you sure?',
+            buttonText: 'Yes',
+            onTap: () {
+              ScaffoldMessenger.of(this.context).hideCurrentSnackBar();
+
+              onTapCancel();
+            },
+          );
+
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: selectedImagePath == null,
+        appBar: const Headers().getChatDetailHeader(context, widget.chatObject),
+        body: _isLoading
+            ? const SizedBox(
+                height: double.infinity,
+                width: double.infinity,
+                child: Align(
+                    alignment: Alignment.center,
+                    child:
+                        // BottomNav()//for times when user deleted in cognito but still signed into app
+                        LoadingScreen(
+                            currentDotColor: Colors.white,
+                            defaultDotColor: Colors.black,
+                            numDots: 10)))
+            : (selectedImagePath != null)
+                ? ImagePreviewForUpload(
+                    onTapAttachment: () => _showAttachmentOptions(context),
+                    isLoading: _isLoadingImage,
+                    messageController: messageController,
+                    onTapSend: () {
+                      sendMessage();
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                    onTapCancel: onTapCancel,
+                    imagePath: selectedImagePath,
+                  )
+                : Column(
+                    children: [
+                      // Text("messagesLength: $messagesLength"),
+                      Expanded(
+                        child: ListView.separated(
+                            controller: scrollController,
+                            itemCount: messages.length,
+                            shrinkWrap: true,
+                            reverse: true,
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 10),
+                            itemBuilder: (_, index) {
+                              return ChatBuble(
+                                text: messages[index].text,
+                                imageUrl: messages[index].imageUrl,
+                                isOwner: messages[index].isOwner,
+                              );
+                            }),
+                      ),
+                      BottomTextBox(
+                        onTapAttachment: () => _showAttachmentOptions(context),
+                        isLoading: _isLoadingImage,
+                        messageController: messageController,
+                        onTapSend: () {
+                          sendMessage();
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                      ),
+                    ],
+                  ),
+      ),
+    );
   }
 }
