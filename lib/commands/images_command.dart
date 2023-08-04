@@ -474,8 +474,10 @@ class ImagesCommand extends BaseCommand {
 
   Future<bool> deleteImageFromBucket(String key) async {
     print("deleteImageFromBucket()");
+    print("key: $key");
     http.Response response = await http.delete(
-      Uri.parse("http://localhost:3000/images?key=$key"),
+      // Uri.parse('http://10.0.2.2:3000/deleteImage?key=$key'),
+      Uri.parse("http://localhost:3000/deleteImage?key=$key"),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(<String, String>{
         'key': key,
