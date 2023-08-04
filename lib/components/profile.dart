@@ -7,6 +7,7 @@ import '../models/user_model.dart';
 import 'package:flutter/material.dart';
 import '../commands/images_command.dart';
 import 'package:provider/provider.dart';
+
 import 'Loading/loading_screen.dart';
 import 'images_list_widget.dart';
 import 'object_profile_main_image.dart';
@@ -21,7 +22,9 @@ class Profile extends StatefulWidget {
   final dynamic profileDetails;
 
   @override
-  State<Profile> createState() => _ProfileState();
+
+  _ProfileState createState() => _ProfileState();
+
 }
 
 class _ProfileState extends State<Profile> {
