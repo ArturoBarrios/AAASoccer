@@ -14,7 +14,10 @@ import '../profile.dart';
 
 class PlayerCard extends StatefulWidget {
   const PlayerCard(
-      {Key? key, required this.playerObject, required this.playerDetails , required this.svgImage})
+      {Key? key,
+      required this.playerObject,
+      required this.playerDetails,
+      required this.svgImage})
       : super(key: key);
   final Map<String, dynamic> playerObject;
   final dynamic playerDetails;
@@ -23,10 +26,6 @@ class PlayerCard extends StatefulWidget {
 
   @override
   State<PlayerCard> createState() => _PlayerCard();
-}
-
-void playerClicked() {
-  print("Player Clicked");
 }
 
 class _PlayerCard extends State<PlayerCard> {
@@ -38,6 +37,16 @@ class _PlayerCard extends State<PlayerCard> {
       textStyle: const TextStyle(fontSize: 20));
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
+
+  void followPlayer() {
+    print("Player Clicked");
+    dynamic user = UserCommand().getAppModelUser();
+    dynamic followUserInput = {
+      "followerId": user['_id'],
+      "followingId": widget.playerObject['_id']
+    };
+    UserCommand().followUser(followUserInput);
+  }
 
   addPlayerToObjectSelection() {
     print("addPlayerToSelectedList");
@@ -54,6 +63,7 @@ class _PlayerCard extends State<PlayerCard> {
     dynamic profileDetails = {
       "user": widget.playerObject,
       "isMine": false,
+      "userDetails": widget.playerDetails
     };
     Navigator.push(
       context,
@@ -64,12 +74,83 @@ class _PlayerCard extends State<PlayerCard> {
     );
   }
 
+  Container followUserContainer(dynamic userObject) {
+    bool isUserFollowingPlayer =
+        UserCommand().isCurrentUserFollowingUser(userObject);
+    bool isUserFollowedByPlayer =
+        UserCommand().isCurrentUserFollowedByUser(userObject);
+
+    //follow
+    if (!isUserFollowingPlayer && !isUserFollowedByPlayer) {
+      return Container(
+          child: GestureDetector(
+        onTap: () {
+          //potentially show dialogue
+          //with different request options
+          followPlayer();
+        },
+        child: Container(
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0), child: Text("Follow")),
+        ),
+      ));
+    }
+    //follow back
+    else if (isUserFollowedByPlayer && !isUserFollowingPlayer) {
+      return Container(
+          child: GestureDetector(
+        onTap: () {
+          //potentially show dialogue
+          //with different request options
+          followPlayer();
+        },
+        child: Container(
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Text("Follow Back")),
+        ),
+      ));
+    }
+    //unfollow
+    else if (!isUserFollowedByPlayer && isUserFollowingPlayer) {
+      return Container(
+          child: GestureDetector(
+        onTap: () {
+          //potentially show dialogue
+          //with different request options
+          followPlayer();
+        },
+        child: Container(
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Text("Unfollow")),
+        ),
+      ));
+    }
+    //friends
+    else {
+      return Container(
+          child: GestureDetector(
+        onTap: () {
+          //potentially show dialogue
+          //with different request options
+          followPlayer();
+        },
+        child: Container(
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Text("Unfollow")),
+        ),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print("Player card: " + widget.playerObject.toString());
     print("widget name: ");
     print(widget.playerObject.toString());
-    print("widget.playerDetails: "+ widget.playerDetails.toString());
+    print("widget.playerDetails: " + widget.playerDetails.toString());
 
     return Listener(
         child: GestureDetector(
@@ -139,18 +220,8 @@ class _PlayerCard extends State<PlayerCard> {
                   }),
             ],
           ),
-          GestureDetector(
-            onTap: () {
-              //potentially show dialogue
-              //with different request options
-              UserCommand().sendFriendRequest(widget.playerObject);
-            },
-            child: Container(
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: const Icon(Icons.person_add_alt_1)),
-            ),
-          ),
+
+          followUserContainer(widget.playerObject)
         ]),
       ),
     ));

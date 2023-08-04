@@ -8,7 +8,15 @@ packages:
       sha256: "4897882604d919befd350648c7f91926a9d5de99e67b455bf0917cc2362f4bb8"
       url: "https://pub.dev"
     source: hosted
-    version: "47.0.0"
+    version: "22.0.0"
+  _flutterfire_internals:
+    dependency: transitive
+    description:
+      name: _flutterfire_internals
+      sha256: "5dce45a06d386358334eb1689108db6455d90ceb0d75848d5f4819283d4ee2b8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.4"
   amplify_analytics_plugin_interface:
     dependency: transitive
     description:
@@ -152,7 +160,15 @@ packages:
       sha256: "690e335554a8385bc9d787117d9eb52c0c03ee207a607e593de3c9d71b1cfe80"
       url: "https://pub.dev"
     source: hosted
-    version: "4.7.0"
+    version: "1.7.2"
+  another_stepper:
+    dependency: "direct main"
+    description:
+      name: another_stepper
+      sha256: "04f5166c57f2412c612b17101e8a3d819f210c53f6bc1b5be541dc4c6987c681"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   args:
     dependency: transitive
     description:
@@ -473,38 +489,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
-  file_selector_linux:
-    dependency: transitive
+  firebase_analytics:
+    dependency: "direct main"
     description:
-      name: file_selector_linux
-      sha256: "770eb1ab057b5ae4326d1c24cc57710758b9a46026349d021d6311bd27580046"
+      name: firebase_analytics
+      sha256: d7494294bdb56a58ab6c4cfef377693835c43fa3610707346b98892fd7c4b634
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.2"
-  file_selector_macos:
+    version: "10.4.4"
+  firebase_analytics_platform_interface:
     dependency: transitive
     description:
-      name: file_selector_macos
-      sha256: "4ada532862917bf16e3adb3891fe3a5917a58bae03293e497082203a80909412"
+      name: firebase_analytics_platform_interface
+      sha256: bcb32ac53c494bd6deb61dcd02087418ae96d063ce522a4004974a32545c3f2b
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.3+1"
-  file_selector_platform_interface:
+    version: "3.6.4"
+  firebase_analytics_web:
     dependency: transitive
     description:
-      name: file_selector_platform_interface
-      sha256: "412705a646a0ae90f33f37acfae6a0f7cbc02222d6cd34e479421c3e74d3853c"
+      name: firebase_analytics_web
+      sha256: "2f7d8ab97b46a747730f580b5a38b3e5330efb54c16af48613a6f729cc5f57fa"
       url: "https://pub.dev"
     source: hosted
-    version: "2.6.0"
-  file_selector_windows:
-    dependency: transitive
-    description:
-      name: file_selector_windows
-      sha256: "1372760c6b389842b77156203308940558a2817360154084368608413835fc26"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.3"
+    version: "0.5.4+4"
   firebase_core:
     dependency: "direct main"
     description:

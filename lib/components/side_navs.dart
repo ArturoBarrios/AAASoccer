@@ -36,12 +36,16 @@ class SideNavs extends StatefulWidget {
       padding: EdgeInsets.zero,
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () async {
+            dynamic userDetails =
+                  await UserCommand().getUserDetails(userObject);
             Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
+              builder: (BuildContext context)  {
+                
                 dynamic profileDetails = {
                   "isMine": true,
-                  "user": userObject
+                  "user": userObject,
+                  "userDetails": userDetails
                 };
                 return Profile(profileDetails: profileDetails,);
               },

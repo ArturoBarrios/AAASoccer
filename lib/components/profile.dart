@@ -144,9 +144,8 @@ class _ProfileState extends State<Profile> {
                     const SizedBox(height: 4.0),
                     const Text(
                       'Durham, NH',
-                      style: TextStyle(
-                          fontFamily: 'Montserrat', color: Colors.grey),
-                    ),
+                      style: TextStyle(fontFamily: 'Montserrat', color: Colors.grey),
+                    ),                    
                     Padding(
                       padding: const EdgeInsets.all(30.0),
                       child: Row(
@@ -155,19 +154,36 @@ class _ProfileState extends State<Profile> {
                         children: <Widget>[
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const <Widget>[
+                            children:  <Widget>[
                               Text(
-                                '34',
+                                widget.profileDetails['userDetails']['followers'].toString(),
                                 style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 5.0),
                               Text(
-                                'Friends',
+                                'Followers',
                                 style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     color: Colors.grey),
+                              )
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                widget.profileDetails['userDetails']['following'].toString(),
+                                style: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 5.0),
+                              Text(
+                                'Following',
+                                style: TextStyle(
+                                    fontFamily: 'Montserrat', color: Colors.grey),
                               )
                             ],
                           ),
@@ -228,7 +244,7 @@ class _ProfileState extends State<Profile> {
                     // History(historyDetails: []),
                     TeamsListWidget(userObjectDetails: teamListDetails),
                     EventsListWidget(objectEventsDetails: eventListDetails),
-                    ImagesListWidget(details: const {"for": Constants.USER}),
+                    ImagesListWidget(details: {"for": Constants.USER}),
 
                     const InfoDetailListTile(
                         name: "Excellent Perfomance",

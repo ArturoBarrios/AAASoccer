@@ -72,6 +72,8 @@ dependencies:
   introduction_screen: ^3.1.6
   flutter_datetime_picker: ^1.5.1
   table_calendar: ^3.0.8
+  another_stepper: ^1.2.2
+  firebase_analytics: ^10.4.4
   
 
   

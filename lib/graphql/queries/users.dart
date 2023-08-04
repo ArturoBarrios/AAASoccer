@@ -51,7 +51,7 @@ class UserQueries {
     String getUser = """
       query getUser {
             findUserByID(id: "${userInput['_id']}") {      
-             ${UserFragments().playerUser()}                                                                                    
+             ${UserFragments().fullUser()}                                                                                    
           }
         }
     """;
