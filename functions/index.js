@@ -322,7 +322,7 @@ exports.uploadImage = functions.https.onRequest(async (req, res) => {
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
-const { uploadFile, getFileStream, getCloudfrontSignedUrl } = require('./s3');
+const { deleteFile,uploadFile, getFileStream, getCloudfrontSignedUrl } = require('./s3');
 
 app.post('/uploadImage',upload.single('image'), async (req, res) => {
     try{
@@ -340,6 +340,21 @@ app.post('/uploadImage',upload.single('image'), async (req, res) => {
 
         // return res.send({ success: true, uploadParamsRes: uploadParamsResp });
         
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
+});
+
+app.delete('/deleteImage', async (req, res) => {
+    try{
+        console.log("deleteImage startedd");
+        const key = req.query.key;
+        console.log(key);
+
+        const result = await deleteFile(key);
+        console.log(result);
+        res.send({ success: true, data: result });
+
     } catch (e) {
         return res.send({ error: e.message })
     }

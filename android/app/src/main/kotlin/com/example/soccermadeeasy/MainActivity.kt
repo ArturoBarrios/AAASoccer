@@ -1,6 +1,7 @@
-basepackage com.example.soccermadeeasy
+package com.example.soccermadeeasy
 
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity: FlutterActivity() {
+class MainActivity: FlutterFragmentActivity() {
 }

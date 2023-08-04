@@ -9,34 +9,46 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class GeoLocationCommand extends BaseCommand {
-  Future <Position> determinePosition() async {
+  Future<Position> determinePosition() async {
     Position position = await GeoLocationServices().determinePosition();
     return position;
   }
 
-  Future <void> setUserAddress(double latitude, double longitude) async {
-    print("setUserAddress");
-    print("latitude: $latitude");
-    print("longitude: $longitude");
-    print("placemarkFromCoordinates");
-    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-    print("placemarks: " + placemarks.toString());
-
-
+  Future<void> setUserAddress(double latitude, double longitude) async {
+    try {
+      print("setUserAddress");
+      print("latitude: $latitude");
+      print("longitude: $longitude");
+      print("placemarkFromCoordinates");
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      print("placemarks: " + placemarks.toString());
+    } on Exception catch (e) {
+      print(e);
+    }
   }
 
   Future<double> getDistanceFromUser(double latitude, double longitude) async {
     print("getDistanceFromUser");
     double distance = 0.0;
-    print("currentUser: "+appModel.currentUser.toString());
-    print("vars: "+ latitude.toString()+" "+ longitude.toString()+" "+appModel.currentPosition.latitude.toString()+" "+appModel.currentPosition.longitude.toString());
+    print("currentUser: " + appModel.currentUser.toString());
+    print("vars: " +
+        latitude.toString() +
+        " " +
+        longitude.toString() +
+        " " +
+        appModel.currentPosition.latitude.toString() +
+        " " +
+        appModel.currentPosition.longitude.toString());
     ////todo: make sure user has a position
-    distance = await GeoLocationServices().calculateDistanceInKMFromLocation(latitude, longitude, appModel.currentPosition.latitude, appModel.currentPosition.longitude);
+    distance = await GeoLocationServices().calculateDistanceInKMFromLocation(
+        latitude,
+        longitude,
+        appModel.currentPosition.latitude,
+        appModel.currentPosition.longitude);
 
     return distance;
   }
-  
-
 
   /////////////////test functions
   Map<String, dynamic> getRandomPosition(double x0, double y0, int radius) {
@@ -66,6 +78,4 @@ class GeoLocationCommand extends BaseCommand {
 
     return latLon;
   }
-
-
 }

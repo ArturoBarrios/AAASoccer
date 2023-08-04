@@ -7,97 +7,87 @@ import '../../components/Mixins/images_mixin.dart';
 import '../../components/headers.dart';
 import '../../constants.dart';
 
-class ImagesView extends StatefulWidget with ImagesMixin {
-  ImagesView({Key? key})
-      : super(key: key);
-
-
+class ImagesView extends StatefulWidget {
+  const ImagesView({Key? key}) : super(key: key);
 
   @override
-  _ImagesViewState createState() => _ImagesViewState();
+  State<ImagesView> createState() => _ImagesViewState();
 }
 
-class _ImagesViewState extends State<ImagesView> {
+class _ImagesViewState extends State<ImagesView> with ImagesMixin {
   bool _isLoading = true;
   List<dynamic> images = [];
   List imageOptions = [
     Constants.IMAGEDELETE.toString(),
-    Constants.IMAGEREPLACE.toString(),    
+    Constants.IMAGEREPLACE.toString(),
   ];
 
-
-  void getImage() async{
+  void getImage() async {
     print("getImage");
     for (var i = 0; i < images.length; i++) {
-    String key = images[i]['key'];
-    Map<String, dynamic> getImageResp = await ImagesCommand().getImage(key);
-    if(getImageResp['success']){
-      print("getImageResp: " + getImageResp.toString());
-      images[i]['signedUrl'] = getImageResp['data']['signedUrl'];
+      String key = images[i]['key'];
+      Map<String, dynamic> getImageResp = await ImagesCommand().getImage(key);
+      if (getImageResp['success']) {
+        print("getImageResp: $getImageResp");
+        images[i]['signedUrl'] = getImageResp['data']['signedUrl'];
+      }
     }
-  }
   }
 
   void goBack() {
     Navigator.pop(context);
   }
 
-  
-
   Future<void> loadInitialData() async {
     dynamic currentUser = UserCommand().getAppModelUser();
-    Map<String,dynamic> allImagesFromUserResp = ImagesCommand().allImagesFromUser(currentUser);
-    if(allImagesFromUserResp['success']){
-      print("allImagesFromUserResp: " + allImagesFromUserResp.toString());
+    Map<String, dynamic> allImagesFromUserResp =
+        ImagesCommand().allImagesFromUser(currentUser);
+    if (allImagesFromUserResp['success']) {
+      print("allImagesFromUserResp: $allImagesFromUserResp");
       images = allImagesFromUserResp['data'];
-       for (var i = 0; i < images.length; i++) {
+      for (var i = 0; i < images.length; i++) {
         String key = images[i]['key'];
         Map<String, dynamic> getImageResp = await ImagesCommand().getImage(key);
-        if(getImageResp['success']){
-          print("getImageResp: " + getImageResp.toString());
+        if (getImageResp['success']) {
+          print("getImageResp: $getImageResp");
           images[i]['signedUrl'] = getImageResp['data']['signedUrl'];
         }
       }
       setState(() {
         _isLoading = false;
       });
-    
-    }    
-       
-
+    }
   }
 
-  imageOptionSelect(Map<int, dynamic> indexes,      
-        List<dynamic> primaryList,
-        List<dynamic> secondaryList){
+  imageOptionSelect(
+    Map<int, dynamic> indexes,
+    List<dynamic> primaryList,
+    List<dynamic> secondaryList,
+    dynamic image,
+  ) {
     print("imageOptionSelect");
-    print("indexes: " + indexes.toString());
-    print("primaryList: " + primaryList.toString());
-    print("secondaryList: " + secondaryList.toString());
+    print("indexes: $indexes");
+    print("primaryList: $primaryList");
+    print("secondaryList: $secondaryList");
+    print("image: $image");
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic optionChosen = primaryList[mainIndex];
-      print("optionChosen: " + optionChosen.toString());
-      if(optionChosen == Constants.IMAGEDELETE){
-        List<dynamic> imageInput = [];
-        ImagesCommand().deleteImageFromDatabase(imageInput);
-        ImagesCommand().deleteImageFromS3(imageInput);
-
-      }
-      else if(optionChosen == Constants.IMAGEREPLACE){
-
-
-      }
-
-
+      print("optionChosen: $optionChosen");
+      if (optionChosen == Constants.IMAGEDELETE) {
+        final key = image['key'];
+        await deleteImage(key);
+        setState(() {
+          images.remove(image);
+        });
+      } else if (optionChosen == Constants.IMAGEREPLACE) {}
     });
-
   }
 
   @override
   void initState() {
     super.initState();
     print("initState");
-    loadInitialData();        
+    loadInitialData();
     _isLoading = false;
   }
 
@@ -105,12 +95,12 @@ class _ImagesViewState extends State<ImagesView> {
   Widget build(BuildContext context) {
     print("build()");
     return Scaffold(
-      appBar: Headers().getBackHeader(context, "Images"),
+      appBar: const Headers().getBackHeader(context, "Images"),
       body: _isLoading
-          ? Text("Loading...")
+          ? const Text("Loading...")
           : GridView.builder(
               itemCount: images.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 mainAxisSpacing: 2.0,
                 crossAxisSpacing: 2.0,
@@ -124,17 +114,21 @@ class _ImagesViewState extends State<ImagesView> {
                       context: context,
                       builder: (BuildContext context) {
                         return AnimatedDialog(
-                            details: {"title": "Image Options"},
+                            details: const {"title": "Image Options"},
                             items: primaryList,
                             singleSelect: false,
                             secondaryItems: secondaryList,
-                            goToFunctions: []);
+                            goToFunctions: const []);
                       },
                     );
                     if (result.isNotEmpty) {
-                      print("result: " + result.toString());                      
-                      imageOptionSelect(result, primaryList, secondaryList);
-                      
+                      print("result: $result");
+                      imageOptionSelect(
+                        result,
+                        primaryList,
+                        secondaryList,
+                        images[index],
+                      );
                     }
                   },
                   child: Container(
@@ -142,8 +136,9 @@ class _ImagesViewState extends State<ImagesView> {
                     decoration: BoxDecoration(
                       color: Colors.amber[600],
                       image: DecorationImage(
-                        image: NetworkImage(images[index]['signedUrl']
-                                  .toString()), // Update this URL with your image url
+                        image: NetworkImage(
+                          images[index]['signedUrl'].toString(),
+                        ), // Update this URL with your image url
                         fit: BoxFit.cover,
                       ),
                     ),

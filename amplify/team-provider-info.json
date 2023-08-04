@@ -12,19 +12,14 @@
       "AmplifyAppId": "d3j6ze5fxredf0"
     },
     "categories": {
+      "auth": {
+        "SoccerApp": {}
+      },
       "function": {
-        "soccerapp78c5364b": {},
         "soccerappcffe289a": {
           "deploymentBucketName": "amplify-soccerapp-staging-04528-deployment",
           "s3Key": "amplify-builds/soccerappcffe289a-4a686872724c3542575a-build.zip"
         }
-      },
-      "auth": {
-        "soccerapp": {},
-        "SoccerApp": {}
-      },
-      "api": {
-        "api": {}
       }
     }
   }

@@ -26,7 +26,6 @@ import '../../testing/seeding/event_seeder.dart';
 import '../../testing/seeding/location_seeder.dart';
 import '../../components/profile.dart';
 import '../../views/home.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import '../../styles/colors.dart';
 import '../../strings.dart';
@@ -65,6 +64,7 @@ class _GameCreateState extends State<GameCreate> {
   CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
   DateTimePicker dateTimePicker = new DateTimePicker();
   LocationSearchBar locationSearchBar = new LocationSearchBar();
+
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime startTime = DateTime.now();

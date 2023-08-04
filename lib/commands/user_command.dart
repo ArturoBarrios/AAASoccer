@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:soccermadeeasy/models/user_model.dart';
 import '../constants.dart';
 import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
@@ -20,14 +22,11 @@ import '../enums/PaymentType.dart';
 import 'images_command.dart';
 
 class UserCommand extends BaseCommand {
-
-  String getProfileImage(){
+  String getProfileImage() {
     print("getProfileImage");
-    print("appModel.currentUser.profileImage: " + userModel.profileImageUrl.toString());
+    print("appModel.currentUser.profileImage: ${userModel.profileImageUrl}");
     return userModel.profileImageUrl;
   }
-
-  
 
   dynamic getAppModelUser() {
     print("getAppModelUser");
@@ -36,7 +35,15 @@ class UserCommand extends BaseCommand {
     return appModel.currentUser;
   }
 
-  dynamic getFriendsModel(){
+  dynamic setAppModelUser(dynamic userData) {
+    print("setAppModelUser");
+    print("appModel.currentUser: $userData");
+    appModel.currentUser = userData;
+
+    return appModel.currentUser;
+  }
+
+  dynamic getFriendsModel() {
     print("getFriendsModel");
     print("appMOdel.friends: " + appModel.friends.toString());
 
@@ -75,7 +82,7 @@ class UserCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -165,6 +172,7 @@ class UserCommand extends BaseCommand {
       dynamic processedUserInput) async {
     print("partialUpdateUser");
     print("processedUserInput: " + processedUserInput.toString());
+
     Map<String, dynamic> partialUpdateUserResponse = {
       "success": false,
       "message": "Default Error",
@@ -175,7 +183,7 @@ class UserCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -293,6 +301,7 @@ class UserCommand extends BaseCommand {
     return addEventResponse;
   }
 
+
   bool isCurrentUserFollowingUser(dynamic userObject){
   print("isUserFollowingUser");
   print("userObject: " + userObject.toString());
@@ -344,6 +353,7 @@ class UserCommand extends BaseCommand {
     return addTeamResponse;
   }
 
+
   dynamic getUserDetails(dynamic user){
     print("getUserPlayerDetails");
     print("user: "+user.toString());
@@ -366,6 +376,7 @@ class UserCommand extends BaseCommand {
       dynamic followUserInput) async {
     print("followUser");
     Map<String, dynamic> followUserResponse = {
+
       "success": false,
       "message": "Default Error",
       "data": null
@@ -396,8 +407,7 @@ class UserCommand extends BaseCommand {
       }
       
 
-      
-
+     
           
     } catch (e) {
       print("error");
@@ -444,16 +454,14 @@ class UserCommand extends BaseCommand {
     return removeFriendResp;
   }
 
-
   Future<void> updateModelsWithFriend(dynamic friend, bool add) async {
     print("updateModelsWithFriend");
     print("friend: " + friend.toString());
     print("add: " + add.toString());
-    print("homePageModel.selectedObjects in updateModelsWithFriend: " + homePageModel.selectedObjects.toString());
-    
-    if (add) {
-            
+    print("homePageModel.selectedObjects in updateModelsWithFriend: " +
+        homePageModel.selectedObjects.toString());
 
+    if (add) {
       //
     } else {
       //find the friend in the currentUser friends list
@@ -471,12 +479,14 @@ class UserCommand extends BaseCommand {
       appModel.friends.remove(friend);
       appModel.friends = List.from(friends);
     }
-    
-    if(homePageModel.selectedKey.toString() == Constants.FRIEND.toString()){
+
+    if (homePageModel.selectedKey.toString() == Constants.FRIEND.toString()) {
       print("in iffffffffffff");
-      print("homePageModel.selectedObjects before: " + homePageModel.selectedObjects.toString());
+      print("homePageModel.selectedObjects before: " +
+          homePageModel.selectedObjects.toString());
       homePageModel.selectedObjects = List.from(appModel.friends);
-      print("homePageModel.selectedObjects after: " + homePageModel.selectedObjects.toString());
+      print("homePageModel.selectedObjects after: " +
+          homePageModel.selectedObjects.toString());
       // homePageModel.selectedKey = Constants.TEAM;
       // homePageModel.selectedKey = Constants.FRIEND;
     }
@@ -528,7 +538,7 @@ class UserCommand extends BaseCommand {
   Future<Map<String, dynamic>> getUserByEmail(
       Map<String, dynamic> userInput) async {
     print("getUserByEmail()");
-    print("userInput: " + userInput.toString());
+    print("userInput: $userInput");
     Map<String, dynamic> getUserResp = {
       "success": false,
       "message": "no user found",
@@ -547,14 +557,25 @@ class UserCommand extends BaseCommand {
       );
 
       print("response: ");
+
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['getUserByEmail'];
-      // if (result != null) {
-      getUserResp["success"] = true;
-      getUserResp["message"] = "user found";
-      getUserResp["data"] = result;
+      if ((jsonDecode(response.body) as Map<String, dynamic>)
+              .containsKey('errors') &&
+          (jsonDecode(response.body) as Map<String, dynamic>)['errors'] !=
+              null) {
+        getUserResp["success"] = false;
+        getUserResp["message"] = "no user found";
+      } else {
+        final result = jsonDecode(response.body)['data']['getUserByEmail'];
+        // if (result != null) {
+        getUserResp["success"] = true;
+        getUserResp["message"] = "user found";
+        getUserResp["data"] = result;
+      }
+
       // }
-    } catch (e) {
+    } catch (e, s) {
+      print(s);
       print('Query failed: $e');
     }
     return getUserResp;
@@ -683,7 +704,10 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
-      final request = ModelMutations.deleteById(User.classType, userId);
+      final request = ModelMutations.deleteById<User>(
+        User.classType,
+        userId,
+      );
       final response = await Amplify.API.mutate(request: request).response;
       resp['success'] = true;
     } on ApiException catch (e) {
