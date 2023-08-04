@@ -206,7 +206,7 @@ class ImagesCommand extends BaseCommand {
       return getImageResponse;
     }
     try {
-      final uri = Uri.parse("http://10.0.2.2:3000/images?key=$key");
+      final uri = Uri.parse("http://localhost:3000/images?key=$key");
 
       final getSignedUrlResponse = await http.get(uri);
       print("response: ${json.decode(getSignedUrlResponse.body)}");
@@ -473,15 +473,16 @@ class ImagesCommand extends BaseCommand {
   }
 
   Future<bool> deleteImageFromBucket(String key) async {
+    print("deleteImageFromBucket()");
     http.Response response = await http.delete(
-      Uri.parse('http://10.0.2.2:3000/deleteImage?key=$key'),
+      Uri.parse("http://localhost:3000/images?key=$key"),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(<String, String>{
         'key': key,
       }),
     );
-    log(response.body);
-    log(response.statusCode.toString());
+    print(response.body);
+    print(response.statusCode.toString());
     return response.statusCode >= 200 && response.statusCode <= 299;
   }
 
@@ -616,7 +617,7 @@ class ImagesCommand extends BaseCommand {
       print("filename: $filename");
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://10.0.2.2:3000/uploadImage'),
+        Uri.parse('http://localhost:3000/uploadImage'),
       );
       http.MultipartFile file =
           await http.MultipartFile.fromPath('image', filename);

@@ -144,15 +144,17 @@ mixin ImagesMixin {
   }
 
   Future<void> deleteImage(String key, {bool isProfileImage = false}) async {
+    print("deleteImage");
     final deletedFromBucket = await ImagesCommand().deleteImageFromBucket(key);
     if (deletedFromBucket) {
       dynamic currentUser = UserCommand().getAppModelUser();
 
       Map<String, dynamic> allImagesFromUserResp =
           ImagesCommand().allImagesFromUser(currentUser);
+      print("allImagesFromUserResp: $allImagesFromUserResp");
       final images = allImagesFromUserResp['data'] as List<dynamic>;
       final image = images.firstWhereOrNull((e) => e['key'] == key);
-
+      print("image: $image");
       if (image != null) {
         final deletedFromDatabase =
             await ImagesCommand().deleteImageFromDatabase(image);

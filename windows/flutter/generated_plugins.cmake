@@ -5,7 +5,6 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
   file_selector_windows
-  connectivity_plus_windows
   firebase_core
   geolocator_windows
   url_launcher_windows
