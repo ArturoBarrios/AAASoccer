@@ -162,57 +162,42 @@ class _GameCreateState extends State<GameCreate> {
   }
 
   var index = 0;
+  var maxIndex = 1;
 
-  List<StepperData> stepperData() => [
-        StepperData(
-            iconWidget: Container(
+List<StepperData> stepperData() {
+  List<StepperData> steppers = [];
+  
+  for (int currentIndex = 0; currentIndex <= maxIndex; currentIndex++) {
+    steppers.add(
+      StepperData(
+        iconWidget: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-              color: index >= 0
-                  ? AppColors.orangeColorShade500
-                  : AppColors.grayColor,
-              borderRadius: const BorderRadius.all(Radius.circular(30))),
-          child: const Center(
+            color: index >= currentIndex
+                ? AppColors.orangeColorShade500
+                : AppColors.grayColor,
+            borderRadius: const BorderRadius.all(Radius.circular(30)),
+          ),
+          child: Center(
             child: Text(
-              "1",
+              "${currentIndex + 1}",
               style: TextStyle(
-                  fontWeight: FontWeight.bold, color: AppColors.whiteColor),
+                fontWeight: FontWeight.bold, 
+                color: AppColors.whiteColor
+              ),
             ),
           ),
-        )),
-        StepperData(
-            iconWidget: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              color: index >= 1
-                  ? AppColors.orangeColorShade500
-                  : AppColors.grayColor,
-              borderRadius: const BorderRadius.all(Radius.circular(30))),
-          child: const Center(
-            child: Text(
-              "2",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: AppColors.whiteColor),
-            ),
-          ),
-        )),
-        StepperData(
-            iconWidget: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              color: index >= 2
-                  ? AppColors.orangeColorShade500
-                  : AppColors.grayColor,
-              borderRadius: const BorderRadius.all(Radius.circular(30))),
-          child: const Center(
-            child: Text(
-              "3",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: AppColors.whiteColor),
-            ),
-          ),
-        )),
-      ];
+        ),
+      ),
+    );
+  }
+  
+  return steppers;
+}
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -324,116 +309,14 @@ class _GameCreateState extends State<GameCreate> {
         : (index == 1)
             ? Column(
                 children: [
-                  CustomTextFormField(
-                    label: StringConstants.awayLabel,
-                    keyboardType: TextInputType.name,
-                    hintText: StringConstants.awayHint,
-                    validator: (value) => Validators.validateRequired(
-                        value!, StringConstants.awayErrorValue),
-                    controller: awayteamController,
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.pickupLabel,
-                    hintText: StringConstants.pickupHint,
-                    keyboardType: TextInputType.name,
-                    controller: isPickupController,
-                    validator: (value) => Validators.validateRequired(
-                        value!, StringConstants.pickupErrorValue),
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.surfaceLabel,
-                    hintText: StringConstants.surfaceHint,
-                    controller: surfaceController,
-                    keyboardType: TextInputType.name,
-                    validator: (value) => Validators.validateRequired(
-                        value!, StringConstants.surfaceErrorValue),
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.fieldSizeLabel,
-                    hintText: StringConstants.fieldSizeHint,
-                    keyboardType: const TextInputType.numberWithOptions(
-                        signed: true, decimal: true),
-                    controller: fieldSizeController,
-                    validator: (value) => Validators.validateRequired(
-                        value!, StringConstants.fieldSizeErrorValue),
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.privateLabel,
-                    hintText: StringConstants.privateHint,
-                    keyboardType: TextInputType.name,
-                    controller: privateController,
-                    validator: (value) => Validators.validateRequired(
-                        value!, StringConstants.privateErrorValue),
-                  ),
+                  locationSearchBar,
+                  createEventRequestWidget,
+                  createEventPaymentWidget,
+                  createTeamRequestWidget,
+                  createTeamPaymentWidget,
                 ],
-              )
-            : Column(
-                children: [
-                  CustomTextFormField(
-                    label: StringConstants.teamPriceLabel,
-                    keyboardType: TextInputType.number,
-                    hintText: StringConstants.teamPriceHint,
-                    validator: (value) => Validators.validateRequired(
-                        value!, StringConstants.teamPriceErrorValue),
-                    controller: teamPriceController,
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.numberOfTeamsLabel,
-                    hintText: StringConstants.numberOfTeamsHint,
-                    keyboardType: TextInputType.number,
-                    controller: numberOfTeamsController,
-                    validator: (value) => Validators.validateRequired(
-                        value!,
-                        StringConstants.numberOfTeamsErrorValue),
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.numberOfRoundsPerTeamsLabel,
-                    hintText:
-                        StringConstants.numberOfRoundsPerTeamsHint,
-                    controller: numberOfRoundsPerTeamController,
-                    keyboardType: TextInputType.number,
-                    validator: (value) => Validators.validateRequired(
-                        value!,
-                        StringConstants
-                            .numberOfRoundsPerTeamsErrorValue),
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.numberOfTeamsPerGroupLabel,
-                    hintText: StringConstants.numberOfTeamsPerGroupHint,
-                    keyboardType: TextInputType.number,
-                    controller: numberOfTeamsPerGroupController,
-                    validator: (value) => Validators.validateRequired(
-                        value!,
-                        StringConstants
-                            .numberOfTeamsPerGroupErrorValue),
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.roundOfXLabel,
-                    hintText: StringConstants.roundOfXHint,
-                    keyboardType: TextInputType.number,
-                    controller: roundOfXController,
-                    validator: (value) => Validators.validateRequired(
-                        value!, StringConstants.roundOfXErrorValue),
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.knockoutRoundsLabel,
-                    hintText: StringConstants.knockoutRoundsHint,
-                    keyboardType: TextInputType.number,
-                    controller: knockoutRoundsController,
-                    validator: (value) => Validators.validateRequired(
-                        value!,
-                        StringConstants.knockoutRoundsErrorValue),
-                  ),
-                  CustomTextFormField(
-                    label: StringConstants.capacityLabel,
-                    hintText: StringConstants.capacityHint,
-                    keyboardType: TextInputType.number,
-                    controller: capacityController,
-                    validator: (value) => Validators.validateRequired(
-                        value!, StringConstants.capacityErrorValue),
-                  ),
-                ],
-              ),
+              ) :
+            
        
         customHeight(50),
         Row(
@@ -471,7 +354,7 @@ class _GameCreateState extends State<GameCreate> {
               child: FloatingActionButton.extended(
                 isExtended: true,
                 label: Text(
-                  (index == 2)
+                  (index == maxIndex)
                       ? StringConstants.createGameBtn
                       : StringConstants.nextBtn,
                   style: const TextStyle(
@@ -482,7 +365,7 @@ class _GameCreateState extends State<GameCreate> {
                 backgroundColor: AppColors.orangeColorShade500,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    (index == 2)
+                    (index == maxIndex)
                         ? {createPickupGame(), goBack()}
                         : setState(() {
                             index = index + 1;

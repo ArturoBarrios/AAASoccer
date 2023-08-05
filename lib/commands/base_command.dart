@@ -373,13 +373,8 @@ class BaseCommand {
           //not being used so commented out
           // await loadUserImagesFromAWS();
           print(
-              "get friends and myEvents from currentUser object: ${appModel.currentUser}");
-          List<dynamic> myEvents =
-              appModel.currentUser['eventUserParticipants']['data'];
-          List<dynamic> myTeams =
-              appModel.currentUser['teamUserParticipants']['data'];
-          List<dynamic> myArchivedEvents = [];
-          List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
+              "get friends and myEvents from currentUser object: ${appModel.currentUser}");          
+
           ImagesCommand().setUserProfileImage();
         } else {
           print("something went wrong in fetching user");
@@ -389,12 +384,9 @@ class BaseCommand {
         // HomePageCommand().eventTypeTapped(Constants.PICKUP);
       }
 
+
       await EventCommand().setupEvents();
       await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
-      !appModel.isGuest
-          ? HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
-          : HomePageCommand().eventTypeTapped(Constants.PICKUP);
-
       //,teams, players near me data.
       //get location and update user location
       Position userPosition = await GeoLocationCommand().determinePosition();
@@ -411,10 +403,13 @@ class BaseCommand {
       print("findEventsNearPointResp: $findEventsNearPointResp");
       if (findEventsNearPointResp["success"]) {
         dynamic eventsNearPoint = findEventsNearPointResp["data"];
-        print("eventsNearPoint: $eventsNearPoint");
         eventsModel.eventsNearMe = eventsNearPoint;
+        print("eventsNearPoint: $eventsNearPoint");
       }
       print("Setup Events");
+        !appModel.isGuest
+            ? HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
+            : HomePageCommand().eventTypeTapped(Constants.PICKUP);
 
       resp["success"] = true;
       resp["message"] = "setup successfull";
