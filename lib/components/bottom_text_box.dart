@@ -3,138 +3,98 @@ import 'package:flutter/material.dart';
 // import '../../components/payment_screen.dart';
 // import '../../components/card_form_screen.dart';
 // import '../../components/Cards/chat_card.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/chat_page_model.dart';
-import 'package:provider/provider.dart';
-import '../../../components/headers.dart';
-import '../../../commands/chat_command.dart';
-import '../../../commands/user_command.dart';
+import 'package:soccermadeeasy/components/Mixins/images_mixin.dart';
 // import 'create.dart';
 
 class BottomTextBox extends StatefulWidget {
-  const BottomTextBox({Key? key, required this.chatObject}) 
-    : super(key: key);
-  final Map<String, dynamic> chatObject;  
+  const BottomTextBox({
+    Key? key,
+    this.onTapSend,
+    this.onTapAttachment,
+    this.messageController,
+    this.isLoading = false,
+  }) : super(key: key);
+
+  final VoidCallback? onTapSend;
+  final VoidCallback? onTapAttachment;
+  final TextEditingController? messageController;
+  final bool isLoading;
 
   @override
-  _BottomTextBoxState createState() => _BottomTextBoxState();
+  State<BottomTextBox> createState() => _BottomTextBoxState();
 }
 
-class _BottomTextBoxState extends State<BottomTextBox> {
-  final messageController = TextEditingController();
-
-
-  bool _isLoading = false;
-  late ScrollController _selectEventController = ScrollController();
-
-  void goBack() {
-    Navigator.pop(context);
-  }
-
-  void _firstLoad() async {
-    print("first load");
-  }
-
-  void sendMessage() async {
-    print("send message");
-    print("messageController.text: " + messageController.text.toString());
-    dynamic currentUser = UserCommand().getAppModelUser();
-    dynamic messageInput = {
-      "content": messageController.text.toString(),
-      "chat_id": widget.chatObject['_id'],
-      "sender_id": currentUser['_id'],
-    };
-    Map<String, dynamic> sendMessageResp =
-        await ChatCommand().createText(messageInput);
-    if(sendMessageResp['success']){
-      dynamic chat = sendMessageResp['data'];
-      ChatCommand().updateChatModel(chat);
-      print("createTextResp: $sendMessageResp");
-      if(sendMessageResp['success']){
-        setState(() {
-          messageController.text = "";
-          // widget.chatObject = sendMessageResp['data'];
-        });
-
-    }
-
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    print("bottom_text_box.dart init state");
-    _firstLoad();
-  }
-
+class _BottomTextBoxState extends State<BottomTextBox> with ImagesMixin {
   @override
   Widget build(BuildContext context) {
-    // int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
-    return 
-      Stack(
-        children: <Widget>[
-          
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-              height: 60,
-              width: double.infinity,
-              color: Colors.white,
-              child: Row(
-                children: <Widget>[
-                  // Text("messagesLength: $messagesLength"),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.lightBlue,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Icon(
-                        Icons.add,
+    return Stack(
+      children: <Widget>[
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Container(
+            padding: const EdgeInsets.only(
+              left: 10,
+            ),
+            width: double.infinity,
+            color: Colors.white,
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: widget.onTapAttachment,
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.lightBlue,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: widget.isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.red,
+                          )
+                        : const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: widget.messageController,
+                    decoration: const InputDecoration(
+                        hintText: "Write message...",
+                        hintStyle: TextStyle(color: Colors.black54),
+                        border: InputBorder.none),
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                SizedBox(
+                  height: 60,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: FloatingActionButton(
+                      onPressed: widget.onTapSend,
+                      backgroundColor: Colors.blue,
+                      elevation: 0,
+                      child: const Icon(
+                        Icons.send,
                         color: Colors.white,
-                        size: 20,
+                        size: 18,
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: messageController,
-                      decoration: InputDecoration(
-                          hintText: "Write message...",
-                          hintStyle: TextStyle(color: Colors.black54),
-                          border: InputBorder.none),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      print("send message button pressed");
-                      sendMessage();
-                    },
-                    child: Icon(
-                      Icons.send,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                    backgroundColor: Colors.blue,
-                    elevation: 0,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        ],
-      );
-    
+        ),
+      ],
+    );
   }
 }
