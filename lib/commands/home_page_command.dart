@@ -120,6 +120,8 @@ class HomePageCommand extends BaseCommand {
     }
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {
+      dynamic event = null;
+      
       print("MYEVENTS");
       if (selectedObject['event']['type'].toString() == "GAME") {
         print("TYPE GAME");

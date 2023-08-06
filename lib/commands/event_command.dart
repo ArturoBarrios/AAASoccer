@@ -1323,7 +1323,7 @@ class EventCommand extends BaseCommand {
 
     if (event['type'] == "GAME") {
       if (add) {
-        appModel.myEvents.insert(0, event['userParticipants']['data'][0]);
+        appModel.myEvents.insert(0, {"event": event});
         eventsModel.games.insert(0, event);
       } else {
         int indexToRemove = -1;        
@@ -1340,6 +1340,7 @@ class EventCommand extends BaseCommand {
       }
     } else if (event['type'] == "TRAINING") {
       if (add) {
+        appModel.myEvents.insert(0, {"event": event});
         eventsModel.trainings.insert(0, event);
       } else {
         int indexToRemove = -1;
@@ -1356,6 +1357,7 @@ class EventCommand extends BaseCommand {
     }
     else if (event['type'] == "TRYOUT") {
       if (add) {
+        appModel.myEvents.insert(0, {"event": event});
         eventsModel.tryouts.insert(0, event);
       } else {
         int indexToRemove = -1;
@@ -1374,6 +1376,7 @@ class EventCommand extends BaseCommand {
       print("event type tournament");
       print("eventModel.tournaments.length: " + eventsModel.tournaments.length.toString());
       if (add) {
+        appModel.myEvents.insert(0, {"event": event});
         eventsModel.tournaments.insert(0, event);
       } else {
         int indexToRemove = -1;
@@ -1392,6 +1395,7 @@ class EventCommand extends BaseCommand {
       print("event type league");
       print("eventModel.leagues.length: " + eventsModel.leagues.length.toString());
       if (add) {
+        appModel.myEvents.insert(0, {"event": event});
         eventsModel.leagues.insert(0, event);
       } else {
         int indexToRemove = -1;

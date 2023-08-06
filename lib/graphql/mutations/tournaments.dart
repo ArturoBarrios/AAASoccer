@@ -28,6 +28,21 @@ class TournamentMutations {
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
+              chats: {
+                create: [
+                  {
+                    name: "General",
+                    isPrivate: false,
+                    users: {
+                      connect: [
+                        "${eventInput['user_id']}"
+                      ]
+                    }
+
+
+                  }
+                ]
+              }      
               price: {
                 create: {
                   amount: "${eventInput['price']}",

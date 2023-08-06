@@ -21,6 +21,19 @@ class TrainingMutations {
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
               capacity: ${eventInput['capacity']},
+              chats: {
+                create: [
+                  {
+                    name: "General",
+                    isPrivate: false,
+                    users: {
+                      connect: [
+                        "${userInput['_id']}"
+                      ]
+                    }
+                  }
+                ]
+              }
               price: {
                 create: {
                   amount: "${eventInput['price']}",
