@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/player_command.dart';
 import 'package:soccermadeeasy/commands/team_command.dart';
 import 'package:soccermadeeasy/commands/tournament_command.dart';
+import 'package:soccermadeeasy/commands/user_command.dart';
 
 import 'base_command.dart';
 import 'league_command.dart';
@@ -51,8 +52,6 @@ class HomePageCommand extends BaseCommand {
       print("selected pickup: " + selectedObject.toString());
       print("before getEventDetails");
       //first approach
-      // dynamic game = selectedObject['games']['data'][0];
-      // game['event'] = selectedObject;
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject]);
       print("after getEventDetails");
@@ -93,7 +92,7 @@ class HomePageCommand extends BaseCommand {
           userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
       dynamic playerDetails =
-          await PlayerCommand().getUserPlayerDetails(selectedObject);
+          await UserCommand().getUserDetails(selectedObject);
       card = PlayerCard(
           playerObject: selectedObject,
           playerDetails: playerDetails,
@@ -121,6 +120,8 @@ class HomePageCommand extends BaseCommand {
     }
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {
+      dynamic event = null;
+      
       print("MYEVENTS");
       if (selectedObject['event']['type'].toString() == "GAME") {
         print("TYPE GAME");
@@ -226,12 +227,6 @@ class HomePageCommand extends BaseCommand {
   void getSelectedObjects() {
     print("getSelectedEvents");
     print(homePageModel.selectedKey);
-    // homePageModel.selectedEvents = EventsModel().games;
-    // find key from homePageModel.enabledEvents where enabled is true
-
-    // HomePageModel.enabledEvents
-    // if(Constants.LEAGUE=="kjkj")
-
     if (homePageModel.selectedKey == Constants.PICKUP) {
       print("check games: ");
       print(eventsModel.games);

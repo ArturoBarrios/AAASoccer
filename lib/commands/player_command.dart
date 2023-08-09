@@ -22,18 +22,7 @@ class PlayerCommand extends BaseCommand {
     return appModel.playersNearMe;
   }
 
-  dynamic getUserPlayerDetails(dynamic user){
-    print("getUserPlayerDetails");
-    print("user: "+user.toString());
-    dynamic getUserPlayerDetailsResp = {
-      "isFriend": false,
-    };
-    dynamic currentUser = appModel.currentUser;
-    print("user: "+user.toString());
-    
-
-    return getUserPlayerDetailsResp;
-  }
+  
 
   Future<Map<String, dynamic>> getPlayersNearLocation() async {
     print("getPlayersNearLocation");

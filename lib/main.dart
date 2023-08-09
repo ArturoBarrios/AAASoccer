@@ -4,11 +4,12 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:soccermadeeasy/components/Dialogues/animated_dialogu.dart';
 import 'package:soccermadeeasy/models/home_page_model.dart';
+import 'package:soccermadeeasy/services/firebase_service.dart';
 import 'package:soccermadeeasy/services/network_services.dart';
 import 'package:soccermadeeasy/services/onesignal_service.dart';
 import 'package:soccermadeeasy/services/stripe_service.dart';
 
-import 'amplifyconfiguration.dart';
+//import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,6 +66,8 @@ void main() async {
   await NetworkServices().enableLocationService();
   await OneSignalService().configureOneSignal();
   await StripeServices().configureStripeService();
+  await FirebaseServices().initializeFirebase();
+  FirebaseServices().initializeFirebaseAnalytics();
   print("===============================================");
 
   runApp(MyApp(client: client));
@@ -173,8 +176,7 @@ class _MyAppState extends State<MyApp> {
     print("continueAsGuest");
     BaseCommand().setIsGuest(true);
     AmplifyAuth.AmplifyAuthService.skipVerifyUser(state);
-    await startLoadToHomeTransition();   
-    
+    await startLoadToHomeTransition();
   }
 
   void signOut(AuthenticatorState state) async {
@@ -189,7 +191,9 @@ class _MyAppState extends State<MyApp> {
   void signIn(AuthenticatorState state) async {
     try {
       SignInResult signInRes = await AmplifyAuth.AmplifyAuthService.signIn(
-          emailController, passwordController);
+        emailController,
+        passwordController,
+      );
       print("signInRes: " + signInRes.nextStep!.signInStep);
       String signInStep = signInRes.nextStep!.signInStep;
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
@@ -267,10 +271,10 @@ class _MyAppState extends State<MyApp> {
   //assumes you're signed in/up
   Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    await TwilioServices().configureTwilio();
+    await TwilioServices().configureTwilio();    
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if (otherConfigurationResp['success']) {
-      /////////////////////////addback in when shortcode is ready
+      ///////////////////////// add back in when shortcode is ready
       Map<String, dynamic> resp = await BaseCommand()
           .setupInitialAppModels(emailController.text.trim());
       print("resppp: " + resp.toString());
@@ -297,7 +301,7 @@ class _MyAppState extends State<MyApp> {
       print(confirmSignInRes.toString());
       String signInStep = confirmSignInRes.nextStep.signUpStep;
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
-      print("confirmSignInmain.dart: " + signInStep);
+      print("confirmSignInmain.dart: $signInStep");
       final result = await Amplify.Auth.fetchAuthSession();
       print("fetchAuthSession: ");
       print(result);
@@ -338,346 +342,343 @@ class _MyAppState extends State<MyApp> {
           Commands.init(context);
 
           return Authenticator(
-              authenticatorBuilder:
-                  (BuildContext context, AuthenticatorState state) {
-                const padding =
-                    EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
-                switch (state.currentStep) {
-                  case AuthenticatorStep.signIn:
-                    return Scaffold(
-                      backgroundColor: Colors.white,
-                      body: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Center(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Welcome Back",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 50),
-                                TextField(
-                                  controller: emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    hintText: 'Email',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                TextField(
-                                  controller: phoneController,
-                                  keyboardType: TextInputType.phone,
-                                  decoration: InputDecoration(
-                                    hintText: 'Phone',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                TextField(
-                                  controller: passwordController,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    hintText: 'Password',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 50),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue, // background color
-                                    onPrimary: Colors.white, // foreground color
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 40, vertical: 15),
-                                  ),
-                                  onPressed: () {
-                                    signIn(state);
-                                  },
-                                  child: Text(
-                                    'Sign In',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                                SizedBox(height: 30),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Don\'t have an account?'),
-                                    TextButton(
-                                      onPressed: () => state
-                                          .changeStep(AuthenticatorStep.signUp),
-                                      child: Text(
-                                        'Sign Up',
-                                        style: TextStyle(color: Colors.blue),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () => continueAsGuest(state),
-                                      child: Text(
-                                        'Continue as Guest',
-                                        style: TextStyle(color: Colors.blue),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-
-                  case AuthenticatorStep.signUp:
-                    return Scaffold(
-                      backgroundColor: Colors.white,
-                      body: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Center(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Create Account",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 50),
-                                TextField(
-                                  controller: emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    hintText: 'Email',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                TextField(
-                                  controller: usernameController,
-                                  decoration: InputDecoration(
-                                    hintText: 'Username',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                TextField(
-                                  controller: phoneController,
-                                  keyboardType: TextInputType.phone,
-                                  decoration: InputDecoration(
-                                    hintText: 'Phone',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                TextField(
-                                  controller: passwordController,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    hintText: 'Password',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                TextField(
-                                  controller: birthdateController,
-                                  keyboardType: TextInputType.datetime,
-                                  decoration: InputDecoration(
-                                    hintText: 'Birthdate',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20),
-                                TextField(
-                                  controller: genderController,
-                                  decoration: InputDecoration(
-                                    hintText: 'Gender',
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 50),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue, // background color
-                                    onPrimary: Colors.white, // foreground color
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 40, vertical: 15),
-                                  ),
-                                  onPressed: () {
-                                    signUp(state);
-                                  },
-                                  child: Text(
-                                    'Sign Up',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                                SizedBox(height: 30),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Already have an account?'),
-                                    TextButton(
-                                      onPressed: () => state
-                                          .changeStep(AuthenticatorStep.signIn),
-                                      child: Text(
-                                        'Sign In',
-                                        style: TextStyle(color: Colors.blue),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () => continueAsGuest(state),
-                                      child: Text(
-                                        'Continue as Guest',
-                                        style: TextStyle(color: Colors.blue),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-
-                  case AuthenticatorStep.confirmSignUp:
-                    return Scaffold(
-                      body: Padding(
-                        padding: padding,
+            authenticatorBuilder:
+                (BuildContext context, AuthenticatorState state) {
+              const padding =
+                  EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
+              switch (state.currentStep) {
+                case AuthenticatorStep.signIn:
+                  return Scaffold(
+                    backgroundColor: Colors.white,
+                    body: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Center(
                         child: SingleChildScrollView(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // app logo
-                              const Center(child: FlutterLogo(size: 100)),
-                              // prebuilt sign up form from amplify_authenticator package
-
-                              TextField(
-                                controller: confirmSignInValueController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Confirmation Code'),
+                              Text(
+                                "Welcome Back",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-
+                              SizedBox(height: 50),
+                              TextField(
+                                controller: emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  hintText: 'Email',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: phoneController,
+                                keyboardType: TextInputType.phone,
+                                decoration: InputDecoration(
+                                  hintText: 'Phone',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: passwordController,
+                                keyboardType: TextInputType.visiblePassword,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Password',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 50),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background
-                                  onPrimary: Colors.white, // foreground
+                                  primary: Colors.blue, // background color
+                                  onPrimary: Colors.white, // foreground color
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 40, vertical: 15),
                                 ),
                                 onPressed: () {
-                                  confirmSignIn(state);
+                                  signIn(state);
                                 },
-                                child: Text('Confirm'),
-                              )
+                                child: Text(
+                                  'Sign In',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                              SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Don\'t have an account?'),
+                                  TextButton(
+                                    onPressed: () => state
+                                        .changeStep(AuthenticatorStep.signUp),
+                                    child: Text(
+                                      'Sign Up',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    onPressed: () => continueAsGuest(state),
+                                    child: Text(
+                                      'Continue as Guest',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
                       ),
-                      // custom button to take the user to sign in
-                      persistentFooterButtons: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Already have an account?'),
-                            TextButton(
-                              onPressed: () => state.changeStep(
-                                AuthenticatorStep.signIn,
+                    ),
+                  );
+
+                case AuthenticatorStep.signUp:
+                  return Scaffold(
+                    backgroundColor: Colors.white,
+                    body: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Create Account",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              child: const Text('Sign In'),
+                              SizedBox(height: 50),
+                              TextField(
+                                controller: emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  hintText: 'Email',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: usernameController,
+                                decoration: InputDecoration(
+                                  hintText: 'Username',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: phoneController,
+                                keyboardType: TextInputType.phone,
+                                decoration: InputDecoration(
+                                  hintText: 'Phone',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: passwordController,
+                                keyboardType: TextInputType.visiblePassword,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Password',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: birthdateController,
+                                keyboardType: TextInputType.datetime,
+                                decoration: InputDecoration(
+                                  hintText: 'Birthdate',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: genderController,
+                                decoration: InputDecoration(
+                                  hintText: 'Gender',
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 50),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background color
+                                  onPrimary: Colors.white, // foreground color
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 40, vertical: 15),
+                                ),
+                                onPressed: () {
+                                  signUp(state);
+                                },
+                                child: Text(
+                                  'Sign Up',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                              SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Already have an account?'),
+                                  TextButton(
+                                    onPressed: () => state
+                                        .changeStep(AuthenticatorStep.signIn),
+                                    child: Text(
+                                      'Sign In',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    onPressed: () => continueAsGuest(state),
+                                    child: Text(
+                                      'Continue as Guest',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+
+                case AuthenticatorStep.confirmSignUp:
+                  return Scaffold(
+                    body: Padding(
+                      padding: padding,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            // app logo
+                            const Center(child: FlutterLogo(size: 100)),
+                            // prebuilt sign up form from amplify_authenticator package
+
+                            TextField(
+                              controller: confirmSignInValueController,
+                              decoration: new InputDecoration.collapsed(
+                                  hintText: 'Confirmation Code'),
                             ),
+
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blue, // background
+                                onPrimary: Colors.white, // foreground
+                              ),
+                              onPressed: () {
+                                confirmSignIn(state);
+                              },
+                              child: Text('Confirm'),
+                            )
                           ],
                         ),
-                      ],
-                    );
-                  default:
-                    // returning null defaults to the prebuilt authenticator for all other steps
-                    return null;
-                }
-              },
-              child: MaterialApp(
-                  builder: Authenticator.builder(),
-                  home: AppScaffold(client: widget.client),
-                  routes: {
-                    // When navigating to the "/" route, build the HomeScreen widget.
-                    '/home': (context) => Home(),
-                    // When navigating to the "/details" route, build the DetailsScreen widget.
-                    // '/details': (context) => DetailsScreen(),
-                    // Add more routes as needed.
-                  },
-                  
-                  ),
-                  
-
+                      ),
+                    ),
+                    // custom button to take the user to sign in
+                    persistentFooterButtons: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Already have an account?'),
+                          TextButton(
+                            onPressed: () => state.changeStep(
+                              AuthenticatorStep.signIn,
+                            ),
+                            child: const Text('Sign In'),
+                          ),
+                        ],
+                      ),
+                    ],
                   );
+                default:
+                  // returning null defaults to the prebuilt authenticator for all other steps
+                  return null;
+              }
+            },
+            child: MaterialApp(
+              builder: Authenticator.builder(),
+              home: AppScaffold(client: widget.client),
+              routes: {
+                // When navigating to the "/" route, build the HomeScreen widget.
+                '/home': (context) => Home(),
+                // When navigating to the "/details" route, build the DetailsScreen widget.
+                // '/details': (context) => DetailsScreen(),
+                // Add more routes as needed.
+              },
+            ),
+          );
         }));
   }
 }

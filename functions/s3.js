@@ -27,6 +27,19 @@ const s3 = new S3({
 }
 exports.uploadFile = uploadFile
 
+
+function deleteFile(key){
+    const params = {
+        Bucket: bucketName,
+        Key: key
+    };
+    
+
+    return s3.deleteObject(params).promise()
+}
+exports.deleteFile = deleteFile
+
+
 async function getFileStream(fileKey){
     console.log("getFileStream: " + fileKey);
     const downloadParams = {

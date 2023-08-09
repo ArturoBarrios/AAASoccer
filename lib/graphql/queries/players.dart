@@ -7,7 +7,7 @@ class PlayerQueries {
         query getUserPlayer {
           findUser(id: $id) {
             data {      
-             ${(UserFragments().playerUser())}
+             ${(UserFragments().fullUser())}
             }
           }
         }
@@ -24,7 +24,7 @@ class PlayerQueries {
               data {      
                 _id              
               
-                  ${(UserFragments().playerUser())}
+                  ${(UserFragments().fullUser())}
                     
                    
                     

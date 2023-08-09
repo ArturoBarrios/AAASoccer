@@ -105,10 +105,11 @@ class EventCommand extends BaseCommand {
   }
 
   void addEventToEventModels(dynamic event) {
-    print("addEventtoEventModels()");
-    print("event: " + event.toString());
+    // print("addEventtoEventModels()");
+    // print("event: " + event.toString());
     String enumValue = event['type'].toString().split('.').last;
-
+    print("enumValue: " + enumValue);
+    print("event: " + event.toString());
     switch (enumValue) {
       case "GAME":
         eventsModel.games.add(event);
@@ -1086,10 +1087,10 @@ class EventCommand extends BaseCommand {
           event['userParticipants'].toString());
 
       //get main event requests
-      Map<String, dynamic> getMainEventResp = await getEvent(event);
-      print("getMainEventResp: " + getMainEventResp.toString());
-      print("requestssss: " +
-          getMainEventResp['data']['requests']['data'].toString());
+      // Map<String, dynamic> getMainEventResp = await getEvent(event);
+      // print("getMainEventResp: " + getMainEventResp.toString());
+      // print("requestssss: " +
+      //     getMainEventResp['data']['requests']['data'].toString());
 
       //get chats
       dynamic chats = event['chats']['data'];
@@ -1243,6 +1244,13 @@ class EventCommand extends BaseCommand {
     if (getEventsOfAllTypesNearLocationResp['success']) {
       //events retrieved successfully
       List<dynamic> events = getEventsOfAllTypesNearLocationResp['data'];
+      events.sort((a, b) {
+        int aCreatedAt = int.tryParse(a["createdAt"]) ?? 0;
+        int bCreatedAt = int.tryParse(b["createdAt"]) ?? 0;
+        print("aCreatedAt: " + aCreatedAt.toString());
+        print("bCreatedAt: " + bCreatedAt.toString());
+        return bCreatedAt.compareTo(aCreatedAt);
+      });
       print("events: " + events.toString());
       print("length of events: " + events.length.toString());
       //iterate through events
@@ -1277,15 +1285,26 @@ class EventCommand extends BaseCommand {
           appModel.currentUser['eventUserParticipants']['data'];
       print("allMyEvents: " + allMyEvents.toString());
       List myEvents = allMyEvents;
-      print("myEvents.length before: " + myEvents.length.toString());
-      List myArchivedEvents = [];
+      print("myEvents.length before: " + myEvents.length.toString());      
       //filter out archived events
       myEvents.removeWhere((event) => BaseCommand()
           .dateTimeFromMilliseconds(event['event']['endTime'].toString())
           .isBefore(DateTime.now()));
+      //sort by createdAt
+      myEvents.sort((a, b) {
+        int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
+        int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
+        print("aCreatedAt: " + aCreatedAt.toString());
+        print("bCreatedAt: " + bCreatedAt.toString());
+        return bCreatedAt.compareTo(aCreatedAt);
+      });
       appModel.myEvents =
           myEvents; //appModel.currentUser['eventUserParticipants']['data'];
-      print("myEvents.length after: " + myEvents.length.toString());
+      for (var event in myEvents) {
+  var createdAt = event["event"]["createdAt"];
+  print("createdAtt: $createdAt");
+}
+      print("myEvents after sort: " + myEvents.length.toString());
     }
 
     return setupEventsResp;
@@ -1304,23 +1323,25 @@ class EventCommand extends BaseCommand {
 
     if (event['type'] == "GAME") {
       if (add) {
-        appModel.myEvents.add(event['userParticipants']['data'][0]);
-        eventsModel.games.add(event);
+        appModel.myEvents.insert(0, {"event": event});
+        eventsModel.games.insert(0, event);
       } else {
-        int indexToRemove = -1;
+        int indexToRemove = -1;        
         for (int i = 0; i < eventsModel.games.length; i++) {
           if (eventsModel.games[i]['_id'] == event['_id']) {
             indexToRemove = i;
             break;
           }
         }
+
         if (indexToRemove != -1) {
           eventsModel.games.removeAt(indexToRemove);
         }
       }
     } else if (event['type'] == "TRAINING") {
       if (add) {
-        eventsModel.trainings.add(event);
+        appModel.myEvents.insert(0, {"event": event});
+        eventsModel.trainings.insert(0, event);
       } else {
         int indexToRemove = -1;
         for (int i = 0; i < eventsModel.trainings.length; i++) {
@@ -1336,7 +1357,8 @@ class EventCommand extends BaseCommand {
     }
     else if (event['type'] == "TRYOUT") {
       if (add) {
-        eventsModel.tryouts.add(event);
+        appModel.myEvents.insert(0, {"event": event});
+        eventsModel.tryouts.insert(0, event);
       } else {
         int indexToRemove = -1;
         for (int i = 0; i < eventsModel.tryouts.length; i++) {
@@ -1354,7 +1376,8 @@ class EventCommand extends BaseCommand {
       print("event type tournament");
       print("eventModel.tournaments.length: " + eventsModel.tournaments.length.toString());
       if (add) {
-        eventsModel.tournaments.add(event);
+        appModel.myEvents.insert(0, {"event": event});
+        eventsModel.tournaments.insert(0, event);
       } else {
         int indexToRemove = -1;
         for (int i = 0; i < eventsModel.tournaments.length; i++) {
@@ -1372,7 +1395,8 @@ class EventCommand extends BaseCommand {
       print("event type league");
       print("eventModel.leagues.length: " + eventsModel.leagues.length.toString());
       if (add) {
-        eventsModel.leagues.add(event);
+        appModel.myEvents.insert(0, {"event": event});
+        eventsModel.leagues.insert(0, event);
       } else {
         int indexToRemove = -1;
         for (int i = 0; i < eventsModel.leagues.length; i++) {
@@ -1384,6 +1408,21 @@ class EventCommand extends BaseCommand {
         if (indexToRemove != -1) {
           eventsModel.leagues.removeAt(indexToRemove);
         }
+      }
+    }
+
+    //remove from myEvents
+    if(!add){
+      List<dynamic> myEvents = appModel.myEvents;
+      int indexToRemove = -1;
+      for (int i = 0; i < myEvents.length; i++) {
+        if (myEvents[i]['event']['_id'] == event['_id']) {
+          indexToRemove = i;
+          break;
+        }
+      }
+      if (indexToRemove != -1) {
+        myEvents.removeAt(indexToRemove);
       }
     }
           

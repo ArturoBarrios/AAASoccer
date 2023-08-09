@@ -17,6 +17,19 @@ class LeagueMutations{
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}", 
               type: LEAGUE,    
+              chats: {
+                create: [
+                  {
+                    name: "General",
+                    isPrivate: false,
+                    users: {
+                      connect: [
+                        "${eventInput['user_id']}"
+                      ]
+                    }
+                  }
+                ]
+              }
                price: {
                 create: {
                   amount: "${eventInput['price']}",
