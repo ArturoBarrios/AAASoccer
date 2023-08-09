@@ -8,8 +8,7 @@ import '../../commands/game_command.dart';
 import '../../views/game/view.dart';
 
 class Card extends StatefulWidget {
-  const Card(
-      {Key? key, required this.eventObject, required this.svgImage})
+  const Card({Key? key, required this.eventObject, required this.svgImage})
       : super(key: key);
   final Map<String, dynamic> eventObject;
   final Svg svgImage;
@@ -30,7 +29,7 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
     "message": "Pickup deleted successfully"
   };
   Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .archiveGame(gameObject["event"]["_id"], gameObject["_id"]);
+      .removeGame(gameObject["event"]["_id"], gameObject["_id"]);
   print("deletePickupResponse: $deletePickupResponse");
   if (deletePickupResponse["success"]) {
     deletePickupResp["success"] = true;

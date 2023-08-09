@@ -1,9 +1,5 @@
-import 'dart:math';
-
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/views/league/view.dart';
 import '../../commands/league_command.dart';
 import '../../commands/event_command.dart';
@@ -15,14 +11,13 @@ import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
 import '../../enums/EventType.dart';
 import '../../models/app_model.dart';
-import '../../testing/seeding/location_seeder.dart';
-import '../../components/profile.dart';
-import '../home.dart';
 import '../tournament/create.dart';
 
 class LeagueCreate extends StatefulWidget {
+  const LeagueCreate({Key? key}) : super(key: key);
+
   @override
-  _LeagueCreateState createState() => _LeagueCreateState();
+  State<LeagueCreate> createState() => _LeagueCreateState();
 }
 
 class _LeagueCreateState extends State<LeagueCreate> {
@@ -40,15 +35,25 @@ class _LeagueCreateState extends State<LeagueCreate> {
   final teamPriceController = TextEditingController();
   final capacityController = TextEditingController();
 
-  bool _isLoading = false;
+  String address = '';
   bool isHasTournamentChecked = false;
 
-  CreateEventRequest createEventRequestWidget = new CreateEventRequest();
-  CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
-  CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
-  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
-  DateTimePicker dateTimePicker = new DateTimePicker();
-  LocationSearchBar locationSearchBar = new LocationSearchBar();
+  CreateEventRequest createEventRequestWidget = CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
+  DateTimePicker dateTimePicker = DateTimePicker();
+  late LocationSearchBar locationSearchBar;
+
+  @override
+  initState() {
+    locationSearchBar = LocationSearchBar(
+      onCoordinatesChange: (coordinates, address) {
+        this.address = address;
+      },
+    );
+    super.initState();
+  }
 
   Future<Map<String, dynamic>> createLeague() async {
     print("createLeague");
@@ -76,13 +81,11 @@ class _LeagueCreateState extends State<LeagueCreate> {
       };
 
       Map<String, dynamic> locationInput = {
-        "name": locationSearchBar.address,
+        "name": address,
         "latitude": AppModel().currentPosition.latitude,
         "longitude": AppModel().currentPosition.longitude
       };
-      List<dynamic> groupPlayOptions = [true, false];
-      var rng = Random();
-      print("locationInputCheck: " + locationInput.toString());
+      print("locationInputCheck: $locationInput");
       Map<String, dynamic> createLeagueInput = {
         "numberOfTeams": int.parse(numberOfTeamsController.text.toString()),
         "numberOfRoundsPerTeam":
@@ -90,38 +93,41 @@ class _LeagueCreateState extends State<LeagueCreate> {
       };
       Map<String, dynamic> createdLeagueResp = await LeagueCommand()
           .createLeague(createLeagueInput, createEventInput, locationInput);
-      print("createdLeagueResp: " + createdLeagueResp.toString());
+      print("createdLeagueResp: $createdLeagueResp");
 
       if (createdLeagueResp['success']) {
         dynamic createdLeague = createdLeagueResp['data'];
         dynamic mainEvent =
             EventCommand().getMainEvent(createdLeague['events']['data']);
-        print("mainEvent: " + mainEvent.toString());
+        print("mainEvent: $mainEvent");
         if (isHasTournamentChecked) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => TournamentCreate(league: createdLeague),
-            ),
-          );
+          if (context.mounted) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => TournamentCreate(league: createdLeague),
+              ),
+            );
+          }
         } else {
           await EventCommand().updateViewModelsWithEvent(mainEvent, true);
-          
-          Navigator.pop(
-            context,
-          );
+          if (context.mounted) {
+            Navigator.pop(
+              context,
+            );
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => LeagueView(league: mainEvent)),
-          );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LeagueView(league: mainEvent)),
+            );
+          }
         }
 
         createEventResponse['success'] = true;
       }
 
       return createEventResponse;
-    } on ApiException catch (e) {
+    } on ApiException catch (_) {
       return createEventResponse;
     }
   }
@@ -131,8 +137,8 @@ class _LeagueCreateState extends State<LeagueCreate> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: new Padding(
-            padding: const EdgeInsets.only(left: 20.0),
+        title: const Padding(
+            padding: EdgeInsets.only(left: 20.0),
             child: Text("Find Soccer Near You")),
         backgroundColor: Colors.orange.shade500,
         actions: <Widget>[
@@ -150,64 +156,70 @@ class _LeagueCreateState extends State<LeagueCreate> {
         ],
       ),
       body: Center(
-          child: Column(children: [
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Name'),
-        ),
-        locationSearchBar,
-        createEventRequestWidget,
-        createEventPaymentWidget,
-        createTeamRequestWidget,
-        createTeamPaymentWidget,
-        dateTimePicker,
-        TextField(
-          controller: priceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Price'),
-        ),
-        TextField(
-          controller: teamPriceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Team Price'),
-        ),
-        TextField(
-          controller: numberOfTeamsController,
-          decoration:
-              new InputDecoration.collapsed(hintText: 'Number of Teams'),
-        ),
-        TextField(
-          controller: locationController,
-          decoration: new InputDecoration.collapsed(hintText: 'Location'),
-        ),
-        TextField(
-          controller: numberOfRoundsPerTeamController,
-          decoration: new InputDecoration.collapsed(
-              hintText: 'Number of Rounds Per Team'),
-        ),
-        TextField(
-          controller: capacityController,
-          decoration: new InputDecoration.collapsed(hintText: 'Capacity'),
-        ),
-        Column(
+        child: Column(
           children: [
-            Checkbox(
-              value: isHasTournamentChecked,
-              onChanged: (value) {
-                setState(() {
-                  isHasTournamentChecked = value!;
-                });
-              },
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration.collapsed(hintText: 'Name'),
+            ),
+            locationSearchBar,
+            createEventRequestWidget,
+            createEventPaymentWidget,
+            createTeamRequestWidget,
+            createTeamPaymentWidget,
+            dateTimePicker,
+            TextField(
+              controller: priceController,
+              decoration: const InputDecoration.collapsed(hintText: 'Price'),
             ),
             TextField(
-              decoration: InputDecoration.collapsed(hintText: 'Checkbox Field'),
+              controller: teamPriceController,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Team Price'),
+            ),
+            TextField(
+              controller: numberOfTeamsController,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Number of Teams'),
+            ),
+            TextField(
+              controller: locationController,
+              decoration: const InputDecoration.collapsed(hintText: 'Location'),
+            ),
+            TextField(
+              controller: numberOfRoundsPerTeamController,
+              decoration: const InputDecoration.collapsed(
+                  hintText: 'Number of Rounds Per Team'),
+            ),
+            TextField(
+              controller: capacityController,
+              decoration: const InputDecoration.collapsed(hintText: 'Capacity'),
+            ),
+            Column(
+              children: [
+                Checkbox(
+                  value: isHasTournamentChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      isHasTournamentChecked = value!;
+                    });
+                  },
+                ),
+                const TextField(
+                  decoration:
+                      InputDecoration.collapsed(hintText: 'Checkbox Field'),
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: () {
+                createLeague();
+              },
+              child: const Text("tap me"),
             ),
           ],
         ),
-        GestureDetector(
-            onTap: () {
-              createLeague();
-            },
-            child: Text("tap me")),
-      ])),
+      ),
     );
   }
 }

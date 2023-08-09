@@ -1,8 +1,5 @@
-import 'dart:math';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/views/training/view.dart';
 import '../../commands/training_command.dart';
 import '../../commands/event_command.dart';
@@ -13,13 +10,13 @@ import '../../components/create_team_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
 import '../../enums/EventType.dart';
-import '../../testing/seeding/event_seeder.dart';
 import '../../components/headers.dart';
-import '../home.dart';
 
 class TrainingCreate extends StatefulWidget {
+  const TrainingCreate({Key? key}) : super(key: key);
+
   @override
-  _TrainingCreateState createState() => _TrainingCreateState();
+  State<TrainingCreate> createState() => _TrainingCreateState();
 }
 
 class _TrainingCreateState extends State<TrainingCreate> {
@@ -34,108 +31,116 @@ class _TrainingCreateState extends State<TrainingCreate> {
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
 
- 
-  bool _isLoading = false;
+  CreateEventRequest createEventRequestWidget = CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
+  DateTimePicker dateTimePicker = DateTimePicker();
+  final Map<String, dynamic> locationInput = {
+    "name": "",
+    "latitude": 0,
+    "longitude": 0,
+  };
+  late LocationSearchBar locationSearchBar;
 
-  CreateEventRequest createEventRequestWidget = new CreateEventRequest();
-  CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
-  CreateTeamPayment createTeamPaymentWidget = new CreateTeamPayment();
-  CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();
-  DateTimePicker dateTimePicker = new DateTimePicker();
-  LocationSearchBar locationSearchBar = new LocationSearchBar();
-    
+  @override
+  initState() {
+    locationSearchBar = LocationSearchBar(
+      onCoordinatesChange: (coordinates, address) {
+        locationInput['name'] = address;
+        locationInput['latitude'] = coordinates.latitude;
+        locationInput['longitude'] = coordinates.longitude;
+      },
+    );
+    super.initState();
+  }
 
   Future<void> createTraining() async {
     print("createTraining");
-    Map<String, dynamic> createEventResponse = {
-      "success": false,
-      "message": "Default Error"
-    };
     try {
-      var rng = Random();
-       Map<String, dynamic> eventInput = {        
+      Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
-        'isMainEvent': true,        
-        'price':  double.parse(priceController.text.toString()),
+        'isMainEvent': true,
+        'price': double.parse(priceController.text.toString()),
         'startTime': dateTimePicker.startTimestamp,
         'endTime': dateTimePicker.endTimestamp,
         'withRequest': createEventRequestWidget.withRequest.value,
-        'withPayment': createEventPaymentWidget.withPayment.value, 
-        'withTeamPayment': createTeamPaymentWidget.withPayment.value, 
-        'withTeamRequest': createTeamRequestWidget.withRequest.value, 
+        'withPayment': createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
+        'withTeamRequest': createTeamRequestWidget.withRequest.value,
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.TRAINING
-
       };
 
       Map<String, dynamic> trainingData = {};
-      Map<String, dynamic> locationInput = {
-        "name": locationSearchBar.address,
-        "latitude": locationSearchBar.coordinates.latitude,
-        "longitude": locationSearchBar.coordinates.longitude,
-      };
-      print("locationInputCheck: " + locationInput.toString());  
 
-      Map<String, dynamic> createTrainingResp = await TrainingCommand().createTraining(trainingData, eventInput, locationInput);                                      
-      
-      print("createTrainingResp: "+ createTrainingResp.toString());
+      print("locationInputCheck: $locationInput");
+
+      Map<String, dynamic> createTrainingResp = await TrainingCommand()
+          .createTraining(trainingData, eventInput, locationInput);
+
+      print("createTrainingResp: $createTrainingResp");
       if (createTrainingResp['success']) {
         dynamic createdTraining = createTrainingResp['data'];
-        await EventCommand().updateViewModelsWithEvent(createdTraining['event'], true);
-      
-        Navigator.pop(
-            context,          
+        await EventCommand()
+            .updateViewModelsWithEvent(createdTraining['event'], true);
+
+        if (context.mounted) {
+          Navigator.pop(
+            context,
           );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TrainingView(training: createdTraining['event'])
-          ),
-        );  
-        
-      }            
-      
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TrainingView(
+                training: createdTraining['event'],
+              ),
+            ),
+          );
+        }
       }
-       on ApiException catch (e) {
-      
-    }
+    } on ApiException catch (_) {}
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Headers().getMainHeader(context),
+      appBar: const Headers().getMainHeader(context),
       body: Center(
-          child: Column(children: [
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Name'),
-        ),       
-        locationSearchBar,
-        createEventRequestWidget,
-        createEventPaymentWidget,      
-        createTeamRequestWidget,
-        createTeamPaymentWidget, 
-        dateTimePicker,
-        TextField(
-          controller: priceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Price'),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration.collapsed(hintText: 'Name'),
+            ),
+            locationSearchBar,
+            createEventRequestWidget,
+            createEventPaymentWidget,
+            createTeamRequestWidget,
+            createTeamPaymentWidget,
+            dateTimePicker,
+            TextField(
+              controller: priceController,
+              decoration: const InputDecoration.collapsed(hintText: 'Price'),
+            ),
+            TextField(
+              controller: locationController,
+              decoration: const InputDecoration.collapsed(hintText: 'Location'),
+            ),
+            TextField(
+              controller: imagesController,
+              decoration: const InputDecoration.collapsed(hintText: 'Images'),
+            ),
+            GestureDetector(
+              onTap: () {
+                createTraining();
+              },
+              child: const Text("tap me"),
+            ),
+          ],
         ),
-        TextField(
-          controller: locationController,
-          decoration: new InputDecoration.collapsed(hintText: 'Location'),
-        ),
-        TextField(
-          controller: imagesController,
-          decoration: new InputDecoration.collapsed(hintText: 'Images'),
-        ),
-        GestureDetector(
-            onTap: () {
-              createTraining();
-            },
-            child: Text("tap me")),
-      ])),
+      ),
     );
   }
 }

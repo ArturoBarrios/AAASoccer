@@ -1,63 +1,69 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:soccermadeeasy/models/coordinates.dart';
 import '../../commands/location_command.dart';
-import 'package:geocoder/geocoder.dart';
 
 class LocationSearchBar extends StatefulWidget {
-  Coordinates coordinates = Coordinates(0, 0);
-  String address = "";
-  final locationController = TextEditingController();
   final bool readonly;
-  final String initialValue;  
+  final String initialValue;
+  final Function(Coordinates coordinates, String address)? onCoordinatesChange;
 
-
-  LocationSearchBar({this.readonly = false, this.initialValue = ''});
+  const LocationSearchBar({
+    Key? key,
+    this.onCoordinatesChange,
+    this.readonly = false,
+    this.initialValue = '',
+  }) : super(key: key);
 
   @override
-  _LocationSearchBar createState() => _LocationSearchBar();
+  State<LocationSearchBar> createState() => _LocationSearchBar();
 }
 
 class _LocationSearchBar extends State<LocationSearchBar> {
+  Coordinates coordinates = Coordinates(latitude: 0, longitude: 0);
+  String address = "";
   final locationController = TextEditingController();
   List<dynamic> addressPredictions = [];
-  
 
   @override
   void initState() {
     super.initState();
-    if (widget.initialValue.isNotEmpty) {      
+    if (widget.initialValue.isNotEmpty) {
       placesApiAutoComplete(widget.initialValue);
     }
   }
 
   Future<void> placesApiAutoComplete(String value) async {
-    Map<String, dynamic> place_api_autocompleteResp =
+    Map<String, dynamic> placeApiAutocompleteresp =
         await LocationCommand().place_api_autocomplete(value);
-    print(
-        "place_api_autocompleteResp: " + place_api_autocompleteResp.toString());
-    List<dynamic> predictionObjects = place_api_autocompleteResp["data"];
+    print("place_api_autocompleteResp: $placeApiAutocompleteresp");
+    List<dynamic> predictionObjects = placeApiAutocompleteresp["data"];
 
     setState(() {
-      this.addressPredictions = predictionObjects;
-      print("predictions: " + this.addressPredictions.toString());
+      addressPredictions = predictionObjects;
+      print("predictions: $addressPredictions");
     });
   }
 
   void chooseAddress(dynamic location) async {
     print("chooseAddress");
     locationController.text = location['description'];
-    widget.address = location['description'];
-    List<Address> addresses =
-        await Geocoder.local.findAddressesFromQuery(location['description']);
-    Address addressToChoose = addresses.first;
-    
+    address = location['description'];
+    List<Location> locations =
+        await locationFromAddress(location['description']);
 
-    print("addressToChoose: " + addressToChoose.toString());    
-    widget.coordinates = addressToChoose.coordinates;
-    print("coordinates: " + widget.coordinates.toString());
-    widget.coordinates.latitude;
-    widget.coordinates.longitude;
+    if (locations.isNotEmpty) {
+      Location addressToChoose = locations.first;
+      print("addressToChoose: $addressToChoose");
+      coordinates = Coordinates(
+        latitude: addressToChoose.latitude,
+        longitude: addressToChoose.longitude,
+      );
+      print("coordinates: $coordinates");
+    } else {
+      print('No Locations found!');
+    }
+    widget.onCoordinatesChange?.call(coordinates, address);
   }
 
   @override
@@ -66,7 +72,7 @@ class _LocationSearchBar extends State<LocationSearchBar> {
       children: <Widget>[
         TextField(
           controller: locationController,
-          decoration: InputDecoration.collapsed(hintText: ''),
+          decoration: const InputDecoration.collapsed(hintText: ''),
           onChanged: (value) async => {placesApiAutoComplete(value)},
           enabled: !widget.readonly,
         ),
@@ -82,28 +88,26 @@ class _LocationSearchBar extends State<LocationSearchBar> {
                           onTap: () {
                             chooseAddress(addressPredictions[index]);
                           },
-                          child: Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                ListTile(
-                                  title: Text(
-                                    addressPredictions[index]["description"]!,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 18.0,
-                                      fontFamily: 'supermarket',
-                                    ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(
+                                  addressPredictions[index]["description"]!,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 18.0,
+                                    fontFamily: 'supermarket',
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       );
                     },
                   )
-                : Center(
+                : const Center(
                     child: Text('Add Address'),
                   ),
           ),

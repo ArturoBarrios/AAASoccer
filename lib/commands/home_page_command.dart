@@ -75,7 +75,7 @@ class HomePageCommand extends BaseCommand {
           tryoutObject: selectedObject,
           svgImage: svgImage,
           userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.TOURNAMENT) {      
+    } else if (selectedKey == Constants.TOURNAMENT) {
       print("selectedObject: " + selectedObject.toString());
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject]);
@@ -84,9 +84,9 @@ class HomePageCommand extends BaseCommand {
           tournamentObject: selectedObject,
           svgImage: svgImage,
           userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.LEAGUE) {      
-      dynamic getEventDetailsResp = await EventCommand()
-          .getUserEventDetails([selectedObject]);
+    } else if (selectedKey == Constants.LEAGUE) {
+      dynamic getEventDetailsResp =
+          await EventCommand().getUserEventDetails([selectedObject]);
       card = LeagueCard(
           leagueObject: selectedObject,
           svgImage: svgImage,
@@ -148,44 +148,46 @@ class HomePageCommand extends BaseCommand {
             tryoutObject: selectedObject['event'],
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
-      } else if (selectedObject['event']['type'].toString() == "TOURNAMENT") {                 
-          dynamic getEventDetailsResp = await EventCommand()
-              .getUserEventDetails([selectedObject['event']]);                    
-          card = TournamentCard(
-              tournamentObject: selectedObject['event'],
-              svgImage: svgImage,
-              userEventDetails: getEventDetailsResp);
-       
-      } else if (selectedObject['event']['type'].toString() == "LEAGUE") {                
-        dynamic getEventDetailsResp = await EventCommand()
-            .getUserEventDetails([selectedObject['event']]);
+      } else if (selectedObject['event']['type'].toString() == "TOURNAMENT") {
+        dynamic getEventDetailsResp =
+            await EventCommand().getUserEventDetails([selectedObject['event']]);
+        card = TournamentCard(
+            tournamentObject: selectedObject['event'],
+            svgImage: svgImage,
+            userEventDetails: getEventDetailsResp);
+      } else if (selectedObject['event']['type'].toString() == "LEAGUE") {
+        dynamic getEventDetailsResp =
+            await EventCommand().getUserEventDetails([selectedObject['event']]);
         card = LeagueCard(
             leagueObject: selectedObject['event'],
             svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);        
+            userEventDetails: getEventDetailsResp);
       }
     }
 
     return card;
   }
 
-  void updateUpdatedCards(bool value){
+  void updateUpdatedCards(bool value) {
     print("updateUpdatedCards");
     homePageModel.updatedCards = value;
-
   }
 
   Future<void> setCards() async {
     print("setCards()");
-    homePageModel.cards = [];
-    homePageModel.cardsLoading = true;
-    Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
-    for (int i = 0; i < homePageModel.selectedObjects.length; i++) {
-      Widget card = await getCard(homePageModel.selectedKey,
-          homePageModel.selectedObjects[i], svgImage);
-      homePageModel.cards.add(card);
-    }
-    homePageModel.cardsLoading = false;
+
+    /// To not get setState() or markNeedsBuild() called during build. error make sure the screen is showing
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      homePageModel.cards = [];
+      homePageModel.cardsLoading = true;
+      Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
+      for (int i = 0; i < homePageModel.selectedObjects.length; i++) {
+        Widget card = await getCard(homePageModel.selectedKey,
+            homePageModel.selectedObjects[i], svgImage);
+        homePageModel.cards.add(card);
+      }
+      homePageModel.cardsLoading = false;
+    });
   }
 
   Future<void> eventTypeTapped(String key) async {
