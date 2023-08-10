@@ -416,81 +416,8 @@ class UserCommand extends BaseCommand {
     return followUserResponse;
   }
 
-  Future<Map<String, dynamic>> removeFriend(dynamic friendInput) async {
-    print("removeFriend");
-    Map<String, dynamic> removeFriendResp = {
-      "success": false,
-      "message": "friend not removed",
-      "data": null
-    };
 
-    try {
-      print("removeFriend in try");
-      print("friendInput: " + friendInput.toString());
-      Map<String, dynamic> userInput = {"_id": appModel.currentUser['_id']};
 
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': UserMutations().removeFriend(userInput, friendInput),
-        }),
-      );
-
-      print("response :" + jsonDecode(response.body).toString());
-
-      //remove friend
-      await updateModelsWithFriend(friendInput, false);
-
-      print("response body: ");
-      print(jsonDecode(response.body));
-    } catch (e) {
-      print("error");
-    }
-
-    return removeFriendResp;
-  }
-
-  Future<void> updateModelsWithFriend(dynamic friend, bool add) async {
-    print("updateModelsWithFriend");
-    print("friend: " + friend.toString());
-    print("add: " + add.toString());
-    print("homePageModel.selectedObjects in updateModelsWithFriend: " +
-        homePageModel.selectedObjects.toString());
-
-    if (add) {
-      //
-    } else {
-      //find the friend in the currentUser friends list
-      dynamic friends = appModel.currentUser['friends']['data'];
-      print("friends: " + friends.toString());
-      for (int i = 0; i < friends.length; i++) {
-        print("friends[i]['user']: " + friends[i]['user'].toString());
-        if (friends[i]['user']['_id'] == friend['user']['_id']) {
-          print("found friend");
-          friends.removeAt(i);
-          appModel.currentUser['friends']['data'] = friends;
-          break;
-        }
-      }
-      appModel.friends.remove(friend);
-      appModel.friends = List.from(friends);
-    }
-
-    if (homePageModel.selectedKey.toString() == Constants.FRIEND.toString()) {
-      print("in iffffffffffff");
-      print("homePageModel.selectedObjects before: " +
-          homePageModel.selectedObjects.toString());
-      homePageModel.selectedObjects = List.from(appModel.friends);
-      print("homePageModel.selectedObjects after: " +
-          homePageModel.selectedObjects.toString());
-      // homePageModel.selectedKey = Constants.TEAM;
-      // homePageModel.selectedKey = Constants.FRIEND;
-    }
-  }
 
   void updateUserModelWithUser(dynamic user) {
     print("updateUserModelWithUser");

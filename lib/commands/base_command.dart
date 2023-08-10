@@ -100,6 +100,11 @@ class BaseCommand {
     return objectsNearMe;
   }
 
+  void setupFaunaClient(dynamic client){
+    print("setupFaunaClient: "+ client);
+    appModel.faunaClient = client;
+  }
+
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
   }
@@ -385,7 +390,7 @@ class BaseCommand {
       }
 
 
-      await EventCommand().setupEvents();
+      await EventCommand().setupInitialEvents();
       await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
       //,teams, players near me data.
       //get location and update user location

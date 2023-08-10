@@ -100,11 +100,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     print("initState");
-    configureApp(); //aaa
+    configureApp(); 
   }
 
-  void configureApp() async {
-    /////////////////////////addback in when shortcode is ready
+  void configureApp() async {    
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
     print("configureAmplifyResp: ");
     print(configureAmplifyResp);
@@ -138,7 +137,8 @@ class _MyAppState extends State<MyApp> {
     );
     print("graphQL clientt: ");
     print(client);
-    // AppModel().faunaClient = client;
+    BaseCommand().setupFaunaClient(client);
+    
   }
 
   Future<Map<String, dynamic>> configureAmplify() async {
@@ -163,12 +163,7 @@ class _MyAppState extends State<MyApp> {
     AppModel().amplifyConfigured = true;
     Commands.BaseCommand().setIsSigned(true);
 
-    //doesn't do anything right now
-    // await Commands.BaseCommand().setupInitialAppConfigs();
-    //camera
-
-    // Get a specific camera from the list of available cameras.
-    // final firstCamera = cameras.first;
+    
     return otherConfigurationsResp;
   }
 

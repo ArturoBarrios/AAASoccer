@@ -6,7 +6,7 @@ class EventQueries {
     String enumValue = type.toString().split('.').last;
   String getEvents = """
     query GetEvents {
-      allEventsOftype(startTime: "$startTime", type: $enumValue) {                  
+      allEventsOfType(startTime: "$startTime", type: $enumValue) {                  
           ${eventFragment}        
       }
     }
@@ -25,6 +25,8 @@ class EventQueries {
     """;
   return getEvents;
 }
+ 
+  
 
 
 }

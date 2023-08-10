@@ -19,7 +19,6 @@ import '../components/Cards/tryout_card.dart';
 import '../components/Cards/tournament_card.dart';
 import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
-import '../components/Cards/friend_card.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 
@@ -115,9 +114,7 @@ class HomePageCommand extends BaseCommand {
           teamObject: team,
           svgImage: svgImage,
           userTeamDetails: userTeamDetails);
-    } else if (selectedKey == Constants.FRIEND) {
-      card = FriendCard(friendObject: selectedObject, svgImage: svgImage);
-    }
+    } 
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {
       dynamic event = null;
