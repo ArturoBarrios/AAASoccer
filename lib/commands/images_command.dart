@@ -44,11 +44,15 @@ class ImagesCommand extends BaseCommand {
         deleteImageResp['message'] = 'Image deleted';
 
       return deleteImageResp;
+      }
+      return deleteImageResp;
     } catch (e) {
       print("getImages() error: $e");
       return deleteImageResp;
-    }
-  }
+    
+  
+      }
+      }
 
   Future<Map<String, dynamic>> deleteImageFromS3(dynamic imageInput) async {
     print("deleteImage()");
@@ -120,6 +124,7 @@ class ImagesCommand extends BaseCommand {
       return getUserProfileImageResp;
     }
   }
+      
 
   Future<Map<String, dynamic>> partialUpdateImage(
       dynamic processedImageInput) async {

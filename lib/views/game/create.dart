@@ -2,17 +2,23 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:another_stepper/widgets/another_stepper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/views/game/view.dart';
+import '../../components/Validator.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
 import '../../components/create_team_request.dart';
+import '../../components/custom_textfield.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/headers.dart';
 import '../../components/location_search_bar.dart';
 import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../enums/EventType.dart';
+import '../../strings.dart';
+import '../../styles/colors.dart';
+import '../../styles/static_decoration.dart';
 
 class GameCreate extends StatefulWidget {
   const GameCreate({Key? key}) : super(key: key);
