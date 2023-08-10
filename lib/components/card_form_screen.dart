@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ import '../views/home.dart';
 import 'dart:async';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
+
+import 'Buttons/apple_google_pay_button.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
@@ -45,7 +48,8 @@ class _CardFormScreen extends State<CardFormScreen> {
     "Pay With Existing Card",
     "Pay With New Card",
     "PayPal",
-    "Apple Card"
+    "Apple Card",
+    Platform.isAndroid ? "Google Pay" : "Apple Pay",
   ];
   String? _selectedPayment = "Pay With Existing Card";
 
@@ -466,16 +470,20 @@ class _CardFormScreen extends State<CardFormScreen> {
                           )
                         ],
                       )
-                    :
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     print("Add New Card pressed");
-                    //     toggleShowCardForm();
-                    //   },
-                    //   child: Text("Add New Card"),
-                    // ),
-                    // if (showCardForm)
-                    paymentWidgetToShow(status)
+                    : waysToPay[4] == _selectedPayment
+                        ? AppleGooglePaymentButton(
+                            item: widget.paymentDetails,
+                            paymentResult: (final result) {},
+                          )
+                        : paymentWidgetToShow(status)
+                // GestureDetector(
+                //   onTap: () {
+                //     print("Add New Card pressed");
+                //     toggleShowCardForm();
+                //   },
+                //   child: Text("Add New Card"),
+                // ),
+                // if (showCardForm)
               ]))
             : Center(child: CircularProgressIndicator()));
   }

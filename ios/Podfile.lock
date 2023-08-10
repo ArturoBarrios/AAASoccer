@@ -195,6 +195,8 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - pay_ios (0.0.1):
+    - Flutter
   - PromisesObjC (2.3.1)
   - ReachabilitySwift (5.0.0)
   - share_plus (0.0.1):
@@ -239,7 +241,7 @@ PODS:
     - StripeUICore (= 23.8.0)
   - StripeUICore (23.8.0):
     - StripeCore (= 23.8.0)
-  - SwiftFormat/CLI (0.51.13)
+  - SwiftFormat/CLI (0.51.15)
   - SwiftLint (0.52.4)
   - url_launcher_ios (0.0.1):
     - Flutter
@@ -265,6 +267,7 @@ DEPENDENCIES:
   - OneSignalXCFramework (< 4.0, >= 3.4.3)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
+  - pay_ios (from `.symlinks/plugins/pay_ios/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
@@ -345,6 +348,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/ios"
+  pay_ios:
+    :path: ".symlinks/plugins/pay_ios/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   stripe_ios:
@@ -392,6 +397,7 @@ SPEC CHECKSUMS:
   OneSignalXCFramework: 087934ab0d4d7445fcf1c015c7c782359e26c020
   package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
+  pay_ios: 8c7beb9c61d885f3f51b61f75f8793023fc8843a
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
@@ -406,10 +412,10 @@ SPEC CHECKSUMS:
   StripePaymentSheet: 1fef5afa050bfd684e84553cba613041a2b3d7b7
   StripePaymentsUI: 7d2fc8fe17c3fdc63508bc54df2b7cc3f45c8ef7
   StripeUICore: 1dc4d2f9afcd908db85190e9091dfe260a1861fe
-  SwiftFormat: f4c21fdf8aacdd2db6ffe110f939e0548c9a7de3
+  SwiftFormat: 9bb35148209f3e809e920037f9b95c4c889c3612
   SwiftLint: 1cc5cd61ba9bacb2194e340aeb47a2a37fda00b3
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
-PODFILE CHECKSUM: 189f4315f704f49d8687a645a03ebc1cdf30e9a2
+PODFILE CHECKSUM: cf1bf67121375b88112cae83d38cc86be89aeab4
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.11.3
