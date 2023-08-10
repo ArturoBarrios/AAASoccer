@@ -18,8 +18,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ImagesCommand extends BaseCommand {
   Future<Map<String, dynamic>> deleteImageFromDatabase(
-    dynamic imageInput,
-  ) async {
+      dynamic imageInput) async {
+
     print("deleteImageFromDatabase()");
     Map<String, dynamic> deleteImageResp = {
       "success": false,
@@ -43,8 +43,6 @@ class ImagesCommand extends BaseCommand {
         deleteImageResp['success'] = true;
         deleteImageResp['message'] = 'Image deleted';
 
-        return deleteImageResp;
-      }
       return deleteImageResp;
     } catch (e) {
       print("getImages() error: $e");
