@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:path_provider/path_provider.dart';
 import 'package:soccermadeeasy/constants.dart';
 
 import '../graphql/mutations/chat.dart';
@@ -688,6 +689,29 @@ class ImagesCommand extends BaseCommand {
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
       return pickImageResponse;
+    }
+  }
+  
+  //Download image with given image url.
+  Future<String?> downloadImage(String? imageUrl) async {
+    try {
+      if (imageUrl == null) return null;
+
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/image.png';
+      final file = File(filePath);
+
+      http.Response response = await http.get(
+        Uri.parse(imageUrl),
+      );
+      final writer = file.openSync(mode: FileMode.write);
+      writer.writeFromSync(response.bodyBytes);
+
+      return filePath;
+    } on PlatformException catch (e) {
+      print('Failed to download image: $e');
+
+      return '';
     }
   }
 }

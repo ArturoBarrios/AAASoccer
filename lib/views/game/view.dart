@@ -2,6 +2,7 @@
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
+import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/images_command.dart';
@@ -113,6 +114,11 @@ class _PickupViewState extends State<PickupView> {
     // _isLoading = false;
   }
 
+  Future<void> onTapShare() async {
+    await 'Hey there, check out this event'
+        .share(imageKey: widget.game['mainImageKey']);
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build()");
@@ -148,6 +154,13 @@ class _PickupViewState extends State<PickupView> {
                   child: Expanded(
                       child: Column(
               children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.share,
+                    color: Colors.blue,
+                  ),
+                  onPressed: onTapShare,
+                ),
                 UpdateViewForm(userObjectDetails: userEventDetails),
               ],
             )))),

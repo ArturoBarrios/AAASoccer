@@ -1,5 +1,6 @@
 import 'package:soccermadeeasy/components/events_list_widget.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
+import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
 import '../constants.dart';
@@ -100,6 +101,11 @@ class _ProfileState extends State<Profile> {
     loadInitialData();
   }
 
+  Future<void> onTapShare() async {
+    await 'Hey theres, my name is ${widget.profileDetails['user']['username']}'
+        .share(imageKey: widget.profileDetails['user']['mainImageKey']);
+  }
+
   @override
   Widget build(BuildContext context) {
     String profileImageUrl =
@@ -126,15 +132,27 @@ class _ProfileState extends State<Profile> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          tooltip: 'Go back',
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        new Align(
+                            alignment: Alignment.centerLeft,
+                            child: IconButton(
+                              icon: const Icon(Icons.arrow_back),
+                              tooltip: 'Go back',
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            )),
+                        IconButton(
+                          icon: Icon(
+                            Icons.share,
+                            color: Colors.blue,
+                          ),
+                          onPressed: onTapShare,
+                        )
+                      ],
+                    ),
                     ObjectProfileMainImage(objectImageInput: objectImageInput),
                     const SizedBox(height: 25.0),
                     const Text(
