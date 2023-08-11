@@ -3,7 +3,7 @@ const String defaultApplePay =
     '''{
   "provider": "apple_pay",
   "data": {
-    "merchantIdentifier": "merchant.com.sams.fish",
+    "merchantIdentifier": "merchant.domain.soccernetwork",
     "displayName": "Sam's Fish",
     "merchantCapabilities": ["3DS", "debit", "credit"],
     "supportedNetworks": ["amex", "visa", "discover", "masterCard"],

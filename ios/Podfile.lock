@@ -241,7 +241,7 @@ PODS:
     - StripeUICore (= 23.8.0)
   - StripeUICore (23.8.0):
     - StripeCore (= 23.8.0)
-  - SwiftFormat/CLI (0.51.15)
+  - SwiftFormat/CLI (0.51.13)
   - SwiftLint (0.52.4)
   - url_launcher_ios (0.0.1):
     - Flutter
@@ -412,10 +412,10 @@ SPEC CHECKSUMS:
   StripePaymentSheet: 1fef5afa050bfd684e84553cba613041a2b3d7b7
   StripePaymentsUI: 7d2fc8fe17c3fdc63508bc54df2b7cc3f45c8ef7
   StripeUICore: 1dc4d2f9afcd908db85190e9091dfe260a1861fe
-  SwiftFormat: 9bb35148209f3e809e920037f9b95c4c889c3612
+  SwiftFormat: f4c21fdf8aacdd2db6ffe110f939e0548c9a7de3
   SwiftLint: 1cc5cd61ba9bacb2194e340aeb47a2a37fda00b3
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
-PODFILE CHECKSUM: cf1bf67121375b88112cae83d38cc86be89aeab4
+PODFILE CHECKSUM: 189f4315f704f49d8687a645a03ebc1cdf30e9a2
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0
