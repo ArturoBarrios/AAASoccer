@@ -855,7 +855,7 @@ class EventCommand extends BaseCommand {
     return addPlayerToEventResponse;
   }
 
-  Future<Map<String,dynamic>> getUserEventParticipants(dynamic user) async{
+  Future<Map<String,dynamic>> getUserEventParticipants(dynamic user, String startTime, String eventFragment) async{
     Map<String,dynamic> getUserEventParticipantsResponse = {
       "success": false,
       "message": "Default Error",
@@ -863,16 +863,16 @@ class EventCommand extends BaseCommand {
     };
 
     try{
-      // http.Response response = await http.post(
-      //   Uri.parse('https://graphql.fauna.com/graphql'),
-      //   headers: <String, String>{
-      //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: jsonEncode(<String, String>{
-      //     'query': EventQueries().getUserEventParticipants(user),
-      //   }),
-      // );
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventQueries().allUserEventParticipants(user, startTime, eventFragment),
+        }),
+      );
 
       return getUserEventParticipantsResponse;
     } catch(e){

@@ -1,6 +1,7 @@
 type Query {  
   allEventsOfType(startTime: String!, type: EventType!): [Event!] @resolver(name: "allEventsOfType")
   allEventsOfAllTypes(startTime: String!): [Event!] @resolver(name: "allEventsOfAllTypes")
+  allCurrentUserEventParticipants(userId: ID!, startTime: String!): [EventUserParticipant!] @resolver(name: "allCurrentUserEventParticipants")
   allGames(pickup: Boolean): [Game!]  
   allTrainings: [Training!]  
   allTryouts: [Tryout!]  
@@ -189,7 +190,6 @@ type Player   {
   sponsors: [Sponsor] @relation
   ratings: [Rating] @relation
 }
-
 type EventUserParticipant {
   event: Event
   user: User

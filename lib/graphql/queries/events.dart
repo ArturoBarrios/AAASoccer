@@ -1,5 +1,7 @@
 import '../../enums/EventType.dart';
 import '../fragments/event_fragments.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
 
 class EventQueries {
    String allEventsOfType(String startTime, EventType type, String eventFragment) {
@@ -25,8 +27,18 @@ class EventQueries {
     """;
   return getEvents;
 }
- 
   
+  String allUserEventParticipants(dynamic user, String startTime, String eventFragment) {    
+    String getEvents = """
+      query GetEvents {
+        allEventsOfAllTypes(startTime: "$startTime") {                  
+            ${eventFragment}        
+        }
+      }
+    """;
+  return getEvents;
+}
+
 
 
 }
