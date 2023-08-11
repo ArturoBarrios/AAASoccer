@@ -28,15 +28,15 @@ class EventQueries {
   return getEvents;
 }
   
-  String allUserEventParticipants(dynamic user, String startTime, String eventFragment) {    
-    String getEvents = """
-      query GetEvents {
-        allEventsOfAllTypes(startTime: "$startTime") {                  
-            ${eventFragment}        
+  String allUserEventParticipants(dynamic allUserEventParticipantsInput) {    
+    String getUserEvents = """
+      query GetEventUserParticipants {
+        allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {                              
+              ${allUserEventParticipantsInput['eventFragment']}            
         }
       }
     """;
-  return getEvents;
+  return getUserEvents;
 }
 
 

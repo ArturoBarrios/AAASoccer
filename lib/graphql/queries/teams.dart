@@ -30,5 +30,16 @@ String findTeamByID(Map<String, dynamic> teamInput ){
     return getTeam;
   }
 
+  String allUserTeamParticipants(dynamic user, String startTime, String teamFragment) {    
+    String getUserTeams = """
+      query getTeams {
+        allTeamsOfUser(startTime: "$startTime") {                  
+            ${teamFragment}        
+        }
+      }
+    """;
+  return getUserTeams;
+}
+
 
 }

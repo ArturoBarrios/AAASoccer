@@ -855,13 +855,14 @@ class EventCommand extends BaseCommand {
     return addPlayerToEventResponse;
   }
 
-  Future<Map<String,dynamic>> getUserEventParticipants(dynamic user, String startTime, String eventFragment) async{
+  Future<Map<String,dynamic>> getAllUserEventParticipants(dynamic allUserEventParticipantsInput) async{
     Map<String,dynamic> getUserEventParticipantsResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
-
+    print("getUserEventParticipants()");
+    print("allUserEventParticipantsInput: " + allUserEventParticipantsInput.toString());
     try{
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
@@ -870,9 +871,18 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventQueries().allUserEventParticipants(user, startTime, eventFragment),
+          'query': EventQueries().allUserEventParticipants(allUserEventParticipantsInput),
         }),
       );
+
+      print("getUserEventParticipants response body: " + jsonDecode(response.body).toString());
+      if(response.statusCode == 200){
+        dynamic allEvents = jsonDecode(response.body)['data']['allCurrentUserEventParticipants'];
+        print("allEventsOfType length: " + allEvents.length.toString());
+        getUserEventParticipantsResponse["success"] = true;
+        getUserEventParticipantsResponse["message"] = "events Retrieved";
+        getUserEventParticipantsResponse["data"] = allEvents;
+      }
 
       return getUserEventParticipantsResponse;
     } catch(e){
@@ -1268,10 +1278,45 @@ class EventCommand extends BaseCommand {
     bool gotInitialEvents = false;
     //get pickup games or upcoming events
     if(!appModel.isGuest){
+      print("is not guest");
       //get eventUserParticipants
       gotInitialEvents = true;  
-      Map<String,dynamic> getUserEventParticipantsResp = await getUserEventParticipants(appModel.currentUser);
-      print("getUserEventParticipantsResp: " + getUserEventParticipantsResp.toString());
+      dynamic allUserEventParticipantsInput = {
+        "userId": appModel.currentUser['_id'],
+        "startTime": oneHourAgoTimestamp,
+        "eventFragment" : EventFragments().userEventParticipants()
+      };
+      Map<String,dynamic> getAllUserEventParticipantsResp = await getAllUserEventParticipants(allUserEventParticipantsInput);
+      print("getAllUserEventParticipantss: " + getAllUserEventParticipantsResp.toString());
+      if(getAllUserEventParticipantsResp['success']){
+        print("successss!!!!");
+        List<dynamic> allMyEvents =
+            getAllUserEventParticipantsResp['data'];
+        print("allMyEvents: " + allMyEvents.toString());
+        List myEvents = allMyEvents;
+        print("myEvents.length before: " + myEvents.length.toString());      
+        //filter out archived events
+        myEvents.removeWhere((event) => BaseCommand()
+            .dateTimeFromMilliseconds(event['event']['endTime'].toString())
+            .isBefore(DateTime.now()));
+        //sort by createdAt
+        myEvents.sort((a, b) {
+          int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
+          int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
+          print("aCreatedAt: " + aCreatedAt.toString());
+          print("bCreatedAt: " + bCreatedAt.toString());
+          return bCreatedAt.compareTo(aCreatedAt);
+        });
+        appModel.myEvents =
+            myEvents; //appModel.currentUser['eventUserParticipants']['data'];
+        for (var event in myEvents) {
+          var createdAt = event["event"]["createdAt"];
+          print("createdAtt: $createdAt");
+        }
+        print("myEvents after sort: " + myEvents.length.toString());
+
+      }
+
     }
     else{
       Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
@@ -1319,35 +1364,7 @@ class EventCommand extends BaseCommand {
       appModel.playersNearMe = players;
     }
 
-    //currentUser is setup by this point. Either from login,
-    // or getting user again at top of function
-    print("friends: ");
-    if (!appModel.isGuest) {      
-      List<dynamic> allMyEvents =
-          appModel.currentUser['eventUserParticipants']['data'];
-      print("allMyEvents: " + allMyEvents.toString());
-      List myEvents = allMyEvents;
-      print("myEvents.length before: " + myEvents.length.toString());      
-      //filter out archived events
-      myEvents.removeWhere((event) => BaseCommand()
-          .dateTimeFromMilliseconds(event['event']['endTime'].toString())
-          .isBefore(DateTime.now()));
-      //sort by createdAt
-      myEvents.sort((a, b) {
-        int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
-        int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
-        print("aCreatedAt: " + aCreatedAt.toString());
-        print("bCreatedAt: " + bCreatedAt.toString());
-        return bCreatedAt.compareTo(aCreatedAt);
-      });
-      appModel.myEvents =
-          myEvents; //appModel.currentUser['eventUserParticipants']['data'];
-      for (var event in myEvents) {
-  var createdAt = event["event"]["createdAt"];
-  print("createdAtt: $createdAt");
-}
-      print("myEvents after sort: " + myEvents.length.toString());
-    }
+    
 
     return setupEventsResp;
   }
