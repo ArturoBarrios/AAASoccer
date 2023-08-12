@@ -25,8 +25,6 @@ import '../commands/event_command.dart';
 import '../commands/images_command.dart';
 import '../models/payment_model.dart';
 import '../services/geolocation_services.dart';
-import '../services/twilio_services.dart';
-import '../services/onesignal_service.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../services/amplify_auth_service.dart';
@@ -64,11 +62,7 @@ class BaseCommand {
   //   appModel.twilioClient = twilioFlutterClient;
   // }
 
-  void initializeData(){
-
-  }
-
-  
+  void initializeData() {}
 
   void updateUserEventDetailsModel(dynamic userEventDetails) {
     appModel.userEventDetails = userEventDetails;
@@ -79,8 +73,9 @@ class BaseCommand {
     return appModel.userEventDetails;
   }
 
-  void popToHome(BuildContext context){    
-    Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+  void popToHome(BuildContext context) {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
   }
 
   getHomePageModel() => homePageModel;
@@ -376,7 +371,7 @@ class BaseCommand {
           //not being used so commented out
           // await loadUserImagesFromAWS();
           print("get friends and myEvents from currentUser object: " +
-              appModel.currentUser.toString());          
+              appModel.currentUser.toString());
           List<dynamic> myEvents =
               appModel.currentUser['eventUserParticipants']['data'];
           List<dynamic> myTeams =
@@ -390,14 +385,14 @@ class BaseCommand {
       } else {
         print("is guest");
         // HomePageCommand().eventTypeTapped(Constants.PICKUP);
-      }      
+      }
 
       await EventCommand().setupEvents();
       await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
-      !appModel.isGuest ? 
-        HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
-        : HomePageCommand().eventTypeTapped(Constants.PICKUP);
-      
+      !appModel.isGuest
+          ? HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
+          : HomePageCommand().eventTypeTapped(Constants.PICKUP);
+
       //,teams, players near me data.
       //get location and update user location
       Position userPosition = await GeoLocationCommand().determinePosition();
@@ -430,7 +425,7 @@ class BaseCommand {
     return resp;
   }
 
-  bool isGuest(){
+  bool isGuest() {
     return appModel.isGuest;
   }
 

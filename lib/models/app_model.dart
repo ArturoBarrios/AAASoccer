@@ -1,18 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/foundation.dart';
-import 'package:faunadb_http/faunadb_http.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:twilio_flutter/twilio_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 class AppModel extends ChangeNotifier {
-
-  void nukeModelData(){
-    
-  }
-
-
+  void nukeModelData() {}
 
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
@@ -20,21 +11,14 @@ class AppModel extends ChangeNotifier {
     _faunaClient = faunaClient;
     notifyListeners();
   }
-  
-  TwilioFlutter? _twilioClient = null;
-  TwilioFlutter get twilioClient => _twilioClient!;
-  set twilioClient(TwilioFlutter twilioClient) {
-    _twilioClient = twilioClient;
-    notifyListeners();
-  }
 
   bool _onesignalUserDetailsSetup = false;
   bool get onesignalUserDetailsSetup => _onesignalUserDetailsSetup;
-  set onesignalUserDetailsSetup(bool onesignalUserDetailsSetup){
+  set onesignalUserDetailsSetup(bool onesignalUserDetailsSetup) {
     _onesignalUserDetailsSetup = onesignalUserDetailsSetup;
     notifyListeners();
-  } 
-    
+  }
+
   Map<String, dynamic> _currentUser = {};
   Map<String, dynamic> get currentUser => _currentUser;
   set currentUser(Map<String, dynamic> currentUser) {
@@ -42,40 +26,46 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Position _currentPosition =  new Position(longitude: 0, latitude: 0, timestamp: null, accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0 );
+  Position _currentPosition = const Position(
+    longitude: 0,
+    latitude: 0,
+    timestamp: null,
+    accuracy: 0,
+    altitude: 0,
+    heading: 0,
+    speed: 0,
+    speedAccuracy: 0,
+  );
   Position get currentPosition => _currentPosition;
-  set currentPosition(Position currentPosition){
+  set currentPosition(Position currentPosition) {
     _currentPosition = currentPosition;
     notifyListeners();
-  } 
+  }
 
   bool _initialConditionsMet = false;
   bool get initialConditionsMet => _initialConditionsMet;
-  set initialConditionsMet(bool initialConditionsMet){
+  set initialConditionsMet(bool initialConditionsMet) {
     _initialConditionsMet = initialConditionsMet;
     notifyListeners();
-  }  
-
-
+  }
 
   bool _amplifyConfigured = false;
   bool get amplifyConfigured => _amplifyConfigured;
-  set amplifyConfigured(bool amplifyConfigured){
+  set amplifyConfigured(bool amplifyConfigured) {
     _amplifyConfigured = amplifyConfigured;
     notifyListeners();
   }
-  
+
   bool _isGuest = false;
   bool get isGuest => _isGuest;
-  set isGuest(bool isGuest){
+  set isGuest(bool isGuest) {
     _isGuest = isGuest;
     notifyListeners();
   }
 
-
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
-  set isSignedIn(bool isSignedIn){
+  set isSignedIn(bool isSignedIn) {
     _isSignedIn = isSignedIn;
     notifyListeners();
   }
@@ -85,8 +75,8 @@ class AppModel extends ChangeNotifier {
   set players(List players) {
     _players = players;
     notifyListeners();
-  }  
-  
+  }
+
   List _playersNearMe = [];
   List get playersNearMe => _playersNearMe;
   set playersNearMe(List playersNearMe) {
@@ -96,7 +86,7 @@ class AppModel extends ChangeNotifier {
 
   List _teamsNearMe = [];
   List get teamsNearMe => _teamsNearMe;
-  set teamsNearMe(List teamsNearMe) {    
+  set teamsNearMe(List teamsNearMe) {
     _teamsNearMe = teamsNearMe;
     notifyListeners();
   }
@@ -107,35 +97,35 @@ class AppModel extends ChangeNotifier {
     _teams = teams;
     notifyListeners();
   }
-  
+
   List _myTeams = [];
   List get myTeams => _myTeams;
   set myTeams(List myTeams) {
     _myTeams = myTeams;
     notifyListeners();
   }
-  
+
   List _friends = [];
   List get friends => _friends;
   set friends(List friends) {
     _friends = friends;
     notifyListeners();
   }
-  
+
   List _myEvents = [];
   List get myEvents => _myEvents;
   set myEvents(List myEvents) {
     _myEvents = myEvents;
     notifyListeners();
   }
-  
+
   List _myArchivedEvents = [];
   List get myArchivedEvents => _myArchivedEvents;
   set myArchivedEvents(List myArchivedEvents) {
     _myArchivedEvents = myArchivedEvents;
     notifyListeners();
   }
-  
+
   dynamic _userEventDetails = [];
   dynamic get userEventDetails => _userEventDetails;
   set userEventDetails(dynamic userEventDetails) {
@@ -143,5 +133,4 @@ class AppModel extends ChangeNotifier {
     _userEventDetails = userEventDetails;
     notifyListeners();
   }
-  
 }

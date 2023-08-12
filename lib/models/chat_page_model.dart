@@ -1,20 +1,13 @@
-import 'dart:ffi';
-
 import 'package:flutter/foundation.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:twilio_flutter/twilio_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 
 class ChatPageModel extends ChangeNotifier {
-  
   List _chats = [];
   List get chats => _chats;
   set chats(List chats) {
-    _chats = chats;        
+    _chats = chats;
     notifyListeners();
     print("chat in chat_page_model updated");
-  } 
+  }
 
   List _messages = [];
   List get messages => _messages;
@@ -22,19 +15,18 @@ class ChatPageModel extends ChangeNotifier {
     _messages = messages;
     messagesLength = messages.length;
     print("messages updated in chat_page_model");
-    print("chat_page_model messages length after update: " + messages.length.toString());
+    print("chat_page_model messages length after update: " +
+        messages.length.toString());
     notifyListeners();
-  } 
+  }
 
-
-  
   int _messagesLength = 0;
   int get messagesLength => _messagesLength;
   set messagesLength(int messagesLength) {
     _messagesLength = messagesLength;
     print("messagesLength updated in chat_page_model");
-    print("chat_page_model messagesLength after update: " + messages.length.toString());
-    notifyListeners();  
-  }  
-  
+    print("chat_page_model messagesLength after update: " +
+        messages.length.toString());
+    notifyListeners();
+  }
 }
