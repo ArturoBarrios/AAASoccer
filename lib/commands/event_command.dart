@@ -31,6 +31,22 @@ import 'package:intl/intl.dart';
 import 'home_page_command.dart';
 
 class EventCommand extends BaseCommand {
+
+  List<dynamic> sortEventsBy(List<dynamic> events){
+    print("sortEventsBy");
+    List<dynamic> sortedEvents = List.from(events);
+    sortedEvents.sort((a, b) {
+      int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
+      int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
+      print("aCreatedAt: " + aCreatedAt.toString());
+      print("bCreatedAt: " + bCreatedAt.toString());
+      return bCreatedAt.compareTo(aCreatedAt);
+    });
+
+    return sortedEvents;
+
+  }
+
   Future<Map<String, dynamic>> archiveEvent(dynamic eventObject) async {
     Map<String, dynamic> archiveEventResp = {
       "success": false,
@@ -896,7 +912,9 @@ class EventCommand extends BaseCommand {
 
   Future<Map<String, dynamic>> getEventsOfTypeNearLocation(EventType eventType,
       String eventFragment, String startDateTimestamp) async {
-    print("getEventsNearLocation()");
+    print("getEventsOfTypeNearLocation()");
+    print("eventType: " + eventType.toString());
+    print("startDateTimestamp: " + startDateTimestamp.toString());
     Map<String, dynamic> getGamesNearLocationResp = {
       "success": false,
       "message": "Default Error",
@@ -915,7 +933,7 @@ class EventCommand extends BaseCommand {
         }),
       );
 
-      print("getEventsNearLocation response body: ");
+      print("getEventsOfTypeNearLocation response body: ");
       print(jsonDecode(response.body));
 
       if (response.statusCode == 200) {
@@ -924,6 +942,7 @@ class EventCommand extends BaseCommand {
         getGamesNearLocationResp["success"] = true;
         getGamesNearLocationResp["message"] = "events Retrieved";
         getGamesNearLocationResp["data"] = allEvents;
+        return getGamesNearLocationResp;
       }
     } on Exception catch (e) {
       print('Mutation failed: $e');
@@ -1261,6 +1280,10 @@ class EventCommand extends BaseCommand {
     }
   }
 
+
+
+ 
+
   Future<Map<String, dynamic>> setupInitialEvents() async {
     print("setupEvents()()");
 
@@ -1325,31 +1348,30 @@ class EventCommand extends BaseCommand {
 
       print("getEventsNearLocationResp: " +
           getEventsOfAllTypesNearLocationResp.toString());
-      gotInitialEvents = true;
+      
+        //events retrieved successfully
+        List<dynamic> events = getEventsOfAllTypesNearLocationResp['data'];
+        events.sort((a, b) {
+          int aCreatedAt = int.tryParse(a["createdAt"]) ?? 0;
+          int bCreatedAt = int.tryParse(b["createdAt"]) ?? 0;
+          print("aCreatedAt: " + aCreatedAt.toString());
+          print("bCreatedAt: " + bCreatedAt.toString());
+          return bCreatedAt.compareTo(aCreatedAt);
+        });
+        print("events: " + events.toString());
+        print("length of events: " + events.length.toString());
+        //iterate through events
+        for (int i = 0; i < events.length; i++) {
+          dynamic type = events[i]['type'];
+          bool isMainEvent = events[i]['isMainEvent'];
+          if (isMainEvent) {
+            addEventToEventModels(events[i]);
+          }
+        }
+        print("games in eventsModel: " + eventsModel.games.toString());
+      
     
     }
-    // if (gotInitialEvents) {
-    //   //events retrieved successfully
-    //   List<dynamic> events = getEventsOfAllTypesNearLocationResp['data'];
-    //   events.sort((a, b) {
-    //     int aCreatedAt = int.tryParse(a["createdAt"]) ?? 0;
-    //     int bCreatedAt = int.tryParse(b["createdAt"]) ?? 0;
-    //     print("aCreatedAt: " + aCreatedAt.toString());
-    //     print("bCreatedAt: " + bCreatedAt.toString());
-    //     return bCreatedAt.compareTo(aCreatedAt);
-    //   });
-    //   print("events: " + events.toString());
-    //   print("length of events: " + events.length.toString());
-    //   //iterate through events
-    //   for (int i = 0; i < events.length; i++) {
-    //     dynamic type = events[i]['type'];
-    //     bool isMainEvent = events[i]['isMainEvent'];
-    //     if (isMainEvent) {
-    //       addEventToEventModels(events[i]);
-    //     }
-    //   }
-    //   print("games in eventsModel: " + eventsModel.games.toString());
-    // }
 
     Map<String, dynamic> getPlayersNearLocationResp =
         await PlayerCommand().getPlayersNearLocation();

@@ -226,7 +226,7 @@ class _Home extends State<Home> {
   List eventsList = [];
   List eventsEnabledList = [];
 
-  String selectedKey = "";
+  dynamic selectedKey = "";
   List selectedObjects = [];
 
   // The controller for the ListView
@@ -334,7 +334,7 @@ class _Home extends State<Home> {
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
 
     selectedKey =
-        context.select<HomePageModel, String>((value) => value.selectedKey);
+        context.select<HomePageModel, dynamic>((value) => value.selectedKey);
 
     List selectedObjects =
         context.watch<HomePageModel>().selectedObjects;
@@ -342,8 +342,8 @@ class _Home extends State<Home> {
     userObjectSelections = context
         .select<HomePageModel, List>((value) => value.userObjectSelections);
 
-    Map<String, dynamic> enabledSelections2 =
-        context.select<HomePageModel, Map<String, dynamic>>(
+    Map<dynamic, dynamic> enabledSelections2 =
+        context.select<HomePageModel, Map<dynamic, dynamic>>(
             (value) => value.enabledSelections2);
 
     List cards = context.select<HomePageModel, List>((value) => value.cards);
@@ -360,7 +360,7 @@ class _Home extends State<Home> {
 
     context.select<AppModel, List<dynamic>>((value) => value.teams);
 
-    print("selectedKey in build: " + selectedKey);
+    print("selectedKey in build: " + selectedKey.toString());
     print("selectedObjects length in build: " +
         selectedObjects.length.toString());
 
@@ -386,7 +386,7 @@ class _Home extends State<Home> {
               controller: _selectEventTypeController,
               itemCount: enabledSelections2.length,
               itemBuilder: (_, index) {
-                String key = enabledSelections2.keys.elementAt(index);
+                dynamic key = enabledSelections2.keys.elementAt(index);
                 return Card(
                   margin:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 10),

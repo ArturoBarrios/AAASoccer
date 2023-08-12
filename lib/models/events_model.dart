@@ -7,13 +7,21 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 
 class EventsModel extends ChangeNotifier {
 
-  
+    
+  int _timeSinceEventsUpdated = 0;
+  int get timeSinceEventsUpdated => _timeSinceEventsUpdated;
+  set timeSinceEventsUpdated(int timeSinceEventsUpdated) {
+    _timeSinceEventsUpdated = timeSinceEventsUpdated;
+    notifyListeners();
+  }
 
   List _events = [];
   List get events => _events;
   set events(List events) {
     _events = events;
+    timeSinceEventsUpdated = 0;
     notifyListeners();
+    
   }
 
 

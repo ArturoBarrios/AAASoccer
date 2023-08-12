@@ -18,11 +18,6 @@ import '../views/locations/create.dart';
 class HomePageModel extends ChangeNotifier {
 
 
-  nukeData(){
-    print("nuking data");
-    HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
-
-  }
 
   String _testText = "";
   String get testText => _testText;
@@ -73,15 +68,17 @@ class HomePageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _selectedKey = Constants.MYEVENTS;
-  String get selectedKey => _selectedKey;
-  set selectedKey(String selectedKey){
+  dynamic _selectedKey = Constants.MYEVENTS;
+  dynamic get selectedKey => _selectedKey;
+  set selectedKey(dynamic selectedKey){
     _selectedKey = selectedKey;
     notifyListeners();
   }  
 
+  
 
-  Map<String, dynamic> _enabledSelections2 = {
+
+  Map<dynamic, dynamic> _enabledSelections2 = {
     Constants.MYEVENTS: {
       "key": Constants.MYEVENTS,
       "enabled": true,
@@ -163,8 +160,8 @@ class HomePageModel extends ChangeNotifier {
   };
 
   
-  Map<String, dynamic> get enabledSelections2 => _enabledSelections2;
-  set enabledSelections2(Map<String, dynamic> enabledSelections2){
+  Map<dynamic, dynamic> get enabledSelections2 => _enabledSelections2;
+  set enabledSelections2(Map<dynamic, dynamic> enabledSelections2){
     _enabledSelections2 = enabledSelections2;    
     notifyListeners();
   }  

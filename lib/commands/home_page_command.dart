@@ -4,6 +4,8 @@ import 'package:soccermadeeasy/commands/team_command.dart';
 import 'package:soccermadeeasy/commands/tournament_command.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
 
+import '../enums/EventType.dart';
+import '../graphql/fragments/event_fragments.dart';
 import 'base_command.dart';
 import 'league_command.dart';
 import 'refresh_posts_command.dart';
@@ -39,9 +41,9 @@ class HomePageCommand extends BaseCommand {
   }
 
   Future<Widget> getCard(
-      String selectedKey, dynamic selectedObject, Svg svgImage) async {
+      dynamic selectedKey, dynamic selectedObject, Svg svgImage) async {
     print("getCard()");
-    print("selectedKey: " + selectedKey);
+    print("selectedKey: " + selectedKey.toString());
     print("selectedObject: " + selectedObject.toString());
 
     Widget card = Text(
@@ -186,16 +188,17 @@ class HomePageCommand extends BaseCommand {
     homePageModel.cardsLoading = false;
   }
 
-  Future<void> eventTypeTapped(String key) async {
+  Future<void> eventTypeTapped(dynamic key) async {
     print("eventTypeTapped");
     print(key);
+    
+    await getSelectedObjects(key);
     print(homePageModel.enabledSelections2[key]['enabled']);
     homePageModel.enabledSelections2.forEach(
         (k, v) => {homePageModel.enabledSelections2[k]['enabled'] = false});
     homePageModel.enabledSelections2[key]['enabled'] =
         !homePageModel.enabledSelections2[key]['enabled'];
     homePageModel.selectedKey = key;
-    getSelectedObjects();
   }
 
   void addPlayerToObjectSelection(dynamic object) {
@@ -217,48 +220,68 @@ class HomePageCommand extends BaseCommand {
         homePageModel.userObjectSelections.toString());
   }
 
-  void toggleEvent(int index) {}
 
-  void getSelectedObjects() {
+  Future<void> getSelectedObjects(dynamic newSelectedKey) async{
     print("getSelectedEvents");
-    print(homePageModel.selectedKey);
-    if (homePageModel.selectedKey == Constants.PICKUP) {
+    print(newSelectedKey);
+    List<dynamic> newSelectedObjects = [];
+    if(BaseCommand().isEventType(newSelectedKey)){
+      
+      String xHoursAgoTimestamp = BaseCommand().xHoursAgo(1);
+      Map<String, dynamic> getEventsOfAllTypesNearLocationResp = await EventCommand().getEventsOfTypeNearLocation(newSelectedKey,
+            EventFragments().fullEvent(), xHoursAgoTimestamp);
+      print("getEventsOfAllTypesNearLocationResp: " + getEventsOfAllTypesNearLocationResp.toString());
+      if(getEventsOfAllTypesNearLocationResp['success']){
+        newSelectedObjects = getEventsOfAllTypesNearLocationResp['data'];
+        homePageModel.selectedObjects = newSelectedObjects;
+      }
+
+    }
+
+    if (newSelectedKey == Constants.PICKUP) {
       print("check games: ");
       print(eventsModel.games);
-      homePageModel.selectedObjects = eventsModel.games;
-    } else if (homePageModel.selectedKey == Constants.TEAM) {
+      if(eventsModel.games.length == 0){
+        eventsModel.games = newSelectedObjects;        
+      }      
+    } else if (newSelectedKey == Constants.TEAM) {
       print("check teams: ");
       print(appModel.teams);
       homePageModel.selectedObjects = appModel.teams;
-    } else if (homePageModel.selectedKey == Constants.PLAYER) {
+    } else if (newSelectedKey == Constants.PLAYER) {
       print("check players: ");
       print("appModel.players.length: " + appModel.players.length.toString());
       homePageModel.selectedObjects = appModel.players;
-    } else if (homePageModel.selectedKey == Constants.TRAINING) {
+    } else if (newSelectedKey == Constants.TRAINING) {
       print("check training: ");
       print(eventsModel.trainings);
-      homePageModel.selectedObjects = eventsModel.trainings;
-    } else if (homePageModel.selectedKey == Constants.TRYOUT) {
+      if(eventsModel.trainings.length == 0){
+        eventsModel.trainings = newSelectedObjects;        
+      }                  
+    } else if (newSelectedKey == Constants.TRYOUT) {
       print("check tryout: ");
       print(eventsModel.tryouts);
+      if(eventsModel.tryouts.length == 0){
+        eventsModel.tryouts = newSelectedObjects;        
+      }      
       homePageModel.selectedObjects = eventsModel.tryouts;
-    } else if (homePageModel.selectedKey == Constants.TOURNAMENT) {
+    } else if (newSelectedKey == Constants.TOURNAMENT) {
       print("check tournament: ");
       print(eventsModel.tournaments);
       homePageModel.selectedObjects = eventsModel.tournaments;
-    } else if (homePageModel.selectedKey == Constants.LEAGUE) {
+    } else if (newSelectedKey == Constants.LEAGUE) {
       print("check league: ");
       print(eventsModel.leagues);
       homePageModel.selectedObjects = eventsModel.leagues;
-    } else if (homePageModel.selectedKey == Constants.FRIEND) {
+    } else if (newSelectedKey == Constants.FRIEND) {
       print("check friend: ");
       print(appModel.friends);
       homePageModel.selectedObjects = appModel.friends;
-    } else if (homePageModel.selectedKey == Constants.MYEVENTS) {
+    } else if (newSelectedKey == Constants.MYEVENTS) {
       print("check my events: ");
       print(appModel.myEvents);
       homePageModel.selectedObjects = appModel.myEvents;
-    } else if (homePageModel.selectedKey == Constants.MYTEAMS) {
+    } else if (newSelectedKey == Constants.MYTEAMS) {
       print("check my teams: ");
       print(appModel.myTeams);
 

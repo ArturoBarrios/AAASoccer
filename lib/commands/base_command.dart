@@ -57,14 +57,29 @@ class BaseCommand {
   ChatPageModel chatPageModel = _mainContext.read();
   // Services
   GeoLocationServices geoLocationServices = _mainContext.read();
-  // TwilioServices twilioServices = _mainContext.read();
-
-  // void configureTwilio(){
-  //   TwilioFlutter twilioFlutterClient = twilioServices.configureTwilio();
-  //   appModel.twilioClient = twilioFlutterClient;
-  // }
 
   void initializeData() {}
+  
+  String xHoursAgo(int x){
+    DateTime xHoursAgo = DateTime.now().subtract(Duration(hours: x));
+    String xHoursAgoTimestamp = xHoursAgo.millisecondsSinceEpoch.toString();
+      print("xHoursAgoTimestamp before getEventsNearLocation: " +
+          xHoursAgoTimestamp);
+
+    return xHoursAgoTimestamp;      
+  }
+
+  bool isEventType(dynamic type){    
+    if(type == Constants.PICKUP || type == Constants.TRYOUT ||
+    type == Constants.TRAINING || type == Constants.TOURNAMENT || 
+    type == Constants.LEAGUE){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
 
   void updateUserEventDetailsModel(dynamic userEventDetails) {
     appModel.userEventDetails = userEventDetails;
@@ -140,7 +155,7 @@ class BaseCommand {
     friendsPageModel = _mainContext.read();
     chatPageModel = _mainContext.read();
 
-    homePageModel.nukeData();
+    // homePageModel.nukeData();
 
     //services
     geoLocationServices = _mainContext.read();
@@ -385,8 +400,7 @@ class BaseCommand {
           print("something went wrong in fetching user");
         }
       } else {
-        print("is guest");
-        // HomePageCommand().eventTypeTapped(Constants.PICKUP);
+        print("is guest");        
       }
 
 
