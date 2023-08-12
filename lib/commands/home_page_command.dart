@@ -268,10 +268,16 @@ class HomePageCommand extends BaseCommand {
     } else if (newSelectedKey == Constants.TOURNAMENT) {
       print("check tournament: ");
       print(eventsModel.tournaments);
+      if(eventsModel.tournaments.length == 0){
+        eventsModel.tournaments = newSelectedObjects;        
+      }            
       homePageModel.selectedObjects = eventsModel.tournaments;
     } else if (newSelectedKey == Constants.LEAGUE) {
       print("check league: ");
       print(eventsModel.leagues);
+      if(eventsModel.leagues.length == 0){
+        eventsModel.leagues = newSelectedObjects;        
+      }       
       homePageModel.selectedObjects = eventsModel.leagues;
     } else if (newSelectedKey == Constants.FRIEND) {
       print("check friend: ");
