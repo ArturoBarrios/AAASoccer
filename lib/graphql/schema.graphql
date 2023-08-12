@@ -173,6 +173,7 @@ type User  {
   ratings: [Rating] @relation
   mainImageKey: String
   subscriptionTypeUsers: [SubscriptionTypeUser] @relation
+  isProfilePrivate: Boolean @default(value: false)
 }
 
 

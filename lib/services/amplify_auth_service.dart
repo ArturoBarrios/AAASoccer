@@ -97,7 +97,7 @@ class AmplifyAuthService {
         print("email");
         print(email);
         UserModel().userEmail = email;
-        print("authSessionRes: " + authSessionRes.toString());
+        print("authSessionRes: $authSessionRes");
         print("amplify configured end of function!");
         configureAmplifyResp["success"] = true;
         configureAmplifyResp["message"] = "isSignedIn";
@@ -114,7 +114,8 @@ class AmplifyAuthService {
 
   Future<void> signOut() async {
     try {
-      await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
+      await Amplify.Auth.signOut(
+          options: const SignOutOptions(globalSignOut: true));
       //base_command set initial app models to reflect signout
     } on AuthException catch (e) {
       print(e.message);
@@ -128,7 +129,7 @@ class AmplifyAuthService {
       password: passwordController.text.trim(),
     );
 
-    print("signIn res: " + res.toString());
+    print("signIn res: $res");
 
     //
 

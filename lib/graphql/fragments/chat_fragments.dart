@@ -1,7 +1,6 @@
-class ChatFragments{
-
-  String chatObject(){
-     String chatObject = r'''      
+class ChatFragments {
+  String chatObject() {
+    String chatObject = r'''      
         	_id
           name
           isPrivate
@@ -28,6 +27,10 @@ class ChatFragments{
                 _id
                 content
               }
+              imageObject{
+                _id
+                url
+              }
               sender{
                 _id
                 name
@@ -38,14 +41,5 @@ class ChatFragments{
     ''';
 
     return chatObject;
-
   }
 }
-
-
-
-
-
-
-
-

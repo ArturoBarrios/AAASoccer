@@ -8,32 +8,32 @@ import '../commands/user_command.dart';
 class IntroductionPage extends StatelessWidget {
   const IntroductionPage({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-    
     void updateUserOnboarding() async {
       print("updateUserOnboarding");
-      dynamic userObjectResp = await UserCommand().findMyUserById();      
+      dynamic userObjectResp = await UserCommand().findMyUserById();
       dynamic userObject = userObjectResp['data'];
       print("userObject: $userObject");
       Map<String, dynamic> partialUserInput = {
         'user': {
           '_id': userObject['_id'],
-          'dataToUpdate': jsonEncode({ 
-            'onboarded': true
-          })
-        },    
-    };
+          'dataToUpdate': """
+          {
+            onboarded: true
+          }
+          """,
+        },
+      };
       await UserCommand().partialUpdateUser(partialUserInput);
 
       Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                return Home();
-              },
-            ),
-          );
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return Home();
+          },
+        ),
+      );
     }
 
     return Scaffold(
@@ -42,9 +42,12 @@ class IntroductionPage extends StatelessWidget {
         pages: [
           PageViewModel(
             title: "Title of blue page",
-            body: "Welcome to the app! This is a description on a page with a blue background.",
+            body:
+                "Welcome to the app! This is a description on a page with a blue background.",
             image: Center(
-              child: Image.network("https://img.freepik.com/premium-vector/boy-playing-soccer-cartoon-vector-icon-illustration_663547-63.jpg", height: 175.0),
+              child: Image.network(
+                  "https://img.freepik.com/premium-vector/boy-playing-soccer-cartoon-vector-icon-illustration_663547-63.jpg",
+                  height: 175.0),
             ),
             // decoration: const PageDecoration(
             //   pageColor: Colors.blue,
@@ -64,7 +67,7 @@ class IntroductionPage extends StatelessWidget {
           ),
         ],
         onDone: () {
-          // updateUserOnboarding();          
+          // updateUserOnboarding();
         },
         skip: const Icon(Icons.skip_next),
         next: const Icon(Icons.forward),

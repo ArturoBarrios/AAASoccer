@@ -24,6 +24,7 @@ class FriendCard extends StatefulWidget {
 
 void friendClicked() {
   print("Friend Clicked");
+  
 }
 
 Future<Map<String, dynamic>> removeFriend(dynamic friendObject) async {

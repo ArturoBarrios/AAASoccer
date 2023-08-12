@@ -36,6 +36,7 @@ class AppModel extends ChangeNotifier {
     speed: 0,
     speedAccuracy: 0,
   );
+
   Position get currentPosition => _currentPosition;
   set currentPosition(Position currentPosition) {
     _currentPosition = currentPosition;

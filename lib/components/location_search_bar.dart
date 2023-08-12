@@ -15,6 +15,7 @@ class LocationSearchBar extends StatefulWidget {
     this.initialValue = '',
   }) : super(key: key);
 
+
   @override
   State<LocationSearchBar> createState() => _LocationSearchBar();
 }

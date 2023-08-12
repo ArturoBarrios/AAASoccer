@@ -17,6 +17,31 @@ class UserFragments{
               gender
               OSPID
               mainImageKey
+              followers{
+                data{
+                  follower{
+                    _id
+                    name
+                  }
+                  following{
+                    _id
+                    name
+                  }
+
+                }
+              }
+              following{
+                data{
+                  follower{
+                    _id
+                    name
+                  }
+                  following{
+                    _id
+                    name
+                  }
+                }
+              }
               subscriptionTypeUsers{
                 data{
                   _id
@@ -113,69 +138,5 @@ class UserFragments{
 
   }
 
-  String playerUser(){
-     String FullUserReturn = """
-       _id      
-              name        	
-              phone
-              email              
-              username
-              birthdate              
-              gender
-              OSPID
-              ratings{
-                data{
-                  _id
-                  rating                  
-                }
-              }
-              player{
-                _id
-              }
-              location{
-                _id
-                latitude
-                longitude
-              }
-              events{
-                data{
-                  ${EventFragments().fullEvent()}               
-                }                
-              }
-              stripeCustomers{
-                data{
-                  _id
-                  customerId
-                }
-              }
-              
-              stripeCustomers{
-                data{
-                  _id
-                  customerId
-                }
-              }
-              teams{
-                data{
-                  _id
-                  name
-                }
-              } 
-              sentMessages{
-                data{
-                  _id
-                }
-                
-              }      
-              chats{
-                data{
-                  ${ChatFragments().chatObject()}               
-
-                }
-              }
-    """;
-
-    return FullUserReturn;
-
-  }
+  
 }

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:soccermadeeasy/constants.dart';
 
 import '../graphql/mutations/chat.dart';
@@ -16,6 +19,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ImagesCommand extends BaseCommand {
   Future<Map<String, dynamic>> deleteImageFromDatabase(
       dynamic imageInput) async {
+
     print("deleteImageFromDatabase()");
     Map<String, dynamic> deleteImageResp = {
       "success": false,
@@ -27,20 +31,28 @@ class ImagesCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
           'query': ImageMutations().deleteImage(imageInput),
         }),
       );
+      print(response.body);
+      if (response.statusCode == 200) {
+        deleteImageResp['success'] = true;
+        deleteImageResp['message'] = 'Image deleted';
 
       return deleteImageResp;
-    } catch (e) {
-      print("getImages() error: " + e.toString());
+      }
       return deleteImageResp;
-    }
-  }
+    } catch (e) {
+      print("getImages() error: $e");
+      return deleteImageResp;
+    
+  
+      }
+      }
 
   Future<Map<String, dynamic>> deleteImageFromS3(dynamic imageInput) async {
     print("deleteImage()");
@@ -52,16 +64,18 @@ class ImagesCommand extends BaseCommand {
     try {
       //delete image from database
       final uri = Uri.https(
-          "us-central1-soccer-app-a9060.cloudfunctions.net", '/getImages');
+        "us-central1-soccer-app-a9060.cloudfunctions.net",
+        '/getImages',
+      );
 
       final getSignedUrlResponse = await http.get(uri);
-      print("response: " + json.decode(getSignedUrlResponse.body).toString());
+      print("response: ${json.decode(getSignedUrlResponse.body)}");
 
       deleteImageFromS3Resp['success'] = true;
 
       return deleteImageFromS3Resp;
     } catch (e) {
-      print("getImages() error: " + e.toString());
+      print("getImages() error: $e");
       return deleteImageFromS3Resp;
     }
   }
@@ -93,12 +107,12 @@ class ImagesCommand extends BaseCommand {
 
       Map<String, dynamic> getImageResp =
           await getImage(appModel.currentUser['mainImageKey']);
-      print("getImageResp: " + getImageResp.toString());
+      print("getImageResp: $getImageResp");
       if (getImageResp['success']) {
         profileImageUrl = getImageResp['data']['signedUrl'];
         //set presigned cloudfront image url
         userModel.profileImageUrl = profileImageUrl;
-        print("profileImageUrl: " + profileImageUrl.toString());
+        print("profileImageUrl: $profileImageUrl");
         getUserProfileImageResp['success'] = true;
         getUserProfileImageResp['message'] = "Profile Image Set";
         getUserProfileImageResp['data'] = profileImageUrl;
@@ -110,11 +124,12 @@ class ImagesCommand extends BaseCommand {
       return getUserProfileImageResp;
     }
   }
+      
 
   Future<Map<String, dynamic>> partialUpdateImage(
       dynamic processedImageInput) async {
     print("partialUpdateImage");
-    print("processedImageInput: " + processedImageInput.toString());
+    print("processedImageInput: $processedImageInput");
     Map<String, dynamic> partialUpdateImageResponse = {
       "success": false,
       "message": "Default Error",
@@ -125,7 +140,7 @@ class ImagesCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -172,7 +187,7 @@ class ImagesCommand extends BaseCommand {
           "us-central1-soccer-app-a9060.cloudfunctions.net", '/getImages');
 
       final getSignedUrlResponse = await http.get(uri);
-      print("response: " + json.decode(getSignedUrlResponse.body).toString());
+      print("response: ${json.decode(getSignedUrlResponse.body)}");
 
       getImageResponse['success'] = true;
 
@@ -191,11 +206,14 @@ class ImagesCommand extends BaseCommand {
       "data": null
     };
 
+    if (key == null) {
+      return getImageResponse;
+    }
     try {
       final uri = Uri.parse("http://localhost:3000/images?key=$key");
 
       final getSignedUrlResponse = await http.get(uri);
-      print("response: " + json.decode(getSignedUrlResponse.body).toString());
+      print("response: ${json.decode(getSignedUrlResponse.body)}");
 
       getImageResponse['success'] = true;
       getImageResponse['data'] = {
@@ -219,7 +237,7 @@ class ImagesCommand extends BaseCommand {
     try {
       Map<String, dynamic> getImageResp =
           await ImagesCommand().getImage(imageInput['key']);
-      print("getImageResp: " + getImageResp.toString());
+      print("getImageResp: $getImageResp");
       if (getImageResp['success']) {
         dynamic data = getImageResp['data'];
         getUserProfileImageResponse['success'] = true;
@@ -240,7 +258,7 @@ class ImagesCommand extends BaseCommand {
 
   void setChatImage(dynamic chat) {
     print("setChatImage()");
-    print("chat: " + chat.toString());
+    print("chat: $chat");
     for (int i = 0; i < chatPageModel.chats.length; i++) {
       dynamic chatCopy = chatPageModel.chats[i];
       if (chatCopy['_id'] == chat['_id']) {
@@ -253,14 +271,14 @@ class ImagesCommand extends BaseCommand {
 
   void setEventImage(dynamic event) {
     print("setEventImage()");
-    print("event: " + event.toString());
+    print("event: $event");
     appModel.userEventDetails['mainEvent'] = event;
   }
 
   Future<Map<String, dynamic>> addImageToUserProfile(
       dynamic userInput, dynamic imageAdded) async {
     print("addImageToProfile");
-    print("imageAdded: " + imageAdded.toString());
+    print("imageAdded: $imageAdded");
     Map<String, dynamic> addImageToProfileResponse = {
       "success": false,
       "message": "Default Error",
@@ -268,12 +286,12 @@ class ImagesCommand extends BaseCommand {
     };
     try {
       Map<String, dynamic> getImageResp = await getImage(imageAdded['key']);
-      print("getImageResp: " + getImageResp.toString());
+      print("getImageResp: $getImageResp");
       userInput['mainImageKey'] = imageAdded['key'];
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -295,7 +313,7 @@ class ImagesCommand extends BaseCommand {
 
       return addImageToProfileResponse;
     } catch (e) {
-      print("addImageToProfile error: " + e.toString());
+      print("addImageToProfile error: $e");
       return addImageToProfileResponse;
     }
   }
@@ -303,7 +321,7 @@ class ImagesCommand extends BaseCommand {
   Future<Map<String, dynamic>> addImageToChat(
       dynamic chatInput, dynamic imageAdded) async {
     print("addImageToChat");
-    print("imageAdded: " + imageAdded.toString());
+    print("imageAdded: $imageAdded");
     Map<String, dynamic> addImageToProfileResponse = {
       "success": false,
       "message": "Default Error",
@@ -311,12 +329,12 @@ class ImagesCommand extends BaseCommand {
     };
     try {
       Map<String, dynamic> getImageResp = await getImage(imageAdded['key']);
-      print("getImageResp: " + getImageResp.toString());
+      print("getImageResp: $getImageResp");
       chatInput['mainImageKey'] = imageAdded['key'];
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -338,7 +356,7 @@ class ImagesCommand extends BaseCommand {
 
       return addImageToProfileResponse;
     } catch (e) {
-      print("addImageToProfile error: " + e.toString());
+      print("addImageToProfile error: $e");
       return addImageToProfileResponse;
     }
   }
@@ -346,7 +364,7 @@ class ImagesCommand extends BaseCommand {
   Future<Map<String, dynamic>> addImageToEvent(
       dynamic eventInput, dynamic imageAdded) async {
     print("addImageToEvent");
-    print("imageAdded: " + imageAdded.toString());
+    print("imageAdded: $imageAdded");
     Map<String, dynamic> addImageToProfileResponse = {
       "success": false,
       "message": "Default Error",
@@ -354,12 +372,12 @@ class ImagesCommand extends BaseCommand {
     };
     try {
       Map<String, dynamic> getImageResp = await getImage(imageAdded['key']);
-      print("getImageResp: " + getImageResp.toString());
+      print("getImageResp: $getImageResp");
       eventInput['mainImageKey'] = imageAdded['key'];
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -380,7 +398,7 @@ class ImagesCommand extends BaseCommand {
 
       return addImageToProfileResponse;
     } catch (e) {
-      print("addImageToProfile error: " + e.toString());
+      print("addImageToProfile error: $e");
       return addImageToProfileResponse;
     }
   }
@@ -398,7 +416,7 @@ class ImagesCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -406,7 +424,7 @@ class ImagesCommand extends BaseCommand {
         }),
       );
 
-      print("response: " + json.decode(response.body).toString());
+      print("response: ${json.decode(response.body)}");
       dynamic createImage = json.decode(response.body)['data']['createImage'];
       getImageResponse['success'] = true;
       getImageResponse['data'] = createImage;
@@ -435,7 +453,7 @@ class ImagesCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -443,7 +461,7 @@ class ImagesCommand extends BaseCommand {
         }),
       );
 
-      print("response: " + json.decode(response.body).toString());
+      log("response: ${json.decode(response.body)}");
       dynamic createImage = json.decode(response.body)['data']['createImage'];
       getImageResponse['success'] = true;
       getImageResponse['data'] = createImage;
@@ -456,6 +474,22 @@ class ImagesCommand extends BaseCommand {
       print('Mutation failed: $e');
       return getImageResponse;
     }
+  }
+
+  Future<bool> deleteImageFromBucket(String key) async {
+    print("deleteImageFromBucket()");
+    print("key: $key");
+    http.Response response = await http.delete(
+      // Uri.parse('http://10.0.2.2:3000/deleteImage?key=$key'),
+      Uri.parse("http://localhost:3000/deleteImage?key=$key"),
+      headers: <String, String>{'Content-Type': 'application/json'},
+      body: jsonEncode(<String, String>{
+        'key': key,
+      }),
+    );
+    print(response.body);
+    print(response.statusCode.toString());
+    return response.statusCode >= 200 && response.statusCode <= 299;
   }
 
   Future<Map<String, dynamic>> storeImageInDatabaseForEvent(
@@ -471,7 +505,7 @@ class ImagesCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -479,7 +513,7 @@ class ImagesCommand extends BaseCommand {
         }),
       );
 
-      print("response: " + json.decode(response.body).toString());
+      print("response: ${json.decode(response.body)}");
       dynamic createImage = json.decode(response.body)['data']['createImage'];
 
       getImageResponse['success'] = true;
@@ -505,7 +539,7 @@ class ImagesCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -513,7 +547,7 @@ class ImagesCommand extends BaseCommand {
         }),
       );
 
-      print("response: " + json.decode(response.body).toString());
+      print("response: ${json.decode(response.body)}");
       dynamic createImage = json.decode(response.body)['data']['createImage'];
 
       getImageResponse['success'] = true;
@@ -539,7 +573,7 @@ class ImagesCommand extends BaseCommand {
     try {
       appModel.currentUser['images']['data'].forEach((image) async {
         if (image['isMainImage']) {
-          print("set isMainImage to false for image: " + image.toString());
+          print("set isMainImage to false for image: $image");
           Map<String, dynamic> partialImageInput = {
             'image': {
               '_id': image['_id'],
@@ -550,7 +584,7 @@ class ImagesCommand extends BaseCommand {
           };
           dynamic partialUpdateImageResp =
               await partialUpdateImage(partialImageInput);
-          print("partialUpdateImageResp: " + partialUpdateImageResp.toString());
+          print("partialUpdateImageResp: $partialUpdateImageResp");
           removeProfileTagFromImageResp['success'] = true;
         }
       });
@@ -580,22 +614,24 @@ class ImagesCommand extends BaseCommand {
 
       if (image == null) return pickImageResponse;
       final imageTemp = File(image.path);
-      print("imageTemp: " + imageTemp.toString());
+      print("imageTemp: $imageTemp");
       //convert to Stream
       var bytes = imageTemp.readAsBytesSync();
       String img64 = base64Encode(bytes);
-      print("img64: " + img64);
+      print("img64: $img64");
       String filename = imageTemp.path;
-      print("filename: " + filename);
+      print("filename: $filename");
       var request = http.MultipartRequest(
-          'POST', Uri.parse('http://localhost:3000/uploadImage'));
+        'POST',
+        Uri.parse('http://localhost:3000/uploadImage'),
+      );
       http.MultipartFile file =
           await http.MultipartFile.fromPath('image', filename);
       request.files.add(file);
-      print("request: " + request.files.toString());
+      print("request: ${request.files}");
       http.StreamedResponse res = await request.send();
       var response = await http.Response.fromStream(res);
-      print("upload iamge res: " + json.decode(response.body).toString());
+      print("upload iamge res: ${json.decode(response.body)}");
 
       pickImageResponse['success'] = true;
       pickImageResponse['data'] = json.decode(response.body)['data'];
@@ -604,6 +640,81 @@ class ImagesCommand extends BaseCommand {
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
       return pickImageResponse;
+    }
+  }
+
+  
+   //Image pick from device. Returns image path.
+  Future<String?> pickImageFromDevice(String imageChoiceChosen) async {
+    try {
+      XFile? image;
+      if (imageChoiceChosen == Constants.PHONEGALLERY) {
+        image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      } else if (imageChoiceChosen == Constants.CAMERA) {
+        image = await ImagePicker().pickImage(source: ImageSource.camera);
+      }
+
+      if (image == null) return '';
+
+      return image.path;
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+
+      return '';
+    }
+  }
+
+  //Image upload with given image path.
+  Future<Map<String, dynamic>> uploadImage(String? imagePath) async {
+    print("pickImage()");
+    Map<String, dynamic> pickImageResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      if (imagePath == null) return pickImageResponse;
+      final imageTemp = File(imagePath);
+      String filename = imageTemp.path;
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('http://localhost:3000/uploadImage'));
+
+      http.MultipartFile file =
+          await http.MultipartFile.fromPath('image', filename);
+      request.files.add(file);
+      http.StreamedResponse res = await request.send();
+      var response = await http.Response.fromStream(res);
+
+      pickImageResponse['success'] = true;
+      pickImageResponse['data'] = json.decode(response.body)['data'];
+
+      return pickImageResponse;
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+      return pickImageResponse;
+    }
+  }
+  
+  //Download image with given image url.
+  Future<String?> downloadImage(String? imageUrl) async {
+    try {
+      if (imageUrl == null) return null;
+
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/image.png';
+      final file = File(filePath);
+
+      http.Response response = await http.get(
+        Uri.parse(imageUrl),
+      );
+      final writer = file.openSync(mode: FileMode.write);
+      writer.writeFromSync(response.bodyBytes);
+
+      return filePath;
+    } on PlatformException catch (e) {
+      print('Failed to download image: $e');
+
+      return '';
     }
   }
 }

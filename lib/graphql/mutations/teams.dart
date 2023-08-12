@@ -9,6 +9,21 @@ class TeamMutations {
           color: "${teamInput['color']}",          
           status: "ACTIVE"
           createdAt: "${teamInput['createdAt']}",
+          chats: {
+                create: [
+                  {
+                    name: "General",
+                    isPrivate: false,
+                    users: {
+                      connect: [
+                        "${teamInput['user_id']}"
+                      ]
+                    }
+
+
+                  }
+                ]
+              }    
           price: {
                 create: {
                   amount: "${teamInput['price']}",                                

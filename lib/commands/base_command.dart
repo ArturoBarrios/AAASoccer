@@ -159,7 +159,7 @@ class BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -262,7 +262,7 @@ class BaseCommand {
     Map<String, dynamic> setupInitialAppConfigsResponse = {
       "success": false,
       "message": "Something went wrong with setting up initial app configs",
-      "data": Map<String, dynamic>()
+      "data": <String, dynamic>{}
     };
     try {
       // Position userPosition = await geoLocationServices.determinePosition();
@@ -325,7 +325,7 @@ class BaseCommand {
 
   Future<Map<String, dynamic>> setupInitialAppModels(String email) async {
     print("setupInitialAppModels");
-    print("email: " + email);
+    print("email: $email");
     Map<String, dynamic> resp = {
       "success": false,
       "message": "setup unsuccessfull",
@@ -363,7 +363,7 @@ class BaseCommand {
           appModel.currentUser = user;
           print("app model user: ");
           print(appModel.currentUser);
-          print("user['chats']['data']: " + user['chats']['data'].toString());
+          print("user['chats']['data']: ${user['chats']['data']}");
           userModel.chats = user['chats']['data'];
           //setup onesignal
           await UserCommand().configureOneSignalUserDetails();
@@ -378,6 +378,8 @@ class BaseCommand {
               appModel.currentUser['teamUserParticipants']['data'];
           List<dynamic> myArchivedEvents = [];
           List<dynamic> myEventsCopy = jsonDecode(jsonEncode(myEvents));
+          print(
+              "get friends and myEvents from currentUser object: ${appModel.currentUser}");          
           ImagesCommand().setUserProfileImage();
         } else {
           print("something went wrong in fetching user");
@@ -389,30 +391,30 @@ class BaseCommand {
 
       await EventCommand().setupEvents();
       await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
-      !appModel.isGuest
-          ? HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
-          : HomePageCommand().eventTypeTapped(Constants.PICKUP);
 
       //,teams, players near me data.
       //get location and update user location
       Position userPosition = await GeoLocationCommand().determinePosition();
       appModel.currentPosition = userPosition;
-      print("userPosition: " + userPosition.toString());
+      print("userPosition: $userPosition");
       appModel.currentUser['currentPosition'] = userPosition;
       await GeoLocationCommand()
           .setUserAddress(userPosition.latitude, userPosition.longitude);
-      print("check appModel after setting userPosition: " +
-          appModel.currentUser['currentPosition'].toString());
+      print(
+          "check appModel after setting userPosition: ${appModel.currentUser['currentPosition']}");
       //assume you have the latest events
       Map<String, dynamic> findEventsNearPointResp =
           await EventCommand().findEventsNearPoint(eventsModel.events, 50);
-      print("findEventsNearPointResp: " + findEventsNearPointResp.toString());
+      print("findEventsNearPointResp: $findEventsNearPointResp");
       if (findEventsNearPointResp["success"]) {
         dynamic eventsNearPoint = findEventsNearPointResp["data"];
-        print("eventsNearPoint: " + eventsNearPoint.toString());
         eventsModel.eventsNearMe = eventsNearPoint;
+        print("eventsNearPoint: $eventsNearPoint");
       }
       print("Setup Events");
+        !appModel.isGuest
+            ? HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
+            : HomePageCommand().eventTypeTapped(Constants.PICKUP);
 
       resp["success"] = true;
       resp["message"] = "setup successfull";
@@ -482,7 +484,7 @@ class BaseCommand {
         disconnectUserIdsString += ",";
       }
     }
-    print("disconnectUserIdsString: " + disconnectUserIdsString);
+    print("disconnectUserIdsString: $disconnectUserIdsString");
     return disconnectUserIdsString;
   }
 

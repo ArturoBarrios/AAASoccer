@@ -1,28 +1,31 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
-import '../../components/headers.dart';
+import 'package:flutter/material.dart';
 import '../commands/images_command.dart';
 import '../commands/user_command.dart';
 import '../constants.dart';
 import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/images_mixin.dart';
 
-class ImagesListWidget extends StatefulWidget with ImagesMixin {
-  ImagesListWidget({Key? key, required this.details}) : super(key: key);
+class ImagesListWidget extends StatefulWidget {
+  ImagesListWidget({
+    Key? key,
+    required this.details,
+  }) : super(key: key);
 
-  final dynamic details;
+  dynamic details;
 
   @override
-  _ImagesListWidgetState createState() => _ImagesListWidgetState();
+  State<ImagesListWidget> createState() => _ImagesListWidgetState();
 }
 
-class _ImagesListWidgetState extends State<ImagesListWidget> {
+class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
   bool _isLoading = true;
   List<dynamic> images = [];
+  Map<dynamic, dynamic> details = {};
   List imageOptions = [
     Constants.IMAGEDELETE.toString(),
-    Constants.IMAGEREPLACE.toString(),    
-    
+    Constants.IMAGEREPLACE.toString(),
   ];
 
   void getImage() async {
@@ -35,92 +38,91 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
   }
 
   Future<void> loadInitialData() async {
-  print("loadInitialData ImagesListWidget");
-  
-  if (widget.details['mainEvent'] != null) {    
-    print("images in mainEvent");
-    images = widget.details['mainEvent']['images']['data'];    
-    widget.details['for'] = Constants.EVENT;
+    print("loadInitialData ImagesListWidget");
 
-  } else if (widget.details['team'] != null) {    
-    print("images in team");
-    widget.details['for'] = Constants.TEAM;
-    images = widget.details['team']['images']['data'];
-
-  } else {    
-    print("images in user");
-    dynamic currentUser = UserCommand().getAppModelUser();
-    Map<String,dynamic> allImagesFromUserResp = ImagesCommand().allImagesFromUser(currentUser);
-    images = allImagesFromUserResp['data'];
-    widget.details['for'] = Constants.USER;
-
-  } 
-  
-  print("images: " + images.toString());
-
-  for (var i = 0; i < images.length; i++) {
-    String key = images[i]['key'];
-    Map<String, dynamic> getImageResp = await ImagesCommand().getImage(key);
-    if(getImageResp['success']){
-      print("getImageResp: " + getImageResp.toString());
-      images[i]['signedUrl'] = getImageResp['data']['signedUrl'];
+    if (details['mainEvent'] != null) {
+      print("images in mainEvent");
+      images = details['mainEvent']['images']['data'];
+      details['for'] = Constants.EVENT;
+    } else if (details['team'] != null) {
+      print("images in team");
+      details['for'] = Constants.TEAM;
+      images = details['team']['images']['data'];
+    } else {
+      print("images in user");
+      dynamic currentUser = UserCommand().getAppModelUser();
+      Map<String, dynamic> allImagesFromUserResp =
+          ImagesCommand().allImagesFromUser(currentUser);
+      images = allImagesFromUserResp['data'];
+      print('imagessss');
+      log(images.toString());
+      details['for'] = Constants.USER;
     }
-  }
 
-  setState(() {
-    _isLoading = false;
-  });
-}
+    print("images: $images");
+
+    for (var i = 0; i < images.length; i++) {
+      String key = images[i]['key'];
+      Map<String, dynamic> getImageResp = await ImagesCommand().getImage(key);
+      if (getImageResp['success']) {
+        print("getImageResp: $getImageResp");
+        images[i]['signedUrl'] = getImageResp['data']['signedUrl'];
+      }
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   addImage(dynamic image) async {
     print("addImage");
-    print("image: " + image.toString());
-    Map<String, dynamic> getImageResp = await ImagesCommand().getImage(image['key']);
-    if(getImageResp['success']){
-      print("getImageResp: " + getImageResp.toString());
+    print("image: $image");
+    Map<String, dynamic> getImageResp =
+        await ImagesCommand().getImage(image['key']);
+    if (getImageResp['success']) {
+      print("getImageResp: $getImageResp");
       String signedUrl = getImageResp['data']['signedUrl'];
       setState(() {
         image['signedUrl'] = signedUrl;
-        images.add(image);     
-         
+        images.add(image);
       });
     }
   }
 
-  imageOptionSelect(Map<int, dynamic> indexes,      
-        List<dynamic> primaryList,
-        List<dynamic> secondaryList){
+  imageOptionSelect(
+    Map<int, dynamic> indexes,
+    List<dynamic> primaryList,
+    List<dynamic> secondaryList,
+    dynamic image,
+  ) {
     print("imageOptionSelect");
-    print("indexes: " + indexes.toString());
-    print("primaryList: " + primaryList.toString());
-    print("secondaryList: " + secondaryList.toString());
+    print("indexes: $indexes");
+    print("primaryList: $primaryList");
+    print("secondaryList: $secondaryList");
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic optionChosen = primaryList[mainIndex];
-      print("optionChosen: " + optionChosen.toString());
-      if(optionChosen == Constants.IMAGEDELETE){
-        List<dynamic> imageInput = [];
-        ImagesCommand().deleteImageFromDatabase(imageInput);
-        ImagesCommand().deleteImageFromS3(imageInput);
-
-      }
-      else if(optionChosen == Constants.IMAGEREPLACE){
-
-
-      }
-
-
+      print("optionChosen: $optionChosen");
+      if (optionChosen == Constants.IMAGEDELETE) {
+        final key = image['key'];
+        await deleteImage(key);
+        setState(() {
+          images.remove(image);
+        });
+      } else if (optionChosen == Constants.IMAGEREPLACE) {}
     });
 
-    imageOptions.removeAt(imageOptions.length-1);
-
+    imageOptions.removeAt(imageOptions.length - 1);
   }
-
-  removeImage() {}
 
   @override
   void initState() {
     super.initState();
     print("initState");
+
+    widget.details.forEach((key, value) {
+      details[key] = value;
+    });
     loadInitialData();
   }
 
@@ -128,13 +130,13 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
   Widget build(BuildContext context) {
     print("build()");
     return _isLoading
-        ? Text("Loading Images...")
+        ? const Text("Loading Images...")
         : Center(
             child: Column(
               children: [
                 GestureDetector(
                   onTap: () async {
-                    List<dynamic> primaryList = widget.imageChoices
+                    List<dynamic> primaryList = imageChoices
                         .map((choice) => choice.values.first)
                         .toList();
 
@@ -143,26 +145,31 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
                       context: context,
                       builder: (BuildContext context) {
                         return AnimatedDialog(
-                            details: {"title": "Image Options"},
+                            details: const {"title": "Image Options"},
                             items: primaryList,
                             singleSelect: true,
                             secondaryItems: secondaryList,
-                            goToFunctions: []);
+                            goToFunctions: const []);
                       },
                     );
                     if (result.isNotEmpty) {
-                      print("result: " + result.toString());
-                      widget.chooseImage(widget.details, result, primaryList,
-                          secondaryList, addImage);
+                      print("result: $result");
+                      chooseImage(
+                        details,
+                        result,
+                        primaryList,
+                        secondaryList,
+                        addImage,
+                      );
                     }
                   },
                   child: Container(
-                    padding: EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         'Add Image',
                         style: TextStyle(
@@ -173,54 +180,60 @@ class _ImagesListWidgetState extends State<ImagesListWidget> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: 300, // specify the height as per your requirement
                   child: GridView.builder(
                     itemCount: images.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4,
                       mainAxisSpacing: 2.0,
                       crossAxisSpacing: 2.0,
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      print("images[index]" +
-                          images[index].toString());
+                      print("images[index]${images[index]}");
                       return GestureDetector(
                         onTap: () async {
-                          
-                          if(images[index]['event'] != null){
-                            imageOptions.add(Constants.VIEWEVENT);                            
-                          }
-                          else if(images[index]['team'] != null){
-                            imageOptions.add(Constants.VIEWTEAM);
-                          }
-                          else{
-                            imageOptions.add(Constants.VIEWUSER);
+                          if (images[index]['event'] != null) {
+                            if (!imageOptions.contains(Constants.VIEWEVENT)) {
+                              imageOptions.add(Constants.VIEWEVENT);
+                            }
+                          } else if (images[index]['team'] != null) {
+                            if (!imageOptions.contains(Constants.VIEWTEAM)) {
+                              imageOptions.add(Constants.VIEWTEAM);
+                            }
+                          } else {
+                            if (!imageOptions.contains(Constants.VIEWUSER)) {
+                              imageOptions.add(Constants.VIEWUSER);
+                            }
                           }
                           List<dynamic> primaryList = imageOptions;
                           List<dynamic> secondaryList = [];
-                          Map<int, dynamic> result = await showDialog(
+                          Map<int, dynamic>? result = await showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AnimatedDialog(
-                                  details: {"title": "Image Options"},
+                                  details: const {"title": "Image Options"},
                                   items: primaryList,
                                   singleSelect: false,
                                   secondaryItems: secondaryList,
-                                  goToFunctions: []);
+                                  goToFunctions: const []);
                             },
                           );
-                    if (result.isNotEmpty) {
-                      print("result: " + result.toString());                      
-                      imageOptionSelect(result, primaryList, secondaryList);
-
-                    }
-                    else{
-                      setState(() {
-                        imageOptions.removeAt(imageOptions.length-1);
-                        
-                      });
-                    }
+                          if (result?.isNotEmpty == true) {
+                            print("result: $result");
+                            imageOptionSelect(
+                              result!,
+                              primaryList,
+                              secondaryList,
+                              images[index],
+                            );
+                          } else {
+                            setState(() {
+                              imageOptions.removeAt(imageOptions.length - 1);
+                            });
+                          }
                         },
                         child: Container(
                           margin: const EdgeInsets.all(10.0),

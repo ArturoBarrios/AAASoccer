@@ -8,10 +8,10 @@ class UserMutations {
   String partialUserUpdate(Map<String, dynamic> userInput) {
     String updateUserString = """
       mutation {
-        partialUpdateUser(id: ${userInput['user']['_id']}, 
-        data:{
-         ${userInput['user']['dataToUpdate']}
-        })
+        partialUpdateUser(
+          id: ${userInput['user']['_id']}, 
+          data: ${userInput['user']['dataToUpdate']}
+        )
         {
           ${UserFragments().fullUser()}
         }  
@@ -19,7 +19,7 @@ class UserMutations {
     """;
 
     return updateUserString;
-  }  
+  }
 
   String createUserStripeCustomer(
       Map<String, dynamic> userInput, Map<String, dynamic> customerInput) {
@@ -46,9 +46,7 @@ class UserMutations {
     return updateUserString;
   }
 
-  String createUserEventPayment(
-      dynamic createUserEventPaymentInput
-      ) {
+  String createUserEventPayment(dynamic createUserEventPaymentInput) {
     String createUserEventPaymentString = """      
       mutation {
         createPayment(data: {
@@ -96,8 +94,7 @@ class UserMutations {
 
     return updateUserString;
   }
-  
-  
+
   String updateUserProfileImage(Map<String, dynamic> userInput) {
     String updateUserString = """      
       mutation {
@@ -114,26 +111,32 @@ class UserMutations {
     return updateUserString;
   }
 
-  String addFriend( 
-       Map<String, dynamic> userInput,Map<String, dynamic> friendInput) {
+
+  String followUser( 
+       dynamic followUserInput) {
     String addFriendString = """      
       mutation {
-       updateUser(id: ${userInput['_id']},
-  				data: {   
-            friends:{  
-              create:
-              {
-                user:   {              
-                  connect: 
-                    ${friendInput['_id']}                                                                                                                                                                                              
-                }   
-              }       
-            }        
-          }                      
-        ){
-        _id
-    		name      
-  }
+        createFollowRelation(data: {
+          follower: {
+            connect: "${followUserInput['followerId']}"            
+          }
+          following: {
+            connect: "${followUserInput['followingId']}"            
+          }          
+          }) {
+           _id
+           follower{
+            _id
+            name
+            email
+           }
+            following{
+              _id
+              name
+              email
+            }            
+          }   
+        
 }
         """;
 
@@ -247,7 +250,7 @@ class UserMutations {
 
     return addPlayerToEvent;
   }
-  
+
   String removeEventFromUser(
       Map<String, dynamic> teamInput, Map<String, dynamic> userInput) {
     String addPlayerToEvent = """      

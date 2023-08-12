@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:soccermadeeasy/models/user_model.dart';
 import '../constants.dart';
 import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
@@ -20,14 +22,11 @@ import '../enums/PaymentType.dart';
 import 'images_command.dart';
 
 class UserCommand extends BaseCommand {
-
-  String getProfileImage(){
+  String getProfileImage() {
     print("getProfileImage");
-    print("appModel.currentUser.profileImage: " + userModel.profileImageUrl.toString());
+    print("appModel.currentUser.profileImage: ${userModel.profileImageUrl}");
     return userModel.profileImageUrl;
   }
-
-  
 
   dynamic getAppModelUser() {
     print("getAppModelUser");
@@ -36,7 +35,15 @@ class UserCommand extends BaseCommand {
     return appModel.currentUser;
   }
 
-  dynamic getFriendsModel(){
+  dynamic setAppModelUser(dynamic userData) {
+    print("setAppModelUser");
+    print("appModel.currentUser: $userData");
+    appModel.currentUser = userData;
+
+    return appModel.currentUser;
+  }
+
+  dynamic getFriendsModel() {
     print("getFriendsModel");
     print("appMOdel.friends: " + appModel.friends.toString());
 
@@ -75,7 +82,7 @@ class UserCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -165,6 +172,7 @@ class UserCommand extends BaseCommand {
       dynamic processedUserInput) async {
     print("partialUpdateUser");
     print("processedUserInput: " + processedUserInput.toString());
+
     Map<String, dynamic> partialUpdateUserResponse = {
       "success": false,
       "message": "Default Error",
@@ -175,7 +183,7 @@ class UserCommand extends BaseCommand {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -293,6 +301,24 @@ class UserCommand extends BaseCommand {
     return addEventResponse;
   }
 
+
+  bool isCurrentUserFollowingUser(dynamic userObject){
+  print("isUserFollowingUser");
+  print("userObject: " + userObject.toString());
+  dynamic currentUser = appModel.currentUser;
+  List<dynamic> followings = currentUser['following']['data'];
+  return followings.any((relation) => relation['following']['_id'] == userObject['_id']);
+}
+
+  bool isCurrentUserFollowedByUser(dynamic userObject){
+    print("isUserFollowedByUser");    
+    dynamic currentUser = appModel.currentUser;
+    List<dynamic> followings = currentUser['followers']['data'];
+    return followings.any((relation) => relation['follower']['_id'] == userObject['_id']);
+    
+
+  }
+
   Future<Map<String, dynamic>> addTeam(
       Map<String, dynamic> userInput, Map<String, dynamic> teamInput, String role) async {
     print("addTeam");
@@ -327,16 +353,35 @@ class UserCommand extends BaseCommand {
     return addTeamResponse;
   }
 
+
+  dynamic getUserDetails(dynamic user){
+    print("getUserPlayerDetails");
+    print("user: "+user.toString());
+    dynamic getUserPlayerDetailsResp = {
+      "isFriend": false,
+      "followers": user['followers']['data'].length,
+      "following": user['following']['data'].length,
+    };
+
+    dynamic currentUser = appModel.currentUser;
+    print("user: "+user.toString());
+    
+
+    return getUserPlayerDetailsResp;
+  }
+
   
 
-  Future<Map<String, dynamic>> addFriend(
-      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) async {
-    print("addFriend");
-    Map<String, dynamic> addFriendResponse = {
+  Future<Map<String, dynamic>> followUser(
+      dynamic followUserInput) async {
+    print("followUser");
+    Map<String, dynamic> followUserResponse = {
+
       "success": false,
       "message": "Default Error",
       "data": null
     };
+
 
     try {
       http.Response response = await http.post(
@@ -346,30 +391,29 @@ class UserCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().addFriend(userInput, friendInput),
+          'query': UserMutations().followUser(followUserInput),
         }),
       );
 
       print("response body: ");
       print(jsonDecode(response.body));
 
-      dynamic friend = jsonDecode(response.body)['data']['updateUser'];
-      print("friend: " + friend.toString());
+      if(response.statusCode == 200){
+        dynamic createdFollowRelation = jsonDecode(response.body)['data']['createFollowRelation'];
+        print("createdFollowRelation: " + createdFollowRelation.toString());
+        followUserResponse["success"] = true;
+        followUserResponse["message"] = "Followed Player";
+        followUserResponse["data"] = createdFollowRelation;
+      }
+      
 
-      print("update currentUser friends");
-      print("currentUser: " + appModel.currentUser.toString());
-
-      // updateModelsWithFriend(friend, true);
-
-      addFriendResponse["success"] = true;
-      addFriendResponse["message"] = "Player for Team Created";
-      addFriendResponse["data"] = friend;
+     
           
     } catch (e) {
       print("error");
     }
 
-    return addFriendResponse;
+    return followUserResponse;
   }
 
   Future<Map<String, dynamic>> removeFriend(dynamic friendInput) async {
@@ -410,16 +454,14 @@ class UserCommand extends BaseCommand {
     return removeFriendResp;
   }
 
-
   Future<void> updateModelsWithFriend(dynamic friend, bool add) async {
     print("updateModelsWithFriend");
     print("friend: " + friend.toString());
     print("add: " + add.toString());
-    print("homePageModel.selectedObjects in updateModelsWithFriend: " + homePageModel.selectedObjects.toString());
-    
-    if (add) {
-            
+    print("homePageModel.selectedObjects in updateModelsWithFriend: " +
+        homePageModel.selectedObjects.toString());
 
+    if (add) {
       //
     } else {
       //find the friend in the currentUser friends list
@@ -437,12 +479,14 @@ class UserCommand extends BaseCommand {
       appModel.friends.remove(friend);
       appModel.friends = List.from(friends);
     }
-    
-    if(homePageModel.selectedKey.toString() == Constants.FRIEND.toString()){
+
+    if (homePageModel.selectedKey.toString() == Constants.FRIEND.toString()) {
       print("in iffffffffffff");
-      print("homePageModel.selectedObjects before: " + homePageModel.selectedObjects.toString());
+      print("homePageModel.selectedObjects before: " +
+          homePageModel.selectedObjects.toString());
       homePageModel.selectedObjects = List.from(appModel.friends);
-      print("homePageModel.selectedObjects after: " + homePageModel.selectedObjects.toString());
+      print("homePageModel.selectedObjects after: " +
+          homePageModel.selectedObjects.toString());
       // homePageModel.selectedKey = Constants.TEAM;
       // homePageModel.selectedKey = Constants.FRIEND;
     }
@@ -494,7 +538,7 @@ class UserCommand extends BaseCommand {
   Future<Map<String, dynamic>> getUserByEmail(
       Map<String, dynamic> userInput) async {
     print("getUserByEmail()");
-    print("userInput: " + userInput.toString());
+    print("userInput: $userInput");
     Map<String, dynamic> getUserResp = {
       "success": false,
       "message": "no user found",
@@ -513,14 +557,25 @@ class UserCommand extends BaseCommand {
       );
 
       print("response: ");
+
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['getUserByEmail'];
-      // if (result != null) {
-      getUserResp["success"] = true;
-      getUserResp["message"] = "user found";
-      getUserResp["data"] = result;
+      if ((jsonDecode(response.body) as Map<String, dynamic>)
+              .containsKey('errors') &&
+          (jsonDecode(response.body) as Map<String, dynamic>)['errors'] !=
+              null) {
+        getUserResp["success"] = false;
+        getUserResp["message"] = "no user found";
+      } else {
+        final result = jsonDecode(response.body)['data']['getUserByEmail'];
+        // if (result != null) {
+        getUserResp["success"] = true;
+        getUserResp["message"] = "user found";
+        getUserResp["data"] = result;
+      }
+
       // }
-    } catch (e) {
+    } catch (e, s) {
+      print(s);
       print('Query failed: $e');
     }
     return getUserResp;
@@ -649,7 +704,10 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
-      final request = ModelMutations.deleteById(User.classType, userId);
+      final request = ModelMutations.deleteById<User>(
+        User.classType,
+        userId,
+      );
       final response = await Amplify.API.mutate(request: request).response;
       resp['success'] = true;
     } on ApiException catch (e) {
