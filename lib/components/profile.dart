@@ -32,7 +32,9 @@ class _ProfileState extends State<Profile> {
   dynamic objectImageInput;
   dynamic currentUser;
   Map<String, dynamic> eventListDetails = {};
+  
   Map<String, dynamic> teamListDetails = {};
+
   bool _isLoading = true;
 
   Future<void> loadInitialData() async {
@@ -81,11 +83,9 @@ class _ProfileState extends State<Profile> {
       "imageUrl": imageUrl,
       "containerType": Constants.PROFILEIMAGECIRCLE
     };
-
-    print(
-        "currentUser eventUserParticipants: ${currentUser['eventUserParticipants']}");
-    eventListDetails['eventUserParticipants'] =
-        currentUser['eventUserParticipants']['data'];
+        
+    eventListDetails['eventUserParticipants'] = UserCommand().getAppModelMyEvents();
+        
     teamListDetails['teamUserParticipants'] =
         currentUser['teamUserParticipants']['data'];
     print("eventListDetails: $eventListDetails");

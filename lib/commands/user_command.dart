@@ -22,6 +22,8 @@ import '../enums/PaymentType.dart';
 import 'images_command.dart';
 
 class UserCommand extends BaseCommand {
+  
+
   String getProfileImage() {
     print("getProfileImage");
     print("appModel.currentUser.profileImage: ${userModel.profileImageUrl}");

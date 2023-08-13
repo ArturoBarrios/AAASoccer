@@ -34,13 +34,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
       setState(() {        
         widget.objectEventsDetails['team']['events']['data'].remove(event);
       });
-      // widget.objectEventsDetails['team']['events']['data'].forEach((teamItem) {
-      //   if(teamItem['_id'] == team['_id']){
-      //     setState(() {
-      //       widget.teamsDetails['teams'].remove(teamItem);
-      //     });
-      //   }
-      // });
+
 
     }
     
