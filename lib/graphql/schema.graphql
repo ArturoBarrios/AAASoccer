@@ -166,8 +166,8 @@ type User  {
   coach: Coach
   referee: Referee
   status: UserAccountStatus
-  last_login: Int
-  last_updated: Int
+  createdAt: Int
+  updatedAt: String
   images: [Image] @relation
   events: [Event] @relation      
   eventUserParticipants: [EventUserParticipant] @relation   

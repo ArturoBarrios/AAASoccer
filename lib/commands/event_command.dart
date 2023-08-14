@@ -1339,9 +1339,11 @@ class EventCommand extends BaseCommand {
 
     Map<String, dynamic> getPlayersNearLocationResp =
         await PlayerCommand().getPlayersNearLocation();
+    print("getPlayersNearLocationResp: " +
+        getPlayersNearLocationResp.toString());
     if (getPlayersNearLocationResp['success']) {
       List<dynamic> players = getPlayersNearLocationResp['data'];
-      print("players length: ");
+      print("playerssss length: ");
       print(players.length);
       //remove the current user from the list
       players.removeWhere(
