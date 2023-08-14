@@ -79,12 +79,11 @@ class _ProfileState extends State<Profile> {
     objectImageInput = {
       "imageUrl": imageUrl,
       "containerType": Constants.PROFILEIMAGECIRCLE
-    };
+    };    
+        
+    eventListDetails['eventUserParticipants'] = UserCommand().getAppModelMyEvents();
 
-    print(
-        "currentUser eventUserParticipants: ${currentUser['eventUserParticipants']}");
-    eventListDetails['eventUserParticipants'] =
-        currentUser['eventUserParticipants']['data'];
+
     teamListDetails['teamUserParticipants'] =
         currentUser['teamUserParticipants']['data'];
     print("eventListDetails: $eventListDetails");

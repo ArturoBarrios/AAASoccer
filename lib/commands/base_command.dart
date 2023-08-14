@@ -59,6 +59,8 @@ class BaseCommand {
   GeoLocationServices geoLocationServices = _mainContext.read();
 
   void initializeData() {}
+
+  
   
   String xHoursAgo(int x){
     DateTime xHoursAgo = DateTime.now().subtract(Duration(hours: x));
@@ -403,9 +405,27 @@ class BaseCommand {
         print("is guest");        
       }
 
+      DateTime oneHourAgo = DateTime.now().subtract(Duration(hours: 1));
+      String oneHourAgoTimestamp = oneHourAgo.millisecondsSinceEpoch.toString();
+      print("oneHourAgoTimestamp before getEventsNearLocation: " +
+        oneHourAgoTimestamp);    
+      //setup events 
+      print("Setup Events");
+        !appModel.isGuest
+            ? HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
+            : HomePageCommand().eventTypeTapped(Constants.PICKUP);
+      // if(appModel.isGuest){
+      //   await EventCommand().setupEvents(Constants.PICKUP, oneHourAgoTimestamp);
+      // }
+      // else{
+      //   await EventCommand().setupEvents(Constants.MYEVENTS, oneHourAgoTimestamp);
 
-      await EventCommand().setupInitialEvents();
-      await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
+      // }
+      print("setup Events done");      
+      
+      //setup players
+      //todo
+
       //,teams, players near me data.
       //get location and update user location
       Position userPosition = await GeoLocationCommand().determinePosition();
@@ -425,10 +445,7 @@ class BaseCommand {
         eventsModel.eventsNearMe = eventsNearPoint;
         print("eventsNearPoint: $eventsNearPoint");
       }
-      print("Setup Events");
-        !appModel.isGuest
-            ? HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
-            : HomePageCommand().eventTypeTapped(Constants.PICKUP);
+      
 
       resp["success"] = true;
       resp["message"] = "setup successfull";

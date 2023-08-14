@@ -6,6 +6,7 @@ import 'package:soccermadeeasy/commands/user_command.dart';
 
 import '../enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
+import '../graphql/fragments/team_fragments.dart';
 import 'base_command.dart';
 import 'league_command.dart';
 import 'refresh_posts_command.dart';
@@ -75,7 +76,7 @@ class HomePageCommand extends BaseCommand {
           tryoutObject: selectedObject,
           svgImage: svgImage,
           userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.TOURNAMENT) {      
+    } else if (selectedKey == Constants.TOURNAMENT) {
       print("selectedObject: " + selectedObject.toString());
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject]);
@@ -84,9 +85,9 @@ class HomePageCommand extends BaseCommand {
           tournamentObject: selectedObject,
           svgImage: svgImage,
           userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.LEAGUE) {      
-      dynamic getEventDetailsResp = await EventCommand()
-          .getUserEventDetails([selectedObject]);
+    } else if (selectedKey == Constants.LEAGUE) {
+      dynamic getEventDetailsResp =
+          await EventCommand().getUserEventDetails([selectedObject]);
       card = LeagueCard(
           leagueObject: selectedObject,
           svgImage: svgImage,
@@ -116,11 +117,11 @@ class HomePageCommand extends BaseCommand {
           teamObject: team,
           svgImage: svgImage,
           userTeamDetails: userTeamDetails);
-    } 
+    }
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {
       dynamic event = null;
-      
+
       print("MYEVENTS");
       if (selectedObject['event']['type'].toString() == "GAME") {
         print("TYPE GAME");
@@ -148,31 +149,29 @@ class HomePageCommand extends BaseCommand {
             tryoutObject: selectedObject['event'],
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
-      } else if (selectedObject['event']['type'].toString() == "TOURNAMENT") {                 
-          dynamic getEventDetailsResp = await EventCommand()
-              .getUserEventDetails([selectedObject['event']]);                    
-          card = TournamentCard(
-              tournamentObject: selectedObject['event'],
-              svgImage: svgImage,
-              userEventDetails: getEventDetailsResp);
-       
-      } else if (selectedObject['event']['type'].toString() == "LEAGUE") {                
-        dynamic getEventDetailsResp = await EventCommand()
-            .getUserEventDetails([selectedObject['event']]);
+      } else if (selectedObject['event']['type'].toString() == "TOURNAMENT") {
+        dynamic getEventDetailsResp =
+            await EventCommand().getUserEventDetails([selectedObject['event']]);
+        card = TournamentCard(
+            tournamentObject: selectedObject['event'],
+            svgImage: svgImage,
+            userEventDetails: getEventDetailsResp);
+      } else if (selectedObject['event']['type'].toString() == "LEAGUE") {
+        dynamic getEventDetailsResp =
+            await EventCommand().getUserEventDetails([selectedObject['event']]);
         card = LeagueCard(
             leagueObject: selectedObject['event'],
             svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);        
+            userEventDetails: getEventDetailsResp);
       }
     }
 
     return card;
   }
 
-  void updateUpdatedCards(bool value){
+  void updateUpdatedCards(bool value) {
     print("updateUpdatedCards");
     homePageModel.updatedCards = value;
-
   }
 
   Future<void> setCards() async {
@@ -191,14 +190,13 @@ class HomePageCommand extends BaseCommand {
   Future<void> eventTypeTapped(dynamic key) async {
     print("eventTypeTapped");
     print(key);
-    
-    await getSelectedObjects(key);
     print(homePageModel.enabledSelections2[key]['enabled']);
     homePageModel.enabledSelections2.forEach(
         (k, v) => {homePageModel.enabledSelections2[k]['enabled'] = false});
     homePageModel.enabledSelections2[key]['enabled'] =
         !homePageModel.enabledSelections2[key]['enabled'];
     homePageModel.selectedKey = key;
+    await getSelectedObjects(key);    
   }
 
   void addPlayerToObjectSelection(dynamic object) {
@@ -220,34 +218,43 @@ class HomePageCommand extends BaseCommand {
         homePageModel.userObjectSelections.toString());
   }
 
-
-  Future<void> getSelectedObjects(dynamic newSelectedKey) async{
+  Future<void> getSelectedObjects(dynamic newSelectedKey) async {
     print("getSelectedEvents");
     print(newSelectedKey);
     List<dynamic> newSelectedObjects = [];
-    if(BaseCommand().isEventType(newSelectedKey)){
-      
-      String xHoursAgoTimestamp = BaseCommand().xHoursAgo(1);
-      Map<String, dynamic> getEventsOfAllTypesNearLocationResp = await EventCommand().getEventsOfTypeNearLocation(newSelectedKey,
-            EventFragments().fullEvent(), xHoursAgoTimestamp);
-      print("getEventsOfAllTypesNearLocationResp: " + getEventsOfAllTypesNearLocationResp.toString());
-      if(getEventsOfAllTypesNearLocationResp['success']){
+    //get events
+    if (BaseCommand().isEventType(newSelectedKey)) {
+      String xHoursAgoTimestamp = homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
+      Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
+          await EventCommand().getEventsOfTypeNearLocation(
+              newSelectedKey, EventFragments().fullEvent(), xHoursAgoTimestamp);
+      print("getEventsOfAllTypesNearLocationResp: " +
+          getEventsOfAllTypesNearLocationResp.toString());
+      if (getEventsOfAllTypesNearLocationResp['success']) {
         newSelectedObjects = getEventsOfAllTypesNearLocationResp['data'];
         homePageModel.selectedObjects = newSelectedObjects;
       }
-
     }
 
     if (newSelectedKey == Constants.PICKUP) {
       print("check games: ");
       print(eventsModel.games);
-      if(eventsModel.games.length == 0){
-        eventsModel.games = newSelectedObjects;        
-      }      
+      if (eventsModel.games.length == 0) {
+        eventsModel.games = newSelectedObjects;
+      }
     } else if (newSelectedKey == Constants.TEAM) {
-      print("check teams: ");
-      print(appModel.teams);
-      homePageModel.selectedObjects = appModel.teams;
+      String oneYearAgoTimestamp = homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];      
+      Map<String, dynamic> getAllTeamsResp =
+          await TeamCommand().getAllTeams(
+               oneYearAgoTimestamp, TeamFragments().fullTeam());
+      print("getAllTeamsResp: " +
+          getAllTeamsResp.toString());
+      if (getAllTeamsResp['success']) {
+        newSelectedObjects = getAllTeamsResp['data'];
+        homePageModel.selectedObjects = newSelectedObjects;
+        appModel.teams = newSelectedObjects;
+      }
+      
     } else if (newSelectedKey == Constants.PLAYER) {
       print("check players: ");
       print("appModel.players.length: " + appModel.players.length.toString());
@@ -255,29 +262,29 @@ class HomePageCommand extends BaseCommand {
     } else if (newSelectedKey == Constants.TRAINING) {
       print("check training: ");
       print(eventsModel.trainings);
-      if(eventsModel.trainings.length == 0){
-        eventsModel.trainings = newSelectedObjects;        
-      }                  
+      if (eventsModel.trainings.length == 0) {
+        eventsModel.trainings = newSelectedObjects;
+      }
     } else if (newSelectedKey == Constants.TRYOUT) {
       print("check tryout: ");
       print(eventsModel.tryouts);
-      if(eventsModel.tryouts.length == 0){
-        eventsModel.tryouts = newSelectedObjects;        
-      }      
+      if (eventsModel.tryouts.length == 0) {
+        eventsModel.tryouts = newSelectedObjects;
+      }
       homePageModel.selectedObjects = eventsModel.tryouts;
     } else if (newSelectedKey == Constants.TOURNAMENT) {
       print("check tournament: ");
       print(eventsModel.tournaments);
-      if(eventsModel.tournaments.length == 0){
-        eventsModel.tournaments = newSelectedObjects;        
-      }            
+      if (eventsModel.tournaments.length == 0) {
+        eventsModel.tournaments = newSelectedObjects;
+      }
       homePageModel.selectedObjects = eventsModel.tournaments;
     } else if (newSelectedKey == Constants.LEAGUE) {
       print("check league: ");
       print(eventsModel.leagues);
-      if(eventsModel.leagues.length == 0){
-        eventsModel.leagues = newSelectedObjects;        
-      }       
+      if (eventsModel.leagues.length == 0) {
+        eventsModel.leagues = newSelectedObjects;
+      }
       homePageModel.selectedObjects = eventsModel.leagues;
     } else if (newSelectedKey == Constants.FRIEND) {
       print("check friend: ");
@@ -290,8 +297,16 @@ class HomePageCommand extends BaseCommand {
     } else if (newSelectedKey == Constants.MYTEAMS) {
       print("check my teams: ");
       print(appModel.myTeams);
-
-      homePageModel.selectedObjects = appModel.myTeams;
+       Map<String, dynamic> getAllTeamUserParticipantsResp =
+          await TeamCommand().getAllTeamUserParticipants(
+               appModel.currentUser['_id'], TeamFragments().fullTeam());
+      print("getAllTeamUserParticipantsResp: " +
+          getAllTeamUserParticipantsResp.toString());
+      if (getAllTeamUserParticipantsResp['success']) {
+        newSelectedObjects = getAllTeamUserParticipantsResp['data'];
+        homePageModel.selectedObjects = newSelectedObjects;
+        appModel.myTeams = newSelectedObjects;
+      }      
     }
   }
 }

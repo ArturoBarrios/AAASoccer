@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
+import '../commands/base_command.dart';
 import '../commands/home_page_command.dart';
 import '../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
@@ -76,15 +77,15 @@ class HomePageModel extends ChangeNotifier {
   }  
 
   
-
-
-  Map<dynamic, dynamic> _enabledSelections2 = {
+  Map<dynamic, dynamic> _enabledSelections2 = {    
     Constants.MYEVENTS: {
       "key": Constants.MYEVENTS,
       "enabled": true,
       "name": StringConstants.MYEVENTSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      "defaultTimestamp": BaseCommand().xHoursAgo(1),
+      "currentTimestamp": BaseCommand().xHoursAgo(1),
     },
     Constants.MYTEAMS: {
       "key": Constants.MYTEAMS,
@@ -92,6 +93,8 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.MYTEAMSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      "defaultTimestamp": BaseCommand().xHoursAgo(1),
+      "currentTimestamp": BaseCommand().xHoursAgo(1),
     },
     Constants.PICKUP: {
       "key": Constants.PICKUP,
@@ -99,21 +102,17 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.PICKUPGAMESTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
-      
+      "defaultTimestamp": BaseCommand().xHoursAgo(1),
+      "currentTimestamp": BaseCommand().xHoursAgo(1),      
     },    
-    Constants.FRIEND: {
-      "key": Constants.FRIEND,
-      "enabled": false,
-      "name": StringConstants.FRIENDSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
     Constants.PLAYER: {
       "key": Constants.PLAYER,
       "enabled": false,
       "name": StringConstants.PLAYERSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      "defaultTimestamp": BaseCommand().xHoursAgo(8760),
+      "currentTimestamp": BaseCommand().xHoursAgo(8760),
     },
     Constants.TEAM: {
     "key": Constants.TEAM,
@@ -121,6 +120,8 @@ class HomePageModel extends ChangeNotifier {
     "name": StringConstants.TEAMSTITLE,
     "description": "",
     "image": SVGWidgets().getSoccerBallSVGImage(),
+    "defaultTimestamp": BaseCommand().xHoursAgo(8760),
+    "currentTimestamp": BaseCommand().xHoursAgo(8760),
     },
     Constants.TRAINING: {
       "key": Constants.TRAINING,
@@ -128,6 +129,8 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.TRAININGSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      "defaultTimestamp": BaseCommand().xHoursAgo(1),
+      "currentTimestamp": BaseCommand().xHoursAgo(1),
     },
     Constants.TRYOUT: {
       "key": Constants.TRYOUT,
@@ -135,6 +138,8 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.TRYOUTSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      "defaultTimestamp": BaseCommand().xHoursAgo(1),
+      "currentTimestamp": BaseCommand().xHoursAgo(1),
     },
     Constants.TOURNAMENT:{
       "key": Constants.TOURNAMENT,
@@ -142,6 +147,8 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.TOURNAMENTSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      "defaultTimestamp": BaseCommand().xHoursAgo(1),
+      "currentTimestamp": BaseCommand().xHoursAgo(1),
     },
     Constants.LEAGUE:{
       "key": Constants.LEAGUE,
@@ -149,6 +156,8 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.LEAGUESTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      "defaultTimestamp": BaseCommand().xHoursAgo(1),
+      "currentTimestamp": BaseCommand().xHoursAgo(1),
     },    
     Constants.LOCATION:{
       "key": Constants.LOCATION,

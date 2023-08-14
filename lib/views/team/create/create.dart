@@ -53,6 +53,7 @@ class _TeamCreateState extends State<TeamCreate> {
           'withPayment': createEventPaymentWidget.withPayment.value,           
           'roles': "{PLAYER, ORGANIZER}",
           'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),                    
+          'updatedAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),                    
         };
 
         Map<String, dynamic> locationInput = {

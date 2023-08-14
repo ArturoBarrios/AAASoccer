@@ -1248,7 +1248,7 @@ class EventCommand extends BaseCommand {
 
  
 
-  Future<Map<String, dynamic>> setupInitialEvents() async {
+  Future<Map<String, dynamic>> setupEvents(dynamic type, String afterTimestamp) async {
     print("setupEvents()()");
 
     Map<String, dynamic> setupEventsResp = {
@@ -1256,59 +1256,58 @@ class EventCommand extends BaseCommand {
       "message": "Default Error",
       "data": []
     };
-    //first part is to get all events
-    print("testing getEventsNearLocation");
-    DateTime oneHourAgo = DateTime.now().subtract(Duration(hours: 1));
-    String oneHourAgoTimestamp = oneHourAgo.millisecondsSinceEpoch.toString();
-    print("oneHourAgoTimestamp before getEventsNearLocation: " +
-        oneHourAgoTimestamp);
-    bool gotInitialEvents = false;
-    //get pickup games or upcoming events
-    if(!appModel.isGuest){
-      print("is not guest");
-      //get eventUserParticipants
-      gotInitialEvents = true;  
-      dynamic allUserEventParticipantsInput = {
-        "userId": appModel.currentUser['_id'],
-        "startTime": oneHourAgoTimestamp,
-        "eventFragment" : EventFragments().userEventParticipants()
-      };
-      Map<String,dynamic> getAllUserEventParticipantsResp = await getAllUserEventParticipants(allUserEventParticipantsInput);
-      print("getAllUserEventParticipantss: " + getAllUserEventParticipantsResp.toString());
-      if(getAllUserEventParticipantsResp['success']){
-        print("successss!!!!");
-        List<dynamic> allMyEvents =
-            getAllUserEventParticipantsResp['data'];
-        print("allMyEvents: " + allMyEvents.toString());
-        List myEvents = allMyEvents;
-        print("myEvents.length before: " + myEvents.length.toString());      
-        //filter out archived events
-        myEvents.removeWhere((event) => BaseCommand()
-            .dateTimeFromMilliseconds(event['event']['endTime'].toString())
-            .isBefore(DateTime.now()));
-        //sort by createdAt
-        myEvents.sort((a, b) {
-          int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
-          int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
-          print("aCreatedAt: " + aCreatedAt.toString());
-          print("bCreatedAt: " + bCreatedAt.toString());
-          return bCreatedAt.compareTo(aCreatedAt);
-        });
-        appModel.myEvents =
-            myEvents; //appModel.currentUser['eventUserParticipants']['data'];
-        for (var event in myEvents) {
-          var createdAt = event["event"]["createdAt"];
-          print("createdAtt: $createdAt");
+    
+    if(type == Constants.MYEVENTS){
+      //first part is to get all events
+      print("testing getEventsNearLocation");
+      //get userEventParticipants
+      if(!appModel.isGuest){
+        print("is not guest");
+        //get eventUserParticipants      
+        dynamic allUserEventParticipantsInput = {
+          "userId": appModel.currentUser['_id'],
+          "startTime": afterTimestamp,
+          "eventFragment" : EventFragments().userEventParticipants()
+        };
+        Map<String,dynamic> getAllUserEventParticipantsResp = await getAllUserEventParticipants(allUserEventParticipantsInput);
+        print("getAllUserEventParticipantss: " + getAllUserEventParticipantsResp.toString());
+        if(getAllUserEventParticipantsResp['success']){
+          print("successss!!!!");
+          List<dynamic> allMyEvents =
+              getAllUserEventParticipantsResp['data'];
+          print("allMyEvents: " + allMyEvents.toString());
+          List myEvents = allMyEvents;
+          print("myEvents.length before: " + myEvents.length.toString());      
+          //filter out archived events
+          myEvents.removeWhere((event) => BaseCommand()
+              .dateTimeFromMilliseconds(event['event']['endTime'].toString())
+              .isBefore(DateTime.now()));
+          //sort by createdAt
+          myEvents.sort((a, b) {
+            int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
+            int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
+            print("aCreatedAt: " + aCreatedAt.toString());
+            print("bCreatedAt: " + bCreatedAt.toString());
+            return bCreatedAt.compareTo(aCreatedAt);
+          });
+          appModel.myEvents =
+              myEvents;
+          for (var event in myEvents) {
+            var createdAt = event["event"]["createdAt"];
+            print("createdAtt: $createdAt");
+          }
+          print("myEvents after sort: " + myEvents.length.toString());
+
         }
-        print("myEvents after sort: " + myEvents.length.toString());
 
       }
 
     }
+    //get other type of events
     else{
       Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
           await EventCommand().getEventsOfTypeNearLocation(EventType.GAME,
-              EventFragments().fullEvent(), oneHourAgoTimestamp);
+              EventFragments().fullEvent(), afterTimestamp);
 
       print("getEventsNearLocationResp: " +
           getEventsOfAllTypesNearLocationResp.toString());
@@ -1323,15 +1322,16 @@ class EventCommand extends BaseCommand {
           return bCreatedAt.compareTo(aCreatedAt);
         });
         print("events: " + events.toString());
-        print("length of events: " + events.length.toString());
+        eventsModel.games = events;
+        // print("length of events: " + events.length.toString());
         //iterate through events
-        for (int i = 0; i < events.length; i++) {
-          dynamic type = events[i]['type'];
-          bool isMainEvent = events[i]['isMainEvent'];
-          if (isMainEvent) {
-            addEventToEventModels(events[i]);
-          }
-        }
+        // for (int i = 0; i < events.length; i++) {
+        //   dynamic type = events[i]['type'];
+        //   bool isMainEvent = events[i]['isMainEvent'];
+        //   if (isMainEvent) {
+        //     addEventToEventModels(events[i]);
+        //   }
+        // }
         print("games in eventsModel: " + eventsModel.games.toString());
       
     

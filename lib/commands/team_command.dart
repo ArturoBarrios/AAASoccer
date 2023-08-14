@@ -195,6 +195,80 @@ class TeamCommand extends BaseCommand {
 
   }
 
+  Future<Map<String, dynamic>> getAllTeams(String from, String teamFragment) async {
+    print("getAllTeams");
+    Map<String, dynamic> getAllTeamsResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TeamQueries().getAllTeams(from, teamFragment),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+      if(response.statusCode == 200){
+        dynamic result = jsonDecode(response.body)['data']['getAllTeams'];        
+        print("getAllTeams result: " + result.toString());
+        getAllTeamsResp["success"] = true;
+        getAllTeamsResp["message"] = "Games Retrieved";
+        getAllTeamsResp["data"] = result;
+
+      }
+      return getAllTeamsResp;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return getAllTeamsResp;
+    }   
+  }
+  
+  Future<Map<String, dynamic>> getAllTeamUserParticipants(String userId, String teamFragment) async {
+    print("getAllTeamUserParticipants");
+    Map<String, dynamic> getAllTeamsResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {      
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': TeamQueries().getAllTeamUserParticipants(userId, teamFragment),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+      if(response.statusCode == 200){
+        dynamic result = jsonDecode(response.body)['data']['getAllTeamUserParticipants'];        
+        print("getAllTeams result: " + result.toString());
+        getAllTeamsResp["success"] = true;
+        getAllTeamsResp["message"] = "Games Retrieved";
+        getAllTeamsResp["data"] = result;
+
+      }
+      return getAllTeamsResp;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return getAllTeamsResp;
+    }
+   
+  }
+
+
   Future<Map<String, dynamic>> getTeamsNearLocation(String teamFragment) async {
     print("getTeamsNearLocation");
     Map<String, dynamic> getTrainingsNearLocationResp = {
