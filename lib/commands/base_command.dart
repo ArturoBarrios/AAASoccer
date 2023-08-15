@@ -57,14 +57,29 @@ class BaseCommand {
   ChatPageModel chatPageModel = _mainContext.read();
   // Services
   GeoLocationServices geoLocationServices = _mainContext.read();
-  // TwilioServices twilioServices = _mainContext.read();
-
-  // void configureTwilio(){
-  //   TwilioFlutter twilioFlutterClient = twilioServices.configureTwilio();
-  //   appModel.twilioClient = twilioFlutterClient;
-  // }
 
   void initializeData() {}
+
+  String xHoursAgo(int x) {
+    DateTime xHoursAgo = DateTime.now().subtract(Duration(hours: x));
+    String xHoursAgoTimestamp = xHoursAgo.millisecondsSinceEpoch.toString();
+    print("xHoursAgoTimestamp before getEventsNearLocation: " +
+        xHoursAgoTimestamp);
+
+    return xHoursAgoTimestamp;
+  }
+
+  bool isEventType(dynamic type) {
+    if (type == Constants.PICKUP ||
+        type == Constants.TRYOUT ||
+        type == Constants.TRAINING ||
+        type == Constants.TOURNAMENT ||
+        type == Constants.LEAGUE) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   void updateUserEventDetailsModel(dynamic userEventDetails) {
     appModel.userEventDetails = userEventDetails;
@@ -98,6 +113,11 @@ class BaseCommand {
     List<dynamic> objectsNearMe = [];
 
     return objectsNearMe;
+  }
+
+  void setupFaunaClient(dynamic client) {
+    print("setupFaunaClient: " + client);
+    appModel.faunaClient = client;
   }
 
   void testUpdateText() {
@@ -135,7 +155,7 @@ class BaseCommand {
     friendsPageModel = _mainContext.read();
     chatPageModel = _mainContext.read();
 
-    homePageModel.nukeData();
+    // homePageModel.nukeData();
 
     //services
     geoLocationServices = _mainContext.read();
@@ -325,68 +345,82 @@ class BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> setupInitialAppModels(String email) async {
+  Future<void> setupUser(String email) async {
+    Map<String, dynamic> getUserInput = {"email": email};
+    if (!appModel.isGuest) {
+      Map<String, dynamic> getUserResp =
+          await UserCommand().getUserByEmail(getUserInput);
+      print("getUserResp: ");
+      print(getUserResp);
+      if (getUserResp["success"]) {
+        dynamic user = getUserResp["data"];
+        if (user == null) {
+          Map<String, dynamic> userInput = {
+            "name": "no name",
+            "email": email,
+            "username": "username",
+            "phone": "2672136006",
+            "birthdate": "07/26/1997",
+            "gender": "male",
+            "address": "random address",
+            "status": "SignedUp"
+          };
+          Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};
+          Map<String, dynamic> createPlayerResp = await PlayerCommand()
+              .createPlayer(userInput, {}, locationInput, false);
+          user = createPlayerResp['data'];
+        }
+        appModel.currentUser = user;
+        print("app model user: ");
+        print(appModel.currentUser);
+        print("user['chats']['data']: ${user['chats']['data']}");
+        userModel.chats = user['chats']['data'];
+        //setup onesignal
+        await UserCommand().configureOneSignalUserDetails();
+        print("testing some shit out!");
+        //not being used so commented out
+        // await loadUserImagesFromAWS();
+        print(
+            "get friends and myEvents from currentUser object: ${appModel.currentUser}");
+
+        ImagesCommand().setUserProfileImage();
+      } else {
+        print("something went wrong in fetching user");
+      }
+    } else {
+      print("is guest");
+    }
+  }
+
+  Future<Map<String, dynamic>> setupInitialAppModels() async {
     print("setupInitialAppModels");
-    print("email: $email");
     Map<String, dynamic> resp = {
       "success": false,
       "message": "setup unsuccessfull",
       "data": null
     };
     try {
-      Map<String, dynamic> getUserInput = {"email": email};
-      if (!appModel.isGuest) {
-        Map<String, dynamic> getUserResp =
-            await UserCommand().getUserByEmail(getUserInput);
-        print("getUserResp: ");
-        print(getUserResp);
+      DateTime oneHourAgo = DateTime.now().subtract(Duration(hours: 1));
+      String oneHourAgoTimestamp = oneHourAgo.millisecondsSinceEpoch.toString();
+      print("oneHourAgoTimestamp before getEventsNearLocation: " +
+          oneHourAgoTimestamp);
+      //setup events
+      print("Setup Events");
+      !appModel.isGuest
+          ? await HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
+          : await HomePageCommand().eventTypeTapped(Constants.PICKUP);
+      // if(appModel.isGuest){
+      //   await EventCommand().setupEvents(Constants.PICKUP, oneHourAgoTimestamp);
+      // }
+      // else{
+      //   await EventCommand().setupEvents(Constants.MYEVENTS, oneHourAgoTimestamp);
 
-        if (getUserResp["success"]) {
-          dynamic user = getUserResp["data"];
-          if (user == null) {
-            Map<String, dynamic> userInput = {
-              "name": "no name",
-              "email": email,
-              "username": "username",
-              "phone": "2672136006",
-              "birthdate": "07/26/1997",
-              "gender": "male",
-              "address": "random address",
-              "status": "SignedUp"
-            };
-            Map<String, dynamic> locationInput = {
-              "latitude": 0,
-              "longitude": 0
-            };
-            Map<String, dynamic> createPlayerResp = await PlayerCommand()
-                .createPlayer(userInput, {}, locationInput, false);
-            user = createPlayerResp['data'];
-          }
-          appModel.currentUser = user;
-          print("app model user: ");
-          print(appModel.currentUser);
-          print("user['chats']['data']: ${user['chats']['data']}");
-          userModel.chats = user['chats']['data'];
-          //setup onesignal
-          await UserCommand().configureOneSignalUserDetails();
-          print("testing some shit out!");
-          //not being used so commented out
-          // await loadUserImagesFromAWS();
-          print(
-              "get friends and myEvents from currentUser object: ${appModel.currentUser}");          
+      // }
+      print("setup Events done");
 
-          ImagesCommand().setUserProfileImage();
-        } else {
-          print("something went wrong in fetching user");
-        }
-      } else {
-        print("is guest");
-        // HomePageCommand().eventTypeTapped(Constants.PICKUP);
-      }
+      //setup players
+      //todo
 
-
-      await EventCommand().setupEvents();
-      await TeamCommand().setupTeamsFromCurrentUser(appModel.currentUser);
       //,teams, players near me data.
       //get location and update user location
       Position userPosition = await GeoLocationCommand().determinePosition();
@@ -406,10 +440,6 @@ class BaseCommand {
         eventsModel.eventsNearMe = eventsNearPoint;
         print("eventsNearPoint: $eventsNearPoint");
       }
-      print("Setup Events");
-        !appModel.isGuest
-            ? HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
-            : HomePageCommand().eventTypeTapped(Constants.PICKUP);
 
       resp["success"] = true;
       resp["message"] = "setup successfull";
@@ -452,6 +482,10 @@ class BaseCommand {
 
   void initialConditionsMet() {
     appModel.initialConditionsMet = true;
+  }
+  
+  void initialUserConditionsMet() {
+    appModel.userConditionsMet = true;
   }
 
   void setUserId(String userId) {

@@ -15,12 +15,7 @@ import '../views/team/create/create.dart';
 
 class FriendsPageModel extends ChangeNotifier {
 
-  String _selectedKey = Constants.PICKUP;
-  String get selectedKey => _selectedKey;
-  set selectedKey(String selectedKey){
-    _selectedKey = selectedKey;
-    notifyListeners();
-  }  
+
 
   bool _initialConditionsMet = true;
   bool get initialConditionsMet => _initialConditionsMet;  

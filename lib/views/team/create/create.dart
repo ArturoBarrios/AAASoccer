@@ -50,18 +50,19 @@ class _TeamCreateState extends State<TeamCreate> {
       "success": false,
       "message": "Default Error"
     };
-    try {
-      Map<String, dynamic> createTeamInput = {
-        'name': nameController.text.trim(),
-        'color': colorController.text.trim(),
-        'logo': logoController.text.trim(),
-        'images': imagesController.text.trim(),
-        'price': double.parse(priceController.text.toString()),
-        'withRequest': createEventRequestWidget.withRequest.value,
-        'withPayment': createEventPaymentWidget.withPayment.value,
-        'roles': "{PLAYER, ORGANIZER}",
-        'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
-      };
+    try {                       
+        Map<String, dynamic> createTeamInput = {
+          'name': nameController.text.trim(),
+          'color': colorController.text.trim(),
+          'logo': logoController.text.trim(),
+          'images': imagesController.text.trim(),
+          'price': double.parse(priceController.text.toString()),
+          'withRequest': createEventRequestWidget.withRequest.value,
+          'withPayment': createEventPaymentWidget.withPayment.value,           
+          'roles': "{PLAYER, ORGANIZER}",
+          'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),                    
+          'updatedAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),                    
+        };
 
       Map<String, dynamic> createdTeamResp =
           await TeamCommand().createTeam(createTeamInput, locationInput);

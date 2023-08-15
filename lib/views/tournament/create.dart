@@ -157,11 +157,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
             icon: const Icon(Icons.account_circle),
             tooltip: 'Go to the next page',
             onPressed: () {
-              // Navigator.push(context, MaterialPageRoute<void>(
-              //   builder: (BuildContext context) {
-              //     return Profile();
-              //   },
-              // ));
+              
             },
           ),
         ],

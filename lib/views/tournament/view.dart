@@ -170,35 +170,13 @@ class _TournamentViewState extends State<TournamentView> {
                                 ),
                               ),
                             )
-                          : Container(),                          
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     PriceWidget(userEventDetails: userEventDetails, teamPrice: false, eventPrice: true)                                                    
-                      //   ],
-                      // ),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     PriceWidget(userEventDetails: userEventDetails, teamPrice: true, eventPrice: false)                          
-                      //   ],
-                      // ),
+                          : Container(),                                               
 
                       UpdateViewForm(userObjectDetails: userEventDetails),
 
                       
                       
-                          // PlayerList(
-                          //     playersDetails: playerListWidgetDetails),
-                        
-                      
-                      // TeamsListWidget(
-                      //         teamsDetails: teamListWidgetDetails),
-                      
-                      // widget.sendPlayersRequestWidget(context, userEventDetails),
-
-                      // widget.sendTeamsRequestWidget(context, userEventDetails),
-
+                          
                       Container(
                         height: 400, // Provide a fixed height here
                         child: GroupStageWidget(

@@ -2,6 +2,8 @@ import '../fragments/team_fragments.dart';
 
 class TeamMutations {
   String createTeam(Map<String, dynamic> teamInput, Map<String, dynamic> locationInput) {
+    print("teamInput: $teamInput");
+    print("locationInput: $locationInput");
     String createTeam = """
       mutation {
         createTeam(data: {
@@ -9,6 +11,7 @@ class TeamMutations {
           color: "${teamInput['color']}",          
           status: "ACTIVE"
           createdAt: "${teamInput['createdAt']}",
+          updatedAt: "${teamInput['updatedAt']}",
           chats: {
                 create: [
                   {

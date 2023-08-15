@@ -22,6 +22,8 @@ class PlayerCommand extends BaseCommand {
     return appModel.playersNearMe;
   }
 
+
+
   
 
   Future<Map<String, dynamic>> getPlayersNearLocation() async {
@@ -48,7 +50,7 @@ class PlayerCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      final result = jsonDecode(response.body)['data']['allUsers']['data'];
+      dynamic result = jsonDecode(response.body)['data']['allUsers']['data'];
       //remove the current user from the list
       result.removeWhere(
           (element) => element['_id'] == appModel.currentUser['_id']);

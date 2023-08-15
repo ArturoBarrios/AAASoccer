@@ -52,6 +52,13 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _userConditionsMet = false;
+  bool get userConditionsMet => _userConditionsMet;
+  set userConditionsMet(bool userConditionsMet) {
+    _userConditionsMet = userConditionsMet;
+    notifyListeners();
+  }
+  
   bool _initialConditionsMet = false;
   bool get initialConditionsMet => _initialConditionsMet;
   set initialConditionsMet(bool initialConditionsMet) {

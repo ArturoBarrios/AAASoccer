@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
+import '../commands/base_command.dart';
 import '../commands/home_page_command.dart';
 import '../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
@@ -18,11 +19,6 @@ import '../views/locations/create.dart';
 class HomePageModel extends ChangeNotifier {
 
 
-  nukeData(){
-    print("nuking data");
-    HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
-
-  }
 
   String _testText = "";
   String get testText => _testText;
@@ -73,21 +69,22 @@ class HomePageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _selectedKey = Constants.MYEVENTS;
-  String get selectedKey => _selectedKey;
-  set selectedKey(String selectedKey){
+  dynamic _selectedKey = Constants.MYEVENTS;
+  dynamic get selectedKey => _selectedKey;
+  set selectedKey(dynamic selectedKey){
     _selectedKey = selectedKey;
     notifyListeners();
   }  
 
-
-  Map<String, dynamic> _enabledSelections2 = {
+  
+  Map<dynamic, dynamic> _enabledSelections2 = {    
     Constants.MYEVENTS: {
       "key": Constants.MYEVENTS,
       "enabled": true,
       "name": StringConstants.MYEVENTSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      
     },
     Constants.MYTEAMS: {
       "key": Constants.MYTEAMS,
@@ -95,6 +92,7 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.MYTEAMSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+     
     },
     Constants.PICKUP: {
       "key": Constants.PICKUP,
@@ -102,21 +100,15 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.PICKUPGAMESTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
-      
+        
     },    
-    Constants.FRIEND: {
-      "key": Constants.FRIEND,
-      "enabled": false,
-      "name": StringConstants.FRIENDSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
     Constants.PLAYER: {
       "key": Constants.PLAYER,
       "enabled": false,
       "name": StringConstants.PLAYERSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      
     },
     Constants.TEAM: {
     "key": Constants.TEAM,
@@ -124,6 +116,7 @@ class HomePageModel extends ChangeNotifier {
     "name": StringConstants.TEAMSTITLE,
     "description": "",
     "image": SVGWidgets().getSoccerBallSVGImage(),
+  
     },
     Constants.TRAINING: {
       "key": Constants.TRAINING,
@@ -131,6 +124,7 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.TRAININGSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+     
     },
     Constants.TRYOUT: {
       "key": Constants.TRYOUT,
@@ -138,6 +132,7 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.TRYOUTSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+      
     },
     Constants.TOURNAMENT:{
       "key": Constants.TOURNAMENT,
@@ -145,6 +140,7 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.TOURNAMENTSTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+     
     },
     Constants.LEAGUE:{
       "key": Constants.LEAGUE,
@@ -152,6 +148,7 @@ class HomePageModel extends ChangeNotifier {
       "name": StringConstants.LEAGUESTITLE,
       "description": "",
       "image": SVGWidgets().getSoccerBallSVGImage(),
+     
     },    
     Constants.LOCATION:{
       "key": Constants.LOCATION,
@@ -163,8 +160,8 @@ class HomePageModel extends ChangeNotifier {
   };
 
   
-  Map<String, dynamic> get enabledSelections2 => _enabledSelections2;
-  set enabledSelections2(Map<String, dynamic> enabledSelections2){
+  Map<dynamic, dynamic> get enabledSelections2 => _enabledSelections2;
+  set enabledSelections2(Map<dynamic, dynamic> enabledSelections2){
     _enabledSelections2 = enabledSelections2;    
     notifyListeners();
   }  
