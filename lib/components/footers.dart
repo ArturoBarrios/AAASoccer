@@ -10,7 +10,6 @@ import '../views/league/create.dart';
 import '../views/training/create.dart';
 import '../views/tryout/create.dart';
 import '../views/team/create/create.dart';
-import '../views/friends/view.dart';
 import '../commands/chat_command.dart';
 import '../components/history.dart';
 import '../views/chats/view.dart';

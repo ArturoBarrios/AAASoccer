@@ -6,7 +6,6 @@ import '../commands/base_command.dart';
 import '../commands/user_command.dart';
 import '../components/profile.dart';
 import '../views/chats/view.dart';
-import '../views/friends/view.dart';
 import '../views/home.dart';
 import '../views/images/view_images.dart';
 import '../models/user_model.dart';

@@ -5,6 +5,21 @@ import 'package:soccermadeeasy/graphql/fragments/chat_fragments.dart';
 import 'image_fragments.dart';
 
 class EventFragments {
+  String userEventParticipants() {
+    String userEventParticipantsReturn = """
+      _id      
+      user{
+        _id
+        name
+        email
+      }
+      roles
+      event{
+        ${fullEvent()}
+      }
+    """;
+    return userEventParticipantsReturn;
+  }
   String fullEvent() {
     String fullEventReturn = """
       name        	

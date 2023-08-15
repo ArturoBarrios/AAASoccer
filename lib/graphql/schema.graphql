@@ -1,6 +1,15 @@
 type Query {  
+  # functions
+  #   events
   allEventsOfType(startTime: String!, type: EventType!): [Event!] @resolver(name: "allEventsOfType")
   allEventsOfAllTypes(startTime: String!): [Event!] @resolver(name: "allEventsOfAllTypes")
+  allCurrentUserEventParticipants(userId: ID!, startTime: String!): [EventUserParticipant!] @resolver(name: "allCurrentUserEventParticipants")
+  getAllTeams(from: String!): [Team!] @resolver(name: "getAllTeams")
+  getAllTeamUserParticipants(userId: ID!): [TeamUserParticipant!] @resolver(name: "getAllTeamUserParticipants")
+
+  #  teams
+
+  # querieds
   allGames(pickup: Boolean): [Game!]  
   allTrainings: [Training!]  
   allTryouts: [Tryout!]  
@@ -157,8 +166,8 @@ type User  {
   coach: Coach
   referee: Referee
   status: UserAccountStatus
-  last_login: Int
-  last_updated: Int
+  createdAt: Int
+  updatedAt: String
   images: [Image] @relation
   events: [Event] @relation      
   eventUserParticipants: [EventUserParticipant] @relation   
@@ -189,7 +198,6 @@ type Player   {
   sponsors: [Sponsor] @relation
   ratings: [Rating] @relation
 }
-
 type EventUserParticipant {
   event: Event
   user: User
@@ -278,6 +286,7 @@ type Team   {
   status: String
   deleted: Boolean
   createdAt: String
+  updatedAt: String
   request: [Request] @relation
   chats: [Chat] @relation
   price: Price
@@ -286,6 +295,7 @@ type Team   {
   teamOrders: [TeamOrder] @relation
   organization: Organization
   ratings: [Rating] @relation
+
   
 
   

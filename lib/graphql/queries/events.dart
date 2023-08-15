@@ -1,12 +1,14 @@
 import '../../enums/EventType.dart';
 import '../fragments/event_fragments.dart';
+import 'package:faunadb_http/faunadb_http.dart';
+import 'package:faunadb_http/query.dart';
 
 class EventQueries {
    String allEventsOfType(String startTime, EventType type, String eventFragment) {
     String enumValue = type.toString().split('.').last;
   String getEvents = """
     query GetEvents {
-      allEventsOftype(startTime: "$startTime", type: $enumValue) {                  
+      allEventsOfType(startTime: "$startTime", type: $enumValue) {                  
           ${eventFragment}        
       }
     }
@@ -25,6 +27,18 @@ class EventQueries {
     """;
   return getEvents;
 }
+  
+  String allUserEventParticipants(dynamic allUserEventParticipantsInput) {    
+    String getUserEvents = """
+      query GetEventUserParticipants {
+        allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {                              
+              ${allUserEventParticipantsInput['eventFragment']}            
+        }
+      }
+    """;
+  return getUserEvents;
+}
+
 
 
 }

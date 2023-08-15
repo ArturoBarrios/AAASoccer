@@ -1,10 +1,12 @@
+import 'enums/EventType.dart';
+
 class Constants {
-  static const String PICKUP = "1";
-  static const String TEAM = "2";
-  static const String LEAGUE = "3";
-  static const String TOURNAMENT = "4";
-  static const String TRYOUT = "5";
-  static const String TRAINING = "6";
+  static const EventType PICKUP = EventType.GAME;
+  static const String TEAM = "TEAM";
+  static const EventType LEAGUE = EventType.LEAGUE;
+  static const EventType TOURNAMENT = EventType.TOURNAMENT;
+  static const EventType TRYOUT = EventType.TRYOUT;
+  static const EventType TRAINING = EventType.TRAINING;
   static const String WAGER = "7";
   static const String FRIEND = "9";
   static const String MYEVENTS = "10";
