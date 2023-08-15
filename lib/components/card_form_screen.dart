@@ -461,8 +461,9 @@ class _CardFormScreen extends State<CardFormScreen> {
                             child: Container(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  createPaymentIntent();
+                                onPressed: () async{
+                                  // createPaymentIntent();
+                                 await PaymentCommand().createRefund();
                                 },
                                 child: const Text('Pay'),
                               ),
