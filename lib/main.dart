@@ -12,6 +12,7 @@ import 'package:soccermadeeasy/services/stripe_service.dart';
 //import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:soccermadeeasy/views/spash_screen.dart';
 
 import 'commands/base_command.dart';
 import 'commands/user_command.dart';
@@ -100,10 +101,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     print("initState");
-    configureApp(); 
+    configureApp();
   }
 
-  void configureApp() async {    
+  Future<void> configureApp() async {
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
     print("configureAmplifyResp: ");
     print(configureAmplifyResp);
@@ -111,6 +112,8 @@ class _MyAppState extends State<MyApp> {
     if (configureAmplifyResp['message'] == "isSignedIn") {
       emailController.text = configureAmplifyResp['email'];
       await startLoadToHomeTransition();
+
+
     }
   }
 
@@ -138,7 +141,6 @@ class _MyAppState extends State<MyApp> {
     print("graphQL clientt: ");
     print(client);
     BaseCommand().setupFaunaClient(client);
-    
   }
 
   Future<Map<String, dynamic>> configureAmplify() async {
@@ -163,7 +165,6 @@ class _MyAppState extends State<MyApp> {
     AppModel().amplifyConfigured = true;
     Commands.BaseCommand().setIsSigned(true);
 
-    
     return otherConfigurationsResp;
   }
 
@@ -183,7 +184,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void signIn(AuthenticatorState state) async {
+  Future<void> signIn(AuthenticatorState state) async {
     try {
       SignInResult signInRes = await AmplifyAuth.AmplifyAuthService.signIn(
         emailController,
@@ -261,30 +262,29 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  //assumes email's been set in AppModel
-  //assumes user's been created in FaunaDB
-  //assumes you're signed in/up
   Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    await TwilioServices().configureTwilio();    
+    await TwilioServices().configureTwilio();
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if (otherConfigurationResp['success']) {
       ///////////////////////// add back in when shortcode is ready
-      Map<String, dynamic> resp = await BaseCommand()
-          .setupInitialAppModels(emailController.text.trim());
-      print("resppp: " + resp.toString());
-      if (resp['success']) {
-        BaseCommand().initialConditionsMet();
-        print("initialConditionsMett");
-      } else {
-        print("try again....");
+      // print("resppp: " + resp.toString());
+      // if (resp['success']) {
+      await BaseCommand().setupUser(emailController.text.trim());
+      BaseCommand().initialUserConditionsMet();
+     
+      print("initialConditionsMett");
+      // } else {
+      //   print("try again....");
 
-        // startLoadToHomeTransition();
-      }
+      
+      // }
     } else {
       print("error in startLoadToHomeTransition");
     }
   }
+
+  
 
   void confirmSignIn(AuthenticatorState state) async {
     try {
@@ -318,6 +318,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext _) {
+    
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (c) => AppModel()),
@@ -334,8 +336,10 @@ class _MyAppState extends State<MyApp> {
           Provider(create: (c) => GeoLocationServices()),
         ],
         child: Builder(builder: (context) {
+          
           Commands.init(context);
-
+bool userConditionsMet =
+        context.select<AppModel, bool>((value) => value.userConditionsMet);
           return Authenticator(
             authenticatorBuilder:
                 (BuildContext context, AuthenticatorState state) {
@@ -664,7 +668,11 @@ class _MyAppState extends State<MyApp> {
             },
             child: MaterialApp(
               builder: Authenticator.builder(),
-              home: AppScaffold(client: widget.client),
+              home: 
+              userConditionsMet ? 
+                AppScaffold(client: widget.client)
+                : SplashScreen(),
+
               routes: {
                 // When navigating to the "/" route, build the HomeScreen widget.
                 '/home': (context) => Home(),
@@ -683,13 +691,48 @@ class AppScaffold extends StatefulWidget {
 
   final dynamic client;
 
+  //assumes email's been set in AppModel
+  //assumes user's been created in FaunaDB
+  //assumes you're signed in/up
+  
+  
+  Future<void> loadPlayerDetails() async {
+    print("loadPlayerDetails");
+    // await TwilioServices().configureTwilio();
+    
+      ///////////////////////// add back in when shortcode is ready
+      // print("resppp: " + resp.toString());
+      // if (resp['success']) {
+      await BaseCommand().setupInitialAppModels();
+      BaseCommand().initialConditionsMet();
+     
+      print("initialConditionsMett");
+      // } else {
+      //   print("try again....");
+
+      
+      // }
+    
+  }
+
+
+
   @override
   _AppScaffoldState createState() => _AppScaffoldState();
 }
 
 class _AppScaffoldState extends State<AppScaffold> {
+
+  @override 
+  initState(){
+    print("AppScaffoldState main.dart");
+    super.initState();
+    widget.loadPlayerDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
+    
     // Bind to AppModel.currentUser
     Map<String, dynamic> currentUser = context
         .select<AppModel, Map<String, dynamic>>((value) => value.currentUser);
@@ -699,6 +742,8 @@ class _AppScaffoldState extends State<AppScaffold> {
 
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
+    
+    
 
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
@@ -709,25 +754,10 @@ class _AppScaffoldState extends State<AppScaffold> {
 
         //replace first condition with loading screen
         body: initialConditionsMet == false
-            ? Container(
-                height: double.infinity,
-                width: double.infinity,
-                child: Align(
-                    alignment: Alignment.center,
-                    child:
-                        // BottomNav()//for times when user deleted in cognito but still signed into app
-                        LoadingScreen(
-                            currentDotColor: Colors.white,
-                            defaultDotColor: Colors.black,
-                            numDots: 10)))
+            ? SplashScreen()
             : RefreshIndicator(
                 onRefresh: () async {
                   print("Reload");
-                  // Navigator.pushAndRemoveUntil(
-                  //         context,
-                  //         MaterialPageRoute(builder: (BuildContext context) => MyApp(client: widget.client)),
-                  //         (route) => false,
-                  //       );
                 },
                 child: Home(),
               )

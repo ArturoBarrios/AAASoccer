@@ -176,6 +176,7 @@ class HomePageCommand extends BaseCommand {
 
   Future<void> setCards() async {
     print("setCards()");
+    print("set cards for selectedObject: " + homePageModel.selectedObjects.toString());
     homePageModel.cards = [];
     homePageModel.cardsLoading = true;
     Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
@@ -307,6 +308,7 @@ class HomePageCommand extends BaseCommand {
       homePageModel.selectedObjects = appModel.friends;
     } else if (newSelectedKey == Constants.MYEVENTS) {
       print("check my events: ");
+      print("appModel.currentUser: " + appModel.currentUser.toString());
       String xHoursAgoTimestamp = BaseCommand().xHoursAgo(1);
       dynamic allUserEventParticipantsInput = {
           "userId": appModel.currentUser['_id'],

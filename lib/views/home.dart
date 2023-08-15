@@ -313,6 +313,8 @@ class _Home extends State<Home> {
     print("loadInitialData");
     _selectEventController = ScrollController()..addListener(_loadMore);    
     userObject = UserCommand().getAppModelUser();
+    print("selectedkeyyyy: "+ HomePageModel().selectedKey.toString());
+    // await HomePageCommand().eventTypeTapped(HomePageModel().selectedKey);
     await HomePageCommand().setCards();   
     updateUpdatedCards(false);     
   }
@@ -321,6 +323,7 @@ class _Home extends State<Home> {
   void initState() {
     print("initState() in home");
     super.initState();
+    // updateUpdatedCards(true);
     loadInitialData();
   }
 
