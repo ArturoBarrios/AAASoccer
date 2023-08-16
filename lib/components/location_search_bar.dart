@@ -73,15 +73,14 @@ class _LocationSearchBar extends State<LocationSearchBar> {
       children: <Widget>[
         TextField(
           controller: locationController,
-          decoration: const InputDecoration.collapsed(hintText: ''),
+          decoration: const InputDecoration.collapsed(hintText: 'Search'),
           onChanged: (value) async => {placesApiAutoComplete(value)},
           enabled: !widget.readonly,
         ),
         SizedBox(
           height: 200,
           child: Expanded(
-            child: addressPredictions.isNotEmpty
-                ? ListView.builder(
+            child: ListView.builder(
                     itemCount: addressPredictions.length,
                     itemBuilder: (context, index) {
                       return Card(
@@ -108,9 +107,7 @@ class _LocationSearchBar extends State<LocationSearchBar> {
                       );
                     },
                   )
-                : const Center(
-                    child: Text('Add Address'),
-                  ),
+               
           ),
         ),
       ],

@@ -761,8 +761,7 @@ class _AppScaffoldState extends State<AppScaffold> {
                 },
                 child: Home(),
               )
-
-        // body: currentUser != "" ?  Home() : LoginPage(),
+        
         );
   }
 }

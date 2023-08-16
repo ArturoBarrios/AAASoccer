@@ -144,6 +144,8 @@ type FollowRelation {
 }
 
 
+
+
 type User  {  
   stripeCustomers: [StripeCustomer] @relation 
   payments: [Payment] @relation
