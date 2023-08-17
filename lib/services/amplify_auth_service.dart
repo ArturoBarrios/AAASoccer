@@ -21,7 +21,7 @@ class AmplifyAuthService {
     };
     try {
       AuthSession authSessionRes = await Amplify.Auth.fetchAuthSession();
-      print("authSessionRes: ${authSessionRes.isSignedIn}");
+      print("authSessionRes: " + authSessionRes.isSignedIn.toString());
       fetchUserAuthResponse["data"] = authSessionRes;
       fetchUserAuthResponse["success"] = 1;
       fetchUserAuthResponse["message"] = "Fetched User";
@@ -68,7 +68,9 @@ class AmplifyAuthService {
       "message": "Default Error"
     };
     /////////////////////////addback in when shortcode is ready
+
     await Amplify.addPlugin(AmplifyAuthCognito());
+
     await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
     // Add the following lines to your app initialization to add the DataStore plugin
     AmplifyDataStore datastorePlugin =
@@ -135,27 +137,29 @@ class AmplifyAuthService {
   }
 
   static Future<SignUpResult> signUp(
-      emailController,
-      passwordController,
-      usernameController,
-      phoneController,
-      birthdateController,
-      genderController,
-      addressController) async {
+    emailController,
+    passwordController,
+    usernameController,
+    phoneController,
+    birthdateController,
+    genderController,
+    addressController,
+  ) async {
     Map<CognitoUserAttributeKey, String> userAttributes = {
       CognitoUserAttributeKey.name: usernameController.text.trim(),
       CognitoUserAttributeKey.email: emailController.text.trim(),
       CognitoUserAttributeKey.preferredUsername: usernameController.text.trim(),
       // Note: phone_number requires country code
-      CognitoUserAttributeKey.phoneNumber: '+1' + phoneController.text.trim(),
+      CognitoUserAttributeKey.phoneNumber: phoneController,
       CognitoUserAttributeKey.birthdate: birthdateController.text.trim(),
       CognitoUserAttributeKey.gender: genderController.text.trim(),
       CognitoUserAttributeKey.address: addressController.text.trim()
     };
     SignUpResult res = await Amplify.Auth.signUp(
-        username: emailController.text.trim(),
-        password: passwordController.text.trim(),
-        options: CognitoSignUpOptions(userAttributes: userAttributes));
+      username: emailController.text.trim(),
+      password: passwordController.text.trim(),
+      options: CognitoSignUpOptions(userAttributes: userAttributes),
+    );
 
     return res;
   }

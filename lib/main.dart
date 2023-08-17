@@ -1,26 +1,23 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:soccermadeeasy/components/Dialogues/animated_dialogu.dart';
+import 'package:flutter/services.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:soccermadeeasy/data/services/twilio/twilio_service.dart';
+import 'package:soccermadeeasy/di/di_init.dart';
 import 'package:soccermadeeasy/models/home_page_model.dart';
-import 'package:soccermadeeasy/services/firebase_service.dart';
 import 'package:soccermadeeasy/services/network_services.dart';
 import 'package:soccermadeeasy/services/onesignal_service.dart';
 import 'package:soccermadeeasy/services/stripe_service.dart';
-
-//import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/views/spash_screen.dart';
 
+import 'package:soccermadeeasy/utils.dart';
+import 'package:soccermadeeasy/widgets/intl_phone_number_filed.dart';
 import 'commands/base_command.dart';
-import 'commands/user_command.dart';
 import 'commands/player_command.dart';
-import 'commands/event_command.dart';
-import 'components/headers.dart';
-import 'components/location_search_bar.dart';
-import 'components/side_navs.dart';
 import 'models/app_model.dart';
 import 'models/chat_page_model.dart';
 import 'models/user_model.dart';
@@ -30,35 +27,21 @@ import 'models/requests_model.dart';
 import 'models/requests_page_model.dart';
 import 'models/friends_page_model.dart';
 import 'models/games_model.dart';
-import 'services/user_service.dart';
 import 'services/fauna_db_services.dart';
 import 'services/geolocation_services.dart';
-import 'services/twilio_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home.dart';
-
 import 'commands/base_command.dart' as Commands;
 import 'components/Loading/loading_screen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:gql_http_link/gql_http_link.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:soccermadeeasy/svg_widgets.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-// import 'package:twilio_flutter/twilio_flutter.dart';
-// import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:location/location.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../views/onboarding.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
+
+  await diInit();
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
 
@@ -67,8 +50,6 @@ void main() async {
   await NetworkServices().enableLocationService();
   await OneSignalService().configureOneSignal();
   await StripeServices().configureStripeService();
-  await FirebaseServices().initializeFirebase();
-  FirebaseServices().initializeFirebaseAnalytics();
   print("===============================================");
 
   runApp(MyApp(client: client));
@@ -80,21 +61,31 @@ class MyApp extends StatefulWidget {
   const MyApp({Key? key, required this.client}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   // final amplifyAuthService = AmplifyAuthService();
+  final formKey = GlobalKey<FormState>();
+  final navigatorKey = GlobalKey<NavigatorState>();
   final emailController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
+  PhoneNumber? phoneNumber;
   final birthdateController = TextEditingController();
+  final birthdateFormatter = MaskTextInputFormatter(
+    mask: 'mm-dd-yyyy',
+    filter: {
+      "m": RegExp(r'[0-9]'),
+      "d": RegExp(r'[0-9]'),
+      "y": RegExp(r'[0-9]'),
+    },
+    type: MaskAutoCompletionType.lazy,
+  );
   final genderController = TextEditingController();
   final addressController = TextEditingController();
   final confirmSignInValueController = TextEditingController();
-
-  late TabController _tabController;
 
   @override
   void initState() {
@@ -177,7 +168,8 @@ class _MyAppState extends State<MyApp> {
 
   void signOut(AuthenticatorState state) async {
     try {
-      await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
+      await Amplify.Auth.signOut(
+          options: const SignOutOptions(globalSignOut: true));
       //base_command set initial app models to reflect signout
     } on AuthException catch (e) {
       print(e.message);
@@ -190,7 +182,7 @@ class _MyAppState extends State<MyApp> {
         emailController,
         passwordController,
       );
-      print("signInRes: " + signInRes.nextStep!.signInStep);
+      print("signInRes: ${signInRes.nextStep!.signInStep}");
       String signInStep = signInRes.nextStep!.signInStep;
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
       //should probably make sure you're actually signed in
@@ -208,23 +200,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> signUp(AuthenticatorState state) async {
     try {
-      SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
-          emailController,
-          passwordController,
-          usernameController,
-          phoneController,
-          birthdateController,
-          genderController,
-          addressController);
-      print("signedUpRes nextStep: ");
-      print(signUpRes.nextStep);
-      print("signUpRes toString()");
-      print(signUpRes.toString());
-
       Map<String, dynamic> userInput = {
         "email": emailController.text.trim(),
         "username": usernameController.text.trim(),
-        "phone": phoneController.text.trim(),
+        "phone": phoneNumber!.phoneNumber,
         "birthdate": birthdateController.text.trim(),
         "gender": genderController.text.trim(),
         "address": addressController.text.trim(),
@@ -233,23 +212,48 @@ class _MyAppState extends State<MyApp> {
       //check unique attributes
       bool uniquenessUserAttributesCheckResponse =
           await BaseCommand().uniquenessUserAttributesCheck(userInput);
-      print("uniquenessUserAttributesCheckResponse: " +
-          uniquenessUserAttributesCheckResponse.toString());
       if (uniquenessUserAttributesCheckResponse) {
+        SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
+          emailController,
+          passwordController,
+          usernameController,
+          phoneNumber!.phoneNumber,
+          birthdateController,
+          genderController,
+          addressController,
+        );
+
+        print("signedUpRes nextStep: ");
+        print(signUpRes.nextStep);
+        print("signUpRes toString()");
+        print(signUpRes.toString());
+        print(signUpRes.nextStep.signUpStep);
+        print(signUpRes.nextStep.additionalInfo);
+        print(signUpRes.nextStep.codeDeliveryDetails?.attributeName);
+        print(signUpRes.nextStep.codeDeliveryDetails?.deliveryMedium);
+        print(signUpRes.nextStep.codeDeliveryDetails?.destination);
+
         String signUpStep = signUpRes.nextStep.signUpStep;
         AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(
-            signUpStep, state);
+          signUpStep,
+          state,
+        );
         Map<String, dynamic> locationInput = {
           "latitude": 0,
           "longitude": 0,
         };
-        Map<String, dynamic> createPlayerResp = await PlayerCommand()
-            .createPlayer(userInput, {}, locationInput, false);
+        Map<String, dynamic> createPlayerResp =
+            await PlayerCommand().createPlayer(
+          userInput,
+          {},
+          locationInput,
+          false,
+        );
         print("createPlayerResp: ");
         print(createPlayerResp);
 
         AppModel().currentUser = createPlayerResp['data'];
-        print("AppModel().currentUser: " + AppModel().currentUser.toString());
+        print("AppModel().currentUser: ${AppModel().currentUser}");
 
         await startLoadToHomeTransition();
       } else {
@@ -264,7 +268,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    await TwilioServices().configureTwilio();
+    // await TwilioServices().configureTwilio();
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
     if (otherConfigurationResp['success']) {
       ///////////////////////// add back in when shortcode is ready
@@ -350,13 +354,13 @@ bool userConditionsMet =
                   return Scaffold(
                     backgroundColor: Colors.white,
                     body: Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       child: Center(
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
+                              const Text(
                                 "Welcome Back",
                                 style: TextStyle(
                                   color: Colors.black,
@@ -364,7 +368,7 @@ bool userConditionsMet =
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 50),
+                              const SizedBox(height: 50),
                               TextField(
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
@@ -378,21 +382,16 @@ bool userConditionsMet =
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 20),
-                              TextField(
+                              const SizedBox(height: 20),
+                              IntlPhoneNumberFiled(
                                 controller: phoneController,
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  hintText: 'Phone',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
+                                initialValue: phoneNumber?.phoneNumber,
+                                onInputChanged: (ph) {
+                                  phoneNumber = ph;
+                                },
+                                labelText: "Phone",
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               TextField(
                                 controller: passwordController,
                                 keyboardType: TextInputType.visiblePassword,
@@ -407,7 +406,7 @@ bool userConditionsMet =
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 50),
+                              const SizedBox(height: 50),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.blue, // background color
@@ -415,26 +414,26 @@ bool userConditionsMet =
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25),
                                   ),
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       horizontal: 40, vertical: 15),
                                 ),
                                 onPressed: () {
                                   signIn(state);
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Sign In',
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ),
-                              SizedBox(height: 30),
+                              const SizedBox(height: 30),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Don\'t have an account?'),
+                                  const Text('Don\'t have an account?'),
                                   TextButton(
                                     onPressed: () => state
                                         .changeStep(AuthenticatorStep.signUp),
-                                    child: Text(
+                                    child: const Text(
                                       'Sign Up',
                                       style: TextStyle(color: Colors.blue),
                                     ),
@@ -446,7 +445,7 @@ bool userConditionsMet =
                                 children: [
                                   TextButton(
                                     onPressed: () => continueAsGuest(state),
-                                    child: Text(
+                                    child: const Text(
                                       'Continue as Guest',
                                       style: TextStyle(color: Colors.blue),
                                     ),
@@ -462,153 +461,188 @@ bool userConditionsMet =
 
                 case AuthenticatorStep.signUp:
                   return Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                      title: const Text(
+                        "Create Account",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     backgroundColor: Colors.white,
-                    body: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Center(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Create Account",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
+                    body: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextFormField(
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                if (!value.isValidEmail) {
+                                  return "Please enter a valid Email";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Email',
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
                                 ),
                               ),
-                              SizedBox(height: 50),
-                              TextField(
-                                controller: emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  hintText: 'Email',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: usernameController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Username',
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
                                 ),
                               ),
-                              SizedBox(height: 20),
-                              TextField(
-                                controller: usernameController,
-                                decoration: InputDecoration(
-                                  hintText: 'Username',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
+                            ),
+                            const SizedBox(height: 20),
+                            IntlPhoneNumberFiled(
+                              controller: phoneController,
+                              initialValue: phoneNumber?.phoneNumber,
+                              onInputChanged: (ph) {
+                                phoneNumber = ph;
+                              },
+                              labelText: "Phone",
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: passwordController,
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
                                 ),
                               ),
-                              SizedBox(height: 20),
-                              TextField(
-                                controller: phoneController,
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  hintText: 'Phone',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: birthdateController,
+                              keyboardType: TextInputType.datetime,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              inputFormatters: [birthdateFormatter],
+                              decoration: InputDecoration(
+                                hintText: 'Birthdate',
+                                helperText: "mm-dd-yyyy",
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
                                 ),
                               ),
-                              SizedBox(height: 20),
-                              TextField(
-                                controller: passwordController,
-                                keyboardType: TextInputType.visiblePassword,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  hintText: 'Password',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: genderController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Gender',
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
                                 ),
                               ),
-                              SizedBox(height: 20),
-                              TextField(
-                                controller: birthdateController,
-                                keyboardType: TextInputType.datetime,
-                                decoration: InputDecoration(
-                                  hintText: 'Birthdate',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
+                            ),
+                            const SizedBox(height: 50),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blue, // background color
+                                onPrimary: Colors.white, // foreground color
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
                                 ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 40, vertical: 15),
                               ),
-                              SizedBox(height: 20),
-                              TextField(
-                                controller: genderController,
-                                decoration: InputDecoration(
-                                  hintText: 'Gender',
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 50),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background color
-                                  onPrimary: Colors.white, // foreground color
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 40, vertical: 15),
-                                ),
-                                onPressed: () {
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
                                   signUp(state);
-                                },
-                                child: Text(
-                                  'Sign Up',
-                                  style: TextStyle(fontSize: 20),
+                                }
+                              },
+                              child: const Text(
+                                'Sign Up',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('Already have an account?'),
+                                TextButton(
+                                  onPressed: () => state
+                                      .changeStep(AuthenticatorStep.signIn),
+                                  child: const Text(
+                                    'Sign In',
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 30),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('Already have an account?'),
-                                  TextButton(
-                                    onPressed: () => state
-                                        .changeStep(AuthenticatorStep.signIn),
-                                    child: Text(
-                                      'Sign In',
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () => continueAsGuest(state),
+                                  child: const Text(
+                                    'Continue as Guest',
+                                    style: TextStyle(color: Colors.blue),
                                   ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                    onPressed: () => continueAsGuest(state),
-                                    child: Text(
-                                      'Continue as Guest',
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -627,7 +661,7 @@ bool userConditionsMet =
 
                             TextField(
                               controller: confirmSignInValueController,
-                              decoration: new InputDecoration.collapsed(
+                              decoration: const InputDecoration.collapsed(
                                   hintText: 'Confirmation Code'),
                             ),
 
@@ -639,7 +673,7 @@ bool userConditionsMet =
                               onPressed: () {
                                 confirmSignIn(state);
                               },
-                              child: Text('Confirm'),
+                              child: const Text('Confirm'),
                             )
                           ],
                         ),
@@ -667,6 +701,7 @@ bool userConditionsMet =
               }
             },
             child: MaterialApp(
+              navigatorKey: navigatorKey,
               builder: Authenticator.builder(),
               home: 
               userConditionsMet ? 
@@ -682,12 +717,14 @@ bool userConditionsMet =
               },
             ),
           );
-        }));
+        },
+      ),
+    );
   }
 }
 
 class AppScaffold extends StatefulWidget {
-  AppScaffold({Key? key, required this.client}) : super(key: key);
+  const AppScaffold({Key? key, required this.client}) : super(key: key);
 
   final dynamic client;
 
@@ -718,7 +755,7 @@ class AppScaffold extends StatefulWidget {
 
 
   @override
-  _AppScaffoldState createState() => _AppScaffoldState();
+  State<AppScaffold> createState() => _AppScaffoldState();
 }
 
 class _AppScaffoldState extends State<AppScaffold> {

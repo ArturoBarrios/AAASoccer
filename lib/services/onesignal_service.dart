@@ -1,22 +1,7 @@
-import 'package:soccermadeeasy/commands/base_command.dart';
-
-import 'package:soccermadeeasy/models/app_model.dart';
-
-import '../amplifyconfiguration.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_authenticator/amplify_authenticator.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_api/amplify_api.dart';
-import '../models/ModelProvider.dart';
-import '../commands/user_command.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
-import '../models/user_model.dart';
-import 'package:twilio_flutter/twilio_flutter.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
-class OneSignalService  {
-  Future<void> configureOneSignal() async{
+class OneSignalService {
+  Future<void> configureOneSignal() async {
     print("configureOneSignal");
     //Remove this method to stop OneSignal Debugging
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
@@ -28,7 +13,6 @@ class OneSignalService  {
       print("Accepted permission: $accepted");
     });
   }
-  
 
   Future<void> sendPN(Map<String, dynamic> pNInput) async {
     print("sendPNN");

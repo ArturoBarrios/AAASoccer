@@ -1,17 +1,9 @@
 import 'dart:convert';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/Location.dart';
-import '../services/twilio_services.dart';
-import '../services/onesignal_service.dart';
 import '../graphql/mutations/chat.dart';
 import '../graphql/queries/chat.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
-import '../models/chat_page_model.dart';
 import 'package:http/http.dart' as http;
-import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/user_command.dart';
 import 'images_command.dart';
@@ -41,16 +33,15 @@ class ChatCommand extends BaseCommand {
     for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {
       if (appModel.currentUser['chats']['data'][i]['_id'] == chat['_id']) {
         chatPageModel.messages = user['chats']['data'][i]['messages']['data'];
-       
       }
     }
   }
 
-
-  //generalize this method and attach to 
-  //teams, players, leagues, tournaments, 
+  //generalize this method and attach to
+  //teams, players, leagues, tournaments,
   // and other events
-  Future<Map<String, dynamic>> createChat(dynamic chatInput, dynamic objectsToAttachInput) async {
+  Future<Map<String, dynamic>> createChat(
+      dynamic chatInput, dynamic objectsToAttachInput) async {
     print("createChat");
     print("chatInput: $chatInput");
     Map<String, dynamic> createChatResponse = {
@@ -80,8 +71,6 @@ class ChatCommand extends BaseCommand {
       createChatResponse['success'] = true;
       createChatResponse['data'] = createdChat;
 
-      
-
       return createChatResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
@@ -89,12 +78,12 @@ class ChatCommand extends BaseCommand {
     }
   }
 
-  List getChatsPageModel(){
+  List getChatsPageModel() {
     print("getChatsPageModel");
     return chatPageModel.chats;
   }
 
-  void updateChatModel(dynamic chat){
+  void updateChatModel(dynamic chat) {
     print("updateChatModel");
     print("chat: $chat");
     int indexOfChat = getIndexOfChat(chat['_id']);
@@ -103,38 +92,32 @@ class ChatCommand extends BaseCommand {
     chatPageModel.chats.insert(indexOfChat, chat);
   }
 
-
-
-
   //seperate for now because I don't feel like refactoring
-  Future<Map<String,dynamic>> setupChats(List<dynamic> chats) async{
-    print("setupChats");    
-    Map<String,dynamic> setupChatsResp = {
+  Future<Map<String, dynamic>> setupChats(List<dynamic> chats) async {
+    print("setupChats");
+    Map<String, dynamic> setupChatsResp = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
-    try{      
-      for(int i = 0;i<chats.length;i++){
+    try {
+      for (int i = 0; i < chats.length; i++) {
         String imageKey = chats[i]['mainImageKey'];
-        dynamic imageInput = {
-          "key": imageKey      
-        };
+        dynamic imageInput = {"key": imageKey};
         print("imageKeyy: $imageKey");
-        if(imageKey != null){
+        if (imageKey != null) {
           print("imageKey: $imageKey");
-          Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
-          print("getImageUrlResppp: "+getImageUrlResp.toString());
-          if(getImageUrlResp['success']){
+          Map<String, dynamic> getImageUrlResp =
+              await ImagesCommand().getImageUrl(imageInput);
+          print("getImageUrlResppp: " + getImageUrlResp.toString());
+          if (getImageUrlResp['success']) {
             chats[i]['mainImageUrl'] = getImageUrlResp['data'];
           }
-        }        
+        }
       }
-      
-      
 
-      setupChatsResp['success'] = true;    
-      setupChatsResp['data'] = chats;  
+      setupChatsResp['success'] = true;
+      setupChatsResp['data'] = chats;
 
       print("finished setupChats");
 
@@ -143,38 +126,34 @@ class ChatCommand extends BaseCommand {
       print('Mutation failed: $e');
       return setupChatsResp;
     }
-
-
   }
 
-  Future<Map<String,dynamic>> setupChatModels() async{
-    print("setupChatModels");    
-    Map<String,dynamic> setupChatModelsResp = {
+  Future<Map<String, dynamic>> setupChatModels() async {
+    print("setupChatModels");
+    Map<String, dynamic> setupChatModelsResp = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
-    try{
+    try {
       chatPageModel.chats = [];
-      for(int i = 0;i<appModel.currentUser['chats']['data'].length;i++){
-        String imageKey = appModel.currentUser['chats']['data'][i]['mainImageKey'];
-        dynamic imageInput = {
-          "key": imageKey      
-        };
-        if(imageKey != null){
+      for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {
+        String imageKey =
+            appModel.currentUser['chats']['data'][i]['mainImageKey'];
+        dynamic imageInput = {"key": imageKey};
+        if (imageKey != null) {
           print("imageKey: $imageKey");
-          Map<String,dynamic> getImageUrlResp = await ImagesCommand().getImageUrl(imageInput);
-          if(getImageUrlResp['success']){
-            appModel.currentUser['chats']['data'][i]['mainImageUrl'] = getImageUrlResp['data'];
+          Map<String, dynamic> getImageUrlResp =
+              await ImagesCommand().getImageUrl(imageInput);
+          if (getImageUrlResp['success']) {
+            appModel.currentUser['chats']['data'][i]['mainImageUrl'] =
+                getImageUrlResp['data'];
           }
         }
         chatPageModel.chats.add(appModel.currentUser['chats']['data'][i]);
-
       }
-      
-      
 
-      setupChatModelsResp['success'] = true;      
+      setupChatModelsResp['success'] = true;
 
       print("finished setupChatModels");
 
@@ -183,8 +162,6 @@ class ChatCommand extends BaseCommand {
       print('Mutation failed: $e');
       return setupChatModelsResp;
     }
-
-
   }
 
   Future<Map<String, dynamic>> createText(
@@ -229,8 +206,6 @@ class ChatCommand extends BaseCommand {
 
       userModel.chats[indexOfChat] = chat;
 
-
-
       print("chat test length before: " +
           chatPageModel.messages.length.toString());
 
@@ -251,8 +226,6 @@ class ChatCommand extends BaseCommand {
     }
   }
 
-
-
   Future<Map<String, dynamic>> removeChat(
       Map<String, dynamic> chatInput) async {
     print("removeChat for real");
@@ -262,7 +235,7 @@ class ChatCommand extends BaseCommand {
       "data": null
     };
     try {
-      if(!chatInput['isMainChat']){
+      if (!chatInput['isMainChat']) {
         http.Response response = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{
@@ -283,9 +256,7 @@ class ChatCommand extends BaseCommand {
         removeChatResponse['success'] = true;
         removeChatResponse['message'] = "Chat Removed";
         removeChatResponse['data'] = deletedChat;
-
-      }
-      else{
+      } else {
         removeChatResponse['success'] = false;
         removeChatResponse['message'] = "Cannot remove main chat";
         removeChatResponse['data'] = null;
@@ -293,7 +264,7 @@ class ChatCommand extends BaseCommand {
 
       return removeChatResponse;
     } on ApiException catch (e) {
-      print('Mutation failed: $e');      
+      print('Mutation failed: $e');
       return removeChatResponse;
     }
   }

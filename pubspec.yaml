@@ -52,7 +52,7 @@ dependencies:
   flutter_animated_dialog: ^2.0.1  
   location: ^5.0.2+1
   onesignal_flutter: ^3.4.2
-  twilio_flutter: ^0.0.9
+
   firebase_core: ^2.4.1
   geolocator: ^9.0.2
   geocoding: ^2.1.0
@@ -76,6 +76,18 @@ dependencies:
   share_plus: ^7.1.0
   path_provider: ^2.1.0
   pay: ^1.1.2
+
+  # DI
+  get_it: ^7.6.0
+
+  # Twilio
+  twilio_flutter: ^0.0.9
+
+  # International phone number input field
+  intl_phone_number_input: ^0.7.3+1
+
+  # Mask input filed formatter
+  mask_text_input_formatter: ^2.5.0
 
   
 dependency_overrides:

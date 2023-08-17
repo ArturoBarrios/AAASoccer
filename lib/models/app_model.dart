@@ -1,9 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/foundation.dart';
-import 'package:faunadb_http/faunadb_http.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:twilio_flutter/twilio_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 class AppModel extends ChangeNotifier {
@@ -13,13 +9,6 @@ class AppModel extends ChangeNotifier {
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
   set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
     _faunaClient = faunaClient;
-    notifyListeners();
-  }
-
-  TwilioFlutter? _twilioClient = null;
-  TwilioFlutter get twilioClient => _twilioClient!;
-  set twilioClient(TwilioFlutter twilioClient) {
-    _twilioClient = twilioClient;
     notifyListeners();
   }
 
@@ -38,14 +27,16 @@ class AppModel extends ChangeNotifier {
   }
 
   Position _currentPosition = const Position(
-      longitude: 0,
-      latitude: 0,
-      timestamp: null,
-      accuracy: 0,
-      altitude: 0,
-      heading: 0,
-      speed: 0,
-      speedAccuracy: 0);
+    longitude: 0,
+    latitude: 0,
+    timestamp: null,
+    accuracy: 0,
+    altitude: 0,
+    heading: 0,
+    speed: 0,
+    speedAccuracy: 0,
+  );
+
   Position get currentPosition => _currentPosition;
   set currentPosition(Position currentPosition) {
     _currentPosition = currentPosition;
