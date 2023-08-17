@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   collection: any
   provider: ^6.0.2
+  riverpod: ^2.3.6
   amplify_flutter: ^0.5.0
   amplify_datastore: ^0.5.0
   amplify_auth_cognito: ^0.5.0
@@ -54,6 +55,7 @@ dependencies:
   onesignal_flutter: ^3.4.2
 
   firebase_core: ^2.4.1
+  freezed_annotation: ^2.4.1
   geolocator: ^9.0.2
   geocoding: ^2.1.0
   flutter_stripe: ^9.3.0
@@ -89,6 +91,7 @@ dependencies:
   # Mask input filed formatter
   mask_text_input_formatter: ^2.5.0
 
+  webview_flutter: ^4.2.2
   
 dependency_overrides:
   rxdart: ^0.27.1
@@ -97,6 +100,8 @@ dependency_overrides:
 dev_dependencies:
   ferry_generator: #[latest-version]
   build_runner: #[latest-version]
+  freezed: ^2.4.1
+  json_serializable: ^6.6.2
   flutter_test:
     sdk: flutter
 

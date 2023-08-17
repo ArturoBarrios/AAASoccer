@@ -1,12 +1,19 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:flutter/material.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
+import 'package:soccermadeeasy/commands/paypal_payment/models/response/orders/paypal_create_order_response.dart';
+import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 import 'package:soccermadeeasy/models/Payment.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
+import '../commands/paypal_payment/models/request/orders/paypal_create_order_request.dart';
+import '../commands/paypal_payment/paypal_provider.dart';
 import '../commands/subscriptions_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
@@ -22,6 +29,7 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 
 import 'Buttons/apple_google_pay_button.dart';
+import 'paypal_payment_view.dart';
 
 // // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
@@ -75,7 +83,7 @@ class _CardFormScreen extends State<CardFormScreen> {
             {'id': 1}
           ]),
     };
-    if(_selectedPayment == "Pay With Existing Card"){
+    if (_selectedPayment == "Pay With Existing Card") {
       createPaymentIntentInput['paymentMethodId'] = paymentMethods[0]['id'];
     }
     Map<String, dynamic> createPaymentIntentResp =
@@ -93,19 +101,19 @@ class _CardFormScreen extends State<CardFormScreen> {
             currentUser,
             widget.paymentDetails['roles']);
         print("addEventResp: " + addEventResp.toString());
-      }
-      else if (widget.paymentDetails['objectType'] == Constants.SUBSCRIPTION) {
+      } else if (widget.paymentDetails['objectType'] ==
+          Constants.SUBSCRIPTION) {
         dynamic subscriptionInput = {
           "user_id": currentUser['_id'],
-          "subscription_type_id": widget.paymentDetails['objectToPurchase']['_id'],
+          "subscription_type_id": widget.paymentDetails['objectToPurchase']
+              ['_id'],
         };
         print("subscriptionInputt: " + subscriptionInput.toString());
-        dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand().createSubscriptionTypeUser(
-          subscriptionInput    
-        );
-        print("createSubscriptionTypeUserResp: " + createSubscriptionTypeUserResp.toString());
-      }
-       else if (widget.paymentDetails['objectType'] == Constants.TEAM) {
+        dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand()
+            .createSubscriptionTypeUser(subscriptionInput);
+        print("createSubscriptionTypeUserResp: " +
+            createSubscriptionTypeUserResp.toString());
+      } else if (widget.paymentDetails['objectType'] == Constants.TEAM) {
         dynamic addEventResp = await TeamCommand().addUserToTeam(
             widget.paymentDetails['objectToPurchase'],
             currentUser,
@@ -235,6 +243,61 @@ class _CardFormScreen extends State<CardFormScreen> {
     });
   }
 
+  Future<void> createOrderWithPaypal() async {
+    final paypalRepository = ProviderContainer().read(paypalRepositoryProvider);
+
+    final result = await paypalRepository.createOrder(
+      order: const PaypalCreateOrderRequest(
+          purchaseUnits: [
+            PurchaseUnitsRequest(
+              items: [
+                Items(
+                    name: '50 kadir item',
+                    unitAmount: UnitAmount(value: '50.00'),
+                    quantity: '1',
+                    description: 'new kadir descr')
+              ],
+              amount: Amount(
+                  value: '50.00',
+                  breakdown: Breakdown(itemTotal: ItemTotal(value: '50.00'))),
+            )
+          ],
+          applicationContext: ApplicationContext(
+              returnUrl: 'https://example.com/return',
+              cancelUrl: 'https://example.com/cancel')),
+    );
+    result.when(
+      left: (final left) => ScaffoldMessenger.of(context).show(
+        type: SnackBarType.failure,
+        message: left.message,
+      ),
+      right: (right) {
+        ScaffoldMessenger.of(context).show(
+          type: SnackBarType.success,
+          message: 'Order created',
+        );
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) => PaypalPaymentView(
+              paymentUrl: findApproveLink(right?.links),
+              returnUrl: 'https://example.com/return',
+              cancelUrl: 'https://example.com/cancel',
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String? findApproveLink(List<Links>? links) {
+    if (links == null) {
+      return null;
+    }
+
+    return links.firstWhere((link) => link.rel == "approve").href;
+  }
+
   @override
   Widget build(BuildContext context) {
     PaymentType status =
@@ -290,7 +353,7 @@ class _CardFormScreen extends State<CardFormScreen> {
                     ? Column(
                         children: [
                           Container(
-                            height:200,
+                            height: 200,
                             child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: paymentMethods.length,
@@ -298,8 +361,7 @@ class _CardFormScreen extends State<CardFormScreen> {
                                     padding: EdgeInsets.only(
                                         top: 16.0,
                                         left: 16.0,
-                                        right:
-                                            16.0), // Define your own padding
+                                        right: 16.0), // Define your own padding
                                     child: FlipCard(
                                       fill: Fill.fillBack,
                                       direction: FlipDirection.HORIZONTAL,
@@ -316,8 +378,7 @@ class _CardFormScreen extends State<CardFormScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
@@ -330,7 +391,8 @@ class _CardFormScreen extends State<CardFormScreen> {
                                                     size: 36,
                                                   ),
                                                   Text(
-                                                    paymentMethods[index]['card']['brand'],
+                                                    paymentMethods[index]
+                                                        ['card']['brand'],
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:
@@ -342,7 +404,9 @@ class _CardFormScreen extends State<CardFormScreen> {
                                               ),
                                               SizedBox(height: 16),
                                               Text(
-                                                '**** **** **** '+paymentMethods[index]['card']['last4'],
+                                                '**** **** **** ' +
+                                                    paymentMethods[index]
+                                                        ['card']['last4'],
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 28,
@@ -381,7 +445,9 @@ class _CardFormScreen extends State<CardFormScreen> {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    paymentMethods[index]['billing_details']['name'],
+                                                    paymentMethods[index]
+                                                            ['billing_details']
+                                                        ['name'],
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 18,
@@ -416,8 +482,7 @@ class _CardFormScreen extends State<CardFormScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               SizedBox(height: 32),
                                               Text(
@@ -430,7 +495,8 @@ class _CardFormScreen extends State<CardFormScreen> {
                                               ),
                                               SizedBox(height: 8),
                                               Text(
-                                                paymentMethods[index]['card']['last4'],
+                                                paymentMethods[index]['card']
+                                                    ['last4'],
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 48,
@@ -450,9 +516,8 @@ class _CardFormScreen extends State<CardFormScreen> {
                                           ),
                                         ),
                                       ),
-                                    ))),                            
+                                    ))),
                           ),
-                          
                           Padding(
                             padding: EdgeInsets.only(
                                 top: 16.0,
@@ -461,8 +526,9 @@ class _CardFormScreen extends State<CardFormScreen> {
                             child: Container(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  createPaymentIntent();
+                                onPressed: () async {
+                                  // createPaymentIntent();
+                                  await PaymentCommand().createRefund();
                                 },
                                 child: const Text('Pay'),
                               ),
@@ -470,12 +536,17 @@ class _CardFormScreen extends State<CardFormScreen> {
                           )
                         ],
                       )
-                    : waysToPay[4] == _selectedPayment
-                        ? AppleGooglePaymentButton(
-                            item: widget.paymentDetails,
-                            paymentResult: (final result) {},
+                    : waysToPay[2] == _selectedPayment
+                        ? ElevatedButton(
+                            onPressed: createOrderWithPaypal,
+                            child: const Text('Pay with paypal'),
                           )
-                        : paymentWidgetToShow(status)
+                        : waysToPay[4] == _selectedPayment
+                            ? AppleGooglePaymentButton(
+                                item: widget.paymentDetails,
+                                paymentResult: (final result) {},
+                              )
+                            : paymentWidgetToShow(status)
                 // GestureDetector(
                 //   onTap: () {
                 //     print("Add New Card pressed");

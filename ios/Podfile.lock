@@ -75,11 +75,11 @@ PODS:
     - FirebaseAnalytics (~> 10.12.0)
   - Firebase/CoreOnly (10.12.0):
     - FirebaseCore (= 10.12.0)
-  - firebase_analytics (10.4.4):
+  - firebase_analytics (10.4.5):
     - Firebase/Analytics (= 10.12.0)
     - firebase_core
     - Flutter
-  - firebase_core (2.15.0):
+  - firebase_core (2.15.1):
     - Firebase/CoreOnly (= 10.12.0)
     - Flutter
   - FirebaseAnalytics (10.12.0):
@@ -254,6 +254,8 @@ PODS:
   - SwiftLint (0.52.4)
   - url_launcher_ios (0.0.1):
     - Flutter
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - amplify_api_ios (from `.symlinks/plugins/amplify_api_ios/ios`)
@@ -281,6 +283,7 @@ DEPENDENCIES:
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
@@ -369,6 +372,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/stripe_ios/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
   Amplify: 010d6a71db20812d9e3062db1fe827393d01e584
@@ -387,8 +392,8 @@ SPEC CHECKSUMS:
   AWSPluginsCore: 120cfa265293694921b6595fe00d1cb5ab558847
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
-  firebase_analytics: 3ff822ee2e90f95b61f0da300df20b378d380fbb
-  firebase_core: e477125798fc37cd4ab43ca6a8536bf7e0929c00
+  firebase_analytics: 3bdcd8b68b7b8ccf28bbcdcfb994309f6232f873
+  firebase_core: 4a3246a02f828a01c74a2c26427037786d90f17f
   FirebaseAnalytics: 0270389efbe3022b54ec4588862dabec3477ee98
   FirebaseCore: f86a1394906b97ac445ae49c92552a9425831bed
   FirebaseCoreInternal: b342e37cd4f5b4454ec34308f073420e7920858e
@@ -404,7 +409,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
   libphonenumber_plugin: e8a7d64a6624a7c25f2c4ab0b7ead2a8e341e35e
-  location: 14159dff482de87eb2e0c3a9f234eca65ad7decb
+  location: d5cf8598915965547c3f36761ae9cc4f4e87d22e
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
   onesignal_flutter: b8ac01bc3ebe47e798d7d775455c3a9b5b84f1c5
@@ -430,6 +435,7 @@ SPEC CHECKSUMS:
   SwiftFormat: f4c21fdf8aacdd2db6ffe110f939e0548c9a7de3
   SwiftLint: 1cc5cd61ba9bacb2194e340aeb47a2a37fda00b3
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
 
 PODFILE CHECKSUM: 189f4315f704f49d8687a645a03ebc1cdf30e9a2
 

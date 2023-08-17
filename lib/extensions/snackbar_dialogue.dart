@@ -15,8 +15,10 @@ extension SnackBarDialogue on ScaffoldMessengerState {
             type == SnackBarType.success ? Colors.green : Colors.red,
         content: Row(
           children: [
-            Text(
-              message ?? '',
+            Flexible(
+              child: Text(
+                message ?? '',
+              ),
             ),
             if (onTap != null) const Spacer(),
             if (onTap != null)

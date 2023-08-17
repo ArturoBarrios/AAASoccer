@@ -171,8 +171,22 @@ exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) 
     }
 });
 
+//Create payment refund
+exports.StripeCreateRefund = functions.https.onRequest(async (req, res) => {
 
+    try {
+        const refund = await stripe.refunds.create({
+            charge: req.body.charge,
+        });
 
+        res.status(200).send({ success: true, refund: refund });
+
+    } catch (error) {
+        print("index.js erorrrrrr create refund: " + e.toString());
+        res.status(404).send({ success: false, error: error.message })
+
+    }
+});
 
 //payment intent
 exports.StripePayEndpointMethodId = functions.https.onRequest(async(req, res) => {
