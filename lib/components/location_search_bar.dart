@@ -79,39 +79,37 @@ class _LocationSearchBar extends State<LocationSearchBar> {
         ),
         SizedBox(
           height: 200,
-          child: Expanded(
-            child: addressPredictions.isNotEmpty
-                ? ListView.builder(
-                    itemCount: addressPredictions.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        child: InkWell(
-                          onTap: () {
-                            chooseAddress(addressPredictions[index]);
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              ListTile(
-                                title: Text(
-                                  addressPredictions[index]["description"]!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 18.0,
-                                    fontFamily: 'supermarket',
-                                  ),
+          child: addressPredictions.isNotEmpty
+              ? ListView.builder(
+                  itemCount: addressPredictions.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: InkWell(
+                        onTap: () {
+                          chooseAddress(addressPredictions[index]);
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(
+                                addressPredictions[index]["description"]!,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18.0,
+                                  fontFamily: 'supermarket',
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  )
-                : const Center(
-                    child: Text('Add Address'),
-                  ),
-          ),
+                      ),
+                    );
+                  },
+                )
+              : const Center(
+                  child: Text('Add Address'),
+                ),
         ),
       ],
     );
