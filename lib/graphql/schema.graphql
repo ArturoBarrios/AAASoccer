@@ -6,6 +6,13 @@ type Query {
   allCurrentUserEventParticipants(userId: ID!, startTime: String!): [EventUserParticipant!] @resolver(name: "allCurrentUserEventParticipants")
   getAllTeams(from: String!): [Team!] @resolver(name: "getAllTeams")
   getAllTeamUserParticipants(userId: ID!): [TeamUserParticipant!] @resolver(name: "getAllTeamUserParticipants")
+  allCurrentUserEventParticipantsByDistance(
+    userLatitude: Float!,
+    userLongitude: Float!,
+    startTime: String!,
+    distance: Float!
+  ): [EventUserParticipant!] @resolver(name: "allCurrentUserEventParticipantsByDistance")
+
 
   #  teams
 
@@ -200,6 +207,7 @@ type Player   {
   sponsors: [Sponsor] @relation
   ratings: [Rating] @relation
 }
+
 type EventUserParticipant {
   event: Event
   user: User
