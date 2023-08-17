@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import '../constants.dart';
 import '../graphql/mutations/prices.dart';
 import '../graphql/mutations/users.dart';
@@ -329,6 +330,26 @@ class PaymentCommand extends BaseCommand {
       return json.decode(response.body);
     } on FormatException catch (e) {
       print("error: " + e.toString());
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> createRefund() async {
+    log('create refund kadir');
+    try {
+      final response = await http.post(
+          Uri.parse(
+              'https://us-central1-soccer-app-a9060.cloudfunctions.net/StripeCreateRefund'),
+          body: {'charge': 'ch_3Nf2ZyDUXwYENeT43OU1UB5C'});
+
+      print("Response Status Code: ${response.statusCode}");
+
+      inspect(response);
+
+      log(jsonDecode(response.body));
+      return {};
+    } catch (e) {
+      inspect(e);
       return {};
     }
   }
