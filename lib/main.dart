@@ -12,7 +12,7 @@ import 'package:soccermadeeasy/services/stripe_service.dart';
 //import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:soccermadeeasy/views/spash_screen.dart';
+import 'package:soccermadeeasy/views/splash_screen.dart';
 
 import 'commands/base_command.dart';
 import 'commands/user_command.dart';

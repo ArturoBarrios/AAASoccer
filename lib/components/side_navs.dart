@@ -58,7 +58,7 @@ class SideNavs extends StatefulWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(profileImageUrl),
+                  backgroundImage: NetworkImage(profileImageUrl.toString() != '' ? profileImageUrl.toString() : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
                   maxRadius: 50,
                 ),
                 SizedBox(height: 10),

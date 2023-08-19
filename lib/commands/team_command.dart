@@ -98,6 +98,8 @@ class TeamCommand extends BaseCommand {
     return userTeamDetails;
   }
 
+  
+
   Future<Map<String, dynamic>> findTeamById(
     Map<String, dynamic> teamInput,
   ) async {
@@ -135,6 +137,8 @@ class TeamCommand extends BaseCommand {
     }
     return getTeamResp;
   }
+
+  
 
   List<dynamic> getMyTeamRoles(dynamic team, dynamic user) {
     print("getMyTeamRoles()");
@@ -754,47 +758,9 @@ class TeamCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> removeUsersFromTeam(
-      dynamic team, List<dynamic> users) async {
-    print("removePlayersFromTeam");
-    print("team: " + team.toString());
-    print("players: " + users.toString());
+  
 
-    Map<String, dynamic> removePlayersFromTeamResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
 
-    try {
-      users.forEach((user) async {
-        dynamic userInput = {
-          "_id": user['_id'],
-        };
-
-        http.Response response = await http.post(
-          Uri.parse('https://graphql.fauna.com/graphql'),
-          headers: <String, String>{
-            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-            'Content-Type': 'application/json'
-          },
-          body: jsonEncode(<String, String>{
-            'query': UserMutations().removeTeamFromUser(userInput, team),
-          }),
-        );
-
-        print("response body: ");
-        print(jsonDecode(response.body));
-
-        removePlayersFromTeamResponse['success'] = true;
-        removePlayersFromTeamResponse['message'] = "Team from players";
-      });
-      return removePlayersFromTeamResponse;
-    } on Exception catch (e) {
-      print("Mutation failed: $e");
-      return removePlayersFromTeamResponse;
-    }
-  }
 
   Future<Map<String, dynamic>> addUserToTeam(
       dynamic teamInput, dynamic userInput, String roles) async {
@@ -819,7 +785,7 @@ class TeamCommand extends BaseCommand {
             'Content-Type': 'application/json'
           },
           body: jsonEncode(<String, String>{
-            'query': TeamMutations().addUserToTeam(teamInput, userInput, roles),
+            'query': UserMutations().addUserToTeam(userInput, teamInput, roles),
           }),
         );
 

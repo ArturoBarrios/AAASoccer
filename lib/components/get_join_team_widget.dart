@@ -50,6 +50,8 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
     return roles;
   }
 
+
+
   void goToTeam(){
     Navigator.pop(context);
   }
@@ -72,6 +74,18 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
               )),
     );
     // await AdaptyPaymentService().makePurchase();
+  }
+
+  void leaveTeam(){
+    String roleToLeave = "PLAYER";
+    // if (roles == "{}") {
+    //   UserCommand().leaveTeam(team, roles);
+    // } else {
+    //   TeamCommand().updateTeamUserParticipant(team, roles);
+    // }
+    // print("removeTeam");
+    // print("roles: " + roles.toString());
+    // UserCommand().leaveTeam(team, roles);
   }
 
   Future<void> sendTeamRequest(Map<int, dynamic> indexes,
@@ -276,6 +290,8 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
           child: GestureDetector(
         onTap: () {
           print("onTap Leave Team");
+          leaveTeam();
+          
         },
         child: Text("Leave Team"),
       ));

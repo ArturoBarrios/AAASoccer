@@ -38,11 +38,13 @@ class CardFormScreen extends StatefulWidget {
 
 class _CardFormScreen extends State<CardFormScreen> {
   bool isLoading = true;
+  bool isPaymentProcessing = false;
   bool showCardForm = true;
   List paymentMethods = [];
   dynamic selectedPaymentMethod;
   late ScrollController _selectPaymentController = ScrollController();
   final FlipCardController flipCardController = FlipCardController();
+
 
   List waysToPay = [
     "Pay With Existing Card",
@@ -54,6 +56,9 @@ class _CardFormScreen extends State<CardFormScreen> {
   String? _selectedPayment = "Pay With Existing Card";
 
   void createPaymentIntent() async {
+    setState(() {
+      
+    }); 
     Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
     print("currentUser: " + currentUser.toString());
     print("createPaymentIntent");

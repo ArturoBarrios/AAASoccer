@@ -204,7 +204,7 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventMutations().removeUserFromEvent(eventInput),
+          'query': EventMutations().deleteEventUserParticipant(eventInput),
         }),
       );
 
@@ -240,6 +240,7 @@ class EventCommand extends BaseCommand {
         updateUserRolesInEvent(eventInput, userInput, roles,
             updateRoleResp['eventUserParticipant']);
       } else {
+        print("will add user to event with input: "+ eventInput.toString()+"\n"+ userInput.toString()+"\n"+ roles.toString());
         http.Response response = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{
@@ -1821,49 +1822,7 @@ class EventCommand extends BaseCommand {
     return addUsersRolesInEventResponse;
   }
 
-  //ensure safety of team
-  //todo add a make team safe property on Event
-  Future<Map<String, dynamic>> removeUsersFromEvent(
-      dynamic event, List<dynamic> users) async {
-    print("removeUsersFromEvent");
-    print("event: " + event.toString());
-    print("users: " + users.toString());
 
-    Map<String, dynamic> removeUsersFromEventResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-
-    try {
-      users.forEach((user) async {
-        dynamic userInput = {
-          "_id": user['_id'],
-        };
-
-        http.Response response = await http.post(
-          Uri.parse('https://graphql.fauna.com/graphql'),
-          headers: <String, String>{
-            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-            'Content-Type': 'application/json'
-          },
-          body: jsonEncode(<String, String>{
-            'query': UserMutations().removeEventFromUser(userInput, event),
-          }),
-        );
-
-        print("response body: ");
-        print(jsonDecode(response.body));
-
-        removeUsersFromEventResponse['success'] = true;
-        removeUsersFromEventResponse['message'] = "Team from players";
-      });
-      return removeUsersFromEventResponse;
-    } on Exception catch (e) {
-      print("Mutation failed: $e");
-      return removeUsersFromEventResponse;
-    }
-  }
 
   Future<Map<String, dynamic>> updateEventUserParticipant(
       dynamic eventUserParticipant, String newRoles) async {

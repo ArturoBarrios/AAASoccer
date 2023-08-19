@@ -78,26 +78,30 @@ class _ChatViewState extends State<ChatView> {
       signedUrl = await uploadImageForChat();
     }
 
-    dynamic currentUser = UserCommand().getAppModelUser();
-    dynamic messageInput = {
-      "content": messageController.text.toString(),
-      "chat_id": widget.chatObject['_id'],
-      "sender_id": currentUser['_id'],
-      "image_url": signedUrl,
-    };
-    Map<String, dynamic> sendMessageResp =
-        await ChatCommand().createText(messageInput);
-    if (sendMessageResp['success']) {
-      dynamic chat = sendMessageResp['data'];
-      ChatCommand().updateChatModel(chat);
-      print("createTextResp: $sendMessageResp");
+    if(messageController.text != ""){
+      dynamic currentUser = UserCommand().getAppModelUser();
+      dynamic messageInput = {
+        "content": messageController.text.toString(),
+        "chat_id": widget.chatObject['_id'],
+        "sender_id": currentUser['_id'],
+        "image_url": signedUrl,
+      };
+      Map<String, dynamic> sendMessageResp =
+          await ChatCommand().createText(messageInput);
       if (sendMessageResp['success']) {
-        setState(() {
-          messageController.text = "";
-          selectedImagePath = null;
-        });
+        dynamic chat = sendMessageResp['data'];
+        ChatCommand().updateChatModel(chat);
+        print("createTextResp: $sendMessageResp");
+        if (sendMessageResp['success']) {
+          setState(() {
+            messageController.text = "";
+            selectedImagePath = null;
+            FocusManager.instance.primaryFocus?.unfocus();
+          });
+        }
       }
     }
+
   }
 
   toggleLoading(final value) {
@@ -246,7 +250,7 @@ class _ChatViewState extends State<ChatView> {
                         messageController: messageController,
                         onTapSend: () {
                           sendMessage();
-                          FocusManager.instance.primaryFocus?.unfocus();
+                          
                         },
                       ),
                     ],

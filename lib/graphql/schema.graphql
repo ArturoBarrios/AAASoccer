@@ -545,6 +545,7 @@ type Location   {
   user: User
   team: Team
   organization: Organization
+  Price: [Price] @relation
 }
 
 type Rating   {  
@@ -565,6 +566,9 @@ type Price   {
   amount: String
   event: Event @relation(name: "event_price")
   team: Team
+  location: Location
   subscriptionType: SubscriptionType
   teamAmount: String
+  time: int #in minutes
+
 }
