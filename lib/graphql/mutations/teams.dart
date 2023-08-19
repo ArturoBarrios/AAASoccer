@@ -10,7 +10,7 @@ class TeamMutations {
         createTeam(data: {
           name: "${teamInput['name']}",
           color: "${teamInput['color']}",          
-          status: "ACTIVE"
+          status: "ACTIVE",
           capacity:"${teamInput['capacity']}",
           createdAt: "${teamInput['createdAt']}",
           updatedAt: "${teamInput['updatedAt']}",

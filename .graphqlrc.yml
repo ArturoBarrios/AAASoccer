@@ -3,7 +3,7 @@ documents: ''
 extensions:
   codegen:
     generates:
-      ./lib/graphl/backend:
+      ./lib/graphql/backend:
         plugins: []
       ./lib/graphql/frontend:
         plugins: []

@@ -1,8 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/event_command.dart';
-import '../../components/payment_screen.dart';
 
 class EventCreate extends StatefulWidget {
   const EventCreate({Key? key}) : super(key: key);
@@ -19,11 +17,13 @@ class _EventCreateState extends State<EventCreate> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
-
+  final capacityController = TextEditingController();
   bool _isLoading = false;
 
   Future<Map<String, dynamic>> createEvent() async {
-    print("createEvent");
+    setState(() {
+      _isLoading = true;
+    });
     Map<String, dynamic> createPickupGameResponse = {
       "success": false,
       "message": "Default Error",
@@ -37,6 +37,7 @@ class _EventCreateState extends State<EventCreate> {
         "surface": surfaceController.text.trim(),
         "images": imageController.text.trim(),
         "fieldSize": fieldSizeController.text.trim(),
+        "capacity": capacityController.text.trim(),
         "private": privateController.text.trim()
       };
       Map<String, dynamic> createEventRes =
@@ -45,51 +46,146 @@ class _EventCreateState extends State<EventCreate> {
         createPickupGameResponse['success'] = true;
         createPickupGameResponse['data'] = createEventRes['data'];
       }
+      setState(() {
+        _isLoading = false;
+      });
       return createPickupGameResponse;
-    } on ApiException catch (e) {
+    } on ApiException {
       return createPickupGameResponse;
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-          child: Column(children: [
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Name'),
+      appBar: AppBar(
+        centerTitle: false,
+        backgroundColor: Colors.orange.shade500,
+        title: const Text("Create Event"),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                hintText: 'Name',
+                labelText: 'Name',
+                border: InputBorder.none,
+                filled: true,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: imageController,
+              decoration: const InputDecoration(
+                hintText: 'Image',
+                labelText: 'Image',
+                border: InputBorder.none,
+                filled: true,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: secondaryNameController,
+              decoration: const InputDecoration(
+                hintText: 'Secondary Name',
+                labelText: 'Secondary Name',
+                border: InputBorder.none,
+                filled: true,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: addressController,
+              decoration: const InputDecoration(
+                hintText: 'Address',
+                labelText: 'Address',
+                border: InputBorder.none,
+                filled: true,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: surfaceController,
+              decoration: const InputDecoration(
+                hintText: 'Surface',
+                labelText: 'Surface',
+                border: InputBorder.none,
+                filled: true,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: fieldSizeController,
+              decoration: const InputDecoration(
+                hintText: 'Field Size',
+                labelText: 'Field Size',
+                border: InputBorder.none,
+                filled: true,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: privateController,
+              decoration: const InputDecoration(
+                hintText: 'Private',
+                labelText: 'Private',
+                border: InputBorder.none,
+                filled: true,
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: capacityController,
+              keyboardType: const TextInputType.numberWithOptions(signed: true),
+              decoration: const InputDecoration(
+                hintText: 'Event Capacity',
+                labelText: 'Event Capacity',
+                border: InputBorder.none,
+                filled: true,
+              ),
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            FilledButton(
+              onPressed: () {
+                createEvent();
+              },
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text("Create Event"),
+            ),
+          ],
         ),
-        TextField(
-          controller: imageController,
-          decoration: new InputDecoration.collapsed(hintText: 'Image'),
-        ),
-        TextField(
-          controller: secondaryNameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Secondary Name'),
-        ),
-        TextField(
-          controller: addressController,
-          decoration: new InputDecoration.collapsed(hintText: 'Address'),
-        ),
-        TextField(
-          controller: surfaceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Surface'),
-        ),
-        TextField(
-          controller: fieldSizeController,
-          decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
-        ),
-        TextField(
-          controller: privateController,
-          decoration: new InputDecoration.collapsed(hintText: 'Private'),
-        ),
-        GestureDetector(
-            onTap: () {
-              createEvent();
-            },
-            child: Text("tap me")),
-      ])),
+      ),
     );
   }
 }

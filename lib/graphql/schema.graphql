@@ -1,33 +1,3071 @@
-type Query {  
-  # functions
-  #   events
-  allEventsOfType(startTime: String!, type: EventType!): [Event!] @resolver(name: "allEventsOfType")
-  allEventsOfAllTypes(startTime: String!): [Event!] @resolver(name: "allEventsOfAllTypes")
-  allCurrentUserEventParticipants(userId: ID!, startTime: String!): [EventUserParticipant!] @resolver(name: "allCurrentUserEventParticipants")
-  getAllTeams(from: String!): [Team!] @resolver(name: "getAllTeams")
-  getAllTeamUserParticipants(userId: ID!): [TeamUserParticipant!] @resolver(name: "getAllTeamUserParticipants")
+directive @embedded on OBJECT
 
-  #  teams
+directive @collection(name: String!) on OBJECT
 
-  # querieds
-  allGames(pickup: Boolean): [Game!]  
-  allTrainings: [Training!]  
-  allTryouts: [Tryout!]  
-  allLeagues: [League!]  
-  allTournaments: [Tournament!]  
-  allSubscriptionTypes: [SubscriptionType!]  
-  allUsers: [User!]
-  allPlayers: [Player!]
-  allRequests: [Request!]
-  allTeams: [Team!]
-  getUserByEmail(email: String): User  
-  getUserByPhone(phone: String): User  
-  getUserByUsername(username: String): User  
-  AllGamesByID(username: [ID]):[ID] @resolver
-  AllEventsByID(ids: [ID]):[ID] @resolver
+directive @index(name: String!) on FIELD_DEFINITION
+
+directive @resolver(
+  name: String
+  paginated: Boolean! = false
+) on FIELD_DEFINITION
+
+directive @relation(name: String) on FIELD_DEFINITION
+
+directive @unique(index: String) on FIELD_DEFINITION
+
+# Allow manipulating the relationship between the types 'Chat' and 'Event' using the field 'Chat.event'.
+input ChatEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
 }
 
+# Allow manipulating the relationship between the types 'Chat' and 'Image'.
+input ChatImagesRelation {
+  # Create one or more documents of type 'Image' and associate them with the current document.
+  create: [ImageInput]
 
+  # Connect one or more documents of type 'Image' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Image' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Chat' input values
+input ChatInput {
+  name: String
+  messages: ChatMessagesRelation
+  users: ChatUsersRelation
+  event: ChatEventRelation
+  team: ChatTeamRelation
+  archived: Boolean
+  isPrivate: Boolean
+  IsMainChat: Boolean
+  mainImageKey: String
+  images: ChatImagesRelation
+}
+
+# Allow manipulating the relationship between the types 'Chat' and 'Message'.
+input ChatMessagesRelation {
+  # Create one or more documents of type 'Message' and associate them with the current document.
+  create: [MessageInput]
+
+  # Connect one or more documents of type 'Message' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Message' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Chat' and 'Team' using the field 'Chat.team'.
+input ChatTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Chat' and 'User'.
+input ChatUsersRelation {
+  # Create one or more documents of type 'User' and associate them with the current document.
+  create: [UserInput]
+
+  # Connect one or more documents of type 'User' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'User' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Coach' input values
+input CoachInput {
+  user: CoachUserRelation
+  ratings: CoachRatingsRelation
+}
+
+# Allow manipulating the relationship between the types 'Coach' and 'Rating'.
+input CoachRatingsRelation {
+  # Create one or more documents of type 'Rating' and associate them with the current document.
+  create: [RatingInput]
+
+  # Connect one or more documents of type 'Rating' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rating' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Coach' and 'User' using the field 'Coach.user'.
+input CoachUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+scalar Date
+
+# Allow manipulating the relationship between the types 'Event' and 'Chat'.
+input EventChatsRelation {
+  # Create one or more documents of type 'Chat' and associate them with the current document.
+  create: [ChatInput]
+
+  # Connect one or more documents of type 'Chat' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Chat' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Organization'.
+input EventCoorganizationsRelation {
+  # Create one or more documents of type 'Organization' and associate them with the current document.
+  create: [OrganizationInput]
+
+  # Connect one or more documents of type 'Organization' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Organization' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Game'.
+input EventGamesRelation {
+  # Create one or more documents of type 'Game' and associate them with the current document.
+  create: [GameInput]
+
+  # Connect one or more documents of type 'Game' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Game' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Image'.
+input EventImagesRelation {
+  # Create one or more documents of type 'Image' and associate them with the current document.
+  create: [ImageInput]
+
+  # Connect one or more documents of type 'Image' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Image' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Event' input values
+input EventInput {
+  name: String
+  joinConditions: EventJoinConditionsRelation
+  isMainEvent: Boolean
+  userParticipants: EventUserParticipantsRelation
+  price: EventPriceRelation
+  requests: EventRequestsRelation
+  coorganizations: EventCoorganizationsRelation
+  sponsors: EventSponsorsRelation
+  ratings: EventRatingsRelation
+  images: EventImagesRelation
+  location: EventLocationRelation
+  type: EventType
+  payments: EventPaymentsRelation
+  chats: EventChatsRelation
+  teams: EventTeamsRelation
+  games: EventGamesRelation
+  users: EventUsersRelation
+  tryouts: EventTryoutsRelation
+  leagues: EventLeaguesRelation
+  tournaments: EventTournamentsRelation
+  trainings: EventTrainingsRelation
+  wager: EventWagerRelation
+  archived: Boolean
+  deleted: Boolean
+  startTime: String
+  endTime: String
+  createdAt: String
+  capacity: Int
+  mainImageKey: String
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'JoinConditions'.
+input EventJoinConditionsRelation {
+  # Create one or more documents of type 'JoinConditions' and associate them with the current document.
+  create: [JoinConditionsInput]
+
+  # Connect one or more documents of type 'JoinConditions' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'JoinConditions' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'League'.
+input EventLeaguesRelation {
+  # Create one or more documents of type 'League' and associate them with the current document.
+  create: [LeagueInput]
+
+  # Connect one or more documents of type 'League' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'League' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Location'.
+input EventLocationRelation {
+  # Create one or more documents of type 'Location' and associate them with the current document.
+  create: [LocationInput]
+
+  # Connect one or more documents of type 'Location' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Location' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'EventOrder' and 'Event' using the field 'EventOrder.event'.
+input EventOrderEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'EventOrder' input values
+input EventOrderInput {
+  event: EventOrderEventRelation
+  order: Int
+  tournamentStage: EventOrderTournamentStageRelation
+}
+
+# Allow manipulating the relationship between the types 'EventOrder' and 'TournamentStage' using the field 'EventOrder.tournamentStage'.
+input EventOrderTournamentStageRelation {
+  # Create a document of type 'TournamentStage' and associate it with the current document.
+  create: TournamentStageInput
+
+  # Connect a document of type 'TournamentStage' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'TournamentStage'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Payment'.
+input EventPaymentsRelation {
+  # Create one or more documents of type 'Payment' and associate them with the current document.
+  create: [PaymentInput]
+
+  # Connect one or more documents of type 'Payment' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Payment' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Price' using the field 'Event.price'.
+input EventPriceRelation {
+  # Create a document of type 'Price' and associate it with the current document.
+  create: PriceInput
+
+  # Connect a document of type 'Price' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Price'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Rating'.
+input EventRatingsRelation {
+  # Create one or more documents of type 'Rating' and associate them with the current document.
+  create: [RatingInput]
+
+  # Connect one or more documents of type 'Rating' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rating' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Request'.
+input EventRequestsRelation {
+  # Create one or more documents of type 'Request' and associate them with the current document.
+  create: [RequestInput]
+
+  # Connect one or more documents of type 'Request' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Request' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Sponsor'.
+input EventSponsorsRelation {
+  # Create one or more documents of type 'Sponsor' and associate them with the current document.
+  create: [SponsorInput]
+
+  # Connect one or more documents of type 'Sponsor' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Sponsor' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Team'.
+input EventTeamsRelation {
+  # Create one or more documents of type 'Team' and associate them with the current document.
+  create: [TeamInput]
+
+  # Connect one or more documents of type 'Team' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Team' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Tournament'.
+input EventTournamentsRelation {
+  # Create one or more documents of type 'Tournament' and associate them with the current document.
+  create: [TournamentInput]
+
+  # Connect one or more documents of type 'Tournament' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Tournament' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Training'.
+input EventTrainingsRelation {
+  # Create one or more documents of type 'Training' and associate them with the current document.
+  create: [TrainingInput]
+
+  # Connect one or more documents of type 'Training' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Training' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Tryout'.
+input EventTryoutsRelation {
+  # Create one or more documents of type 'Tryout' and associate them with the current document.
+  create: [TryoutInput]
+
+  # Connect one or more documents of type 'Tryout' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Tryout' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'EventUserParticipant' and 'Event' using the field 'EventUserParticipant.event'.
+input EventUserParticipantEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'EventUserParticipant' input values
+input EventUserParticipantInput {
+  event: EventUserParticipantEventRelation
+  user: EventUserParticipantUserRelation
+  roles: String
+  organization: EventUserParticipantOrganizationRelation
+}
+
+# Allow manipulating the relationship between the types 'EventUserParticipant' and 'Organization' using the field 'EventUserParticipant.organization'.
+input EventUserParticipantOrganizationRelation {
+  # Create a document of type 'Organization' and associate it with the current document.
+  create: OrganizationInput
+
+  # Connect a document of type 'Organization' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Organization'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'EventUserParticipant' and 'User' using the field 'EventUserParticipant.user'.
+input EventUserParticipantUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'EventUserParticipant'.
+input EventUserParticipantsRelation {
+  # Create one or more documents of type 'EventUserParticipant' and associate them with the current document.
+  create: [EventUserParticipantInput]
+
+  # Connect one or more documents of type 'EventUserParticipant' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'EventUserParticipant' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'User'.
+input EventUsersRelation {
+  # Create one or more documents of type 'User' and associate them with the current document.
+  create: [UserInput]
+
+  # Connect one or more documents of type 'User' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'User' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Event' and 'Wager'.
+input EventWagerRelation {
+  # Create one or more documents of type 'Wager' and associate them with the current document.
+  create: [WagerInput]
+
+  # Connect one or more documents of type 'Wager' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Wager' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'FollowRelation' and 'User' using the field 'FollowRelation.follower'.
+input FollowRelationFollowerRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'FollowRelation' and 'User' using the field 'FollowRelation.following'.
+input FollowRelationFollowingRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# 'FollowRelation' input values
+input FollowRelationInput {
+  follower: FollowRelationFollowerRelation
+  following: FollowRelationFollowingRelation
+}
+
+# Allow manipulating the relationship between the types 'Game' and 'Team' using the field 'Game.awayteam'.
+input GameAwayteamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Game' and 'Event' using the field 'Game.event'.
+input GameEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Game' and 'Team' using the field 'Game.hometeam'.
+input GameHometeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# 'Game' input values
+input GameInput {
+  hometeam: GameHometeamRelation
+  awayteam: GameAwayteamRelation
+  teamA: String
+  teamB: String
+  round: Int
+  gameNumber: Int
+  homegoals: Int
+  awaygoals: Int
+  pickup: Boolean
+  event: GameEventRelation
+}
+
+# 'GifContent' input values
+input GifContentInput {
+  gifUrl: String
+}
+
+# Allow manipulating the relationship between the types 'Group' and 'GroupStage' using the field 'Group.groupStage'.
+input GroupGroupStageRelation {
+  # Create a document of type 'GroupStage' and associate it with the current document.
+  create: GroupStageInput
+
+  # Connect a document of type 'GroupStage' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'GroupStage'
+  disconnect: Boolean
+}
+
+# 'Group' input values
+input GroupInput {
+  groupNumber: Int
+  groupStage: GroupGroupStageRelation
+  teamOrders: GroupTeamOrdersRelation
+}
+
+# Allow manipulating the relationship between the types 'GroupStage' and 'Group'.
+input GroupStageGroupsRelation {
+  # Create one or more documents of type 'Group' and associate them with the current document.
+  create: [GroupInput]
+
+  # Connect one or more documents of type 'Group' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Group' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'GroupStage' input values
+input GroupStageInput {
+  groups: GroupStageGroupsRelation
+  numberOfTeams: Int
+  numberOfRoundsPerTeam: Int
+  tournament: GroupStageTournamentRelation
+  league: GroupStageLeagueRelation
+  type: EventType
+}
+
+# Allow manipulating the relationship between the types 'GroupStage' and 'League' using the field 'GroupStage.league'.
+input GroupStageLeagueRelation {
+  # Create a document of type 'League' and associate it with the current document.
+  create: LeagueInput
+
+  # Connect a document of type 'League' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'League'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'GroupStage' and 'Tournament' using the field 'GroupStage.tournament'.
+input GroupStageTournamentRelation {
+  # Create a document of type 'Tournament' and associate it with the current document.
+  create: TournamentInput
+
+  # Connect a document of type 'Tournament' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Tournament'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Group' and 'TeamOrder'.
+input GroupTeamOrdersRelation {
+  # Create one or more documents of type 'TeamOrder' and associate them with the current document.
+  create: [TeamOrderInput]
+
+  # Connect one or more documents of type 'TeamOrder' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'TeamOrder' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Image' and 'Chat' using the field 'Image.chat'.
+input ImageChatRelation {
+  # Create a document of type 'Chat' and associate it with the current document.
+  create: ChatInput
+
+  # Connect a document of type 'Chat' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Chat'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Image' and 'Event' using the field 'Image.event'.
+input ImageEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'Image' input values
+input ImageInput {
+  isMainImage: Boolean
+  public: Boolean
+  url: String
+  key: String
+  user: ImageUserRelation
+  event: ImageEventRelation
+  chat: ImageChatRelation
+  team: ImageTeamRelation
+  location: ImageLocationRelation
+  organization: ImageOrganizationRelation
+  attachedModelType: ModelType
+  sponsor: ImageSponsorRelation
+  s3bucket: String
+}
+
+# Allow manipulating the relationship between the types 'Image' and 'Location' using the field 'Image.location'.
+input ImageLocationRelation {
+  # Create a document of type 'Location' and associate it with the current document.
+  create: LocationInput
+
+  # Connect a document of type 'Location' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Location'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Image' and 'Organization' using the field 'Image.organization'.
+input ImageOrganizationRelation {
+  # Create a document of type 'Organization' and associate it with the current document.
+  create: OrganizationInput
+
+  # Connect a document of type 'Organization' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Organization'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Image' and 'Sponsor' using the field 'Image.sponsor'.
+input ImageSponsorRelation {
+  # Create a document of type 'Sponsor' and associate it with the current document.
+  create: SponsorInput
+
+  # Connect a document of type 'Sponsor' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Sponsor'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Image' and 'Team' using the field 'Image.team'.
+input ImageTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Image' and 'User' using the field 'Image.user'.
+input ImageUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'JoinConditions' and 'Event' using the field 'JoinConditions.event'.
+input JoinConditionsEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'JoinConditions' input values
+input JoinConditionsInput {
+  withRequest: Boolean
+  withPayment: Boolean
+  forTeam: Boolean
+  forEvent: Boolean
+  event: JoinConditionsEventRelation
+  team: JoinConditionsTeamRelation
+}
+
+# Allow manipulating the relationship between the types 'JoinConditions' and 'Team' using the field 'JoinConditions.team'.
+input JoinConditionsTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'League' and 'Event'.
+input LeagueEventsRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'League' input values
+input LeagueInput {
+  tournaments: LeagueTournamentsRelation
+  events: LeagueEventsRelation
+  numberOfTeams: Int
+  season: LeagueSeasonRelation
+}
+
+# Allow manipulating the relationship between the types 'League' and 'Season' using the field 'League.season'.
+input LeagueSeasonRelation {
+  # Create a document of type 'Season' and associate it with the current document.
+  create: SeasonInput
+
+  # Connect a document of type 'Season' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Season'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'League' and 'Tournament'.
+input LeagueTournamentsRelation {
+  # Create one or more documents of type 'Tournament' and associate them with the current document.
+  create: [TournamentInput]
+
+  # Connect one or more documents of type 'Tournament' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Tournament' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Location' and 'Event'.
+input LocationEventsRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Location' and 'Image'.
+input LocationImagesRelation {
+  # Create one or more documents of type 'Image' and associate them with the current document.
+  create: [ImageInput]
+
+  # Connect one or more documents of type 'Image' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Image' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Location' input values
+input LocationInput {
+  name: String
+  secondaryName: String
+  address: String
+  surface: SurfaceType
+  images: LocationImagesRelation
+  fieldSize: FieldPlayerOccupancySize
+  private: Boolean
+  schedule: String
+  latitude: Float!
+  longitude: Float!
+  events: LocationEventsRelation
+  user: LocationUserRelation
+  team: LocationTeamRelation
+  organization: LocationOrganizationRelation
+}
+
+# Allow manipulating the relationship between the types 'Location' and 'Organization' using the field 'Location.organization'.
+input LocationOrganizationRelation {
+  # Create a document of type 'Organization' and associate it with the current document.
+  create: OrganizationInput
+
+  # Connect a document of type 'Organization' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Organization'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Location' and 'Team' using the field 'Location.team'.
+input LocationTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Location' and 'User' using the field 'Location.user'.
+input LocationUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Message' and 'Chat' using the field 'Message.chatObject'.
+input MessageChatObjectRelation {
+  # Create a document of type 'Chat' and associate it with the current document.
+  create: ChatInput
+
+  # Connect a document of type 'Chat' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Chat'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Message' and 'User'.
+input MessageForRelation {
+  # Create one or more documents of type 'User' and associate them with the current document.
+  create: [UserInput]
+
+  # Connect one or more documents of type 'User' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'User' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Message' and 'GifContent' using the field 'Message.gifObject'.
+input MessageGifObjectRelation {
+  # Create a document of type 'GifContent' and associate it with the current document.
+  create: GifContentInput
+
+  # Connect a document of type 'GifContent' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'GifContent'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Message' and 'Image' using the field 'Message.imageObject'.
+input MessageImageObjectRelation {
+  # Create a document of type 'Image' and associate it with the current document.
+  create: ImageInput
+
+  # Connect a document of type 'Image' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Image'
+  disconnect: Boolean
+}
+
+# 'Message' input values
+input MessageInput {
+  chatObject: MessageChatObjectRelation
+  textObject: MessageTextObjectRelation
+  gifObject: MessageGifObjectRelation
+  imageObject: MessageImageObjectRelation
+  sender: MessageSenderRelation
+  messageType: MessageType
+  for: MessageForRelation
+}
+
+# Allow manipulating the relationship between the types 'Message' and 'User' using the field 'Message.sender'.
+input MessageSenderRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Message' and 'TextContent' using the field 'Message.textObject'.
+input MessageTextObjectRelation {
+  # Create a document of type 'TextContent' and associate it with the current document.
+  create: TextContentInput
+
+  # Connect a document of type 'TextContent' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'TextContent'
+  disconnect: Boolean
+}
+
+type Mutation {
+  # Partially updates an existing document in the collection of 'Referee'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateReferee(
+    # The 'Referee' document's ID
+    id: ID!
+
+    # 'Referee' input values
+    data: PartialUpdateRefereeInput!
+  ): Referee
+
+  # Delete an existing document in the collection of 'TournamentStage'
+  deleteTournamentStage(
+    # The 'TournamentStage' document's ID
+    id: ID!
+  ): TournamentStage
+
+  # Partially updates an existing document in the collection of 'Chat'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateChat(
+    # The 'Chat' document's ID
+    id: ID!
+
+    # 'Chat' input values
+    data: PartialUpdateChatInput!
+  ): Chat
+
+  # Delete an existing document in the collection of 'JoinConditions'
+  deleteJoinConditions(
+    # The 'JoinConditions' document's ID
+    id: ID!
+  ): JoinConditions
+
+  # Update an existing document in the collection of 'User'
+  updateUser(
+    # The 'User' document's ID
+    id: ID!
+
+    # 'User' input values
+    data: UserInput!
+  ): User
+
+  # Delete an existing document in the collection of 'Organization'
+  deleteOrganization(
+    # The 'Organization' document's ID
+    id: ID!
+  ): Organization
+
+  # Create a new document in the collection of 'TournamentStage'
+  createTournamentStage(
+    # 'TournamentStage' input values
+    data: TournamentStageInput!
+  ): TournamentStage!
+
+  # Delete an existing document in the collection of 'Wager'
+  deleteWager(
+    # The 'Wager' document's ID
+    id: ID!
+  ): Wager
+
+  # Create a new document in the collection of 'Tournament'
+  createTournament(
+    # 'Tournament' input values
+    data: TournamentInput!
+  ): Tournament!
+
+  # Create a new document in the collection of 'User'
+  createUser(
+    # 'User' input values
+    data: UserInput!
+  ): User!
+
+  # Create a new document in the collection of 'Image'
+  createImage(
+    # 'Image' input values
+    data: ImageInput!
+  ): Image!
+
+  # Partially updates an existing document in the collection of 'Event'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateEvent(
+    # The 'Event' document's ID
+    id: ID!
+
+    # 'Event' input values
+    data: PartialUpdateEventInput!
+  ): Event
+
+  # Create a new document in the collection of 'Sponsor'
+  createSponsor(
+    # 'Sponsor' input values
+    data: SponsorInput!
+  ): Sponsor!
+
+  # Create a new document in the collection of 'StripeCustomer'
+  createStripeCustomer(
+    # 'StripeCustomer' input values
+    data: StripeCustomerInput!
+  ): StripeCustomer!
+
+  # Update an existing document in the collection of 'EventOrder'
+  updateEventOrder(
+    # The 'EventOrder' document's ID
+    id: ID!
+
+    # 'EventOrder' input values
+    data: EventOrderInput!
+  ): EventOrder
+
+  # Create a new document in the collection of 'TextContent'
+  createTextContent(
+    # 'TextContent' input values
+    data: TextContentInput!
+  ): TextContent!
+
+  # Partially updates an existing document in the collection of 'Organization'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateOrganization(
+    # The 'Organization' document's ID
+    id: ID!
+
+    # 'Organization' input values
+    data: PartialUpdateOrganizationInput!
+  ): Organization
+
+  # Delete an existing document in the collection of 'Rating'
+  deleteRating(
+    # The 'Rating' document's ID
+    id: ID!
+  ): Rating
+
+  # Create a new document in the collection of 'GifContent'
+  createGifContent(
+    # 'GifContent' input values
+    data: GifContentInput!
+  ): GifContent!
+
+  # Delete an existing document in the collection of 'Location'
+  deleteLocation(
+    # The 'Location' document's ID
+    id: ID!
+  ): Location
+
+  # Update an existing document in the collection of 'Wager'
+  updateWager(
+    # The 'Wager' document's ID
+    id: ID!
+
+    # 'Wager' input values
+    data: WagerInput!
+  ): Wager
+
+  # Update an existing document in the collection of 'Tournament'
+  updateTournament(
+    # The 'Tournament' document's ID
+    id: ID!
+
+    # 'Tournament' input values
+    data: TournamentInput!
+  ): Tournament
+
+  # Update an existing document in the collection of 'Request'
+  updateRequest(
+    # The 'Request' document's ID
+    id: ID!
+
+    # 'Request' input values
+    data: RequestInput!
+  ): Request
+
+  # Update an existing document in the collection of 'Chat'
+  updateChat(
+    # The 'Chat' document's ID
+    id: ID!
+
+    # 'Chat' input values
+    data: ChatInput!
+  ): Chat
+
+  # Create a new document in the collection of 'EventOrder'
+  createEventOrder(
+    # 'EventOrder' input values
+    data: EventOrderInput!
+  ): EventOrder!
+
+  # Partially updates an existing document in the collection of 'Image'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateImage(
+    # The 'Image' document's ID
+    id: ID!
+
+    # 'Image' input values
+    data: PartialUpdateImageInput!
+  ): Image
+
+  # Delete an existing document in the collection of 'League'
+  deleteLeague(
+    # The 'League' document's ID
+    id: ID!
+  ): League
+
+  # Delete an existing document in the collection of 'Request'
+  deleteRequest(
+    # The 'Request' document's ID
+    id: ID!
+  ): Request
+
+  # Create a new document in the collection of 'GroupStage'
+  createGroupStage(
+    # 'GroupStage' input values
+    data: GroupStageInput!
+  ): GroupStage!
+
+  # Delete an existing document in the collection of 'Price'
+  deletePrice(
+    # The 'Price' document's ID
+    id: ID!
+  ): Price
+
+  # Partially updates an existing document in the collection of 'Location'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateLocation(
+    # The 'Location' document's ID
+    id: ID!
+
+    # 'Location' input values
+    data: PartialUpdateLocationInput!
+  ): Location
+
+  # Create a new document in the collection of 'TeamUserParticipant'
+  createTeamUserParticipant(
+    # 'TeamUserParticipant' input values
+    data: TeamUserParticipantInput!
+  ): TeamUserParticipant!
+
+  # Delete an existing document in the collection of 'TeamUserParticipant'
+  deleteTeamUserParticipant(
+    # The 'TeamUserParticipant' document's ID
+    id: ID!
+  ): TeamUserParticipant
+
+  # Partially updates an existing document in the collection of 'Game'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateGame(
+    # The 'Game' document's ID
+    id: ID!
+
+    # 'Game' input values
+    data: PartialUpdateGameInput!
+  ): Game
+
+  # Delete an existing document in the collection of 'TeamGroup'
+  deleteTeamGroup(
+    # The 'TeamGroup' document's ID
+    id: ID!
+  ): TeamGroup
+
+  # Create a new document in the collection of 'TeamGroup'
+  createTeamGroup(
+    # 'TeamGroup' input values
+    data: TeamGroupInput!
+  ): TeamGroup!
+
+  # Partially updates an existing document in the collection of 'GroupStage'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateGroupStage(
+    # The 'GroupStage' document's ID
+    id: ID!
+
+    # 'GroupStage' input values
+    data: PartialUpdateGroupStageInput!
+  ): GroupStage
+
+  # Partially updates an existing document in the collection of 'TeamOrder'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTeamOrder(
+    # The 'TeamOrder' document's ID
+    id: ID!
+
+    # 'TeamOrder' input values
+    data: PartialUpdateTeamOrderInput!
+  ): TeamOrder
+
+  # Update an existing document in the collection of 'Event'
+  updateEvent(
+    # The 'Event' document's ID
+    id: ID!
+
+    # 'Event' input values
+    data: EventInput!
+  ): Event
+
+  # Update an existing document in the collection of 'Referee'
+  updateReferee(
+    # The 'Referee' document's ID
+    id: ID!
+
+    # 'Referee' input values
+    data: RefereeInput!
+  ): Referee
+
+  # Partially updates an existing document in the collection of 'SubscriptionType'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateSubscriptionType(
+    # The 'SubscriptionType' document's ID
+    id: ID!
+
+    # 'SubscriptionType' input values
+    data: PartialUpdateSubscriptionTypeInput!
+  ): SubscriptionType
+
+  # Update an existing document in the collection of 'GroupStage'
+  updateGroupStage(
+    # The 'GroupStage' document's ID
+    id: ID!
+
+    # 'GroupStage' input values
+    data: GroupStageInput!
+  ): GroupStage
+
+  # Create a new document in the collection of 'Season'
+  createSeason(
+    # 'Season' input values
+    data: SeasonInput!
+  ): Season!
+
+  # Partially updates an existing document in the collection of 'Wager'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateWager(
+    # The 'Wager' document's ID
+    id: ID!
+
+    # 'Wager' input values
+    data: PartialUpdateWagerInput!
+  ): Wager
+
+  # Update an existing document in the collection of 'SubscriptionTypeUser'
+  updateSubscriptionTypeUser(
+    # The 'SubscriptionTypeUser' document's ID
+    id: ID!
+
+    # 'SubscriptionTypeUser' input values
+    data: SubscriptionTypeUserInput!
+  ): SubscriptionTypeUser
+
+  # Update an existing document in the collection of 'Message'
+  updateMessage(
+    # The 'Message' document's ID
+    id: ID!
+
+    # 'Message' input values
+    data: MessageInput!
+  ): Message
+
+  # Create a new document in the collection of 'Payment'
+  createPayment(
+    # 'Payment' input values
+    data: PaymentInput!
+  ): Payment!
+
+  # Update an existing document in the collection of 'Player'
+  updatePlayer(
+    # The 'Player' document's ID
+    id: ID!
+
+    # 'Player' input values
+    data: PlayerInput!
+  ): Player
+
+  # Partially updates an existing document in the collection of 'TeamGroup'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTeamGroup(
+    # The 'TeamGroup' document's ID
+    id: ID!
+
+    # 'TeamGroup' input values
+    data: PartialUpdateTeamGroupInput!
+  ): TeamGroup
+
+  # Create a new document in the collection of 'Group'
+  createGroup(
+    # 'Group' input values
+    data: GroupInput!
+  ): Group!
+
+  # Partially updates an existing document in the collection of 'TextContent'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTextContent(
+    # The 'TextContent' document's ID
+    id: ID!
+
+    # 'TextContent' input values
+    data: PartialUpdateTextContentInput!
+  ): TextContent
+
+  # Delete an existing document in the collection of 'Image'
+  deleteImage(
+    # The 'Image' document's ID
+    id: ID!
+  ): Image
+
+  # Delete an existing document in the collection of 'Chat'
+  deleteChat(
+    # The 'Chat' document's ID
+    id: ID!
+  ): Chat
+
+  # Update an existing document in the collection of 'JoinConditions'
+  updateJoinConditions(
+    # The 'JoinConditions' document's ID
+    id: ID!
+
+    # 'JoinConditions' input values
+    data: JoinConditionsInput!
+  ): JoinConditions
+
+  # Create a new document in the collection of 'Rating'
+  createRating(
+    # 'Rating' input values
+    data: RatingInput!
+  ): Rating!
+
+  # Update an existing document in the collection of 'SubscriptionType'
+  updateSubscriptionType(
+    # The 'SubscriptionType' document's ID
+    id: ID!
+
+    # 'SubscriptionType' input values
+    data: SubscriptionTypeInput!
+  ): SubscriptionType
+
+  # Partially updates an existing document in the collection of 'EventUserParticipant'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateEventUserParticipant(
+    # The 'EventUserParticipant' document's ID
+    id: ID!
+
+    # 'EventUserParticipant' input values
+    data: PartialUpdateEventUserParticipantInput!
+  ): EventUserParticipant
+
+  # Partially updates an existing document in the collection of 'Team'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTeam(
+    # The 'Team' document's ID
+    id: ID!
+
+    # 'Team' input values
+    data: PartialUpdateTeamInput!
+  ): Team
+
+  # Partially updates an existing document in the collection of 'TournamentStage'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTournamentStage(
+    # The 'TournamentStage' document's ID
+    id: ID!
+
+    # 'TournamentStage' input values
+    data: PartialUpdateTournamentStageInput!
+  ): TournamentStage
+
+  # Create a new document in the collection of 'Team'
+  createTeam(
+    # 'Team' input values
+    data: TeamInput!
+  ): Team!
+
+  # Update an existing document in the collection of 'Group'
+  updateGroup(
+    # The 'Group' document's ID
+    id: ID!
+
+    # 'Group' input values
+    data: GroupInput!
+  ): Group
+
+  # Partially updates an existing document in the collection of 'GifContent'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateGifContent(
+    # The 'GifContent' document's ID
+    id: ID!
+
+    # 'GifContent' input values
+    data: PartialUpdateGifContentInput!
+  ): GifContent
+
+  # Update an existing document in the collection of 'Location'
+  updateLocation(
+    # The 'Location' document's ID
+    id: ID!
+
+    # 'Location' input values
+    data: LocationInput!
+  ): Location
+
+  # Partially updates an existing document in the collection of 'Payment'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdatePayment(
+    # The 'Payment' document's ID
+    id: ID!
+
+    # 'Payment' input values
+    data: PartialUpdatePaymentInput!
+  ): Payment
+
+  # Create a new document in the collection of 'Organizer'
+  createOrganizer(
+    # 'Organizer' input values
+    data: OrganizerInput!
+  ): Organizer!
+
+  # Create a new document in the collection of 'SubscriptionTypeUser'
+  createSubscriptionTypeUser(
+    # 'SubscriptionTypeUser' input values
+    data: SubscriptionTypeUserInput!
+  ): SubscriptionTypeUser!
+
+  # Create a new document in the collection of 'League'
+  createLeague(
+    # 'League' input values
+    data: LeagueInput!
+  ): League!
+
+  # Delete an existing document in the collection of 'TeamOrder'
+  deleteTeamOrder(
+    # The 'TeamOrder' document's ID
+    id: ID!
+  ): TeamOrder
+
+  # Create a new document in the collection of 'Player'
+  createPlayer(
+    # 'Player' input values
+    data: PlayerInput!
+  ): Player!
+
+  # Update an existing document in the collection of 'Rating'
+  updateRating(
+    # The 'Rating' document's ID
+    id: ID!
+
+    # 'Rating' input values
+    data: RatingInput!
+  ): Rating
+
+  # Partially updates an existing document in the collection of 'Training'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTraining(
+    # The 'Training' document's ID
+    id: ID!
+
+    # 'Training' input values
+    data: PartialUpdateTrainingInput!
+  ): Training
+
+  # Partially updates an existing document in the collection of 'StripeCustomer'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateStripeCustomer(
+    # The 'StripeCustomer' document's ID
+    id: ID!
+
+    # 'StripeCustomer' input values
+    data: PartialUpdateStripeCustomerInput!
+  ): StripeCustomer
+
+  # Partially updates an existing document in the collection of 'Coach'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateCoach(
+    # The 'Coach' document's ID
+    id: ID!
+
+    # 'Coach' input values
+    data: PartialUpdateCoachInput!
+  ): Coach
+
+  # Partially updates an existing document in the collection of 'FollowRelation'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateFollowRelation(
+    # The 'FollowRelation' document's ID
+    id: ID!
+
+    # 'FollowRelation' input values
+    data: PartialUpdateFollowRelationInput!
+  ): FollowRelation
+
+  # Partially updates an existing document in the collection of 'Price'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdatePrice(
+    # The 'Price' document's ID
+    id: ID!
+
+    # 'Price' input values
+    data: PartialUpdatePriceInput!
+  ): Price
+
+  # Update an existing document in the collection of 'Organizer'
+  updateOrganizer(
+    # The 'Organizer' document's ID
+    id: ID!
+
+    # 'Organizer' input values
+    data: OrganizerInput!
+  ): Organizer
+
+  # Partially updates an existing document in the collection of 'JoinConditions'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateJoinConditions(
+    # The 'JoinConditions' document's ID
+    id: ID!
+
+    # 'JoinConditions' input values
+    data: PartialUpdateJoinConditionsInput!
+  ): JoinConditions
+
+  # Update an existing document in the collection of 'League'
+  updateLeague(
+    # The 'League' document's ID
+    id: ID!
+
+    # 'League' input values
+    data: LeagueInput!
+  ): League
+
+  # Create a new document in the collection of 'Message'
+  createMessage(
+    # 'Message' input values
+    data: MessageInput!
+  ): Message!
+
+  # Delete an existing document in the collection of 'SubscriptionType'
+  deleteSubscriptionType(
+    # The 'SubscriptionType' document's ID
+    id: ID!
+  ): SubscriptionType
+
+  # Partially updates an existing document in the collection of 'Player'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdatePlayer(
+    # The 'Player' document's ID
+    id: ID!
+
+    # 'Player' input values
+    data: PartialUpdatePlayerInput!
+  ): Player
+
+  # Create a new document in the collection of 'Location'
+  createLocation(
+    # 'Location' input values
+    data: LocationInput!
+  ): Location!
+
+  # Create a new document in the collection of 'Training'
+  createTraining(
+    # 'Training' input values
+    data: TrainingInput!
+  ): Training!
+
+  # Delete an existing document in the collection of 'Training'
+  deleteTraining(
+    # The 'Training' document's ID
+    id: ID!
+  ): Training
+
+  # Delete an existing document in the collection of 'TextContent'
+  deleteTextContent(
+    # The 'TextContent' document's ID
+    id: ID!
+  ): TextContent
+
+  # Partially updates an existing document in the collection of 'TeamUserParticipant'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTeamUserParticipant(
+    # The 'TeamUserParticipant' document's ID
+    id: ID!
+
+    # 'TeamUserParticipant' input values
+    data: PartialUpdateTeamUserParticipantInput!
+  ): TeamUserParticipant
+
+  # Delete an existing document in the collection of 'GifContent'
+  deleteGifContent(
+    # The 'GifContent' document's ID
+    id: ID!
+  ): GifContent
+
+  # Update an existing document in the collection of 'TournamentStage'
+  updateTournamentStage(
+    # The 'TournamentStage' document's ID
+    id: ID!
+
+    # 'TournamentStage' input values
+    data: TournamentStageInput!
+  ): TournamentStage
+
+  # Partially updates an existing document in the collection of 'Request'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateRequest(
+    # The 'Request' document's ID
+    id: ID!
+
+    # 'Request' input values
+    data: PartialUpdateRequestInput!
+  ): Request
+
+  # Delete an existing document in the collection of 'EventOrder'
+  deleteEventOrder(
+    # The 'EventOrder' document's ID
+    id: ID!
+  ): EventOrder
+
+  # Create a new document in the collection of 'JoinConditions'
+  createJoinConditions(
+    # 'JoinConditions' input values
+    data: JoinConditionsInput!
+  ): JoinConditions!
+
+  # Partially updates an existing document in the collection of 'EventOrder'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateEventOrder(
+    # The 'EventOrder' document's ID
+    id: ID!
+
+    # 'EventOrder' input values
+    data: PartialUpdateEventOrderInput!
+  ): EventOrder
+
+  # Update an existing document in the collection of 'Organization'
+  updateOrganization(
+    # The 'Organization' document's ID
+    id: ID!
+
+    # 'Organization' input values
+    data: OrganizationInput!
+  ): Organization
+
+  # Update an existing document in the collection of 'EventUserParticipant'
+  updateEventUserParticipant(
+    # The 'EventUserParticipant' document's ID
+    id: ID!
+
+    # 'EventUserParticipant' input values
+    data: EventUserParticipantInput!
+  ): EventUserParticipant
+
+  # Update an existing document in the collection of 'Coach'
+  updateCoach(
+    # The 'Coach' document's ID
+    id: ID!
+
+    # 'Coach' input values
+    data: CoachInput!
+  ): Coach
+
+  # Create a new document in the collection of 'Tryout'
+  createTryout(
+    # 'Tryout' input values
+    data: TryoutInput!
+  ): Tryout!
+
+  # Update an existing document in the collection of 'GifContent'
+  updateGifContent(
+    # The 'GifContent' document's ID
+    id: ID!
+
+    # 'GifContent' input values
+    data: GifContentInput!
+  ): GifContent
+
+  # Delete an existing document in the collection of 'Message'
+  deleteMessage(
+    # The 'Message' document's ID
+    id: ID!
+  ): Message
+
+  # Update an existing document in the collection of 'FollowRelation'
+  updateFollowRelation(
+    # The 'FollowRelation' document's ID
+    id: ID!
+
+    # 'FollowRelation' input values
+    data: FollowRelationInput!
+  ): FollowRelation
+
+  # Update an existing document in the collection of 'TeamOrder'
+  updateTeamOrder(
+    # The 'TeamOrder' document's ID
+    id: ID!
+
+    # 'TeamOrder' input values
+    data: TeamOrderInput!
+  ): TeamOrder
+
+  # Delete an existing document in the collection of 'Tryout'
+  deleteTryout(
+    # The 'Tryout' document's ID
+    id: ID!
+  ): Tryout
+
+  # Partially updates an existing document in the collection of 'SubscriptionTypeUser'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateSubscriptionTypeUser(
+    # The 'SubscriptionTypeUser' document's ID
+    id: ID!
+
+    # 'SubscriptionTypeUser' input values
+    data: PartialUpdateSubscriptionTypeUserInput!
+  ): SubscriptionTypeUser
+
+  # Delete an existing document in the collection of 'User'
+  deleteUser(
+    # The 'User' document's ID
+    id: ID!
+  ): User
+
+  # Delete an existing document in the collection of 'Coach'
+  deleteCoach(
+    # The 'Coach' document's ID
+    id: ID!
+  ): Coach
+
+  # Delete an existing document in the collection of 'Sponsor'
+  deleteSponsor(
+    # The 'Sponsor' document's ID
+    id: ID!
+  ): Sponsor
+
+  # Delete an existing document in the collection of 'EventUserParticipant'
+  deleteEventUserParticipant(
+    # The 'EventUserParticipant' document's ID
+    id: ID!
+  ): EventUserParticipant
+
+  # Update an existing document in the collection of 'StripeCustomer'
+  updateStripeCustomer(
+    # The 'StripeCustomer' document's ID
+    id: ID!
+
+    # 'StripeCustomer' input values
+    data: StripeCustomerInput!
+  ): StripeCustomer
+
+  # Delete an existing document in the collection of 'StripeCustomer'
+  deleteStripeCustomer(
+    # The 'StripeCustomer' document's ID
+    id: ID!
+  ): StripeCustomer
+
+  # Delete an existing document in the collection of 'Game'
+  deleteGame(
+    # The 'Game' document's ID
+    id: ID!
+  ): Game
+
+  # Create a new document in the collection of 'Organization'
+  createOrganization(
+    # 'Organization' input values
+    data: OrganizationInput!
+  ): Organization!
+
+  # Partially updates an existing document in the collection of 'Message'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateMessage(
+    # The 'Message' document's ID
+    id: ID!
+
+    # 'Message' input values
+    data: PartialUpdateMessageInput!
+  ): Message
+
+  # Create a new document in the collection of 'Event'
+  createEvent(
+    # 'Event' input values
+    data: EventInput!
+  ): Event!
+
+  # Update an existing document in the collection of 'Image'
+  updateImage(
+    # The 'Image' document's ID
+    id: ID!
+
+    # 'Image' input values
+    data: ImageInput!
+  ): Image
+
+  # Create a new document in the collection of 'Wager'
+  createWager(
+    # 'Wager' input values
+    data: WagerInput!
+  ): Wager!
+
+  # Partially updates an existing document in the collection of 'Organizer'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateOrganizer(
+    # The 'Organizer' document's ID
+    id: ID!
+
+    # 'Organizer' input values
+    data: PartialUpdateOrganizerInput!
+  ): Organizer
+
+  # Create a new document in the collection of 'Referee'
+  createReferee(
+    # 'Referee' input values
+    data: RefereeInput!
+  ): Referee!
+
+  # Create a new document in the collection of 'SubscriptionType'
+  createSubscriptionType(
+    # 'SubscriptionType' input values
+    data: SubscriptionTypeInput!
+  ): SubscriptionType!
+
+  # Update an existing document in the collection of 'Training'
+  updateTraining(
+    # The 'Training' document's ID
+    id: ID!
+
+    # 'Training' input values
+    data: TrainingInput!
+  ): Training
+
+  # Delete an existing document in the collection of 'Group'
+  deleteGroup(
+    # The 'Group' document's ID
+    id: ID!
+  ): Group
+
+  # Delete an existing document in the collection of 'Payment'
+  deletePayment(
+    # The 'Payment' document's ID
+    id: ID!
+  ): Payment
+
+  # Partially updates an existing document in the collection of 'Sponsor'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateSponsor(
+    # The 'Sponsor' document's ID
+    id: ID!
+
+    # 'Sponsor' input values
+    data: PartialUpdateSponsorInput!
+  ): Sponsor
+
+  # Delete an existing document in the collection of 'Referee'
+  deleteReferee(
+    # The 'Referee' document's ID
+    id: ID!
+  ): Referee
+
+  # Update an existing document in the collection of 'Game'
+  updateGame(
+    # The 'Game' document's ID
+    id: ID!
+
+    # 'Game' input values
+    data: GameInput!
+  ): Game
+
+  # Create a new document in the collection of 'Price'
+  createPrice(
+    # 'Price' input values
+    data: PriceInput!
+  ): Price!
+
+  # Update an existing document in the collection of 'TextContent'
+  updateTextContent(
+    # The 'TextContent' document's ID
+    id: ID!
+
+    # 'TextContent' input values
+    data: TextContentInput!
+  ): TextContent
+
+  # Update an existing document in the collection of 'Tryout'
+  updateTryout(
+    # The 'Tryout' document's ID
+    id: ID!
+
+    # 'Tryout' input values
+    data: TryoutInput!
+  ): Tryout
+
+  # Delete an existing document in the collection of 'Season'
+  deleteSeason(
+    # The 'Season' document's ID
+    id: ID!
+  ): Season
+
+  # Delete an existing document in the collection of 'SubscriptionTypeUser'
+  deleteSubscriptionTypeUser(
+    # The 'SubscriptionTypeUser' document's ID
+    id: ID!
+  ): SubscriptionTypeUser
+
+  # Partially updates an existing document in the collection of 'User'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateUser(
+    # The 'User' document's ID
+    id: ID!
+
+    # 'User' input values
+    data: PartialUpdateUserInput!
+  ): User
+
+  # Update an existing document in the collection of 'Sponsor'
+  updateSponsor(
+    # The 'Sponsor' document's ID
+    id: ID!
+
+    # 'Sponsor' input values
+    data: SponsorInput!
+  ): Sponsor
+
+  # Create a new document in the collection of 'FollowRelation'
+  createFollowRelation(
+    # 'FollowRelation' input values
+    data: FollowRelationInput!
+  ): FollowRelation!
+
+  # Partially updates an existing document in the collection of 'Rating'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateRating(
+    # The 'Rating' document's ID
+    id: ID!
+
+    # 'Rating' input values
+    data: PartialUpdateRatingInput!
+  ): Rating
+
+  # Partially updates an existing document in the collection of 'Season'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateSeason(
+    # The 'Season' document's ID
+    id: ID!
+
+    # 'Season' input values
+    data: PartialUpdateSeasonInput!
+  ): Season
+
+  # Create a new document in the collection of 'Chat'
+  createChat(
+    # 'Chat' input values
+    data: ChatInput!
+  ): Chat!
+
+  # Create a new document in the collection of 'Request'
+  createRequest(
+    # 'Request' input values
+    data: RequestInput!
+  ): Request!
+
+  # Delete an existing document in the collection of 'Organizer'
+  deleteOrganizer(
+    # The 'Organizer' document's ID
+    id: ID!
+  ): Organizer
+
+  # Delete an existing document in the collection of 'FollowRelation'
+  deleteFollowRelation(
+    # The 'FollowRelation' document's ID
+    id: ID!
+  ): FollowRelation
+
+  # Update an existing document in the collection of 'Price'
+  updatePrice(
+    # The 'Price' document's ID
+    id: ID!
+
+    # 'Price' input values
+    data: PriceInput!
+  ): Price
+
+  # Delete an existing document in the collection of 'Tournament'
+  deleteTournament(
+    # The 'Tournament' document's ID
+    id: ID!
+  ): Tournament
+
+  # Delete an existing document in the collection of 'GroupStage'
+  deleteGroupStage(
+    # The 'GroupStage' document's ID
+    id: ID!
+  ): GroupStage
+
+  # Delete an existing document in the collection of 'Player'
+  deletePlayer(
+    # The 'Player' document's ID
+    id: ID!
+  ): Player
+
+  # Update an existing document in the collection of 'Payment'
+  updatePayment(
+    # The 'Payment' document's ID
+    id: ID!
+
+    # 'Payment' input values
+    data: PaymentInput!
+  ): Payment
+
+  # Update an existing document in the collection of 'Season'
+  updateSeason(
+    # The 'Season' document's ID
+    id: ID!
+
+    # 'Season' input values
+    data: SeasonInput!
+  ): Season
+
+  # Update an existing document in the collection of 'Team'
+  updateTeam(
+    # The 'Team' document's ID
+    id: ID!
+
+    # 'Team' input values
+    data: TeamInput!
+  ): Team
+
+  # Delete an existing document in the collection of 'Event'
+  deleteEvent(
+    # The 'Event' document's ID
+    id: ID!
+  ): Event
+
+  # Create a new document in the collection of 'Coach'
+  createCoach(
+    # 'Coach' input values
+    data: CoachInput!
+  ): Coach!
+
+  # Partially updates an existing document in the collection of 'League'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateLeague(
+    # The 'League' document's ID
+    id: ID!
+
+    # 'League' input values
+    data: PartialUpdateLeagueInput!
+  ): League
+
+  # Partially updates an existing document in the collection of 'Tryout'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTryout(
+    # The 'Tryout' document's ID
+    id: ID!
+
+    # 'Tryout' input values
+    data: PartialUpdateTryoutInput!
+  ): Tryout
+
+  # Create a new document in the collection of 'Game'
+  createGame(
+    # 'Game' input values
+    data: GameInput!
+  ): Game!
+
+  # Update an existing document in the collection of 'TeamGroup'
+  updateTeamGroup(
+    # The 'TeamGroup' document's ID
+    id: ID!
+
+    # 'TeamGroup' input values
+    data: TeamGroupInput!
+  ): TeamGroup
+
+  # Delete an existing document in the collection of 'Team'
+  deleteTeam(
+    # The 'Team' document's ID
+    id: ID!
+  ): Team
+
+  # Partially updates an existing document in the collection of 'Tournament'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateTournament(
+    # The 'Tournament' document's ID
+    id: ID!
+
+    # 'Tournament' input values
+    data: PartialUpdateTournamentInput!
+  ): Tournament
+
+  # Create a new document in the collection of 'TeamOrder'
+  createTeamOrder(
+    # 'TeamOrder' input values
+    data: TeamOrderInput!
+  ): TeamOrder!
+
+  # Create a new document in the collection of 'EventUserParticipant'
+  createEventUserParticipant(
+    # 'EventUserParticipant' input values
+    data: EventUserParticipantInput!
+  ): EventUserParticipant!
+
+  # Partially updates an existing document in the collection of 'Group'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'.
+  partialUpdateGroup(
+    # The 'Group' document's ID
+    id: ID!
+
+    # 'Group' input values
+    data: PartialUpdateGroupInput!
+  ): Group
+
+  # Update an existing document in the collection of 'TeamUserParticipant'
+  updateTeamUserParticipant(
+    # The 'TeamUserParticipant' document's ID
+    id: ID!
+
+    # 'TeamUserParticipant' input values
+    data: TeamUserParticipantInput!
+  ): TeamUserParticipant
+}
+
+# Allow manipulating the relationship between the types 'Organization' and 'Event'.
+input OrganizationEventsRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Organization' and 'Image'.
+input OrganizationImagesRelation {
+  # Create one or more documents of type 'Image' and associate them with the current document.
+  create: [ImageInput]
+
+  # Connect one or more documents of type 'Image' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Image' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Organization' input values
+input OrganizationInput {
+  name: String
+  images: OrganizationImagesRelation
+  rating: OrganizationRatingRelation
+  events: OrganizationEventsRelation
+  teams: OrganizationTeamsRelation
+  sponsors: OrganizationSponsorsRelation
+  description: String
+  minAge: Int
+  maxAge: Int
+  inviteOnly: Boolean
+  private: Boolean
+  isMainOrg: Boolean
+  userParticipants: OrganizationUserParticipantsRelation
+  location: OrganizationLocationRelation
+}
+
+# Allow manipulating the relationship between the types 'Organization' and 'Location'.
+input OrganizationLocationRelation {
+  # Create one or more documents of type 'Location' and associate them with the current document.
+  create: [LocationInput]
+
+  # Connect one or more documents of type 'Location' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Location' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Organization' and 'Rating'.
+input OrganizationRatingRelation {
+  # Create one or more documents of type 'Rating' and associate them with the current document.
+  create: [RatingInput]
+
+  # Connect one or more documents of type 'Rating' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rating' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Organization' and 'Sponsor'.
+input OrganizationSponsorsRelation {
+  # Create one or more documents of type 'Sponsor' and associate them with the current document.
+  create: [SponsorInput]
+
+  # Connect one or more documents of type 'Sponsor' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Sponsor' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Organization' and 'Team'.
+input OrganizationTeamsRelation {
+  # Create one or more documents of type 'Team' and associate them with the current document.
+  create: [TeamInput]
+
+  # Connect one or more documents of type 'Team' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Team' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Organization' and 'EventUserParticipant'.
+input OrganizationUserParticipantsRelation {
+  # Create one or more documents of type 'EventUserParticipant' and associate them with the current document.
+  create: [EventUserParticipantInput]
+
+  # Connect one or more documents of type 'EventUserParticipant' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'EventUserParticipant' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Organizer' input values
+input OrganizerInput {
+  user: OrganizerUserRelation
+  ratings: OrganizerRatingsRelation
+}
+
+# Allow manipulating the relationship between the types 'Organizer' and 'Rating'.
+input OrganizerRatingsRelation {
+  # Create one or more documents of type 'Rating' and associate them with the current document.
+  create: [RatingInput]
+
+  # Connect one or more documents of type 'Rating' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rating' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Organizer' and 'User' using the field 'Organizer.user'.
+input OrganizerUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# 'Chat' input values
+input PartialUpdateChatInput {
+  name: String
+  messages: ChatMessagesRelation
+  users: ChatUsersRelation
+  event: ChatEventRelation
+  team: ChatTeamRelation
+  archived: Boolean
+  isPrivate: Boolean
+  IsMainChat: Boolean
+  mainImageKey: String
+  images: ChatImagesRelation
+}
+
+# 'Coach' input values
+input PartialUpdateCoachInput {
+  user: CoachUserRelation
+  ratings: CoachRatingsRelation
+}
+
+# 'Event' input values
+input PartialUpdateEventInput {
+  name: String
+  joinConditions: EventJoinConditionsRelation
+  isMainEvent: Boolean
+  userParticipants: EventUserParticipantsRelation
+  price: EventPriceRelation
+  requests: EventRequestsRelation
+  coorganizations: EventCoorganizationsRelation
+  sponsors: EventSponsorsRelation
+  ratings: EventRatingsRelation
+  images: EventImagesRelation
+  location: EventLocationRelation
+  type: EventType
+  payments: EventPaymentsRelation
+  chats: EventChatsRelation
+  teams: EventTeamsRelation
+  games: EventGamesRelation
+  users: EventUsersRelation
+  tryouts: EventTryoutsRelation
+  leagues: EventLeaguesRelation
+  tournaments: EventTournamentsRelation
+  trainings: EventTrainingsRelation
+  wager: EventWagerRelation
+  archived: Boolean
+  deleted: Boolean
+  startTime: String
+  endTime: String
+  createdAt: String
+  capacity: Int
+  mainImageKey: String
+}
+
+# 'EventOrder' input values
+input PartialUpdateEventOrderInput {
+  event: EventOrderEventRelation
+  order: Int
+  tournamentStage: EventOrderTournamentStageRelation
+}
+
+# 'EventUserParticipant' input values
+input PartialUpdateEventUserParticipantInput {
+  event: EventUserParticipantEventRelation
+  user: EventUserParticipantUserRelation
+  roles: String
+  organization: EventUserParticipantOrganizationRelation
+}
+
+# 'FollowRelation' input values
+input PartialUpdateFollowRelationInput {
+  follower: FollowRelationFollowerRelation
+  following: FollowRelationFollowingRelation
+}
+
+# 'Game' input values
+input PartialUpdateGameInput {
+  hometeam: GameHometeamRelation
+  awayteam: GameAwayteamRelation
+  teamA: String
+  teamB: String
+  round: Int
+  gameNumber: Int
+  homegoals: Int
+  awaygoals: Int
+  pickup: Boolean
+  event: GameEventRelation
+}
+
+# 'GifContent' input values
+input PartialUpdateGifContentInput {
+  gifUrl: String
+}
+
+# 'Group' input values
+input PartialUpdateGroupInput {
+  groupNumber: Int
+  groupStage: GroupGroupStageRelation
+  teamOrders: GroupTeamOrdersRelation
+}
+
+# 'GroupStage' input values
+input PartialUpdateGroupStageInput {
+  groups: GroupStageGroupsRelation
+  numberOfTeams: Int
+  numberOfRoundsPerTeam: Int
+  tournament: GroupStageTournamentRelation
+  league: GroupStageLeagueRelation
+  type: EventType
+}
+
+# 'Image' input values
+input PartialUpdateImageInput {
+  isMainImage: Boolean
+  public: Boolean
+  url: String
+  key: String
+  user: ImageUserRelation
+  event: ImageEventRelation
+  chat: ImageChatRelation
+  team: ImageTeamRelation
+  location: ImageLocationRelation
+  organization: ImageOrganizationRelation
+  attachedModelType: ModelType
+  sponsor: ImageSponsorRelation
+  s3bucket: String
+}
+
+# 'JoinConditions' input values
+input PartialUpdateJoinConditionsInput {
+  withRequest: Boolean
+  withPayment: Boolean
+  forTeam: Boolean
+  forEvent: Boolean
+  event: JoinConditionsEventRelation
+  team: JoinConditionsTeamRelation
+}
+
+# 'League' input values
+input PartialUpdateLeagueInput {
+  tournaments: LeagueTournamentsRelation
+  events: LeagueEventsRelation
+  numberOfTeams: Int
+  season: LeagueSeasonRelation
+}
+
+# 'Location' input values
+input PartialUpdateLocationInput {
+  name: String
+  secondaryName: String
+  address: String
+  surface: SurfaceType
+  images: LocationImagesRelation
+  fieldSize: FieldPlayerOccupancySize
+  private: Boolean
+  schedule: String
+  latitude: Float
+  longitude: Float
+  events: LocationEventsRelation
+  user: LocationUserRelation
+  team: LocationTeamRelation
+  organization: LocationOrganizationRelation
+}
+
+# 'Message' input values
+input PartialUpdateMessageInput {
+  chatObject: MessageChatObjectRelation
+  textObject: MessageTextObjectRelation
+  gifObject: MessageGifObjectRelation
+  imageObject: MessageImageObjectRelation
+  sender: MessageSenderRelation
+  messageType: MessageType
+  for: MessageForRelation
+}
+
+# 'Organization' input values
+input PartialUpdateOrganizationInput {
+  name: String
+  images: OrganizationImagesRelation
+  rating: OrganizationRatingRelation
+  events: OrganizationEventsRelation
+  teams: OrganizationTeamsRelation
+  sponsors: OrganizationSponsorsRelation
+  description: String
+  minAge: Int
+  maxAge: Int
+  inviteOnly: Boolean
+  private: Boolean
+  isMainOrg: Boolean
+  userParticipants: OrganizationUserParticipantsRelation
+  location: OrganizationLocationRelation
+}
+
+# 'Organizer' input values
+input PartialUpdateOrganizerInput {
+  user: OrganizerUserRelation
+  ratings: OrganizerRatingsRelation
+}
+
+# 'Payment' input values
+input PartialUpdatePaymentInput {
+  amount: String
+  event: PaymentEventRelation
+  team: PaymentTeamRelation
+  paidAt: String
+  user: PaymentUserRelation
+  isPlayerPayment: Boolean
+  isTeamPayment: Boolean
+}
+
+# 'Player' input values
+input PartialUpdatePlayerInput {
+  wagerRating: String
+  wagers: PlayerWagersRelation
+  competitiveLevel: String
+  hasRating: String
+  showRating: String
+  user: PlayerUserRelation
+  selfRating: Int
+  sponsors: PlayerSponsorsRelation
+  ratings: PlayerRatingsRelation
+}
+
+# 'Price' input values
+input PartialUpdatePriceInput {
+  amount: String
+  event: PriceEventRelation
+  team: PriceTeamRelation
+  subscriptionType: PriceSubscriptionTypeRelation
+  teamAmount: String
+}
+
+# 'Rating' input values
+input PartialUpdateRatingInput {
+  rating: Int
+  organizations: RatingOrganizationsRelation
+  teams: RatingTeamsRelation
+  events: RatingEventsRelation
+  users: RatingUsersRelation
+  players: RatingPlayersRelation
+  organizers: RatingOrganizersRelation
+  coaches: RatingCoachesRelation
+  referees: RatingRefereesRelation
+}
+
+# 'Referee' input values
+input PartialUpdateRefereeInput {
+  user: RefereeUserRelation
+  ratings: RefereeRatingsRelation
+}
+
+# 'Request' input values
+input PartialUpdateRequestInput {
+  type: RequestType
+  sender: RequestSenderRelation
+  receivers: RequestReceiversRelation
+  acceptedBy: RequestAcceptedByRelation
+  status: RequestStatus
+  requestAttempts: Int
+  fromOrganizer: Boolean
+  event: RequestEventRelation
+  team: RequestTeamRelation
+  forRole: String
+  sentAt: Int
+  acceptedAt: Int
+}
+
+# 'Season' input values
+input PartialUpdateSeasonInput {
+  leagues: SeasonLeaguesRelation
+  tournaments: SeasonTournamentsRelation
+  startDate: String
+  endDate: String
+}
+
+# 'Sponsor' input values
+input PartialUpdateSponsorInput {
+  id: ID
+  name: String
+  images: SponsorImagesRelation
+  description: String
+  url: String
+  event: SponsorEventRelation
+  sponsoredOrgs: SponsorSponsoredOrgsRelation
+  sponsoredPlayers: SponsorSponsoredPlayersRelation
+  sponsoredTeams: SponsorSponsoredTeamsRelation
+}
+
+# 'StripeCustomer' input values
+input PartialUpdateStripeCustomerInput {
+  customerId: String
+  user: StripeCustomerUserRelation
+}
+
+# 'SubscriptionType' input values
+input PartialUpdateSubscriptionTypeInput {
+  name: String
+  description: String
+  price: SubscriptionTypePriceRelation
+  lengths: String
+  subscriptions: SubscriptionTypeSubscriptionsRelation
+}
+
+# 'SubscriptionTypeUser' input values
+input PartialUpdateSubscriptionTypeUserInput {
+  subscriptionType: SubscriptionTypeUserSubscriptionTypeRelation
+  user: SubscriptionTypeUserUserRelation
+  startDate: String
+  endDate: String
+  length: Int
+}
+
+# 'TeamGroup' input values
+input PartialUpdateTeamGroupInput {
+  numberOfPoints: Int
+}
+
+# 'Team' input values
+input PartialUpdateTeamInput {
+  name: String
+  color: String
+  events: TeamEventsRelation
+  images: TeamImagesRelation
+  users: TeamUsersRelation
+  sponsors: TeamSponsorsRelation
+  location: TeamLocationRelation
+  userParticipants: TeamUserParticipantsRelation
+  status: String
+  deleted: Boolean
+  createdAt: String
+  request: TeamRequestRelation
+  chats: TeamChatsRelation
+  price: TeamPriceRelation
+  payments: TeamPaymentsRelation
+  joinConditions: TeamJoinConditionsRelation
+  teamOrders: TeamTeamOrdersRelation
+  organization: TeamOrganizationRelation
+  ratings: TeamRatingsRelation
+}
+
+# 'TeamOrder' input values
+input PartialUpdateTeamOrderInput {
+  team: TeamOrderTeamRelation
+  points: Int
+  group: TeamOrderGroupRelation
+  order: Int
+}
+
+# 'TeamUserParticipant' input values
+input PartialUpdateTeamUserParticipantInput {
+  team: TeamUserParticipantTeamRelation
+  user: TeamUserParticipantUserRelation
+  roles: String
+}
+
+# 'TextContent' input values
+input PartialUpdateTextContentInput {
+  content: String
+}
+
+# 'Tournament' input values
+input PartialUpdateTournamentInput {
+  groupPlay: Boolean
+  events: TournamentEventsRelation
+  numberOfTeams: Int
+  groupStage: TournamentGroupStageRelation
+  tournamentStage: TournamentTournamentStageRelation
+  season: TournamentSeasonRelation
+  leagues: TournamentLeaguesRelation
+}
+
+# 'TournamentStage' input values
+input PartialUpdateTournamentStageInput {
+  numberOfTeams: Int
+  numberOfRoundsPerTeam: Int
+  tournament: TournamentStageTournamentRelation
+  eventOrders: TournamentStageEventOrdersRelation
+}
+
+# 'Training' input values
+input PartialUpdateTrainingInput {
+  event: TrainingEventRelation
+}
+
+# 'Tryout' input values
+input PartialUpdateTryoutInput {
+  event: TryoutEventRelation
+}
+
+# 'User' input values
+input PartialUpdateUserInput {
+  stripeCustomers: UserStripeCustomersRelation
+  payments: UserPaymentsRelation
+  userType: UserType
+  OSPID: String
+  name: String
+  phone: String
+  email: String
+  bio: String
+  username: String
+  birthdate: String
+  age: Int
+  teams: UserTeamsRelation
+  gender: GenderType
+  followers: UserFollowersRelation
+  following: UserFollowingRelation
+  location: UserLocationRelation
+  player: UserPlayerRelation
+  organizer: UserOrganizerRelation
+  coach: UserCoachRelation
+  referee: UserRefereeRelation
+  status: UserAccountStatus
+  last_login: Int
+  last_updated: Int
+  images: UserImagesRelation
+  events: UserEventsRelation
+  eventUserParticipants: UserEventUserParticipantsRelation
+  teamUserParticipants: UserTeamUserParticipantsRelation
+  requestsSent: UserRequestsSentRelation
+  requestsReceived: UserRequestsReceivedRelation
+  requestsAccepted: UserRequestsAcceptedRelation
+  chats: UserChatsRelation
+  sentMessages: UserSentMessagesRelation
+  messagesDirectedForMe: UserMessagesDirectedForMeRelation
+  onboarded: Boolean
+  ratings: UserRatingsRelation
+  mainImageKey: String
+  subscriptionTypeUsers: UserSubscriptionTypeUsersRelation
+}
+
+# 'Wager' input values
+input PartialUpdateWagerInput {
+  name: String
+  amount: String
+  players: WagerPlayersRelation
+  private: Boolean
+  events: WagerEventsRelation
+}
+
+# Allow manipulating the relationship between the types 'Payment' and 'Event' using the field 'Payment.event'.
+input PaymentEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'Payment' input values
+input PaymentInput {
+  amount: String
+  event: PaymentEventRelation
+  team: PaymentTeamRelation
+  paidAt: String
+  user: PaymentUserRelation
+  isPlayerPayment: Boolean
+  isTeamPayment: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Payment' and 'Team' using the field 'Payment.team'.
+input PaymentTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Payment' and 'User' using the field 'Payment.user'.
+input PaymentUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# 'Player' input values
+input PlayerInput {
+  wagerRating: String
+  wagers: PlayerWagersRelation
+  competitiveLevel: String
+  hasRating: String
+  showRating: String
+  user: PlayerUserRelation
+  selfRating: Int
+  sponsors: PlayerSponsorsRelation
+  ratings: PlayerRatingsRelation
+}
+
+# Allow manipulating the relationship between the types 'Player' and 'Rating'.
+input PlayerRatingsRelation {
+  # Create one or more documents of type 'Rating' and associate them with the current document.
+  create: [RatingInput]
+
+  # Connect one or more documents of type 'Rating' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rating' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Player' and 'Sponsor'.
+input PlayerSponsorsRelation {
+  # Create one or more documents of type 'Sponsor' and associate them with the current document.
+  create: [SponsorInput]
+
+  # Connect one or more documents of type 'Sponsor' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Sponsor' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Player' and 'User' using the field 'Player.user'.
+input PlayerUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Player' and 'Wager'.
+input PlayerWagersRelation {
+  # Create one or more documents of type 'Wager' and associate them with the current document.
+  create: [WagerInput]
+
+  # Connect one or more documents of type 'Wager' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Wager' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Price' and 'Event' using the field 'Price.event'.
+input PriceEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'Price' input values
+input PriceInput {
+  amount: String
+  event: PriceEventRelation
+  team: PriceTeamRelation
+  subscriptionType: PriceSubscriptionTypeRelation
+  teamAmount: String
+}
+
+# Allow manipulating the relationship between the types 'Price' and 'SubscriptionType' using the field 'Price.subscriptionType'.
+input PriceSubscriptionTypeRelation {
+  # Create a document of type 'SubscriptionType' and associate it with the current document.
+  create: SubscriptionTypeInput
+
+  # Connect a document of type 'SubscriptionType' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'SubscriptionType'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Price' and 'Team' using the field 'Price.team'.
+input PriceTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Rating' and 'Coach'.
+input RatingCoachesRelation {
+  # Create one or more documents of type 'Coach' and associate them with the current document.
+  create: [CoachInput]
+
+  # Connect one or more documents of type 'Coach' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Coach' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Rating' and 'Event'.
+input RatingEventsRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Rating' input values
+input RatingInput {
+  rating: Int
+  organizations: RatingOrganizationsRelation
+  teams: RatingTeamsRelation
+  events: RatingEventsRelation
+  users: RatingUsersRelation
+  players: RatingPlayersRelation
+  organizers: RatingOrganizersRelation
+  coaches: RatingCoachesRelation
+  referees: RatingRefereesRelation
+}
+
+# Allow manipulating the relationship between the types 'Rating' and 'Organization'.
+input RatingOrganizationsRelation {
+  # Create one or more documents of type 'Organization' and associate them with the current document.
+  create: [OrganizationInput]
+
+  # Connect one or more documents of type 'Organization' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Organization' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Rating' and 'Organizer'.
+input RatingOrganizersRelation {
+  # Create one or more documents of type 'Organizer' and associate them with the current document.
+  create: [OrganizerInput]
+
+  # Connect one or more documents of type 'Organizer' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Organizer' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Rating' and 'Player'.
+input RatingPlayersRelation {
+  # Create one or more documents of type 'Player' and associate them with the current document.
+  create: [PlayerInput]
+
+  # Connect one or more documents of type 'Player' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Player' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Rating' and 'Referee'.
+input RatingRefereesRelation {
+  # Create one or more documents of type 'Referee' and associate them with the current document.
+  create: [RefereeInput]
+
+  # Connect one or more documents of type 'Referee' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Referee' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Rating' and 'Team'.
+input RatingTeamsRelation {
+  # Create one or more documents of type 'Team' and associate them with the current document.
+  create: [TeamInput]
+
+  # Connect one or more documents of type 'Team' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Team' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Rating' and 'User'.
+input RatingUsersRelation {
+  # Create one or more documents of type 'User' and associate them with the current document.
+  create: [UserInput]
+
+  # Connect one or more documents of type 'User' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'User' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Referee' input values
+input RefereeInput {
+  user: RefereeUserRelation
+  ratings: RefereeRatingsRelation
+}
+
+# Allow manipulating the relationship between the types 'Referee' and 'Rating'.
+input RefereeRatingsRelation {
+  # Create one or more documents of type 'Rating' and associate them with the current document.
+  create: [RatingInput]
+
+  # Connect one or more documents of type 'Rating' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rating' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Referee' and 'User' using the field 'Referee.user'.
+input RefereeUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Request' and 'User' using the field 'Request.acceptedBy'.
+input RequestAcceptedByRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Request' and 'Event' using the field 'Request.event'.
+input RequestEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'Request' input values
+input RequestInput {
+  type: RequestType
+  sender: RequestSenderRelation
+  receivers: RequestReceiversRelation
+  acceptedBy: RequestAcceptedByRelation
+  status: RequestStatus
+  requestAttempts: Int
+  fromOrganizer: Boolean
+  event: RequestEventRelation
+  team: RequestTeamRelation
+  forRole: String
+  sentAt: Int
+  acceptedAt: Int
+}
+
+# Allow manipulating the relationship between the types 'Request' and 'User'.
+input RequestReceiversRelation {
+  # Create one or more documents of type 'User' and associate them with the current document.
+  create: [UserInput]
+
+  # Connect one or more documents of type 'User' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'User' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Request' and 'User' using the field 'Request.sender'.
+input RequestSenderRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Request' and 'Team' using the field 'Request.team'.
+input RequestTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
 
 enum RoleType {
   COACH
@@ -38,12 +3076,1529 @@ enum RoleType {
   SPONSOR
 }
 
+# 'Season' input values
+input SeasonInput {
+  leagues: SeasonLeaguesRelation
+  tournaments: SeasonTournamentsRelation
+  startDate: String
+  endDate: String
+}
+
+# Allow manipulating the relationship between the types 'Season' and 'League'.
+input SeasonLeaguesRelation {
+  # Create one or more documents of type 'League' and associate them with the current document.
+  create: [LeagueInput]
+
+  # Connect one or more documents of type 'League' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'League' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Season' and 'Tournament'.
+input SeasonTournamentsRelation {
+  # Create one or more documents of type 'Tournament' and associate them with the current document.
+  create: [TournamentInput]
+
+  # Connect one or more documents of type 'Tournament' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Tournament' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Sponsor' and 'Event'.
+input SponsorEventRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Sponsor' and 'Image'.
+input SponsorImagesRelation {
+  # Create one or more documents of type 'Image' and associate them with the current document.
+  create: [ImageInput]
+
+  # Connect one or more documents of type 'Image' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Image' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Sponsor' input values
+input SponsorInput {
+  id: ID!
+  name: String
+  images: SponsorImagesRelation
+  description: String
+  url: String
+  event: SponsorEventRelation
+  sponsoredOrgs: SponsorSponsoredOrgsRelation
+  sponsoredPlayers: SponsorSponsoredPlayersRelation
+  sponsoredTeams: SponsorSponsoredTeamsRelation
+}
+
+# Allow manipulating the relationship between the types 'Sponsor' and 'Organization'.
+input SponsorSponsoredOrgsRelation {
+  # Create one or more documents of type 'Organization' and associate them with the current document.
+  create: [OrganizationInput]
+
+  # Connect one or more documents of type 'Organization' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Organization' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Sponsor' and 'Player'.
+input SponsorSponsoredPlayersRelation {
+  # Create one or more documents of type 'Player' and associate them with the current document.
+  create: [PlayerInput]
+
+  # Connect one or more documents of type 'Player' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Player' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Sponsor' and 'Team'.
+input SponsorSponsoredTeamsRelation {
+  # Create one or more documents of type 'Team' and associate them with the current document.
+  create: [TeamInput]
+
+  # Connect one or more documents of type 'Team' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Team' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'StripeCustomer' input values
+input StripeCustomerInput {
+  customerId: String
+  user: StripeCustomerUserRelation
+}
+
+# Allow manipulating the relationship between the types 'StripeCustomer' and 'User' using the field 'StripeCustomer.user'.
+input StripeCustomerUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# 'SubscriptionType' input values
+input SubscriptionTypeInput {
+  name: String
+  description: String
+  price: SubscriptionTypePriceRelation
+  lengths: String
+  subscriptions: SubscriptionTypeSubscriptionsRelation
+}
+
+# Allow manipulating the relationship between the types 'SubscriptionType' and 'Price' using the field 'SubscriptionType.price'.
+input SubscriptionTypePriceRelation {
+  # Create a document of type 'Price' and associate it with the current document.
+  create: PriceInput
+
+  # Connect a document of type 'Price' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Price'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'SubscriptionType' and 'SubscriptionTypeUser'.
+input SubscriptionTypeSubscriptionsRelation {
+  # Create one or more documents of type 'SubscriptionTypeUser' and associate them with the current document.
+  create: [SubscriptionTypeUserInput]
+
+  # Connect one or more documents of type 'SubscriptionTypeUser' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'SubscriptionTypeUser' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'SubscriptionTypeUser' input values
+input SubscriptionTypeUserInput {
+  subscriptionType: SubscriptionTypeUserSubscriptionTypeRelation
+  user: SubscriptionTypeUserUserRelation
+  startDate: String
+  endDate: String
+  length: Int
+}
+
+# Allow manipulating the relationship between the types 'SubscriptionTypeUser' and 'SubscriptionType' using the field 'SubscriptionTypeUser.subscriptionType'.
+input SubscriptionTypeUserSubscriptionTypeRelation {
+  # Create a document of type 'SubscriptionType' and associate it with the current document.
+  create: SubscriptionTypeInput
+
+  # Connect a document of type 'SubscriptionType' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'SubscriptionType'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'SubscriptionTypeUser' and 'User' using the field 'SubscriptionTypeUser.user'.
+input SubscriptionTypeUserUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Chat'.
+input TeamChatsRelation {
+  # Create one or more documents of type 'Chat' and associate them with the current document.
+  create: [ChatInput]
+
+  # Connect one or more documents of type 'Chat' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Chat' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Event'.
+input TeamEventsRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'TeamGroup' input values
+input TeamGroupInput {
+  numberOfPoints: Int
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Image'.
+input TeamImagesRelation {
+  # Create one or more documents of type 'Image' and associate them with the current document.
+  create: [ImageInput]
+
+  # Connect one or more documents of type 'Image' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Image' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Team' input values
+input TeamInput {
+  name: String
+  color: String
+  capacity: Int
+  events: TeamEventsRelation
+  images: TeamImagesRelation
+  users: TeamUsersRelation
+  sponsors: TeamSponsorsRelation
+  location: TeamLocationRelation
+  userParticipants: TeamUserParticipantsRelation
+  status: String
+  deleted: Boolean
+  createdAt: String
+  updatedAt: String
+  request: TeamRequestRelation
+  chats: TeamChatsRelation
+  price: TeamPriceRelation
+  payments: TeamPaymentsRelation
+  joinConditions: TeamJoinConditionsRelation
+  teamOrders: TeamTeamOrdersRelation
+  organization: TeamOrganizationRelation
+  ratings: TeamRatingsRelation
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'JoinConditions'.
+input TeamJoinConditionsRelation {
+  # Create one or more documents of type 'JoinConditions' and associate them with the current document.
+  create: [JoinConditionsInput]
+
+  # Connect one or more documents of type 'JoinConditions' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'JoinConditions' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Location'.
+input TeamLocationRelation {
+  # Create one or more documents of type 'Location' and associate them with the current document.
+  create: [LocationInput]
+
+  # Connect one or more documents of type 'Location' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Location' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'TeamOrder' and 'Group' using the field 'TeamOrder.group'.
+input TeamOrderGroupRelation {
+  # Create a document of type 'Group' and associate it with the current document.
+  create: GroupInput
+
+  # Connect a document of type 'Group' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Group'
+  disconnect: Boolean
+}
+
+# 'TeamOrder' input values
+input TeamOrderInput {
+  team: TeamOrderTeamRelation
+  points: Int
+  group: TeamOrderGroupRelation
+  order: Int
+}
+
+# Allow manipulating the relationship between the types 'TeamOrder' and 'Team' using the field 'TeamOrder.team'.
+input TeamOrderTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Organization' using the field 'Team.organization'.
+input TeamOrganizationRelation {
+  # Create a document of type 'Organization' and associate it with the current document.
+  create: OrganizationInput
+
+  # Connect a document of type 'Organization' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Organization'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Payment'.
+input TeamPaymentsRelation {
+  # Create one or more documents of type 'Payment' and associate them with the current document.
+  create: [PaymentInput]
+
+  # Connect one or more documents of type 'Payment' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Payment' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Price' using the field 'Team.price'.
+input TeamPriceRelation {
+  # Create a document of type 'Price' and associate it with the current document.
+  create: PriceInput
+
+  # Connect a document of type 'Price' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Price'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Rating'.
+input TeamRatingsRelation {
+  # Create one or more documents of type 'Rating' and associate them with the current document.
+  create: [RatingInput]
+
+  # Connect one or more documents of type 'Rating' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rating' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Request'.
+input TeamRequestRelation {
+  # Create one or more documents of type 'Request' and associate them with the current document.
+  create: [RequestInput]
+
+  # Connect one or more documents of type 'Request' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Request' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'Sponsor'.
+input TeamSponsorsRelation {
+  # Create one or more documents of type 'Sponsor' and associate them with the current document.
+  create: [SponsorInput]
+
+  # Connect one or more documents of type 'Sponsor' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Sponsor' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'TeamOrder'.
+input TeamTeamOrdersRelation {
+  # Create one or more documents of type 'TeamOrder' and associate them with the current document.
+  create: [TeamOrderInput]
+
+  # Connect one or more documents of type 'TeamOrder' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'TeamOrder' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'TeamUserParticipant' input values
+input TeamUserParticipantInput {
+  team: TeamUserParticipantTeamRelation
+  user: TeamUserParticipantUserRelation
+  roles: String
+}
+
+# Allow manipulating the relationship between the types 'TeamUserParticipant' and 'Team' using the field 'TeamUserParticipant.team'.
+input TeamUserParticipantTeamRelation {
+  # Create a document of type 'Team' and associate it with the current document.
+  create: TeamInput
+
+  # Connect a document of type 'Team' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Team'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'TeamUserParticipant' and 'User' using the field 'TeamUserParticipant.user'.
+input TeamUserParticipantUserRelation {
+  # Create a document of type 'User' and associate it with the current document.
+  create: UserInput
+
+  # Connect a document of type 'User' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'User'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'TeamUserParticipant'.
+input TeamUserParticipantsRelation {
+  # Create one or more documents of type 'TeamUserParticipant' and associate them with the current document.
+  create: [TeamUserParticipantInput]
+
+  # Connect one or more documents of type 'TeamUserParticipant' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'TeamUserParticipant' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Team' and 'User'.
+input TeamUsersRelation {
+  # Create one or more documents of type 'User' and associate them with the current document.
+  create: [UserInput]
+
+  # Connect one or more documents of type 'User' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'User' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'TextContent' input values
+input TextContentInput {
+  content: String
+}
+
+scalar Time
+
+# Allow manipulating the relationship between the types 'Tournament' and 'Event'.
+input TournamentEventsRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Tournament' and 'GroupStage' using the field 'Tournament.groupStage'.
+input TournamentGroupStageRelation {
+  # Create a document of type 'GroupStage' and associate it with the current document.
+  create: GroupStageInput
+
+  # Connect a document of type 'GroupStage' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'GroupStage'
+  disconnect: Boolean
+}
+
+# 'Tournament' input values
+input TournamentInput {
+  groupPlay: Boolean
+  events: TournamentEventsRelation
+  numberOfTeams: Int
+  groupStage: TournamentGroupStageRelation
+  tournamentStage: TournamentTournamentStageRelation
+  season: TournamentSeasonRelation
+  leagues: TournamentLeaguesRelation
+}
+
+# Allow manipulating the relationship between the types 'Tournament' and 'League'.
+input TournamentLeaguesRelation {
+  # Create one or more documents of type 'League' and associate them with the current document.
+  create: [LeagueInput]
+
+  # Connect one or more documents of type 'League' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'League' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Tournament' and 'Season' using the field 'Tournament.season'.
+input TournamentSeasonRelation {
+  # Create a document of type 'Season' and associate it with the current document.
+  create: SeasonInput
+
+  # Connect a document of type 'Season' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Season'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'TournamentStage' and 'EventOrder'.
+input TournamentStageEventOrdersRelation {
+  # Create one or more documents of type 'EventOrder' and associate them with the current document.
+  create: [EventOrderInput]
+
+  # Connect one or more documents of type 'EventOrder' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'EventOrder' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'TournamentStage' input values
+input TournamentStageInput {
+  numberOfTeams: Int
+  numberOfRoundsPerTeam: Int
+  tournament: TournamentStageTournamentRelation
+  eventOrders: TournamentStageEventOrdersRelation
+}
+
+# Allow manipulating the relationship between the types 'TournamentStage' and 'Tournament' using the field 'TournamentStage.tournament'.
+input TournamentStageTournamentRelation {
+  # Create a document of type 'Tournament' and associate it with the current document.
+  create: TournamentInput
+
+  # Connect a document of type 'Tournament' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Tournament'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Tournament' and 'TournamentStage' using the field 'Tournament.tournamentStage'.
+input TournamentTournamentStageRelation {
+  # Create a document of type 'TournamentStage' and associate it with the current document.
+  create: TournamentStageInput
+
+  # Connect a document of type 'TournamentStage' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'TournamentStage'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Training' and 'Event' using the field 'Training.event'.
+input TrainingEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'Training' input values
+input TrainingInput {
+  event: TrainingEventRelation
+}
+
+# Allow manipulating the relationship between the types 'Tryout' and 'Event' using the field 'Tryout.event'.
+input TryoutEventRelation {
+  # Create a document of type 'Event' and associate it with the current document.
+  create: EventInput
+
+  # Connect a document of type 'Event' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Event'
+  disconnect: Boolean
+}
+
+# 'Tryout' input values
+input TryoutInput {
+  event: TryoutEventRelation
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Chat'.
+input UserChatsRelation {
+  # Create one or more documents of type 'Chat' and associate them with the current document.
+  create: [ChatInput]
+
+  # Connect one or more documents of type 'Chat' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Chat' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Coach' using the field 'User.coach'.
+input UserCoachRelation {
+  # Create a document of type 'Coach' and associate it with the current document.
+  create: CoachInput
+
+  # Connect a document of type 'Coach' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Coach'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'User' and 'EventUserParticipant'.
+input UserEventUserParticipantsRelation {
+  # Create one or more documents of type 'EventUserParticipant' and associate them with the current document.
+  create: [EventUserParticipantInput]
+
+  # Connect one or more documents of type 'EventUserParticipant' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'EventUserParticipant' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Event'.
+input UserEventsRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'FollowRelation'.
+input UserFollowersRelation {
+  # Create one or more documents of type 'FollowRelation' and associate them with the current document.
+  create: [FollowRelationInput]
+
+  # Connect one or more documents of type 'FollowRelation' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'FollowRelation' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'FollowRelation'.
+input UserFollowingRelation {
+  # Create one or more documents of type 'FollowRelation' and associate them with the current document.
+  create: [FollowRelationInput]
+
+  # Connect one or more documents of type 'FollowRelation' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'FollowRelation' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Image'.
+input UserImagesRelation {
+  # Create one or more documents of type 'Image' and associate them with the current document.
+  create: [ImageInput]
+
+  # Connect one or more documents of type 'Image' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Image' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'User' input values
+input UserInput {
+  stripeCustomers: UserStripeCustomersRelation
+  payments: UserPaymentsRelation
+  userType: UserType
+  OSPID: String
+  name: String
+  phone: String
+  email: String
+  bio: String
+  username: String
+  birthdate: String
+  age: Int
+  teams: UserTeamsRelation
+  gender: GenderType
+  followers: UserFollowersRelation
+  following: UserFollowingRelation
+  location: UserLocationRelation
+  player: UserPlayerRelation
+  organizer: UserOrganizerRelation
+  coach: UserCoachRelation
+  referee: UserRefereeRelation
+  status: UserAccountStatus
+  last_login: Int
+  last_updated: Int
+  images: UserImagesRelation
+  events: UserEventsRelation
+  eventUserParticipants: UserEventUserParticipantsRelation
+  teamUserParticipants: UserTeamUserParticipantsRelation
+  requestsSent: UserRequestsSentRelation
+  requestsReceived: UserRequestsReceivedRelation
+  requestsAccepted: UserRequestsAcceptedRelation
+  chats: UserChatsRelation
+  sentMessages: UserSentMessagesRelation
+  messagesDirectedForMe: UserMessagesDirectedForMeRelation
+  onboarded: Boolean
+  ratings: UserRatingsRelation
+  mainImageKey: String
+  subscriptionTypeUsers: UserSubscriptionTypeUsersRelation
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Location' using the field 'User.location'.
+input UserLocationRelation {
+  # Create a document of type 'Location' and associate it with the current document.
+  create: LocationInput
+
+  # Connect a document of type 'Location' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Location'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Message'.
+input UserMessagesDirectedForMeRelation {
+  # Create one or more documents of type 'Message' and associate them with the current document.
+  create: [MessageInput]
+
+  # Connect one or more documents of type 'Message' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Message' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Organizer' using the field 'User.organizer'.
+input UserOrganizerRelation {
+  # Create a document of type 'Organizer' and associate it with the current document.
+  create: OrganizerInput
+
+  # Connect a document of type 'Organizer' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Organizer'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Payment'.
+input UserPaymentsRelation {
+  # Create one or more documents of type 'Payment' and associate them with the current document.
+  create: [PaymentInput]
+
+  # Connect one or more documents of type 'Payment' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Payment' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Player' using the field 'User.player'.
+input UserPlayerRelation {
+  # Create a document of type 'Player' and associate it with the current document.
+  create: PlayerInput
+
+  # Connect a document of type 'Player' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Player'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Rating'.
+input UserRatingsRelation {
+  # Create one or more documents of type 'Rating' and associate them with the current document.
+  create: [RatingInput]
+
+  # Connect one or more documents of type 'Rating' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rating' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Referee' using the field 'User.referee'.
+input UserRefereeRelation {
+  # Create a document of type 'Referee' and associate it with the current document.
+  create: RefereeInput
+
+  # Connect a document of type 'Referee' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Referee'
+  disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Request'.
+input UserRequestsAcceptedRelation {
+  # Create one or more documents of type 'Request' and associate them with the current document.
+  create: [RequestInput]
+
+  # Connect one or more documents of type 'Request' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Request' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Request'.
+input UserRequestsReceivedRelation {
+  # Create one or more documents of type 'Request' and associate them with the current document.
+  create: [RequestInput]
+
+  # Connect one or more documents of type 'Request' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Request' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Request'.
+input UserRequestsSentRelation {
+  # Create one or more documents of type 'Request' and associate them with the current document.
+  create: [RequestInput]
+
+  # Connect one or more documents of type 'Request' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Request' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Message'.
+input UserSentMessagesRelation {
+  # Create one or more documents of type 'Message' and associate them with the current document.
+  create: [MessageInput]
+
+  # Connect one or more documents of type 'Message' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Message' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'StripeCustomer'.
+input UserStripeCustomersRelation {
+  # Create one or more documents of type 'StripeCustomer' and associate them with the current document.
+  create: [StripeCustomerInput]
+
+  # Connect one or more documents of type 'StripeCustomer' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'StripeCustomer' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'SubscriptionTypeUser'.
+input UserSubscriptionTypeUsersRelation {
+  # Create one or more documents of type 'SubscriptionTypeUser' and associate them with the current document.
+  create: [SubscriptionTypeUserInput]
+
+  # Connect one or more documents of type 'SubscriptionTypeUser' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'SubscriptionTypeUser' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'TeamUserParticipant'.
+input UserTeamUserParticipantsRelation {
+  # Create one or more documents of type 'TeamUserParticipant' and associate them with the current document.
+  create: [TeamUserParticipantInput]
+
+  # Connect one or more documents of type 'TeamUserParticipant' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'TeamUserParticipant' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'User' and 'Team'.
+input UserTeamsRelation {
+  # Create one or more documents of type 'Team' and associate them with the current document.
+  create: [TeamInput]
+
+  # Connect one or more documents of type 'Team' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Team' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Wager' and 'Event'.
+input WagerEventsRelation {
+  # Create one or more documents of type 'Event' and associate them with the current document.
+  create: [EventInput]
+
+  # Connect one or more documents of type 'Event' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Event' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+# 'Wager' input values
+input WagerInput {
+  name: String
+  amount: String
+  players: WagerPlayersRelation
+  private: Boolean
+  events: WagerEventsRelation
+}
+
+# Allow manipulating the relationship between the types 'Wager' and 'Player'.
+input WagerPlayersRelation {
+  # Create one or more documents of type 'Player' and associate them with the current document.
+  create: [PlayerInput]
+
+  # Connect one or more documents of type 'Player' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Player' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+type Chat {
+  messages(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): MessagePage!
+  IsMainChat: Boolean
+  mainImageKey: String
+  name: String
+  event: Event
+
+  # The document's ID.
+  _id: ID!
+  archived: Boolean
+  users(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): UserPage!
+  team: Team
+  isPrivate: Boolean
+  images(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ImagePage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Chat'.
+type ChatPage {
+  # The elements of type 'Chat' in this page.
+  data: [Chat]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Coach {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  user: User
+  ratings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RatingPage!
+}
+
+# The pagination object for elements of type 'Coach'.
+type CoachPage {
+  # The elements of type 'Coach' in this page.
+  data: [Coach]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Event {
+  leagues(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): LeaguePage!
+  tournaments(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TournamentPage!
+  payments(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): PaymentPage!
+  mainImageKey: String
+  name: String
+  startTime: String
+  location(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): LocationPage!
+
+  # The document's ID.
+  _id: ID!
+  archived: Boolean
+  price: Price
+  users(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): UserPage!
+  isMainEvent: Boolean
+  userParticipants(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventUserParticipantPage!
+  teams(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamPage!
+  trainings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TrainingPage!
+  endTime: String
+  joinConditions(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): JoinConditionsPage!
+  tryouts(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TryoutPage!
+  createdAt: String
+  ratings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RatingPage!
+  chats(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ChatPage!
+  wager(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): WagerPage!
+  type: EventType
+  coorganizations(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): OrganizationPage!
+  images(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ImagePage!
+  requests(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RequestPage!
+  games(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): GamePage!
+  deleted: Boolean
+  sponsors(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): SponsorPage!
+  capacity: Int
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+type EventOrder {
+  event: Event
+
+  # The document's ID.
+  _id: ID!
+  tournamentStage: TournamentStage
+  order: Int
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'EventOrder'.
+type EventOrderPage {
+  # The elements of type 'EventOrder' in this page.
+  data: [EventOrder]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+# The pagination object for elements of type 'Event'.
+type EventPage {
+  # The elements of type 'Event' in this page.
+  data: [Event]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
 enum EventType {
   TRYOUT
   GAME
   LEAGUE
   TOURNAMENT
   TRAINING
+}
+
+type EventUserParticipant {
+  organization: Organization
+  event: Event
+
+  # The document's ID.
+  _id: ID!
+  roles: String
+  user: User
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'EventUserParticipant'.
+type EventUserParticipantPage {
+  # The elements of type 'EventUserParticipant' in this page.
+  data: [EventUserParticipant]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+enum FieldPlayerOccupancySize {
+  SMALL
+  MEDIUM
+  FULLSIZE
+}
+
+type FollowRelation {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  follower: User
+  following: User
+}
+
+# The pagination object for elements of type 'FollowRelation'.
+type FollowRelationPage {
+  # The elements of type 'FollowRelation' in this page.
+  data: [FollowRelation]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Game {
+  homegoals: Int
+  gameNumber: Int
+  event: Event
+
+  # The document's ID.
+  _id: ID!
+  hometeam: Team
+  awayteam: Team
+  teamA: String
+  awaygoals: Int
+  pickup: Boolean
+  round: Int
+  teamB: String
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Game'.
+type GamePage {
+  # The elements of type 'Game' in this page.
+  data: [Game]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+enum GenderType {
+  MALE
+  FEMALE
+}
+
+type GifContent {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  gifUrl: String
+}
+
+type Group {
+  # The document's ID.
+  _id: ID!
+  groupStage: GroupStage
+  groupNumber: Int
+  teamOrders(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamOrderPage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Group'.
+type GroupPage {
+  # The elements of type 'Group' in this page.
+  data: [Group]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type GroupStage {
+  # The document's ID.
+  _id: ID!
+  league: League
+  numberOfRoundsPerTeam: Int
+  tournament: Tournament
+  groups(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): GroupPage!
+  numberOfTeams: Int
+  type: EventType
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+type Image {
+  organization: Organization
+  location: Location
+  url: String
+  event: Event
+
+  # The document's ID.
+  _id: ID!
+  sponsor: Sponsor
+  attachedModelType: ModelType
+  s3bucket: String
+  public: Boolean
+  key: String
+  chat: Chat
+  isMainImage: Boolean
+  team: Team
+  user: User
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Image'.
+type ImagePage {
+  # The elements of type 'Image' in this page.
+  data: [Image]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type JoinConditions {
+  forEvent: Boolean
+  event: Event
+  withRequest: Boolean
+
+  # The document's ID.
+  _id: ID!
+  forTeam: Boolean
+  team: Team
+  withPayment: Boolean
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'JoinConditions'.
+type JoinConditionsPage {
+  # The elements of type 'JoinConditions' in this page.
+  data: [JoinConditions]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type League {
+  tournaments(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TournamentPage!
+
+  # The document's ID.
+  _id: ID!
+  season: Season
+  numberOfTeams: Int
+  events(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'League'.
+type LeaguePage {
+  # The elements of type 'League' in this page.
+  data: [League]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Location {
+  organization: Organization
+  name: String
+  private: Boolean
+  latitude: Float!
+  surface: SurfaceType
+
+  # The document's ID.
+  _id: ID!
+  secondaryName: String
+  longitude: Float!
+  schedule: String
+  team: Team
+  address: String
+  images(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ImagePage!
+  user: User
+  fieldSize: FieldPlayerOccupancySize
+  events(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Location'.
+type LocationPage {
+  # The elements of type 'Location' in this page.
+  data: [Location]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Message {
+  for(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): UserPage!
+  textObject: TextContent
+
+  # The document's ID.
+  _id: ID!
+  messageType: MessageType
+  imageObject: Image
+  gifObject: GifContent
+  sender: User
+  chatObject: Chat
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Message'.
+type MessagePage {
+  # The elements of type 'Message' in this page.
+  data: [Message]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
 }
 
 enum MessageType {
@@ -53,6 +4608,846 @@ enum MessageType {
   AUDIO
 }
 
+enum ModelType {
+  USER
+  ORGANIZATION
+  EVENT
+}
+
+type Organization {
+  isMainOrg: Boolean
+  name: String
+  location(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): LocationPage!
+  private: Boolean
+  description: String
+
+  # The document's ID.
+  _id: ID!
+  minAge: Int
+  inviteOnly: Boolean
+  userParticipants(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventUserParticipantPage!
+  teams(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamPage!
+  rating(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RatingPage!
+  images(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ImagePage!
+  maxAge: Int
+  events(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+  sponsors(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): SponsorPage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Organization'.
+type OrganizationPage {
+  # The elements of type 'Organization' in this page.
+  data: [Organization]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Organizer {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  user: User
+  ratings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RatingPage!
+}
+
+# The pagination object for elements of type 'Organizer'.
+type OrganizerPage {
+  # The elements of type 'Organizer' in this page.
+  data: [Organizer]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Payment {
+  paidAt: String
+  event: Event
+
+  # The document's ID.
+  _id: ID!
+  isTeamPayment: Boolean
+  isPlayerPayment: Boolean
+  amount: String
+  team: Team
+  user: User
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Payment'.
+type PaymentPage {
+  # The elements of type 'Payment' in this page.
+  data: [Payment]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Player {
+  selfRating: Int
+
+  # The document's ID.
+  _id: ID!
+  hasRating: String
+  showRating: String
+  wagers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): WagerPage!
+  ratings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RatingPage!
+  wagerRating: String
+  competitiveLevel: String
+  user: User
+  sponsors(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): SponsorPage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Player'.
+type PlayerPage {
+  # The elements of type 'Player' in this page.
+  data: [Player]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Price {
+  event: Event
+
+  # The document's ID.
+  _id: ID!
+  amount: String
+  teamAmount: String
+  team: Team
+  subscriptionType: SubscriptionType
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+type Query {
+  # Find a document from the collection of 'JoinConditions' by its id.
+  findJoinConditionsByID(
+    # The 'JoinConditions' document's ID
+    id: ID!
+  ): JoinConditions
+
+  # Find a document from the collection of 'SubscriptionType' by its id.
+  findSubscriptionTypeByID(
+    # The 'SubscriptionType' document's ID
+    id: ID!
+  ): SubscriptionType
+
+  # Find a document from the collection of 'GifContent' by its id.
+  findGifContentByID(
+    # The 'GifContent' document's ID
+    id: ID!
+  ): GifContent
+
+  # Find a document from the collection of 'Payment' by its id.
+  findPaymentByID(
+    # The 'Payment' document's ID
+    id: ID!
+  ): Payment
+
+  # Find a document from the collection of 'GroupStage' by its id.
+  findGroupStageByID(
+    # The 'GroupStage' document's ID
+    id: ID!
+  ): GroupStage
+
+  # Find a document from the collection of 'Tryout' by its id.
+  findTryoutByID(
+    # The 'Tryout' document's ID
+    id: ID!
+  ): Tryout
+
+  # Find a document from the collection of 'Rating' by its id.
+  findRatingByID(
+    # The 'Rating' document's ID
+    id: ID!
+  ): Rating
+  allEventsOfAllTypes(startTime: String!): [Event!]
+
+  # Find a document from the collection of 'Group' by its id.
+  findGroupByID(
+    # The 'Group' document's ID
+    id: ID!
+  ): Group
+  allGames(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+    pickup: Boolean
+  ): GamePage!
+
+  # Find a document from the collection of 'Event' by its id.
+  findEventByID(
+    # The 'Event' document's ID
+    id: ID!
+  ): Event
+
+  # Find a document from the collection of 'Location' by its id.
+  findLocationByID(
+    # The 'Location' document's ID
+    id: ID!
+  ): Location
+
+  # Find a document from the collection of 'TeamOrder' by its id.
+  findTeamOrderByID(
+    # The 'TeamOrder' document's ID
+    id: ID!
+  ): TeamOrder
+
+  # Find a document from the collection of 'SubscriptionTypeUser' by its id.
+  findSubscriptionTypeUserByID(
+    # The 'SubscriptionTypeUser' document's ID
+    id: ID!
+  ): SubscriptionTypeUser
+
+  # Find a document from the collection of 'Organizer' by its id.
+  findOrganizerByID(
+    # The 'Organizer' document's ID
+    id: ID!
+  ): Organizer
+  AllGamesByID(username: [ID]): [ID]
+
+  # Find a document from the collection of 'Chat' by its id.
+  findChatByID(
+    # The 'Chat' document's ID
+    id: ID!
+  ): Chat
+
+  # Find a document from the collection of 'Coach' by its id.
+  findCoachByID(
+    # The 'Coach' document's ID
+    id: ID!
+  ): Coach
+
+  # Find a document from the collection of 'EventOrder' by its id.
+  findEventOrderByID(
+    # The 'EventOrder' document's ID
+    id: ID!
+  ): EventOrder
+
+  # Find a document from the collection of 'Training' by its id.
+  findTrainingByID(
+    # The 'Training' document's ID
+    id: ID!
+  ): Training
+
+  # Find a document from the collection of 'Image' by its id.
+  findImageByID(
+    # The 'Image' document's ID
+    id: ID!
+  ): Image
+
+  # Find a document from the collection of 'Game' by its id.
+  findGameByID(
+    # The 'Game' document's ID
+    id: ID!
+  ): Game
+  allRequests(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RequestPage!
+
+  # Find a document from the collection of 'EventUserParticipant' by its id.
+  findEventUserParticipantByID(
+    # The 'EventUserParticipant' document's ID
+    id: ID!
+  ): EventUserParticipant
+  getUserByUsername(username: String): User
+
+  # Find a document from the collection of 'FollowRelation' by its id.
+  findFollowRelationByID(
+    # The 'FollowRelation' document's ID
+    id: ID!
+  ): FollowRelation
+  allUsers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): UserPage!
+
+  # Find a document from the collection of 'Team' by its id.
+  findTeamByID(
+    # The 'Team' document's ID
+    id: ID!
+  ): Team
+
+  # Find a document from the collection of 'User' by its id.
+  findUserByID(
+    # The 'User' document's ID
+    id: ID!
+  ): User
+
+  # Find a document from the collection of 'TeamGroup' by its id.
+  findTeamGroupByID(
+    # The 'TeamGroup' document's ID
+    id: ID!
+  ): TeamGroup
+
+  # Find a document from the collection of 'Sponsor' by its id.
+  findSponsorByID(
+    # The 'Sponsor' document's ID
+    id: ID!
+  ): Sponsor
+  getUserByEmail(email: String): User
+
+  # Find a document from the collection of 'Request' by its id.
+  findRequestByID(
+    # The 'Request' document's ID
+    id: ID!
+  ): Request
+  allPlayers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): PlayerPage!
+
+  # Find a document from the collection of 'Organization' by its id.
+  findOrganizationByID(
+    # The 'Organization' document's ID
+    id: ID!
+  ): Organization
+  allTryouts(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TryoutPage!
+
+  # Find a document from the collection of 'Referee' by its id.
+  findRefereeByID(
+    # The 'Referee' document's ID
+    id: ID!
+  ): Referee
+
+  # Find a document from the collection of 'StripeCustomer' by its id.
+  findStripeCustomerByID(
+    # The 'StripeCustomer' document's ID
+    id: ID!
+  ): StripeCustomer
+  AllEventsByID(ids: [ID]): [ID]
+  allLeagues(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): LeaguePage!
+
+  # Find a document from the collection of 'Tournament' by its id.
+  findTournamentByID(
+    # The 'Tournament' document's ID
+    id: ID!
+  ): Tournament
+  allTournaments(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TournamentPage!
+
+  # Find a document from the collection of 'TournamentStage' by its id.
+  findTournamentStageByID(
+    # The 'TournamentStage' document's ID
+    id: ID!
+  ): TournamentStage
+
+  # Find a document from the collection of 'League' by its id.
+  findLeagueByID(
+    # The 'League' document's ID
+    id: ID!
+  ): League
+
+  # Find a document from the collection of 'Price' by its id.
+  findPriceByID(
+    # The 'Price' document's ID
+    id: ID!
+  ): Price
+
+  # Find a document from the collection of 'Wager' by its id.
+  findWagerByID(
+    # The 'Wager' document's ID
+    id: ID!
+  ): Wager
+
+  # Find a document from the collection of 'Message' by its id.
+  findMessageByID(
+    # The 'Message' document's ID
+    id: ID!
+  ): Message
+
+  # Find a document from the collection of 'Player' by its id.
+  findPlayerByID(
+    # The 'Player' document's ID
+    id: ID!
+  ): Player
+  allTrainings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TrainingPage!
+  allTeams(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamPage!
+  getUserByPhone(phone: String): User
+
+  # Find a document from the collection of 'TeamUserParticipant' by its id.
+  findTeamUserParticipantByID(
+    # The 'TeamUserParticipant' document's ID
+    id: ID!
+  ): TeamUserParticipant
+  allEventsOfType(startTime: String!, type: EventType!): [Event!]
+
+  # Find a document from the collection of 'TextContent' by its id.
+  findTextContentByID(
+    # The 'TextContent' document's ID
+    id: ID!
+  ): TextContent
+  allSubscriptionTypes(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): SubscriptionTypePage!
+
+  # Find a document from the collection of 'Season' by its id.
+  findSeasonByID(
+    # The 'Season' document's ID
+    id: ID!
+  ): Season
+}
+
+type Rating {
+  players(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): PlayerPage!
+
+  # The document's ID.
+  _id: ID!
+  users(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): UserPage!
+  teams(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamPage!
+  referees(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RefereePage!
+  rating: Int
+  coaches(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): CoachPage!
+  organizations(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): OrganizationPage!
+  organizers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): OrganizerPage!
+  events(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Rating'.
+type RatingPage {
+  # The elements of type 'Rating' in this page.
+  data: [Rating]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Referee {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  user: User
+  ratings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RatingPage!
+}
+
+# The pagination object for elements of type 'Referee'.
+type RefereePage {
+  # The elements of type 'Referee' in this page.
+  data: [Referee]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Request {
+  requestAttempts: Int
+  forRole: String
+  event: Event
+
+  # The document's ID.
+  _id: ID!
+  acceptedBy: User
+  acceptedAt: Int
+  receivers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): UserPage!
+  status: RequestStatus
+  team: Team
+  sender: User
+  sentAt: Int
+  type: RequestType
+  fromOrganizer: Boolean
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Request'.
+type RequestPage {
+  # The elements of type 'Request' in this page.
+  data: [Request]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum RequestType {
+  FRIENDREQUEST
+  GAMEREQUEST
+  TEAMREQUEST
+  TOURNAMENTREQUEST
+  LEAGUEREQUEST
+  TRAININGREQUEST
+  TEAMEVENTREQUEST
+}
+
+type Season {
+  leagues(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): LeaguePage!
+  tournaments(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TournamentPage!
+  endDate: String
+
+  # The document's ID.
+  _id: ID!
+  startDate: String
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+type Sponsor {
+  name: String
+  url: String
+  event(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+  description: String
+
+  # The document's ID.
+  _id: ID!
+  sponsoredOrgs(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): OrganizationPage!
+  sponsoredPlayers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): PlayerPage!
+  id: ID!
+  sponsoredTeams(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamPage!
+  images(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ImagePage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Sponsor'.
+type SponsorPage {
+  # The elements of type 'Sponsor' in this page.
+  data: [Sponsor]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type StripeCustomer {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  customerId: String
+  user: User
+}
+
+# The pagination object for elements of type 'StripeCustomer'.
+type StripeCustomerPage {
+  # The elements of type 'StripeCustomer' in this page.
+  data: [StripeCustomer]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type SubscriptionType {
+  name: String
+  description: String
+
+  # The document's ID.
+  _id: ID!
+  price: Price
+  lengths: String
+  subscriptions(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): SubscriptionTypeUserPage!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'SubscriptionType'.
+type SubscriptionTypePage {
+  # The elements of type 'SubscriptionType' in this page.
+  data: [SubscriptionType]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type SubscriptionTypeUser {
+  endDate: String
+
+  # The document's ID.
+  _id: ID!
+  length: Int
+  subscriptionType: SubscriptionType
+  startDate: String
+  user: User
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'SubscriptionTypeUser'.
+type SubscriptionTypeUserPage {
+  # The elements of type 'SubscriptionTypeUser' in this page.
+  data: [SubscriptionTypeUser]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
 
 enum SurfaceType {
   TURFPOOR
@@ -69,36 +5464,453 @@ enum SurfaceType {
   QUICKSAND
 }
 
-enum FieldPlayerOccupancySize {
-  SMALL
-  MEDIUM
-  FULLSIZE
+type Team {
+  organization: Organization
+  payments(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): PaymentPage!
+  name: String
+  request(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RequestPage!
+  location(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): LocationPage!
+
+  # The document's ID.
+  _id: ID!
+  price: Price
+  users(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): UserPage!
+  userParticipants(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamUserParticipantPage!
+  color: String
+  joinConditions(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): JoinConditionsPage!
+  status: String
+  createdAt: String
+  updatedAt: String
+  capacity: Int
+  ratings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RatingPage!
+  chats(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ChatPage!
+  teamOrders(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamOrderPage!
+  images(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ImagePage!
+  events(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+  deleted: Boolean
+  sponsors(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): SponsorPage!
+
+  # The document's timestamp.
+  _ts: Long!
 }
 
-enum GenderType {
-  MALE
-  FEMALE
+type TeamGroup {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  numberOfPoints: Int
 }
 
-enum ModelType {
-  USER
-  ORGANIZATION
-  EVENT
+type TeamOrder {
+  # The document's ID.
+  _id: ID!
+  points: Int
+  order: Int
+  team: Team
+  group: Group
+
+  # The document's timestamp.
+  _ts: Long!
 }
 
-enum UserAccountStatus{
+# The pagination object for elements of type 'TeamOrder'.
+type TeamOrderPage {
+  # The elements of type 'TeamOrder' in this page.
+  data: [TeamOrder]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+# The pagination object for elements of type 'Team'.
+type TeamPage {
+  # The elements of type 'Team' in this page.
+  data: [Team]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type TeamUserParticipant {
+  # The document's ID.
+  _id: ID!
+  roles: String
+  team: Team
+  user: User
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'TeamUserParticipant'.
+type TeamUserParticipantPage {
+  # The elements of type 'TeamUserParticipant' in this page.
+  data: [TeamUserParticipant]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type TextContent {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  content: String
+}
+
+type Tournament {
+  leagues(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): LeaguePage!
+
+  # The document's ID.
+  _id: ID!
+  season: Season
+  tournamentStage: TournamentStage
+  groupStage: GroupStage
+  numberOfTeams: Int
+  events(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+  groupPlay: Boolean
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Tournament'.
+type TournamentPage {
+  # The elements of type 'Tournament' in this page.
+  data: [Tournament]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type TournamentStage {
+  # The document's ID.
+  _id: ID!
+  numberOfRoundsPerTeam: Int
+  tournament: Tournament
+  eventOrders(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventOrderPage!
+  numberOfTeams: Int
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+type Training {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  event: Event
+}
+
+# The pagination object for elements of type 'Training'.
+type TrainingPage {
+  # The elements of type 'Training' in this page.
+  data: [Training]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type Tryout {
+  # The document's ID.
+  _id: ID!
+
+  # The document's timestamp.
+  _ts: Long!
+  event: Event
+}
+
+# The pagination object for elements of type 'Tryout'.
+type TryoutPage {
+  # The elements of type 'Tryout' in this page.
+  data: [Tryout]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+type User {
+  payments(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): PaymentPage!
+  mainImageKey: String
+  name: String
+  messagesDirectedForMe(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): MessagePage!
+  location: Location
+  OSPID: String
+  email: String
+  organizer: Organizer
+  username: String
+
+  # The document's ID.
+  _id: ID!
+  sentMessages(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): MessagePage!
+  referee: Referee
+  onboarded: Boolean
+  teams(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamPage!
+  followers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): FollowRelationPage!
+  subscriptionTypeUsers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): SubscriptionTypeUserPage!
+  requestsSent(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RequestPage!
+  requestsAccepted(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RequestPage!
+  following(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): FollowRelationPage!
+  eventUserParticipants(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventUserParticipantPage!
+  age: Int
+  bio: String
+  birthdate: String
+  coach: Coach
+  teamUserParticipants(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): TeamUserParticipantPage!
+  player: Player
+  last_updated: Int
+  stripeCustomers(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): StripeCustomerPage!
+  status: UserAccountStatus
+  requestsReceived(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RequestPage!
+  ratings(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RatingPage!
+  last_login: Int
+  chats(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ChatPage!
+  images(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): ImagePage!
+  userType: UserType
+  events(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+  phone: String
+  gender: GenderType
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+enum UserAccountStatus {
   UNCOMFIRMED
   CONFIRMED
   INACTIVE
   BANNED
 }
 
-enum RequestStatus{
-  PENDING
-  ACCEPTED
-  REJECTED
+# The pagination object for elements of type 'User'.
+type UserPage {
+  # The elements of type 'User' in this page.
+  data: [User]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
 }
-enum UserType{
+
+enum UserType {
   PLAYER
   ORGANIZER
   MANAGER
@@ -107,452 +5919,43 @@ enum UserType{
   REF
 }
 
-enum RequestType{
-  FRIENDREQUEST
-  GAMEREQUEST
-  TEAMREQUEST
-  TOURNAMENTREQUEST
-  LEAGUEREQUEST
-  TRAININGREQUEST
-  TEAMEVENTREQUEST
-}
-
-type Request {
-  type: RequestType
-  sender: User @relation(name: "requests_sent")
-  receivers: [User] @relation(name: "request_receivers")
-  acceptedBy: User @relation(name: "request_acceptedBy")
-  status: RequestStatus
-  requestAttempts: Int
-  fromOrganizer: Boolean
-  event: Event
-  team: Team
-  forRole: String
-  sentAt: Int
-  acceptedAt: Int
-  
-}
-
-type StripeCustomer {
-  customerId: String
-  user: User
-}
-
-type FollowRelation {
-  follower: User @relation(name: "user_follower")
-  following: User @relation(name: "user_following")
-}
-
-
-type User  {  
-  stripeCustomers: [StripeCustomer] @relation 
-  payments: [Payment] @relation
-  userType: UserType
-  OSPID: String
+type Wager {
   name: String
-  phone: String
-  email: String
-  bio: String
-  username: String
-  birthdate: String
-  age: Int
-  teams: [Team] @relation
-  gender: GenderType
-  followers: [FollowRelation] @relation(name: "user_following")
-  following: [FollowRelation] @relation(name: "user_follower")
-  location: Location
-  player: Player
-  organizer: Organizer
-  coach: Coach
-  referee: Referee
-  status: UserAccountStatus
-  createdAt: Int
-  updatedAt: String
-  images: [Image] @relation
-  events: [Event] @relation      
-  eventUserParticipants: [EventUserParticipant] @relation   
-  teamUserParticipants: [TeamUserParticipant] @relation  
-  requestsSent: [Request]  @relation(name: "requests_sent")
-  requestsReceived: [Request] @relation(name: "request_receivers")
-  requestsAccepted: [Request] @relation(name: "request_acceptedBy")
-  chats: [Chat] @relation(name: "user_chats")
-  sentMessages: [Message] @relation(name: "messages_sent")
-  messagesDirectedForMe: [Message] @relation(name: "messages_for")
-  onboarded: Boolean @default(value: false)
-  ratings: [Rating] @relation
-  mainImageKey: String
-  subscriptionTypeUsers: [SubscriptionTypeUser] @relation
-  isProfilePrivate: Boolean @default(value: false)
-}
+  players(
+    # The number of items to return per page.
+    _size: Int
 
-
-type Player   {  
-  wagerRating: String
-  wagers: [Wager] @relation  
-  # events: [Event] @relation  
-  competitiveLevel: String  
-  hasRating: String
-  showRating: String  
-  user: User
-  selfRating: Int
-  sponsors: [Sponsor] @relation
-  ratings: [Rating] @relation
-}
-type EventUserParticipant {
-  event: Event
-  user: User
-  roles: String
-  organization: Organization
-}
-
-type TeamUserParticipant {
-  team: Team
-  user: User
-  roles: String
-}
-
-type Game {
-  hometeam: Team
-  awayteam: Team
-  teamA: String 
-  teamB: String
-  round: Int
-  gameNumber: Int
-  homegoals: Int
-  awaygoals: Int
-  pickup: Boolean
-  event: Event  
-  # event(archived: Boolean = false): Event
-}
-
-type JoinConditions {
-  withRequest: Boolean
-  withPayment: Boolean  
-  forTeam: Boolean
-  forEvent: Boolean
-  event: Event
-  team: Team
-}
-
-type Event   {
-  name: String
-  joinConditions: [JoinConditions] @relation
-  isMainEvent: Boolean
-  userParticipants: [EventUserParticipant] @relation
-  # eventUserOrganizers: EventUserOrganizers
-  price: Price @relation(name: "event_price")
-  requests: [Request] @relation
-  # organization: Organization
-  #need org to create events? nah. allow user to create events,
-  #if user has orgs, they can select which org to create event for                
-  coorganizations: [Organization] @relation
-  sponsors: [Sponsor] @relation
-  # creator: User 
-  ratings: [Rating] @relation
-  images: [Image] @relation
-  location: [Location] @relation
-  type: EventType
-  payments: [Payment] @relation
-  chats: [Chat] @relation
-  teams: [Team] @relation
-  games: [Game] @relation
-  users: [User] @relation  
-  #I don't  think you need these since tournament 
-  #can have many events but not the other way around
-  # tournament: Tournament 
-  tryouts: [Tryout] @relation
-  leagues: [League]  @relation
-  tournaments: [Tournament] @relation
-  trainings: [Training] @relation 
-  wager: [Wager] @relation  
-  archived: Boolean  @default(value: false)
-  deleted: Boolean  @default(value: false)
-  startTime: String
-  endTime: String
-  createdAt: String
-  capacity: Int  
-  mainImageKey: String
-}
-
-type Team {
-  name: String
-  color: String
-  events: [Event] @relation
-  images: [Image] @relation
-  users: [User] @relation    
-  sponsors: [Sponsor] @relation
-  location: [Location] @relation   
-  userParticipants: [TeamUserParticipant] @relation
-  status: String
-  deleted: Boolean
-  createdAt: String
-  updatedAt: String
-  capacity: Int
-  request: [Request] @relation
-  chats: [Chat] @relation
-  price: Price
-  payments: [Payment] @relation
-  joinConditions: [JoinConditions] @relation  
-  teamOrders: [TeamOrder] @relation
-  organization: Organization
-  ratings: [Rating] @relation
-
-}
-
-type Coach   {  
-  user: User
-  ratings: [Rating] @relation
-}
-
-type Referee   {  
-  user: User
-  ratings: [Rating] @relation
-}
-
-type Organizer   {  
-  user: User
-  ratings: [Rating] @relation
-}
-
-
-# a payment is attached to event
-# use payment object to create payment screen details for event
-type Payment   {  
-  amount: String
-  event: Event
-  team: Team
-  paidAt: String
-  user: User
-  isPlayerPayment: Boolean
-  isTeamPayment: Boolean
-}
-
-# orgs can have many suborgs
-# allow org to behave as Sponsor
-type Organization   {  
-  name: String
-  images: [Image] @relation
-  rating: [Rating] @relation
-  events: [Event] @relation
-  teams: [Team] @relation
-  # suborgs: [Organization] @relation
-  # sponsor: Sponsor
-  sponsors: [Sponsor] @relation
-  description: String
-  minAge: Int
-  maxAge: Int
-  inviteOnly: Boolean
-  private: Boolean #it won't show up in public search
-  isMainOrg: Boolean
-  userParticipants: [EventUserParticipant] @relation
-  location: [Location] @relation
-}
-
-# sponsor is an org
-type Sponsor {
-  id: ID!
-  name: String
-  images: [Image] @relation
-  description: String
-  url: String
-  event: [Event] @relation  
-  sponsoredOrgs: [Organization] @relation
-  sponsoredPlayers: [Player] @relation
-  sponsoredTeams: [Team] @relation
-}
-
-type Wager   {  
-  name: String
-  amount: String
-  players: [Player] @relation
-  # eligibleEventTypes: [EventType] @relation
+    # The pagination cursor.
+    _cursor: String
+  ): PlayerPage!
   private: Boolean
-  events: [Event] @relation
-}
 
-
-type Tryout   {  
-  # event: Event
-  event: Event
-  #tryout can have a pickup game
-  # eligibleEventTypes: [EventType] @relation
-}
-
-type League   {  
-  tournaments: [Tournament] @relation   
-  # event: Event
-  events: [Event] @relation
-  numberOfTeams: Int
-  # eligibleEventTypes: [EventType] @relation
-  season: Season
-}
-
-type Season {
-  leagues: [League] @relation
-  tournaments: [Tournament] @relation  
-  # was going to add season but you can calculate season from start and end date
-  startDate: String
-  endDate: String
-}
-
-type TeamOrder {
-  team: Team
-  points: Int
-  group: Group
-  order: Int
-
-}
-
-type TeamGroup {
-  numberOfPoints: Int
-
-}
-
-type Group {
-  groupNumber: Int
-  groupStage: GroupStage  
-  teamOrders: [TeamOrder] @relation
-}
-
-type GroupStage {
-  groups: [Group] @relation
-  numberOfTeams: Int
-  numberOfRoundsPerTeam: Int    
-  tournament: Tournament
-  league: League
-  type: EventType  
-}
-
-type EventOrder{
-  event: Event
-  order: Int
-  tournamentStage: TournamentStage
-}
-
-type TournamentStage {
-  numberOfTeams: Int
-  numberOfRoundsPerTeam: Int  
-  tournament: Tournament
-  eventOrders: [EventOrder] @relation
-
-}
-
-type Tournament   {
-  groupPlay: Boolean  
-  # event: Event
-  events: [Event] @relation
-  numberOfTeams: Int
-  groupStage: GroupStage
-  tournamentStage: TournamentStage
-  season: Season
-  leagues: [League] @relation
-  # eligibleEventTypes: [EventType] @relation  
-}
-
-type Training   {  
-  event: Event  
-  # eligibleEventTypes: [EventType] @relation
-}
-
-
-type Image   {  
-  isMainImage: Boolean
-  public: Boolean
-  url: String
-  key: String
-  user: User
-  event: Event
-  chat: Chat
-  team: Team
-  location: Location
-  organization: Organization
-  attachedModelType: ModelType
-  sponsor: Sponsor   
-  s3bucket: String 
-}
-
-type GifContent   {
-  gifUrl: String
-}
-
-type TextContent   {
-  content: String
-}
-
-type Message {  
-  chatObject: Chat #belongs to chat
-  textObject: TextContent
-  gifObject: GifContent
-  imageObject: Image
-  sender: User @relation(name: "messages_sent") 
-  messageType: MessageType
-  for: [User] @relation(name: "messages_for")
-}
-
-type Chat  {  
-  name: String
-  messages: [Message] @relation #has many messages
-  users: [User] @relation(name: "user_chats")
-  event: Event
-  team: Team
-  archived: Boolean @default(value: false)
-  isPrivate: Boolean
-  IsMainChat: Boolean
-  mainImageKey: String
-  images: [Image] @relation
-}
-
-type SubscriptionType {  
-  name: String
-  description: String
-  price: Price  
-  lengths: String
-  subscriptions: [SubscriptionTypeUser] @relation
-}
-
-type SubscriptionTypeUser  {
-  subscriptionType: SubscriptionType
-  user: User 
-  startDate: String
-  endDate: String
-  length: Int  
-}
-
-type Location   {  
-  name: String
-  secondaryName: String
-  address: String
-  surface: SurfaceType
-  images: [Image] @relation
-  fieldSize: FieldPlayerOccupancySize
-  private: Boolean
-  schedule: String
-  latitude: Float!
-  longitude: Float!
-  events: [Event] @relation
-  user: User
-  team: Team
-  organization: Organization
-}
-
-type Rating   {  
-  rating: Int
-  organizations: [Organization] @relation
-  teams: [Team] @relation
-  events: [Event] @relation
-  users: [User] @relation
-  players: [Player] @relation
-  organizers: [Organizer] @relation
-  coaches: [Coach] @relation
-  referees: [Referee] @relation
-
-
-}
-
-type Price   {  
+  # The document's ID.
+  _id: ID!
   amount: String
-  event: Event @relation(name: "event_price")
-  team: Team
-  subscriptionType: SubscriptionType
-  teamAmount: String
+  events(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): EventPage!
+
+  # The document's timestamp.
+  _ts: Long!
 }
+
+# The pagination object for elements of type 'Wager'.
+type WagerPage {
+  # The elements of type 'Wager' in this page.
+  data: [Wager]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+# The `Long` scalar type represents non-fractional signed whole numeric values. Long can represent values between -(2^63) and 2^63 - 1.
+scalar Long
