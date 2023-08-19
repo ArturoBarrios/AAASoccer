@@ -86,8 +86,7 @@ class _LocationSearchBar extends State<LocationSearchBar> {
         SizedBox(
           height: 200,
           child: Expanded(
-            child: addressPredictions.isNotEmpty
-                ? ListView.builder(
+            child: ListView.builder(
                     itemCount: addressPredictions.length,
                     itemBuilder: (context, index) {
                       return Card(
@@ -114,9 +113,7 @@ class _LocationSearchBar extends State<LocationSearchBar> {
                       );
                     },
                   )
-                : const Center(
-                    child: Text('Add Address'),
-                  ),
+
           ),
         ),
       ],

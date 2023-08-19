@@ -24,36 +24,14 @@ class _TeamViewState extends State<TeamView> {
     Navigator.pop(context);
   }
 
-  // int selectIndex = 0;
-  // int chosenRequestType = 0;
-  // List requestUserTypes = [
-  //   Constants.PLAYER.toString(),
-  //   Constants.ORGANIZER.toString(),
-  //   Constants.MANAGER.toString(),
-  //   Constants.MAINCOACH.toString(),
-  //   Constants.ASSISTANTCOACH.toString(),
-  //   Constants.REF.toString(),
-  // ];
-  // List playerList = [];
-  // List playersSelectedList = [];
-  // List<int>? selectedPlayerIndexes;
-  // List<int>? selectedRequestTypeIndexes;
-  // List<String> selectedRequestTypeObjects = [];
 
   void setupPlayerList() {
     widget.setupPlayerList();
-    // print("setupPlayerList");
-    // playerList = PlayerCommand().getAppModelPlayersNearMe();
   }
 
   void playersSelected(List<int> selectedIndexes) {
     widget.playersSelected(selectedIndexes);
-    // print("playersSelected: $selectedIndexes");
-    // selectedPlayerIndexes = selectedIndexes;
-    // playersSelectedList = [];
-    // for (int i = 0; i < selectedIndexes.length; i++) {
-    //   playersSelectedList.add(playerList[selectedIndexes[i]]);
-    // }
+
   }
 
   requestTypeSelected(List<int>? indexes) {

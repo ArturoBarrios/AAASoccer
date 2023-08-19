@@ -819,7 +819,7 @@ class TeamCommand extends BaseCommand {
             'Content-Type': 'application/json'
           },
           body: jsonEncode(<String, String>{
-            'query': TeamMutations().addUserToTeam(teamInput, userInput, roles),
+            'query': UserMutations().addUserToTeam(userInput, teamInput, roles),
           }),
         );
 

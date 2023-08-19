@@ -64,6 +64,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
   }
 
   Container returnProfileImageContainer(String imageUrl) {
+    print("returnProfileImageContainer: $imageUrl");
     return Container(
       child: GestureDetector(
         onTap: () async {
@@ -166,7 +167,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
                     borderRadius: BorderRadius.circular(62.5),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage(imageUrl.toString()),
+                      image: NetworkImage(imageUrl.toString() != '' ? imageUrl.toString() : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
                     ),
                   ),
                 ),
@@ -218,7 +219,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
                     borderRadius: BorderRadius.circular(62.5),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage(imageUrl.toString()),
+                      image: NetworkImage(imageUrl.toString() != ''&& imageUrl != null ? imageUrl.toString() : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
                     ),
                   ),
                 ),
@@ -272,7 +273,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(imageUrl),
+                        image: NetworkImage(imageUrl.toString() ),
                       ),
                     ),
                   )

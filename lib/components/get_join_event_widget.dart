@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../commands/base_command.dart';
 import '../commands/event_command.dart';
 import '../commands/team_command.dart';
 import '../commands/user_command.dart';
@@ -67,6 +68,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
   void goToEvent(){
     print("goToEvent");
     Navigator.pop(context);
+    // BaseCommand().popToHome(context);
   }
 
   void purchaseEvent(BuildContext context, dynamic event, String roles,
@@ -87,7 +89,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
               callbackFunction: goToEvent,
               )),
     );
-    // await AdaptyPaymentService().makePurchase();
+
   }
 
   Future<void> removeUserFromEvent(dynamic event, dynamic userObject) async{
