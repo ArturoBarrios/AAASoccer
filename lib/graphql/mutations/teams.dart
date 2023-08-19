@@ -175,34 +175,6 @@ class TeamMutations {
     return addPlayerToTeam;
   }
 
-    String addUserToTeam(Map<String, dynamic> teamInput,
-      Map<String, dynamic> userInput, String roles) {
-    String addPlayerToTeam = """      
-      mutation {
-        updateTeam(
-          id: ${teamInput['_id']},
-  				data: {                       
-            userParticipants:{
-              create:
-              {
-                user: {
-                  connect:
-                  "${userInput['_id']}"
-                }
-                roles: "$roles"
-              }
-            }                                                        
-          }                      
-        ){
-          ${TeamFragments().fullTeam()}
-              
-    				  
-          }
-        }
-        """;
-
-    return addPlayerToTeam;
-  }
 
     String updateTeamUserParticipant(
       dynamic updateTeamUserParticipantInput){
@@ -230,56 +202,25 @@ class TeamMutations {
     return updateTeamUserParticipantString;
     }  
 
-    String removeUserFromTeam(
-      dynamic team, dynamic user) {
-      String updateTeamRequest = """
+
+    String deleteTeamUserParticipant(Map<String, dynamic> teamUserParticipant,
+    ) {
+    String deleteTeamUserParticipantString = """      
       mutation {
-        updateRequest(id: ${team['_id']},
-          data: {              
-          status: ACCEPTED,
-          acceptedBy: {
-           	connect: "${team['acceptedBy_id']}"           
-          },                                                  
-          }) {
-              _id
-            status
-            requestAttempts
-            acceptedBy{              
-                _id
-                name              
-                email         
-            }
-            organizers{                            
-              data{
-              _id
-              name     
-              email         
-              }
-            }   
-            receivers{                            
-              data{
-              _id
-              name     
-              email         
-              }
-            }   
-            sender{              
-                _id
-                name          
-                email             
-            }            
-            team{              
-                _id
-                name              
-            }            
-    				
-                 
-          }   
+        deleteTeamUserParticipant(
+          id: ${teamUserParticipant['eventUserParticipantId']}
+        )
+        {
+          _id
+              
+    				  
+          }
         }
         """;
 
-    return updateTeamRequest;
-    }  
+    return deleteTeamUserParticipantString;
+  }
+ 
 
 
 

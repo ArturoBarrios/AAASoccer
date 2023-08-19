@@ -12,7 +12,7 @@ import 'package:soccermadeeasy/services/onesignal_service.dart';
 import 'package:soccermadeeasy/services/stripe_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:soccermadeeasy/views/spash_screen.dart';
+import 'package:soccermadeeasy/views/splash_screen.dart';
 
 import 'package:soccermadeeasy/utils.dart';
 import 'package:soccermadeeasy/widgets/intl_phone_number_filed.dart';
@@ -798,8 +798,7 @@ class _AppScaffoldState extends State<AppScaffold> {
                 },
                 child: Home(),
               )
-
-        // body: currentUser != "" ?  Home() : LoginPage(),
+        
         );
   }
 }

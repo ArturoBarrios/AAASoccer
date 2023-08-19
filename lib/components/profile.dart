@@ -132,26 +132,32 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        new Align(
-                            alignment: Alignment.centerLeft,
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              tooltip: 'Go back',
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            )),
-                        IconButton(
-                          icon: Icon(
-                            Icons.share,
-                            color: Colors.blue,
-                          ),
-                          onPressed: onTapShare,
-                        )
-                      ],
-                    ),
+  children: [
+    IconButton(
+      icon: const Icon(Icons.arrow_back),
+      tooltip: 'Go back',
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
+    Spacer(), // This will take up all available space between the elements
+    IconButton(
+      icon: Icon(
+        Icons.share,
+        color: Colors.blue,
+      ),
+      onPressed: onTapShare,
+    ),
+    IconButton(
+      icon: Icon(
+        Icons.settings,
+        color: Colors.blue,
+      ),
+      onPressed: onTapShare, // You might want to use a different function here
+    )
+  ],
+)
+,
                     ObjectProfileMainImage(objectImageInput: objectImageInput),
                     const SizedBox(height: 25.0),
                     const Text(

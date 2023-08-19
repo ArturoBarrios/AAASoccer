@@ -152,32 +152,7 @@ class _PlayerListState extends State<PlayerList> {
     }
   }
 
-  Future<void> removePlayer(dynamic user) async {
-    //remove player from team
-    if (widget.playersDetails['team'] != null) {
-      dynamic removeUsersFromTeamResp = await TeamCommand()
-          .removeUsersFromTeam(widget.playersDetails['team'], [user]);
-      print("removeUsersFromTeamResp: " + removeUsersFromTeamResp.toString());
-      if (removeUsersFromTeamResp['success']) {
-        setState(() {
-          widget.playersDetails['userParticipants'].removeWhere(
-              (userParticipant) =>
-                  userParticipant['user']['_id'] == user['_id']);
-        });
-      }
-    } else {
-      dynamic removeUsersFromEventResp = await EventCommand()
-          .removeUsersFromEvent(widget.playersDetails['event'], [user]);
-      print("removeUsersFromEventResp: " + removeUsersFromEventResp.toString());
-      if (removeUsersFromEventResp['success']) {
-        setState(() {
-          widget.playersDetails['userParticipants'].removeWhere(
-              (userParticipant) =>
-                  userParticipant['user']['_id'] == user['_id']);
-        });
-      }
-    }
-  }
+
 
   @override
   void initState() {

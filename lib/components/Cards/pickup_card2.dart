@@ -205,11 +205,11 @@ class _PickupCard2 extends State<PickupCard2> {
                         ),
                       ),
                     ),
-                    !widget.userEventDetails['isMine'] ? 
-                    widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails)
-                    : 
-                    Text("Join Your Game")
-                    ,
+                    // !widget.userEventDetails['isMine'] ? 
+                    // widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails)
+                    // : 
+                    // Text("Join Your Game")
+                    // ,
 
                     widget.userEventDetails['isMine'] ? 
                     Container(
