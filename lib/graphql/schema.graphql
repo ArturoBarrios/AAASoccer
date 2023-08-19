@@ -274,7 +274,7 @@ type Event   {
   mainImageKey: String
 }
 
-type Team   {
+type Team {
   name: String
   color: String
   events: [Event] @relation
@@ -287,6 +287,7 @@ type Team   {
   deleted: Boolean
   createdAt: String
   updatedAt: String
+  capacity: Int
   request: [Request] @relation
   chats: [Chat] @relation
   price: Price
@@ -296,9 +297,6 @@ type Team   {
   organization: Organization
   ratings: [Rating] @relation
 
-  
-
-  
 }
 
 type Coach   {  

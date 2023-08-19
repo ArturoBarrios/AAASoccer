@@ -5,8 +5,10 @@ import '../../commands/event_command.dart';
 import '../../components/payment_screen.dart';
 
 class EventCreate extends StatefulWidget {
+  const EventCreate({Key? key}) : super(key: key);
+
   @override
-  _EventCreateState createState() => _EventCreateState();
+  State<EventCreate> createState() => _EventCreateState();
 }
 
 class _EventCreateState extends State<EventCreate> {

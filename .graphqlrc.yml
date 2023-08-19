@@ -1,4 +1,4 @@
-schema: ./lib/schema.graphql
+schema: ./lib/graphql/schema.graphql
 documents: ''
 extensions:
   codegen:

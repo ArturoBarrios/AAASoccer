@@ -74,7 +74,6 @@ dependencies:
   table_calendar: ^3.0.8
   another_stepper: ^1.2.2
   firebase_analytics: ^10.4.4
-  geocoder: ^0.2.1
   share_plus: ^7.1.0
   path_provider: ^2.1.0
   pay: ^1.1.2

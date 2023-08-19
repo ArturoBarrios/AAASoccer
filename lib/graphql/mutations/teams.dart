@@ -1,7 +1,8 @@
 import '../fragments/team_fragments.dart';
 
 class TeamMutations {
-  String createTeam(Map<String, dynamic> teamInput, Map<String, dynamic> locationInput) {
+  String createTeam(
+      Map<String, dynamic> teamInput, Map<String, dynamic> locationInput) {
     print("teamInput: $teamInput");
     print("locationInput: $locationInput");
     String createTeam = """
@@ -10,6 +11,7 @@ class TeamMutations {
           name: "${teamInput['name']}",
           color: "${teamInput['color']}",          
           status: "ACTIVE"
+          capacity:"${teamInput['capacity']}",
           createdAt: "${teamInput['createdAt']}",
           updatedAt: "${teamInput['updatedAt']}",
           chats: {
@@ -55,7 +57,7 @@ class TeamMutations {
             create: 
             {
               latitude: ${locationInput['latitude']},
-              longitude: ${locationInput ['longitude']},
+              longitude: ${locationInput['longitude']},
               name: "${locationInput['name']}",
             }
           } 
@@ -93,11 +95,9 @@ class TeamMutations {
 
     return createPrice;
   }
-    
-  
- String updateTeamRequest(
-      Map<String, dynamic> teamRequestInput) {
-      String updateTeamRequest = """
+
+  String updateTeamRequest(Map<String, dynamic> teamRequestInput) {
+    String updateTeamRequest = """
       mutation {
         updateRequest(id: ${teamRequestInput['_id']},
           data: {              
@@ -144,9 +144,9 @@ class TeamMutations {
         """;
 
     return updateTeamRequest;
-    }  
+  }
 
-    String updateUserRolesInTeam(Map<String, dynamic> teamInput,
+  String updateUserRolesInTeam(Map<String, dynamic> teamInput,
       Map<String, dynamic> userInput, String roles, String teamRequestId) {
     String addPlayerToTeam = """      
       mutation {
@@ -175,7 +175,7 @@ class TeamMutations {
     return addPlayerToTeam;
   }
 
-    String addUserToTeam(Map<String, dynamic> teamInput,
+  String addUserToTeam(Map<String, dynamic> teamInput,
       Map<String, dynamic> userInput, String roles) {
     String addPlayerToTeam = """      
       mutation {
@@ -204,9 +204,8 @@ class TeamMutations {
     return addPlayerToTeam;
   }
 
-    String updateTeamUserParticipant(
-      dynamic updateTeamUserParticipantInput){
-      String updateTeamUserParticipantString = """
+  String updateTeamUserParticipant(dynamic updateTeamUserParticipantInput) {
+    String updateTeamUserParticipantString = """
       mutation {
         updateTeamUserParticipant(id: ${updateTeamUserParticipantInput['_id']},
           data: {                      
@@ -228,11 +227,10 @@ class TeamMutations {
         """;
 
     return updateTeamUserParticipantString;
-    }  
+  }
 
-    String removeUserFromTeam(
-      dynamic team, dynamic user) {
-      String updateTeamRequest = """
+  String removeUserFromTeam(dynamic team, dynamic user) {
+    String updateTeamRequest = """
       mutation {
         updateRequest(id: ${team['_id']},
           data: {              
@@ -279,11 +277,5 @@ class TeamMutations {
         """;
 
     return updateTeamRequest;
-    }  
-
-
-
-
-
-
+  }
 }
