@@ -1,9 +1,7 @@
 import '../fragments/event_fragments.dart';
 
 class EventMutations {
-
-  String getEvent(
-      Map<String, dynamic> eventInput) {
+  String getEvent(Map<String, dynamic> eventInput) {
     String getEvent = """      
       query {
         findEventByID(id: ${eventInput['_id']}) {
@@ -13,9 +11,6 @@ class EventMutations {
       """;
 
     return getEvent;
-
-
-
   }
 
   String addPlayerToEventDoesntWork(
@@ -103,8 +98,9 @@ class EventMutations {
     return addPlayerToEvent;
   }
 
-  String deleteEventUserParticipant(Map<String, dynamic> event,
-      ) {
+  String deleteEventUserParticipant(
+    Map<String, dynamic> event,
+  ) {
     String deleteEventUserParticipantString = """      
       mutation {
         deleteEventUserParticipant(
@@ -121,8 +117,7 @@ class EventMutations {
     return deleteEventUserParticipantString;
   }
 
-  String updateEventUserParticipant(
-      dynamic updateEventUserParticipantInput){
+  String updateEventUserParticipant(dynamic updateEventUserParticipantInput) {
     String updateEventUserParticipantString = """
       mutation {
         updateEventUserParticipant(id: ${updateEventUserParticipantInput['_id']},
@@ -177,11 +172,13 @@ class EventMutations {
   }
 
   String createPrice(
-      Map<String, dynamic> paymentInput,
-      Map<String, dynamic> eventInput,
-      ) {
+    Map<String, dynamic> paymentInput,
+    Map<String, dynamic> eventInput,
+  ) {
     // Check if 'teamAmount' is present in paymentInput, if not set it to 0
-    var teamAmount = paymentInput.containsKey('teamPrice') ? paymentInput['teamPrice'] : "0.00";
+    var teamAmount = paymentInput.containsKey('teamPrice')
+        ? paymentInput['teamPrice']
+        : "0.00";
 
     String createPrice = """
    mutation {
@@ -207,8 +204,7 @@ class EventMutations {
     return createPrice;
   }
 
-  String addTeam(
-      dynamic eventInput, dynamic teamInput) {
+  String addTeam(dynamic eventInput, dynamic teamInput) {
     String addTeamString = """      
       mutation {
         updateEvent(id: ${eventInput['_id']},
@@ -249,8 +245,7 @@ class EventMutations {
     return removeTeamString;
   }
 
-  String archiveEvent(
-      dynamic event) {
+  String archiveEvent(dynamic event) {
     String archiveEventString = """      
       mutation {
         updateEvent(id: ${event['_id']},
@@ -266,6 +261,7 @@ class EventMutations {
 
     return archiveEventString;
   }
+
   String createEvent(Map<String, dynamic> eventInput) {
     // TODO add more attrs
     String createEvent = """      

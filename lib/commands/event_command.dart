@@ -43,7 +43,6 @@ class EventCommand extends BaseCommand {
     });
 
     return sortedEvents;
-
   }
 
   Future<Map<String, dynamic>> archiveEvent(dynamic eventObject) async {
@@ -76,7 +75,6 @@ class EventCommand extends BaseCommand {
 
     return archiveEventResp;
   }
-
 
   dynamic returnMyEventsModel() {
     return appModel.myEvents;
@@ -238,7 +236,12 @@ class EventCommand extends BaseCommand {
         updateUserRolesInEvent(eventInput, userInput, roles,
             updateRoleResp['eventUserParticipant']);
       } else {
-        print("will add user to event with input: "+ eventInput.toString()+"\n"+ userInput.toString()+"\n"+ roles.toString());
+        print("will add user to event with input: " +
+            eventInput.toString() +
+            "\n" +
+            userInput.toString() +
+            "\n" +
+            roles.toString());
         http.Response response = await http.post(
           Uri.parse('https://graphql.fauna.com/graphql'),
           headers: <String, String>{
@@ -834,15 +837,17 @@ class EventCommand extends BaseCommand {
     return addPlayerToEventResponse;
   }
 
-  Future<Map<String,dynamic>> getAllUserEventParticipants(dynamic allUserEventParticipantsInput) async{
-    Map<String,dynamic> getUserEventParticipantsResponse = {
+  Future<Map<String, dynamic>> getAllUserEventParticipants(
+      dynamic allUserEventParticipantsInput) async {
+    Map<String, dynamic> getUserEventParticipantsResponse = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
     print("getUserEventParticipants()");
-    print("allUserEventParticipantsInput: " + allUserEventParticipantsInput.toString());
-    try{
+    print("allUserEventParticipantsInput: " +
+        allUserEventParticipantsInput.toString());
+    try {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -850,13 +855,16 @@ class EventCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventQueries().allUserEventParticipants(allUserEventParticipantsInput),
+          'query': EventQueries()
+              .allUserEventParticipants(allUserEventParticipantsInput),
         }),
       );
 
-      print("getUserEventParticipants response body: " + jsonDecode(response.body).toString());
-      if(response.statusCode == 200){
-        dynamic allEvents = jsonDecode(response.body)['data']['allCurrentUserEventParticipants'];
+      print("getUserEventParticipants response body: " +
+          jsonDecode(response.body).toString());
+      if (response.statusCode == 200) {
+        dynamic allEvents = jsonDecode(response.body)['data']
+            ['allCurrentUserEventParticipants'];
         print("allEventsOfType length: " + allEvents.length.toString());
         getUserEventParticipantsResponse["success"] = true;
         getUserEventParticipantsResponse["message"] = "events Retrieved";
@@ -864,14 +872,11 @@ class EventCommand extends BaseCommand {
       }
 
       return getUserEventParticipantsResponse;
-    } catch(e){
+    } catch (e) {
       print("getUserEventParticipants error: " + e.toString());
       return getUserEventParticipantsResponse;
     }
-
   }
-
-
 
   Future<Map<String, dynamic>> getEventsOfTypeNearLocation(EventType eventType,
       String eventFragment, String startDateTimestamp) async {
@@ -900,7 +905,8 @@ class EventCommand extends BaseCommand {
       print(jsonDecode(response.body));
 
       if (response.statusCode == 200) {
-        dynamic allEvents = jsonDecode(response.body)['data']['allEventsOfType'];
+        dynamic allEvents =
+            jsonDecode(response.body)['data']['allEventsOfType'];
         print("allEventsOfType length: " + allEvents.length.toString());
         getGamesNearLocationResp["success"] = true;
         getGamesNearLocationResp["message"] = "events Retrieved";
@@ -1187,15 +1193,15 @@ class EventCommand extends BaseCommand {
               teamAmountPaid += double.parse(payments[i]['amount']);
             }
           }
-        }        
-        isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);        
+        }
+        isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
         isMyEventResp['amountRemaining'] =
             (double.parse(event['price']['amount']) - amountPaid)
-                .toStringAsFixed(2);        
-        isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);        
+                .toStringAsFixed(2);
+        isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);
         isMyEventResp['teamAmountRemaining'] =
             (double.parse(event['price']['teamAmount']) - teamAmountPaid)
-                .toStringAsFixed(2);        
+                .toStringAsFixed(2);
       }
       print("successfully ran details function");
       isMyEventResp["success"] = true;
@@ -1243,11 +1249,8 @@ class EventCommand extends BaseCommand {
     }
   }
 
-
-
- 
-
-  Future<Map<String, dynamic>> setupEvents(dynamic type, String afterTimestamp) async {
+  Future<Map<String, dynamic>> setupEvents(
+      dynamic type, String afterTimestamp) async {
     print("setupEvents()()");
 
     Map<String, dynamic> setupEventsResp = {
@@ -1255,28 +1258,29 @@ class EventCommand extends BaseCommand {
       "message": "Default Error",
       "data": []
     };
-    
-    if(type == Constants.MYEVENTS){
+
+    if (type == Constants.MYEVENTS) {
       //first part is to get all events
       print("testing getEventsNearLocation");
       //get userEventParticipants
-      if(!appModel.isGuest){
+      if (!appModel.isGuest) {
         print("is not guest");
-        //get eventUserParticipants      
+        //get eventUserParticipants
         dynamic allUserEventParticipantsInput = {
           "userId": appModel.currentUser['_id'],
           "startTime": afterTimestamp,
-          "eventFragment" : EventFragments().userEventParticipants()
+          "eventFragment": EventFragments().userEventParticipants()
         };
-        Map<String,dynamic> getAllUserEventParticipantsResp = await getAllUserEventParticipants(allUserEventParticipantsInput);
-        print("getAllUserEventParticipantss: " + getAllUserEventParticipantsResp.toString());
-        if(getAllUserEventParticipantsResp['success']){
+        Map<String, dynamic> getAllUserEventParticipantsResp =
+            await getAllUserEventParticipants(allUserEventParticipantsInput);
+        print("getAllUserEventParticipantss: " +
+            getAllUserEventParticipantsResp.toString());
+        if (getAllUserEventParticipantsResp['success']) {
           print("successss!!!!");
-          List<dynamic> allMyEvents =
-              getAllUserEventParticipantsResp['data'];
+          List<dynamic> allMyEvents = getAllUserEventParticipantsResp['data'];
           print("allMyEvents: " + allMyEvents.toString());
           List myEvents = allMyEvents;
-          print("myEvents.length before: " + myEvents.length.toString());      
+          print("myEvents.length before: " + myEvents.length.toString());
           //filter out archived events
           myEvents.removeWhere((event) => BaseCommand()
               .dateTimeFromMilliseconds(event['event']['endTime'].toString())
@@ -1289,57 +1293,51 @@ class EventCommand extends BaseCommand {
             print("bCreatedAt: " + bCreatedAt.toString());
             return bCreatedAt.compareTo(aCreatedAt);
           });
-          appModel.myEvents =
-              myEvents;
+          appModel.myEvents = myEvents;
           for (var event in myEvents) {
             var createdAt = event["event"]["createdAt"];
             print("createdAtt: $createdAt");
           }
           print("myEvents after sort: " + myEvents.length.toString());
-
         }
-
       }
-
     }
     //get other type of events
-    else{
+    else {
       Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
-          await EventCommand().getEventsOfTypeNearLocation(EventType.GAME,
-              EventFragments().fullEvent(), afterTimestamp);
+          await EventCommand().getEventsOfTypeNearLocation(
+              EventType.GAME, EventFragments().fullEvent(), afterTimestamp);
 
       print("getEventsNearLocationResp: " +
           getEventsOfAllTypesNearLocationResp.toString());
-      
-        //events retrieved successfully
-        List<dynamic> events = getEventsOfAllTypesNearLocationResp['data'];
-        events.sort((a, b) {
-          int aCreatedAt = int.tryParse(a["createdAt"]) ?? 0;
-          int bCreatedAt = int.tryParse(b["createdAt"]) ?? 0;
-          print("aCreatedAt: " + aCreatedAt.toString());
-          print("bCreatedAt: " + bCreatedAt.toString());
-          return bCreatedAt.compareTo(aCreatedAt);
-        });
-        print("events: " + events.toString());
-        eventsModel.games = events;
-        // print("length of events: " + events.length.toString());
-        //iterate through events
-        // for (int i = 0; i < events.length; i++) {
-        //   dynamic type = events[i]['type'];
-        //   bool isMainEvent = events[i]['isMainEvent'];
-        //   if (isMainEvent) {
-        //     addEventToEventModels(events[i]);
-        //   }
-        // }
-        print("games in eventsModel: " + eventsModel.games.toString());
-      
-    
+
+      //events retrieved successfully
+      List<dynamic> events = getEventsOfAllTypesNearLocationResp['data'];
+      events.sort((a, b) {
+        int aCreatedAt = int.tryParse(a["createdAt"]) ?? 0;
+        int bCreatedAt = int.tryParse(b["createdAt"]) ?? 0;
+        print("aCreatedAt: " + aCreatedAt.toString());
+        print("bCreatedAt: " + bCreatedAt.toString());
+        return bCreatedAt.compareTo(aCreatedAt);
+      });
+      print("events: " + events.toString());
+      eventsModel.games = events;
+      // print("length of events: " + events.length.toString());
+      //iterate through events
+      // for (int i = 0; i < events.length; i++) {
+      //   dynamic type = events[i]['type'];
+      //   bool isMainEvent = events[i]['isMainEvent'];
+      //   if (isMainEvent) {
+      //     addEventToEventModels(events[i]);
+      //   }
+      // }
+      print("games in eventsModel: " + eventsModel.games.toString());
     }
 
     Map<String, dynamic> getPlayersNearLocationResp =
         await PlayerCommand().getPlayersNearLocation();
-    print("getPlayersNearLocationResp: " +
-        getPlayersNearLocationResp.toString());
+    print(
+        "getPlayersNearLocationResp: " + getPlayersNearLocationResp.toString());
     if (getPlayersNearLocationResp['success']) {
       List<dynamic> players = getPlayersNearLocationResp['data'];
       print("playerssss length: ");
@@ -1350,8 +1348,6 @@ class EventCommand extends BaseCommand {
       appModel.players = players;
       appModel.playersNearMe = players;
     }
-
-    
 
     return setupEventsResp;
   }
@@ -1372,7 +1368,7 @@ class EventCommand extends BaseCommand {
         appModel.myEvents.insert(0, {"event": event});
         eventsModel.games.insert(0, event);
       } else {
-        int indexToRemove = -1;        
+        int indexToRemove = -1;
         for (int i = 0; i < eventsModel.games.length; i++) {
           if (eventsModel.games[i]['_id'] == event['_id']) {
             indexToRemove = i;
@@ -1400,8 +1396,7 @@ class EventCommand extends BaseCommand {
           eventsModel.trainings.removeAt(indexToRemove);
         }
       }
-    }
-    else if (event['type'] == "TRYOUT") {
+    } else if (event['type'] == "TRYOUT") {
       if (add) {
         appModel.myEvents.insert(0, {"event": event});
         eventsModel.tryouts.insert(0, event);
@@ -1417,10 +1412,10 @@ class EventCommand extends BaseCommand {
           eventsModel.tryouts.removeAt(indexToRemove);
         }
       }
-    }
-    else if (event['type'] == "TOURNAMENT") {
+    } else if (event['type'] == "TOURNAMENT") {
       print("event type tournament");
-      print("eventModel.tournaments.length: " + eventsModel.tournaments.length.toString());
+      print("eventModel.tournaments.length: " +
+          eventsModel.tournaments.length.toString());
       if (add) {
         appModel.myEvents.insert(0, {"event": event});
         eventsModel.tournaments.insert(0, event);
@@ -1436,10 +1431,10 @@ class EventCommand extends BaseCommand {
           eventsModel.tournaments.removeAt(indexToRemove);
         }
       }
-    }
-    else if (event['type'] == "LEAGUE") {
+    } else if (event['type'] == "LEAGUE") {
       print("event type league");
-      print("eventModel.leagues.length: " + eventsModel.leagues.length.toString());
+      print("eventModel.leagues.length: " +
+          eventsModel.leagues.length.toString());
       if (add) {
         appModel.myEvents.insert(0, {"event": event});
         eventsModel.leagues.insert(0, event);
@@ -1458,7 +1453,7 @@ class EventCommand extends BaseCommand {
     }
 
     //remove from myEvents
-    if(!add){
+    if (!add) {
       List<dynamic> myEvents = appModel.myEvents;
       int indexToRemove = -1;
       for (int i = 0; i < myEvents.length; i++) {
@@ -1471,7 +1466,7 @@ class EventCommand extends BaseCommand {
         myEvents.removeAt(indexToRemove);
       }
     }
-          
+
     HomePageCommand().updateUpdatedCards(true);
 
     return updateViewModelsWithGameResp;
@@ -1819,8 +1814,6 @@ class EventCommand extends BaseCommand {
 
     return addUsersRolesInEventResponse;
   }
-
-
 
   Future<Map<String, dynamic>> updateEventUserParticipant(
       dynamic eventUserParticipant, String newRoles) async {

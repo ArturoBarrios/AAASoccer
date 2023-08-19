@@ -175,7 +175,6 @@ class TeamMutations {
     return addPlayerToTeam;
   }
 
-
   String updateTeamUserParticipant(dynamic updateTeamUserParticipantInput) {
     String updateTeamUserParticipantString = """
       mutation {
@@ -199,11 +198,11 @@ class TeamMutations {
         """;
 
     return updateTeamUserParticipantString;
-    }  
+  }
 
-
-    String deleteTeamUserParticipant(Map<String, dynamic> teamUserParticipant,
-    ) {
+  String deleteTeamUserParticipant(
+    Map<String, dynamic> teamUserParticipant,
+  ) {
     String deleteTeamUserParticipantString = """      
       mutation {
         deleteTeamUserParticipant(
@@ -219,11 +218,4 @@ class TeamMutations {
 
     return deleteTeamUserParticipantString;
   }
-
-
-
-
-
-
-
 }
