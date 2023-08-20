@@ -198,6 +198,8 @@ class UserMutations {
     return addTeamString;
   }
 
+  
+
   String removeFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String addFriendString = """      
@@ -212,59 +214,4 @@ class UserMutations {
     return addFriendString;
   }
 
-  String removeGame(
-      Map<String, dynamic> userInput, Map<String, dynamic> eventInput) {
-    String removeGameString = """      
-      mutation {
-        updateUser(id: ${userInput['_id']},
-  				data: {            
-            events: {
-              disconnect: [
-                ${eventInput['_id']}                                                                                 
-              ]
-            }             
-          }                      
-        ){
-        ${UserFragments().fullUser()}        
-                                              			
-  }
-}
-        """;
-
-    return removeGameString;
-  }
-
-  String removeTeamFromUser(
-      Map<String, dynamic> teamInput, Map<String, dynamic> userInput) {
-    String addPlayerToEvent = """      
-      mutation {
-        updateUser(id: ${userInput['_id']}, data: {          
-          teams: {
-            disconnect: ${teamInput['_id']}
-          }
-        }) {
-          _id
-        }
-      }
-        """;
-
-    return addPlayerToEvent;
-  }
-
-  String removeEventFromUser(
-      Map<String, dynamic> teamInput, Map<String, dynamic> userInput) {
-    String addPlayerToEvent = """      
-      mutation {
-        updateUser(id: ${userInput['_id']}, data: {          
-          teams: {
-            disconnect: ${teamInput['_id']}
-          }
-        }) {
-          _id
-        }
-      }
-        """;
-
-    return addPlayerToEvent;
-  }
 }
