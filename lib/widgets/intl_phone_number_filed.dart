@@ -33,6 +33,7 @@ class IntlPhoneNumberFiled extends StatefulWidget {
 class _IntlPhoneNumberFiledState extends State<IntlPhoneNumberFiled> {
   String? _errorText;
   String isoCode = '';
+  String dialCode = '';
   PhoneNumber? initPhoneNumber;
 
   @override
@@ -69,7 +70,7 @@ class _IntlPhoneNumberFiledState extends State<IntlPhoneNumberFiled> {
           if (value.isNotEmpty) {
             try {
               var isValidPhoneNumber = await PhoneNumberUtil.isValidNumber(
-                phoneNumber: '$isoCode$value',
+                phoneNumber: '$dialCode$value',
                 isoCode: isoCode,
               );
 
@@ -129,7 +130,8 @@ class _IntlPhoneNumberFiledState extends State<IntlPhoneNumberFiled> {
               ),
               onInputChanged: (value) {
                 _validate(value.parseNumber());
-                isoCode = value.dialCode ?? '';
+                dialCode = value.dialCode ?? '';
+                isoCode = value.isoCode ?? '';
                 widget.onInputChanged?.call(value);
               },
               textFieldController: widget.controller,

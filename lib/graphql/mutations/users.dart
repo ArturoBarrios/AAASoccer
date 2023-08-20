@@ -2,7 +2,6 @@ import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
 
 import '../fragments/user_fragments.dart';
 import '../fragments/event_fragments.dart';
-import '../fragments/request_fragments.dart';
 
 class UserMutations {
   String partialUserUpdate(Map<String, dynamic> userInput) {
@@ -111,9 +110,7 @@ class UserMutations {
     return updateUserString;
   }
 
-
-  String followUser( 
-       dynamic followUserInput) {
+  String followUser(dynamic followUserInput) {
     String addFriendString = """      
       mutation {
         createFollowRelation(data: {
@@ -198,8 +195,6 @@ class UserMutations {
     return addTeamString;
   }
 
-  
-
   String removeFriend(
       Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
     String addFriendString = """      
@@ -214,4 +209,5 @@ class UserMutations {
     return addFriendString;
   }
 
+  removeTeamFromUser(userInput, team) {}
 }

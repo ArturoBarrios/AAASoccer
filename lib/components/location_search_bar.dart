@@ -64,6 +64,8 @@ class _LocationSearchBar extends State<LocationSearchBar> {
       print('No Locations found!');
     }
     widget.onCoordinatesChange?.call(coordinates, address);
+    addressPredictions.clear();
+    setState(() {});
   }
 
   @override
@@ -72,7 +74,12 @@ class _LocationSearchBar extends State<LocationSearchBar> {
       children: <Widget>[
         TextField(
           controller: locationController,
-          decoration: const InputDecoration.collapsed(hintText: 'Search'),
+          decoration: const InputDecoration(
+            hintText: 'Location',
+            labelText: 'Location',
+            border: InputBorder.none,
+            filled: true,
+          ),
           onChanged: (value) async => {placesApiAutoComplete(value)},
           enabled: !widget.readonly,
         ),

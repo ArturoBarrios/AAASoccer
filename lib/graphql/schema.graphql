@@ -308,7 +308,7 @@ type Team   {
   organization: Organization
   ratings: [Rating] @relation
   SocialMediaApps: [SocialMediaApp] @relation
-  
+  capacity: I
 }
 
 type Coach   {  
