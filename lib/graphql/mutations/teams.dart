@@ -208,7 +208,7 @@ class TeamMutations {
     String deleteTeamUserParticipantString = """      
       mutation {
         deleteTeamUserParticipant(
-          id: ${teamUserParticipant['eventUserParticipantId']}
+          id: ${teamUserParticipant['teamUserParticipantId']}
         )
         {
           _id

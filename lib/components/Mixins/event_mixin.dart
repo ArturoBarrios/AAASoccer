@@ -64,6 +64,8 @@ mixin EventMixin {
 
   
 
+  
+
 
   void setupPlayerList() {
     print("setupPlayerList");
@@ -242,6 +244,39 @@ mixin EventMixin {
             playerChosen, [userObjectDetails['team']], roles);
       });
     });
+  }
+
+   Future<dynamic> chooseRolesDialogue(BuildContext context)async{
+      dynamic chooseRolesDialogueResp = {};   
+      List<dynamic> primaryList = EventCommand().getEventUserRoles();
+      List<dynamic> secondaryList = [];
+      Map<int, dynamic> result = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AnimatedDialog(
+              details: {"title": "Choose Event Role"},
+              items: primaryList,
+              singleSelect: false,
+              secondaryItems: secondaryList,
+              goToFunctions: []);
+        },
+      );
+      if (result.isNotEmpty) {
+        print('Selected items: $result');                 
+        List<dynamic> rolesArray = [];
+        result.forEach((mainIndex, secondaryIndex){
+          rolesArray.add(primaryList[mainIndex]);
+        });
+        chooseRolesDialogueResp['rolesArray'] = rolesArray;
+        return chooseRolesDialogueResp;  
+      }
+      else{
+        return null;
+      }
+
+    
+           
+    
   }
 
   Future<void> sendTeamsEventRequest(dynamic event, Map<int, dynamic> indexes,
@@ -615,174 +650,6 @@ mixin EventMixin {
           child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [Text("FREE!")],
-      ));
-    }
-  }
-
-  Container getJoinGameWidget(BuildContext context, dynamic userObjectDetails,
-      dynamic event, dynamic userInput) {
-    print("getJoinGameWidget()");
-    dynamic eventJoinCondition = getEventJoinConditions(event['joinConditions']['data']);
-    print("eventJoinCondition: "+eventJoinCondition.toString());
-    //if not already a player
-    if (!userObjectDetails['roles'].contains("PLAYER")) {
-      String roles = addRoleToRoles("PLAYER");
-      if (userObjectDetails['isMine']) {
-        return Container(
-            child: GestureDetector(
-          onTap: () {
-            print("onTap Join My Game");
-            EventCommand().addUserToEvent(event, userInput, roles);
-          },
-          child: Text("Join my Game"),
-        ));
-      } else {
-        //!withPayment&&!withRequest
-        if (!eventJoinCondition['withPayment'] &&
-            !eventJoinCondition['withRequest']) {
-          //price exists(join with paying or not paying)
-          if (userObjectDetails['price'] != null) {
-            return Container(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  GestureDetector(
-                    onTap: () {
-                      print("!withPayment&&!withRequest");
-                      purchaseEvent(context, event, roles, userObjectDetails);
-                    },
-                    child: Text("Join Game, Pay Now"),
-                  ),
-                  Container(
-                      child: GestureDetector(
-                    onTap: () {
-                      print("!withPayment&&!withRequest");
-                      EventCommand().addUserToEvent(event, userInput, roles);
-                    },
-                    child: Text("Join Game, Pay Later"),
-                  ))
-                ]));
-          }
-          //price does not exist
-          else {
-            return Container(
-                child: GestureDetector(
-              onTap: () {
-                print("!withPayment&&!withRequest");
-                EventCommand().addUserToEvent(event, userInput, roles);
-              },
-              child: Text("Join Game, Pay Later"),
-            ));
-          }
-        }
-        //!withPayment&&withRequestt
-        else if (!eventJoinCondition['withPayment'] &&
-            eventJoinCondition['withRequest']) {
-          return sendOrganizerPlayerEventRequest(context, userObjectDetails);
-          // return Container(
-          //     child: GestureDetector(
-          //   onTap: () {
-          //     print("!withPayment&&!withRequest");
-          //     selectedRequestTypeObjects.add("PLAYER");
-          //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
-          //     selectedRequestTypeObjects = [];
-          //   },
-          //   child: Text("Send Request to Join(No Payment required to join)"),
-          // ));
-        }
-        //withPayment && !withRequest
-        else if (eventJoinCondition['withPayment'] &&
-            !eventJoinCondition['withRequest']) {
-          //if amount is 0
-
-          return Container(
-              child: GestureDetector(
-            onTap: () {
-              print("withPayment && !withRequest");
-              purchaseEvent(context, event, roles, userObjectDetails);
-            },
-            child: Text("Pay to Join Game"),
-          ));
-        }
-        //withPayment && withRequest
-        //find request element, else send request
-        else {
-          print("elseeee");
-          print("userObject['requestsSent']: ${userObject['requestsSent']}");
-          //check event request status
-          dynamic requestElementObject;
-          userObject['requestsSent']['data'].forEach((requestElement) {
-            print("requestElement: $requestElement");
-            print("event: " + event.toString());
-            if (requestElement['type'] != 'TEAMREQUEST' &&
-                requestElement['event']['_id'] == event['_id']) {
-              requestElementObject = requestElement;
-            }
-          });
-          if (requestElementObject != null) {
-            print("requestElementObject['status']: " +
-                requestElementObject['status'].toString());
-            if (requestElementObject['status'].toString() == "ACCEPTED") {
-              //if not paid off
-              if ((double.parse(userObjectDetails['amountRemaining']) / 100)
-                      .toStringAsFixed(2) !=
-                  "0.00") {
-                return Container(
-                    child: GestureDetector(
-                  onTap: () {
-                    print("withPayment && withRequest");
-                    purchaseEvent(context, event, roles, userObjectDetails);
-                  },
-                  child: Text("Pay to Join Game"),
-                ));
-              }
-              //paid off
-              else {
-                return Container();
-              }
-            } else if (requestElementObject['status'].toString() == "PENDING") {
-              return Container(
-                  child: GestureDetector(
-                onTap: () {
-                  print("WAITING FOR REQUEST TO BE ACCEPTED");
-                },
-                child: Text("Request Pending"),
-              ));
-            } else {
-              return sendOrganizerPlayerEventRequest(
-                  context, userObjectDetails);
-              // return Container(
-              //     child: GestureDetector(
-              //   onTap: () {
-              //     selectedRequestTypeObjects.add("PLAYER");
-              //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
-              //     selectedRequestTypeObjects = [];
-              //   },
-              //   child: Text("Request Denied, Resend Request"),
-              // ));
-            }
-          } else {
-            return sendOrganizerPlayerEventRequest(context, userObjectDetails);
-            // return Container(
-            //     child: GestureDetector(
-            //   onTap: () {
-            //     print("withPayment && withRequest");
-            //     selectedRequestTypeObjects.add("PLAYER");
-            //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
-            //     selectedRequestTypeObjects = [];
-            //   },
-            //   child: Text("Send Request to Join(Payment required to join)"),
-            // ));
-          }
-        }
-      }
-    } else {
-      return Container(
-          child: GestureDetector(
-        onTap: () {
-          print("onTap Leave Game");
-        },
-        child: Text("Leave Game"),
       ));
     }
   }
