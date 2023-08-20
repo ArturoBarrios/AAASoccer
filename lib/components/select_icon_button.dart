@@ -8,15 +8,17 @@ import '../models/home_page_model.dart';
 
 class SelectIconButton extends StatefulWidget {
   const SelectIconButton(
-      {Key? key, required this.eventObject, required this.svgImage, required this.index})
-      : super(key: key);  
-  final dynamic eventObject; 
+      {Key? key,
+      required this.eventObject,
+      required this.svgImage,
+      required this.index,
+      this.onTapEvent})
+      : super(key: key);
+  final dynamic eventObject;
   final Svg svgImage;
-  final double bevel = 10.0;  
-  final int index;  
-  
-
-
+  final double bevel = 10.0;
+  final int index;
+  final VoidCallback? onTapEvent;
 
   @override
   State<SelectIconButton> createState() => _SelectIconButton();
@@ -24,32 +26,32 @@ class SelectIconButton extends StatefulWidget {
 
 class _SelectIconButton extends State<SelectIconButton> {
   final bool _isPressed = false;
-    final Color color = Colors.grey.shade200;    
-    final Color selectedColor = Colors.orange.shade500;    
-  
-  final ButtonStyle style =
-        ElevatedButton.styleFrom(primary: Colors.orange.shade500, textStyle: const TextStyle(fontSize: 20));
-  final imageUrl = "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
+  final Color color = Colors.grey.shade200;
+  final Color selectedColor = Colors.orange.shade500;
+
+  final ButtonStyle style = ElevatedButton.styleFrom(
+      primary: Colors.orange.shade500,
+      textStyle: const TextStyle(fontSize: 20));
+  final imageUrl =
+      "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
-  Widget build(BuildContext context) {  
-  print("eventObject: " + widget.eventObject.toString());  
-  print("eventObjectKey: " + widget.index.toString());
-   
+  Widget build(BuildContext context) {
+    print("eventObject: " + widget.eventObject.toString());
+    print("eventObjectKey: " + widget.index.toString());
 
     return Listener(
-      
-      child: GestureDetector(
-        onTap: () async {
-          print("onTap EventType");          
-          await HomePageCommand().eventTypeTapped(widget.eventObject['key']);
-          await HomePageCommand().setCards();
+        child: GestureDetector(
+      onTap: () async {
+        print("onTap EventType");
 
-        },
-        child: AnimatedContainer(   
-                 
+        HomePageCommand().eventTypeTapped(widget.eventObject['key']);
+        HomePageCommand().setCards();
+        widget.onTapEvent?.call();
+      },
+      child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           padding: EdgeInsets.all(12.5),
-          decoration: BoxDecoration(            
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.0 * 1),
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -58,7 +60,7 @@ class _SelectIconButton extends State<SelectIconButton> {
                   widget.eventObject['enabled'] ? selectedColor : color,
                   widget.eventObject['enabled'] ? selectedColor : color,
                   widget.eventObject['enabled'] ? selectedColor : color,
-                  widget.eventObject['enabled'] ? selectedColor : color,                  
+                  widget.eventObject['enabled'] ? selectedColor : color,
                 ],
                 stops: const [
                   0.0,
@@ -71,33 +73,24 @@ class _SelectIconButton extends State<SelectIconButton> {
                 : [
                     BoxShadow(
                       blurRadius: 10.0,
-                      offset: -Offset(10.0/2, 10.0/2),
+                      offset: -Offset(10.0 / 2, 10.0 / 2),
                       color: Colors.white,
                     ),
                     BoxShadow(
                       blurRadius: widget.bevel,
-                      offset: Offset(10.0/2, 10.0/2),
+                      offset: Offset(10.0 / 2, 10.0 / 2),
                       color: Colors.black,
                     )
                   ],
           ),
           child: Container(
-              child: 
-              InnerNeumorphicCardFb1(
+              child: InnerNeumorphicCardFb1(
                   text: widget.eventObject['name'],
-                  svgImage:
-                      widget.eventObject['image'],
+                  svgImage: widget.eventObject['image'],
                   subtitle: widget.eventObject['description'],
-                  onPressed: () {
-                    
-                  })
-                  )),
-
-                  )
-                  
-    );
+                  onPressed: () {}))),
+    ));
   }
-
 }
 
 class InnerNeumorphicCardFb1 extends StatelessWidget {
@@ -105,7 +98,7 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
   final Svg svgImage;
   final String subtitle;
   final Function() onPressed;
- @override
+  @override
   State<SelectIconButton> createState() => _SelectIconButton();
 
   const InnerNeumorphicCardFb1(
@@ -118,10 +111,10 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final double cardWidth = MediaQuery.of(context).size.width * .4;
-  final double cardHeight = MediaQuery.of(context).size.height * .1;
-  final double cardImageWidth = cardWidth * .5;
-  final double cardImageHeight = cardHeight * .5;
+    final double cardWidth = MediaQuery.of(context).size.width * .4;
+    final double cardHeight = MediaQuery.of(context).size.height * .1;
+    final double cardImageWidth = cardWidth * .5;
+    final double cardImageHeight = cardHeight * .5;
 
     return GestureDetector(
       onTap: onPressed,
@@ -129,15 +122,14 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
         width: cardWidth,
         height: cardHeight,
         padding: const EdgeInsets.all(15.0),
-       
         child: Column(
           children: [
-            Image(          
-          width: cardImageWidth,
-          height: cardImageHeight,                          
-          image: svgImage,
-          color: Colors.white,
-              ),
+            Image(
+              width: cardImageWidth,
+              height: cardImageHeight,
+              image: svgImage,
+              color: Colors.white,
+            ),
             const Spacer(),
             Text(text,
                 textAlign: TextAlign.center,
@@ -146,7 +138,6 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 )),
-           
             Text(
               subtitle,
               textAlign: TextAlign.center,
@@ -155,11 +146,9 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
                   fontWeight: FontWeight.normal,
                   fontSize: 12),
             ),
-            
           ],
         ),
       ),
     );
   }
 }
-

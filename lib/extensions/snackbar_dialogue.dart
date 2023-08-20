@@ -7,10 +7,13 @@ extension SnackBarDialogue on ScaffoldMessengerState {
     final SnackBarType? type,
     final String? message,
     final String? buttonText,
+    final SnackBarBehavior? behavior,
     final VoidCallback? onTap,
   }) {
     showSnackBar(
       SnackBar(
+        behavior: behavior,
+        margin: behavior != null ? const EdgeInsets.only(bottom: 70) : null,
         backgroundColor:
             type == SnackBarType.success ? Colors.green : Colors.red,
         content: Row(
