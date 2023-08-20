@@ -11,7 +11,7 @@ import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 import '../commands/player_command.dart';
 import '../components/Loading/loading_screen.dart';
-import '../models/button_model.dart';
+import '../components/models/button_model.dart';
 import '../models/filter_result_model.dart';
 import '../services/amplify_auth_service.dart' as AmplifyAuth;
 //import widgets

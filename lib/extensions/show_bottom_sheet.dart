@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/filter_bottom_sheet.dart';
-import '../models/button_model.dart';
+import '../components/models/button_model.dart';
 import '../models/filter_result_model.dart';
 
 ///

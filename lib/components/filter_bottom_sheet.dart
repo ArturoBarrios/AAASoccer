@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
-import '../models/button_model.dart';
 import '../models/filter_result_model.dart';
 import 'custom_range_slider.dart';
+import 'models/button_model.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({

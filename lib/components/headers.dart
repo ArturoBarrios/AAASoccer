@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../components/profile.dart';
-import '../models/button_model.dart';
 import '../views/chats/view.dart';
 import '../views/home.dart';
 import '../views/chats/create.dart';
+import 'models/button_model.dart';
 
 class Headers extends StatefulWidget {
   final ButtonModel? filterButton;
