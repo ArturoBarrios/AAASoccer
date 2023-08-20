@@ -55,4 +55,12 @@ class Constants {
   static const String IMAGEREPLACE = "Replace Image";
 
   static const String SUBSCRIPTION = "SUBSCRIPTION";
+
+  //social media types
+  static const String FACEBOOK = "FACEBOOK";
+  static const String INSTAGRAM = "INSTAGRAM";
+  static const String X = "X";
+  static const String YOUTUBE = "YOUTUBE";
+  static const String LINKEDIN = "LINKEDIN";
+
 }

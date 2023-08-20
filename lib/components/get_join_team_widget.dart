@@ -76,8 +76,8 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
     // await AdaptyPaymentService().makePurchase();
   }
 
-  void leaveTeam(){
-    String roleToLeave = "PLAYER";
+  void leaveTeam(String roles, String roleToLeave){
+    
     // if (roles == "{}") {
     //   UserCommand().leaveTeam(team, roles);
     // } else {
@@ -290,7 +290,8 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
           child: GestureDetector(
         onTap: () {
           print("onTap Leave Team");
-          leaveTeam();
+          String roleToLeave = "PLAYER";
+          // leaveTeam(roles, roleToLeave);
           
         },
         child: Text("Leave Team"),

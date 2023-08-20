@@ -192,6 +192,7 @@ type User  {
   mainImageKey: String
   subscriptionTypeUsers: [SubscriptionTypeUser] @relation
   isProfilePrivate: Boolean @default(value: false)
+  SocialMediaApps: [SocialMediaApp] @relation
 }
 
 
@@ -282,6 +283,7 @@ type Event   {
   createdAt: String
   capacity: Int  
   mainImageKey: String
+  SocialMediaApps: [SocialMediaApp] @relation
 }
 
 type Team   {
@@ -305,9 +307,7 @@ type Team   {
   teamOrders: [TeamOrder] @relation
   organization: Organization
   ratings: [Rating] @relation
-
-  
-
+  SocialMediaApps: [SocialMediaApp] @relation
   
 }
 
@@ -569,6 +569,22 @@ type Price   {
   location: Location
   subscriptionType: SubscriptionType
   teamAmount: String
-  time: int #in minutes
+  time: Int #in minutes
+}
 
+enum SubscriptionType {  
+  FACEBOOK  
+  INSTAGRAM
+  X
+  YOUTUBE
+  LINKEDIN   
+}
+
+
+type SocialMediaApps   {  
+  type: SocialMediaType
+  url: String
+  user: User
+  team: Team
+  event: Event
 }

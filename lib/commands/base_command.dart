@@ -1,5 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
+import '../components/Dialogues/animated_dialogu.dart';
 import '../constants.dart';
 import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
@@ -79,6 +80,31 @@ class BaseCommand {
     } else {
       return false;
     }
+  } 
+
+
+
+  
+
+  String addRolesToExistingRoles(List<dynamic> exitingRoles,List<dynamic> rolesToAdd){
+    String roles = "{";
+    for(int i = 0;i<exitingRoles.length;i++){
+      roles += exitingRoles[i];
+      if(i != exitingRoles.length-1){
+        roles += ", ";
+      }
+
+    }
+    for(int i = 0;i<rolesToAdd.length;i++){
+      roles += rolesToAdd[i];
+      if(i != rolesToAdd.length-1){
+        roles += ", ";
+      }
+
+    }        
+  
+    roles += "}";
+    return roles;
   }
 
   void updateUserEventDetailsModel(dynamic userEventDetails) {
@@ -122,7 +148,7 @@ class BaseCommand {
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
-  }
+  }  
 
   //"{"test1", "test2", "test3"} => ["test1", "test2", "test3"]
   List<String> parseRoles(String inputString) {
@@ -134,7 +160,7 @@ class BaseCommand {
   }
 
   //["test1", "test2", "test3"] => {"test1", "test2", "test3"}
-  String stringifyRoles(List<String> inputList) {
+  String stringifyRoles(List<dynamic> inputList) {
     String rolesString = inputList.toSet().toString();
 
     return rolesString;
