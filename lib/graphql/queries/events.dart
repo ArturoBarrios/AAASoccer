@@ -1,34 +1,33 @@
+import 'dart:developer';
 import '../../enums/EventType.dart';
-import '../fragments/event_fragments.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
 
 class EventQueries {
-   String allEventsOfType(String startTime, EventType type, String eventFragment) {
+  String allEventsOfType(
+      String startTime, EventType type, String eventFragment) {
     String enumValue = type.toString().split('.').last;
-  String getEvents = """
+    String getEvents = """
     query GetEvents {
       allEventsOfType(startTime: "$startTime", type: $enumValue) {                  
-          ${eventFragment}        
+          $eventFragment        
       }
     }
   """;
 
-  return getEvents;
-}
+    return getEvents;
+  }
 
-  String allEventsOfAllTypes(String startTime, String eventFragment) {    
+  String allEventsOfAllTypes(String startTime, String eventFragment) {
     String getEvents = """
       query GetEvents {
         allEventsOfAllTypes(startTime: "$startTime") {                  
-            ${eventFragment}        
+            $eventFragment        
         }
       }
     """;
-  return getEvents;
-}
-  
-  String allUserEventParticipants(dynamic allUserEventParticipantsInput) {    
+    return getEvents;
+  }
+
+  String allUserEventParticipants(dynamic allUserEventParticipantsInput) {
     String getUserEvents = """
       query GetEventUserParticipants {
         allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {                              
@@ -36,9 +35,6 @@ class EventQueries {
         }
       }
     """;
-  return getUserEvents;
-}
-
-
-
+    return getUserEvents;
+  }
 }

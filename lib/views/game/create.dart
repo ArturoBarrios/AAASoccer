@@ -92,6 +92,7 @@ class _GameCreateState extends State<GameCreate> {
       print("priceee: ${priceController.text}");
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
+        "capacity": capacityController.text.toString(),
         'isMainEvent': true,
         'price': double.parse(priceController.text.toString()),
         'startTime': startTimestamp,
@@ -241,6 +242,19 @@ class _GameCreateState extends State<GameCreate> {
             controller: priceController,
             validator: (value) => Validators.validateRequired(
                 value!, StringConstants.priceErrorValue),
+          ),
+          CustomTextFormField(
+            label: StringConstants.capacityLabel,
+            hintText: StringConstants.capacityHint,
+            keyboardType: const TextInputType.numberWithOptions(
+              signed: true,
+              decimal: false,
+            ),
+            controller: capacityController,
+            validator: (value) => Validators.validateRequired(
+              value!,
+              StringConstants.capacityErrorValue,
+            ),
           ),
         ],
       ),
