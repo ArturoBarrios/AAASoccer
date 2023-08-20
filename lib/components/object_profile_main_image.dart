@@ -9,7 +9,6 @@ import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/images_mixin.dart';
 import 'app_images_gallery.dart';
 
-
 class ObjectProfileMainImage extends StatefulWidget with ImagesMixin {
   final dynamic objectImageInput;
   dynamic primaryColor = const Color(0xff4338CA);
@@ -21,9 +20,7 @@ class ObjectProfileMainImage extends StatefulWidget with ImagesMixin {
   State<ObjectProfileMainImage> createState() => _ObjectProfileMainImageState();
 }
 
-
 class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
-
   Future<void> addImageToProfile(dynamic imageAdded) async {
     //do something
     //get the user
@@ -167,7 +164,9 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
                     borderRadius: BorderRadius.circular(62.5),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage(imageUrl.toString() != '' ? imageUrl.toString() : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
+                      image: NetworkImage(imageUrl.toString() != ''
+                          ? imageUrl.toString()
+                          : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
                     ),
                   ),
                 ),
@@ -179,59 +178,62 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
     );
   }
 
-  Container returnChatImageContainer(String imageUrl) {
-    return Container(
-      child: GestureDetector(
-        onTap: () async {
-          List<dynamic> primaryList =
-              widget.imageChoices.map((choice) => choice.values.first).toList();
+  Widget returnChatImageContainer(String? imageUrl) {
+    return GestureDetector(
+      onTap: () async {
+        List<dynamic> primaryList =
+            widget.imageChoices.map((choice) => choice.values.first).toList();
 
-          List<dynamic> secondaryList = [];
-          Map<int, dynamic> result = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AnimatedDialog(
-                  details: const {"title": "Image Options"},
-                  items: primaryList,
-                  singleSelect: true,
-                  secondaryItems: secondaryList,
-                  goToFunctions: const []);
-            },
-          );
-          if (result.isNotEmpty) {
-            print("result: $result");
-            widget.chooseImage({
-              "for": Constants.CHAT,
-              "chat": widget.objectImageInput['chat']
-            }, result, primaryList, secondaryList, addImageToChat);
-          }
-        },
-        child: Hero(
-          tag: "profile",
-          child: Stack(
-            alignment: AlignmentDirectional.center,
-            children: <Widget>[
-              Container(
-                child: Container(
-                  height: 50.0,
-                  width: 50.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(62.5),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(imageUrl.toString() != ''&& imageUrl != null ? imageUrl.toString() : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
-                    ),
+        List<dynamic> secondaryList = [];
+        Map<int, dynamic> result = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AnimatedDialog(
+                details: const {"title": "Image Options"},
+                items: primaryList,
+                singleSelect: true,
+                secondaryItems: secondaryList,
+                goToFunctions: const []);
+          },
+        );
+        if (result.isNotEmpty) {
+          print("result: $result");
+          widget.chooseImage(
+              {"for": Constants.CHAT, "chat": widget.objectImageInput['chat']},
+              result,
+              primaryList,
+              secondaryList,
+              addImageToChat);
+        }
+      },
+      child: Hero(
+        tag: "profile",
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: <Widget>[
+            Container(
+              child: Container(
+                height: 50.0,
+                width: 50.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(62.5),
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(imageUrl.toString() != '' &&
+                            imageUrl != null
+                        ? imageUrl.toString()
+                        : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Container returnEventImageContainer(String imageUrl) {
+  Container returnEventImageContainer(String? imageUrl) {
     print("returnEventImageContainer() imageurl: $imageUrl");
     print("widget.objectImageInput: ${widget.objectImageInput}");
     return Container(
@@ -273,7 +275,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(imageUrl.toString() ),
+                        image: NetworkImage(imageUrl.toString()),
                       ),
                     ),
                   )

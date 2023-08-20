@@ -102,7 +102,7 @@ class ChatCommand extends BaseCommand {
     };
     try {
       for (int i = 0; i < chats.length; i++) {
-        String imageKey = chats[i]['mainImageKey'];
+        String? imageKey = chats[i]['mainImageKey'];
         dynamic imageInput = {"key": imageKey};
         print("imageKeyy: $imageKey");
         if (imageKey != null) {

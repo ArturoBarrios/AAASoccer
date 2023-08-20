@@ -1,15 +1,15 @@
 class StringConstants {
-  static final String PICKUPGAMESTITLE = "Pickup Games";
-  static final String TOURNAMENTSTITLE = "Tournaments";
-  static final String TRAININGSTITLE = "Training Sessions";
-  static final String LEAGUESTITLE = "Leagues";
-  static final String TEAMSTITLE = "Teams";
-  static final String TRYOUTSTITLE = "Tryouts";
-  static final String PLAYERSTITLE = "Players";
-  static final String FRIENDSTITLE = "Friends";
-  static final String MYEVENTSTITLE = "Upcoming Events";
-  static final String MYTEAMSTITLE = "My Teams";
-  static final String LOCATIONSTITLE = "Locations";
+  static const String PICKUPGAMESTITLE = "Pickup Games";
+  static const String TOURNAMENTSTITLE = "Tournaments";
+  static const String TRAININGSTITLE = "Training Sessions";
+  static const String LEAGUESTITLE = "Leagues";
+  static const String TEAMSTITLE = "Teams";
+  static const String TRYOUTSTITLE = "Tryouts";
+  static const String PLAYERSTITLE = "Players";
+  static const String FRIENDSTITLE = "Friends";
+  static const String MYEVENTSTITLE = "Upcoming Events";
+  static const String MYTEAMSTITLE = "My Teams";
+  static const String LOCATIONSTITLE = "Locations";
 
   // game create Strings + Tournment screen strings
 
@@ -29,6 +29,10 @@ class StringConstants {
   static const String priceLabel = 'Price*';
   static const String priceHint = 'Please Enter Price';
   static const String priceErrorValue = 'Price';
+
+  static const String capacityLabel = 'Capacity*';
+  static const String capacityHint = 'Please Enter Capacity';
+  static const String capacityErrorValue = 'Capacity';
 
   static const String awayLabel = 'Away*';
   static const String awayHint = 'Please Enter Away';
@@ -58,13 +62,18 @@ class StringConstants {
   static const String numberOfTeamsHint = 'Please Enter Number of Teams';
   static const String numberOfTeamsErrorValue = 'Number of Teams';
 
-  static const String numberOfRoundsPerTeamsLabel = 'Number of Rounds Per Team*';
-  static const String numberOfRoundsPerTeamsHint = 'Please Enter Number of Rounds Per Team';
-  static const String numberOfRoundsPerTeamsErrorValue = "Number of Rounds Per Team";
+  static const String numberOfRoundsPerTeamsLabel =
+      'Number of Rounds Per Team*';
+  static const String numberOfRoundsPerTeamsHint =
+      'Please Enter Number of Rounds Per Team';
+  static const String numberOfRoundsPerTeamsErrorValue =
+      "Number of Rounds Per Team";
 
   static const String numberOfTeamsPerGroupLabel = 'Number of Teams Per Group*';
-  static const String numberOfTeamsPerGroupHint = 'Please Enter Number of Teams Per Group';
-  static const String numberOfTeamsPerGroupErrorValue = "Number of Teams Per Group";
+  static const String numberOfTeamsPerGroupHint =
+      'Please Enter Number of Teams Per Group';
+  static const String numberOfTeamsPerGroupErrorValue =
+      "Number of Teams Per Group";
 
   static const String roundOfXLabel = 'Round of X*';
   static const String roundOfXHint = 'Please Enter Round of X';
@@ -74,14 +83,8 @@ class StringConstants {
   static const String knockoutRoundsHint = 'Please Enter Knockout Rounds';
   static const String knockoutRoundsErrorValue = 'Knockout Rounds';
 
-  static const String capacityLabel = 'Capcity*';
-  static const String capacityHint = 'Please Enter Capcity';
-  static const String capacityErrorValue = 'Capcity';
-
   static const String cancelBtn = 'Cancel';
   static const String backBtn = 'Back';
   static const String createGameBtn = 'Create Game';
   static const String nextBtn = 'Next';
-
-
 }

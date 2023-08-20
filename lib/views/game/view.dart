@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
@@ -52,11 +52,11 @@ class _PickupViewState extends State<PickupView> {
   late LatLng _center = LatLng(45.521563, -122.677433);
   dynamic priceObject;
   dynamic objectImageInput = {
-      "imageUrl": "",
-      "containerType": Constants.IMAGEBANNER,
-      "mainEvent": null,
-      "isMine": false
-    };
+    "imageUrl": "",
+    "containerType": Constants.IMAGEBANNER,
+    "mainEvent": null,
+    "isMine": false
+  };
   String imageUrl = "";
 
   LocationSearchBar locationSearchBar = new LocationSearchBar();
@@ -109,7 +109,7 @@ class _PickupViewState extends State<PickupView> {
     super.initState();
 
     print("initState");
-    print("game: " + widget.game.toString());    
+    print("game: " + widget.game.toString());
     loadInitialData();
     // _isLoading = false;
   }
@@ -130,16 +130,15 @@ class _PickupViewState extends State<PickupView> {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
-    preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
-    child: ObjectProfileMainImage(
-          objectImageInput:
-              objectImageInput), 
-  ),
+        preferredSize: const Size.fromHeight(
+            200.0), // You can adjust the height value as per your requirement.
+        child: ObjectProfileMainImage(objectImageInput: objectImageInput),
+      ),
       body: _isLoading
-          ? Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: Align(
+          ? SizedBox(
+              height: 120,
+              width: MediaQuery.of(context).size.width,
+              child: const Align(
                 alignment: Alignment.center,
                 child:
                     // BottomNav()//for times when user deleted in cognito but still signed into app
@@ -151,19 +150,22 @@ class _PickupViewState extends State<PickupView> {
             )
           : SingleChildScrollView(
               child: Center(
-                  child: Expanded(
-                      child: Column(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.share,
-                    color: Colors.blue,
+                child: Expanded(
+                  child: Column(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.share,
+                          color: Colors.blue,
+                        ),
+                        onPressed: onTapShare,
+                      ),
+                      UpdateViewForm(userObjectDetails: userEventDetails),
+                    ],
                   ),
-                  onPressed: onTapShare,
                 ),
-                UpdateViewForm(userObjectDetails: userEventDetails),
-              ],
-            )))),
+              ),
+            ),
     );
   }
 }

@@ -123,7 +123,9 @@ class HomePageCommand extends BaseCommand {
       dynamic event = null;
 
       print("MYEVENTS");
-      if (selectedObject['event']['type'].toString() == "GAME") {
+      print(selectedObject['event']);
+      if (selectedObject['event'] == null) {
+      } else if (selectedObject['event']['type'].toString() == "GAME") {
         print("TYPE GAME");
 
         dynamic getEventDetailsResp =
@@ -254,7 +256,7 @@ class HomePageCommand extends BaseCommand {
     if (newSelectedKey == Constants.PICKUP) {
       print("check games: ");
       print(eventsModel.games);
-      if (eventsModel.games.length == 0) {
+      if (eventsModel.games.isEmpty) {
         eventsModel.games = newSelectedObjects;
       }
     } else if (newSelectedKey == Constants.TEAM) {

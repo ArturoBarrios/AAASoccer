@@ -1,17 +1,4 @@
-directive @embedded on OBJECT
 
-directive @collection(name: String!) on OBJECT
-
-directive @index(name: String!) on FIELD_DEFINITION
-
-directive @resolver(
-  name: String
-  paginated: Boolean! = false
-) on FIELD_DEFINITION
-
-directive @relation(name: String) on FIELD_DEFINITION
-
-directive @unique(index: String) on FIELD_DEFINITION
 
 # Allow manipulating the relationship between the types 'Chat' and 'Event' using the field 'Chat.event'.
 input ChatEventRelation {
@@ -165,6 +152,28 @@ input EventImagesRelation {
 
   # Disconnect the given documents of type 'Image' from the current document using their IDs.
   disconnect: [ID]
+}
+
+# Allow manipulating the relationship between the types 'Rsv' and 'Image'.
+input EventRsvRelation {
+  # Create one or more documents of type 'Rsv' and associate them with the current document.
+  create: [RsvInput]
+
+  # Connect one or more documents of type 'Rsv' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Rsv' from the current document using their IDs.
+  disconnect: [ID]
+}
+
+input RsvInput{
+  userId: ID!
+  rsvResponse: RsvResponse
+}
+
+# 'SubmitRsvEvent' input values
+input SubmitRsvEventInput {
+  rsv: EventRsvRelation
 }
 
 # 'Event' input values
@@ -836,6 +845,7 @@ input LocationInput {
   user: LocationUserRelation
   team: LocationTeamRelation
   organization: LocationOrganizationRelation
+  Price: LocationPriceRelation
 }
 
 # Allow manipulating the relationship between the types 'Location' and 'Organization' using the field 'Location.organization'.
@@ -848,6 +858,18 @@ input LocationOrganizationRelation {
 
   # If true, disconnects this document from 'Organization'
   disconnect: Boolean
+}
+
+# Allow manipulating the relationship between the types 'Location' and 'Price'.
+input LocationPriceRelation {
+  # Create one or more documents of type 'Price' and associate them with the current document.
+  create: [PriceInput]
+
+  # Connect one or more documents of type 'Price' with the current document using their IDs.
+  connect: [ID]
+
+  # Disconnect the given documents of type 'Price' from the current document using their IDs.
+  disconnect: [ID]
 }
 
 # Allow manipulating the relationship between the types 'Location' and 'Team' using the field 'Location.team'.
@@ -1062,6 +1084,15 @@ type Mutation {
     # 'EventOrder' input values
     data: EventOrderInput!
   ): EventOrder
+
+  # Update an existing document in the collection of 'Event'
+  submitRsvEvent(
+    # The 'Event' document's ID
+    id: ID!
+
+    # 'EventOrder' input values
+    data: SubmitRsvEventInput!
+  ): Event
 
   # Create a new document in the collection of 'TextContent'
   createTextContent(
@@ -2422,6 +2453,7 @@ input PartialUpdateLocationInput {
   user: LocationUserRelation
   team: LocationTeamRelation
   organization: LocationOrganizationRelation
+  Price: LocationPriceRelation
 }
 
 # 'Message' input values
@@ -2488,8 +2520,10 @@ input PartialUpdatePriceInput {
   amount: String
   event: PriceEventRelation
   team: PriceTeamRelation
+  location: PriceLocationRelation
   subscriptionType: PriceSubscriptionTypeRelation
   teamAmount: String
+  time: Int
 }
 
 # 'Rating' input values
@@ -2590,6 +2624,7 @@ input PartialUpdateTeamInput {
   status: String
   deleted: Boolean
   createdAt: String
+  updatedAt: String
   request: TeamRequestRelation
   chats: TeamChatsRelation
   price: TeamPriceRelation
@@ -2672,8 +2707,8 @@ input PartialUpdateUserInput {
   coach: UserCoachRelation
   referee: UserRefereeRelation
   status: UserAccountStatus
-  last_login: Int
-  last_updated: Int
+  createdAt: Int
+  updatedAt: String
   images: UserImagesRelation
   events: UserEventsRelation
   eventUserParticipants: UserEventUserParticipantsRelation
@@ -2688,6 +2723,7 @@ input PartialUpdateUserInput {
   ratings: UserRatingsRelation
   mainImageKey: String
   subscriptionTypeUsers: UserSubscriptionTypeUsersRelation
+  isProfilePrivate: Boolean
 }
 
 # 'Wager' input values
@@ -2824,8 +2860,22 @@ input PriceInput {
   amount: String
   event: PriceEventRelation
   team: PriceTeamRelation
+  location: PriceLocationRelation
   subscriptionType: PriceSubscriptionTypeRelation
   teamAmount: String
+  time: Int
+}
+
+# Allow manipulating the relationship between the types 'Price' and 'Location' using the field 'Price.location'.
+input PriceLocationRelation {
+  # Create a document of type 'Location' and associate it with the current document.
+  create: LocationInput
+
+  # Connect a document of type 'Location' with the current document using its ID.
+  connect: ID
+
+  # If true, disconnects this document from 'Location'
+  disconnect: Boolean
 }
 
 # Allow manipulating the relationship between the types 'Price' and 'SubscriptionType' using the field 'Price.subscriptionType'.
@@ -3777,8 +3827,8 @@ input UserInput {
   coach: UserCoachRelation
   referee: UserRefereeRelation
   status: UserAccountStatus
-  last_login: Int
-  last_updated: Int
+  createdAt: Int
+  updatedAt: String
   images: UserImagesRelation
   events: UserEventsRelation
   eventUserParticipants: UserEventUserParticipantsRelation
@@ -3793,6 +3843,7 @@ input UserInput {
   ratings: UserRatingsRelation
   mainImageKey: String
   subscriptionTypeUsers: UserSubscriptionTypeUsersRelation
+  isProfilePrivate: Boolean
 }
 
 # Allow manipulating the relationship between the types 'User' and 'Location' using the field 'User.location'.
@@ -4225,6 +4276,13 @@ type Event {
     # The pagination cursor.
     _cursor: String
   ): SponsorPage!
+  rsv(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): RsvPage!
   capacity: Int
 
   # The document's timestamp.
@@ -4530,6 +4588,13 @@ type Location {
   # The document's ID.
   _id: ID!
   secondaryName: String
+  Price(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): PricePage!
   longitude: Float!
   schedule: String
   team: Team
@@ -4796,6 +4861,7 @@ type PlayerPage {
 }
 
 type Price {
+  location: Location
   event: Event
 
   # The document's ID.
@@ -4803,10 +4869,23 @@ type Price {
   amount: String
   teamAmount: String
   team: Team
+  time: Int
   subscriptionType: SubscriptionType
 
   # The document's timestamp.
   _ts: Long!
+}
+
+# The pagination object for elements of type 'Price'.
+type PricePage {
+  # The elements of type 'Price' in this page.
+  data: [Price]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
 }
 
 type Query {
@@ -4858,6 +4937,12 @@ type Query {
     # The 'Group' document's ID
     id: ID!
   ): Group
+  allCurrentUserEventParticipantsByDistance(
+    userLatitude: Float!
+    userLongitude: Float!
+    startTime: String!
+    distance: Float!
+  ): [EventUserParticipant!]
   allGames(
     # The number of items to return per page.
     _size: Int
@@ -4890,6 +4975,7 @@ type Query {
     # The 'SubscriptionTypeUser' document's ID
     id: ID!
   ): SubscriptionTypeUser
+  getAllTeamUserParticipants(userId: ID!): [TeamUserParticipant!]
 
   # Find a document from the collection of 'Organizer' by its id.
   findOrganizerByID(
@@ -5024,6 +5110,10 @@ type Query {
     id: ID!
   ): StripeCustomer
   AllEventsByID(ids: [ID]): [ID]
+  allCurrentUserEventParticipants(
+    userId: ID!
+    startTime: String!
+  ): [EventUserParticipant!]
   allLeagues(
     # The number of items to return per page.
     _size: Int
@@ -5074,6 +5164,7 @@ type Query {
     # The 'Message' document's ID
     id: ID!
   ): Message
+  getAllTeams(from: String!): [Team!]
 
   # Find a document from the collection of 'Player' by its id.
   findPlayerByID(
@@ -5357,10 +5448,40 @@ type Sponsor {
   _ts: Long!
 }
 
+enum RsvResponse{
+  Yes,
+  No,
+  Maybe,
+}
+
+type Rsv{
+  # The document's ID.
+  _id: ID!
+
+  userId: ID!
+
+  rsvResponse: RsvResponse
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
 # The pagination object for elements of type 'Sponsor'.
 type SponsorPage {
   # The elements of type 'Sponsor' in this page.
   data: [Sponsor]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+# The pagination object for elements of type 'Rsv'.
+type RsvPage {
+  # The elements of type 'Rsv' in this page.
+  data: [Rsv]!
 
   # A cursor for elements coming after the current page.
   after: String
@@ -5474,6 +5595,7 @@ type Team {
     _cursor: String
   ): PaymentPage!
   name: String
+  updatedAt: String
   request(
     # The number of items to return per page.
     _size: Int
@@ -5516,7 +5638,6 @@ type Team {
   ): JoinConditionsPage!
   status: String
   createdAt: String
-  updatedAt: String
   capacity: Int
   ratings(
     # The number of items to return per page.
@@ -5753,6 +5874,7 @@ type User {
   ): PaymentPage!
   mainImageKey: String
   name: String
+  updatedAt: String
   messagesDirectedForMe(
     # The number of items to return per page.
     _size: Int
@@ -5760,6 +5882,7 @@ type User {
     # The pagination cursor.
     _cursor: String
   ): MessagePage!
+  isProfilePrivate: Boolean
   location: Location
   OSPID: String
   email: String
@@ -5838,7 +5961,6 @@ type User {
     _cursor: String
   ): TeamUserParticipantPage!
   player: Player
-  last_updated: Int
   stripeCustomers(
     # The number of items to return per page.
     _size: Int
@@ -5854,6 +5976,7 @@ type User {
     # The pagination cursor.
     _cursor: String
   ): RequestPage!
+  createdAt: Int
   ratings(
     # The number of items to return per page.
     _size: Int
@@ -5861,7 +5984,6 @@ type User {
     # The pagination cursor.
     _cursor: String
   ): RatingPage!
-  last_login: Int
   chats(
     # The number of items to return per page.
     _size: Int

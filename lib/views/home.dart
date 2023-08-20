@@ -3,31 +3,20 @@ import 'dart:developer';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 //amplify auth packages
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_authenticator/amplify_authenticator.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+
 import 'package:soccermadeeasy/extensions/filter_extension.dart';
 import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
-import '../commands/player_command.dart';
+
 import '../components/Loading/loading_screen.dart';
 import '../components/models/button_model.dart';
 import '../models/filter_result_model.dart';
-import '../services/amplify_auth_service.dart' as AmplifyAuth;
+
 //import widgets
 import '../components/select_icon_button.dart';
-import '../components/search_field.dart';
-import '../components/Dialogues/animated_dialogu.dart';
-import '../components/profile.dart';
+
 import '../components/headers.dart';
 //card widgets
-import '../components/Cards/pickup_card2.dart';
-import '../components/Cards/player_card.dart';
-import '../components/Cards/training_card.dart';
-import '../components/Cards/tryout_card.dart';
-import '../components/Cards/tournament_card.dart';
-import '../components/Cards/league_card.dart';
-import '../components/Cards/team_card.dart';
 import '../components/footers.dart';
 import '../components/side_navs.dart';
 
@@ -35,16 +24,12 @@ import '../components/side_navs.dart';
 import '../models/home_page_model.dart';
 import '../models/app_model.dart';
 import '../models/chat_page_model.dart';
-import '../enums/EventType.dart';
 //views
 //commands
 import '../commands/home_page_command.dart';
-import '../commands/tournament_command.dart';
 import '../commands/event_command.dart';
-import '../commands/league_command.dart';
 import '../commands/team_command.dart';
 import '../commands/user_command.dart';
-import '../components/Buttons/seed_data_button.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:http/http.dart' as http;
@@ -55,8 +40,10 @@ import '../models/events_model.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
   @override
-  _Home createState() => _Home();
+  State<Home> createState() => _Home();
 }
 
 class _Home extends State<Home> {
@@ -320,7 +307,7 @@ class _Home extends State<Home> {
     print("loadInitialData");
     _selectEventController = ScrollController()..addListener(_loadMore);
     userObject = UserCommand().getAppModelUser();
-    print("selectedkeyyyy: " + HomePageModel().selectedKey.toString());
+    print("selectedkeyyyy: ${HomePageModel().selectedKey}");
     // await HomePageCommand().eventTypeTapped(HomePageModel().selectedKey);
     await HomePageCommand().setCards();
     updateUpdatedCards(false);
@@ -375,6 +362,7 @@ class _Home extends State<Home> {
     HomePageCommand().changeFilteringStatus(false);
     HomePageCommand().filterObjects([]);
     await HomePageCommand().setCards();
+    setState(() {});
   }
 
   Future<void> showBottomSheet(
@@ -452,7 +440,7 @@ class _Home extends State<Home> {
       loadInitialData();
     }
 
-    return (Scaffold(
+    return Scaffold(
       appBar: Headers(
         filterButton: ButtonModel(
           iconData:
@@ -461,143 +449,156 @@ class _Home extends State<Home> {
               showBottomSheet(context, selectedKey.toString(), selectedObjects),
         ),
       ).getMainHeader(context),
-      drawer: Container(
+      drawer: SizedBox(
         width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
-        child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
+        child:
+            Drawer(child: const SideNavs().getMainSideNav(context, userObject)),
       ),
-      body: Stack(children: <Widget>[
-        Column(children: [
-          Container(
-            height: 200, // Define the height you want for your card section
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              controller: _selectEventTypeController,
-              itemCount: enabledSelections2.length,
-              itemBuilder: (_, index) {
-                dynamic key = enabledSelections2.keys.elementAt(index);
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                  child: SelectIconButton(
-                    eventObject: enabledSelections2[key],
-                    svgImage: svgImage,
-                    index: index,
-                    onTapEvent: () => clearFiltering(isPop: false),
-                  ),
-                );
-              },
-            ),
-          ),
-          //logic/button for sending team/event requests to
-          // multiple players
-          userObjectSelections.isNotEmpty
-              ? GestureDetector(
-                  onTap: () async {
-                    int? index = await showAnimatedDialog<int>(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return ClassicListDialogWidget<dynamic>(
-                            selectedIndex: selectIndex,
-                            titleText: 'Title',
-                            listType: ListType.singleSelect,
-                            positiveText: "Next",
-                            activeColor: Colors.green,
-                            dataList: teamEventList);
-                      },
-                      animationType: DialogTransitionType.size,
-                      curve: Curves.linear,
+      body: Stack(
+        children: <Widget>[
+          Column(
+            children: [
+              SizedBox(
+                height: 200, // Define the height you want for your card section
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  controller: _selectEventTypeController,
+                  itemCount: enabledSelections2.length,
+                  itemBuilder: (_, index) {
+                    dynamic key = enabledSelections2.keys.elementAt(index);
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 10),
+                      child: SelectIconButton(
+                        eventObject: enabledSelections2[key],
+                        svgImage: svgImage,
+                        index: index,
+                        onTapEvent: () => clearFiltering(isPop: false),
+                      ),
                     );
-                    print("index: " + index.toString());
-                    setupEventTeamToChoose(index!);
-                    if (eventTeamChosen != "") {
-                      List<int>? indexes = await showAnimatedDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return ClassicListDialogWidget<dynamic>(
-                              selectedIndexes: selectedEventTeamIndexes,
-                              titleText: 'Choose Players',
-                              positiveText: "Next",
-                              listType: ListType.multiSelect,
-                              activeColor: Colors.green,
-                              dataList: choices);
-                        },
-                        animationType: DialogTransitionType.size,
-                        curve: Curves.linear,
-                      );
-                      selectedEventTeamIndexes =
-                          indexes ?? selectedEventTeamIndexes;
-                      print(
-                          'selectedIndex:${selectedEventTeamIndexes?.toString()}');
-                      eventTeamsSelected(selectedEventTeamIndexes);
-                    }
-                    if (selectedEventTeamIndexes!.isNotEmpty) {
-                      List<int>? requestIndexes =
-                          await showAnimatedDialog<dynamic>(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return ClassicListDialogWidget<dynamic>(
-                              selectedIndexes: selectedRequestTypeIndexes,
-                              titleText: 'Choose User Type',
-                              positiveText: "Send Request",
-                              listType: ListType.multiSelect,
-                              onNegativeClick: () {
-                                print("onNegativeClick");
-                                selectedEventTeamIndexes = [];
-                                //pop
-                                Navigator.pop(context);
-                              },
-                              activeColor: Colors.green,
-                              dataList: requestUserTypes);
-                        },
-                        animationType: DialogTransitionType.size,
-                        curve: Curves.linear,
-                      );
-
-                      selectedRequestTypeIndexes =
-                          requestIndexes ?? selectedRequestTypeIndexes;
-                      print(
-                          'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                      await requestTypesSelected(selectedRequestTypeIndexes);
-                      await sendPlayerRequests();
-                    }
                   },
-                  child: Container(
-                    width: 200,
-                    height: 50,
-                    color: Colors.blue,
-                    child: Center(child: Text("Send Event/Team Request")),
-                  ))
-              : Container(),
-          !cardsLoading
-              ?
-              //list view
-              Expanded(
-                  child: ListView.builder(
-                      controller: _selectEventController,
-                      itemCount: cards.length,
-                      itemBuilder: (_, index) => Card(
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 10,
-                            ),
-                            child: cards[index],
-                          )),
-                )
-              : Container(
-                  height: 100,
-                  width: 100,
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: LoadingScreen(
+                ),
+              ),
+              //logic/button for sending team/event requests to
+              // multiple players
+              userObjectSelections.isNotEmpty
+                  ? GestureDetector(
+                      onTap: () async {
+                        int? index = await showAnimatedDialog<int>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return ClassicListDialogWidget<dynamic>(
+                                selectedIndex: selectIndex,
+                                titleText: 'Title',
+                                listType: ListType.singleSelect,
+                                positiveText: "Next",
+                                activeColor: Colors.green,
+                                dataList: teamEventList);
+                          },
+                          animationType: DialogTransitionType.size,
+                          curve: Curves.linear,
+                        );
+                        print("index: " + index.toString());
+                        setupEventTeamToChoose(index!);
+                        if (eventTeamChosen != "") {
+                          List<int>? indexes = await showAnimatedDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return ClassicListDialogWidget<dynamic>(
+                                  selectedIndexes: selectedEventTeamIndexes,
+                                  titleText: 'Choose Players',
+                                  positiveText: "Next",
+                                  listType: ListType.multiSelect,
+                                  activeColor: Colors.green,
+                                  dataList: choices);
+                            },
+                            animationType: DialogTransitionType.size,
+                            curve: Curves.linear,
+                          );
+                          selectedEventTeamIndexes =
+                              indexes ?? selectedEventTeamIndexes;
+                          print(
+                              'selectedIndex:${selectedEventTeamIndexes?.toString()}');
+                          eventTeamsSelected(selectedEventTeamIndexes);
+                        }
+                        if (selectedEventTeamIndexes!.isNotEmpty) {
+                          List<int>? requestIndexes =
+                              await showAnimatedDialog<dynamic>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return ClassicListDialogWidget<dynamic>(
+                                  selectedIndexes: selectedRequestTypeIndexes,
+                                  titleText: 'Choose User Type',
+                                  positiveText: "Send Request",
+                                  listType: ListType.multiSelect,
+                                  onNegativeClick: () {
+                                    print("onNegativeClick");
+                                    selectedEventTeamIndexes = [];
+                                    //pop
+                                    Navigator.pop(context);
+                                  },
+                                  activeColor: Colors.green,
+                                  dataList: requestUserTypes);
+                            },
+                            animationType: DialogTransitionType.size,
+                            curve: Curves.linear,
+                          );
+
+                          selectedRequestTypeIndexes =
+                              requestIndexes ?? selectedRequestTypeIndexes;
+                          print(
+                              'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                          await requestTypesSelected(
+                              selectedRequestTypeIndexes);
+                          await sendPlayerRequests();
+                        }
+                      },
+                      child: Container(
+                        width: 200,
+                        height: 50,
+                        color: Colors.blue,
+                        child: const Center(
+                          child: Text("Send Event/Team Request"),
+                        ),
+                      ),
+                    )
+                  : Container(),
+              !cardsLoading
+                  ?
+                  //list view
+                  Expanded(
+                      child: ListView.builder(
+                        controller: _selectEventController,
+                        itemCount: cards.length,
+                        itemBuilder: (_, index) => Card(
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 10,
+                          ),
+                          child: cards[index],
+                        ),
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: LoadingScreen(
                           currentDotColor: Colors.white,
                           defaultDotColor: Colors.black,
-                          numDots: 10)))
-        ])
-      ]),
+                          numDots: 10,
+                        ),
+                      ),
+                    ),
+            ],
+          )
+        ],
+      ),
       bottomNavigationBar: const Footers().getMainBottomNav(context),
-    ));
+    );
   }
 }
