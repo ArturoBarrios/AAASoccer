@@ -85,9 +85,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
       EventCommand().removeUserFromEvent(event, userObject);
     //remove event from user and user from event
     if(removeUserFromEventResp['success']){
-      // print("removeUserFromEventResp: "+removeUserFromEventResp.toString());
-      // dynamic eventToRemove = removeUserFromEventResp['data'];
-      // EventCommand().removeEventFromMyEvents(eventToRemove);
+      print("removeUserFromEventResp: "+removeUserFromEventResp.toString());
+      dynamic eventToRemove = removeUserFromEventResp['data'];
+      EventCommand().updateViewModelsWithEvent(eventToRemove, false);
       // setState(() {
       //   event['userParticipants']['data'].removeWhere((element) => element['user']['_id']==userObject['_id']);
       //   widget.userObjectDetails['roles'] = [];        
@@ -189,9 +189,15 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
             child: GestureDetector(
           onTap: () async {
             print("onTap Join My Game");
-            await widget.chooseRolesDialogue(context);
+            dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
+            if(chooseRoleDialog != null){
+              print("chooseRoleDialog: "+chooseRoleDialog.toString());
+              List<dynamic> newRoles = chooseRoleDialog['rolesArray'];                        
+              print("newRoles: "+newRoles.toString());             
+              String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                         
+              EventCommand().addUserToEvent(event, userObject, roles);
+            }
             
-            // EventCommand().addUserToEvent(event, userObject, roles);
           },
           child: Text("Join my Game"),
         ));
@@ -206,9 +212,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async{
                       print("!withPayment&&!withRequest");
-                      dynamic chooseRoleDialog = widget.chooseRolesDialogue(context);
+                      dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
                       if(chooseRoleDialog != null){
                         print("chooseRoleDialog: "+chooseRoleDialog.toString());
                         List<dynamic> roles = chooseRoleDialog['rolesArray'];                        
@@ -220,9 +226,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                   ),
                   Container(
                       child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       print("!withPayment&&!withRequest");
-                      dynamic chooseRoleDialog = widget.chooseRolesDialogue(context);
+                      dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
                       if(chooseRoleDialog != null){
                         print("chooseRoleDialog: "+chooseRoleDialog.toString());
                         List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
@@ -240,10 +246,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
           else {
             return Container(
                 child: GestureDetector(
-              onTap: () {
-                print("!withPayment&&!withRequest");
-                print("!withPayment&&!withRequest");
-                dynamic chooseRoleDialog = widget.chooseRolesDialogue(context);
+              onTap: () async {
+                print("!withPayment&&!withRequest");                
+                dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
                 if(chooseRoleDialog != null){
                   print("chooseRoleDialog: "+chooseRoleDialog.toString());
                   List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
@@ -260,16 +265,6 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         else if (!eventJoinCondition['withPayment'] &&
             eventJoinCondition['withRequest']) {
           return sendOrganizerPlayerEventRequest(context, widget.userObjectDetails);
-          // return Container(
-          //     child: GestureDetector(
-          //   onTap: () {
-          //     print("!withPayment&&!withRequest");
-          //     selectedRequestTypeObjects.add("PLAYER");
-          //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
-          //     selectedRequestTypeObjects = [];
-          //   },
-          //   child: Text("Send Request to Join(No Payment required to join)"),
-          // ));
         }
         //withPayment && !withRequest
         else if (eventJoinCondition['withPayment'] &&
@@ -278,9 +273,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
           return Container(
               child: GestureDetector(
-            onTap: () {
+            onTap: () async{
               print("withPayment && !withRequest");
-              dynamic chooseRoleDialog = widget.chooseRolesDialogue(context);
+              dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
               if(chooseRoleDialog != null){
                 print("chooseRoleDialog: "+chooseRoleDialog.toString());
                 List<dynamic> roles = chooseRoleDialog['rolesArray'];
@@ -317,9 +312,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                   "0.00") {
                 return Container(
                     child: GestureDetector(
-                  onTap: () {
+                  onTap: () async{
                     print("withPayment && withRequest");
-                    dynamic chooseRoleDialog = widget.chooseRolesDialogue(context);
+                    dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
                       if(chooseRoleDialog != null){
                         print("chooseRoleDialog: "+chooseRoleDialog.toString());
                         List<String> roles = chooseRoleDialog['rolesArray'];
@@ -346,28 +341,11 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
             } else {
               return sendOrganizerPlayerEventRequest(
                   context, widget.userObjectDetails);
-              // return Container(
-              //     child: GestureDetector(
-              //   onTap: () {
-              //     selectedRequestTypeObjects.add("PLAYER");
-              //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
-              //     selectedRequestTypeObjects = [];
-              //   },
-              //   child: Text("Request Denied, Resend Request"),
-              // ));
+
             }
           } else {
             return sendOrganizerPlayerEventRequest(context, widget.userObjectDetails);
-            // return Container(
-            //     child: GestureDetector(
-            //   onTap: () {
-            //     print("withPayment && withRequest");
-            //     selectedRequestTypeObjects.add("PLAYER");
-            //     sendEventRequest(event, {0: {}}, requestUserTypes, []);
-            //     selectedRequestTypeObjects = [];
-            //   },
-            //   child: Text("Send Request to Join(Payment required to join)"),
-            // ));
+
           }
         }
       }

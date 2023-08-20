@@ -27,7 +27,7 @@ Future<dynamic> chooseRolesDialogue(BuildContext context)async{
       List<dynamic> secondaryList = [];
       Map<int, dynamic> result = await showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext context) {          
           return AnimatedDialog(
               details: {"title": "Choose Team Role"},
               items: primaryList,
@@ -37,10 +37,13 @@ Future<dynamic> chooseRolesDialogue(BuildContext context)async{
         },
       );
       if (result.isNotEmpty) {
-        print('Selected items: $result');         
-        // BaseCommand().addRoleToRoles();                    
-        chooseRolesDialogueResp['primaryList'] = primaryList;
-        chooseRolesDialogueResp['secondaryList'] = secondaryList;
+        print('Selected items: $result');                 
+        List<dynamic> rolesArray = [];
+        result.forEach((mainIndex, secondaryIndex){
+          rolesArray.add(primaryList[mainIndex]);
+        });
+        chooseRolesDialogueResp['rolesArray'] = rolesArray;
+        return chooseRolesDialogueResp;  
       }
       else{
         return null;

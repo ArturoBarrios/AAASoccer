@@ -22,6 +22,14 @@ import 'home_page_command.dart';
 class TeamCommand extends BaseCommand {
 
 
+  List getTeamUserRoles() {
+    List teamUserRoles = [
+      Constants.PLAYER,      
+      Constants.MAINCOACH,            
+      Constants.ASSISTANTCOACH,
+    ];
+    return teamUserRoles;
+  }
 
   Future<dynamic> getUserTeamDetails(dynamic team) async {
     print("getUserTeamDetails()");

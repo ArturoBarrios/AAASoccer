@@ -268,11 +268,12 @@ mixin EventMixin {
           rolesArray.add(primaryList[mainIndex]);
         });
         chooseRolesDialogueResp['rolesArray'] = rolesArray;
-        
+        return chooseRolesDialogueResp;  
       }
       else{
         return null;
       }
+
     
            
     
