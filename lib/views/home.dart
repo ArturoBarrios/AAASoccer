@@ -1,11 +1,18 @@
+import 'dart:developer';
+
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 //amplify auth packages
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:soccermadeeasy/extensions/filter_extension.dart';
+import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
+import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 import '../commands/player_command.dart';
 import '../components/Loading/loading_screen.dart';
+import '../components/models/button_model.dart';
+import '../models/filter_result_model.dart';
 import '../services/amplify_auth_service.dart' as AmplifyAuth;
 //import widgets
 import '../components/select_icon_button.dart';
@@ -53,6 +60,7 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  FilterResultModel? _filterResultModel;
   dynamic userObject;
   List<String> teamEventList = ["Team", "Event"];
   int selectIndex = 0;
@@ -304,20 +312,90 @@ class _Home extends State<Home> {
     print("testFunction");
   }
 
-  void updateUpdatedCards(bool value){
-    HomePageCommand().updateUpdatedCards(value);    
-    
+  void updateUpdatedCards(bool value) {
+    HomePageCommand().updateUpdatedCards(value);
   }
 
   Future<void> loadInitialData() async {
     print("loadInitialData");
-    _selectEventController = ScrollController()..addListener(_loadMore);    
+    _selectEventController = ScrollController()..addListener(_loadMore);
     userObject = UserCommand().getAppModelUser();
-    print("selectedkeyyyy: "+ HomePageModel().selectedKey.toString());
+    print("selectedkeyyyy: " + HomePageModel().selectedKey.toString());
     // await HomePageCommand().eventTypeTapped(HomePageModel().selectedKey);
-    await HomePageCommand().setCards();   
-    updateUpdatedCards(false);     
+    await HomePageCommand().setCards();
+    updateUpdatedCards(false);
   }
+
+  void changeFilterResult(final FilterResultModel? filterResult) {
+    setState(() {
+      _filterResultModel = filterResult;
+    });
+  }
+
+  Future<void> onFilterResult(
+      {required final BuildContext context,
+      final FilterResultModel? filterResult,
+      final String? key,
+      final List<dynamic>? objects}) async {
+    inspect(key);
+
+    Navigator.of(context).pop();
+
+    if (filterResult?.rangeResult == null) {
+      ScaffoldMessenger.of(context).show(
+        type: SnackBarType.failure,
+        behavior: SnackBarBehavior.floating,
+        message: 'Make some filtering',
+      );
+
+      return;
+    }
+    HomePageCommand().changeFilteringStatus(true);
+    changeFilterResult(filterResult);
+    final filter = objects.filterByPriceAmount(
+        selectedKey: key, amount: filterResult?.rangeResult ?? 0);
+    if (filter?.isNotEmpty ?? false) {
+      HomePageCommand().filterObjects(filter ?? []);
+    } else {
+      HomePageCommand().filterObjects([]);
+      ScaffoldMessenger.of(context).show(
+        type: SnackBarType.failure,
+        behavior: SnackBarBehavior.floating,
+        message: 'No result found',
+      );
+    }
+    await HomePageCommand().setCards();
+  }
+
+  Future<void> clearFiltering({bool isPop = true}) async {
+    if (isPop) {
+      Navigator.of(context).pop();
+    }
+    changeFilterResult(null);
+    HomePageCommand().changeFilteringStatus(false);
+    HomePageCommand().filterObjects([]);
+    await HomePageCommand().setCards();
+  }
+
+  Future<void> showBottomSheet(
+          BuildContext context, String key, List<dynamic> objects) async =>
+      context.showFilterBottomSheet(
+          filterResult: _filterResultModel,
+          confirmButton: ButtonModel(
+              text: 'Apply',
+              onTapReturnWithValue: (final value) async => onFilterResult(
+                  context: context,
+                  filterResult: value as FilterResultModel,
+                  key: key,
+                  objects: objects)),
+          cancelButton: ButtonModel(
+            text: 'Cancel',
+            onTap: () => Navigator.of(context).pop(),
+          ),
+          clearButton: ButtonModel(
+            text: 'Clear',
+            onTap: clearFiltering,
+          ));
 
   @override
   void initState() {
@@ -329,7 +407,6 @@ class _Home extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    
     int messagesLength =
         context.select<ChatPageModel, int>((value) => value.messagesLength);
     print("buildDDDDDD");
@@ -339,8 +416,7 @@ class _Home extends State<Home> {
     selectedKey =
         context.select<HomePageModel, dynamic>((value) => value.selectedKey);
 
-    List selectedObjects =
-        context.watch<HomePageModel>().selectedObjects;
+    List selectedObjects = context.watch<HomePageModel>().selectedObjects;
 
     userObjectSelections = context
         .select<HomePageModel, List>((value) => value.userObjectSelections);
@@ -350,10 +426,14 @@ class _Home extends State<Home> {
             (value) => value.enabledSelections2);
 
     List cards = context.select<HomePageModel, List>((value) => value.cards);
-    
-    bool updatedCards = context.select<HomePageModel, bool>((value) => value.updatedCards);
-    
-    bool cardsLoading = context.select<HomePageModel, bool>((value) => value.cardsLoading);
+    bool isFilteringEnabled = context
+        .select<HomePageModel, bool>((value) => value.isFilteringEnabled);
+
+    bool updatedCards =
+        context.select<HomePageModel, bool>((value) => value.updatedCards);
+
+    bool cardsLoading =
+        context.select<HomePageModel, bool>((value) => value.cardsLoading);
 
     List<dynamic> games = context.watch<EventsModel>().games;
 
@@ -367,15 +447,20 @@ class _Home extends State<Home> {
     print("selectedObjects length in build: " +
         selectedObjects.length.toString());
 
-    
-    if(updatedCards) {
+    if (updatedCards) {
       print("updatedCards");
       loadInitialData();
-        
     }
 
     return (Scaffold(
-      appBar: Headers().getMainHeader(context),
+      appBar: Headers(
+        filterButton: ButtonModel(
+          iconData:
+              isFilteringEnabled ? Icons.filter_alt_off : Icons.filter_alt,
+          onTap: () =>
+              showBottomSheet(context, selectedKey.toString(), selectedObjects),
+        ),
+      ).getMainHeader(context),
       drawer: Container(
         width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
         child: Drawer(child: SideNavs().getMainSideNav(context, userObject)),
@@ -397,6 +482,7 @@ class _Home extends State<Home> {
                     eventObject: enabledSelections2[key],
                     svgImage: svgImage,
                     index: index,
+                    onTapEvent: () => clearFiltering(isPop: false),
                   ),
                 );
               },
