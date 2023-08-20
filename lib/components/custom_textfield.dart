@@ -33,6 +33,7 @@ class CustomTextFormField extends StatelessWidget {
         controller: controller,
         enabled: enabled,
         onTap: onPressed,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         cursorColor: AppColors.orangeColorShade500,
         keyboardType: keyboardType,
         validator: validator,
