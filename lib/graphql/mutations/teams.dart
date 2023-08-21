@@ -11,7 +11,7 @@ class TeamMutations {
           name: "${teamInput['name']}",
           color: "${teamInput['color']}",          
           status: "ACTIVE",
-          capacity:"${teamInput['capacity']}",
+          capacity:${teamInput['capacity']},
           createdAt: "${teamInput['createdAt']}",
           updatedAt: "${teamInput['updatedAt']}",
           chats: {
