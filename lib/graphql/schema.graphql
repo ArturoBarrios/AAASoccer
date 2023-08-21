@@ -594,3 +594,10 @@ type SocialMediaApps   {
   team: Team
   event: Event
 }
+
+type Item {
+  name: String
+  description: String
+  price: String
+
+}
