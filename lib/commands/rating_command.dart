@@ -13,40 +13,23 @@ import 'package:url_launcher/url_launcher.dart';
 
 
 class RatingCommand extends BaseCommand {
-  Future<Map<String, dynamic>> getObjectRatings(String id) async{        
-    print("getRating()");
-    Map<String, dynamic> responseMap = {"success": false, "message": "Default", "data": null};
+
+  Future<Map<String,dynamic>> createRatingCategory()async {
+    Map<String,dynamic> createRatingCategoryResp = {
+      "success": false,
+      "message": "Failed to create rating category"    
+    };
+
     try{
-        String autocompleteUrl = 'https://api.sportsengine.com/organizations/locations/'+id+'/reviews';
-        http.Response response = await http.get(
-        Uri.parse(autocompleteUrl),
-        headers: <String, String>{          
-          'Content-Type': 'application/json'
-        },        
-      );
-      // print("Response: "+jsonDecode(response.body));
-      responseMap["success"] = true;
-      responseMap["message"] = "Success";
-      responseMap["data"] = jsonDecode(response.body)["predictions"];
-      return responseMap;
-    } catch(e){
-      print(e);
-      return responseMap;
+      return createRatingCategoryResp;
+    } catch (e) {
+      print("Error creating rating category: $e");
+      return createRatingCategoryResp;
     }
+
+    
   }
-
-  double calculateAverageRating(List<dynamic> ratings){
-    print("calculateAverageRating()");
-    double averageRating = 0;
-    double totalRating = 0;
-    for(int i = 0; i < ratings.length; i++){
-      totalRating += ratings[i]["rating"];
-    }
-    averageRating = totalRating/ratings.length;
-
-    return averageRating;
-
-  }
+  
 
   
 

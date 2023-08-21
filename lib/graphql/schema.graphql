@@ -192,7 +192,7 @@ type User  {
   mainImageKey: String
   subscriptionTypeUsers: [SubscriptionTypeUser] @relation
   isProfilePrivate: Boolean @default(value: false)
-  SocialMediaApps: [SocialMediaApp] @relation
+  socialMediaApps: [SocialMediaApp] @relation
 }
 
 
@@ -558,7 +558,13 @@ type Rating   {
   organizers: [Organizer] @relation
   coaches: [Coach] @relation
   referees: [Referee] @relation
+  ratingCategory: [RatingCategory] @relation
+}
 
+type RatingCategory {
+  name: String
+  weight: Float!
+  ratings: [Rating] @relation
 
 }
 
@@ -572,7 +578,7 @@ type Price   {
   time: Int #in minutes
 }
 
-enum SubscriptionType {  
+enum SocialMediaType {  
   FACEBOOK  
   INSTAGRAM
   X
