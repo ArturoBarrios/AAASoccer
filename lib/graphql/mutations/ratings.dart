@@ -1,39 +1,20 @@
 import '../fragments/rating_fragments.dart';
 
 class RatingMutations {
-  String updateRating(
-      Map<String, dynamic> ratingInput) {    
-    // var teamAmount = priceInput.containsKey('teamAmount') ? priceInput['teamAmount'] : "0";
-    String updateRatingString = """
+  String createRatingCategory(
+      Map<String, dynamic> ratingCategoryInput) {
+    print("teamInput: $ratingCategoryInput");    
+    String createRatingCategoryString = """
       mutation {
-        updateRating(
-          id: ${ratingInput['_id']},
-  				data: {                       
-               
-          }                      
-        ){
-          ${RatingFragments().fullRating()}                 				                    				  
-          }
+        createTeam(data: {
+          name: "${ratingCategoryInput['name']}",
+          ratingCategory: "${ratingCategoryInput['weight']}",             
+          }) {
+           ${RatingFragments().ratingCategory()}
+          }   
         }
         """;
 
-    return updateRatingString;
-  }
-  
-  String createRating(
-      Map<String, dynamic> ratingInput) {    
-    // var teamAmount = priceInput.containsKey('teamAmount') ? priceInput['teamAmount'] : "0";
-    String createRatingString = """
-      mutation {
-        createRating(data: {                       
-          rating: "${ratingInput['rating']}",      
-        }                      
-        ){
-          ${RatingFragments().fullRating()}                 				                    				  
-          }
-        }
-        """;
-
-    return createRatingString;
+    return createRatingCategoryString;
   }
 }

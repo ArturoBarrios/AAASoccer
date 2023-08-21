@@ -352,10 +352,17 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     } else {
       return Container(
           child: GestureDetector(
-        onTap: () {
+        onTap: () async {
           print("onTap Leave Game");
           print("onTap Join My Game");
-          removeUserFromEvent(event, userObject);
+          dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
+          if(chooseRoleDialog != null){
+            print("chooseRoleDialog: "+chooseRoleDialog.toString());
+            List<String> roles = chooseRoleDialog['rolesArray'];
+            // BaseCommand().stringifyRoles(roles);
+            print("roles: "+roles.toString());
+            removeUserFromEvent(event, userObject);                        
+          }                    
             
         },
         child: Text("Leave Game"),

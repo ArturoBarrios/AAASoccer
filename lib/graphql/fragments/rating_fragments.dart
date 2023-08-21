@@ -18,6 +18,16 @@ class RatingFragments{
     return ratingObjectString;
 
   }
+
+  String ratingCategory(){
+     String ratingCategoryString = r'''      
+        	_id
+                               
+    ''';
+
+    return ratingCategoryString;
+
+  }
 }
 
 
