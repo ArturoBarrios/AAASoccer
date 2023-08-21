@@ -605,3 +605,9 @@ type SocialMediaApp   {
   event: Event
 }
 
+type Item {
+  name: String
+  description: String
+  price: String
+
+}
