@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 //amplify auth packages
@@ -324,8 +322,6 @@ class _Home extends State<Home> {
       final FilterResultModel? filterResult,
       final String? key,
       final List<dynamic>? objects}) async {
-    inspect(key);
-
     Navigator.of(context).pop();
 
     if (filterResult?.rangeResult == null) {
@@ -340,7 +336,7 @@ class _Home extends State<Home> {
     HomePageCommand().changeFilteringStatus(true);
     changeFilterResult(filterResult);
     final filter = objects.filterByPriceAmount(
-        selectedKey: key, amount: filterResult?.rangeResult ?? 0);
+        selectedKey: key, rangeAmount: filterResult?.rangeResult);
     if (filter?.isNotEmpty ?? false) {
       HomePageCommand().filterObjects(filter ?? []);
     } else {

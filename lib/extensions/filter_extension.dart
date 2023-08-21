@@ -1,13 +1,17 @@
+import 'package:soccermadeeasy/models/filter_result_model.dart';
+
 /// Extension for filtering event list.
 extension FilterEventExtension on List<dynamic>? {
   List<dynamic>? filterByPriceAmount(
-      {final String? selectedKey, final double? amount}) {
+      {final String? selectedKey, final FilterRangeResultModel? rangeAmount}) {
     return this?.where((item) {
-      final selectedAmount = formatAmount(amount);
+      final selectedMinAmount = formatAmount(rangeAmount?.minResult);
+      final selectedMaxAmount = formatAmount(rangeAmount?.maxResult);
       double itemAmount =
           getPriceByEventType(key: selectedKey, event: item) ?? 0;
 
-      return itemAmount < (selectedAmount);
+      return (selectedMinAmount) < itemAmount &&
+          itemAmount < (selectedMaxAmount);
     }).toList();
   }
 

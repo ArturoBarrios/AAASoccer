@@ -65,7 +65,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 if (widget.title != null) Text(widget.title ?? ''),
                 if (widget.title != null) const SizedBox(height: 12),
                 CustomRangeSlider(
-                  currentMaxValue: widget.filterResult?.rangeResult ?? 500,
+                  currentMaxValue:
+                      widget.filterResult?.rangeResult?.maxResult ?? 500,
                   rangeCallback: (final value) {
                     setState(() {
                       filterResultModel.rangeResult = value;
