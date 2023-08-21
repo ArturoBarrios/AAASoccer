@@ -20,6 +20,17 @@ import '../graphql/mutations/users.dart';
 import 'home_page_command.dart';
 
 class TeamCommand extends BaseCommand {
+
+
+  List getTeamUserRoles() {
+    List teamUserRoles = [
+      Constants.PLAYER,      
+      Constants.MAINCOACH,            
+      Constants.ASSISTANTCOACH,
+    ];
+    return teamUserRoles;
+  }
+
   Future<dynamic> getUserTeamDetails(dynamic team) async {
     print("getUserTeamDetails()");
     //get team most up to date

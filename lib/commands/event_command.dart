@@ -45,6 +45,15 @@ class EventCommand extends BaseCommand {
     return sortedEvents;
   }
 
+   List getEventUserRoles() {
+    List eventUserRoles = [
+      Constants.PLAYER,      
+      Constants.ORGANIZER,            
+      Constants.REF
+    ];
+    return eventUserRoles;
+  }
+
   Future<Map<String, dynamic>> archiveEvent(dynamic eventObject) async {
     Map<String, dynamic> archiveEventResp = {
       "success": false,
@@ -229,7 +238,7 @@ class EventCommand extends BaseCommand {
       "data": null
     };
     try {
-      dynamic userObject = UserCommand().getAppModelUser();
+      dynamic userObject = UserCommand().getAppModelUser();      
       dynamic updateRoleResp =
           EventCommand().checkIfUpdateRole(eventInput, userObject);
       if (updateRoleResp['updateRole']) {
@@ -1069,7 +1078,7 @@ class EventCommand extends BaseCommand {
       "freeAgents": [],
       "organizers": [],
       "teams": [],
-      "roles": [],
+      "roles": List<String>.empty(growable: true),
       "chats": [],
       "allEvents": [],
       "groupStage": [],
@@ -1118,8 +1127,9 @@ class EventCommand extends BaseCommand {
       // print("getMainEventResp: " + getMainEventResp.toString());
       // print("requestssss: " +
       //     getMainEventResp['data']['requests']['data'].toString());
-
+      
       //get chats
+      print("get chats: "+ event['chats'].toString());
       dynamic chats = event['chats']['data'];
 
       List<dynamic> myObjectRoles = getEventRoles(event, appModel.currentUser);
