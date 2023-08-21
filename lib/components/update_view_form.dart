@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/players_list_widget.dart';
 import 'package:soccermadeeasy/components/price_widget.dart';
 import 'package:soccermadeeasy/components/requests_list.dart';
+import 'package:soccermadeeasy/components/rsvp_widget.dart';
 import 'package:soccermadeeasy/components/send_players_request_widget.dart';
 import 'package:soccermadeeasy/components/send_teams_request_widget.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
@@ -86,6 +89,13 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     widget.userObjectDetails['mainEvent']['chats']['data'] = filteredChats;
   }
 
+  void updateRsvpStatus(Map<String, dynamic> rsvpStatus) {
+    setState(() {
+      widget.userObjectDetails['mainEvent']['rsvp']['data'].add(rsvpStatus);
+      BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -123,6 +133,10 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
                 "requests": widget.userObjectDetails['mainEvent']['requests']
                     ['data']
               }),
+              RSVPWidget(
+                onRsvpStatusChanged: () {},
+                currentStatus: '',
+              ),
               widget.userObjectDetails['isMine']
                   ? locationSearchBar = LocationSearchBar(
                       initialValue: widget.userObjectDetails['mainEvent']
@@ -182,5 +196,11 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
         ),
       ),
     );
+  }
+
+  bool isEventOrTeam() {
+    return widget.userObjectDetails['mainEvent']['type'].toString() ==
+            "EVENT" ||
+        widget.userObjectDetails['mainEvent']['type'].toString() == "TEAM";
   }
 }
