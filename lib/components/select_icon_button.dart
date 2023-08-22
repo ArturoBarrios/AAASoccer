@@ -43,10 +43,9 @@ class _SelectIconButton extends State<SelectIconButton> {
         child: GestureDetector(
       onTap: () async {
         print("onTap EventType");
-
-        HomePageCommand().eventTypeTapped(widget.eventObject['key']);
-        HomePageCommand().setCards();
         widget.onTapEvent?.call();
+        await HomePageCommand().eventTypeTapped(widget.eventObject['key']);
+        await HomePageCommand().setCards();
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
