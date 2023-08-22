@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
 import '../commands/paypal_payment/models/request/orders/paypal_create_order_request.dart';
 import '../commands/paypal_payment/paypal_provider.dart';
+import '../commands/paypal_payment/paypal_repository.dart';
 import '../commands/subscriptions_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
@@ -53,7 +54,6 @@ class _CardFormScreen extends State<CardFormScreen> {
   late ScrollController _selectPaymentController = ScrollController();
   final FlipCardController flipCardController = FlipCardController();
 
-
   List waysToPay = [
     "Pay With Existing Card",
     "Pay With New Card",
@@ -64,9 +64,7 @@ class _CardFormScreen extends State<CardFormScreen> {
   String? _selectedPayment = "Pay With Existing Card";
 
   void createPaymentIntent() async {
-    setState(() {
-      
-    }); 
+    setState(() {});
     Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
     print("currentUser: " + currentUser.toString());
     print("createPaymentIntent");
@@ -248,10 +246,9 @@ class _CardFormScreen extends State<CardFormScreen> {
     });
   }
 
-  Future<void> createOrderWithPaypal() async {
-    final paypalRepository = ProviderContainer().read(paypalRepositoryProvider);
-
-    final result = await paypalRepository.createOrder(
+  Future<void> createOrderWithPaypal(
+      {final PaypalRepository? repository}) async {
+    final result = await repository?.createOrder(
       order: const PaypalCreateOrderRequest(
           purchaseUnits: [
             PurchaseUnitsRequest(
@@ -271,12 +268,16 @@ class _CardFormScreen extends State<CardFormScreen> {
               returnUrl: 'https://example.com/return',
               cancelUrl: 'https://example.com/cancel')),
     );
-    result.when(
-      left: (final left) => ScaffoldMessenger.of(context).show(
-        type: SnackBarType.failure,
-        message: left.message,
-      ),
+    result?.when(
+      left: (final left) {
+        setState(() {});
+        ScaffoldMessenger.of(context).show(
+          type: SnackBarType.failure,
+          message: left.message,
+        );
+      },
       right: (right) {
+        setState(() {});
         ScaffoldMessenger.of(context).show(
           type: SnackBarType.success,
           message: 'Order created',
@@ -305,6 +306,7 @@ class _CardFormScreen extends State<CardFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final paypalRepository = ProviderContainer().read(paypalRepositoryProvider);
     PaymentType status =
         context.select<PaymentModel, PaymentType>((value) => value.status);
 
@@ -543,7 +545,8 @@ class _CardFormScreen extends State<CardFormScreen> {
                       )
                     : waysToPay[2] == _selectedPayment
                         ? ElevatedButton(
-                            onPressed: createOrderWithPaypal,
+                            onPressed: () => createOrderWithPaypal(
+                                repository: paypalRepository),
                             child: const Text('Pay with paypal'),
                           )
                         : waysToPay[4] == _selectedPayment
