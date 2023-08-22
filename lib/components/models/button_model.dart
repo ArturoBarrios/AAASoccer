@@ -7,7 +7,8 @@ class ButtonModel {
     this.backgroundColor,
     this.onTap,
     this.onTapReturnWithValue,
-    this.iconData,
+    this.prefixIconData,
+    this.suffixIconData,
   });
 
   final String? text;
@@ -16,5 +17,6 @@ class ButtonModel {
   final void Function(dynamic)? onTapReturnWithValue;
 
   final Color? backgroundColor;
-  final IconData? iconData;
+  final IconData? prefixIconData;
+  final IconData? suffixIconData;
 }

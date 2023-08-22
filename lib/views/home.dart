@@ -439,7 +439,7 @@ class _Home extends State<Home> {
     return Scaffold(
       appBar: Headers(
         filterButton: ButtonModel(
-          iconData:
+          prefixIconData:
               isFilteringEnabled ? Icons.filter_alt_off : Icons.filter_alt,
           onTap: () =>
               showBottomSheet(context, selectedKey.toString(), selectedObjects),

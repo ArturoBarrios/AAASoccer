@@ -31,7 +31,7 @@ class Headers extends StatefulWidget {
         if (filterButton != null)
           IconButton(
               onPressed: filterButton?.onTap,
-              icon: Icon(filterButton?.iconData))
+              icon: Icon(filterButton?.prefixIconData))
       ],
     );
     return appBar;
