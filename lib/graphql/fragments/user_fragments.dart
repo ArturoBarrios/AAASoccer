@@ -17,6 +17,7 @@ class UserFragments{
               gender
               OSPID
               mainImageKey
+              updatedAt
               followers{
                 data{
                   follower{

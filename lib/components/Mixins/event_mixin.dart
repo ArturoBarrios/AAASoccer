@@ -85,9 +85,9 @@ mixin EventMixin {
     //add teamInEvent property
   }
 
-  void setupMyTeams() {
+  Future<void> setupMyTeams() async{
     print("setupMyTeams");
-    dynamic getAppModelMyTeams = UserCommand().getAppModelMyTeams();
+    dynamic getAppModelMyTeams = await UserCommand().getAppModelMyTeams();
     myTeamList = getAppModelMyTeams;
     
   }

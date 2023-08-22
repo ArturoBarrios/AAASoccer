@@ -81,14 +81,14 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
 
 
   Container sendEventRequestForMyTeamWidget(
-      BuildContext context, dynamic userObjectDetails) {
+      BuildContext context, dynamic userObjectDetails)  {
         print("sendEventRequestForMyTeamWidget");
-        widget.setupMyTeams();
+        
     return Container(
         child: GestureDetector(
             onTap: () async {
               // print("myTeamList before: " + myTeamList.toString());
-              widget.setupMyTeams();
+              // widget.setupMyTeams();
               List<dynamic> primaryList = [];
               List<dynamic> secondaryList = [];
               List<dynamic> myProcessedTeamList = widget.myTeamList
@@ -129,7 +129,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
   Container sendTeamsRequestWidget(
       BuildContext context, dynamic userObjectDetails) {
     print("sendTeamsRequestWidgett: " + userObjectDetails.toString());
-    widget.setupTeamList();
+    // widget.setupTeamList();
     
         if(userObjectDetails['isMine']){
           return Container(
@@ -176,9 +176,16 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
         }
   }
 
+  loadInitialData() async{
+    await widget.setupTeamList();
+    await widget.setupMyTeams();
+    
+  }
+
   @override
   void initState() {
     super.initState();
+    loadInitialData();
     // setupMyTeams();
     // setupTeams();
   }

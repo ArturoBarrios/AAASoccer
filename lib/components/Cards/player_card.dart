@@ -79,7 +79,7 @@ class _PlayerCard extends State<PlayerCard> {
         UserCommand().isCurrentUserFollowingUser(userObject);
     bool isUserFollowedByPlayer =
         UserCommand().isCurrentUserFollowedByUser(userObject);
-
+    print("followUserContainerValues: $isUserFollowingPlayer, $isUserFollowedByPlayer");
     //follow
     if (!isUserFollowingPlayer && !isUserFollowedByPlayer) {
       return Container(

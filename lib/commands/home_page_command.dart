@@ -206,13 +206,13 @@ class HomePageCommand extends BaseCommand {
   Future<void> eventTypeTapped(dynamic key) async {
     print("eventTypeTapped");
     print(key);
-    await getSelectedObjects(key);
     print(homePageModel.enabledSelections2[key]['enabled']);
     homePageModel.enabledSelections2.forEach(
         (k, v) => {homePageModel.enabledSelections2[k]['enabled'] = false});
     homePageModel.enabledSelections2[key]['enabled'] =
         !homePageModel.enabledSelections2[key]['enabled'];
     homePageModel.selectedKey = key;
+    await getSelectedObjects(key);
   }
 
   void addPlayerToObjectSelection(dynamic object) {
@@ -240,7 +240,7 @@ class HomePageCommand extends BaseCommand {
     List<dynamic> newSelectedObjects = [];
     //get events
     if (BaseCommand().isEventType(newSelectedKey)) {
-      String xHoursAgoTimestamp = BaseCommand().xHoursAgo(
+      String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(
           1); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
       Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
           await EventCommand().getEventsOfTypeNearLocation(
@@ -260,7 +260,7 @@ class HomePageCommand extends BaseCommand {
         eventsModel.games = newSelectedObjects;
       }
     } else if (newSelectedKey == Constants.TEAM) {
-      String oneYearAgoTimestamp = BaseCommand().xHoursAgo(
+      String oneYearAgoTimestamp = BaseCommand().xHoursAgoString(
           8760); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
       print("oneYearAgoTimestamppppp: " + oneYearAgoTimestamp);
       Map<String, dynamic> getAllTeamsResp = await TeamCommand()
@@ -323,7 +323,7 @@ class HomePageCommand extends BaseCommand {
     } else if (newSelectedKey == Constants.MYEVENTS) {
       print("check my events: ");
       print("appModel.currentUser: " + appModel.currentUser.toString());
-      String xHoursAgoTimestamp = BaseCommand().xHoursAgo(1);
+      String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(1);
       dynamic allUserEventParticipantsInput = {
         "userId": appModel.currentUser['_id'],
         "startTime": xHoursAgoTimestamp,

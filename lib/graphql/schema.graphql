@@ -1,4 +1,4 @@
-type Query {  
+type Query {
   # functions
   #   events
   allEventsOfType(startTime: String!, type: EventType!): [Event!] @resolver(name: "allEventsOfType")
@@ -17,24 +17,26 @@ type Query {
   #  teams
 
   # querieds
-  allGames(pickup: Boolean): [Game!]  
-  allTrainings: [Training!]  
-  allTryouts: [Tryout!]  
-  allLeagues: [League!]  
-  allTournaments: [Tournament!]  
-  allSubscriptionTypes: [SubscriptionType!]  
+  allGames(pickup: Boolean): [Game!]
+  allTrainings: [Training!]
+  allTryouts: [Tryout!]
+  allLeagues: [League!]
+  allTournaments: [Tournament!]
+  allSubscriptionTypes: [SubscriptionType!]
   allUsers: [User!]
   allPlayers: [Player!]
   allRequests: [Request!]
   allTeams: [Team!]
-  getUserByEmail(email: String): User  
-  getUserByPhone(phone: String): User  
-  getUserByUsername(username: String): User  
+  getUserByEmail(email: String): User
+  getUserByPhone(phone: String): User
+  getUserByUsername(username: String): User
   AllGamesByID(username: [ID]):[ID] @resolver
   AllEventsByID(ids: [ID]):[ID] @resolver
 }
 
-
+type Mutation {
+  createRsvp(eventId: ID!, userId: ID!, status: RsvpStatus!): Rsvp
+}
 
 enum RoleType {
   COACH
@@ -59,7 +61,6 @@ enum MessageType {
   VIDEO
   AUDIO
 }
-
 
 enum SurfaceType {
   TURFPOOR
@@ -105,6 +106,7 @@ enum RequestStatus{
   ACCEPTED
   REJECTED
 }
+
 enum UserType{
   PLAYER
   ORGANIZER
@@ -137,7 +139,7 @@ type Request {
   forRole: String
   sentAt: Int
   acceptedAt: Int
-  
+
 }
 
 type StripeCustomer {
@@ -150,11 +152,8 @@ type FollowRelation {
   following: User @relation(name: "user_following")
 }
 
-
-
-
-type User  {  
-  stripeCustomers: [StripeCustomer] @relation 
+type User  {
+  stripeCustomers: [StripeCustomer] @relation
   payments: [Payment] @relation
   userType: UserType
   OSPID: String
@@ -178,9 +177,9 @@ type User  {
   createdAt: Int
   updatedAt: String
   images: [Image] @relation
-  events: [Event] @relation      
-  eventUserParticipants: [EventUserParticipant] @relation   
-  teamUserParticipants: [TeamUserParticipant] @relation  
+  events: [Event] @relation
+  eventUserParticipants: [EventUserParticipant] @relation
+  teamUserParticipants: [TeamUserParticipant] @relation
   requestsSent: [Request]  @relation(name: "requests_sent")
   requestsReceived: [Request] @relation(name: "request_receivers")
   requestsAccepted: [Request] @relation(name: "request_acceptedBy")
@@ -195,14 +194,13 @@ type User  {
   socialMediaApps: [SocialMediaApp] @relation
 }
 
-
-type Player   {  
+type Player   {
   wagerRating: String
-  wagers: [Wager] @relation  
-  # events: [Event] @relation  
-  competitiveLevel: String  
+  wagers: [Wager] @relation
+  # events: [Event] @relation
+  competitiveLevel: String
   hasRating: String
-  showRating: String  
+  showRating: String
   user: User
   selfRating: Int
   sponsors: [Sponsor] @relation
@@ -225,20 +223,20 @@ type TeamUserParticipant {
 type Game {
   hometeam: Team
   awayteam: Team
-  teamA: String 
+  teamA: String
   teamB: String
   round: Int
   gameNumber: Int
   homegoals: Int
   awaygoals: Int
   pickup: Boolean
-  event: Event  
+  event: Event
   # event(archived: Boolean = false): Event
 }
 
 type JoinConditions {
   withRequest: Boolean
-  withPayment: Boolean  
+  withPayment: Boolean
   forTeam: Boolean
   forEvent: Boolean
   event: Event
@@ -255,10 +253,10 @@ type Event   {
   requests: [Request] @relation
   # organization: Organization
   #need org to create events? nah. allow user to create events,
-  #if user has orgs, they can select which org to create event for                
+  #if user has orgs, they can select which org to create event for
   coorganizations: [Organization] @relation
   sponsors: [Sponsor] @relation
-  # creator: User 
+  # creator: User
   ratings: [Rating] @relation
   images: [Image] @relation
   location: [Location] @relation
@@ -267,23 +265,38 @@ type Event   {
   chats: [Chat] @relation
   teams: [Team] @relation
   games: [Game] @relation
-  users: [User] @relation  
-  #I don't  think you need these since tournament 
+  users: [User] @relation
+  #I don't  think you need these since tournament
   #can have many events but not the other way around
-  # tournament: Tournament 
+  # tournament: Tournament
   tryouts: [Tryout] @relation
   leagues: [League]  @relation
   tournaments: [Tournament] @relation
-  trainings: [Training] @relation 
-  wager: [Wager] @relation  
+  trainings: [Training] @relation
+  wager: [Wager] @relation
+  rsvp: [Rsvp] @relation
   archived: Boolean  @default(value: false)
   deleted: Boolean  @default(value: false)
   startTime: String
   endTime: String
   createdAt: String
-  capacity: Int  
+  capacity: Int
   mainImageKey: String
   SocialMediaApps: [SocialMediaApp] @relation
+}
+
+type Rsvp {
+  id: ID!
+  user: User! @relation
+  event: Event! @relation
+  status: RsvpStatus
+  createdAt: String
+}
+
+enum RsvpStatus{
+  Yes,
+  No,
+  Maybe
 }
 
 type Team   {
@@ -291,9 +304,9 @@ type Team   {
   color: String
   events: [Event] @relation
   images: [Image] @relation
-  users: [User] @relation    
+  users: [User] @relation
   sponsors: [Sponsor] @relation
-  location: [Location] @relation   
+  location: [Location] @relation
   userParticipants: [TeamUserParticipant] @relation
   status: String
   deleted: Boolean
@@ -303,7 +316,7 @@ type Team   {
   chats: [Chat] @relation
   price: Price
   payments: [Payment] @relation
-  joinConditions: [JoinConditions] @relation  
+  joinConditions: [JoinConditions] @relation
   teamOrders: [TeamOrder] @relation
   organization: Organization
   ratings: [Rating] @relation
@@ -311,17 +324,17 @@ type Team   {
   capacity: Int
 }
 
-type Coach   {  
+type Coach   {
   user: User
   ratings: [Rating] @relation
 }
 
-type Referee   {  
+type Referee   {
   user: User
   ratings: [Rating] @relation
 }
 
-type Organizer   {  
+type Organizer   {
   user: User
   ratings: [Rating] @relation
 }
@@ -329,7 +342,7 @@ type Organizer   {
 
 # a payment is attached to event
 # use payment object to create payment screen details for event
-type Payment   {  
+type Payment   {
   amount: String
   event: Event
   team: Team
@@ -341,7 +354,7 @@ type Payment   {
 
 # orgs can have many suborgs
 # allow org to behave as Sponsor
-type Organization   {  
+type Organization   {
   name: String
   images: [Image] @relation
   rating: [Rating] @relation
@@ -367,13 +380,13 @@ type Sponsor {
   images: [Image] @relation
   description: String
   url: String
-  event: [Event] @relation  
+  event: [Event] @relation
   sponsoredOrgs: [Organization] @relation
   sponsoredPlayers: [Player] @relation
   sponsoredTeams: [Team] @relation
 }
 
-type Wager   {  
+type Wager   {
   name: String
   amount: String
   players: [Player] @relation
@@ -382,16 +395,15 @@ type Wager   {
   events: [Event] @relation
 }
 
-
-type Tryout   {  
+type Tryout   {
   # event: Event
   event: Event
   #tryout can have a pickup game
   # eligibleEventTypes: [EventType] @relation
 }
 
-type League   {  
-  tournaments: [Tournament] @relation   
+type League   {
+  tournaments: [Tournament] @relation
   # event: Event
   events: [Event] @relation
   numberOfTeams: Int
@@ -401,7 +413,7 @@ type League   {
 
 type Season {
   leagues: [League] @relation
-  tournaments: [Tournament] @relation  
+  tournaments: [Tournament] @relation
   # was going to add season but you can calculate season from start and end date
   startDate: String
   endDate: String
@@ -422,17 +434,17 @@ type TeamGroup {
 
 type Group {
   groupNumber: Int
-  groupStage: GroupStage  
+  groupStage: GroupStage
   teamOrders: [TeamOrder] @relation
 }
 
 type GroupStage {
   groups: [Group] @relation
   numberOfTeams: Int
-  numberOfRoundsPerTeam: Int    
+  numberOfRoundsPerTeam: Int
   tournament: Tournament
   league: League
-  type: EventType  
+  type: EventType
 }
 
 type EventOrder{
@@ -443,14 +455,14 @@ type EventOrder{
 
 type TournamentStage {
   numberOfTeams: Int
-  numberOfRoundsPerTeam: Int  
+  numberOfRoundsPerTeam: Int
   tournament: Tournament
   eventOrders: [EventOrder] @relation
 
 }
 
 type Tournament   {
-  groupPlay: Boolean  
+  groupPlay: Boolean
   # event: Event
   events: [Event] @relation
   numberOfTeams: Int
@@ -458,16 +470,15 @@ type Tournament   {
   tournamentStage: TournamentStage
   season: Season
   leagues: [League] @relation
-  # eligibleEventTypes: [EventType] @relation  
-}
-
-type Training   {  
-  event: Event  
   # eligibleEventTypes: [EventType] @relation
 }
 
+type Training   {
+  event: Event
+  # eligibleEventTypes: [EventType] @relation
+}
 
-type Image   {  
+type Image   {
   isMainImage: Boolean
   public: Boolean
   url: String
@@ -479,8 +490,8 @@ type Image   {
   location: Location
   organization: Organization
   attachedModelType: ModelType
-  sponsor: Sponsor   
-  s3bucket: String 
+  sponsor: Sponsor
+  s3bucket: String
 }
 
 type GifContent   {
@@ -491,17 +502,17 @@ type TextContent   {
   content: String
 }
 
-type Message {  
+type Message {
   chatObject: Chat #belongs to chat
   textObject: TextContent
   gifObject: GifContent
   imageObject: Image
-  sender: User @relation(name: "messages_sent") 
+  sender: User @relation(name: "messages_sent")
   messageType: MessageType
   for: [User] @relation(name: "messages_for")
 }
 
-type Chat  {  
+type Chat  {
   name: String
   messages: [Message] @relation #has many messages
   users: [User] @relation(name: "user_chats")
@@ -514,23 +525,23 @@ type Chat  {
   images: [Image] @relation
 }
 
-type SubscriptionType {  
+type SubscriptionType {
   name: String
   description: String
-  price: Price  
+  price: Price
   lengths: String
   subscriptions: [SubscriptionTypeUser] @relation
 }
 
 type SubscriptionTypeUser  {
   subscriptionType: SubscriptionType
-  user: User 
+  user: User
   startDate: String
   endDate: String
-  length: Int  
+  length: Int
 }
 
-type Location   {  
+type Location   {
   name: String
   secondaryName: String
   address: String
@@ -548,7 +559,7 @@ type Location   {
   Price: [Price] @relation
 }
 
-type Rating   {  
+type Rating   {
   rating: Int
   organizations: [Organization] @relation
   teams: [Team] @relation
@@ -568,7 +579,7 @@ type RatingCategory {
 
 }
 
-type Price   {  
+type Price   {
   amount: String
   event: Event @relation(name: "event_price")
   team: Team
@@ -578,19 +589,26 @@ type Price   {
   time: Int #in minutes
 }
 
-enum SocialMediaType {  
-  FACEBOOK  
+enum SocialMediaType {
+  FACEBOOK
   INSTAGRAM
   X
   YOUTUBE
-  LINKEDIN   
+  LINKEDIN
 }
 
-
-type SocialMediaApps   {  
+type SocialMediaApp   {
   type: SocialMediaType
   url: String
   user: User
   team: Team
   event: Event
+}
+
+type Item {
+  name: String
+  description: String #size 5
+  price: String
+  quantity: Int
+
 }

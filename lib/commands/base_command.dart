@@ -59,13 +59,25 @@ class BaseCommand {
 
   void initializeData() {}
 
-  String xHoursAgo(int x) {
+  String xHoursAgoString(int x) {
     DateTime xHoursAgo = DateTime.now().subtract(Duration(hours: x));
     String xHoursAgoTimestamp = xHoursAgo.millisecondsSinceEpoch.toString();
     print("xHoursAgoTimestamp before getEventsNearLocation: " +
         xHoursAgoTimestamp);
 
     return xHoursAgoTimestamp;
+  }  
+
+  bool isWithinXHoursAgo(int hoursAgo, String timestampToCompareTo){
+     DateTime xHoursAgo = DateTime.now().subtract(Duration(hours: hoursAgo));
+    String xHoursAgoTimestamp = xHoursAgo.millisecondsSinceEpoch.toString();
+    print("xHoursAgoTimestamp before getEventsNearLocation: " +
+        xHoursAgoTimestamp);
+    if(int.parse(xHoursAgoTimestamp) < int.parse(timestampToCompareTo)){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   bool isEventType(dynamic type) {
@@ -430,9 +442,12 @@ class BaseCommand {
           oneHourAgoTimestamp);
       //setup events
       print("Setup Events");
-      !appModel.isGuest
-          ? await HomePageCommand().eventTypeTapped(Constants.MYEVENTS)
-          : await HomePageCommand().eventTypeTapped(Constants.PICKUP);
+      if(!appModel.isGuest){
+        await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
+      }
+      else{
+        await HomePageCommand().eventTypeTapped(Constants.PICKUP);
+      }
       // if(appModel.isGuest){
       //   await EventCommand().setupEvents(Constants.PICKUP, oneHourAgoTimestamp);
       // }

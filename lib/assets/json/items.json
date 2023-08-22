@@ -1,0 +1,21 @@
+{
+    "items": [
+      {
+        "name": "Soccer Ball",        
+        "type": "{size 5, size 4, size 3, size 2, size 1}"
+      },
+      {
+        "name": "Goal",        
+        "type": "{full size, medium size, small size}"
+      },
+      {
+        "name": "Pinnies"                         
+      }, 
+      {
+        "name": "Shin Guards"
+      },
+      {
+        "name": "Water Bottles"
+      }
+    ]
+  }
