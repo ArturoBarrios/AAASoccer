@@ -4,6 +4,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:soccermadeeasy/commands/home_page_command.dart';
 import 'package:soccermadeeasy/models/user_model.dart';
 import '../constants.dart';
 import '../graphql/mutations/requests.dart';
@@ -57,9 +58,13 @@ class UserCommand extends BaseCommand {
   }
 
   //get myTeams
-  List<dynamic> getAppModelMyTeams() {
+  Future<List<dynamic>> getAppModelMyTeams() async {
     print("getAppModelMyTeams");
     print("appModel.myTeams: " + appModel.myTeams.toString());
+    if(appModel.myTeams.length == 0){
+      await HomePageCommand().getSelectedObjects(Constants.MYTEAMS);
+
+    }
     return appModel.myTeams;
   }
 

@@ -82,9 +82,9 @@ class _Home extends State<Home> {
     choices = myEventsToChooseFrom;
   }
 
-  void setupTeamsToChooseFrom() {
+  Future<void> setupTeamsToChooseFrom() async {
     print("setupTeamsToChooseFrom");
-    List<dynamic> myTeams = UserCommand().getAppModelMyTeams();
+    List<dynamic> myTeams = await UserCommand().getAppModelMyTeams();
     myTeamsToChooseFrom = myTeams;
     choices = myTeamsToChooseFrom;
   }

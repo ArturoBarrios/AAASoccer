@@ -607,7 +607,8 @@ type SocialMediaApp   {
 
 type Item {
   name: String
-  description: String
+  description: String #size 5
   price: String
+  quantity: Int
 
 }

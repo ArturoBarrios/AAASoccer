@@ -80,20 +80,37 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
   }
 
-  Future<void> removeUserFromEvent(dynamic event, dynamic userObject) async{
-    dynamic removeUserFromEventResp = await 
-      EventCommand().removeUserFromEvent(event, userObject);
+  Future<void> removeUserFromEvent(dynamic event, dynamic userObject, List<dynamic> rolesToRemove, List<dynamic> existingRoles) async{
+      
+    List<dynamic> updatedRoles = [];
+    existingRoles.forEach((element) {
+      if(!rolesToRemove.contains(element)){
+        updatedRoles.add(element);
+      }
+    });
     //remove event from user and user from event
-    if(removeUserFromEventResp['success']){
-      print("removeUserFromEventResp: "+removeUserFromEventResp.toString());
-      dynamic eventToRemove = removeUserFromEventResp['data'];
-      EventCommand().updateViewModelsWithEvent(eventToRemove, false);
-      // setState(() {
-      //   event['userParticipants']['data'].removeWhere((element) => element['user']['_id']==userObject['_id']);
-      //   widget.userObjectDetails['roles'] = [];        
-      // }); 
+    if(updatedRoles.length == 0){
+      dynamic removeUserFromEventResp = await 
+      EventCommand().removeUserFromEvent(event, userObject);
+      if(removeUserFromEventResp['success']){
+        print("removeUserFromEventResp: "+removeUserFromEventResp.toString());
+        dynamic eventToRemove = removeUserFromEventResp['data'];
+        EventCommand().updateViewModelsWithEvent(eventToRemove, false);
+        // setState(() {
+        //   event['userParticipants']['data'].removeWhere((element) => element['user']['_id']==userObject['_id']);
+        //   widget.userObjectDetails['roles'] = [];        
+        // }); 
+      } 
     }
+    else{
 
+    }
+    
+
+  }
+
+  Future<void> addUserToEvent(dynamic event, userObject, List<dynamic> rolesToAdd, List<dynamic>existingRoles) async{
+    List<dynamic> updatedRoles = [];
   }
 
   String getRequestType(eventObject) {
@@ -361,7 +378,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
             List<String> roles = chooseRoleDialog['rolesArray'];
             // BaseCommand().stringifyRoles(roles);
             print("roles: "+roles.toString());
-            removeUserFromEvent(event, userObject);                        
+            removeUserFromEvent(event, userObject, roles, existingRoles);                        
           }                    
             
         },

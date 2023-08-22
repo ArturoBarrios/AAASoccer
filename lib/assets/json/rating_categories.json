@@ -2,21 +2,19 @@
     "ratingCategories": [
       {
         "name": "RatedByPlayer",
-        "price": "9.99",
-        "description": "This is a basic subscription providing limited access to our features.",
-        "lengths": "monthly, quarterly"
+        "weight": ".2"
       },
       {
         "name": "RatedBySelf",
-        "price": "19.99",
-        "description": "This is a premium subscription offering full access to all our features.",
-        "lengths": "monthly, quarterly, annual"
+        "weight": ".5"
       },
       {
-        "name": "",
-        "price": "199.99",
-        "description": "This is a one-time subscription offering lifetime access to all our features.",
-        "lengths": "lifetime"
+        "name": "RatedByCoach",
+        "price": ".6"        
+      }, 
+      {
+        "name": "RatedByOnlooker",
+        "price": ".1"        
       }
     ]
   }
