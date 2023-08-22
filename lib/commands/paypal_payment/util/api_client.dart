@@ -3,9 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:collection/collection.dart';
 import 'package:http/http.dart';
-import 'package:http/retry.dart';
 
 import 'api_response.dart';
 
@@ -17,6 +15,7 @@ abstract class ApiClient {
     final T Function(Map<String, dynamic>)? fromJson,
     final U Function(Map<String, dynamic>)? fromJsonError,
     final Map<String, dynamic>? body,
+    final int? tokenExp,
     final Map<String, dynamic>? queryParameters,
     final Map<String, String>? headers,
   });
@@ -27,19 +26,15 @@ class ApiClientImpl implements ApiClient {
   /// [ApiClientImpl].
   ApiClientImpl({
     required final String baseURL,
-    final String? pathPrefix,
     final Future<Map<String, String>?> Function()? headers,
     final Map<String, dynamic>? queryParameters,
     final bool Function(BaseResponse response)? retryWhen,
     this.refreshToken,
   })  : _baseURL = baseURL,
-        _pathPrefix = pathPrefix ?? '',
         _headers = headers,
         _queryParameters = queryParameters;
 
-  // final BaseClient _httpClient;
   final String _baseURL;
-  final String _pathPrefix;
   final Future<Map<String, String>?> Function()? _headers;
   final Map<String, dynamic>? _queryParameters;
 
@@ -54,6 +49,7 @@ class ApiClientImpl implements ApiClient {
     final T Function(Map<String, dynamic>)? fromJson,
     final U Function(Map<String, dynamic>)? fromJsonError,
     final Map<String, dynamic>? body,
+    final int? tokenExp,
     final Map<String, dynamic>? queryParameters,
     final Map<String, String>? headers,
     final String filePath = '',
@@ -64,6 +60,7 @@ class ApiClientImpl implements ApiClient {
         path: path,
         body: body,
         method: 'POST',
+        tokenExp: tokenExp,
         isMultipartRequest: isMultipartRequest,
         filePath: filePath,
         fromJson: fromJson,
@@ -86,6 +83,7 @@ class ApiClientImpl implements ApiClient {
     final bool refreshOnUnauthenticated = true,
     final String filePath = '',
     final bool isMultipartRequest = false,
+    int? tokenExp,
   }) async {
     try {
       final getHeaders = _headers?.call();
@@ -99,23 +97,18 @@ class ApiClientImpl implements ApiClient {
                   'application/x-www-form-urlencoded'
               ? _combineEncodedBody(body)
               : jsonEncode(body);
-      log(jsonEncode(body));
-      final authorization = uriHeaders[HttpHeaders.authorizationHeader];
-      if (authorization != null &&
-          authorization.isNotEmpty &&
-          _isTokenExpired(authorization.split(' ').lastOrNull ?? '') &&
-          refreshToken != null) {
+
+      if (_isTokenExpired(tokenExp)) {
         await refreshToken?.call();
         uriHeaders = <String, String>{
           ...await getHeaders ?? <String, String>{},
           ...headers ?? <String, String>{},
         };
       }
-
       final uri = Uri(
         scheme: 'https',
         host: _baseURL,
-        path: '$_pathPrefix${path != null ? '/$path' : ''}',
+        path: path != null ? '/$path' : '',
         queryParameters: <String, String>{
           ...queryParameters != null
               ? queryParameters as Map<String, String>? ?? {}
@@ -149,16 +142,15 @@ class ApiClientImpl implements ApiClient {
           HttpStatus.requestTimeout,
         ),
       );
-      // inspect(response);
       final message =
           'RESPONSE: ${response.request?.method} ${response.statusCode} '
           '${Uri.decodeQueryComponent(response.request?.url.toString() ?? '')}'
           '\n${response.body}';
 
+      log(message);
+
       // TODO test below doesn't execute and remove.
-      if (authorization != null &&
-          authorization.isNotEmpty &&
-          response.statusCode == HttpStatus.unauthorized &&
+      if (response.statusCode == HttpStatus.unauthorized &&
           refreshOnUnauthenticated &&
           refreshToken != null) {
         await refreshToken?.call();
@@ -183,9 +175,7 @@ class ApiClientImpl implements ApiClient {
           : responseBody;
 
       if (response.statusCode >= HttpStatus.badRequest) {
-        final containsAuth = authorization != null && authorization.isNotEmpty;
-
-        if ((containsAuth && response.statusCode == HttpStatus.unauthorized) ||
+        if ((response.statusCode == HttpStatus.unauthorized) ||
             (response.statusCode != HttpStatus.unauthorized &&
                 response.statusCode != HttpStatus.notFound)) {}
 
@@ -250,18 +240,11 @@ class ApiClientImpl implements ApiClient {
       .map((final entry) => '${entry.key}=${entry.value}')
       .join('&');
 
-  bool _isTokenExpired(final String token) {
-    final exp = (json.decode(
-      utf8.decode(
-        base64Url.decode(base64Url.normalize(token.split('.')[1])),
-      ),
-    ) as Map<String, dynamic>)['exp'] as int?;
-    if (exp == null) {
-      return false;
-    }
-    final tokenExpiryDuration = DateTime.fromMillisecondsSinceEpoch(exp * 1000)
-        .difference(DateTime.now());
+  bool _isTokenExpired(int? timestamp) {
+    if (timestamp == null) return false;
 
-    return tokenExpiryDuration.isNegative;
+    final currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+
+    return timestamp <= currentTimestamp;
   }
 }

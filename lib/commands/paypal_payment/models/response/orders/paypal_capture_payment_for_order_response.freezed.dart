@@ -1676,13 +1676,12 @@ abstract class $BreakdownCopyWith<$Res> {
       _$BreakdownCopyWithImpl<$Res, Breakdown>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'item_total')
-          CurrencyCodeWithValue? itemTotal,
+      {@JsonKey(name: 'item_total') CurrencyCodeWithValue? itemTotal,
       CurrencyCodeWithValue? shipping,
       CurrencyCodeWithValue? handling,
       CurrencyCodeWithValue? insurance,
       @JsonKey(name: 'shipping_discount')
-          CurrencyCodeWithValue? shippingDiscount});
+      CurrencyCodeWithValue? shippingDiscount});
 
   $CurrencyCodeWithValueCopyWith<$Res>? get itemTotal;
   $CurrencyCodeWithValueCopyWith<$Res>? get shipping;
@@ -1804,13 +1803,12 @@ abstract class _$$_BreakdownCopyWith<$Res> implements $BreakdownCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'item_total')
-          CurrencyCodeWithValue? itemTotal,
+      {@JsonKey(name: 'item_total') CurrencyCodeWithValue? itemTotal,
       CurrencyCodeWithValue? shipping,
       CurrencyCodeWithValue? handling,
       CurrencyCodeWithValue? insurance,
       @JsonKey(name: 'shipping_discount')
-          CurrencyCodeWithValue? shippingDiscount});
+      CurrencyCodeWithValue? shippingDiscount});
 
   @override
   $CurrencyCodeWithValueCopyWith<$Res>? get itemTotal;
@@ -1935,13 +1933,12 @@ class _$_Breakdown implements _Breakdown {
 
 abstract class _Breakdown implements Breakdown {
   const factory _Breakdown(
-      {@JsonKey(name: 'item_total')
-          final CurrencyCodeWithValue? itemTotal,
+      {@JsonKey(name: 'item_total') final CurrencyCodeWithValue? itemTotal,
       final CurrencyCodeWithValue? shipping,
       final CurrencyCodeWithValue? handling,
       final CurrencyCodeWithValue? insurance,
       @JsonKey(name: 'shipping_discount')
-          final CurrencyCodeWithValue? shippingDiscount}) = _$_Breakdown;
+      final CurrencyCodeWithValue? shippingDiscount}) = _$_Breakdown;
 
   factory _Breakdown.fromJson(Map<String, dynamic> json) =
       _$_Breakdown.fromJson;
@@ -3172,17 +3169,13 @@ abstract class $CapturesCopyWith<$Res> {
       {String? id,
       String? status,
       Amount? amount,
-      @JsonKey(name: 'final_capture')
-          bool? finalCapture,
-      @JsonKey(name: 'seller_protection')
-          SellerProtection? sellerProtection,
+      @JsonKey(name: 'final_capture') bool? finalCapture,
+      @JsonKey(name: 'seller_protection') SellerProtection? sellerProtection,
       @JsonKey(name: 'seller_receivable_breakdown')
-          SellerReceivableBreakdown? sellerReceivableBreakdown,
+      SellerReceivableBreakdown? sellerReceivableBreakdown,
       List<Links>? links,
-      @JsonKey(name: 'create_time')
-          String? createTime,
-      @JsonKey(name: 'update_time')
-          String? updateTime});
+      @JsonKey(name: 'create_time') String? createTime,
+      @JsonKey(name: 'update_time') String? updateTime});
 
   $AmountCopyWith<$Res>? get amount;
   $SellerProtectionCopyWith<$Res>? get sellerProtection;
@@ -3301,17 +3294,13 @@ abstract class _$$_CapturesCopyWith<$Res> implements $CapturesCopyWith<$Res> {
       {String? id,
       String? status,
       Amount? amount,
-      @JsonKey(name: 'final_capture')
-          bool? finalCapture,
-      @JsonKey(name: 'seller_protection')
-          SellerProtection? sellerProtection,
+      @JsonKey(name: 'final_capture') bool? finalCapture,
+      @JsonKey(name: 'seller_protection') SellerProtection? sellerProtection,
       @JsonKey(name: 'seller_receivable_breakdown')
-          SellerReceivableBreakdown? sellerReceivableBreakdown,
+      SellerReceivableBreakdown? sellerReceivableBreakdown,
       List<Links>? links,
-      @JsonKey(name: 'create_time')
-          String? createTime,
-      @JsonKey(name: 'update_time')
-          String? updateTime});
+      @JsonKey(name: 'create_time') String? createTime,
+      @JsonKey(name: 'update_time') String? updateTime});
 
   @override
   $AmountCopyWith<$Res>? get amount;
@@ -3390,17 +3379,13 @@ class _$_Captures implements _Captures {
       {this.id,
       this.status,
       this.amount,
-      @JsonKey(name: 'final_capture')
-          this.finalCapture,
-      @JsonKey(name: 'seller_protection')
-          this.sellerProtection,
+      @JsonKey(name: 'final_capture') this.finalCapture,
+      @JsonKey(name: 'seller_protection') this.sellerProtection,
       @JsonKey(name: 'seller_receivable_breakdown')
-          this.sellerReceivableBreakdown,
+      this.sellerReceivableBreakdown,
       final List<Links>? links,
-      @JsonKey(name: 'create_time')
-          this.createTime,
-      @JsonKey(name: 'update_time')
-          this.updateTime})
+      @JsonKey(name: 'create_time') this.createTime,
+      @JsonKey(name: 'update_time') this.updateTime})
       : _links = links;
 
   factory _$_Captures.fromJson(Map<String, dynamic> json) =>
@@ -3498,17 +3483,14 @@ abstract class _Captures implements Captures {
       {final String? id,
       final String? status,
       final Amount? amount,
-      @JsonKey(name: 'final_capture')
-          final bool? finalCapture,
+      @JsonKey(name: 'final_capture') final bool? finalCapture,
       @JsonKey(name: 'seller_protection')
-          final SellerProtection? sellerProtection,
+      final SellerProtection? sellerProtection,
       @JsonKey(name: 'seller_receivable_breakdown')
-          final SellerReceivableBreakdown? sellerReceivableBreakdown,
+      final SellerReceivableBreakdown? sellerReceivableBreakdown,
       final List<Links>? links,
-      @JsonKey(name: 'create_time')
-          final String? createTime,
-      @JsonKey(name: 'update_time')
-          final String? updateTime}) = _$_Captures;
+      @JsonKey(name: 'create_time') final String? createTime,
+      @JsonKey(name: 'update_time') final String? updateTime}) = _$_Captures;
 
   factory _Captures.fromJson(Map<String, dynamic> json) = _$_Captures.fromJson;
 
@@ -3643,7 +3625,7 @@ class _$_SellerProtection implements _SellerProtection {
   const _$_SellerProtection(
       {this.status,
       @JsonKey(name: 'dispute_categories')
-          final List<String>? disputeCategories})
+      final List<String>? disputeCategories})
       : _disputeCategories = disputeCategories;
 
   factory _$_SellerProtection.fromJson(Map<String, dynamic> json) =>
@@ -3701,7 +3683,7 @@ abstract class _SellerProtection implements SellerProtection {
   const factory _SellerProtection(
       {final String? status,
       @JsonKey(name: 'dispute_categories')
-          final List<String>? disputeCategories}) = _$_SellerProtection;
+      final List<String>? disputeCategories}) = _$_SellerProtection;
 
   factory _SellerProtection.fromJson(Map<String, dynamic> json) =
       _$_SellerProtection.fromJson;
@@ -3941,13 +3923,10 @@ class _$_SellerReceivableBreakdown implements _SellerReceivableBreakdown {
 
 abstract class _SellerReceivableBreakdown implements SellerReceivableBreakdown {
   const factory _SellerReceivableBreakdown(
-          {@JsonKey(name: 'gross_amount')
-              final CurrencyCodeWithValue? grossAmount,
-          @JsonKey(name: 'paypal_fee')
-              final CurrencyCodeWithValue? paypalFee,
-          @JsonKey(name: 'net_amount')
-              final CurrencyCodeWithValue? netAmount}) =
-      _$_SellerReceivableBreakdown;
+      {@JsonKey(name: 'gross_amount') final CurrencyCodeWithValue? grossAmount,
+      @JsonKey(name: 'paypal_fee') final CurrencyCodeWithValue? paypalFee,
+      @JsonKey(name: 'net_amount')
+      final CurrencyCodeWithValue? netAmount}) = _$_SellerReceivableBreakdown;
 
   factory _SellerReceivableBreakdown.fromJson(Map<String, dynamic> json) =
       _$_SellerReceivableBreakdown.fromJson;

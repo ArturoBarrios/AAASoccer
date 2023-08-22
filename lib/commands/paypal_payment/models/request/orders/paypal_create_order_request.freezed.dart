@@ -44,9 +44,9 @@ abstract class $PaypalCreateOrderRequestCopyWith<$Res> {
   $Res call(
       {String? intent,
       @JsonKey(name: 'purchase_units')
-          List<PurchaseUnitsRequest>? purchaseUnits,
+      List<PurchaseUnitsRequest>? purchaseUnits,
       @JsonKey(name: 'application_context', includeIfNull: false)
-          ApplicationContext? applicationContext});
+      ApplicationContext? applicationContext});
 
   $ApplicationContextCopyWith<$Res>? get applicationContext;
 }
@@ -111,9 +111,9 @@ abstract class _$$_PaypalCreateOrderRequestCopyWith<$Res>
   $Res call(
       {String? intent,
       @JsonKey(name: 'purchase_units')
-          List<PurchaseUnitsRequest>? purchaseUnits,
+      List<PurchaseUnitsRequest>? purchaseUnits,
       @JsonKey(name: 'application_context', includeIfNull: false)
-          ApplicationContext? applicationContext});
+      ApplicationContext? applicationContext});
 
   @override
   $ApplicationContextCopyWith<$Res>? get applicationContext;
@@ -158,9 +158,9 @@ class _$_PaypalCreateOrderRequest implements _PaypalCreateOrderRequest {
   const _$_PaypalCreateOrderRequest(
       {this.intent = 'CAPTURE',
       @JsonKey(name: 'purchase_units')
-          final List<PurchaseUnitsRequest>? purchaseUnits,
+      final List<PurchaseUnitsRequest>? purchaseUnits,
       @JsonKey(name: 'application_context', includeIfNull: false)
-          this.applicationContext})
+      this.applicationContext})
       : _purchaseUnits = purchaseUnits;
 
   factory _$_PaypalCreateOrderRequest.fromJson(Map<String, dynamic> json) =>
@@ -225,9 +225,9 @@ abstract class _PaypalCreateOrderRequest implements PaypalCreateOrderRequest {
   const factory _PaypalCreateOrderRequest(
           {final String? intent,
           @JsonKey(name: 'purchase_units')
-              final List<PurchaseUnitsRequest>? purchaseUnits,
+          final List<PurchaseUnitsRequest>? purchaseUnits,
           @JsonKey(name: 'application_context', includeIfNull: false)
-              final ApplicationContext? applicationContext}) =
+          final ApplicationContext? applicationContext}) =
       _$_PaypalCreateOrderRequest;
 
   factory _PaypalCreateOrderRequest.fromJson(Map<String, dynamic> json) =
@@ -532,9 +532,9 @@ class __$$_ApplicationContextCopyWithImpl<$Res>
 class _$_ApplicationContext implements _ApplicationContext {
   const _$_ApplicationContext(
       {@JsonKey(name: 'return_url')
-          this.returnUrl = 'https://example.com/return',
+      this.returnUrl = 'https://example.com/return',
       @JsonKey(name: 'cancel_url')
-          this.cancelUrl = 'https://example.com/cancel'});
+      this.cancelUrl = 'https://example.com/cancel'});
 
   factory _$_ApplicationContext.fromJson(Map<String, dynamic> json) =>
       _$$_ApplicationContextFromJson(json);
