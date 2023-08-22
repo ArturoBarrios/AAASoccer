@@ -401,7 +401,6 @@ class _Home extends State<Home> {
         context.select<HomePageModel, dynamic>((value) => value.selectedKey);
 
     List selectedObjects = context.watch<HomePageModel>().selectedObjects;
-
     userObjectSelections = context
         .select<HomePageModel, List>((value) => value.userObjectSelections);
 
@@ -469,7 +468,9 @@ class _Home extends State<Home> {
                         eventObject: enabledSelections2[key],
                         svgImage: svgImage,
                         index: index,
-                        onTapEvent: () => clearFiltering(isPop: false),
+                        onTapEvent: () => isFilteringEnabled
+                            ? clearFiltering(isPop: false)
+                            : null,
                       ),
                     );
                   },

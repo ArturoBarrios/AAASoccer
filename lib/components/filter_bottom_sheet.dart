@@ -67,6 +67,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 CustomRangeSlider(
                   currentMaxValue:
                       widget.filterResult?.rangeResult?.maxResult ?? 500,
+                  currentMinValue:
+                      widget.filterResult?.rangeResult?.minResult ?? 0,
                   rangeCallback: (final value) {
                     setState(() {
                       filterResultModel.rangeResult = value;
