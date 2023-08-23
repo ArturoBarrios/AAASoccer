@@ -34,9 +34,9 @@ type Query {
   AllEventsByID(ids: [ID]):[ID] @resolver
 }
 
-type Mutation {
-  createRsvp(eventId: ID!, userId: ID!, status: RsvpStatus!): Rsvp
-}
+# type Mutation {
+#   createRsvp(eventId: ID!, userId: ID!, status: RsvpStatus!): Rsvp
+# }
 
 enum RoleType {
   COACH
