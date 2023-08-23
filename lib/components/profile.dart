@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../commands/images_command.dart';
 import 'package:provider/provider.dart';
 
+import '../views/settings/settings_view.dart';
 import 'Loading/loading_screen.dart';
 import 'images_list_widget.dart';
 import 'object_profile_main_image.dart';
@@ -23,9 +24,7 @@ class Profile extends StatefulWidget {
   final dynamic profileDetails;
 
   @override
-
   _ProfileState createState() => _ProfileState();
-
 }
 
 class _ProfileState extends State<Profile> {
@@ -80,10 +79,10 @@ class _ProfileState extends State<Profile> {
     objectImageInput = {
       "imageUrl": imageUrl,
       "containerType": Constants.PROFILEIMAGECIRCLE
-    };    
-        
-    eventListDetails['eventUserParticipants'] = UserCommand().getAppModelMyEvents();
+    };
 
+    eventListDetails['eventUserParticipants'] =
+        UserCommand().getAppModelMyEvents();
 
     teamListDetails['teamUserParticipants'] =
         currentUser['teamUserParticipants']['data'];
@@ -103,6 +102,14 @@ class _ProfileState extends State<Profile> {
   Future<void> onTapShare() async {
     await 'Hey theres, my name is ${widget.profileDetails['user']['username']}'
         .share(imageKey: widget.profileDetails['user']['mainImageKey']);
+  }
+
+  void onTapSettings() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => const SettingsView(),
+      ),
+    );
   }
 
   @override
@@ -132,32 +139,30 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Row(
-  children: [
-    IconButton(
-      icon: const Icon(Icons.arrow_back),
-      tooltip: 'Go back',
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
-    Spacer(), // This will take up all available space between the elements
-    IconButton(
-      icon: Icon(
-        Icons.share,
-        color: Colors.blue,
-      ),
-      onPressed: onTapShare,
-    ),
-    IconButton(
-      icon: Icon(
-        Icons.settings,
-        color: Colors.blue,
-      ),
-      onPressed: onTapShare, // You might want to use a different function here
-    )
-  ],
-)
-,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          tooltip: 'Go back',
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        Spacer(), // This will take up all available space between the elements
+                        IconButton(
+                          icon: Icon(
+                            Icons.share,
+                            color: Colors.blue,
+                          ),
+                          onPressed: onTapShare,
+                        ),
+                        IconButton(
+                            icon: Icon(
+                              Icons.settings,
+                              color: Colors.blue,
+                            ),
+                            onPressed: onTapSettings)
+                      ],
+                    ),
                     ObjectProfileMainImage(objectImageInput: objectImageInput),
                     const SizedBox(height: 25.0),
                     const Text(
@@ -170,8 +175,9 @@ class _ProfileState extends State<Profile> {
                     const SizedBox(height: 4.0),
                     const Text(
                       'Durham, NH',
-                      style: TextStyle(fontFamily: 'Montserrat', color: Colors.grey),
-                    ),                    
+                      style: TextStyle(
+                          fontFamily: 'Montserrat', color: Colors.grey),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(30.0),
                       child: Row(
@@ -180,9 +186,11 @@ class _ProfileState extends State<Profile> {
                         children: <Widget>[
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children:  <Widget>[
+                            children: <Widget>[
                               Text(
-                                widget.profileDetails['userDetails']['followers'].toString(),
+                                widget.profileDetails['userDetails']
+                                        ['followers']
+                                    .toString(),
                                 style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.bold),
@@ -200,7 +208,9 @@ class _ProfileState extends State<Profile> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                widget.profileDetails['userDetails']['following'].toString(),
+                                widget.profileDetails['userDetails']
+                                        ['following']
+                                    .toString(),
                                 style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.bold),
@@ -209,7 +219,8 @@ class _ProfileState extends State<Profile> {
                               Text(
                                 'Following',
                                 style: TextStyle(
-                                    fontFamily: 'Montserrat', color: Colors.grey),
+                                    fontFamily: 'Montserrat',
+                                    color: Colors.grey),
                               )
                             ],
                           ),
