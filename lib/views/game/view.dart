@@ -6,6 +6,7 @@ import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/images_command.dart';
+import '../../commands/requests_command.dart';
 import '../../commands/user_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/images_mixin.dart';
@@ -29,6 +30,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
 import '../../models/app_model.dart';
+import '../social_media_cards_view/social_media_cards_view.dart';
 
 class PickupView extends StatefulWidget with EventMixin, ImagesMixin {
   PickupView({Key? key, required this.game}) : super(key: key);
@@ -119,6 +121,17 @@ class _PickupViewState extends State<PickupView> {
         .share(imageKey: widget.game['mainImageKey']);
   }
 
+  Future<void> onTapSocialMediaApp() async {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (BuildContext context) => SocialMediaCardsView(
+            // object: widget.game,
+            ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build()");
@@ -159,6 +172,13 @@ class _PickupViewState extends State<PickupView> {
                           color: Colors.blue,
                         ),
                         onPressed: onTapShare,
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.social_distance,
+                          color: Colors.red,
+                        ),
+                        onPressed: onTapSocialMediaApp,
                       ),
                       UpdateViewForm(userObjectDetails: userEventDetails),
                     ],

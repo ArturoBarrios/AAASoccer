@@ -171,6 +171,52 @@ class EventMutations {
     return addPlayerToEvent;
   }
 
+  String updateEventSocialMedia(
+      Map<String, dynamic> eventInput, Map<String, dynamic> userInput) {
+    String addSocialMediaToEventMutation = """
+      mutation {
+        updateEvent(
+          id: ${eventInput['_id']},
+          data: {
+            SocialMediaApps: {
+              create: {
+                type: ${eventInput['socialMediaType']}
+                url: "${eventInput['socialMediaUrl']}"
+                user: {
+                  connect: "${userInput['_id']}"
+                }
+                event: {
+                  connect: "${eventInput['_id']}"
+                }
+              }
+            }
+          }
+        ) {
+          ${EventFragments().fullEvent()}  
+        }
+      }
+    """;
+
+    return addSocialMediaToEventMutation;
+  }
+
+  String deleteSocialMediaApps(
+    Map<String, dynamic> event,
+  ) {
+    String deleteEventUserParticipantString = """      
+      mutation {
+        deleteSocialMediaApp(
+          id: ${event['_id']}
+        )
+        {
+          _id
+          }
+        }
+        """;
+
+    return deleteEventUserParticipantString;
+  }
+
   String createPrice(
     Map<String, dynamic> paymentInput,
     Map<String, dynamic> eventInput,

@@ -20,6 +20,31 @@ class EventFragments {
     """;
     return userEventParticipantsReturn;
   }
+
+  String fullSocialMediaApps() {
+    String fullImageReturn = """
+          _id
+          type
+          url
+          user{
+            _id
+            name
+            email
+            userType
+          }                 
+          team{
+            _id
+            name
+          }           
+          event{
+            _id
+            name
+          }   
+      """;
+
+    return fullImageReturn;
+  }
+
   String fullEvent() {
     String fullEventReturn = """
       name        	
@@ -46,6 +71,11 @@ class EventFragments {
       chats{
         data{
           ${ChatFragments().chatObject()}
+        }
+      }
+      SocialMediaApps{
+        data{
+          ${fullSocialMediaApps()}
         }
       }
       joinConditions{
@@ -148,6 +178,7 @@ class EventFragments {
 
     return fullEventReturn;
   }
+
   String minimalEvent() {
     String minimalEventReturn = """
       name        	
