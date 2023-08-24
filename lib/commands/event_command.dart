@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
@@ -45,10 +47,10 @@ class EventCommand extends BaseCommand {
     return sortedEvents;
   }
 
-   List getEventUserRoles() {
+  List getEventUserRoles() {
     List eventUserRoles = [
-      Constants.PLAYER,      
-      Constants.ORGANIZER,            
+      Constants.PLAYER,
+      Constants.ORGANIZER,
       Constants.REF
     ];
     return eventUserRoles;
@@ -238,7 +240,7 @@ class EventCommand extends BaseCommand {
       "data": null
     };
     try {
-      dynamic userObject = UserCommand().getAppModelUser();      
+      dynamic userObject = UserCommand().getAppModelUser();
       dynamic updateRoleResp =
           EventCommand().checkIfUpdateRole(eventInput, userObject);
       if (updateRoleResp['updateRole']) {
@@ -307,6 +309,72 @@ class EventCommand extends BaseCommand {
     } on ApiException catch (e) {
       print('Mutation failed: $e');
       return addUserToEventResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> updateSocialMedia(
+      dynamic eventInput, dynamic userInput) async {
+    print("updateSocialMediaOfEvent");
+    Map<String, dynamic> addSocialMediaAppResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      log('start');
+      log(EventMutations().updateEventSocialMedia(eventInput, userInput));
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query':
+              EventMutations().updateEventSocialMedia(eventInput, userInput),
+        }),
+      );
+
+      log("response body: ");
+      addSocialMediaAppResponse['data'] =
+          jsonDecode(response.body)['data']['updateEvent']['SocialMediaApps'];
+
+      return addSocialMediaAppResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return addSocialMediaAppResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> deleteSocialMedia(dynamic eventInput) async {
+    print("updateSocialMediaOfEvent");
+    Map<String, dynamic> deleteSocialMediaAppResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      log('start');
+      log(EventMutations().deleteSocialMediaApps(eventInput));
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations().deleteSocialMediaApps(eventInput),
+        }),
+      );
+
+      deleteSocialMediaAppResponse['data'] =
+          jsonDecode(response.body)['data']['deleteSocialMediaApp'];
+      log("response body: ");
+
+      return deleteSocialMediaAppResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return deleteSocialMediaAppResponse;
     }
   }
 
@@ -1127,9 +1195,9 @@ class EventCommand extends BaseCommand {
       // print("getMainEventResp: " + getMainEventResp.toString());
       // print("requestssss: " +
       //     getMainEventResp['data']['requests']['data'].toString());
-      
+
       //get chats
-      print("get chats: "+ event['chats'].toString());
+      print("get chats: " + event['chats'].toString());
       dynamic chats = event['chats']['data'];
 
       List<dynamic> myObjectRoles = getEventRoles(event, appModel.currentUser);
