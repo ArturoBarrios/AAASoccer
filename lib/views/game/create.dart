@@ -18,8 +18,6 @@ import '../../components/models/button_model.dart';
 import '../../components/models/custom_stepper_model.dart';
 import '../../enums/EventType.dart';
 import '../../strings.dart';
-import '../../styles/colors.dart';
-import '../../styles/static_decoration.dart';
 
 class GameCreate extends StatefulWidget {
   const GameCreate({Key? key}) : super(key: key);
@@ -171,6 +169,11 @@ class _GameCreateState extends State<GameCreate> {
     });
   }
 
+  Future<void> onTapCreate() async {
+    await createPickupGame();
+    goBack();
+  }
+
   @override
   Widget build(BuildContext context) {
     final stepperList = [
@@ -278,7 +281,7 @@ class _GameCreateState extends State<GameCreate> {
     Future<void> onConfirmTap() async {
       if (_formKey.currentState!.validate()) {
         (activeStep == (stepperList.length - 1))
-            ? {createPickupGame(), goBack()}
+            ? await onTapCreate()
             : changeStepValue(activeStep + 1);
       }
     }

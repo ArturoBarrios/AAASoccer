@@ -1,42 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
-import 'package:soccermadeeasy/components/Cards/pickup_card2.dart';
 import 'package:soccermadeeasy/constants.dart';
-import 'package:soccermadeeasy/models/app_model.dart';
 import '../../commands/team_command.dart';
-import '../profile/profile.dart';
 import '../../components/headers.dart';
 import '../../components/Cards/team_request_card.dart';
 import '../../components/Cards/friend_request_card.dart';
 import '../../components/Cards/event_request_card.dart';
-import '../../models/requests_model.dart';
 import '../../commands/requests_command.dart';
-import '../../graphql/queries/requests.dart';
+import '../../components/images/svg_image.dart';
+import '../../enums/view_status.dart';
 import '../../models/requests_page_model.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:soccermadeeasy/svg_widgets.dart';
 import '../../components/Loading/loading_screen.dart';
-import '../../enums/EventRequestType.dart';
+import '../../styles/asset_constants.dart';
 
 class RequestsView extends StatefulWidget {
+  const RequestsView({Key? key}) : super(key: key);
+
   @override
-  _RequestsViewState createState() => _RequestsViewState();
+  State<RequestsView> createState() => _RequestsViewState();
 }
 
 class _RequestsViewState extends State<RequestsView> {
-  Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
+  ViewStatus _viewStatus = ViewStatus.loading;
+  String selectedRequestType = "RECEIVED";
+  final Color color = Colors.grey.shade200;
+  final Color selectedColor = Colors.orange.shade500;
 
-  bool _isLoading = true;
+  @override
+  void initState() {
+    print("init state");
+    super.initState();
+    loadInitialData();
+  }
 
-  late ScrollController _selectEventController = ScrollController();
+  void loadInitialData() {
+    requestTypeTapped(selectedRequestType);
+  }
 
   void goBack() {
     Navigator.pop(context);
   }
 
   Future<Widget> getRequestCard(
-      String selectedKey, dynamic requestObject, Svg svgImage) async {
+      String selectedKey, dynamic requestObject) async {
     print("getRequestCard()");
     print("selectedKey: " + selectedKey);
     print("requestObject: " + requestObject.toString());
@@ -48,7 +55,6 @@ class _RequestsViewState extends State<RequestsView> {
         Constants.FRIENDREQUEST.toString()) {
       Widget card = FriendRequestCard(
         friendRequestObject: requestObject,
-        svgImage: svgImage,
         didSendRequest: didSendRequest,
       );
       return card;
@@ -64,7 +70,6 @@ class _RequestsViewState extends State<RequestsView> {
             Constants.TRYOUTREQUEST.toString()) {
       Widget card = EventRequestCard(
           eventRequestObject: requestObject,
-          svgImage: svgImage,
           type: requestObject['type'],
           didSendRequest: didSendRequest);
       return card;
@@ -79,7 +84,6 @@ class _RequestsViewState extends State<RequestsView> {
       print("teamDetails: " + teamDetails.toString());
       Widget card = TeamRequestCard(
         teamRequestObject: requestObject,
-        svgImage: svgImage,
         didSendRequest: didSendRequest,
         userTeamDetails: teamDetails,
       );
@@ -88,31 +92,19 @@ class _RequestsViewState extends State<RequestsView> {
   }
 
   Future<void> requestTypeTapped(String requestType) async {
-    setState(() {
-      _isLoading = true;
-    });
+    _changeStatus(ViewStatus.loading);
+
     selectedRequestType = requestType;
 
     await RequestsCommand().updatedSelectedRequests(requestType);
+
+    _changeStatus(ViewStatus.completed);
+  }
+
+  void _changeStatus(ViewStatus status) {
     setState(() {
-      _isLoading = false;
+      _viewStatus = status;
     });
-  }
-
-  late ScrollController _selectRequestTypeController = ScrollController();
-  String selectedRequestType = "RECEIVED";
-  final Color color = Colors.grey.shade200;
-  final Color selectedColor = Colors.orange.shade500;
-
-  void loadInitialData() {
-    requestTypeTapped(selectedRequestType);
-  }
-
-  @override
-  void initState() {
-    print("init state");
-    super.initState();
-    loadInitialData();
   }
 
   @override
@@ -121,7 +113,7 @@ class _RequestsViewState extends State<RequestsView> {
     final double cardHeight = MediaQuery.of(context).size.height * .1;
     final double cardImageWidth = cardWidth * .5;
     final double cardImageHeight = cardHeight * .5;
-    final double bevel = 10.0;
+    const double bevel = 10.0;
     bool initialConditionsMet = context
         .select<RequestsPageModel, bool>((value) => value.initialConditionsMet);
 
@@ -139,7 +131,7 @@ class _RequestsViewState extends State<RequestsView> {
     print("selectedObjects to build:: " + selectedObjects.toString());
 
     return Scaffold(
-        appBar: Headers().getBackHeader(context, "Requests"),
+        appBar: const Headers().getBackHeader(context, "Requests"),
         body: Stack(children: <Widget>[
           Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             Expanded(
@@ -150,9 +142,13 @@ class _RequestsViewState extends State<RequestsView> {
               Expanded(
                   child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                controller: _selectRequestTypeController,
                 itemCount: requestTypes.length,
                 itemBuilder: (_, index) {
+                  final defaultColor =
+                      requestTypes[index] == selectedRequestType
+                          ? selectedColor
+                          : color;
+
                   return Card(
                     margin:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
@@ -164,25 +160,17 @@ class _RequestsViewState extends State<RequestsView> {
                       },
                       child: AnimatedContainer(
                           duration: const Duration(milliseconds: 150),
-                          padding: EdgeInsets.all(12.5),
+                          padding: const EdgeInsets.all(12.5),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0 * 1),
                             gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  requestTypes[index] == selectedRequestType
-                                      ? selectedColor
-                                      : color,
-                                  requestTypes[index] == selectedRequestType
-                                      ? selectedColor
-                                      : color,
-                                  requestTypes[index] == selectedRequestType
-                                      ? selectedColor
-                                      : color,
-                                  requestTypes[index] == selectedRequestType
-                                      ? selectedColor
-                                      : color,
+                                  defaultColor,
+                                  defaultColor,
+                                  defaultColor,
+                                  defaultColor,
                                 ],
                                 stops: const [
                                   0.0,
@@ -190,52 +178,48 @@ class _RequestsViewState extends State<RequestsView> {
                                   .6,
                                   1.0,
                                 ]),
-                            boxShadow: false
-                                ? null
-                                : [
-                                    BoxShadow(
-                                      blurRadius: 10.0,
-                                      offset: -Offset(10.0 / 2, 10.0 / 2),
-                                      color: Colors.white,
-                                    ),
-                                    BoxShadow(
-                                      blurRadius: bevel,
-                                      offset: Offset(10.0 / 2, 10.0 / 2),
-                                      color: Colors.black,
-                                    )
-                                  ],
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 10.0,
+                                offset: -const Offset(10.0 / 2, 10.0 / 2),
+                                color: Colors.white,
+                              ),
+                              const BoxShadow(
+                                blurRadius: bevel,
+                                offset: Offset(10.0 / 2, 10.0 / 2),
+                                color: Colors.black,
+                              )
+                            ],
                           ),
                           child: Container(
-                            child: Container(
-                              width: cardWidth,
-                              height: cardHeight,
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                children: [
-                                  Image(
-                                    width: cardImageWidth,
-                                    height: cardImageHeight,
-                                    image: svgImage,
-                                    color: Colors.white,
-                                  ),
-                                  const Spacer(),
-                                  Text(requestTypes[index],
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      )),
-                                  Text(
-                                    "",
+                            width: cardWidth,
+                            height: cardHeight,
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              children: [
+                                SvgImage(
+                                  svgPath: AssetConstants.soccerBall,
+                                  height: cardImageHeight,
+                                  width: cardImageWidth,
+                                  color: Colors.white,
+                                ),
+                                const Spacer(),
+                                Text(requestTypes[index],
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 12),
-                                  ),
-                                ],
-                              ),
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    )),
+                                const Text(
+                                  "",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 12),
+                                ),
+                              ],
                             ),
                           )),
                     )),
@@ -246,8 +230,8 @@ class _RequestsViewState extends State<RequestsView> {
 
             //list view
             Expanded(
-                child: _isLoading == true
-                    ? Container(
+                child: _viewStatus == ViewStatus.loading
+                    ? const SizedBox(
                         height: double.infinity,
                         width: double.infinity,
                         child: Align(
@@ -258,19 +242,18 @@ class _RequestsViewState extends State<RequestsView> {
                                     currentDotColor: Colors.white,
                                     defaultDotColor: Colors.black,
                                     numDots: 10)))
-                    : selectedObjects.length > 0
+                    : selectedObjects.isNotEmpty
                         ? ListView.builder(
-                            controller: _selectEventController,
                             itemCount: selectedObjects.length,
                             itemBuilder: (_, index) {
                               return FutureBuilder(
-                                future: getRequestCard(selectedKey,
-                                    selectedObjects[index], svgImage),
+                                future: getRequestCard(
+                                    selectedKey, selectedObjects[index]),
                                 builder: (BuildContext context,
                                     AsyncSnapshot snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
-                                    return Center(
+                                    return const Center(
                                         child: CircularProgressIndicator());
                                   } else if (snapshot.hasError) {
                                     return Center(
@@ -287,7 +270,7 @@ class _RequestsViewState extends State<RequestsView> {
                               );
                             },
                           )
-                        : Text("No Requests Yet")),
+                        : const Text("No Requests Yet")),
           ]),
         ]));
   }
