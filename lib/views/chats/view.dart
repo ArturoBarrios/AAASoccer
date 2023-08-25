@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../commands/chat_command.dart';
 import '../../components/Loading/loading_screen.dart';
-import '../../components/profile.dart';
 import '../../components/footers.dart';
 import '../../components/headers.dart';
 import '../../components/search_bar.dart' as search_bar;
 import '../../commands/user_command.dart';
 import '../../components/conversation_list.dart';
-import '../../components/card_form_screen.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/user_model.dart';
 import '../../models/chat_page_model.dart';
 import 'package:provider/provider.dart';
-import 'create.dart';
 
 class ChatsView extends StatefulWidget {
   const ChatsView({Key? key}) : super(key: key);

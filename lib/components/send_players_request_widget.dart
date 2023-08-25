@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/components/profile.dart';
+import 'package:soccermadeeasy/views/profile/profile.dart';
 
 import '../commands/event_command.dart';
 import '../commands/player_command.dart';
@@ -13,20 +13,17 @@ import 'Dialogues/animated_dialogu.dart';
 
 // // // // // // // // // // // // // // //
 class SendPlayersRequestWidget extends StatefulWidget {
-
   SendPlayersRequestWidget({Key? key, required this.userObjectDetails})
       : super(key: key);
 
   final dynamic userObjectDetails;
 
   @override
-  _SendPlayersRequestWidgetState createState() => _SendPlayersRequestWidgetState();
-
-  
+  _SendPlayersRequestWidgetState createState() =>
+      _SendPlayersRequestWidgetState();
 }
 
 class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
-
   List playerList = [];
   dynamic userObject;
   List requestUserTypes = [
@@ -37,8 +34,8 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     Constants.ASSISTANTCOACH.toString(),
     Constants.REF.toString(),
   ];
-  
- void setupPlayerList() {
+
+  void setupPlayerList() {
     print("setupPlayerList");
     playerList = PlayerCommand().getAppModelPlayersNearMe();
     print("playerList: " + playerList.toString());
@@ -62,10 +59,8 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     return type;
   }
 
-  Future<void> sendPlayersEventRequest(      
-      Map<int, dynamic> indexes,
-      List<dynamic> primaryList,
-      List<dynamic> secondaryList) async {
+  Future<void> sendPlayersEventRequest(Map<int, dynamic> indexes,
+      List<dynamic> primaryList, List<dynamic> secondaryList) async {
     print("sendPlayersEventRequest");
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
@@ -84,10 +79,8 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     });
   }
 
-  Future<void> sendPlayersTeamRequest(
-      Map<int, dynamic> indexes,
-      List<dynamic> primaryList,
-      List<dynamic> secondaryList) async {
+  Future<void> sendPlayersTeamRequest(Map<int, dynamic> indexes,
+      List<dynamic> primaryList, List<dynamic> secondaryList) async {
     print("sendPlayersTeamRequest");
     print("userObjectDetails: " + widget.userObjectDetails['team'].toString());
     print("indexes: " + indexes.toString());
@@ -117,26 +110,21 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     indexes.forEach((mainIndex, secondaryIndexesThatIsNull) async {
       dynamic role = primaryList[mainIndex];
       bool isMyObject = false;
-      if(widget.userObjectDetails['isMine']){
-       if(widget.userObjectDetails['mainEvent'] != null){
-        //add yourself to event
-        setState(() {
-          widget.userObjectDetails['players'].add(userObject);
-        });
-       }
-       else{
-        //add yourself to team
-        setState(() {
-          widget.userObjectDetails['team']['players'].add(userObject);
-          
-        });
-       }
-      }
-      else{
+      if (widget.userObjectDetails['isMine']) {
+        if (widget.userObjectDetails['mainEvent'] != null) {
+          //add yourself to event
+          setState(() {
+            widget.userObjectDetails['players'].add(userObject);
+          });
+        } else {
+          //add yourself to team
+          setState(() {
+            widget.userObjectDetails['team']['players'].add(userObject);
+          });
+        }
+      } else {
         await EventCommand()
             .sendOrganizerEventRequest(eventObject, role, requestType);
-        
-
       }
     });
     // for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
@@ -160,8 +148,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     );
   }
 
-  Container sendOrganizerPlayerEventRequest(
-      BuildContext context) {
+  Container sendOrganizerPlayerEventRequest(BuildContext context) {
     return Container(
       height: 20,
       child: ClipRRect(
@@ -184,8 +171,8 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
               if (result.isNotEmpty) {
                 print('Selected items: $result');
                 // await requestTypeSelected(selectedRequestTypeIndexes);
-                await sendEventRequest(widget.userObjectDetails['mainEvent'], result,
-                    primaryList, secondaryList);
+                await sendEventRequest(widget.userObjectDetails['mainEvent'],
+                    result, primaryList, secondaryList);
               }
             },
             child: Container(
@@ -198,54 +185,51 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     );
   }
 
-  Container sendPlayersRequestWidget(
-     dynamic userObjectDetails) {
+  Container sendPlayersRequestWidget(dynamic userObjectDetails) {
     print("sendPlayersRequestWidget: " + userObjectDetails.toString());
     setupPlayerList();
     print("playersList: " + playerList.length.toString());
     // if(userObjectDetails['isMine']){
-      return Container(
-          child: GestureDetector(
-              onTap: () async {
-                List<dynamic> primaryList = playerList;
-                List<dynamic> secondaryList = requestUserTypes;
-                Map<int, dynamic> result = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AnimatedDialog(
-                        details: {"title": "Send Players Request"},
-                        items: primaryList,
-                        singleSelect: false,
-                        secondaryItems: secondaryList,
-                        goToFunctions: [goToPlayer]);
-                  },
-                );
-                if (result.isNotEmpty) {
-                  print("result: " + result.toString());
-                  if (userObjectDetails['mainEvent'] != null) {
-                    sendPlayersEventRequest(
-                         result, primaryList, secondaryList);
-                  } else {
-                    sendPlayersTeamRequest(
-                         result, primaryList, secondaryList);
-                  }
+    return Container(
+        child: GestureDetector(
+            onTap: () async {
+              List<dynamic> primaryList = playerList;
+              List<dynamic> secondaryList = requestUserTypes;
+              Map<int, dynamic> result = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AnimatedDialog(
+                      details: {"title": "Send Players Request"},
+                      items: primaryList,
+                      singleSelect: false,
+                      secondaryItems: secondaryList,
+                      goToFunctions: [goToPlayer]);
+                },
+              );
+              if (result.isNotEmpty) {
+                print("result: " + result.toString());
+                if (userObjectDetails['mainEvent'] != null) {
+                  sendPlayersEventRequest(result, primaryList, secondaryList);
+                } else {
+                  sendPlayersTeamRequest(result, primaryList, secondaryList);
                 }
-              },
-              child: Container(
-                width: 200,
-                height: 50,
-                color: Colors.blue,
-                child: Center(child: Text("Send Players Request")),
-              )));
+              }
+            },
+            child: Container(
+              width: 200,
+              height: 50,
+              color: Colors.blue,
+              child: Center(child: Text("Send Players Request")),
+            )));
 
     // }
     // else{
-    //   return sendOrganizerPlayerEventRequest(context);                
+    //   return sendOrganizerPlayerEventRequest(context);
 
     // }
   }
-  
-  void loadInitialData(){
+
+  void loadInitialData() {
     setupPlayerList();
   }
 
@@ -253,11 +237,10 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
   void initState() {
     super.initState();
     loadInitialData();
-    
   }
 
   @override
   Widget build(BuildContext context) {
     return sendPlayersRequestWidget(widget.userObjectDetails);
-}
+  }
 }

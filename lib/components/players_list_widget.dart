@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/components/profile.dart';
+import 'package:soccermadeeasy/views/profile/profile.dart';
 
 import '../commands/base_command.dart';
 import '../commands/event_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
-import 'Dialogues/animated_dialogu.dart';
 
-class PlayerList extends StatefulWidget {
-  final dynamic playersDetails;
-
-  PlayerList({required this.playersDetails});
+class MyWidget extends StatefulWidget {
+  const MyWidget({Key? key}) : super(key: key);
 
   @override
-  _PlayerListState createState() => _PlayerListState();
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+class PlayerList extends StatefulWidget {
+  const PlayerList({Key? key, required this.playersDetails}) : super(key: key);
+  final dynamic playersDetails;
+
+  @override
+  State<PlayerList> createState() => _PlayerListState();
 }
 
 class _PlayerListState extends State<PlayerList> {
@@ -152,8 +164,6 @@ class _PlayerListState extends State<PlayerList> {
     }
   }
 
-
-
   @override
   void initState() {
     super.initState();
@@ -228,45 +238,39 @@ class _PlayerListState extends State<PlayerList> {
                 "user": user,
                 "isMine": false,
               };
-              return 
-              InkWell(
-                onTap: () {
-Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Profile(
-                profileDetails: profileDetails,
-              )),
-    );
-                },
-                child:
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(user['username']),
+              return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Profile(
+                                profileDetails: profileDetails,
+                              )),
+                    );
+                  },
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(user['username']),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.info),
+                            onPressed: () {
+                              _showPlayerDetailsDialog(context, user['name']);
+                            },
+                          ),
+                          // ...other icons and actions...
+                        ],
                       ),
-                      IconButton(
-                        icon: Icon(Icons.info),
-                        onPressed: () {
-                          _showPlayerDetailsDialog(context, user['name']);
-                        },
-                      ),
-                      // ...other icons and actions...
-                    ],
-                  ),
-                ),
-              )
-
-                
-              );
+                    ),
+                  ));
             }).toList(),
           ),
         ],
       ),
     );
   }
-
 }

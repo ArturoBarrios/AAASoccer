@@ -4,7 +4,7 @@ import 'package:soccermadeeasy/components/playground_widget.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
-import '../components/profile.dart';
+import '../views/profile/profile.dart';
 import '../views/chats/view.dart';
 import '../views/home.dart';
 import '../views/images/view_images.dart';
@@ -20,9 +20,8 @@ class SideNavs extends StatefulWidget {
   @override
   State<SideNavs> createState() => _SideNavs();
 
-  void loadUserProfileData(){
+  void loadUserProfileData() {
     UserCommand().getAppModelUser();
-
   }
 
   ListView getMainSideNav(BuildContext context, dynamic userObject) {
@@ -37,16 +36,17 @@ class SideNavs extends StatefulWidget {
         GestureDetector(
           onTap: () async {
             dynamic userDetails =
-                  await UserCommand().getUserDetails(userObject);
+                await UserCommand().getUserDetails(userObject);
             Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context)  {
-                
+              builder: (BuildContext context) {
                 dynamic profileDetails = {
                   "isMine": true,
                   "user": userObject,
                   "userDetails": userDetails
                 };
-                return Profile(profileDetails: profileDetails,);
+                return Profile(
+                  profileDetails: profileDetails,
+                );
               },
             ));
           },
@@ -58,12 +58,15 @@ class SideNavs extends StatefulWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(profileImageUrl.toString() != '' ? profileImageUrl.toString() : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
+                  backgroundImage: NetworkImage(profileImageUrl.toString() != ''
+                      ? profileImageUrl.toString()
+                      : "https://gravatar.com/avatar/f33c768ea4c84ac3662a4e2646362f14?s=400&d=robohash&r=x"),
                   maxRadius: 50,
                 ),
                 SizedBox(height: 10),
-                userObject['username']!=null ? 
-                Text(userObject['username']) : Text("Guest"),
+                userObject['username'] != null
+                    ? Text(userObject['username'])
+                    : Text("Guest"),
               ],
             ),
           ),
@@ -95,7 +98,7 @@ class SideNavs extends StatefulWidget {
         //   },
         // ),
         //playground
-        if(dotenv.env["ENVIRONMENT"]=="DEVELOPMENT")
+        if (dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
           ListTile(
             leading: Icon(
               Icons.message_outlined,
@@ -160,7 +163,7 @@ class SideNavs extends StatefulWidget {
         //       },
         //     ));
         //   },
-        // ),        
+        // ),
         ListTile(
           leading: Icon(
             Icons.history,
@@ -174,33 +177,33 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        !isGuest ?         
-          Container(
-            margin: EdgeInsets.all(25),
-            child: ElevatedButton(
-              onPressed: () {
-                BaseCommand().signOut();
-              },
-              // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-              style: ElevatedButton.styleFrom(
-                  elevation: 12.0,
-                  textStyle: const TextStyle(color: Colors.white)),
-              child: const Text('Sign Out'),
-            ),
-          ) : 
-          Container(
-            margin: EdgeInsets.all(25),
-            child: ElevatedButton(
-              onPressed: () {
-                BaseCommand().signOut();
-              },
-              // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-              style: ElevatedButton.styleFrom(
-                  elevation: 12.0,
-                  textStyle: const TextStyle(color: Colors.white)),
-              child: const Text('Go to Sign Up'),
-            ),
-          )
+        !isGuest
+            ? Container(
+                margin: EdgeInsets.all(25),
+                child: ElevatedButton(
+                  onPressed: () {
+                    BaseCommand().signOut();
+                  },
+                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                  style: ElevatedButton.styleFrom(
+                      elevation: 12.0,
+                      textStyle: const TextStyle(color: Colors.white)),
+                  child: const Text('Sign Out'),
+                ),
+              )
+            : Container(
+                margin: EdgeInsets.all(25),
+                child: ElevatedButton(
+                  onPressed: () {
+                    BaseCommand().signOut();
+                  },
+                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                  style: ElevatedButton.styleFrom(
+                      elevation: 12.0,
+                      textStyle: const TextStyle(color: Colors.white)),
+                  child: const Text('Go to Sign Up'),
+                ),
+              )
       ],
     );
 
@@ -208,12 +211,10 @@ class SideNavs extends StatefulWidget {
   }
 }
 
-
 class _SideNavs extends State<SideNavs> {
   void onTapMenu() {}
   final title = "Jefferson";
   final upperTitle = "Welcome back,";
-
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ import '../../views/player/view.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/constants.dart';
 
-import '../profile.dart';
+import '../../views/profile/profile.dart';
 
 class PlayerCard extends StatefulWidget {
   const PlayerCard(
@@ -79,7 +79,8 @@ class _PlayerCard extends State<PlayerCard> {
         UserCommand().isCurrentUserFollowingUser(userObject);
     bool isUserFollowedByPlayer =
         UserCommand().isCurrentUserFollowedByUser(userObject);
-    print("followUserContainerValues: $isUserFollowingPlayer, $isUserFollowedByPlayer");
+    print(
+        "followUserContainerValues: $isUserFollowingPlayer, $isUserFollowedByPlayer");
     //follow
     if (!isUserFollowingPlayer && !isUserFollowedByPlayer) {
       return Container(

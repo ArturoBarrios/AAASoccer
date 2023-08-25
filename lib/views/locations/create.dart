@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/views/chats/view.dart';
 import 'package:soccermadeeasy/views/home.dart';
 import '../../commands/location_command.dart';
-import '../../components/profile.dart';
+import '../profile/profile.dart';
 import '../../commands/chat_command.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
-
-
 class LocationCreate extends StatefulWidget {
-  const LocationCreate({Key? key, required this.eventObject, required this.teamObject })
-    : super(key: key);    
+  const LocationCreate(
+      {Key? key, required this.eventObject, required this.teamObject})
+      : super(key: key);
 
   final dynamic eventObject;
-  final dynamic teamObject;  
+  final dynamic teamObject;
 
   @override
   _LocationCreateState createState() => _LocationCreateState();
@@ -21,7 +20,7 @@ class LocationCreate extends StatefulWidget {
 
 class _LocationCreateState extends State<LocationCreate> {
   final nameController = TextEditingController();
-  final descriptionController = TextEditingController();  
+  final descriptionController = TextEditingController();
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
@@ -30,10 +29,7 @@ class _LocationCreateState extends State<LocationCreate> {
 
   bool _isLoading = false;
 
-
-
-
-  void goBack(){
+  void goBack() {
     Navigator.pop(context);
   }
 
@@ -41,21 +37,17 @@ class _LocationCreateState extends State<LocationCreate> {
     print("first load");
   }
 
-
-
   void createLocation() async {
     print("createLocation");
-    print("eventObject: "+widget.eventObject.toString());
-    print("teamObject: "+widget.teamObject.toString());        
-    
+    print("eventObject: " + widget.eventObject.toString());
+    print("teamObject: " + widget.teamObject.toString());
+
     dynamic objectsToAttachInput = {
-      "eventId": widget.eventObject!=null ? 
-        widget.eventObject["_id"] : null,
-      "teamId": widget.teamObject!=null ? 
-        widget.teamObject["_id"] : null,
+      "eventId": widget.eventObject != null ? widget.eventObject["_id"] : null,
+      "teamId": widget.teamObject != null ? widget.teamObject["_id"] : null,
     };
     dynamic locationInput = {
-      "name": nameController.text.toString(),  
+      "name": nameController.text.toString(),
       "address": "",
       "surface": surfaceController.text.toString(),
       "fieldSize": fieldSizeController.text.toString(),
@@ -64,28 +56,26 @@ class _LocationCreateState extends State<LocationCreate> {
       "latitude": 0.0,
       "longitude": 0.0,
       "objectsToAttachInput": objectsToAttachInput
-
-    };    
+    };
     print("objectsToAttachInput: $objectsToAttachInput");
-    Map<String, dynamic> createLocationResp = await LocationCommand().createLocation(locationInput);
+    Map<String, dynamic> createLocationResp =
+        await LocationCommand().createLocation(locationInput);
 
     print("createLocationResp: $createLocationResp");
-    if(createLocationResp['success']){
+    if (createLocationResp['success']) {
       dynamic locationObject = createLocationResp['data'];
-      if(mounted){
+      if (mounted) {
         Navigator.pop(context);
       }
     }
-
   }
 
   @override
   void initState() {
     print("views/locations/create.dart init state");
-    super.initState();    
-    
+    super.initState();
 
-    _firstLoad();    
+    _firstLoad();
   }
 
   @override
@@ -112,9 +102,8 @@ class _LocationCreateState extends State<LocationCreate> {
           ),
         ],
       ),
-      body: 
-      Center(
-          child: Column(children: [            
+      body: Center(
+          child: Column(children: [
         TextField(
           readOnly: false,
           controller: nameController,
@@ -124,35 +113,36 @@ class _LocationCreateState extends State<LocationCreate> {
           readOnly: true,
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),    
+        ),
         Column(
-      children: [
-        Checkbox(
-          value: isPrivate,
-          onChanged: (value) {
-            setState(() {
-              isPrivate = value!;
-            });
+          children: [
+            Checkbox(
+              value: isPrivate,
+              onChanged: (value) {
+                setState(() {
+                  isPrivate = value!;
+                });
+              },
+            ),
+            TextField(
+              decoration:
+                  InputDecoration.collapsed(hintText: 'Make Chat Private'),
+            ),
+          ],
+        ),
+        IconButton(
+          icon: const Icon(Icons.mark_chat_unread_rounded),
+          tooltip: 'Chat',
+          onPressed: () {
+            createLocation();
           },
         ),
-        TextField(
-          decoration: InputDecoration.collapsed(hintText: 'Make Chat Private'),
-        ),
-      ],
-    )   ,         
-        IconButton(
-            icon: const Icon(Icons.mark_chat_unread_rounded),
-            tooltip: 'Chat',
-            onPressed: () {
-              createLocation();
-            },
-          ),
         GestureDetector(
             onTap: () {
               goBack();
             },
             child: Text("Back to Home")),
-      ])),      
+      ])),
     );
   }
 }

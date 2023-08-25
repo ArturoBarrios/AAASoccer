@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/views/chats/view.dart';
 import 'package:soccermadeeasy/views/home.dart';
-import '../../components/profile.dart';
+import '../profile/profile.dart';
 import '../../commands/chat_command.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import 'chat/view.dart';
 
 class ChatCreate extends StatefulWidget {
-  const ChatCreate({Key? key, required this.eventObject, required this.teamObject, required this.players })
-    : super(key: key);    
+  const ChatCreate(
+      {Key? key,
+      required this.eventObject,
+      required this.teamObject,
+      required this.players})
+      : super(key: key);
 
   final dynamic eventObject;
   final dynamic teamObject;
@@ -32,10 +36,7 @@ class _ChatCreateState extends State<ChatCreate> {
 
   bool _isLoading = false;
 
-
-
-
-  void goBack(){
+  void goBack() {
     Navigator.pop(context);
   }
 
@@ -43,67 +44,61 @@ class _ChatCreateState extends State<ChatCreate> {
     print("first load");
   }
 
-
-
   void createChat() async {
     print("create chat");
-    print("eventObject: "+widget.eventObject.toString());
-    print("teamObject: "+widget.teamObject.toString());
-    print("players: "+widget.players.toString());
-    print("players length: "+widget.players.length.toString());
+    print("eventObject: " + widget.eventObject.toString());
+    print("teamObject: " + widget.teamObject.toString());
+    print("players: " + widget.players.toString());
+    print("players length: " + widget.players.length.toString());
     String playersInput = "";
     for (var i = 0; i < widget.players.length; i++) {
-      print("player: "+widget.players[i].toString());
-      playersInput += widget.players[i]["_id"] +",";            
+      print("player: " + widget.players[i].toString());
+      playersInput += widget.players[i]["_id"] + ",";
     }
     print("playersInput: $playersInput");
     dynamic chatInput = {
-      "name": nameController.text.toString(),  
+      "name": nameController.text.toString(),
       "isPrivate": isPrivate
-
-    };    
+    };
     dynamic objectsToAttachInput = {
-      "eventId": widget.eventObject!=null ? 
-        widget.eventObject["_id"] : null,
-      "teamId": widget.teamObject!=null ? 
-        widget.teamObject["_id"] : null,
-      "playersIds":playersInput,
+      "eventId": widget.eventObject != null ? widget.eventObject["_id"] : null,
+      "teamId": widget.teamObject != null ? widget.teamObject["_id"] : null,
+      "playersIds": playersInput,
     };
     print("objectsToAttachInput: $objectsToAttachInput");
-    Map<String, dynamic> createChatResp = await ChatCommand().createChat(chatInput, objectsToAttachInput);
+    Map<String, dynamic> createChatResp =
+        await ChatCommand().createChat(chatInput, objectsToAttachInput);
 
     print("createChatResp: $createChatResp");
-    if(createChatResp['success']){
+    if (createChatResp['success']) {
       dynamic chatObject = createChatResp['data'];
-      if(mounted){
+      if (mounted) {
         Navigator.pop(context, chatObject);
       }
-    //   Navigator.push(context, MaterialPageRoute<void>(
-    //   builder: (BuildContext context) {
-    //     return Home();
-    //   },
-    // ));
-    //   Navigator.push(context, MaterialPageRoute<void>(
-    //   builder: (BuildContext context) {
-    //     return ChatsView();
-    //   },
-    // )); 
-    //   Navigator.push(context, MaterialPageRoute<void>(
-    //   builder: (BuildContext context) {
-    //     return ChatView(index: 0,chatObject: chatObject);
-    //   },
-    // ));
+      //   Navigator.push(context, MaterialPageRoute<void>(
+      //   builder: (BuildContext context) {
+      //     return Home();
+      //   },
+      // ));
+      //   Navigator.push(context, MaterialPageRoute<void>(
+      //   builder: (BuildContext context) {
+      //     return ChatsView();
+      //   },
+      // ));
+      //   Navigator.push(context, MaterialPageRoute<void>(
+      //   builder: (BuildContext context) {
+      //     return ChatView(index: 0,chatObject: chatObject);
+      //   },
+      // ));
     }
-
   }
 
   @override
   void initState() {
     print("chat/view.dart init state");
-    super.initState();    
-    
+    super.initState();
 
-    _firstLoad();    
+    _firstLoad();
   }
 
   @override
@@ -130,9 +125,8 @@ class _ChatCreateState extends State<ChatCreate> {
           ),
         ],
       ),
-      body: 
-      Center(
-          child: Column(children: [            
+      body: Center(
+          child: Column(children: [
         TextField(
           readOnly: false,
           controller: nameController,
@@ -142,35 +136,36 @@ class _ChatCreateState extends State<ChatCreate> {
           readOnly: true,
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),    
+        ),
         Column(
-      children: [
-        Checkbox(
-          value: isPrivate,
-          onChanged: (value) {
-            setState(() {
-              isPrivate = value!;
-            });
+          children: [
+            Checkbox(
+              value: isPrivate,
+              onChanged: (value) {
+                setState(() {
+                  isPrivate = value!;
+                });
+              },
+            ),
+            TextField(
+              decoration:
+                  InputDecoration.collapsed(hintText: 'Make Chat Private'),
+            ),
+          ],
+        ),
+        IconButton(
+          icon: const Icon(Icons.mark_chat_unread_rounded),
+          tooltip: 'Chat',
+          onPressed: () {
+            createChat();
           },
         ),
-        TextField(
-          decoration: InputDecoration.collapsed(hintText: 'Make Chat Private'),
-        ),
-      ],
-    )   ,         
-        IconButton(
-            icon: const Icon(Icons.mark_chat_unread_rounded),
-            tooltip: 'Chat',
-            onPressed: () {
-              createChat();
-            },
-          ),
         GestureDetector(
             onTap: () {
               goBack();
             },
             child: Text("Back to Home")),
-      ])),      
+      ])),
     );
   }
 }

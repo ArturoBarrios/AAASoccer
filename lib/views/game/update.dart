@@ -2,7 +2,7 @@ import 'dart:ffi';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import '../../components/profile.dart';
+import '../profile/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
 import '../../commands/event_command.dart';
@@ -42,22 +42,17 @@ class _GameUpdateState extends State<GameUpdate> {
     return LatLng(lat, lon);
   }
 
-
-  void partiallyUpdateEvent(dynamic gameObject) async{
+  void partiallyUpdateEvent(dynamic gameObject) async {
     Map<String, dynamic> gameEventInput = {
-    'game': {
-      '_id': gameObject['_id'],
-      'dataToUpdate': {
-        'name': 'Something Random'
-      }
-    },
-    'event': {
-      '_id': gameObject['event']['_id'],
-      'dataToUpdate': jsonEncode({
-        'homegoals': 5
-      })
-    },
-  };
+      'game': {
+        '_id': gameObject['_id'],
+        'dataToUpdate': {'name': 'Something Random'}
+      },
+      'event': {
+        '_id': gameObject['event']['_id'],
+        'dataToUpdate': jsonEncode({'homegoals': 5})
+      },
+    };
     await EventCommand().partiallyUpdateGame(gameObject);
   }
 
@@ -79,52 +74,46 @@ class _GameUpdateState extends State<GameUpdate> {
   Widget build(BuildContext context) {
     print("game build()");
     print("game: " + widget.game.toString());
-    return 
-        Scaffold(
-            appBar: Headers().getBackHeader(context, "Update Game"),
-            body: _isLoading
-                ? Text("Loading...")
-                : Center(
-                  
-                    child:  Column(
-                      children: [                                                                    
-                      TextField(
-                        controller: nameController,
-                        decoration: new InputDecoration.collapsed(hintText: 'Away'),          
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(10.0),
-                        color: Colors.amber[600],
-                        width: MediaQuery.of(context).size.width -
-                            (MediaQuery.of(context).size.width *
-                                .1), //10% padding
-                        height: 200.0,
-                        child: 
-                        MyMapPage(
-                            latitude: widget.game['event']['location']['data']
-                                [0]['latitude'],
-                            longitude: widget.game['event']['location']['data']
-                                [0]['longitude'])),
-                      GestureDetector(
-                        onTap: () {
-                          print("onTap Update Game button");
-                          partiallyUpdateEvent(widget.game);
-                        },
-                        child: Text("Update Game"),
-                      ),
-                      GestureDetector(
+    return Scaffold(
+        appBar: Headers().getBackHeader(context, "Update Game"),
+        body: _isLoading
+            ? Text("Loading...")
+            : Center(
+                child: Column(children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: new InputDecoration.collapsed(hintText: 'Away'),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.all(10.0),
+                      color: Colors.amber[600],
+                      width: MediaQuery.of(context).size.width -
+                          (MediaQuery.of(context).size.width *
+                              .1), //10% padding
+                      height: 200.0,
+                      child: MyMapPage(
+                          latitude: widget.game['event']['location']['data'][0]
+                              ['latitude'],
+                          longitude: widget.game['event']['location']['data'][0]
+                              ['longitude'])),
+                  GestureDetector(
+                    onTap: () {
+                      print("onTap Update Game button");
+                      partiallyUpdateEvent(widget.game);
+                    },
+                    child: Text("Update Game"),
+                  ),
+                  GestureDetector(
                     onTap: () {
                       print("onTap Join Game");
                       // purchaseEvent();
                     },
                     child: Text("Join Game"),
                   )
-                  
-                    ]),
-                  
-                  )
-            // MyMapPage()
-            );
+                ]),
+              )
+        // MyMapPage()
+        );
   }
 }
 

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/components/profile.dart';
+import 'package:soccermadeeasy/views/profile/profile.dart';
 
 import '../commands/event_command.dart';
 import '../commands/player_command.dart';
@@ -14,48 +14,50 @@ import 'Dialogues/animated_dialogu.dart';
 
 // // // // // // // // // // // // // // //
 class SendMyEventsTeamRequestWidget extends StatefulWidget {
-
-  SendMyEventsTeamRequestWidget({Key? key, required this.userObjectDetails, required this.addEventcallback})
+  SendMyEventsTeamRequestWidget(
+      {Key? key,
+      required this.userObjectDetails,
+      required this.addEventcallback})
       : super(key: key);
 
   final dynamic userObjectDetails;
   final Function addEventcallback;
 
   @override
-  _SendMyEventsTeamRequestWidgetState createState() => _SendMyEventsTeamRequestWidgetState();
-
-  
+  _SendMyEventsTeamRequestWidgetState createState() =>
+      _SendMyEventsTeamRequestWidgetState();
 }
 
-class _SendMyEventsTeamRequestWidgetState extends State<SendMyEventsTeamRequestWidget> {
-  List myEventsToChooseFrom = [];  
+class _SendMyEventsTeamRequestWidgetState
+    extends State<SendMyEventsTeamRequestWidget> {
+  List myEventsToChooseFrom = [];
 
   void setupEventsToChooseFrom() {
-      print("setupEventsToChooseFrom");
-      List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
-      myEventsToChooseFrom = myEvents;
-      
-    }
+    print("setupEventsToChooseFrom");
+    List<dynamic> myEvents = UserCommand().getAppModelMyEvents();
+    myEventsToChooseFrom = myEvents;
+  }
 
-    Future<void> sendMyEventsRequestForTeam(Map<int, dynamic> indexes,
-      List<dynamic> primaryList, List<dynamic> secondaryList,
-      dynamic userObjectDetails, Function addEventcallback  ) async {
+  Future<void> sendMyEventsRequestForTeam(
+      Map<int, dynamic> indexes,
+      List<dynamic> primaryList,
+      List<dynamic> secondaryList,
+      dynamic userObjectDetails,
+      Function addEventcallback) async {
     print("sendMyEventsRequestForTeam: " + indexes.toString());
     indexes.forEach((mainIndex, secondaryIndexesThatIsNull) async {
       dynamic eventSelected = primaryList[mainIndex];
-      if(userObjectDetails['isMine']){
+      if (userObjectDetails['isMine']) {
         //add team to event
-        await EventCommand().addTeamToEvent(eventSelected, userObjectDetails['team']);        
+        await EventCommand()
+            .addTeamToEvent(eventSelected, userObjectDetails['team']);
         print("add team to event");
         addEventcallback(eventSelected);
       }
-      
+
       //add team to my event
-
-    });   
+    });
   }
-
-  
 
   void goToMyEvent(dynamic event) {
     print("goToEvent");
@@ -67,11 +69,9 @@ class _SendMyEventsTeamRequestWidgetState extends State<SendMyEventsTeamRequestW
       ),
     );
   }
- 
 
   Container sendMyEventsTeamRequestWidget(
-    BuildContext context, dynamic userObjectDetails
-  ){
+      BuildContext context, dynamic userObjectDetails) {
     print("sendMyEventsTeamRequestWidget");
     setupEventsToChooseFrom();
     return Container(
@@ -79,15 +79,17 @@ class _SendMyEventsTeamRequestWidgetState extends State<SendMyEventsTeamRequestW
             onTap: () async {
               List<dynamic> primaryList = myEventsToChooseFrom;
               List<dynamic> secondaryList = [];
-              print("primaryList: "+ primaryList.toString());
-              print("userObjectDetails['team']['events']['data']: "+ userObjectDetails['team']['events']['data'].toString());
+              print("primaryList: " + primaryList.toString());
+              print("userObjectDetails['team']['events']['data']: " +
+                  userObjectDetails['team']['events']['data'].toString());
               List<dynamic> myProcessedEventList = primaryList
                   .where((item1) => !userObjectDetails['team']['events']['data']
                       .any((item2) => item2["_id"] == item1['event']["_id"]))
                   .map((item) => item['event'])
                   .toList();
               primaryList = myProcessedEventList;
-              print("myProcessedEventList primaryList: " + primaryList.toString());
+              print("myProcessedEventList primaryList: " +
+                  primaryList.toString());
               Map<int, dynamic> result = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -101,8 +103,8 @@ class _SendMyEventsTeamRequestWidgetState extends State<SendMyEventsTeamRequestW
               );
               if (result.isNotEmpty) {
                 print("result: " + result.toString());
-                sendMyEventsRequestForTeam(
-                    result, primaryList, secondaryList, userObjectDetails, widget.addEventcallback);
+                sendMyEventsRequestForTeam(result, primaryList, secondaryList,
+                    userObjectDetails, widget.addEventcallback);
               }
             },
             child: Container(
@@ -113,23 +115,18 @@ class _SendMyEventsTeamRequestWidgetState extends State<SendMyEventsTeamRequestW
             )));
   }
 
-  
-  
-  void loadInitialData(){
+  void loadInitialData() {
     print("loadInitialData");
-    
-    
   }
 
   @override
   void initState() {
     super.initState();
     loadInitialData();
-    
   }
 
   @override
   Widget build(BuildContext context) {
     return sendMyEventsTeamRequestWidget(context, widget.userObjectDetails);
-}
+  }
 }

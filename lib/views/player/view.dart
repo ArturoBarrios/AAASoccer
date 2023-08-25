@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../components/Mixins/event_mixin.dart';
-import '../../components/profile.dart';
+import '../profile/profile.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/user_command.dart';
@@ -11,8 +11,7 @@ import '../../commands/team_command.dart';
 import '../../components/singleListDialog.dart';
 
 class PlayerView extends StatefulWidget with EventMixin {
-   PlayerView({Key? key, required this.userPlayerObject})
-      : super(key: key);
+  PlayerView({Key? key, required this.userPlayerObject}) : super(key: key);
   final Map<String, dynamic> userPlayerObject;
 
   @override
@@ -74,7 +73,7 @@ class _PlayerViewState extends State<PlayerView> {
   // List<dynamic> selectedEventTeamObjects = [];
   // List<String> selectedRequestTypeObjects = [];
 
-  eventTeamsSelected(List<int>? indexes) {    
+  eventTeamsSelected(List<int>? indexes) {
     widget.eventTeamsSelected(indexes);
     // print("eventTeamsSelected: " + indexes.toString());
     // selectedEventTeamObjects = [];
@@ -87,14 +86,13 @@ class _PlayerViewState extends State<PlayerView> {
 
   requestTypesSelected(List<int>? indexes) async {
     widget.requestTypeSelected(indexes);
-    // print("requestTypesSelected: " + indexes.toString());    
+    // print("requestTypesSelected: " + indexes.toString());
     // selectedRequestTypeIndexes = indexes;
     // for(int i = 0; i < indexes!.length; i++){
-    //   selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);      
+    //   selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
     // }
     // await sendPlayerRequests();
   }
-
 
   void goBack() {
     Navigator.pop(context);
@@ -197,7 +195,7 @@ class _PlayerViewState extends State<PlayerView> {
                     //   print("onPositiveClick: " );
                     //   print("selectIndex: " + index.toString());
                     //   //navigation add
-                     
+
                     // },
                     activeColor: Colors.green,
                     dataList: widget.teamEventList);
@@ -223,8 +221,10 @@ class _PlayerViewState extends State<PlayerView> {
                 animationType: DialogTransitionType.size,
                 curve: Curves.linear,
               );
-              widget.selectedEventTeamIndexes = indexes ?? widget.selectedEventTeamIndexes;
-              print('selectedIndex:${widget.selectedEventTeamIndexes?.toString()}');
+              widget.selectedEventTeamIndexes =
+                  indexes ?? widget.selectedEventTeamIndexes;
+              print(
+                  'selectedIndex:${widget.selectedEventTeamIndexes?.toString()}');
               eventTeamsSelected(widget.selectedEventTeamIndexes);
             }
             if (widget.selectedEventTeamIndexes!.isNotEmpty) {
@@ -252,7 +252,8 @@ class _PlayerViewState extends State<PlayerView> {
 
               widget.selectedRequestTypeIndexes =
                   requestIndexes ?? widget.selectedRequestTypeIndexes;
-              print('selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+              print(
+                  'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
               requestTypesSelected(widget.selectedRequestTypeIndexes);
               widget.sendPlayerRequests(widget.userPlayerObject);
             }

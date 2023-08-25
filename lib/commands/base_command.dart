@@ -66,16 +66,16 @@ class BaseCommand {
         xHoursAgoTimestamp);
 
     return xHoursAgoTimestamp;
-  }  
+  }
 
-  bool isWithinXHoursAgo(int hoursAgo, String timestampToCompareTo){
-     DateTime xHoursAgo = DateTime.now().subtract(Duration(hours: hoursAgo));
+  bool isWithinXHoursAgo(int hoursAgo, String timestampToCompareTo) {
+    DateTime xHoursAgo = DateTime.now().subtract(Duration(hours: hoursAgo));
     String xHoursAgoTimestamp = xHoursAgo.millisecondsSinceEpoch.toString();
     print("xHoursAgoTimestamp before getEventsNearLocation: " +
         xHoursAgoTimestamp);
-    if(int.parse(xHoursAgoTimestamp) < int.parse(timestampToCompareTo)){
+    if (int.parse(xHoursAgoTimestamp) < int.parse(timestampToCompareTo)) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -90,29 +90,24 @@ class BaseCommand {
     } else {
       return false;
     }
-  } 
+  }
 
-
-
-  
-
-  String addRolesToExistingRoles(List<dynamic> exitingRoles,List<dynamic> rolesToAdd){
+  String addRolesToExistingRoles(
+      List<dynamic> exitingRoles, List<dynamic> rolesToAdd) {
     String roles = "{";
-    for(int i = 0;i<exitingRoles.length;i++){
+    for (int i = 0; i < exitingRoles.length; i++) {
       roles += exitingRoles[i];
-      if(i != exitingRoles.length-1){
+      if (i != exitingRoles.length - 1) {
         roles += ", ";
       }
-
     }
-    for(int i = 0;i<rolesToAdd.length;i++){
+    for (int i = 0; i < rolesToAdd.length; i++) {
       roles += rolesToAdd[i];
-      if(i != rolesToAdd.length-1){
+      if (i != rolesToAdd.length - 1) {
         roles += ", ";
       }
+    }
 
-    }        
-  
     roles += "}";
     return roles;
   }
@@ -158,7 +153,7 @@ class BaseCommand {
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
-  }  
+  }
 
   //"{"test1", "test2", "test3"} => ["test1", "test2", "test3"]
   List<String> parseRoles(String inputString) {
@@ -310,7 +305,7 @@ class BaseCommand {
     appModel.isGuest = isGuest;
   }
 
-  void signOut() async {
+  Future<void> signOut() async {
     BaseCommand().nukeData();
     await AmplifyAuthService().signOut();
   }
@@ -442,10 +437,9 @@ class BaseCommand {
           oneHourAgoTimestamp);
       //setup events
       print("Setup Events");
-      if(!appModel.isGuest){
+      if (!appModel.isGuest) {
         await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
-      }
-      else{
+      } else {
         await HomePageCommand().eventTypeTapped(Constants.PICKUP);
       }
       // if(appModel.isGuest){
@@ -522,7 +516,7 @@ class BaseCommand {
   void initialConditionsMet() {
     appModel.initialConditionsMet = true;
   }
-  
+
   void initialUserConditionsMet() {
     appModel.userConditionsMet = true;
   }

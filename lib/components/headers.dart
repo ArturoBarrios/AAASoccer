@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/profile.dart';
-import '../views/chats/view.dart';
 import '../views/home.dart';
-import '../views/chats/create.dart';
 import 'models/button_model.dart';
 
 class Headers extends StatefulWidget {
@@ -15,7 +12,7 @@ class Headers extends StatefulWidget {
   void goHome(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Home()),
+      MaterialPageRoute(builder: (context) => const Home()),
     );
   }
 
@@ -23,8 +20,8 @@ class Headers extends StatefulWidget {
     AppBar appBar = AppBar(
       elevation: 2,
       centerTitle: false,
-      title: new Padding(
-          padding: const EdgeInsets.only(left: 20.0),
+      title: const Padding(
+          padding: EdgeInsets.only(left: 20.0),
           child: Text("Find Soccer Near You")),
       backgroundColor: Colors.orange.shade500,
       actions: <Widget>[
@@ -40,7 +37,7 @@ class Headers extends StatefulWidget {
   SafeArea getChatHeader(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 10),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -48,12 +45,12 @@ class Headers extends StatefulWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: Colors.black,
               ),
             ),
-            Text(
+            const Text(
               "Conversations",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
@@ -67,8 +64,8 @@ class Headers extends StatefulWidget {
                   // ));
                 },
                 child: Container(
-                  padding:
-                      EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 2),
+                  padding: const EdgeInsets.only(
+                      left: 8, right: 8, top: 2, bottom: 2),
                   height: 30,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
@@ -76,15 +73,15 @@ class Headers extends StatefulWidget {
                   ),
                   child: Row(
                     children: <Widget>[
-                      Icon(
+                      const Icon(
                         Icons.add,
                         color: Colors.pink,
                         size: 20,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 2,
                       ),
-                      Text(
+                      const Text(
                         "Add New",
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
@@ -105,26 +102,26 @@ class Headers extends StatefulWidget {
       backgroundColor: Colors.white,
       flexibleSpace: SafeArea(
         child: Container(
-          padding: EdgeInsets.only(right: 16),
+          padding: const EdgeInsets.only(right: 16),
           child: Row(
             children: <Widget>[
               IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 2,
               ),
               // CircleAvatar(
               //   backgroundImage: NetworkImage("<https://randomuser.me/api/portraits/men/5.jpg>"),
               //   maxRadius: 20,
               // ),
-              SizedBox(
+              const SizedBox(
                 width: 12,
               ),
               // Expanded(
@@ -154,14 +151,14 @@ class Headers extends StatefulWidget {
       backgroundColor: Colors.white,
       flexibleSpace: SafeArea(
         child: Container(
-          padding: EdgeInsets.only(right: 16),
+          padding: const EdgeInsets.only(right: 16),
           child: Row(
             children: <Widget>[
               IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.black,
                 ),
@@ -170,20 +167,20 @@ class Headers extends StatefulWidget {
                 onPressed: () {
                   goHome(context);
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.home,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 2,
               ),
-              CircleAvatar(
+              const CircleAvatar(
                 backgroundImage: NetworkImage(
                     "https://randomuser.me/api/portraits/men/5.jpg"),
                 maxRadius: 20,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 12,
               ),
               Expanded(
@@ -193,17 +190,17 @@ class Headers extends StatefulWidget {
                   children: <Widget>[
                     Text(
                       chatObject['name'],
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 6,
                     ),
                     // Text("Online",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
                   ],
                 ),
               ),
-              Icon(
+              const Icon(
                 Icons.settings,
                 color: Colors.black54,
               ),
@@ -223,7 +220,7 @@ class Headers extends StatefulWidget {
       title: Text(title),
       backgroundColor: Colors.orange.shade500,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back),
         onPressed: () {
           Navigator.pop(context);
         },
@@ -243,7 +240,7 @@ class Headers extends StatefulWidget {
       title: Text(title),
       backgroundColor: Colors.orange.shade500,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back),
         onPressed: () {
           Navigator.pop(context);
         },
@@ -265,7 +262,7 @@ class _Headers extends State<Headers> {
       centerTitle: false,
       title: new Padding(
           padding: const EdgeInsets.only(left: 20.0),
-          child: Text("Find Soccer Near You")),
+          child: const Text("Find Soccer Near You")),
       backgroundColor: Colors.orange.shade500,
       actions: <Widget>[
         IconButton(
