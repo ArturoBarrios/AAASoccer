@@ -18,7 +18,7 @@ import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
 import '../../components/object_profile_main_image.dart';
 import '../../components/players_list_widget.dart';
-import '../../components/profile.dart';
+import '../profile/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
 import '../../components/card_form_screen.dart';

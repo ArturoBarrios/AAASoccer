@@ -13,58 +13,53 @@ import '../../views/team/view.dart';
 import '../../views/tournament/view.dart';
 import '../../views/training/view.dart';
 import '../../views/tryout/view.dart';
-import '../profile.dart';
+import '../../views/profile/profile.dart';
 
 mixin RequestMixin {
-
-  goToEvent(BuildContext context, dynamic event){
-    print("goToEvent");        
+  goToEvent(BuildContext context, dynamic event) {
+    print("goToEvent");
     print("event: " + event.toString());
-    //what event view should you go to? 
+    //what event view should you go to?
     //for training, tryout, league, tournament
-    if(event['type']==Constants.PICKUP){
+    if (event['type'] == Constants.PICKUP) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => PickupView(game: event),
         ),
       );
-    }
-    else if(event['type']==Constants.TRYOUT){
+    } else if (event['type'] == Constants.TRYOUT) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TryoutView(tryout: event),
         ),
       );
-    }
-    else if(event['type']==Constants.TRAINING){
+    } else if (event['type'] == Constants.TRAINING) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TrainingView(training: event),
         ),
       );
-    }
-    else if(event['type']==Constants.TOURNAMENT){
+    } else if (event['type'] == Constants.TOURNAMENT) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TournamentView(tournament: event),
         ),
       );
-    }
-    else if(event['type']==Constants.LEAGUE){
+    } else if (event['type'] == Constants.LEAGUE) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => LeagueView(league: event),
         ),
       );
-    }      
-
+    }
   }
-  goToTeam(BuildContext context, dynamic team){      
+
+  goToTeam(BuildContext context, dynamic team) {
     print("goToTeam");
     print("team: " + team.toString());
     Navigator.push(
@@ -73,10 +68,9 @@ mixin RequestMixin {
         builder: (context) => TeamView(teamObject: team),
       ),
     );
-  
   }
 
-  goToPlayer(BuildContext context, dynamic user){
+  goToPlayer(BuildContext context, dynamic user) {
     print("goToPlayer");
     dynamic profileDetails = {
       "user": user,
@@ -90,6 +84,4 @@ mixin RequestMixin {
               )),
     );
   }
-
-  
 }

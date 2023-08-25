@@ -4,7 +4,7 @@ import 'package:soccermadeeasy/components/Cards/pickup_card2.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/models/app_model.dart';
 import '../../commands/team_command.dart';
-import '../../components/profile.dart';
+import '../profile/profile.dart';
 import '../../components/headers.dart';
 import '../../components/Cards/team_request_card.dart';
 import '../../components/Cards/friend_request_card.dart';
@@ -41,45 +41,48 @@ class _RequestsViewState extends State<RequestsView> {
     print("selectedKey: " + selectedKey);
     print("requestObject: " + requestObject.toString());
     print("requestObject['type'].toString(): " +
-        requestObject['type'].toString());    
+        requestObject['type'].toString());
     dynamic user = UserCommand().getAppModelUser();
-    bool didSendRequest = user['_id'] == requestObject['sender']['_id'];    
+    bool didSendRequest = user['_id'] == requestObject['sender']['_id'];
     if (requestObject['type'].toString() ==
         Constants.FRIENDREQUEST.toString()) {
       Widget card = FriendRequestCard(
-          friendRequestObject: requestObject, 
-          svgImage: svgImage,
-          didSendRequest: didSendRequest,
-
-          );
+        friendRequestObject: requestObject,
+        svgImage: svgImage,
+        didSendRequest: didSendRequest,
+      );
       return card;
-    } else if (requestObject['type'].toString() == Constants.GAMEREQUEST.toString() || 
-        requestObject['type'].toString() == Constants.TOURNAMENTREQUEST.toString() ||
-        requestObject['type'].toString() == Constants.LEAGUEREQUEST.toString() ||
-        requestObject['type'].toString() == Constants.TRAININGREQUEST.toString() ||
-        requestObject['type'].toString() == Constants.TRYOUTREQUEST.toString()        
-        ) {
+    } else if (requestObject['type'].toString() ==
+            Constants.GAMEREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TOURNAMENTREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.LEAGUEREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TRAININGREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TRYOUTREQUEST.toString()) {
       Widget card = EventRequestCard(
-          eventRequestObject: requestObject, 
+          eventRequestObject: requestObject,
           svgImage: svgImage,
           type: requestObject['type'],
-          didSendRequest: didSendRequest     
-      );
+          didSendRequest: didSendRequest);
       return card;
     } else {
       print("elseeeeee");
-      print("team: "+ requestObject['team'].toString());
-      dynamic findTeamByIdResponse = await TeamCommand().findTeamById({"_id": requestObject['team']['_id']});      
+      print("team: " + requestObject['team'].toString());
+      dynamic findTeamByIdResponse = await TeamCommand()
+          .findTeamById({"_id": requestObject['team']['_id']});
       dynamic team = findTeamByIdResponse['data'];
       print("team: " + team.toString());
       dynamic teamDetails = await TeamCommand().getUserTeamDetails(team);
       print("teamDetails: " + teamDetails.toString());
-      Widget card =
-          TeamRequestCard(teamRequestObject: requestObject, 
-          svgImage: svgImage,
-          didSendRequest: didSendRequest,
-          userTeamDetails: teamDetails,
-          );      
+      Widget card = TeamRequestCard(
+        teamRequestObject: requestObject,
+        svgImage: svgImage,
+        didSendRequest: didSendRequest,
+        userTeamDetails: teamDetails,
+      );
       return card;
     }
   }
@@ -101,7 +104,7 @@ class _RequestsViewState extends State<RequestsView> {
   final Color color = Colors.grey.shade200;
   final Color selectedColor = Colors.orange.shade500;
 
-  void loadInitialData(){
+  void loadInitialData() {
     requestTypeTapped(selectedRequestType);
   }
 
@@ -110,7 +113,6 @@ class _RequestsViewState extends State<RequestsView> {
     print("init state");
     super.initState();
     loadInitialData();
-    
   }
 
   @override
@@ -244,46 +246,48 @@ class _RequestsViewState extends State<RequestsView> {
 
             //list view
             Expanded(
-              child: _isLoading == true
-                  ? Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      child: Align(
-                          alignment: Alignment.center,
-                          child:
-                              // BottomNav()//for times when user deleted in cognito but still signed into app
-                              LoadingScreen(
-                                  currentDotColor: Colors.white,
-                                  defaultDotColor: Colors.black,
-                                  numDots: 10)))
-                  : 
-                  selectedObjects.length>0 ? 
-                  ListView.builder(
-  controller: _selectEventController,
-  itemCount: selectedObjects.length,
-  itemBuilder: (_, index) {
-    return FutureBuilder(
-      future: getRequestCard(
-          selectedKey, selectedObjects[index], svgImage),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          return Card(
-            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-            child: snapshot.data,
-          );
-        }
-      },
-    );
-  },
-)
- :
-                          Text("No Requests Yet")
-                          
-            ),
+                child: _isLoading == true
+                    ? Container(
+                        height: double.infinity,
+                        width: double.infinity,
+                        child: Align(
+                            alignment: Alignment.center,
+                            child:
+                                // BottomNav()//for times when user deleted in cognito but still signed into app
+                                LoadingScreen(
+                                    currentDotColor: Colors.white,
+                                    defaultDotColor: Colors.black,
+                                    numDots: 10)))
+                    : selectedObjects.length > 0
+                        ? ListView.builder(
+                            controller: _selectEventController,
+                            itemCount: selectedObjects.length,
+                            itemBuilder: (_, index) {
+                              return FutureBuilder(
+                                future: getRequestCard(selectedKey,
+                                    selectedObjects[index], svgImage),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return Center(
+                                        child:
+                                            Text('Error: ${snapshot.error}'));
+                                  } else {
+                                    return Card(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 10),
+                                      child: snapshot.data,
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          )
+                        : Text("No Requests Yet")),
           ]),
         ]));
   }

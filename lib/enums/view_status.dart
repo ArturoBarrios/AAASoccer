@@ -1,0 +1,4 @@
+enum ViewStatus {
+  loading,
+  completed,
+}
