@@ -1,26 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../commands/game_command.dart';
 import '../../commands/requests_command.dart';
-import '../../views/game/view.dart';
-import '../../assets/icons/plus.svg';
 import '../Mixins/request_mixin.dart';
 
 class EventRequestCard extends StatefulWidget with RequestMixin {
   const EventRequestCard(
-      {Key? key, required this.eventRequestObject, 
-      required this.svgImage, 
+      {Key? key,
+      required this.eventRequestObject,
       required this.type,
-      required this.didSendRequest      
-      })
+      required this.didSendRequest})
       : super(key: key);
   final Map<String, dynamic> eventRequestObject;
-  final Svg svgImage;  
   final String type;
-  final bool didSendRequest;  
+  final bool didSendRequest;
 
   @override
   State<EventRequestCard> createState() => _EventRequestCard();
@@ -46,23 +39,19 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
-
-
-
 class _EventRequestCard extends State<EventRequestCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
 
-  void goToEvent(BuildContext context){
-  dynamic event = widget.eventRequestObject["event"];  
-  widget.goToEvent(context, event);
-}
+  void goToEvent(BuildContext context) {
+    dynamic event = widget.eventRequestObject["event"];
+    widget.goToEvent(context, event);
+  }
 
-void goToPlayer(BuildContext context){
-
-  dynamic senderUser = widget.eventRequestObject['sender'];
-  widget.goToPlayer(context, senderUser);
-}
+  void goToPlayer(BuildContext context) {
+    dynamic senderUser = widget.eventRequestObject['sender'];
+    widget.goToPlayer(context, senderUser);
+  }
 
   final ButtonStyle style = ElevatedButton.styleFrom(
       primary: Colors.orange.shade500,
@@ -71,15 +60,14 @@ void goToPlayer(BuildContext context){
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-  print("EventRequestCard Build()");
+    print("EventRequestCard Build()");
     print("widget name: ");
     print(widget.eventRequestObject.toString());
-    String typeProcessed = widget.type[0].toUpperCase() + widget.type.substring(1, (widget.type.length-7)).toLowerCase();
+    String typeProcessed = widget.type[0].toUpperCase() +
+        widget.type.substring(1, (widget.type.length - 7)).toLowerCase();
     return Listener(
         child: GestureDetector(
-      onTap: () {
-        
-      },
+      onTap: () {},
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           padding: EdgeInsets.all(12.5),
@@ -111,13 +99,30 @@ void goToPlayer(BuildContext context){
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: typeProcessed +" Request("+widget.eventRequestObject['event']['name']+")",
-                    svgImage: widget.svgImage,
-                    subtitle:
-                      widget.didSendRequest ? 
-                        "sent to "+widget.eventRequestObject['receivers']['data'][0]['email'].toString() + " for "+(widget.eventRequestObject['team']==null ? "player" : "team "+widget.eventRequestObject['team']['name'].toString())
-                        : "sent by "+ widget.eventRequestObject['sender']['email'].toString() + " for "+(widget.eventRequestObject['team']==null ? "player" : "team "+widget.eventRequestObject['team']['name'].toString())
-                        ,                        
+                    text: typeProcessed +
+                        " Request(" +
+                        widget.eventRequestObject['event']['name'] +
+                        ")",
+                    subtitle: widget.didSendRequest
+                        ? "sent to " +
+                            widget.eventRequestObject['receivers']['data'][0]
+                                    ['email']
+                                .toString() +
+                            " for " +
+                            (widget.eventRequestObject['team'] == null
+                                ? "player"
+                                : "team " +
+                                    widget.eventRequestObject['team']['name']
+                                        .toString())
+                        : "sent by " +
+                            widget.eventRequestObject['sender']['email']
+                                .toString() +
+                            " for " +
+                            (widget.eventRequestObject['team'] == null
+                                ? "player"
+                                : "team " +
+                                    widget.eventRequestObject['team']['name']
+                                        .toString()),
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -159,10 +164,10 @@ void goToPlayer(BuildContext context){
               ),
             ),
             GestureDetector(
-              onTap: () {                
+              onTap: () {
                 print(widget.eventRequestObject.toString());
-                RequestsCommand().updateEventRequests(widget.eventRequestObject);
-                
+                RequestsCommand()
+                    .updateEventRequests(widget.eventRequestObject);
               },
               child: Container(
                 child: ClipRRect(
@@ -183,13 +188,11 @@ void goToPlayer(BuildContext context){
 
 class InnerNeumorphicCardFb1 extends StatelessWidget {
   final String text;
-  final Svg svgImage;
   final String subtitle;
   final Function() onPressed;
 
   const InnerNeumorphicCardFb1(
       {required this.text,
-      required this.svgImage,
       required this.subtitle,
       required this.onPressed,
       Key? key})

@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../../commands/user_command.dart';
-import '../../commands/requests_command.dart';
 import '../../views/home.dart';
 import '../../views/player/view.dart';
-import '../../assets/icons/plus.svg';
 
 class FriendRequestCard extends StatefulWidget {
   const FriendRequestCard(
-      {Key? key, required this.friendRequestObject, 
-      required this.svgImage,
-      required this.didSendRequest
-      })
+      {Key? key,
+      required this.friendRequestObject,
+      required this.didSendRequest})
       : super(key: key);
   final Map<String, dynamic> friendRequestObject;
-  final Svg svgImage;
   final bool didSendRequest;
 
   @override
@@ -44,16 +38,14 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
   return deletePickupResp;
 }
 
-Future<void> updateFriendRequest(dynamic friendRequestObject, BuildContext context) async {
+Future<void> updateFriendRequest(
+    dynamic friendRequestObject, BuildContext context) async {
   // await RequestsCommand().updateFriendRequest(friendRequestObject);
   //go back
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => Home()),
-  );  
-
-  
-
+  );
 }
 
 class _FriendRequestCard extends State<FriendRequestCard> {
@@ -67,14 +59,12 @@ class _FriendRequestCard extends State<FriendRequestCard> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-  print("FriendRequestCard Build()");
+    print("FriendRequestCard Build()");
     print("widget name: ");
     print(widget.friendRequestObject.toString());
     return Listener(
         child: GestureDetector(
-      onTap: () {
-        
-      },
+      onTap: () {},
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           padding: EdgeInsets.all(12.5),
@@ -107,13 +97,12 @@ class _FriendRequestCard extends State<FriendRequestCard> {
             Container(
                 child: InnerNeumorphicCardFb1(
                     text: "Friend Request",
-                    svgImage: widget.svgImage,
                     friendRequestObject: widget.friendRequestObject,
-                    subtitle:
-                        "sent by "+widget.friendRequestObject['sender']['email'].toString(), //widget.friendRequestObject['description'],
+                    subtitle: "sent by " +
+                        widget.friendRequestObject['sender']['email']
+                            .toString(), //widget.friendRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
-
                     })),
             GestureDetector(
               onTap: () {
@@ -153,13 +142,13 @@ class _FriendRequestCard extends State<FriendRequestCard> {
               ),
             ),
             IconButton(
-          icon: const Icon(Icons.notifications_active),
-          tooltip: 'Notifications',
-          onPressed: () {
-            print(widget.toString());
-            updateFriendRequest(widget.friendRequestObject, context);            
-          },
-        ),          
+              icon: const Icon(Icons.notifications_active),
+              tooltip: 'Notifications',
+              onPressed: () {
+                print(widget.toString());
+                updateFriendRequest(widget.friendRequestObject, context);
+              },
+            ),
           ])),
     ));
   }
@@ -167,15 +156,12 @@ class _FriendRequestCard extends State<FriendRequestCard> {
 
 class InnerNeumorphicCardFb1 extends StatelessWidget {
   final String text;
-  final Svg svgImage;
   final String subtitle;
   final dynamic friendRequestObject;
   final Function() onPressed;
-  
 
   const InnerNeumorphicCardFb1(
       {required this.text,
-      required this.svgImage,
       required this.subtitle,
       required this.onPressed,
       required this.friendRequestObject,
@@ -183,12 +169,12 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) 
-  {
-    Future<void> viewPlayerProfile() async{
+  Widget build(BuildContext context) {
+    Future<void> viewPlayerProfile() async {
       print("viewPlayerProfile");
       print(friendRequestObject.toString());
-      Map<String, dynamic> findMyUserByIdResp = await UserCommand().findUserPlayerById(friendRequestObject['sender']);
+      Map<String, dynamic> findMyUserByIdResp =
+          await UserCommand().findUserPlayerById(friendRequestObject['sender']);
       print(findMyUserByIdResp.toString());
       dynamic playerObject = findMyUserByIdResp['user'];
 
@@ -200,9 +186,8 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
           ),
         ),
       );
-      
-
     }
+
     return GestureDetector(
       onTap: onPressed,
       child: Container(
@@ -230,25 +215,22 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
               height: 5,
             ),
             GestureDetector(
-              onTap: () {
-                print("view player profile");
-                viewPlayerProfile();
-              },
-              child: 
-              Container(
-                width:100,
-                height: 20,
-                child: Text(
-                  subtitle,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12),
-                ),
-
-                )
-            ),
+                onTap: () {
+                  print("view player profile");
+                  viewPlayerProfile();
+                },
+                child: Container(
+                  width: 100,
+                  height: 20,
+                  child: Text(
+                    subtitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12),
+                  ),
+                )),
             const SizedBox(
               height: 10,
             ),

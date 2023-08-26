@@ -1,47 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/commands/user_command.dart';
-import 'package:soccermadeeasy/components/Cards/pickup_card2.dart';
-import 'package:soccermadeeasy/constants.dart';
-import 'package:soccermadeeasy/models/app_model.dart';
+import 'package:soccermadeeasy/components/loading_circular.dart';
+import 'package:soccermadeeasy/enums/view_status.dart';
+import '../commands/user_command.dart';
+import '../constants.dart';
 import '../../commands/team_command.dart';
-import '../views/profile/profile.dart';
-import '../../components/headers.dart';
 import '../../components/Cards/team_request_card.dart';
 import '../../components/Cards/friend_request_card.dart';
 import '../../components/Cards/event_request_card.dart';
-import '../../models/requests_model.dart';
 import '../../commands/requests_command.dart';
-import '../../graphql/queries/requests.dart';
 import '../../models/requests_page_model.dart';
+import '../styles/asset_constants.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:soccermadeeasy/svg_widgets.dart';
-import '../../components/Loading/loading_screen.dart';
-import '../../enums/EventRequestType.dart';
+
+import 'images/svg_image.dart';
 
 class RequestsList extends StatefulWidget {
+  const RequestsList({Key? key, required this.objectDetails}) : super(key: key);
+
   final dynamic objectDetails;
 
-  RequestsList({required this.objectDetails});
-
   @override
-  _RequestsListState createState() => _RequestsListState();
+  State<RequestsList> createState() => _RequestsListState();
 }
 
 class _RequestsListState extends State<RequestsList> {
-  Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
-
-  bool _isLoading = true;
+  ViewStatus _viewStatus = ViewStatus.loading;
+  String selectedRequestType = "RECEIVED";
+  final Color color = Colors.grey.shade200;
+  final Color selectedColor = Colors.orange.shade500;
   List requests = [];
 
-  late ScrollController _selectEventController = ScrollController();
+  @override
+  void initState() {
+    print("init state");
+    super.initState();
+    loadInitialData();
+  }
 
-  void goBack() {
-    Navigator.pop(context);
+  void loadInitialData() {
+    // requestTypeTapped(selectedRequestType);
+    requests = widget.objectDetails['requests'];
+    print("requestsss: " + requests.toString());
+
+    _changeStatus(ViewStatus.completed);
   }
 
   Future<Widget> getRequestCard(
-      String selectedKey, dynamic requestObject, Svg svgImage) async {
+      String selectedKey, dynamic requestObject) async {
     print("getRequestCard()");
     print("selectedKey: " + selectedKey);
     print("requestObject: " + requestObject.toString());
@@ -53,7 +58,6 @@ class _RequestsListState extends State<RequestsList> {
         Constants.FRIENDREQUEST.toString()) {
       Widget card = FriendRequestCard(
         friendRequestObject: requestObject,
-        svgImage: svgImage,
         didSendRequest: didSendRequest,
       );
       return card;
@@ -69,7 +73,6 @@ class _RequestsListState extends State<RequestsList> {
             Constants.TRYOUTREQUEST.toString()) {
       Widget card = EventRequestCard(
           eventRequestObject: requestObject,
-          svgImage: svgImage,
           type: requestObject['type'],
           didSendRequest: didSendRequest);
       return card;
@@ -84,7 +87,6 @@ class _RequestsListState extends State<RequestsList> {
       print("teamDetails: " + teamDetails.toString());
       Widget card = TeamRequestCard(
         teamRequestObject: requestObject,
-        svgImage: svgImage,
         didSendRequest: didSendRequest,
         userTeamDetails: teamDetails,
       );
@@ -93,36 +95,23 @@ class _RequestsListState extends State<RequestsList> {
   }
 
   Future<void> requestTypeTapped(String requestType) async {
-    setState(() {
-      _isLoading = true;
-    });
+    _changeStatus(ViewStatus.loading);
+
     selectedRequestType = requestType;
 
     await RequestsCommand().updatedSelectedRequests(requestType);
+
+    _changeStatus(ViewStatus.completed);
+  }
+
+  void _changeStatus(ViewStatus status) {
     setState(() {
-      _isLoading = false;
+      _viewStatus = status;
     });
   }
 
-  late ScrollController _selectRequestTypeController = ScrollController();
-  String selectedRequestType = "RECEIVED";
-  final Color color = Colors.grey.shade200;
-  final Color selectedColor = Colors.orange.shade500;
-
-  void loadInitialData() {
-    // requestTypeTapped(selectedRequestType);
-    requests = widget.objectDetails['requests'];
-    print("requestsss: " + requests.toString());
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    print("init state");
-    super.initState();
-    loadInitialData();
+  void goBack() {
+    Navigator.pop(context);
   }
 
   @override
@@ -131,7 +120,7 @@ class _RequestsListState extends State<RequestsList> {
     final double cardHeight = MediaQuery.of(context).size.height * .1;
     final double cardImageWidth = cardWidth * .5;
     final double cardImageHeight = cardHeight * .5;
-    final double bevel = 10.0;
+    const double bevel = 10.0;
     bool initialConditionsMet = context
         .select<RequestsPageModel, bool>((value) => value.initialConditionsMet);
 
@@ -151,13 +140,16 @@ class _RequestsListState extends State<RequestsList> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Container(
-          height: 200, // Set this to the desired height
+        SizedBox(
+          height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            controller: _selectRequestTypeController,
             itemCount: requestTypes.length,
             itemBuilder: (_, index) {
+              final defaultColor = requestTypes[index] == selectedRequestType
+                  ? selectedColor
+                  : color;
+
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                 child: GestureDetector(
@@ -166,110 +158,93 @@ class _RequestsListState extends State<RequestsList> {
                     requestTypeTapped(requestTypes[index]);
                   },
                   child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      padding: EdgeInsets.all(12.5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0 * 1),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              requestTypes[index] == selectedRequestType
-                                  ? selectedColor
-                                  : color,
-                              requestTypes[index] == selectedRequestType
-                                  ? selectedColor
-                                  : color,
-                              requestTypes[index] == selectedRequestType
-                                  ? selectedColor
-                                  : color,
-                              requestTypes[index] == selectedRequestType
-                                  ? selectedColor
-                                  : color,
-                            ],
-                            stops: const [
-                              0.0,
-                              .3,
-                              .6,
-                              1.0,
-                            ]),
-                        boxShadow: false
-                            ? null
-                            : [
-                                BoxShadow(
-                                  blurRadius: 10.0,
-                                  offset: -Offset(10.0 / 2, 10.0 / 2),
-                                  color: Colors.white,
-                                ),
-                                BoxShadow(
-                                  blurRadius: bevel,
-                                  offset: Offset(10.0 / 2, 10.0 / 2),
-                                  color: Colors.black,
-                                )
-                              ],
-                      ),
-                      child: Container(
-                        child: Container(
-                          width: cardWidth,
-                          height: cardHeight,
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            children: [
-                              Image(
-                                width: cardImageWidth,
-                                height: cardImageHeight,
-                                image: svgImage,
-                                color: Colors.white,
-                              ),
-                              const Spacer(),
-                              Text(requestTypes[index],
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  )),
-                              Text(
-                                "",
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 12),
-                              ),
-                            ],
-                          ),
+                    duration: const Duration(milliseconds: 150),
+                    padding: const EdgeInsets.all(12.5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0 * 1),
+                      gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            defaultColor,
+                            defaultColor,
+                            defaultColor,
+                            defaultColor,
+                          ],
+                          stops: const [
+                            0.0,
+                            .3,
+                            .6,
+                            1.0,
+                          ]),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 10.0,
+                          offset: -const Offset(10.0 / 2, 10.0 / 2),
+                          color: Colors.white,
                         ),
-                      )),
+                        const BoxShadow(
+                          blurRadius: bevel,
+                          offset: Offset(10.0 / 2, 10.0 / 2),
+                          color: Colors.black,
+                        )
+                      ],
+                    ),
+                    child: Container(
+                      width: cardWidth,
+                      height: cardHeight,
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          SvgImage(
+                            svgPath: AssetConstants.soccerBall,
+                            height: cardImageHeight,
+                            width: cardImageWidth,
+                            color: Colors.white,
+                          ),
+                          const Spacer(),
+                          Text(
+                            requestTypes[index],
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          const Text(
+                            "",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               );
             },
           ),
         ),
-        _isLoading == true
-            ? Container(
-                height: 100,
-                child: Align(
-                    alignment: Alignment.center,
-                    child: LoadingScreen(
-                        currentDotColor: Colors.white,
-                        defaultDotColor: Colors.black,
-                        numDots: 10)))
-            : requests.length > 0
-                ? Container(
+        _viewStatus == ViewStatus.loading
+            ? const LoadingCircular(height: 100)
+            : requests.isNotEmpty
+                ? SizedBox(
                     height: 100,
                     child: ListView.builder(
-                      controller: _selectEventController,
                       itemCount: requests.length,
                       itemBuilder: (_, index) {
                         return FutureBuilder(
-                          future: getRequestCard(
-                              selectedKey, requests[index], svgImage),
+                          future: getRequestCard(selectedKey, requests[index]),
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             } else if (snapshot.hasError) {
                               return Center(
                                   child: Text('Error: ${snapshot.error}'));
@@ -284,7 +259,7 @@ class _RequestsListState extends State<RequestsList> {
                         );
                       },
                     ))
-                : Text("No Requests Yet"),
+                : const Text("No Requests Yet"),
       ],
     );
   }
