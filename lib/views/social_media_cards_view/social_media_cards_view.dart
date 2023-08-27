@@ -6,8 +6,11 @@ import 'package:soccermadeeasy/styles/colors.dart';
 
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
+import '../../commands/event_command_impl.dart';
+import '../../commands/network_models/add_social_media_apps_request.dart';
 import '../../commands/user_command.dart';
 import '../../components/custom_textfield.dart';
+import '../../extensions/snackbar_dialogue.dart';
 import '../../models/app_model.dart';
 
 class SocialMediaCardsView extends StatefulWidget {
@@ -46,6 +49,8 @@ class _SocialMediaCardsViewState extends State<SocialMediaCardsView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     dynamic userEventDetails = context.watch<AppModel>().userEventDetails;
+    // inspect(userEventDetails);
+
     if (userEventDetails['mainEvent'] == null) {
       return;
     }
@@ -80,27 +85,39 @@ class _SocialMediaCardsViewState extends State<SocialMediaCardsView> {
   Future<void> onTapAddSocialMediaApp(userEventDetails) async {
     final currentUser = UserCommand().getAppModelUser();
     final selectedApp = CardType.values.toList()[currentPage];
-    Map<String, dynamic> eventInput = {
-      "_id": userEventDetails['mainEvent']['_id'],
-      "socialMediaType": selectedApp.name.toUpperCase(),
-      "socialMediaUrl": selectedApp.url + controller.text,
-    };
-    Map<String, dynamic> userInput = {
-      "_id": currentUser['_id'],
-    };
 
-    final result =
-        await EventCommand().updateSocialMedia(eventInput, userInput);
+    final result = await EventCommandImpl().updateSocialMedia(
+      body: AddSocialMediaAppsRequest(
+        eventId: userEventDetails['mainEvent']['_id'],
+        userId: currentUser['_id'],
+        socialMediaType: selectedApp.name.toUpperCase(),
+        socialMediaUrl: selectedApp.url + controller.text,
+      ),
+    );
 
-    if (result['data'] != null) {
-      userEventDetails['mainEvent']['SocialMediaApps'] = result['data'];
+    result.whenOrNull(
+      left: (left) {
+        ScaffoldMessenger.of(context).show(
+          type: SnackBarType.failure,
+          message: left.message,
+        );
+      },
+      right: (right) {
+        ScaffoldMessenger.of(context).show(
+          type: SnackBarType.success,
+          message: 'Success!',
+        );
+        // if (result['data'] != null) {
+        //   userEventDetails['mainEvent']['SocialMediaApps'] = result['data'];
 
-      BaseCommand().updateUserEventDetailsModel(userEventDetails);
-      if (isFlip) {
-        controller.clear();
-        flipCard();
-      }
-    }
+        //   BaseCommand().updateUserEventDetailsModel(userEventDetails);
+        //   if (isFlip) {
+        //     controller.clear();
+        //     flipCard();
+        //   }
+        // }
+      },
+    );
   }
 
   Future<void> onTapDeleteSocialMediaApp(userEventDetails) async {

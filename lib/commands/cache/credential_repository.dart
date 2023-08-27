@@ -1,5 +1,5 @@
-import '../paypal_payment/types/either.dart';
-import '../paypal_payment/types/failure.dart';
+import '../network/types/either.dart';
+import '../network/types/failure.dart';
 
 ///
 abstract class CredentialsRepository {

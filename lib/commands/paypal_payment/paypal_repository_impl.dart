@@ -1,16 +1,16 @@
 import 'package:soccermadeeasy/commands/paypal_payment/models/paypal_error/error_response.dart';
-import 'package:soccermadeeasy/commands/paypal_payment/util/api_util.dart';
 
 import '../cache/credential_repository.dart';
+import '../network/types/either.dart';
+import '../network/types/failure.dart';
+import '../network/types/server_failure.dart';
+import '../network/util/api_util.dart';
 import 'models/request/orders/paypal_create_order_request.dart';
 import 'models/response/authentication/paypal_access_token_response.dart';
 import 'models/response/orders/paypal_capture_payment_for_order_response.dart';
 import 'models/response/orders/paypal_create_order_response.dart';
 import 'paypal_data_source/paypal_data_source_remote.dart';
 import 'paypal_repository.dart';
-import 'types/either.dart';
-import 'types/failure.dart';
-import 'types/server_failure.dart';
 
 ///
 class PaypalRepositoryImpl implements PaypalRepository {

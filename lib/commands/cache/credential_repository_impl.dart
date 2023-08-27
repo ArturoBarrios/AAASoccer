@@ -2,9 +2,9 @@
 
 import 'dart:async';
 
-import '../paypal_payment/types/either.dart';
-import '../paypal_payment/types/failure.dart';
-import '../paypal_payment/types/storage_failure.dart';
+import '../network/types/either.dart';
+import '../network/types/failure.dart';
+import '../network/types/storage_failure.dart';
 import 'credential_data_source.dart';
 import 'credential_repository.dart';
 import 'package:rxdart/rxdart.dart';

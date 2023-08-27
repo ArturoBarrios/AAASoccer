@@ -1,3 +1,4 @@
+import '../../commands/network_models/add_social_media_apps_request.dart';
 import '../fragments/event_fragments.dart';
 
 class EventMutations {
@@ -172,29 +173,23 @@ class EventMutations {
   }
 
   String updateEventSocialMedia(
-      Map<String, dynamic> eventInput, Map<String, dynamic> userInput) {
+      {required final AddSocialMediaAppsRequest body}) {
     String addSocialMediaToEventMutation = """
-      mutation {
-        updateEvent(
-          id: ${eventInput['_id']},
+          id: ${body.eventId},
           data: {
             SocialMediaApps: {
               create: {
-                type: ${eventInput['socialMediaType']}
-                url: "${eventInput['socialMediaUrl']}"
+                type: ${body.socialMediaType}
+                url: "${body.socialMediaUrl}"
                 user: {
-                  connect: "${userInput['_id']}"
+                  connect: "${body.userId}"
                 }
                 event: {
-                  connect: "${eventInput['_id']}"
+                  connect: "${body.eventId}"
                 }
               }
             }
           }
-        ) {
-          ${EventFragments().fullEvent()}  
-        }
-      }
     """;
 
     return addSocialMediaToEventMutation;

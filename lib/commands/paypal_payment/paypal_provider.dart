@@ -4,9 +4,9 @@ import 'package:riverpod/riverpod.dart' as riverpod;
 import '../cache/credential_data_source.dart';
 import '../cache/credential_repository.dart';
 import '../cache/credential_repository_impl.dart';
+import '../network/util/api_client.dart';
 import 'paypal_repository.dart';
 import 'paypal_repository_impl.dart';
-import 'util/api_client.dart';
 
 final _paypalApiClientProvider = riverpod.Provider.autoDispose<ApiClient>(
   (final ref) {

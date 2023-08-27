@@ -1,7 +1,7 @@
 import 'package:soccermadeeasy/commands/paypal_payment/models/response/orders/paypal_capture_payment_for_order_response.dart';
-import 'package:soccermadeeasy/commands/paypal_payment/types/either.dart';
-import 'package:soccermadeeasy/commands/paypal_payment/types/failure.dart';
 
+import '../network/types/either.dart';
+import '../network/types/failure.dart';
 import 'models/request/orders/paypal_create_order_request.dart';
 import 'models/response/authentication/paypal_access_token_response.dart';
 import 'models/response/orders/paypal_create_order_response.dart';
