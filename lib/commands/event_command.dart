@@ -1,36 +1,32 @@
 import 'dart:developer';
 
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
+import 'package:soccermadeeasy/commands/network/base_api_client.dart';
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
-import 'package:soccermadeeasy/models/events_model.dart';
-import 'package:soccermadeeasy/models/home_page_model.dart';
 
-import '../graphql/mutations/images.dart';
-import '../graphql/mutations/users.dart';
 import '../graphql/queries/events.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../commands/game_command.dart';
 import '../commands/player_command.dart';
 import '../enums/EventType.dart';
 import '../graphql/queries/games.dart';
 import '../commands/user_command.dart';
 import '../graphql/mutations/games.dart';
 import '../graphql/mutations/requests.dart';
-import '../commands/team_command.dart';
-import '../commands/training_command.dart';
-import '../commands/tryout_command.dart';
 import '../commands/tournament_command.dart';
 import '../commands/league_command.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/events.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:intl/intl.dart';
 
 import 'home_page_command.dart';
+import 'network/util/api_graphql_operation_type.dart';
+import 'network/util/api_response.dart';
+import 'network_models/add_social_media_apps_request.dart';
+import 'network_models/base_update_response_model.dart';
 
 class EventCommand extends BaseCommand {
   List<dynamic> sortEventsBy(List<dynamic> events) {
@@ -312,39 +308,15 @@ class EventCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> updateSocialMedia(
-      dynamic eventInput, dynamic userInput) async {
-    print("updateSocialMediaOfEvent");
-    Map<String, dynamic> addSocialMediaAppResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-    try {
-      log('start');
-      log(EventMutations().updateEventSocialMedia(eventInput, userInput));
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query':
-              EventMutations().updateEventSocialMedia(eventInput, userInput),
-        }),
+  Future<ApiResponse<BaseUpdateResponseModel, void>> updateSocialMedia(
+          {required final AddSocialMediaAppsRequest body}) async =>
+      BaseApiClient().graphqlRequest(
+        operationType: ApiGraphqlOperationType.mutation,
+        operationName: 'updateEvent',
+        body: EventMutations().updateEventSocialMedia(body: body),
+        fields: EventFragments().fullEvent(),
+        fromJson: (value) => BaseUpdateResponseModel.fromJson(value),
       );
-
-      log("response body: ");
-      addSocialMediaAppResponse['data'] =
-          jsonDecode(response.body)['data']['updateEvent']['SocialMediaApps'];
-
-      return addSocialMediaAppResponse;
-    } on ApiException catch (e) {
-      print('Mutation failed: $e');
-      return addSocialMediaAppResponse;
-    }
-  }
 
   Future<Map<String, dynamic>> deleteSocialMedia(dynamic eventInput) async {
     print("updateSocialMediaOfEvent");

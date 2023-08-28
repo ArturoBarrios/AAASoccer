@@ -4,11 +4,11 @@ import 'package:soccermadeeasy/commands/paypal_payment/models/request/authentica
 import 'package:soccermadeeasy/commands/paypal_payment/models/response/authentication/paypal_access_token_response.dart';
 import 'package:soccermadeeasy/commands/paypal_payment/models/response/orders/paypal_capture_payment_for_order_response.dart';
 
+import '../../network/util/api_client.dart';
+import '../../network/util/api_response.dart';
 import '../models/paypal_error/error_response.dart';
 import '../models/request/orders/paypal_create_order_request.dart';
 import '../models/response/orders/paypal_create_order_response.dart';
-import '../util/api_client.dart';
-import '../util/api_response.dart';
 
 ///
 abstract class PaypalDataSourceRemote {
