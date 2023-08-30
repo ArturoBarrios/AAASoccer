@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/network/base_api_client.dart';
+import 'package:soccermadeeasy/commands/network_models/fql_request_models/in_body.dart';
+import 'package:soccermadeeasy/commands/network_models/fql_request_models/object_params_body.dart';
+import 'package:soccermadeeasy/commands/network_models/fql_request_models/social_media_app_data.dart';
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
@@ -27,6 +30,11 @@ import 'network/util/api_graphql_operation_type.dart';
 import 'network/util/api_response.dart';
 import 'network_models/add_social_media_apps_request.dart';
 import 'network_models/base_update_response_model.dart';
+import 'network_models/fql_request_models/add_social_media_apps.dart';
+import 'network_models/fql_request_models/add_social_media_apps_let.dart';
+import 'network_models/fql_request_models/collection_body.dart';
+import 'network_models/fql_request_models/ref_body.dart';
+import 'network_models/fql_request_models/var_body.dart';
 
 class EventCommand extends BaseCommand {
   List<dynamic> sortEventsBy(List<dynamic> events) {
@@ -308,15 +316,51 @@ class EventCommand extends BaseCommand {
     }
   }
 
-  Future<ApiResponse<BaseUpdateResponseModel, void>> updateSocialMedia(
-          {required final AddSocialMediaAppsRequest body}) async =>
-      BaseApiClient().graphqlRequest(
-        operationType: ApiGraphqlOperationType.mutation,
-        operationName: 'updateEvent',
-        body: EventMutations().updateEventSocialMedia(body: body),
-        fields: EventFragments().fullEvent(),
-        fromJson: (value) => BaseUpdateResponseModel.fromJson(value),
-      );
+  Future<ApiResponse<BaseUpdateResponseModel, void>> updateSocialMedia({
+    required final String type,
+    required final String url,
+    required final String eventId,
+    required final String userId,
+  }) async {
+    final body = AddSocialMediaApps(
+      let: [
+        AddSocialMediaAppsLet(
+          eventRef: RefBody(
+            id: eventId,
+            ref: const CollectionBody(collection: 'Event'),
+          ),
+        ),
+        AddSocialMediaAppsLet(
+          userRef: RefBody(
+            id: userId,
+            ref: const CollectionBody(collection: 'User'),
+          ),
+        ),
+        AddSocialMediaAppsLet(
+          socialMediaAppData: SocialMediaAppData(
+            object: SocialMediaAppObjectData(
+              type: type,
+              url: url,
+              user: const VarBody(varProperty: 'userRef'),
+              event: const VarBody(varProperty: 'eventRef'),
+            ),
+          ),
+        )
+      ],
+      inProperty: const InBody(
+        create: CollectionBody(collection: 'SocialMediaApp'),
+        params: ObjectParamsBody(
+          objectObjectParamsBody: ObjectParamsBodyData(
+            data: VarBody(varProperty: 'socialMediaAppData'),
+          ),
+        ),
+      ),
+    );
+
+    return BaseApiClient().fqlRequest(
+      jsonBody: body.toJson(),
+    );
+  }
 
   Future<Map<String, dynamic>> deleteSocialMedia(dynamic eventInput) async {
     print("updateSocialMediaOfEvent");

@@ -9,11 +9,25 @@ import 'util/api_graphql_operation_type.dart';
 import 'util/api_response.dart';
 
 class BaseApiClient {
+  Future<ApiResponse<T, U>> fqlRequest<T, U>({
+    final T Function(Map<String, dynamic>)? fromJson,
+    final U Function(Map<String, dynamic>)? fromJsonError,
+    final Map<String, dynamic>? jsonBody,
+    final Map<String, dynamic>? queryParameters,
+  }) async =>
+      _request(
+        jsonBody: jsonBody,
+        method: 'POST',
+        fromJson: fromJson,
+        fromJsonError: fromJsonError,
+        queryParameters: queryParameters,
+      );
+
   Future<ApiResponse<T, U>> graphqlRequest<T, U>({
     required final ApiGraphqlOperationType operationType,
     required final String operationName,
     required final String fields,
-    final String body = '',
+    final String graphqlBody = '',
     final T Function(Map<String, dynamic>)? fromJson,
     final U Function(Map<String, dynamic>)? fromJsonError,
   }) async =>
@@ -21,9 +35,9 @@ class BaseApiClient {
         method: 'POST',
         fromJson: fromJson,
         fromJsonError: fromJsonError,
-        body: jsonEncode(<String, String>{
+        graphqlBody: jsonEncode(<String, String>{
           'query': '${operationType.name}'
-              '{ $operationName(\n$body)\n'
+              '{ $operationName(\n$graphqlBody)\n'
               '{ $fields } }',
         }),
       );
@@ -34,12 +48,13 @@ class BaseApiClient {
     final U Function(Map<String, dynamic>)? fromJsonError,
     final String? path,
     final Map<String, dynamic>? queryParameters,
-    final String? body,
+    final Map<String, dynamic>? jsonBody,
+    final String? graphqlBody,
     final bool followRedirects = true,
     final String operationName = '',
   }) async {
     try {
-      final uri = Uri.parse('https://graphql.fauna.com/graphql');
+      final uri = Uri.parse('https://db.fauna.com');
 
       final request = http.Request(
         method,
@@ -49,12 +64,17 @@ class BaseApiClient {
       request.headers.addAll(
         <String, String>{
           'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
-          'Content-Type': 'application/json'
+          'Content-Type': 'text/plain'
         },
       );
 
-      if (body != null) {
-        request.body = body;
+      if (graphqlBody != null) {
+        request.body = graphqlBody;
+        log('RequestGraphql:\n ${request.body}');
+      }
+      if (jsonBody != null) {
+        request.body = jsonEncode(jsonBody).trim();
+        log('RequestFql:\n ${request.body}');
       }
 
       final response = await http.Response.fromStream(
@@ -70,7 +90,7 @@ class BaseApiClient {
       final message =
           'RESPONSE: ${response.request?.method} ${response.statusCode} '
           '${Uri.decodeQueryComponent(response.request?.url.toString() ?? '')}'
-          '\n${response.body}';
+          '\nBody:\n${response.body}';
 
       log(message);
 

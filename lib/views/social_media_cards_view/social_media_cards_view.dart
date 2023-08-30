@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,10 +8,8 @@ import 'package:soccermadeeasy/styles/colors.dart';
 import '../../commands/base_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/event_command_impl.dart';
-import '../../commands/network_models/add_social_media_apps_request.dart';
 import '../../commands/user_command.dart';
 import '../../components/custom_textfield.dart';
-import '../../extensions/snackbar_dialogue.dart';
 import '../../models/app_model.dart';
 
 class SocialMediaCardsView extends StatefulWidget {
@@ -49,7 +48,7 @@ class _SocialMediaCardsViewState extends State<SocialMediaCardsView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     dynamic userEventDetails = context.watch<AppModel>().userEventDetails;
-    // inspect(userEventDetails);
+    inspect(userEventDetails);
 
     if (userEventDetails['mainEvent'] == null) {
       return;
@@ -86,37 +85,20 @@ class _SocialMediaCardsViewState extends State<SocialMediaCardsView> {
     final currentUser = UserCommand().getAppModelUser();
     final selectedApp = CardType.values.toList()[currentPage];
 
-    final result = await EventCommandImpl().updateSocialMedia(
-      body: AddSocialMediaAppsRequest(
-        eventId: userEventDetails['mainEvent']['_id'],
-        userId: currentUser['_id'],
-        socialMediaType: selectedApp.name.toUpperCase(),
-        socialMediaUrl: selectedApp.url + controller.text,
-      ),
-    );
+    // final result = await EventCommandImpl().updateSocialMedia(
+    //   body: AddSocialMediaAppsRequest(
+    //     eventId: userEventDetails['mainEvent']['_id'],
+    //     userId: currentUser['_id'],
+    //     socialMediaType: selectedApp.name.toUpperCase(),
+    //     socialMediaUrl: selectedApp.url + controller.text,
+    //   ),
+    // );
 
-    result.whenOrNull(
-      left: (left) {
-        ScaffoldMessenger.of(context).show(
-          type: SnackBarType.failure,
-          message: left.message,
-        );
-      },
-      right: (right) {
-        ScaffoldMessenger.of(context).show(
-          type: SnackBarType.success,
-          message: 'Success!',
-        );
-        // if (result['data'] != null) {
-        //   userEventDetails['mainEvent']['SocialMediaApps'] = result['data'];
-
-        //   BaseCommand().updateUserEventDetailsModel(userEventDetails);
-        //   if (isFlip) {
-        //     controller.clear();
-        //     flipCard();
-        //   }
-        // }
-      },
+    await EventCommandImpl().updateSocialMedia(
+      type: selectedApp.name.toUpperCase(),
+      url: selectedApp.url + controller.text,
+      eventId: userEventDetails['mainEvent']['_id'],
+      userId: currentUser['_id'],
     );
   }
 
