@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:soccermadeeasy/commands/team_command.dart';
-import '../../components/Loading/loading_screen.dart';
-import '../../components/Mixins/event_mixin.dart';
+import 'package:soccermadeeasy/components/loading_circular.dart';
 import '../../components/headers.dart';
 import '../../components/update_view_team_form.dart';
+import '../../enums/view_status.dart';
+import 'team_view_controller.dart';
 
-class TeamView extends StatefulWidget with EventMixin {
-  TeamView({Key? key, required this.teamObject}) : super(key: key);
+class TeamView extends StatefulWidget {
+  const TeamView({Key? key, required this.teamObject}) : super(key: key);
   final Map<String, dynamic> teamObject;
 
   @override
@@ -15,94 +15,8 @@ class TeamView extends StatefulWidget with EventMixin {
 }
 
 class _TeamViewState extends State<TeamView> {
-  bool _isLoading = true;
-  dynamic priceObject;
-  dynamic userTeamDetails;
-  dynamic playerListWidgetDetails;
-
-  void goBack() {
-    Navigator.pop(context);
-  }
-
-
-  void setupPlayerList() {
-    widget.setupPlayerList();
-  }
-
-  void playersSelected(List<int> selectedIndexes) {
-    widget.playersSelected(selectedIndexes);
-
-  }
-
-  requestTypeSelected(List<int>? indexes) {
-    widget.requestTypeSelected(indexes);
-    // print("requestTypeSelected: " + indexes.toString());
-    // selectedRequestTypeIndexes = indexes;
-    // for (int i = 0; i < indexes!.length; i++) {
-    //   selectedRequestTypeObjects.add(requestUserTypes[indexes[i]]);
-    // }
-  }
-
-  Future<void> sendPlayersTeamRequest() async {
-    // widget.sendPlayersTeamRequest(widget.teamObject);
-    // print("sendPlayersTeamRequest");
-    // print("selectedRequestTypeObjects.length: " +
-    //     selectedRequestTypeObjects.length.toString());
-    // print(
-    //     "playersSelectedList.length: " + playersSelectedList.length.toString());
-    // print(
-    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    // print("send player team request");
-    // for (int i = 0; i < playersSelectedList.length; i++) {
-    //   await TeamCommand().sendPlayerTeamRequests(playersSelectedList[i],
-    //       [widget.teamObject], selectedRequestTypeObjects);
-    // }
-  }
-
-  Future<void> sendTeamRequest() async {
-    widget.sendTeamRequest(widget.teamObject);
-    // print("sendTeamRequest");
-    // print("selectedRequestTypeObjects.length: " +
-    //     selectedRequestTypeObjects.length.toString());
-    // print(
-    //     "playersSelectedList.length: " + playersSelectedList.length.toString());
-    // print(
-    //     "selectedRequestTypeObjects: " + selectedRequestTypeObjects.toString());
-    // print("send team request");
-    // for(int i = 0; i < selectedRequestTypeObjects.length; i++) {
-    //   await TeamCommand().sendOrganizerTeamRequest(widget.teamObject, selectedRequestTypeObjects[i]);
-    // }
-  }
-
-  void loadEventPayment() {
-    priceObject = userTeamDetails['price'];
-  }
-
-  void loadInitialData() async {
-    print("loadInitialData() in TeamView");
-    //wait for 3 seconds
-    await Future.delayed(const Duration(seconds: 2));
-    print("widget.teamObject ${widget.teamObject['events']['data']}");
-    dynamic userTeamDetailsResp =
-        await TeamCommand().getUserTeamDetails(widget.teamObject);
-    widget.setupPlayerList();
-    setState(() {
-      userTeamDetails = userTeamDetailsResp;
-      _isLoading = false;
-    });
-    print("userTeamDetails: $userTeamDetails");
-    print("userTeamDetails['events']: ${userTeamDetails['events']}");
-    print("loadInitialData() finished!");
-    print("loadEventPayment() in loadInitialData()");
-    loadEventPayment();
-    print("loadEventPayment() finished in loadInitialData()");
-  }
-
-  void updateChatsList(dynamic createdChat) {
-    setState(() {
-      userTeamDetails['team']['chats']['data'].add(createdChat);
-    });
-  }
+  ViewStatus _viewStatus = ViewStatus.loading;
+  final TeamViewController _tVC = TeamViewController();
 
   @override
   void initState() {
@@ -110,19 +24,28 @@ class _TeamViewState extends State<TeamView> {
     print("initState()");
     print("loadIinitialData() in initState()");
     loadInitialData();
-
     print("initState finished!");
-    // print("initState() in TeamView");
-    // print("userTeamDetails: " + userTeamDetails.toString());
+  }
+
+  Future<void> loadInitialData() async {
+    await _tVC.loadInitialData(widget.teamObject);
+    changeViewStatus(ViewStatus.completed);
+  }
+
+  changeViewStatus(final ViewStatus status) {
+    setState(() {
+      _viewStatus = status;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     print("build() in TeamView");
     print("teamObject: ${widget.teamObject}");
+
     return Scaffold(
       appBar: const Headers().getBackHeader(context, widget.teamObject['name']),
-      body: !_isLoading
+      body: _viewStatus == ViewStatus.completed
           ? SingleChildScrollView(
               child: Center(
                 child: Expanded(
@@ -145,23 +68,24 @@ class _TeamViewState extends State<TeamView> {
                                   builder: (BuildContext context) {
                                     return ClassicListDialogWidget<dynamic>(
                                         selectedIndexes:
-                                            widget.selectedPlayerIndexes,
+                                            _tVC.selectedPlayerIndexes,
                                         titleText: 'Choose Players',
                                         listType: ListType.multiSelect,
                                         positiveText: "Next",
                                         activeColor: Colors.green,
-                                        dataList: widget.playerList);
+                                        dataList: _tVC.playerList);
                                   },
                                   animationType: DialogTransitionType.size,
                                   curve: Curves.linear,
                                 );
-                                widget.selectedPlayerIndexes = playerIndexes ??
-                                    widget.selectedPlayerIndexes;
+                                _tVC.selectedPlayerIndexes =
+                                    playerIndexes ?? _tVC.selectedPlayerIndexes;
                                 print(
-                                    'selectedIndex:${widget.selectedPlayerIndexes?.toString()}');
-                                playersSelected(widget.selectedPlayerIndexes!);
+                                    'selectedIndex:${_tVC.selectedPlayerIndexes?.toString()}');
+                                _tVC.playersSelected(
+                                    _tVC.selectedPlayerIndexes!);
 
-                                if (widget.playersSelectedList.isNotEmpty &&
+                                if (_tVC.playersSelectedList.isNotEmpty &&
                                     context.mounted) {
                                   List<int>? requestIndexes =
                                       await showAnimatedDialog<dynamic>(
@@ -170,36 +94,37 @@ class _TeamViewState extends State<TeamView> {
                                     builder: (BuildContext context) {
                                       return ClassicListDialogWidget<dynamic>(
                                           selectedIndexes:
-                                              widget.selectedRequestTypeIndexes,
+                                              _tVC.selectedRequestTypeIndexes,
                                           titleText: 'Choose User Type',
                                           positiveText: "Send Request",
                                           listType: ListType.multiSelect,
                                           activeColor: Colors.green,
-                                          dataList: widget.requestUserTypes);
+                                          dataList: _tVC.requestUserTypes);
                                     },
                                     animationType: DialogTransitionType.size,
                                     curve: Curves.linear,
                                   );
 
-                                  widget.selectedRequestTypeIndexes =
+                                  _tVC.selectedRequestTypeIndexes =
                                       requestIndexes ??
-                                          widget.selectedRequestTypeIndexes;
+                                          _tVC.selectedRequestTypeIndexes;
                                   print(
-                                      'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                                  await requestTypeSelected(
-                                      widget.selectedRequestTypeIndexes);
-                                  await sendPlayersTeamRequest();
+                                      'selectedIndex:${_tVC.selectedRequestTypeIndexes?.toString()}');
+                                  await _tVC.requestTypeSelected(
+                                      _tVC.selectedRequestTypeIndexes);
+                                  // await sendPlayersTeamRequest();
                                 }
                               },
                               child: const Text("Invite Players")),
                         ),
                       ),
-                      UpdateViewTeamForm(userObjectDetails: userTeamDetails),
+                      UpdateViewTeamForm(
+                          userObjectDetails: _tVC.userTeamDetails),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          widget.getPriceWidget(userTeamDetails),
-                          userTeamDetails['isMine']
+                          _tVC.getPriceWidget(_tVC.userTeamDetails),
+                          _tVC.userTeamDetails['isMine']
                               ? ElevatedButton(
                                   onPressed: () {
                                     // Add button onPressed logic here
@@ -214,20 +139,7 @@ class _TeamViewState extends State<TeamView> {
                 ),
               ),
             )
-          : const SizedBox(
-              height: double.infinity,
-              width: double.infinity,
-              child: Align(
-                alignment: Alignment.center,
-                child:
-                    // BottomNav()//for times when user deleted in cognito but still signed into app
-                    LoadingScreen(
-                  currentDotColor: Colors.white,
-                  defaultDotColor: Colors.black,
-                  numDots: 10,
-                ),
-              ),
-            ),
+          : const LoadingCircular(height: double.infinity),
     );
   }
 }
