@@ -5,6 +5,8 @@ import '../constants.dart';
 import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
+import '../models/event_page_model.dart';
+import '../models/team_page_model.dart';
 import '/models/app_model.dart';
 import 'package:flutter/material.dart';
 import '/models/user_model.dart';
@@ -50,6 +52,8 @@ class BaseCommand {
   EventsModel eventsModel = _mainContext.read();
   GamesModel gamesModel = _mainContext.read();
   HomePageModel homePageModel = _mainContext.read();
+  EventPageModel eventPageModel = _mainContext.read();
+  TeamPageModel teamPageModel = _mainContext.read();
   RequestsModel requestsModel = _mainContext.read();
   RequestsPageModel requestsPageModel = _mainContext.read();
   FriendsPageModel friendsPageModel = _mainContext.read();
@@ -181,6 +185,8 @@ class BaseCommand {
     eventsModel = _mainContext.read();
     gamesModel = _mainContext.read();
     homePageModel = _mainContext.read();
+    eventPageModel = _mainContext.read();
+    teamPageModel = _mainContext.read();
     requestsModel = _mainContext.read();
     requestsPageModel = _mainContext.read();
     friendsPageModel = _mainContext.read();

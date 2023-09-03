@@ -8,6 +8,7 @@ import 'package:soccermadeeasy/commands/network_models/fql_request_models/social
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
+import 'package:soccermadeeasy/models/event_page_model.dart';
 
 import '../graphql/queries/events.dart';
 import 'base_command.dart';
@@ -1154,17 +1155,13 @@ class EventCommand extends BaseCommand {
       "amountRemaining": "0.00",
       "teamAmountPaid": "0.00",
       "teamAmountRemaining": "0.00",
-      "price": {},
-      "paymentObjects": [],
-      "mainEvent": null,
-      "team": null,
-      "players": [],
-      "freeAgents": [],
+      "price": {},      
+      "mainEvent": null,      
+      "players": [],      
       "organizers": [],
       "teams": [],
-      "roles": List<String>.empty(growable: true),
-      "chats": [],
-      "allEvents": [],
+      "roles": [],
+      "chats": [],      
       "groupStage": [],
       "tournamentStage": [],
       "userParticipants": [],
@@ -1206,6 +1203,8 @@ class EventCommand extends BaseCommand {
       print("main event user participants: " +
           event['userParticipants'].toString());
 
+      eventPageModel.mainEvent = event;
+
       //get main event requests
       // Map<String, dynamic> getMainEventResp = await getEvent(event);
       // print("getMainEventResp: " + getMainEventResp.toString());
@@ -1215,33 +1214,43 @@ class EventCommand extends BaseCommand {
       //get chats
       print("get chats: " + event['chats'].toString());
       dynamic chats = event['chats']['data'];
+      eventPageModel.chats = chats;
 
       List<dynamic> myObjectRoles = getEventRoles(event, appModel.currentUser);
       print("myObjectRoles: " + myObjectRoles.toString());
 
       isMyEventResp['roles'] = myObjectRoles;
+      eventPageModel.roles = myObjectRoles;
+
       isMyEventResp['isMine'] = myObjectRoles.contains("ORGANIZER");
+      eventPageModel.isMine = myObjectRoles.contains("ORGANIZER");
       isMyEventResp['isMember'] = myObjectRoles.contains("PLAYER");
+      eventPageModel.isMember = myObjectRoles.contains("PLAYER");
 
       //get teams
       dynamic teams = event['teams']['data'];
       print("teams:: " + teams.toString());
       isMyEventResp['teams'] = teams;
+      eventPageModel.teams = teams;
 
       //get userParticipation data
       dynamic userParticipants = event['userParticipants']['data'];
       isMyEventResp['userParticipants'] = userParticipants;
+      eventPageModel.userParticipants = userParticipants;
+      
       print("userParticipants: " + userParticipants.toString());
       for (int i = 0; i < userParticipants.length; i++) {
         dynamic userParticipant = userParticipants[i];
         List<String> roles = parseRoles(userParticipant['roles']);
         if (roles.contains("ORGANIZER")) {
           print("isMyEvent() = true");
-          isMyEventResp['organizers'].add(userParticipant);
+          isMyEventResp['organizers'].add(userParticipant);          
+          eventPageModel.organizers.add(userParticipants);
         }
         if (roles.contains("PLAYER")) {
           print("isMember() = true");
           isMyEventResp['players'].add(userParticipant);
+          eventPageModel.players.add(userParticipants);
           //check if player belongs to team
           //this code is causing error!
           // if(userParticipant['user']['teams']['data'].length>0&&teams.length>0){
@@ -1267,6 +1276,7 @@ class EventCommand extends BaseCommand {
       // isMyEventResp['amountPaid'] = "0.00";
       // isMyEventResp['amountRemaining'] = "0.00";
       isMyEventResp['price'] = event['price'];
+      eventPageModel.price = event['price'];
       if (event['price'] != null) {
         print("event['price']: " + event['price'].toString());
         print("payments: " + payments.toString());
@@ -1289,12 +1299,16 @@ class EventCommand extends BaseCommand {
           }
         }
         isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
+        eventPageModel.amountPaid = (amountPaid).toStringAsFixed(2);
         isMyEventResp['amountRemaining'] =
             (double.parse(event['price']['amount']) - amountPaid)
                 .toStringAsFixed(2);
         isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);
+        eventPageModel.teamAmountPaid = (teamAmountPaid).toStringAsFixed(2);
         isMyEventResp['teamAmountRemaining'] =
             (double.parse(event['price']['teamAmount']) - teamAmountPaid)
+                .toStringAsFixed(2);
+        eventPageModel.teamAmountRemaining = (double.parse(event['price']['teamAmount']) - teamAmountPaid)
                 .toStringAsFixed(2);
       }
       print("successfully ran details function");

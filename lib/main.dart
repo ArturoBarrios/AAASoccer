@@ -20,6 +20,8 @@ import 'commands/base_command.dart';
 import 'commands/player_command.dart';
 import 'models/app_model.dart';
 import 'models/chat_page_model.dart';
+import 'models/event_page_model.dart';
+import 'models/team_page_model.dart';
 import 'models/user_model.dart';
 import 'models/events_model.dart';
 import 'models/payment_model.dart';
@@ -330,6 +332,8 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (c) => UserModel()),
           ChangeNotifierProvider(create: (c) => EventsModel()),
           ChangeNotifierProvider(create: (c) => GamesModel()),
+          ChangeNotifierProvider(create: (c) => EventPageModel()),
+          ChangeNotifierProvider(create: (c) => TeamPageModel()),
           ChangeNotifierProvider(create: (c) => RequestsModel()),
           ChangeNotifierProvider(create: (c) => RequestsPageModel()),
           ChangeNotifierProvider(create: (c) => FriendsPageModel()),
