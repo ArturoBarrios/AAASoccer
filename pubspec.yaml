@@ -127,6 +127,7 @@ flutter:
   assets:
     - .env
     - lib/assets/icons/
+    - lib/assets/images/
     - lib/assets/json/subscriptions.json
     # - images/a_dot_ham.jpeg
 
