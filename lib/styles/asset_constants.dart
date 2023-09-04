@@ -1,5 +1,6 @@
 class AssetConstants {
   /// Soccer ball.
+
   static const String accountCircle = 'lib/assets/icons/account_circle.svg';
 
   static const String allInboxFilled = 'lib/assets/icons/all_inbox_filled.svg';
@@ -65,4 +66,8 @@ class AssetConstants {
   static const String stadiumFilled = 'lib/assets/icons/stadium_filled.svg';
 
   static const String stadium = 'lib/assets/icons/stadium.svg';
+
+  static const String soccerBall = 'lib/assets/icons/soccer_ball.svg';
+
+  static const String player = 'lib/assets/images/football_player.jpg';
 }

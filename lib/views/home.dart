@@ -37,6 +37,8 @@ import '../constants.dart';
 import '../models/events_model.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
+import 'onboarding/onboarding_view.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -437,6 +439,16 @@ class _Home extends State<Home> {
 
     return Scaffold(
       appBar: Headers(
+        playerStepperButton: ButtonModel(
+          prefixIconData: Icons.play_circle_fill_rounded,
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const OnboardingView();
+              },
+            ));
+          },
+        ),
         filterButton: ButtonModel(
           prefixIconData:
               isFilteringEnabled ? Icons.filter_alt_off : Icons.filter_alt,

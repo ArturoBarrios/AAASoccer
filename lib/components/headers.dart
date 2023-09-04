@@ -3,8 +3,10 @@ import '../views/home.dart';
 import 'models/button_model.dart';
 
 class Headers extends StatefulWidget {
+  final ButtonModel? playerStepperButton;
   final ButtonModel? filterButton;
-  const Headers({Key? key, this.filterButton}) : super(key: key);
+  const Headers({Key? key, this.filterButton, this.playerStepperButton})
+      : super(key: key);
 
   @override
   State<Headers> createState() => _Headers();
@@ -25,6 +27,10 @@ class Headers extends StatefulWidget {
           child: Text("Find Soccer Near You")),
       backgroundColor: Colors.orange.shade500,
       actions: <Widget>[
+        if (playerStepperButton != null)
+          IconButton(
+              onPressed: playerStepperButton?.onTap,
+              icon: Icon(playerStepperButton?.prefixIconData)),
         if (filterButton != null)
           IconButton(
               onPressed: filterButton?.onTap,
