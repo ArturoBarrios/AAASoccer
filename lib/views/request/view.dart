@@ -198,7 +198,7 @@ class _RequestsViewState extends State<RequestsView> {
                             child: Column(
                               children: [
                                 SvgImage(
-                                  svgPath: AssetConstants.soccerBall,
+                                  svgPath: 'lib/assets/icons/soccer_ball.svg',
                                   height: cardImageHeight,
                                   width: cardImageWidth,
                                   color: Colors.white,
