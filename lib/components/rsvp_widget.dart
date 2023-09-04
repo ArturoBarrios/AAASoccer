@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 
-class RSVPWidget extends StatefulWidget {
-  final Function onRsvpStatusChanged;
-  final String currentStatus;
+import '../enums/rsv_status.dart';
+
+class RSVPWidget extends StatelessWidget {
+  final Function(RsvStatus)? onTap;
+  final RsvStatus? currentRsvStatus;
   const RSVPWidget({
     Key? key,
-    required this.onRsvpStatusChanged,
-    required this.currentStatus,
+    this.onTap,
+    this.currentRsvStatus,
   }) : super(key: key);
 
-  @override
-  State<RSVPWidget> createState() => _RSVPWidgetState();
-}
-
-class _RSVPWidgetState extends State<RSVPWidget> {
-  late var selectedRsv = widget.currentStatus;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,16 +30,12 @@ class _RSVPWidgetState extends State<RSVPWidget> {
             ),
             Expanded(
               child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedRsv = "Yes";
-                  });
-                },
+                onTap: () => onTap?.call(RsvStatus.yes),
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                   decoration: BoxDecoration(
-                    color: selectedRsv == "Yes"
+                    color: currentRsvStatus == RsvStatus.yes
                         ? Colors.grey.shade400
                         : Colors.grey.shade100,
                     border: Border.all(color: Colors.grey.shade300),
@@ -60,16 +52,12 @@ class _RSVPWidgetState extends State<RSVPWidget> {
             ),
             Expanded(
               child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedRsv = "No";
-                  });
-                },
+                onTap: () => onTap?.call(RsvStatus.no),
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                   decoration: BoxDecoration(
-                    color: selectedRsv == "No"
+                    color: currentRsvStatus == RsvStatus.no
                         ? Colors.grey.shade400
                         : Colors.grey.shade100,
                     border: Border.all(color: Colors.grey.shade300),
@@ -86,16 +74,12 @@ class _RSVPWidgetState extends State<RSVPWidget> {
             ),
             Expanded(
               child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedRsv = "Maybe";
-                  });
-                },
+                onTap: () => onTap?.call(RsvStatus.maybe),
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                   decoration: BoxDecoration(
-                    color: selectedRsv == "Maybe"
+                    color: currentRsvStatus == RsvStatus.maybe
                         ? Colors.grey.shade400
                         : Colors.grey.shade100,
                     border: Border.all(color: Colors.grey.shade300),

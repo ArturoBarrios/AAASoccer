@@ -156,6 +156,7 @@ class EventFragments {
             }
           }          
           roles
+          isAttending
         }                                                              
       }
       payments{
@@ -172,7 +173,7 @@ class EventFragments {
             _id
             name
           }
-        }
+        }                                                              
       }
     """;
 
@@ -227,6 +228,7 @@ class EventFragments {
             }
           }          
           roles
+          isAttending
         }                                                              
       }      
     """;

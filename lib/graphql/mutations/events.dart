@@ -143,6 +143,60 @@ class EventMutations {
     return updateEventUserParticipantString;
   }
 
+  String updateEventUserParticipantRsv(
+      dynamic updateEventUserParticipantInput) {
+    String updateEventUserParticipantString = """
+      mutation partialUpdateEventUserParticipant {
+        updateEventUserParticipant(
+          id:"${updateEventUserParticipantInput['participantId']}",
+          data: {
+            isAttending: ${updateEventUserParticipantInput['isAttending']},
+            user: { connect: "${updateEventUserParticipantInput['userId']}" },
+            event: { connect: "${updateEventUserParticipantInput['eventId']}"}
+          }
+        ) {
+    _id
+    user {
+      _id
+      name
+      email
+      phone
+    }
+    event {
+      userParticipants {
+        data{
+          _id
+          event{                        
+            _id
+            name
+          }
+          user{
+            _id
+            name
+            email
+            username
+            userType
+            teams{
+              data{
+                _id
+              }
+
+            }
+          }          
+          roles
+          isAttending
+        } 
+      }
+    }
+    roles
+    isAttending
+  }
+}
+        """;
+
+    return updateEventUserParticipantString;
+  }
+
   String updateUserRolesInEvent(Map<String, dynamic> eventInput,
       Map<String, dynamic> userInput, String roles, String eventRequestId) {
     String addPlayerToEvent = """      
