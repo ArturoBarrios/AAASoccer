@@ -116,10 +116,6 @@ class BaseCommand {
     return roles;
   }
 
-  void updateUserEventDetailsModel(dynamic userEventDetails) {
-    appModel.userEventDetails = userEventDetails;
-    // appModel.updateUserEventDetails(userEventDetails);
-  }
 
   dynamic getUserEventDetailsModel() {
     return appModel.userEventDetails;

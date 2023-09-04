@@ -12,9 +12,13 @@ import 'Mixins/event_mixin.dart';
 import 'card_form_screen.dart';
 
 class GetJoinEventWidget extends StatefulWidget with EventMixin {
-  final Map<String, dynamic> userObjectDetails;
+  final dynamic mainEvent;
+  final List<dynamic> roles;
+  final bool isMine;
+  final dynamic price;
+  final String amountRemaining;
 
-  GetJoinEventWidget({required this.userObjectDetails});
+  GetJoinEventWidget({required this.mainEvent, required this.roles, required this.isMine, required this.price, required this.amountRemaining,  });
 
   @override
   _GetJoinEventWidgetState createState() => _GetJoinEventWidgetState();
@@ -58,13 +62,13 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     // BaseCommand().popToHome(context);
   }
 
-  void purchaseEvent(BuildContext context, dynamic event, List<dynamic> roles,
-      dynamic userObjectDetails) async {
+  void purchaseEvent(BuildContext context, dynamic event, List<dynamic> roles
+      ) async {
     print("purchaseEvent");
     String rolesString = BaseCommand().stringifyRoles(roles);
      dynamic subscriptionDetails = {
-      "price": userObjectDetails['mainEvent']['price'],
-      "objectToPurchase": userObjectDetails['mainEvent'],
+      "price": widget.price,
+      "objectToPurchase": widget.mainEvent,
       "objectType": Constants.EVENT,    
       "roles": rolesString,  
       "forRole": Constants.PLAYER,
@@ -150,7 +154,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
   }
 
   Container sendOrganizerPlayerEventRequest(
-      BuildContext context, dynamic userObjectDetails) {
+      BuildContext context) {
     return Container(
       height: 20,
       child: ClipRRect(
@@ -173,7 +177,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
               if (result.isNotEmpty) {
                 print('Selected items: $result');
                 // await requestTypeSelected(selectedRequestTypeIndexes);
-                await sendEventRequest(userObjectDetails['mainEvent'], result,
+                await sendEventRequest(widget.mainEvent, result,
                     primaryList, secondaryList);
               }
             },
@@ -196,12 +200,12 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     print("getJoinEventWidget()");
     dynamic eventJoinCondition = getEventJoinConditions(event['joinConditions']['data']);
     print("eventJoinCondition: "+eventJoinCondition.toString());
-    print("rolesss: "+ widget.userObjectDetails['roles'].toString());
-    List<dynamic> existingRoles = widget.userObjectDetails['roles'];
+    print("rolesss: "+ widget.roles.toString());
+    List<dynamic> existingRoles = widget.roles;
     //if not already a player
-    if (!widget.userObjectDetails['roles'].contains("PLAYER")) {
+    if (!widget.roles.contains("PLAYER")) {
       // String roles = addRoleToRoles("PLAYER");
-      if (widget.userObjectDetails['isMine']) {
+      if (widget.isMine) {
         return Container(
             child: GestureDetector(
           onTap: () async {
@@ -223,7 +227,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         if (!eventJoinCondition['withPayment'] &&
             !eventJoinCondition['withRequest']) {
           //price exists(join with paying or not paying)
-          if (widget.userObjectDetails['price'] != null) {
+          if (widget.price != null) {
             return Container(
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -236,7 +240,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                         print("chooseRoleDialog: "+chooseRoleDialog.toString());
                         List<dynamic> roles = chooseRoleDialog['rolesArray'];                        
                         print("roles: "+roles.toString());
-                        purchaseEvent(context, event, roles, widget.userObjectDetails);
+                        purchaseEvent(context, event, roles);
                       }
                     },
                     child: Text("Join Game, Pay Now"),
@@ -281,7 +285,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         //!withPayment&&withRequestt
         else if (!eventJoinCondition['withPayment'] &&
             eventJoinCondition['withRequest']) {
-          return sendOrganizerPlayerEventRequest(context, widget.userObjectDetails);
+          return sendOrganizerPlayerEventRequest(context);
         }
         //withPayment && !withRequest
         else if (eventJoinCondition['withPayment'] &&
@@ -298,7 +302,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                 List<dynamic> roles = chooseRoleDialog['rolesArray'];
                 // BaseCommand().stringifyRoles(roles);
                 print("roles: "+roles.toString());
-                purchaseEvent(context, event, roles, widget.userObjectDetails);
+                purchaseEvent(context, event, roles);
               }              
             },
             child: Text("Pay to Join Game"),
@@ -324,7 +328,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                 requestElementObject['status'].toString());
             if (requestElementObject['status'].toString() == "ACCEPTED") {
               //if not paid off
-              if ((double.parse(widget.userObjectDetails['amountRemaining']) / 100)
+              if ((double.parse(widget.amountRemaining) / 100)
                       .toStringAsFixed(2) !=
                   "0.00") {
                 return Container(
@@ -337,7 +341,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                         List<String> roles = chooseRoleDialog['rolesArray'];
                         // BaseCommand().stringifyRoles(roles);
                         print("roles: "+roles.toString());
-                        purchaseEvent(context, event, roles, widget.userObjectDetails);
+                        purchaseEvent(context, event, roles);
                       }                    
                   },
                   child: Text("Pay to Join Game"),
@@ -357,11 +361,11 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
               ));
             } else {
               return sendOrganizerPlayerEventRequest(
-                  context, widget.userObjectDetails);
+                  context);
 
             }
           } else {
-            return sendOrganizerPlayerEventRequest(context, widget.userObjectDetails);
+            return sendOrganizerPlayerEventRequest(context);
 
           }
         }
@@ -392,7 +396,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
   void loadInitialData() {
     userObject = UserCommand().getAppModelUser();
-    event = widget.userObjectDetails['mainEvent'];
+    event = widget.mainEvent;
   }
 
   @override

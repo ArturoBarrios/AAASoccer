@@ -68,6 +68,7 @@ class EventPageModel extends ChangeNotifier {
     _players = players;
     notifyListeners();
   }
+   
   
   List _organizers = [];
   List get organizers => _organizers;

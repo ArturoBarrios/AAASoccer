@@ -13,11 +13,25 @@ import '../../components/Mixins/images_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/Mixins/event_mixin.dart';
 import '../../components/chats_list_widget.dart';
+import '../../components/create_event_payment.dart';
+import '../../components/create_event_request.dart';
+import '../../components/create_team_payment.dart';
+import '../../components/create_team_request.dart';
+import '../../components/event_date_widget.dart';
+import '../../components/get_chat_widget.dart';
+import '../../components/get_join_event_widget.dart';
 import '../../components/image_header.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
 import '../../components/object_profile_main_image.dart';
 import '../../components/players_list_widget.dart';
+import '../../components/price_widget.dart';
+import '../../components/requests_list.dart';
+import '../../components/rsvp_widget.dart';
+import '../../components/send_players_request_widget.dart';
+import '../../components/send_teams_request_widget.dart';
+import '../../components/teams_list_widget.dart';
+import '../../models/event_page_model.dart';
 import '../profile/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
@@ -49,6 +63,11 @@ class _PickupViewState extends State<PickupView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
+
+  CreateEventRequest createEventRequestWidget = CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
 
   bool _isLoading = true;
   late LatLng _center = LatLng(45.521563, -122.677433);
@@ -83,7 +102,6 @@ class _PickupViewState extends State<PickupView> {
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
     dynamic userEventDetails = getEventDetailsResp;
-    BaseCommand().updateUserEventDetailsModel(userEventDetails);
     //setup image
     objectImageInput = await widget.loadEventMainImage(userEventDetails);
 
@@ -102,7 +120,6 @@ class _PickupViewState extends State<PickupView> {
     setState(() {
       dynamic userEventDetails = BaseCommand().getUserEventDetailsModel();
       userEventDetails['mainEvent']['chats']['data'].add(createdChat);
-      BaseCommand().updateUserEventDetailsModel(userEventDetails);
     });
   }
 
@@ -132,13 +149,38 @@ class _PickupViewState extends State<PickupView> {
     );
   }
 
+  void addTeamCallback(dynamic team) {
+    setState(() {
+      // widget.userObjectDetails['mainEvent']['teams']['data'].add(team);
+      // BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build()");
     print("game: " + widget.game.toString());
 
-    dynamic userEventDetails =
-        context.select<AppModel, dynamic>((value) => value.userEventDetails);
+    dynamic mainEvent =
+        context.select<EventPageModel, dynamic>((value) => value.mainEvent);
+    List<dynamic> roles =
+        context.select<EventPageModel, List<dynamic>>((value) => value.roles);
+    bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
+    bool isMember = context.select<EventPageModel, bool>((value) => value.isMember);
+    dynamic price =
+        context.select<EventPageModel, dynamic>((value) => value.price);
+    String amountRemaining = context
+        .select<EventPageModel, String>((value) => value.amountRemaining);
+    String amountPaid = context.select<EventPageModel, String>((value) => value.amountPaid);
+    String teamAmountRemaining = context
+        .select<EventPageModel, String>((value) => value.amountRemaining);
+    String amountPaid = context.select<EventPageModel, String>((value) => value.amountPaid);
+    List userParticipants =
+        context.select<EventPageModel, List>((value) => value.userParticipants);
+    List teams = context.select<EventPageModel, List>((value) => value.teams);
+    List players =
+        context.select<EventPageModel, List>((value) => value.players);
+    List chats = context.select<EventPageModel, List>((value) => value.chats);
 
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -180,7 +222,102 @@ class _PickupViewState extends State<PickupView> {
                         ),
                         onPressed: onTapSocialMediaApp,
                       ),
-                      UpdateViewForm(userObjectDetails: userEventDetails),
+                      //date
+                      EventDateWidget(
+                          canEdit: mainEvent['isMine'],
+                          startTime: mainEvent['startTime'],
+                          endTime: mainEvent['endTime']),
+                      //map
+                      Container(
+                        margin: const EdgeInsets.all(10.0),
+                        color: Colors.amber[600],
+                        width: MediaQuery.of(context).size.width -
+                            (MediaQuery.of(context).size.width *
+                                .1), //10% padding
+                        height: 200.0,
+                        child: MyMapPage(
+                            latitude: mainEvent['location']['data'][0]
+                                ['latitude'],
+                            longitude: mainEvent['location']['data'][0]
+                                ['longitude']),
+                      ),
+                      //join widget
+                      GetJoinEventWidget(
+                          mainEvent: mainEvent,
+                          roles: roles,
+                          isMine: isMine,
+                          price: price,
+                          amountRemaining: amountRemaining),
+                      //Requests widget
+                      RequestsList(objectDetails: {
+                        "requests": mainEvent['requests']['data']
+                      }),
+                      //RSP
+                      RSVPWidget(
+                        onRsvpStatusChanged: () {},
+                        currentStatus: '',
+                      ),
+                      //location search bar
+                      locationSearchBar = LocationSearchBar(
+                          initialValue: mainEvent['location']['data'][0]
+                              ['name']),
+                      //player list
+                      PlayerList(userParticipants: userParticipants),
+                      //team list
+                      TeamsListWidget(mainEvent: mainEvent, teams: teams),
+                      //player request widget
+                      SendPlayersRequestWidget(
+                          mainEvent: mainEvent,
+                          team: null,
+                          players: players,
+                          isMine: isMine),
+                      //team request widget
+                      SendTeamsRequestWidget(
+                        mainEvent: mainEvent,
+                        isMine: isMine,
+                        teams: teams,
+                        addTeamCallback: addTeamCallback,
+                      ),
+                      //chat widget
+                      GetChatWidget(
+                          mainEvent: mainEvent,
+                          team: null,
+                          players: players,
+                          isMine: isMine,
+                          updatechatsList: updateChatsList),
+                      ChatsListWidget(
+                        chats: chats,
+                      ),
+                      //Player price widget
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PriceWidget(
+                              price: price,
+                              teamPrice: false,
+                              eventPrice: true,
+                              amountPaid: amountPaid,
+                              amountRemaining: amountRemaining,
+                              isMine: isMine,
+                              isMember: isMember
+                            )
+                        ],
+                      ),
+                      //Team price widget
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PriceWidget(
+                            price: price,
+                            teamPrice: true,
+                            eventPrice: false,
+                            amountPaid: teamAmountPaid,
+                            amountRemaining: teamAmountRemaining,
+                            isMine: isMine,
+                            isMember: isMember
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 ),

@@ -13,10 +13,13 @@ import 'Dialogues/animated_dialogu.dart';
 
 // // // // // // // // // // // // // // //
 class SendPlayersRequestWidget extends StatefulWidget {
-  SendPlayersRequestWidget({Key? key, required this.userObjectDetails})
+  SendPlayersRequestWidget({Key? key, required this.mainEvent, required this.team, required this.players, required this.isMine })
       : super(key: key);
 
-  final dynamic userObjectDetails;
+  final dynamic mainEvent;
+  final dynamic team;
+  final dynamic players;
+  final dynamic isMine;
 
   @override
   _SendPlayersRequestWidgetState createState() =>
@@ -65,7 +68,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
 
-    String type = getRequestType(widget.userObjectDetails['mainEvent']);
+    String type = getRequestType(widget.mainEvent);
 
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic playerChosen = primaryList[mainIndex];
@@ -75,14 +78,14 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
       });
       print("roles: " + roles.toString());
       await EventCommand().sendPlayerEventRequests(
-          playerChosen, [widget.userObjectDetails['mainEvent']], roles, type);
+          playerChosen, [widget.mainEvent], roles, type);
     });
   }
 
   Future<void> sendPlayersTeamRequest(Map<int, dynamic> indexes,
       List<dynamic> primaryList, List<dynamic> secondaryList) async {
     print("sendPlayersTeamRequest");
-    print("userObjectDetails: " + widget.userObjectDetails['team'].toString());
+    print("userObjectDetails: " + widget.team.toString());
     print("indexes: " + indexes.toString());
     print("primaryList: " + primaryList.toString());
     print("secondaryList: " + secondaryList.toString());
@@ -94,7 +97,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
         print("roles: " + roles.toString());
 
         await TeamCommand().sendPlayerTeamRequests(
-            playerChosen, [widget.userObjectDetails['team']], roles);
+            playerChosen, [widget.team], roles);
       });
     });
   }
@@ -110,16 +113,16 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     indexes.forEach((mainIndex, secondaryIndexesThatIsNull) async {
       dynamic role = primaryList[mainIndex];
       bool isMyObject = false;
-      if (widget.userObjectDetails['isMine']) {
-        if (widget.userObjectDetails['mainEvent'] != null) {
+      if (widget.isMine) {
+        if (widget.mainEvent != null) {
           //add yourself to event
           setState(() {
-            widget.userObjectDetails['players'].add(userObject);
+            widget.players.add(userObject);
           });
         } else {
           //add yourself to team
           setState(() {
-            widget.userObjectDetails['team']['players'].add(userObject);
+            widget.team['players'].add(userObject);
           });
         }
       } else {
@@ -127,10 +130,6 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
             .sendOrganizerEventRequest(eventObject, role, requestType);
       }
     });
-    // for (int i = 0; i < selectedRequestTypeObjects.length; i++) {
-    //   await EventCommand().sendOrganizerEventRequest(
-    //       eventObject, selectedRequestTypeObjects[i], requestType);
-    // }
   }
 
   void goToPlayer(dynamic player) {
@@ -171,7 +170,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
               if (result.isNotEmpty) {
                 print('Selected items: $result');
                 // await requestTypeSelected(selectedRequestTypeIndexes);
-                await sendEventRequest(widget.userObjectDetails['mainEvent'],
+                await sendEventRequest(widget.mainEvent,
                     result, primaryList, secondaryList);
               }
             },
@@ -185,8 +184,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     );
   }
 
-  Container sendPlayersRequestWidget(dynamic userObjectDetails) {
-    print("sendPlayersRequestWidget: " + userObjectDetails.toString());
+  Container sendPlayersRequestWidget() {    
     setupPlayerList();
     print("playersList: " + playerList.length.toString());
     // if(userObjectDetails['isMine']){
@@ -208,7 +206,7 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
               );
               if (result.isNotEmpty) {
                 print("result: " + result.toString());
-                if (userObjectDetails['mainEvent'] != null) {
+                if (widget.mainEvent != null) {
                   sendPlayersEventRequest(result, primaryList, secondaryList);
                 } else {
                   sendPlayersTeamRequest(result, primaryList, secondaryList);
@@ -241,6 +239,6 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return sendPlayersRequestWidget(widget.userObjectDetails);
+    return sendPlayersRequestWidget();
   }
 }
