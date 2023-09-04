@@ -155,7 +155,10 @@ class _LeagueCreateState extends State<LeagueCreate> {
           ),
         ],
       ),
-      body: Center(
+      body: 
+      SingleChildScrollView(
+        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 50.0),
+        child: Center(
         child: Column(
           children: [
             TextField(
@@ -219,7 +222,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 }

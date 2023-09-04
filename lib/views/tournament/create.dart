@@ -162,7 +162,9 @@ class _TournamentCreateState extends State<TournamentCreate> {
           ),
         ],
       ),
-      body: Center(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 50.0),
+        child:Center(
         child: Column(
           children: [
             EventInputWidget(
@@ -202,11 +204,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
               controller: knockoutRoundsController,
               decoration:
                   const InputDecoration.collapsed(hintText: 'Knockout Rounds'),
-            ),
-            TextField(
-              controller: capacityController,
-              decoration: const InputDecoration.collapsed(hintText: 'Capcity'),
-            ),
+            ),            
             GestureDetector(
               onTap: () {
                 createTournament();
@@ -215,7 +213,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 }
