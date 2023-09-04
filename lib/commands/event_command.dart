@@ -1948,4 +1948,39 @@ class EventCommand extends BaseCommand {
 
     return updateEventUserParticipantResponse;
   }
+
+  Future<Map<String, dynamic>> updateEventUserParticipantRsv(
+      dynamic eventUserParticipantRsv) async {
+    print("updateEventUserParticipant");
+
+    Map<String, dynamic> updateEventUserParticipantResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    http.Response response = await http.post(
+      Uri.parse('https://graphql.fauna.com/graphql'),
+      headers: <String, String>{
+        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        'Content-Type': 'application/json'
+      },
+      body: jsonEncode(<String, String>{
+        'query': EventMutations()
+            .updateEventUserParticipantRsv(eventUserParticipantRsv),
+      }),
+    );
+
+    print("response body: ");
+    print(jsonDecode(response.body));
+
+    updateEventUserParticipantResponse["success"] = true;
+    updateEventUserParticipantResponse["message"] =
+        "Event User Participant Updated";
+    updateEventUserParticipantResponse["data"] =
+        jsonDecode(response.body)['data']['updateEventUserParticipant']['event']
+            ['userParticipants']['data'];
+
+    return updateEventUserParticipantResponse;
+  }
 }

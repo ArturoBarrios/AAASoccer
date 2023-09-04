@@ -207,17 +207,25 @@ type Player   {
   ratings: [Rating] @relation
 }
 
+enum EventUserParticipantAttendingOptions {
+  YES
+  NO
+  MAYBE
+}
+
 type EventUserParticipant {
   event: Event
   user: User
   roles: String
   organization: Organization
+  isAttending: EventUserParticipantAttendingOptions
 }
 
 type TeamUserParticipant {
   team: Team
   user: User
   roles: String
+  isAttending: EventUserParticipantAttendingOptions
 }
 
 type Game {

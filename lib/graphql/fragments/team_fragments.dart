@@ -44,6 +44,7 @@ class TeamFragments {
                   phone
                 }
                 roles
+                isAttending
               }
             } 
             joinConditions{
@@ -80,7 +81,7 @@ class TeamFragments {
 
     return fullTeamReturn;
   }
-  
+
   String minimalTeam() {
     String fullTeamReturn = """
             _id
@@ -113,6 +114,7 @@ class TeamFragments {
                   phone
                 }
                 roles
+                isAttending
               }
             } 
             joinConditions{

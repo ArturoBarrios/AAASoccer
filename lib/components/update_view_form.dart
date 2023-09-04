@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/commands/event_command.dart';
 import 'package:soccermadeeasy/components/players_list_widget.dart';
 import 'package:soccermadeeasy/components/price_widget.dart';
 import 'package:soccermadeeasy/components/requests_list.dart';
@@ -11,6 +10,7 @@ import 'package:soccermadeeasy/components/teams_list_widget.dart';
 
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
+import '../enums/rsv_status.dart';
 import '../views/game/update.dart';
 
 import 'Mixins/event_mixin.dart';
@@ -42,6 +42,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
   CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
   CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
   dynamic images = [];
+  RsvStatus rsvStatus = RsvStatus.maybe;
 
   void setupRequestWidgetData() {
     print("setupRequestWidgetData()");
@@ -77,6 +78,11 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
 
     //remove chats that don't belong to you
     dynamic appModelUser = UserCommand().getAppModelUser();
+    rsvStatus = getParticipantIdByUserId(
+            widget.userObjectDetails['mainEvent']['userParticipants']['data'],
+            appModelUser['_id'])['isAttending']
+        .toString()
+        .toRsv;
     var chats = widget.userObjectDetails['mainEvent']['chats']['data'];
     var filteredChats = [];
 
@@ -89,11 +95,38 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     widget.userObjectDetails['mainEvent']['chats']['data'] = filteredChats;
   }
 
-  void updateRsvpStatus(Map<String, dynamic> rsvpStatus) {
-    setState(() {
-      widget.userObjectDetails['mainEvent']['rsvp']['data'].add(rsvpStatus);
-      BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
-    });
+  Future<void> updateRsvp(RsvStatus rsvpStatus) async {
+    dynamic appModelUser = UserCommand().getAppModelUser();
+
+    final participantId = getParticipantIdByUserId(
+        widget.userObjectDetails['mainEvent']['userParticipants']['data'],
+        appModelUser['_id']);
+
+    Map<String, dynamic> input = {
+      "participantId": participantId['_id'],
+      "eventId": widget.userObjectDetails['mainEvent']['_id'],
+      "userId": appModelUser['_id'],
+      "isAttending": rsvpStatus.name.toUpperCase(),
+    };
+    final result = await EventCommand().updateEventUserParticipantRsv(input);
+    if (result['data'] != null) {
+      setState(() {
+        rsvStatus = rsvpStatus;
+        widget.userObjectDetails['mainEvent']['userParticipants']['data'] =
+            result['data'];
+        widget.userObjectDetails['userParticipants'] = result['data'];
+        BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
+      });
+    }
+  }
+
+  dynamic getParticipantIdByUserId(List<dynamic> dataList, String userId) {
+    for (var data in dataList) {
+      if (data['user']['_id'] == userId) {
+        return data;
+      }
+    }
+    return null;
   }
 
   @override
@@ -134,8 +167,8 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
                     ['data']
               }),
               RSVPWidget(
-                onRsvpStatusChanged: () {},
-                currentStatus: '',
+                onTap: updateRsvp,
+                currentRsvStatus: rsvStatus,
               ),
               widget.userObjectDetails['isMine']
                   ? locationSearchBar = LocationSearchBar(
