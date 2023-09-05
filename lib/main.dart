@@ -105,8 +105,6 @@ class _MyAppState extends State<MyApp> {
     if (configureAmplifyResp['message'] == "isSignedIn") {
       emailController.text = configureAmplifyResp['email'];
       await startLoadToHomeTransition();
-
-
     }
   }
 
@@ -278,19 +276,16 @@ class _MyAppState extends State<MyApp> {
       // if (resp['success']) {
       await BaseCommand().setupUser(emailController.text.trim());
       BaseCommand().initialUserConditionsMet();
-     
+
       print("initialConditionsMett");
       // } else {
       //   print("try again....");
 
-      
       // }
     } else {
       print("error in startLoadToHomeTransition");
     }
   }
-
-  
 
   void confirmSignIn(AuthenticatorState state) async {
     try {
@@ -324,30 +319,28 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext _) {
-    
-
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (c) => AppModel()),
-          ChangeNotifierProvider(create: (c) => UserModel()),
-          ChangeNotifierProvider(create: (c) => EventsModel()),
-          ChangeNotifierProvider(create: (c) => GamesModel()),
-          ChangeNotifierProvider(create: (c) => EventPageModel()),
-          ChangeNotifierProvider(create: (c) => TeamPageModel()),
-          ChangeNotifierProvider(create: (c) => RequestsModel()),
-          ChangeNotifierProvider(create: (c) => RequestsPageModel()),
-          ChangeNotifierProvider(create: (c) => FriendsPageModel()),
-          ChangeNotifierProvider(create: (c) => ChatPageModel()),
-          ChangeNotifierProvider(create: (c) => HomePageModel()),
-          ChangeNotifierProvider(create: (c) => PaymentModel()),
-          Provider(create: (c) => FaunaDBServices()),
-          Provider(create: (c) => GeoLocationServices()),
-        ],
-        child: Builder(builder: (context) {
-          
+      providers: [
+        ChangeNotifierProvider(create: (c) => AppModel()),
+        ChangeNotifierProvider(create: (c) => UserModel()),
+        ChangeNotifierProvider(create: (c) => EventsModel()),
+        ChangeNotifierProvider(create: (c) => GamesModel()),
+        ChangeNotifierProvider(create: (c) => EventPageModel()),
+        ChangeNotifierProvider(create: (c) => TeamPageModel()),
+        ChangeNotifierProvider(create: (c) => RequestsModel()),
+        ChangeNotifierProvider(create: (c) => RequestsPageModel()),
+        ChangeNotifierProvider(create: (c) => FriendsPageModel()),
+        ChangeNotifierProvider(create: (c) => ChatPageModel()),
+        ChangeNotifierProvider(create: (c) => HomePageModel()),
+        ChangeNotifierProvider(create: (c) => PaymentModel()),
+        Provider(create: (c) => FaunaDBServices()),
+        Provider(create: (c) => GeoLocationServices()),
+      ],
+      child: Builder(
+        builder: (context) {
           Commands.init(context);
-bool userConditionsMet =
-        context.select<AppModel, bool>((value) => value.userConditionsMet);
+          bool userConditionsMet = context
+              .select<AppModel, bool>((value) => value.userConditionsMet);
           return Authenticator(
             authenticatorBuilder:
                 (BuildContext context, AuthenticatorState state) {
@@ -707,11 +700,9 @@ bool userConditionsMet =
             child: MaterialApp(
               navigatorKey: navigatorKey,
               builder: Authenticator.builder(),
-              home: 
-              userConditionsMet ? 
-                AppScaffold(client: widget.client)
-                : SplashScreen(),
-
+              home: userConditionsMet
+                  ? AppScaffold(client: widget.client)
+                  : SplashScreen(),
               routes: {
                 // When navigating to the "/" route, build the HomeScreen widget.
                 '/home': (context) => Home(),
@@ -735,37 +726,31 @@ class AppScaffold extends StatefulWidget {
   //assumes email's been set in AppModel
   //assumes user's been created in FaunaDB
   //assumes you're signed in/up
-  
-  
+
   Future<void> loadPlayerDetails() async {
     print("loadPlayerDetails");
     // await TwilioServices().configureTwilio();
-    
-      ///////////////////////// add back in when shortcode is ready
-      // print("resppp: " + resp.toString());
-      // if (resp['success']) {
-      await BaseCommand().setupInitialAppModels();
-      BaseCommand().initialConditionsMet();
-     
-      print("initialConditionsMett");
-      // } else {
-      //   print("try again....");
 
-      
-      // }
-    
+    ///////////////////////// add back in when shortcode is ready
+    // print("resppp: " + resp.toString());
+    // if (resp['success']) {
+    await BaseCommand().setupInitialAppModels();
+    BaseCommand().initialConditionsMet();
+
+    print("initialConditionsMett");
+    // } else {
+    //   print("try again....");
+
+    // }
   }
-
-
 
   @override
   State<AppScaffold> createState() => _AppScaffoldState();
 }
 
 class _AppScaffoldState extends State<AppScaffold> {
-
-  @override 
-  initState(){
+  @override
+  initState() {
     print("AppScaffoldState main.dart");
     super.initState();
     widget.loadPlayerDetails();
@@ -773,7 +758,6 @@ class _AppScaffoldState extends State<AppScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    
     // Bind to AppModel.currentUser
     Map<String, dynamic> currentUser = context
         .select<AppModel, Map<String, dynamic>>((value) => value.currentUser);
@@ -783,8 +767,6 @@ class _AppScaffoldState extends State<AppScaffold> {
 
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
-    
-    
 
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
@@ -794,15 +776,6 @@ class _AppScaffoldState extends State<AppScaffold> {
     return Scaffold(
 
         //replace first condition with loading screen
-        body: initialConditionsMet == false
-            ? SplashScreen()
-            : RefreshIndicator(
-                onRefresh: () async {
-                  print("Reload");
-                },
-                child: Home(),
-              )
-        
-        );
+        body: initialConditionsMet == false ? SplashScreen() : Home());
   }
 }
