@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import '../commands/payment_commands.dart';
 
 class PriceWidget extends StatefulWidget {
-  final dynamic userEventDetails;
-  final bool teamPrice;
-  final bool eventPrice;
+  final dynamic price;
+  final dynamic teamPrice;
+  final dynamic eventPrice;
+  final String amountPaid;
+  final String amountRemaining;
+  final bool isMine;
+  final bool isMember;
 
-  PriceWidget({required this.userEventDetails, required this.teamPrice, required this.eventPrice});
+  PriceWidget({required this.price, required this.teamPrice, required this.eventPrice, required this.amountPaid, required this.amountRemaining, required this.isMine, required this.isMember });
 
   @override
   _PriceWidgetState createState() => _PriceWidgetState();
@@ -30,11 +34,11 @@ class _PriceWidgetState extends State<PriceWidget> {
     print("loadPriceDetails()");
     if(widget.eventPrice){
       print("if(widget.eventPrice)");
-      priceController.text = (double.parse(widget.userEventDetails['price']['amount'])).toStringAsFixed(2);
+      priceController.text = (double.parse(widget.price['amount'])).toStringAsFixed(2);
     }
     else{
       print("else");
-      priceController.text = (double.parse(widget.userEventDetails['price']['teamAmount'])).toStringAsFixed(2);
+      priceController.text = (double.parse(widget.price['teamAmount'])).toStringAsFixed(2);
     }
   }
 
@@ -44,10 +48,10 @@ class _PriceWidgetState extends State<PriceWidget> {
     print("newAmount: " + newAmount.toString());
     dynamic priceObject = null;
     if(widget.eventPrice){
-      priceObject = widget.userEventDetails['price'];
+      priceObject = widget.price;
     }
     else{
-      priceObject = widget.userEventDetails['price'];
+      priceObject = widget.price;
     }
     dynamic priceInput = {
       "_id": priceObject['_id'],
@@ -58,41 +62,40 @@ class _PriceWidgetState extends State<PriceWidget> {
     dynamic updatedPrice = updatePriceResp['data'];
     setState(() {
       if(widget.eventPrice){
-        widget.userEventDetails['price']['amount'] = (double.parse(updatedPrice['amount'])/2).toString();
+        widget.price['amount'] = (double.parse(updatedPrice['amount'])/2).toString();
       }
       else{
-        widget.userEventDetails['price']['teamAmount'] = updatedPrice['teamAmount'];
+        widget.price['teamAmount'] = updatedPrice['teamAmount'];
       }
     });
   }
 
-  Container getPriceWidget(dynamic userObjectDetails) {
-    print("getPriceWidget()");
-    print("userObjectDetails: " + userObjectDetails.toString());
-    if (userObjectDetails['price'] != null) {
+  Container getPriceWidget() {
+    print("getPriceWidget()");    
+    if (widget.price != null) {
       String amount = "";
       String amountPaid = "";
       String amountRemaining = "";
       if(widget.eventPrice){
-        amount = (double.parse(userObjectDetails['price']['amount']) / 100)
+        amount = (double.parse(widget.price['amount']) / 100)
             .toStringAsFixed(2);
-        amountPaid = (double.parse(userObjectDetails['amountPaid']) / 100)
+        amountPaid = (double.parse(widget.amountPaid) / 100)
             .toStringAsFixed(2);
         amountRemaining =
-            (double.parse(userObjectDetails['amountRemaining']) / 100)
+            (double.parse(widget.amountRemaining) / 100)
                 .toStringAsFixed(2);
 
       }
       else{
-        amount = (double.parse(userObjectDetails['price']['teamAmount']) / 100)
+        amount = (double.parse(widget.price['teamAmount']) / 100)
             .toStringAsFixed(2);
-        amountPaid = (double.parse(userObjectDetails['teamAmountPaid']) / 100)
+        amountPaid = (double.parse(widget.amountPaid) / 100)
             .toStringAsFixed(2);
         amountRemaining =
-            (double.parse(userObjectDetails['teamAmountRemaining']) / 100)
+            (double.parse(widget.amountRemaining) / 100)
                 .toStringAsFixed(2);
       }
-      if (!userObjectDetails['roles'].contains("ORGANIZER")) {
+      if (!widget.isMine) {
         if (amountRemaining == "0.00") {
           return Container(
               child: Row(
@@ -120,7 +123,7 @@ class _PriceWidgetState extends State<PriceWidget> {
                       "Price: \$${(amount)}",
                       style: TextStyle(fontSize: 16),
                     ),
-                    userObjectDetails['isMember']
+                    widget.isMember
                         ? Text(
                             "Remaining Balance: \$$amountRemaining",
                             style: TextStyle(fontSize: 16),
@@ -175,7 +178,7 @@ class _PriceWidgetState extends State<PriceWidget> {
         child:
         Column(
           children: [
-            getPriceWidget(widget.userEventDetails),
+            getPriceWidget(),
               
 
           ]

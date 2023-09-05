@@ -99,19 +99,19 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm>
       SendMyEventsTeamRequestWidget(
           userObjectDetails: widget.userObjectDetails,
           addEventcallback: addEventCallback),
-      widget.userObjectDetails['isMine']
-          ? SendPlayersRequestWidget(
-              userObjectDetails: widget.userObjectDetails)
-          : Container(),
-      EventsListWidget(
-        objectEventsDetails: widget.userObjectDetails,
-      ),
-      ImagesListWidget(details: widget.userObjectDetails),
-      GetJoinTeamWidget(userObjectDetails: widget.userObjectDetails),
-      PlayerList(playersDetails: widget.userObjectDetails),
-      GetChatWidget(
-          objectEventsDetails: widget.userObjectDetails,
-          updatechatsList: updateChatsList),
+      // widget.userObjectDetails['isMine']
+      //     ? SendPlayersRequestWidget(
+      //         userObjectDetails: widget.userObjectDetails)
+      //     : Container(),
+      // EventsListWidget(
+      //   objectEventsDetails: widget.userObjectDetails,
+      // ),
+      // ImagesListWidget(details: widget.userObjectDetails),
+      // GetJoinTeamWidget(userObjectDetails: widget.userObjectDetails),
+      // PlayerList(playersDetails: widget.userObjectDetails),
+      // GetChatWidget(
+      //     objectEventsDetails: widget.userObjectDetails,
+      //     updatechatsList: updateChatsList),
       ChatsListWidget(chats: widget.userObjectDetails['team']['chats']['data']),
       createTeamRequestWidget,
       createTeamPaymentWidget,
