@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/base_command.dart';
 import '../commands/event_command.dart';
+import '../commands/user_command.dart';
 import '../views/team/view.dart';
 import 'Loading/loading_screen.dart';
 
-class TeamsListWidget extends StatefulWidget {
-  final Map<String, dynamic> userObjectDetails;  
+class TeamsListWidget extends StatefulWidget {  
+  final dynamic mainEvent;  
+  final List teams;    
   // final void Function(dynamic) addTeam; // Optional function input parameter
 
-  TeamsListWidget({required this.userObjectDetails}); // Include required modifier
+  TeamsListWidget({required this.mainEvent, required this.teams}); // Include required modifier
   
   @override
   _TeamsListWidgetState createState() => _TeamsListWidgetState();
@@ -17,43 +19,50 @@ class TeamsListWidget extends StatefulWidget {
 class _TeamsListWidgetState extends State<TeamsListWidget> {
   List<dynamic> teams = [];
   bool _isLoading = true;
+  dynamic user; 
+
+  Future<void> removeUserFromTeam(dynamic team) async {
+    print("removeUserFromTeam");
+    print("team: " + team.toString());
+    dynamic removeUserFromTeamInput = {
+      'team_id': team['_id'],
+      'user_id': user['_id'],
+    };
+    dynamic removeTeamFromEventResp =
+        await EventCommand().removeTeamFromEvent(removeUserFromTeamInput);
+    print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
+    if (removeTeamFromEventResp['success']) {      
+      
+          setState(() {
+            widget.teams.removeWhere((teamItem) => teamItem['_id'] == team['_id']);
+          });          
+    }
+  }
 
   Future<void> removeTeamFromEvent(dynamic team) async {
     print("removeTeamFromEvent");
     print("team: " + team.toString());
     dynamic removeTeamFromEventInput = {
       'team_id': team['_id'],
-      'event_id': widget.userObjectDetails['mainEvent']['_id'],
+      'event_id': widget.mainEvent['_id'],
     };
     dynamic removeTeamFromEventResp =
         await EventCommand().removeTeamFromEvent(removeTeamFromEventInput);
     print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
-    if (removeTeamFromEventResp['success']) {
-      print("userObjectDetailsCopy['teams']: "+ widget.userObjectDetails['teams'].toString());
-      // dynamic userObjectDetailsCopy  = Map.from(widget.userObjectDetails);
-      // userObjectDetailsCopy['teams'].forEach((teamItem) {
-      //   if (teamItem['_id'] == team['_id']) {
+    if (removeTeamFromEventResp['success']) {      
+      
           setState(() {
-            widget.userObjectDetails['teams'].removeWhere((teamItem) => teamItem['_id'] == team['_id']);
-          });
-      //   }
-      // });
-      BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
+            widget.teams.removeWhere((teamItem) => teamItem['_id'] == team['_id']);
+          });          
     }
   }
 
   void loadInitialData(){
     print("loadInitialData");
-    if(widget.userObjectDetails['teams'] != null){
-      teams = widget.userObjectDetails['teams'];
-    }
-    else{
-      List<dynamic> teamUserParticipants = widget.userObjectDetails['teamUserParticipants'];
-      teamUserParticipants.forEach((teamUserParticipant) {
-        teams.add(teamUserParticipant['team']);
-      });
-
-    }
+    user = UserCommand().getAppModelUser();
+    
+    
+    
 
   }
 

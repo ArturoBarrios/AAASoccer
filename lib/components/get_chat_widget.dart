@@ -8,17 +8,19 @@ import '../views/game/view.dart';
 import 'Dialogues/animated_dialogu.dart';
 
 class GetChatWidget extends StatefulWidget {
-  final Map<String, dynamic> objectEventsDetails;
+  final dynamic mainEvent;
+  final dynamic team;
+  final List<dynamic> players;
+  final bool isMine;
   final Function updatechatsList;
 
-  GetChatWidget({required this.objectEventsDetails, required this.updatechatsList});
+  GetChatWidget({required this.mainEvent, required this.team, required this.players, required this.isMine, required this.updatechatsList});
 
   @override
   _GetChatWidgetState createState() => _GetChatWidgetState();
 }
 
-class _GetChatWidgetState extends State<GetChatWidget> {
-  List<String> participationRoles = [];
+class _GetChatWidgetState extends State<GetChatWidget> {  
   List playerList = [];
   dynamic userObject;
 
@@ -28,7 +30,7 @@ class _GetChatWidgetState extends State<GetChatWidget> {
       bool attachToTeam,
       Map<int, dynamic> indexes,
       List<dynamic> primaryList,
-      dynamic userObjectDetails) async {
+      ) async {
     print("createChat");
     List<dynamic> selectedPlayers = [];
     indexes.forEach((mainIndex, secondaryIndexes) async {
@@ -41,8 +43,8 @@ class _GetChatWidgetState extends State<GetChatWidget> {
       MaterialPageRoute(
           builder: (context) => ChatCreate(
               eventObject:
-                  attachToEvent ? userObjectDetails['mainEvent'] : null,
-              teamObject: attachToTeam ? userObjectDetails['team'] : null,
+                  attachToEvent ? widget.mainEvent : null,
+              teamObject: attachToTeam ? widget.team : null,
               players: selectedPlayers)),
     );
     return chatObject;
@@ -52,14 +54,13 @@ class _GetChatWidgetState extends State<GetChatWidget> {
   Container getChatWidget(
       BuildContext context,
       bool attachToEvent,
-      bool attachToTeam,
-      dynamic userObjectDetails,
+      bool attachToTeam,      
       ) {
-    print("getChatWidget");
-
-    print("participationRoles: $participationRoles");
-    if (userObjectDetails['roles'].contains("ORGANIZER")) {
+    print("getChatWidgett: "+widget.isMine.toString());
+    
+    if (widget.isMine) {
       return Container(
+        height:100,
           child: GestureDetector(
               onTap: () async {
                 if (!playerList.isEmpty) {
@@ -85,7 +86,7 @@ class _GetChatWidgetState extends State<GetChatWidget> {
                         attachToTeam,
                         result,
                         primaryList,
-                        userObjectDetails);
+                        );
                     if (createdChat != null) {
                       widget.updatechatsList!(createdChat);
                     }
@@ -93,7 +94,7 @@ class _GetChatWidgetState extends State<GetChatWidget> {
                 } else {
                   print("No players to add but yourself");
                   dynamic createdChat = await createChat(context, attachToEvent,
-                      attachToTeam, {}, [], userObjectDetails);
+                      attachToTeam, {}, []);
                   if (createdChat != null) {
                     widget.updatechatsList!(createdChat);
                   }
@@ -129,7 +130,7 @@ class _GetChatWidgetState extends State<GetChatWidget> {
 
   void loadInitialData() {
     userObject = UserCommand().getAppModelUser();
-    playerList = widget.objectEventsDetails['players'];
+    playerList = widget.players;
     print("playerList: $playerList");
     //remove yourself
     playerList.removeWhere((element) => element['id'] == userObject['id']);
@@ -138,16 +139,16 @@ class _GetChatWidgetState extends State<GetChatWidget> {
   @override
   void initState() {
     super.initState();
-    print("initState() GetChatWidget");
-    loadInitialData();
+    // loadInitialData();
   }
 
   @override
   Widget build(BuildContext context) {    
-    return
-    widget.objectEventsDetails['mainEvent'] != null ? 
-    getChatWidget(context, true, false, widget.objectEventsDetails)
-    : getChatWidget(context, false, true, widget.objectEventsDetails);
+    print("initState() GetChatWidgett "+ widget.mainEvent );
+    return Text("chattt");
+    // widget.mainEvent != null ? 
+    // getChatWidget(context, true, false)
+    // : getChatWidget(context, false, true);
      
   }
 }

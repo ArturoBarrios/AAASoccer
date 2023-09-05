@@ -51,16 +51,11 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
   void updateChatsList(dynamic createdChat) {
     setState(() {
       widget.userObjectDetails['mainEvent']['chats']['data'].add(createdChat);
-      BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
+      // BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
     });
   }
 
-  void addTeamCallback(dynamic team) {
-    setState(() {
-      widget.userObjectDetails['mainEvent']['teams']['data'].add(team);
-      BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
-    });
-  }
+ 
 
   void loadInitialData() {
     print("loadInitialData()");
@@ -95,30 +90,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     widget.userObjectDetails['mainEvent']['chats']['data'] = filteredChats;
   }
 
-  Future<void> updateRsvp(RsvStatus rsvpStatus) async {
-    dynamic appModelUser = UserCommand().getAppModelUser();
-
-    final participantId = getParticipantIdByUserId(
-        widget.userObjectDetails['mainEvent']['userParticipants']['data'],
-        appModelUser['_id']);
-
-    Map<String, dynamic> input = {
-      "participantId": participantId['_id'],
-      "eventId": widget.userObjectDetails['mainEvent']['_id'],
-      "userId": appModelUser['_id'],
-      "isAttending": rsvpStatus.name.toUpperCase(),
-    };
-    final result = await EventCommand().updateEventUserParticipantRsv(input);
-    if (result['data'] != null) {
-      setState(() {
-        rsvStatus = rsvpStatus;
-        widget.userObjectDetails['mainEvent']['userParticipants']['data'] =
-            result['data'];
-        widget.userObjectDetails['userParticipants'] = result['data'];
-        BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
-      });
-    }
-  }
+  
 
   dynamic getParticipantIdByUserId(List<dynamic> dataList, String userId) {
     for (var data in dataList) {
@@ -144,86 +116,82 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
         child: Expanded(
           child: Column(
             children: [
-              EventDateWidget(eventDetails: widget.userObjectDetails),
+              EventDateWidget(canEdit: widget.userObjectDetails['isMine'], startTime: widget.userObjectDetails['startTime'], endTime: widget.userObjectDetails['endTime']),
 
-              Container(
-                margin: const EdgeInsets.all(10.0),
-                color: Colors.amber[600],
-                width: MediaQuery.of(context).size.width -
-                    (MediaQuery.of(context).size.width * .1), //10% padding
-                height: 200.0,
-                child:
+              // Container(
+              //   margin: const EdgeInsets.all(10.0),
+              //   color: Colors.amber[600],
+              //   width: MediaQuery.of(context).size.width -
+              //       (MediaQuery.of(context).size.width * .1), //10% padding
+              //   height: 200.0,
+              //   child:
 
                     //map
-                    MyMapPage(
-                        latitude: widget.userObjectDetails['mainEvent']
-                            ['location']['data'][0]['latitude'],
-                        longitude: widget.userObjectDetails['mainEvent']
-                            ['location']['data'][0]['longitude']),
-              ),
-              GetJoinEventWidget(userObjectDetails: widget.userObjectDetails),
-              RequestsList(objectDetails: {
-                "requests": widget.userObjectDetails['mainEvent']['requests']
-                    ['data']
-              }),
-              RSVPWidget(
-                onTap: updateRsvp,
-                currentRsvStatus: rsvStatus,
-              ),
-              widget.userObjectDetails['isMine']
-                  ? locationSearchBar = LocationSearchBar(
-                      initialValue: widget.userObjectDetails['mainEvent']
-                          ['location']['data'][0]['name'])
-                  : Text(widget.userObjectDetails['mainEvent']['location']
-                      ['data'][0]['name']),
+              //       MyMapPage(
+              //           latitude: widget.userObjectDetails['mainEvent']
+              //               ['location']['data'][0]['latitude'],
+              //           longitude: widget.userObjectDetails['mainEvent']
+              //               ['location']['data'][0]['longitude']),
+              // ),
+              // GetJoinEventWidget(userObjectDetails: widget.userObjectDetails),
+              // RequestsList(objectDetails: {
+              //   "requests": widget.userObjectDetails['mainEvent']['requests']
+              //       ['data']
+              // }),
+              // RSVPWidget(
+              //   onRsvpStatusChanged: () {},
+              //   currentStatus: '',
+              // ),
+              // widget.userObjectDetails['isMine']
+              //     ? locationSearchBar = LocationSearchBar(
+              //         initialValue: widget.userObjectDetails['mainEvent']
+              //             ['location']['data'][0]['name'])
+              //     : Text(widget.userObjectDetails['mainEvent']['location']
+              //         ['data'][0]['name']),
               widget.userObjectDetails['mainEvent']['type'].toString() ==
                       "LEAGUE"
                   ? LeagueTableWidget(
                       userEventDetails: widget.userObjectDetails,
                     )
                   : Container(),
-              PlayerList(playersDetails: widget.userObjectDetails),
-              TeamsListWidget(userObjectDetails: widget.userObjectDetails),
-              SendPlayersRequestWidget(
-                  userObjectDetails: widget.userObjectDetails),
-              SendTeamsRequestWidget(
-                  userObjectDetails: widget.userObjectDetails,
-                  addTeamCallback: addTeamCallback),
-              GetChatWidget(
-                  objectEventsDetails: widget.userObjectDetails,
-                  updatechatsList: updateChatsList),
+              // PlayerList(playersDetails: widget.userObjectDetails),
+              // TeamsListWidget(userObjectDetails: widget.userObjectDetails),
+              // SendPlayersRequestWidget(
+              //     userObjectDetails: widget.userObjectDetails),
+              // SendTeamsRequestWidget(
+              //     userObjectDetails: widget.userObjectDetails,
+              //     addTeamCallback: addTeamCallback),
+              // GetChatWidget(
+              //     objectEventsDetails: widget.userObjectDetails,
+              //     updatechatsList: updateChatsList),
               ChatsListWidget(
                 chats: widget.userObjectDetails['mainEvent']['chats']['data'],
               ),
-
-              // if (widget.userObjectDetails['isMine'])
+              
               createEventRequestWidget,
-              // if (widget.userObjectDetails['isMine'])
-              createEventPaymentWidget,
-              // if (widget.userObjectDetails['isMine'])
-              createTeamRequestWidget,
-              // if (widget.userObjectDetails['isMine'])
+              createEventPaymentWidget,              
+              createTeamRequestWidget,              
               createTeamPaymentWidget,
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  PriceWidget(
-                      userEventDetails: widget.userObjectDetails,
-                      teamPrice: false,
-                      eventPrice: true)
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  PriceWidget(
-                      userEventDetails: widget.userObjectDetails,
-                      teamPrice: true,
-                      eventPrice: false)
-                ],
-              ),
-              ImagesListWidget(details: widget.userObjectDetails),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     PriceWidget(
+              //         userEventDetails: widget.userObjectDetails,
+              //         teamPrice: false,
+              //         eventPrice: true)
+              //   ],
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     PriceWidget(
+              //         userEventDetails: widget.userObjectDetails,
+              //         teamPrice: true,
+              //         eventPrice: false)
+              //   ],
+              // ),
+              // ImagesListWidget(details: widget.userObjectDetails),
             ],
           ),
         ),

@@ -19,15 +19,15 @@ mixin ImagesMixin {
     {Constants.APPGALLERY: "Choose from App Images"},
   ];
 
-  void chooseImage(
-    dynamic objectDetails,
+  void chooseImage(    
+    dynamic objectFor,
+    String imageFor,    
     Map<int, dynamic> indexes,
     List<dynamic> primaryList,
     List<dynamic> secondaryList,
     Function chooseImageCallback,
   ) {
-    print("chooseImage");
-    print("objectDetails: $objectDetails");
+    print("chooseImage");    
     print("indexes: $indexes");
     print("primaryList: $primaryList");
     print("secondaryList: $secondaryList");
@@ -37,7 +37,7 @@ mixin ImagesMixin {
       //choose from phone gallery||//take a picture
       if (imageChoiceChosen == Constants.PHONEGALLERY ||
           imageChoiceChosen == Constants.CAMERA) {
-        pickImage(objectDetails, imageChoiceChosen, chooseImageCallback);
+        pickImage(objectFor, imageFor,imageChoiceChosen, chooseImageCallback);
       }
       //choose from app images
       else {}
@@ -76,7 +76,9 @@ mixin ImagesMixin {
   }
 
   void pickImage(
-    dynamic objectDetails,
+    // dynamic objectDetails,
+    dynamic objectFor,
+    String imageFor,
     String imageChoiceChosen,
     Function chooseImageCallback,
   ) async {
@@ -95,9 +97,8 @@ mixin ImagesMixin {
       "s3bucket": s3bucket
     };
     print("imageInput: $imageInput");
-    if (objectDetails['for'] == Constants.CHAT) {
-      print("for chat");
-      imageInput['chat_id'] = objectDetails['chat']['_id'];
+    if (imageFor == Constants.CHAT) {
+      print("for chat");      
       print("imageInput: $imageInput");
       dynamic storeImageInDatabaseForUserResp =
           await ImagesCommand().storeImageInDatabaseForChat(imageInput);
@@ -106,7 +107,7 @@ mixin ImagesMixin {
         chooseImageCallback(storedImage);
       }
     }
-    if (objectDetails['for'] == Constants.USER) {
+    if (imageFor == Constants.USER) {
       // await ImagesCommand().removeProfileTagFromImage();
       dynamic storeImageInDatabaseForUserResp =
           await ImagesCommand().storeImageInDatabaseForUser(imageInput);
@@ -114,9 +115,8 @@ mixin ImagesMixin {
         dynamic storedImage = storeImageInDatabaseForUserResp['data'];
         chooseImageCallback(storedImage);
       }
-    } else if (objectDetails['for'] == Constants.TEAM) {
-      print("objectDetails['team']['_id']: ${objectDetails['team']['_id']}");
-      imageInput['team_id'] = objectDetails['team']['_id'];
+    } else if (imageFor == Constants.TEAM) {      
+      imageInput['team_id'] = objectFor['_id'];
       //get current User
       dynamic currentUser = await UserCommand().getAppModelUser();
       imageInput['user_id'] = currentUser['_id'];
@@ -124,9 +124,8 @@ mixin ImagesMixin {
           await ImagesCommand().storeImageInDatabaseForTeam(imageInput);
       dynamic storedImage = storeImageInDatabaseForUserResp['data'];
       chooseImageCallback(storedImage);
-    } else if (objectDetails['for'] == Constants.EVENT) {
-      print("else if for event: $objectDetails");
-      imageInput['event_id'] = objectDetails['mainEvent']['_id'];
+    } else if (imageFor == Constants.EVENT) {      
+      imageInput['event_id'] = objectFor['_id'];
       //get current User
       dynamic currentUser = await UserCommand().getAppModelUser();
       imageInput['user_id'] = currentUser['_id'];

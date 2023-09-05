@@ -86,7 +86,7 @@ class _LeagueViewState extends State<LeagueView> {
     teamListWidgetDetails =
         await widget.getTeamListWidgetDetails(getEventDetailsResp);
     print("mainEvent type: "+ userEventDetails['mainEvent']['type']);    
-    BaseCommand().updateUserEventDetailsModel(userEventDetails);
+    // BaseCommand().updateUserEventDetailsModel(userEventDetails);
     setState(() {
       _isLoading = false;
     });

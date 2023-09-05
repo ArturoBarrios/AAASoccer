@@ -68,6 +68,15 @@ class UserCommand extends BaseCommand {
     return appModel.myTeams;
   }
 
+  dynamic getParticipantIdByUserId(List<dynamic> dataList, String userId) {
+    for (var data in dataList) {
+      if (data['user']['_id'] == userId) {
+        return data;
+      }
+    }
+    return null;
+  }
+
   void updatePaymentStatus(PaymentType status) {
     print("updatePaymentStatus");
     print("paymentModel.status before....: " + paymentModel.status.toString());

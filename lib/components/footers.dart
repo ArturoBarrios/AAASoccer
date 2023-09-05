@@ -30,6 +30,7 @@ class Footers extends StatefulWidget {
       "Training",
       "Tryout",
       "Organization",
+      "Region"
     ];
 
     void goToPage(int selectedIndex) {

@@ -12,10 +12,12 @@ import 'Mixins/event_mixin.dart';
 // // // // // // // // // // // // // // //
 class SendTeamsRequestWidget extends StatefulWidget with EventMixin {
 
-   SendTeamsRequestWidget({Key? key, required this.userObjectDetails, required this.addTeamCallback})
+   SendTeamsRequestWidget({Key? key, required this.mainEvent, required this.isMine, required this.teams, required this.addTeamCallback})
       : super(key: key);
 
-  final dynamic userObjectDetails;
+  final dynamic mainEvent;
+  final bool isMine;
+  final List teams;
   final Function addTeamCallback;
 
   @override
@@ -31,7 +33,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic teamChosen = primaryList[mainIndex];      
       TeamCommand().sendEventRequestForMyTeam(
-          widget.userObjectDetails['mainEvent'], teamChosen);
+          widget.mainEvent, teamChosen);
           
     });
     
@@ -51,10 +53,10 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
       isMyTeam = myTeamRoles.contains("ORGANIZER");
       print("isMyTeam: " + isMyTeam.toString());
       //check if player is a team and organizer, if so, add to list
-      if(widget.userObjectDetails['isMine'] && isMyTeam){
+      if(widget.isMine && isMyTeam){
         print("isMyTeam");
         // teamsNearMeList.remove(teamChosen);
-        await EventCommand().addTeamToEvent(widget.userObjectDetails['mainEvent'], teamChosen);
+        await EventCommand().addTeamToEvent(widget.mainEvent, teamChosen);
         print("team added to event");
         setState(() {
           // widget.userObjectDetails['teams'].add(teamChosen);    
@@ -63,7 +65,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
 
       }
       else{
-        await TeamCommand().sendTeamEventRequest(teamChosen, widget.userObjectDetails['mainEvent']);
+        await TeamCommand().sendTeamEventRequest(teamChosen, widget.mainEvent);
       }
     });
   }
@@ -81,7 +83,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
 
 
   Container sendEventRequestForMyTeamWidget(
-      BuildContext context, dynamic userObjectDetails)  {
+      BuildContext context)  {
         print("sendEventRequestForMyTeamWidget");
         
     return Container(
@@ -92,7 +94,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
               List<dynamic> primaryList = [];
               List<dynamic> secondaryList = [];
               List<dynamic> myProcessedTeamList = widget.myTeamList
-                  .where((item1) => !userObjectDetails['teams']
+                  .where((item1) => !widget.teams
                       .any((item2) => item2["_id"] == item1["_id"]))
                   .map((item) => item['team'])
                   .toList();
@@ -127,11 +129,10 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
 
   //send request to all teams near me(excluding)
   Container sendTeamsRequestWidget(
-      BuildContext context, dynamic userObjectDetails) {
-    print("sendTeamsRequestWidgett: " + userObjectDetails.toString());
+      BuildContext context) {    
     // widget.setupTeamList();
     
-        if(userObjectDetails['isMine']){
+        if(widget.isMine){
           return Container(
               child: GestureDetector(
                   onTap: () async {
@@ -139,7 +140,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                     List<dynamic> secondaryList = [];
                     print("teamList: "+ widget.teamList.toString());
                     List<dynamic> processedTeamList = widget.teamList
-                        .where((item1) => !userObjectDetails['teams']
+                        .where((item1) => !widget.teams
                             .any((item2) => item2["_id"] == item1["_id"]))
                         .map((item) => item)
                         .toList();
@@ -172,7 +173,7 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
                   )));
         }
         else{
-          return sendEventRequestForMyTeamWidget(context, userObjectDetails);                
+          return sendEventRequestForMyTeamWidget(context);                
         }
   }
 
@@ -192,6 +193,6 @@ class _SendTeamsRequestWidgetState extends State<SendTeamsRequestWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return sendTeamsRequestWidget(context, widget.userObjectDetails);
+    return sendTeamsRequestWidget(context);
 }
 }

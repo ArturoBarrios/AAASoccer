@@ -120,7 +120,7 @@ class _SocialMediaCardsViewState extends State<SocialMediaCardsView> {
               userEventDetails['mainEvent']['SocialMediaApps']['data'],
               deletedSocialMediaApp);
 
-      BaseCommand().updateUserEventDetailsModel(userEventDetails);
+      // BaseCommand().updateUserEventDetailsModel(userEventDetails);
       if (isFlip) {
         controller.clear();
         flipCard();

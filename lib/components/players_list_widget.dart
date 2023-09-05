@@ -21,8 +21,10 @@ class _MyWidgetState extends State<MyWidget> {
 }
 
 class PlayerList extends StatefulWidget {
-  const PlayerList({Key? key, required this.playersDetails}) : super(key: key);
-  final dynamic playersDetails;
+  const PlayerList({Key? key, required this.event, required this.team, required this.userParticipants}) : super(key: key);
+  final List userParticipants;
+  final dynamic event;
+  final dynamic team;
 
   @override
   State<PlayerList> createState() => _PlayerListState();
@@ -70,21 +72,21 @@ class _PlayerListState extends State<PlayerList> {
   Future<void> removePlayerRole(dynamic user) async {
     print("removePlayerRoler");
 
-    int index = widget.playersDetails['userParticipants'].indexWhere(
+    int index = widget.userParticipants.indexWhere(
         (userParticipant) => userParticipant['user']['_id'] == user['_id']);
     print("indexWhere:" + index.toString());
     if (index != -1) {
       print("in ifff");
       // Replace item at found index
       dynamic userParticipantRemoved =
-          widget.playersDetails['userParticipants'].removeAt(index);
+          widget.userParticipants.removeAt(index);
 
       List<String> userRoles = getUserRoles(userParticipantRemoved);
       print("userRoles before remove: " + userRoles.toString());
       userRoles.remove(_selectedUserType);
       print("userRoles after remove: " + userRoles.toString());
       String newRolesString = BaseCommand().stringifyRoles(userRoles);
-      if (widget.playersDetails['team'] != null) {
+      if (widget.team != null) {
         dynamic removeUsersFromTeamResp = await TeamCommand()
             .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
         print("removeUsersFromTeamResp: " + removeUsersFromTeamResp.toString());
@@ -92,7 +94,7 @@ class _PlayerListState extends State<PlayerList> {
           print("successfully removed user role from TeamUserParticipant;");
           dynamic teamUserParticipant = removeUsersFromTeamResp['data'];
           setState(() {
-            widget.playersDetails['userParticipants'].add(teamUserParticipant);
+            widget.userParticipants.add(teamUserParticipant);
           });
           print("done");
         }
@@ -105,7 +107,7 @@ class _PlayerListState extends State<PlayerList> {
           print("successfully removed user role from EventUserParticipant;");
           dynamic eventUserParticipant = removeUsersFromEventResp['data'];
           setState(() {
-            widget.playersDetails['userParticipants'].add(eventUserParticipant);
+            widget.userParticipants.add(eventUserParticipant);
           });
           print("done");
         }
@@ -123,17 +125,17 @@ class _PlayerListState extends State<PlayerList> {
     print("indexes: " + indexes.toString());
     print("primaryList: " + primaryList.toString());
 
-    int index = widget.playersDetails['userParticipants'].indexWhere(
+    int index = widget.userParticipants.indexWhere(
         (userParticipant) => userParticipant['user']['_id'] == user['_id']);
     print("indexWhere:" + index.toString());
     dynamic userParticipantRemoved =
-        widget.playersDetails['userParticipants'].removeAt(index);
+        widget.userParticipants.removeAt(index);
     List<String> userRoles = getUserRoles(userParticipantRemoved);
     indexes.forEach((mainIndex, secondaryIndexes) async {
       userRoles.add(primaryList[mainIndex]);
     });
     String newRolesString = BaseCommand().stringifyRoles(userRoles);
-    if (widget.playersDetails['team'] != null) {
+    if (widget.team != null) {
       dynamic updateUserParticipantResp = await TeamCommand()
           .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
       print(
@@ -142,7 +144,7 @@ class _PlayerListState extends State<PlayerList> {
         print("successfully updated Team User participant");
         dynamic teamUserParticipant = updateUserParticipantResp['data'];
         setState(() {
-          widget.playersDetails['userParticipants'].add(teamUserParticipant);
+          widget.userParticipants.add(teamUserParticipant);
         });
         String currentlySelectedUserType = _selectedUserType;
         print("done adding back to widget.palyersDetails['userParticipants']");
@@ -156,7 +158,7 @@ class _PlayerListState extends State<PlayerList> {
         print("successfully updated Event User participant");
         dynamic eventUserParticipant = updateUserParticipantResp['data'];
         setState(() {
-          widget.playersDetails['userParticipants'].add(eventUserParticipant);
+          widget.userParticipants.add(eventUserParticipant);
         });
         String currentlySelectedUserType = _selectedUserType;
         print("done adding back to widget.palyersDetails['userParticipants']");
@@ -168,9 +170,7 @@ class _PlayerListState extends State<PlayerList> {
   void initState() {
     super.initState();
     print("initState PlayerList Widget ");
-    print("playerDetails: " + widget.playersDetails.toString());
-    print("playerDetails['userParticipants']: " +
-        widget.playersDetails['userParticipants'].toString());
+        
   }
 
   List<String> getUserRoles(dynamic userParticipant) {
@@ -228,7 +228,7 @@ class _PlayerListState extends State<PlayerList> {
               ),
             ),
           Column(
-            children: widget.playersDetails['userParticipants']
+            children: widget.userParticipants
                 .where((userParticipant) {
               List<dynamic> userRoles = getUserRoles(userParticipant);
               return userRoles.contains(_selectedUserType);

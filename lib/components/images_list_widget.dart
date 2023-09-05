@@ -10,10 +10,14 @@ import 'Mixins/images_mixin.dart';
 class ImagesListWidget extends StatefulWidget {
   ImagesListWidget({
     Key? key,
-    required this.details,
+    required this.mainEvent,
+    required this.team,
+    required this.imageFor,
   }) : super(key: key);
 
-  dynamic details;
+  dynamic mainEvent;
+  dynamic team;
+  String imageFor;
 
   @override
   State<ImagesListWidget> createState() => _ImagesListWidgetState();
@@ -21,8 +25,7 @@ class ImagesListWidget extends StatefulWidget {
 
 class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
   bool _isLoading = true;
-  List<dynamic> images = [];
-  Map<dynamic, dynamic> details = {};
+  List<dynamic> images = [];  
   List imageOptions = [
     Constants.IMAGEDELETE.toString(),
     Constants.IMAGEREPLACE.toString(),
@@ -40,14 +43,14 @@ class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
   Future<void> loadInitialData() async {
     print("loadInitialData ImagesListWidget");
 
-    if (details['mainEvent'] != null) {
+    if (widget.mainEvent != null) {
       print("images in mainEvent");
-      images = details['mainEvent']['images']['data'];
-      details['for'] = Constants.EVENT;
-    } else if (details['team'] != null) {
+      images = widget.mainEvent['images']['data'];
+      widget.imageFor = Constants.EVENT;
+    } else if (widget.team != null) {
       print("images in team");
-      details['for'] = Constants.TEAM;
-      images = details['team']['images']['data'];
+      widget.imageFor = Constants.TEAM;
+      images = widget.team['images']['data'];
     } else {
       print("images in user");
       dynamic currentUser = UserCommand().getAppModelUser();
@@ -56,7 +59,7 @@ class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
       images = allImagesFromUserResp['data'];
       print('imagessss');
       log(images.toString());
-      details['for'] = Constants.USER;
+      widget.imageFor = Constants.USER;
     }
 
     print("images: $images");
@@ -120,9 +123,9 @@ class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
     super.initState();
     print("initState");
 
-    widget.details.forEach((key, value) {
-      details[key] = value;
-    });
+    // widget.details.forEach((key, value) {
+    //   details[key] = value;
+    // });
     loadInitialData();
   }
 
@@ -154,8 +157,9 @@ class _ImagesListWidgetState extends State<ImagesListWidget> with ImagesMixin {
                     );
                     if (result.isNotEmpty) {
                       print("result: $result");
-                      chooseImage(
-                        details,
+                      chooseImage(    
+                        widget.mainEvent != null ? widget.mainEvent : widget.team,
+                        widget.mainEvent != null ? Constants.EVENT : Constants.TEAM,
                         result,
                         primaryList,
                         secondaryList,
