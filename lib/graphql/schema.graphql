@@ -180,6 +180,7 @@ type User  {
   events: [Event] @relation
   eventUserParticipants: [EventUserParticipant] @relation
   teamUserParticipants: [TeamUserParticipant] @relation
+  regionUserParticipants: [RegionUserParticipant] @relation
   requestsSent: [Request]  @relation(name: "requests_sent")
   requestsReceived: [Request] @relation(name: "request_receivers")
   requestsAccepted: [Request] @relation(name: "request_acceptedBy")
@@ -308,6 +309,7 @@ type Team   {
   sponsors: [Sponsor] @relation
   location: [Location] @relation
   userParticipants: [TeamUserParticipant] @relation
+  regions: [Region] @relation
   status: String
   deleted: Boolean
   createdAt: String
@@ -409,6 +411,7 @@ type League   {
   numberOfTeams: Int
   # eligibleEventTypes: [EventType] @relation
   season: Season
+  region: Region
 }
 
 type Season {
@@ -468,6 +471,7 @@ type Tournament   {
   numberOfTeams: Int
   groupStage: GroupStage
   tournamentStage: TournamentStage
+  region: Region
   season: Season
   leagues: [League] @relation
   # eligibleEventTypes: [EventType] @relation
@@ -611,4 +615,19 @@ type Item {
   price: String
   quantity: Int
 
+}
+
+type Region {
+  name: String
+  location: Location
+  Leagues: [League] @Relation
+  tournaments: [Tournament] @Relation
+  teams: [Team] @Relation
+  userParticipants: [RegionUserParticipant] @Relation
+}
+
+type RegionUserParticipant {
+  region: Region
+  user: User
+  roles: String
 }

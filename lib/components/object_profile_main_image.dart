@@ -103,7 +103,8 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
               }
             } else {
               widget.chooseImage(
-                {"for": Constants.USER},
+                null,//null because we already have access to user
+                Constants.USER,
                 result,
                 primaryList,
                 secondaryList,
@@ -199,7 +200,8 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
         if (result.isNotEmpty) {
           print("result: $result");
           widget.chooseImage(
-              {"for": Constants.CHAT, "chat": widget.objectImageInput['chat']},
+              widget.objectImageInput['chat'],
+              Constants.CHAT,
               result,
               primaryList,
               secondaryList,
@@ -258,10 +260,10 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
             );
             if (result.isNotEmpty) {
               print("result: $result");
-              widget.chooseImage({
-                "for": Constants.EVENT,
-                "mainEvent": widget.objectImageInput['mainEvent']
-              }, result, primaryList, secondaryList, addImageToEvent);
+              widget.chooseImage(
+                widget.objectImageInput['mainEvent'],
+                Constants.EVENT,                
+               result, primaryList, secondaryList, addImageToEvent);
             }
           }
         },

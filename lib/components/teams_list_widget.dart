@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/base_command.dart';
 import '../commands/event_command.dart';
+import '../commands/user_command.dart';
 import '../views/team/view.dart';
 import 'Loading/loading_screen.dart';
 
-class TeamsListWidget extends StatefulWidget {
+class TeamsListWidget extends StatefulWidget {  
   final dynamic mainEvent;  
   final List teams;    
   // final void Function(dynamic) addTeam; // Optional function input parameter
@@ -18,6 +19,25 @@ class TeamsListWidget extends StatefulWidget {
 class _TeamsListWidgetState extends State<TeamsListWidget> {
   List<dynamic> teams = [];
   bool _isLoading = true;
+  dynamic user; 
+
+  Future<void> removeUserFromTeam(dynamic team) async {
+    print("removeUserFromTeam");
+    print("team: " + team.toString());
+    dynamic removeUserFromTeamInput = {
+      'team_id': team['_id'],
+      'user_id': user['_id'],
+    };
+    dynamic removeTeamFromEventResp =
+        await EventCommand().removeTeamFromEvent(removeUserFromTeamInput);
+    print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
+    if (removeTeamFromEventResp['success']) {      
+      
+          setState(() {
+            widget.teams.removeWhere((teamItem) => teamItem['_id'] == team['_id']);
+          });          
+    }
+  }
 
   Future<void> removeTeamFromEvent(dynamic team) async {
     print("removeTeamFromEvent");
@@ -39,6 +59,7 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
 
   void loadInitialData(){
     print("loadInitialData");
+    user = UserCommand().getAppModelUser();
     
     
     

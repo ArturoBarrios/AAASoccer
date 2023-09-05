@@ -205,11 +205,15 @@ class _ProfileState extends State<Profile> {
                 ),
 
                 // History(historyDetails: []),
-                TeamsListWidget(
-                    userObjectDetails: _viewController.teamListDetails),
+                // TeamsListWidget(
+                //     // userObjectDetails: _viewController.teamListDetails                    
+                //     mainEvent: null,
+                //     teams: teams,
+
+                // ),
                 EventsListWidget(
                     objectEventsDetails: _viewController.eventListDetails),
-                ImagesListWidget(details: {"for": Constants.USER}),
+                ImagesListWidget(mainEvent: null, team: null, imageFor: Constants.USER),
 
                 const InfoDetailListTile(
                     name: "Excellent Perfomance",

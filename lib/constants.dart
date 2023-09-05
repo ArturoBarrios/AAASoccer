@@ -63,4 +63,16 @@ class Constants {
   static const String YOUTUBE = "YOUTUBE";
   static const String LINKEDIN = "LINKEDIN";
 
+  //region user types
+  static const String REGIONADMIN = "REGIONADMIN";
+  static const String TOURNAMENTORGANIZER = "TOURNAMENTORGANIZER";
+  static const String MATCHOFFICIALCOORDINATOR = "MATCHOFFICIALCOORDINATOR"; // Manages referees and other match officials for tournaments and leagues.
+  static const String FIXTURESCHEDULER = "FIXTURESCHEDULER"; // Responsible for setting the dates and venues for matches.
+  static const String SCOUT = "SCOUT"; 
+  static const String MEDICALSTAFF = "MEDICALSTAFF"; 
+  static const String VOLUNTEERCOORDINATOR = "VOLUNTEERCOORDINATOR"; 
+  static const String SPONSORLIAISON = "SPONSORLIAISON"; 
+  
+
+
 }

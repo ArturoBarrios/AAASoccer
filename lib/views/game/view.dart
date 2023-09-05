@@ -21,6 +21,7 @@ import '../../components/event_date_widget.dart';
 import '../../components/get_chat_widget.dart';
 import '../../components/get_join_event_widget.dart';
 import '../../components/image_header.dart';
+import '../../components/images_list_widget.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
 import '../../components/object_profile_main_image.dart';
@@ -174,7 +175,7 @@ class _PickupViewState extends State<PickupView> {
     String amountPaid = context.select<EventPageModel, String>((value) => value.amountPaid);
     String teamAmountRemaining = context
         .select<EventPageModel, String>((value) => value.amountRemaining);
-    String amountPaid = context.select<EventPageModel, String>((value) => value.amountPaid);
+    String teamAmountPaid = context.select<EventPageModel, String>((value) => value.teamAmountPaid);
     List userParticipants =
         context.select<EventPageModel, List>((value) => value.userParticipants);
     List teams = context.select<EventPageModel, List>((value) => value.teams);
@@ -224,7 +225,7 @@ class _PickupViewState extends State<PickupView> {
                       ),
                       //date
                       EventDateWidget(
-                          canEdit: mainEvent['isMine'],
+                          canEdit: isMine,
                           startTime: mainEvent['startTime'],
                           endTime: mainEvent['endTime']),
                       //map
@@ -262,7 +263,7 @@ class _PickupViewState extends State<PickupView> {
                           initialValue: mainEvent['location']['data'][0]
                               ['name']),
                       //player list
-                      PlayerList(userParticipants: userParticipants),
+                      PlayerList(event: mainEvent, team: null , userParticipants: userParticipants),
                       //team list
                       TeamsListWidget(mainEvent: mainEvent, teams: teams),
                       //player request widget
@@ -279,16 +280,16 @@ class _PickupViewState extends State<PickupView> {
                         addTeamCallback: addTeamCallback,
                       ),
                       //chat widget
-                      GetChatWidget(
-                          mainEvent: mainEvent,
-                          team: null,
-                          players: players,
-                          isMine: isMine,
-                          updatechatsList: updateChatsList),
+                      // GetChatWidget(
+                      //     mainEvent: mainEvent,
+                      //     team: null,
+                      //     players: players,
+                      //     isMine: isMine,
+                      //     updatechatsList: updateChatsList),
                       ChatsListWidget(
                         chats: chats,
                       ),
-                      //Player price widget
+                      // Player price widget
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -318,6 +319,7 @@ class _PickupViewState extends State<PickupView> {
                           )
                         ],
                       ),
+                      ImagesListWidget(mainEvent: mainEvent, team: null, imageFor: Constants.EVENT ),
                     ],
                   ),
                 ),

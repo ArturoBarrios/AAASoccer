@@ -20,8 +20,7 @@ class GetChatWidget extends StatefulWidget {
   _GetChatWidgetState createState() => _GetChatWidgetState();
 }
 
-class _GetChatWidgetState extends State<GetChatWidget> {
-  List<String> participationRoles = [];
+class _GetChatWidgetState extends State<GetChatWidget> {  
   List playerList = [];
   dynamic userObject;
 
@@ -57,11 +56,11 @@ class _GetChatWidgetState extends State<GetChatWidget> {
       bool attachToEvent,
       bool attachToTeam,      
       ) {
-    print("getChatWidget");
-
-    print("participationRoles: $participationRoles");
+    print("getChatWidgett: "+widget.isMine.toString());
+    
     if (widget.isMine) {
       return Container(
+        height:100,
           child: GestureDetector(
               onTap: () async {
                 if (!playerList.isEmpty) {
@@ -140,16 +139,16 @@ class _GetChatWidgetState extends State<GetChatWidget> {
   @override
   void initState() {
     super.initState();
-    print("initState() GetChatWidget");
-    loadInitialData();
+    // loadInitialData();
   }
 
   @override
   Widget build(BuildContext context) {    
-    return
-    widget.mainEvent != null ? 
-    getChatWidget(context, true, false)
-    : getChatWidget(context, false, true);
+    print("initState() GetChatWidgett "+ widget.mainEvent );
+    return Text("chattt");
+    // widget.mainEvent != null ? 
+    // getChatWidget(context, true, false)
+    // : getChatWidget(context, false, true);
      
   }
 }

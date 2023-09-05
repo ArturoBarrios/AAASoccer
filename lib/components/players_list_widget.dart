@@ -21,8 +21,10 @@ class _MyWidgetState extends State<MyWidget> {
 }
 
 class PlayerList extends StatefulWidget {
-  const PlayerList({Key? key, required this.userParticipants}) : super(key: key);
+  const PlayerList({Key? key, required this.event, required this.team, required this.userParticipants}) : super(key: key);
   final List userParticipants;
+  final dynamic event;
+  final dynamic team;
 
   @override
   State<PlayerList> createState() => _PlayerListState();
@@ -84,7 +86,7 @@ class _PlayerListState extends State<PlayerList> {
       userRoles.remove(_selectedUserType);
       print("userRoles after remove: " + userRoles.toString());
       String newRolesString = BaseCommand().stringifyRoles(userRoles);
-      if (widget.playersDetails['team'] != null) {
+      if (widget.team != null) {
         dynamic removeUsersFromTeamResp = await TeamCommand()
             .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
         print("removeUsersFromTeamResp: " + removeUsersFromTeamResp.toString());
@@ -122,7 +124,7 @@ class _PlayerListState extends State<PlayerList> {
     print("user: " + user.toString());
     print("indexes: " + indexes.toString());
     print("primaryList: " + primaryList.toString());
-\
+
     int index = widget.userParticipants.indexWhere(
         (userParticipant) => userParticipant['user']['_id'] == user['_id']);
     print("indexWhere:" + index.toString());
@@ -133,7 +135,7 @@ class _PlayerListState extends State<PlayerList> {
       userRoles.add(primaryList[mainIndex]);
     });
     String newRolesString = BaseCommand().stringifyRoles(userRoles);
-    if (widget.playersDetails['team'] != null) {
+    if (widget.team != null) {
       dynamic updateUserParticipantResp = await TeamCommand()
           .updateTeamUserParticipant(userParticipantRemoved, newRolesString);
       print(

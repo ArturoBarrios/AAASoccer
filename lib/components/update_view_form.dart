@@ -163,25 +163,25 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
               createTeamRequestWidget,              
               createTeamPaymentWidget,
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  PriceWidget(
-                      userEventDetails: widget.userObjectDetails,
-                      teamPrice: false,
-                      eventPrice: true)
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  PriceWidget(
-                      userEventDetails: widget.userObjectDetails,
-                      teamPrice: true,
-                      eventPrice: false)
-                ],
-              ),
-              ImagesListWidget(details: widget.userObjectDetails),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     PriceWidget(
+              //         userEventDetails: widget.userObjectDetails,
+              //         teamPrice: false,
+              //         eventPrice: true)
+              //   ],
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     PriceWidget(
+              //         userEventDetails: widget.userObjectDetails,
+              //         teamPrice: true,
+              //         eventPrice: false)
+              //   ],
+              // ),
+              // ImagesListWidget(details: widget.userObjectDetails),
             ],
           ),
         ),
