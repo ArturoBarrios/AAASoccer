@@ -8,7 +8,7 @@ import 'package:soccermadeeasy/commands/network_models/fql_request_models/social
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
-import 'package:soccermadeeasy/models/event_page_model.dart';
+import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
 import '../graphql/queries/events.dart';
 import 'base_command.dart';

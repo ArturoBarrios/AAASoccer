@@ -8,7 +8,7 @@ import '../../components/Cards/team_request_card.dart';
 import '../../components/Cards/friend_request_card.dart';
 import '../../components/Cards/event_request_card.dart';
 import '../../commands/requests_command.dart';
-import '../../models/requests_page_model.dart';
+import '../models/pageModels/requests_page_model.dart';
 import '../styles/asset_constants.dart';
 import 'package:provider/provider.dart';
 

@@ -33,7 +33,7 @@ import '../../components/send_players_request_widget.dart';
 import '../../components/send_teams_request_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../enums/rsv_status.dart';
-import '../../models/event_page_model.dart';
+import '../../models/pageModels/event_page_model.dart';
 import '../profile/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
@@ -45,7 +45,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
-import '../../models/app_model.dart';
+import '../../models/pageModels/app_model.dart';
 import '../social_media_cards_view/social_media_cards_view.dart';
 
 class PickupView extends StatefulWidget with EventMixin, ImagesMixin {

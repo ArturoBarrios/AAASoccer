@@ -6,7 +6,7 @@ import '../../commands/tournament_command.dart';
 import '../../constants.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/app_model.dart';
+import '../../models/pageModels/app_model.dart';
 import '../../commands/event_command.dart';
 import '../../views/tournament/view.dart';
 

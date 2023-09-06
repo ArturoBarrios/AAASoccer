@@ -1,6 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/models/app_model.dart';
+import 'package:soccermadeeasy/models/pageModels/app_model.dart';
 import 'package:soccermadeeasy/views/tournament/view.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/event_command.dart';

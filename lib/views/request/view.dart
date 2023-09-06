@@ -9,7 +9,7 @@ import '../../components/Cards/event_request_card.dart';
 import '../../commands/requests_command.dart';
 import '../../components/images/svg_image.dart';
 import '../../enums/view_status.dart';
-import '../../models/requests_page_model.dart';
+import '../../models/pageModels/requests_page_model.dart';
 import 'package:provider/provider.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../styles/asset_constants.dart';

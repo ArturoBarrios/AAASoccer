@@ -4,7 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/views/home.dart';
 import '../commands/home_page_command.dart';
-import '../models/home_page_model.dart';
+import '../models/pageModels/home_page_model.dart';
 
 class SelectIconButton extends StatefulWidget {
   const SelectIconButton(

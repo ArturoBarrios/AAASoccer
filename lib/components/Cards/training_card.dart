@@ -5,7 +5,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../Mixins/event_mixin.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/app_model.dart';
+import '../../models/pageModels/app_model.dart';
 import '../../commands/event_command.dart';
 import '../../views/training/view.dart';
 import 'package:soccermadeeasy/constants.dart';

@@ -6,7 +6,7 @@ import '../../components/headers.dart';
 import '../../components/search_bar.dart' as search_bar;
 import '../../commands/user_command.dart';
 import '../../components/conversation_list.dart';
-import '../../models/chat_page_model.dart';
+import '../../models/pageModels/chat_page_model.dart';
 import 'package:provider/provider.dart';
 
 class ChatsView extends StatefulWidget {

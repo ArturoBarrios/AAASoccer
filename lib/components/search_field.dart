@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/app_model.dart';
+import '../models/pageModels/app_model.dart';
 
 class SearchField extends StatefulWidget {
   const SearchField({Key? key, required this.testText}) : super(key: key);

@@ -1,4 +1,4 @@
-import 'package:soccermadeeasy/models/filter_result_model.dart';
+import 'package:soccermadeeasy/models/componentModels/filter_result_model.dart';
 
 /// Extension for filtering event list.
 extension FilterEventExtension on List<dynamic>? {

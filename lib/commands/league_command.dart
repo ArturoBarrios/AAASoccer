@@ -3,7 +3,6 @@ import 'dart:math';
 import '../enums/EventType.dart' as event_type;
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/League.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import '../commands/event_command.dart';
 import 'package:faunadb_http/faunadb_http.dart';

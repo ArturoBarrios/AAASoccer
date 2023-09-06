@@ -10,8 +10,7 @@ import '../constants.dart';
 import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
 import 'package:faunadb_http/query.dart';
-import '../models/app_model.dart';
-import '../models/User.dart';
+import '../models/pageModels/app_model.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../graphql/queries/users.dart';
 import '../graphql/mutations/users.dart';
@@ -161,22 +160,6 @@ class UserCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> updateUserLogin(String email) async {
-    Map<String, dynamic> updateUserResponse = {
-      "success": false,
-      "message": "Default Error"
-    };
-    try {
-      User oldUser = (await Amplify.DataStore.query(User.classType,
-          where: User.EMAIL.eq(email)))[0];
-
-      User newUser = oldUser.copyWith(
-          last_login: new DateTime.now().millisecondsSinceEpoch);
-      await Amplify.DataStore.save(newUser);
-      updateUserResponse["success"] = true;
-    } catch (e) {}
-    return updateUserResponse;
-  }
 
   void setUserID() {
     // userModel.userID = userId;
@@ -522,10 +505,6 @@ class UserCommand extends BaseCommand {
     return getUserResp;
   }
 
-  //FriendsPageModel
-  void updateFriendsPageModel(List<dynamic> friends) {
-    friendsPageModel.selectedObjects = friends;
-  }
 
   Future<Map<String, dynamic>> findMyUserById() async {
     print("findMyUserById()");
@@ -637,25 +616,6 @@ class UserCommand extends BaseCommand {
     return getUserResp;
   }
 
-  Future<Map<String, dynamic>> deleteUser(String userId) async {
-    print("delteUser");
-    Map<String, dynamic> resp = {
-      "success": false,
-      "message": "user not deleted",
-      "data": null
-    };
-    try {
-      final request = ModelMutations.deleteById<User>(
-        User.classType,
-        userId,
-      );
-      final response = await Amplify.API.mutate(request: request).response;
-      resp['success'] = true;
-    } on ApiException catch (e) {
-      print("handle exception");
-    }
-    return resp;
-  }
 
   Future<Map<String, dynamic>> getAllUsers() async {
     print("getUsers");

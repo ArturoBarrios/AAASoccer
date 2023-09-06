@@ -17,7 +17,7 @@ import '../../components/players_list_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
-import '../../models/app_model.dart';
+import '../../models/pageModels/app_model.dart';
 import '../tournament/view.dart';
 
 class LeagueView extends StatefulWidget with EventMixin, PaymentMixin, ImagesMixin {

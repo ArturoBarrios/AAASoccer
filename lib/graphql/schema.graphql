@@ -126,6 +126,18 @@ enum RequestType{
   TEAMEVENTREQUEST
 }
 
+enum EventUserParticipantAttendingOptions {
+  YES
+  NO
+  MAYBE
+}
+
+enum RsvpStatus{
+  Yes,
+  No,
+  Maybe
+}
+
 type Request {
   type: RequestType
   sender: User @relation(name: "requests_sent")
@@ -139,7 +151,6 @@ type Request {
   forRole: String
   sentAt: Int
   acceptedAt: Int
-
 }
 
 type StripeCustomer {
@@ -197,8 +208,7 @@ type User  {
 
 type Player   {
   wagerRating: String
-  wagers: [Wager] @relation
-  # events: [Event] @relation
+  wagers: [Wager] @relation  
   competitiveLevel: String
   hasRating: String
   showRating: String
@@ -208,11 +218,6 @@ type Player   {
   ratings: [Rating] @relation
 }
 
-enum EventUserParticipantAttendingOptions {
-  YES
-  NO
-  MAYBE
-}
 
 type EventUserParticipant {
   event: Event
@@ -239,8 +244,7 @@ type Game {
   homegoals: Int
   awaygoals: Int
   pickup: Boolean
-  event: Event
-  # event(archived: Boolean = false): Event
+  event: Event  
 }
 
 type JoinConditions {
@@ -256,16 +260,11 @@ type Event   {
   name: String
   joinConditions: [JoinConditions] @relation
   isMainEvent: Boolean
-  userParticipants: [EventUserParticipant] @relation
-  # eventUserOrganizers: EventUserOrganizers
+  userParticipants: [EventUserParticipant] @relation  
   price: Price @relation(name: "event_price")
   requests: [Request] @relation
-  # organization: Organization
-  #need org to create events? nah. allow user to create events,
-  #if user has orgs, they can select which org to create event for
   coorganizations: [Organization] @relation
   sponsors: [Sponsor] @relation
-  # creator: User
   ratings: [Rating] @relation
   images: [Image] @relation
   location: [Location] @relation
@@ -274,10 +273,7 @@ type Event   {
   chats: [Chat] @relation
   teams: [Team] @relation
   games: [Game] @relation
-  users: [User] @relation
-  #I don't  think you need these since tournament
-  #can have many events but not the other way around
-  # tournament: Tournament
+  users: [User] @relation  
   tryouts: [Tryout] @relation
   leagues: [League]  @relation
   tournaments: [Tournament] @relation
@@ -302,11 +298,6 @@ type Rsvp {
   createdAt: String
 }
 
-enum RsvpStatus{
-  Yes,
-  No,
-  Maybe
-}
 
 type Team   {
   name: String
@@ -399,33 +390,26 @@ type Sponsor {
 type Wager   {
   name: String
   amount: String
-  players: [Player] @relation
-  # eligibleEventTypes: [EventType] @relation
+  players: [Player] @relation  
   private: Boolean
   events: [Event] @relation
 }
 
-type Tryout   {
-  # event: Event
-  event: Event
-  #tryout can have a pickup game
-  # eligibleEventTypes: [EventType] @relation
+type Tryout   {  
+  event: Event  
 }
 
 type League   {
-  tournaments: [Tournament] @relation
-  # event: Event
+  tournaments: [Tournament] @relation  
   events: [Event] @relation
-  numberOfTeams: Int
-  # eligibleEventTypes: [EventType] @relation
+  numberOfTeams: Int  
   season: Season
   region: Region
 }
 
 type Season {
   leagues: [League] @relation
-  tournaments: [Tournament] @relation
-  # was going to add season but you can calculate season from start and end date
+  tournaments: [Tournament] @relation  
   startDate: String
   endDate: String
 }
@@ -458,7 +442,7 @@ type GroupStage {
   type: EventType
 }
 
-type EventOrder{
+type EventOrder {
   event: Event
   order: Int
   tournamentStage: TournamentStage
@@ -473,21 +457,18 @@ type TournamentStage {
 }
 
 type Tournament   {
-  groupPlay: Boolean
-  # event: Event
+  groupPlay: Boolean  
   events: [Event] @relation
   numberOfTeams: Int
   groupStage: GroupStage
   tournamentStage: TournamentStage
   region: Region
   season: Season
-  leagues: [League] @relation
-  # eligibleEventTypes: [EventType] @relation
+  leagues: [League] @relation  
 }
 
 type Training   {
-  event: Event
-  # eligibleEventTypes: [EventType] @relation
+  event: Event  
 }
 
 type Image   {
@@ -588,7 +569,6 @@ type RatingCategory {
   name: String
   weight: Float!
   ratings: [Rating] @relation
-
 }
 
 type Price   {
@@ -622,7 +602,6 @@ type Item {
   description: String #size 5
   price: String
   quantity: Int
-
 }
 
 type Region {

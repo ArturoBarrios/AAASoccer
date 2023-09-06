@@ -11,7 +11,7 @@ import 'base_command.dart';
 import 'league_command.dart';
 import 'refresh_posts_command.dart';
 import 'event_command.dart';
-import '../models/home_page_model.dart';
+import '../models/pageModels/home_page_model.dart';
 import '../models/events_model.dart';
 import 'package:flutter/foundation.dart';
 import '../constants.dart';

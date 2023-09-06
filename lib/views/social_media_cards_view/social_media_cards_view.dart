@@ -10,7 +10,7 @@ import '../../commands/event_command.dart';
 import '../../commands/event_command_impl.dart';
 import '../../commands/user_command.dart';
 import '../../components/custom_textfield.dart';
-import '../../models/app_model.dart';
+import '../../models/pageModels/app_model.dart';
 
 class SocialMediaCardsView extends StatefulWidget {
   const SocialMediaCardsView({
