@@ -1,3 +1,5 @@
+import 'Rating.dart';
+
 class RatingCategory {
   String? name;
   double? weight;

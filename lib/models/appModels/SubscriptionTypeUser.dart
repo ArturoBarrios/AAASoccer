@@ -1,3 +1,5 @@
+import 'User.dart';
+
 class SubscriptionTypeUser {
   SubscriptionType? subscriptionType;
   User? user;

@@ -1,3 +1,6 @@
+import 'Region.dart';
+import 'User.dart';
+
 class RegionUserParticipant {
   Region? region;
   User? user;

@@ -1,4 +1,27 @@
-// Event.dart
+import 'JoinConditions.dart';
+import 'EventUserParticipant.dart';
+import 'Price.dart';
+import 'Request.dart';
+import 'Organization.dart';
+import 'Sponsor.dart';
+import 'Rating.dart';
+import 'Image.dart';
+import 'Location.dart';
+import 'Payment.dart';
+import 'Chat.dart';
+import 'Team.dart';
+import 'Game.dart';
+import 'User.dart';
+import 'Tryout.dart';
+import 'League.dart';
+import 'Tournament.dart';
+import 'Training.dart';
+import 'Wager.dart';
+import 'Rsvp.dart';
+import 'SocialMediaApp.dart';
+
+
+
 class Event {
   String? name;
   List<JoinConditions>? joinConditions;  // You will define this JoinConditions class similarly

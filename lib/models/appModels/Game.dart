@@ -1,3 +1,6 @@
+import 'Team.dart';
+import 'Event.dart';
+
 class Game {
   Team? hometeam;
   Team? awayteam;

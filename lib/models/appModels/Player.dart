@@ -1,3 +1,8 @@
+import 'Wager.dart';
+import 'User.dart';
+import 'Sponsor.dart';
+import 'Rating.dart';
+
 class Player {
   String? wagerRating;
   List<Wager>? wagers;

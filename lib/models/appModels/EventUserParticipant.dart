@@ -1,3 +1,7 @@
+import 'EVent.dart';
+import 'User.dart';
+import 'Organization.dart';
+
 class EventUserParticipant {
   Event? event;
   User? user;

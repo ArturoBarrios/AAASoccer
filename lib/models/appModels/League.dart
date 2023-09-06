@@ -1,3 +1,8 @@
+import 'Tournament.dart';
+import 'Event.dart';
+import 'Season.dart';
+import 'Region.dart';
+
 class League {
   List<Tournament>? tournaments;
   List<Event>? events;

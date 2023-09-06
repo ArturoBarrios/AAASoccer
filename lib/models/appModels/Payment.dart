@@ -1,3 +1,8 @@
+import 'Event.dart';
+import 'Team.dart';
+import 'User.dart';
+
+
 class Payment {
   String? amount;
   Event? event;

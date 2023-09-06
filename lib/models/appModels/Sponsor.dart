@@ -1,3 +1,9 @@
+import 'Image.dart';
+import 'Event.dart';
+import 'Organization.dart';
+import 'Player.dart';
+import 'Team.dart';
+
 class Sponsor {
   String? id;
   String? name;

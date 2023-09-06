@@ -1,3 +1,6 @@
+import 'Event.dart';
+import 'TournamentStage.dart';
+
 class EventOrder {
   Event? event;
   int? order;

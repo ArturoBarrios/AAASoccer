@@ -1,3 +1,9 @@
+import 'Chat.dart';
+import 'TextContent.dart';
+import 'GifContent.dart';
+import 'Image.dart';
+import 'User.dart';
+
 class Message {
   Chat? chatObject;
   TextContent? textObject;

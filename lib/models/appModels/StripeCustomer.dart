@@ -1,3 +1,6 @@
+import 'User.dart';
+
+
 class StripeCustomer {
   String? customerId;
   User? user;

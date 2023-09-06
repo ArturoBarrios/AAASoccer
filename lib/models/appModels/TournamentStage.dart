@@ -1,3 +1,6 @@
+import 'Tournament.dart';
+import 'EventOrder.dart';
+
 class TournamentStage {
   int? numberOfTeams;
   int? numberOfRoundsPerTeam;

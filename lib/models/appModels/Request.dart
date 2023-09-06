@@ -1,3 +1,7 @@
+import 'User.dart';
+import 'Event.dart';
+import 'Team.dart';
+
 class Request {
   RequestType? type;
   User? sender;

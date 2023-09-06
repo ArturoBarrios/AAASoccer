@@ -1,3 +1,7 @@
+import 'Group.dart';
+import 'Tournament.dart';
+import 'League.dart';
+
 class GroupStage {
   List<Group>? groups;
   int? numberOfTeams;

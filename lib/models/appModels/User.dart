@@ -12,12 +12,13 @@ import 'Image.dart';
 import 'UserAccountStatus.dart';
 import 'Referee.dart';
 import 'Coach.dart';
-import 'Organizer.dart';
+import 'Organization.dart';
 import 'Player.dart';
 import 'Location.dart';
 import 'FollowRelation.dart';
 import 'Team.dart';
-import 
+import 'Payment.dart';
+import 'StripeCustomer.dart';
 
 class User {
   List<StripeCustomer>? stripeCustomers;
@@ -36,8 +37,7 @@ class User {
   List<FollowRelation>? followers;
   List<FollowRelation>? following;
   Location? location;
-  Player? player;
-  Organizer? organizer;
+  Player? player;  
   Coach? coach;
   Referee? referee;
   UserAccountStatus? status;

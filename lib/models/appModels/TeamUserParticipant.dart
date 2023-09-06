@@ -1,3 +1,6 @@
+import 'Team.dart';
+import 'User.dart';
+
 class TeamUserParticipant {
   Team? team;
   User? user;

@@ -1,3 +1,9 @@
+import 'Location.dart';
+import 'League.dart';
+import 'Tournament.dart';
+import 'Team.dart';
+import 'RegionUserParticipant.dart';
+
 class Region {
   String? name;
   Location? location;

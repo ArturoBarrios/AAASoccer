@@ -1,3 +1,12 @@
+import 'User.dart';
+import 'Event.dart';
+import 'Chat.dart';
+import 'Team.dart';
+import 'Location.dart';
+import 'Organization.dart';
+import 'Sponsor.dart';
+
+
 class Image {
   bool? isMainImage;
   bool? public;

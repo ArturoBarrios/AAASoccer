@@ -34,9 +34,12 @@ type Query {
   AllEventsByID(ids: [ID]):[ID] @resolver
 }
 
-# type Mutation {
-#   createRsvp(eventId: ID!, userId: ID!, status: RsvpStatus!): Rsvp
-# }
+
+enum AmenitieType {
+ bathrooms
+ water fountain
+ bike station
+}
 
 enum RoleType {
   COACH
@@ -138,6 +141,13 @@ enum RsvpStatus{
   Maybe
 }
 
+enum PrizeType {
+  CASH
+  TROPHY
+  MEDAL
+  OTHER
+}
+
 type Request {
   type: RequestType
   sender: User @relation(name: "requests_sent")
@@ -181,7 +191,6 @@ type User  {
   following: [FollowRelation] @relation(name: "user_follower")
   location: Location
   player: Player
-  organizer: Organizer
   coach: Coach
   referee: Referee
   status: UserAccountStatus
@@ -334,12 +343,6 @@ type Referee   {
   user: User
   ratings: [Rating] @relation
 }
-
-type Organizer   {
-  user: User
-  ratings: [Rating] @relation
-}
-
 
 # a payment is attached to event
 # use payment object to create payment screen details for event
@@ -559,7 +562,6 @@ type Rating   {
   events: [Event] @relation
   users: [User] @relation
   players: [Player] @relation
-  organizers: [Organizer] @relation
   coaches: [Coach] @relation
   referees: [Referee] @relation
   ratingCategory: [RatingCategory] @relation
@@ -617,4 +619,24 @@ type RegionUserParticipant {
   region: Region
   user: User
   roles: String
+}
+
+type Prize {
+  amount: String
+  type: PrizeType  
+  description: String
+}
+
+type Amenities {
+  type: AmenitieType  
+
+}
+
+type Discount {
+  percentage: Int  
+}
+
+type Coupon {
+  code: String
+  discount: Discount
 }

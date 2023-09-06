@@ -1,3 +1,21 @@
+import 'Event.dart';
+import 'Image.dart';
+import 'User.dart';
+import 'Sponsor.dart';
+import 'Location.dart';
+import 'TeamUserParticipant.dart';
+import 'Region.dart';
+import 'Request.dart';
+import 'Chat.dart';
+import 'Price.dart';
+import 'Payment.dart';
+import 'JoinConditions.dart';
+import 'TeamOrder.dart';
+import 'Organization.dart';
+import 'Rating.dart';
+import 'SocialMediaApp.dart';
+
+
 class Team {
   String? name;
   String? color;

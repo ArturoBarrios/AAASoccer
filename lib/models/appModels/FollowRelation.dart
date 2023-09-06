@@ -1,3 +1,5 @@
+import 'User.dart';
+
 class FollowRelation {
   User? follower;
   User? following;

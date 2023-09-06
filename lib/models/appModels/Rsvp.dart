@@ -1,3 +1,6 @@
+import 'User.dart';
+import 'Event.dart';
+
 class Rsvp {
   String? id;
   User? user;

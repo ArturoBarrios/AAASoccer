@@ -1,3 +1,6 @@
+import 'Event.dart';
+import 'Team.dart';
+
 class JoinConditions {
   bool? withRequest;
   bool? withPayment;

@@ -1,3 +1,9 @@
+import 'Message.dart';
+import 'User.dart';
+import 'Event.dart';
+import 'Team.dart';
+import 'Image.dart';
+
 class Chat {
   String? name;
   List<Message>? messages;  // You will define this Message class similarly

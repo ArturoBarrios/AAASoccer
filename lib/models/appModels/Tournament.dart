@@ -1,3 +1,10 @@
+import 'Event.dart';
+import 'GroupStage.dart';
+import 'League.dart';
+import 'Region.dart';
+import 'Season.dart';
+import 'TournamentStage.dart';
+
 class Tournament {
   bool? groupPlay;
   List<Event>? events;

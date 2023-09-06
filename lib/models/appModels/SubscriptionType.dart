@@ -1,3 +1,5 @@
+import 'Price.dart';
+
 class SubscriptionType {
   String? name;
   String? description;

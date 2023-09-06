@@ -1,3 +1,6 @@
+import 'Team.dart';
+import 'Group.dart';
+
 class TeamOrder {
   Team? team;
   int? points;

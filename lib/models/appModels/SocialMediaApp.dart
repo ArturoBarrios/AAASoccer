@@ -1,3 +1,7 @@
+import 'User.dart';
+import 'Team.dart';
+import 'Event.dart';
+
 class SocialMediaApp {
   SocialMediaType? type;
   String? url;
