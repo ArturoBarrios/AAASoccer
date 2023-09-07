@@ -1,3 +1,5 @@
+import '../enums/RequestStatus.dart';
+import '../enums/RequestType.dart';
 import 'User.dart';
 import 'Event.dart';
 import 'Team.dart';

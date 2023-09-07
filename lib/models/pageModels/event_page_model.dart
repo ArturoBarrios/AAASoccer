@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../../constants.dart';
+import '../appModels/Price.dart';
 
 
 
@@ -55,9 +56,9 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
   
-  Price _price = {};
-  Price get price => _price;
-  set price(Price price) {
+  dynamic _price = {};
+  dynamic get price => _price;
+  set price(dynamic price) {
     _price = price;
     notifyListeners();
   }

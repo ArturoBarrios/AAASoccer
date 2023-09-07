@@ -32,7 +32,7 @@ import '../../components/rsvp_widget.dart';
 import '../../components/send_players_request_widget.dart';
 import '../../components/send_teams_request_widget.dart';
 import '../../components/teams_list_widget.dart';
-import '../../enums/rsv_status.dart';
+import '../../models/enums/RsvpStatus.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../profile/profile.dart';
 import '../../components/payment_screen.dart';

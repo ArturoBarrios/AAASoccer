@@ -22,7 +22,6 @@ type Query {
   allTryouts: [Tryout!]
   allLeagues: [League!]
   allTournaments: [Tournament!]
-  allSubscriptionTypes: [SubscriptionType!]
   allUsers: [User!]
   allPlayers: [Player!]
   allRequests: [Request!]
@@ -36,9 +35,11 @@ type Query {
 
 
 enum AmenitieType {
- bathrooms
- water fountain
- bike station
+ BATHROOMS
+ WATERFOUNDATIN
+ BIKESTATION
+ TRAIN
+ BUS
 }
 
 enum RoleType {
@@ -210,7 +211,6 @@ type User  {
   onboarded: Boolean @default(value: false)
   ratings: [Rating] @relation
   mainImageKey: String
-  subscriptionTypeUsers: [SubscriptionTypeUser] @relation
   isProfilePrivate: Boolean @default(value: false)
   socialMediaApps: [SocialMediaApp] @relation
 }
@@ -484,8 +484,7 @@ type Image   {
   chat: Chat
   team: Team
   location: Location
-  organization: Organization
-  attachedModelType: ModelType
+  organization: Organization  
   sponsor: Sponsor
   s3bucket: String
 }
@@ -521,21 +520,6 @@ type Chat  {
   images: [Image] @relation
 }
 
-type SubscriptionType {
-  name: String
-  description: String
-  price: Price
-  lengths: String
-  subscriptions: [SubscriptionTypeUser] @relation
-}
-
-type SubscriptionTypeUser  {
-  subscriptionType: SubscriptionType
-  user: User
-  startDate: String
-  endDate: String
-  length: Int
-}
 
 type Location   {
   name: String
@@ -578,7 +562,6 @@ type Price   {
   event: Event @relation(name: "event_price")
   team: Team
   location: Location
-  subscriptionType: SubscriptionType
   teamAmount: String
   time: Int #in minutes
 }

@@ -11,7 +11,7 @@ import '../../components/create_event_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/event_input_widget.dart';
 import '../../components/location_search_bar.dart';
-import '../../enums/EventType.dart';
+import '../../models/enums/EventType.dart';
 
 class TournamentCreate extends StatefulWidget {
   final dynamic league;

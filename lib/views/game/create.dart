@@ -16,7 +16,7 @@ import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/models/button_model.dart';
 import '../../components/models/custom_stepper_model.dart';
-import '../../enums/EventType.dart';
+import '../../models/enums/EventType.dart';
 import '../../strings.dart';
 
 class GameCreate extends StatefulWidget {

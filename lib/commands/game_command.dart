@@ -16,7 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/payment_commands.dart';
-import '../enums/EventType.dart';
+import '../models/enums/EventType.dart';
 
 class GameCommand extends BaseCommand {
   List<dynamic> sortGames(List<dynamic> games, String sortBy) {

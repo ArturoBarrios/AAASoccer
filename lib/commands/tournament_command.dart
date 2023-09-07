@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:soccermadeeasy/graphql/queries/tournaments.dart';
 
 import '../constants.dart';
-import '../enums/EventType.dart';
+import '../models/enums/EventType.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:faunadb_http/faunadb_http.dart';

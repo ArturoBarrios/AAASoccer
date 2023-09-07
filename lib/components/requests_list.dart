@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/loading_circular.dart';
-import 'package:soccermadeeasy/enums/view_status.dart';
+import 'package:soccermadeeasy/models/enums/view_status.dart';
 import '../commands/user_command.dart';
 import '../constants.dart';
 import '../../commands/team_command.dart';

@@ -1,3 +1,4 @@
+import '../enums/EventType.dart';
 import 'JoinConditions.dart';
 import 'EventUserParticipant.dart';
 import 'Price.dart';

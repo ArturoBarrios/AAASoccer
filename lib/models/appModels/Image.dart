@@ -17,8 +17,7 @@ class Image {
   Chat? chat;
   Team? team;
   Location? location;
-  Organization? organization;
-  ModelType? attachedModelType;
+  Organization? organization;  
   Sponsor? sponsor;
   String? s3bucket;
 
@@ -32,8 +31,7 @@ class Image {
     this.chat,
     this.team,
     this.location,
-    this.organization,
-    this.attachedModelType,
+    this.organization,    
     this.sponsor,
     this.s3bucket,
   });

@@ -16,7 +16,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:geolocator/geolocator.dart';
 import '../commands/geolocation_command.dart';
 import '../commands/user_command.dart';
-import '../enums/PaymentType.dart';
+import '../models/enums/PaymentType.dart';
 import '../graphql/queries/trainings.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import '../blocs/payment/payment_bloc.dart';

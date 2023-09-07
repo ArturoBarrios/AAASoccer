@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import '../../enums/PaymentType.dart';
+import '../enums/PaymentType.dart';
 
 class PaymentModel extends ChangeNotifier {
   PaymentType _status = PaymentType.initial;

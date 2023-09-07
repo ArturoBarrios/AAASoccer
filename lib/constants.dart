@@ -1,4 +1,4 @@
-import 'enums/EventType.dart';
+import 'models/enums/EventType.dart';
 
 class Constants {
   static const EventType PICKUP = EventType.GAME;

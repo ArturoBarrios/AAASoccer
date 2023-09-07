@@ -324,6 +324,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (c) => EventsModel()),        
         ChangeNotifierProvider(create: (c) => EventPageModel()),
         ChangeNotifierProvider(create: (c) => TeamPageModel()),        
+        ChangeNotifierProvider(create: (c) => RequestsModel()),        
         ChangeNotifierProvider(create: (c) => RequestsPageModel()),        
         ChangeNotifierProvider(create: (c) => ChatPageModel()),
         ChangeNotifierProvider(create: (c) => HomePageModel()),

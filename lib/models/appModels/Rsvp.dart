@@ -1,5 +1,6 @@
 import 'User.dart';
 import 'Event.dart';
+import '../enums/RsvpStatus.dart';
 
 class Rsvp {
   String? id;

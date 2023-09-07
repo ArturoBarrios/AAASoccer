@@ -1,5 +1,5 @@
 import 'dart:developer';
-import '../../enums/EventType.dart';
+import '../../models/enums/EventType.dart';
 
 class EventQueries {
   String allEventsOfType(

@@ -1,6 +1,7 @@
 import 'EVent.dart';
 import 'User.dart';
 import 'Organization.dart';
+import '../enums/EventUserParticipantAttendingOptions.dart';
 
 class EventUserParticipant {
   Event? event;

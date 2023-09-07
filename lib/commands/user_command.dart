@@ -18,7 +18,7 @@ import '../graphql/mutations/teams.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/notifications_command.dart';
-import '../enums/PaymentType.dart';
+import '../models/enums/PaymentType.dart';
 import 'images_command.dart';
 
 class UserCommand extends BaseCommand {

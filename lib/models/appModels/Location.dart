@@ -1,9 +1,11 @@
+import '../enums/SurfaceType.dart';
 import 'Image.dart';
 import 'Event.dart';
 import 'User.dart';
 import 'Team.dart';
 import 'Organization.dart';
 import 'Price.dart';
+import '../enums/FieldPlayerOccupancySize.dart';
 
 class Location {
   String? name;

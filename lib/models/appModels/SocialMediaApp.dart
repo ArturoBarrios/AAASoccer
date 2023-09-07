@@ -1,3 +1,4 @@
+import '../enums/SocialMediaType.dart';
 import 'User.dart';
 import 'Team.dart';
 import 'Event.dart';

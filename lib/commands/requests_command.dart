@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
 import '../commands/notifications_command.dart';
-import '../enums/RequestStatus.dart';
+import '../models/enums/RequestStatus.dart';
 
 class RequestsCommand extends BaseCommand {
   

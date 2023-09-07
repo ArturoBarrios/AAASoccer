@@ -1,3 +1,4 @@
+import '../enums/EventUserParticipantAttendingOptions.dart';
 import 'Team.dart';
 import 'User.dart';
 

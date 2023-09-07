@@ -1,5 +1,7 @@
+import '../enums/GenderType.dart';
+import '../enums/UserAccountStatus.dart';
+import '../enums/UserType.dart';
 import 'SocialMediaApp.dart';
-import 'SubscriptionTypeUser.dart';
 import 'Rating.dart';
 import 'Chat.dart';
 import 'Message.dart';
@@ -9,7 +11,6 @@ import 'TeamUserParticipant.dart';
 import 'EventUserParticipant.dart';
 import 'Event.dart';
 import 'Image.dart';
-import 'UserAccountStatus.dart';
 import 'Referee.dart';
 import 'Coach.dart';
 import 'Organization.dart';
@@ -57,7 +58,6 @@ class User {
   bool? onboarded;
   List<Rating>? ratings;
   String? mainImageKey;
-  List<SubscriptionTypeUser>? subscriptionTypeUsers;
   bool? isProfilePrivate;
   List<SocialMediaApp>? socialMediaApps;
 
@@ -78,8 +78,7 @@ class User {
     this.followers,
     this.following,
     this.location,
-    this.player,
-    this.organizer,
+    this.player,    
     this.coach,
     this.referee,
     this.status,
@@ -98,8 +97,7 @@ class User {
     this.messagesDirectedForMe,
     this.onboarded,
     this.ratings,
-    this.mainImageKey,
-    this.subscriptionTypeUsers,
+    this.mainImageKey,    
     this.isProfilePrivate,
     this.socialMediaApps,
   });

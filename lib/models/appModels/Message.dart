@@ -1,3 +1,4 @@
+import '../enums/MessageType.dart';
 import 'Chat.dart';
 import 'TextContent.dart';
 import 'GifContent.dart';

@@ -4,7 +4,7 @@ import 'package:soccermadeeasy/commands/team_command.dart';
 import 'package:soccermadeeasy/commands/tournament_command.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
 
-import '../enums/EventType.dart';
+import '../models/enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
 import '../graphql/fragments/team_fragments.dart';
 import 'base_command.dart';

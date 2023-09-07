@@ -17,7 +17,7 @@ import '../commands/paypal_payment/paypal_repository.dart';
 import '../commands/subscriptions_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
-import '../enums/PaymentType.dart';
+import '../models/enums/PaymentType.dart';
 import '../models/componentModels/payment_model.dart';
 import '../components/Cards/payment_card.dart';
 import '../components/my_painter.dart';

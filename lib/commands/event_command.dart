@@ -14,7 +14,7 @@ import '../graphql/queries/events.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../commands/player_command.dart';
-import '../enums/EventType.dart';
+import '../models/enums/EventType.dart';
 import '../graphql/queries/games.dart';
 import '../commands/user_command.dart';
 import '../graphql/mutations/games.dart';

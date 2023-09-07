@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../commands/event_command.dart';
 import '../commands/user_command.dart';
-import '../enums/rsv_status.dart';
+import '../models/enums/RsvpStatus.dart';
 
 class RSVPWidget extends StatefulWidget {        
     final dynamic? event;
@@ -17,11 +17,11 @@ class RSVPWidget extends StatefulWidget {
     State<RSVPWidget> createState() => _RSVPWidgetState();
   }
   class _RSVPWidgetState extends State<RSVPWidget> {    
-      RsvStatus? currentRsvStatus;
+      RsvpStatus? currentRsvpStatus;
 
 
   
-    Future<void> updateRsvp(RsvStatus rsvpStatus) async {
+    Future<void> updateRsvp(RsvpStatus rsvpStatus) async {
       dynamic appModelUser = UserCommand().getAppModelUser();
 
       final participantId = UserCommand().getParticipantIdByUserId(
@@ -37,7 +37,7 @@ class RSVPWidget extends StatefulWidget {
       final result = await EventCommand().updateEventUserParticipantRsv(input);
       if (result['data'] != null) {
         setState(() {
-          currentRsvStatus = rsvpStatus;
+          currentRsvpStatus = rsvpStatus;
           widget.event['userParticipants']['data'] =
               result['data'];
           // widget.userParticipants = result['data'];
@@ -47,7 +47,7 @@ class RSVPWidget extends StatefulWidget {
     }
 
     loadInitialData(){
-      currentRsvStatus = RsvStatus.maybe;
+      currentRsvpStatus = RsvpStatus.maybe;
     }
 
     @override
@@ -75,12 +75,12 @@ class RSVPWidget extends StatefulWidget {
               ),
               Expanded(
                 child: GestureDetector(
-                  onTap: () => updateRsvp?.call(RsvStatus.yes),
+                  onTap: () => updateRsvp?.call(RsvpStatus.yes),
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                     decoration: BoxDecoration(
-                      color: currentRsvStatus == RsvStatus.yes
+                      color: currentRsvpStatus == RsvpStatus.yes
                           ? Colors.grey.shade400
                           : Colors.grey.shade100,
                       border: Border.all(color: Colors.grey.shade300),
@@ -97,12 +97,12 @@ class RSVPWidget extends StatefulWidget {
               ),
               Expanded(
                 child: GestureDetector(
-                  onTap: () => updateRsvp?.call(RsvStatus.no),
+                  onTap: () => updateRsvp?.call(RsvpStatus.no),
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                     decoration: BoxDecoration(
-                      color: currentRsvStatus == RsvStatus.no
+                      color: currentRsvpStatus == RsvpStatus.no
                           ? Colors.grey.shade400
                           : Colors.grey.shade100,
                       border: Border.all(color: Colors.grey.shade300),
@@ -119,12 +119,12 @@ class RSVPWidget extends StatefulWidget {
               ),
               Expanded(
                 child: GestureDetector(
-                  onTap: () => updateRsvp?.call(RsvStatus.maybe),
+                  onTap: () => updateRsvp?.call(RsvpStatus.maybe),
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                     decoration: BoxDecoration(
-                      color: currentRsvStatus == RsvStatus.maybe
+                      color: currentRsvpStatus == RsvpStatus.maybe
                           ? Colors.grey.shade400
                           : Colors.grey.shade100,
                       border: Border.all(color: Colors.grey.shade300),
