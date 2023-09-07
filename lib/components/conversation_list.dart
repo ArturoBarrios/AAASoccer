@@ -7,11 +7,19 @@ import '../commands/chat_command.dart';
 import 'object_profile_main_image.dart';
 
 class ConversationList extends StatefulWidget {
-  const ConversationList({Key? key, required this.chatObject})
-      : super(key: key);
+  const ConversationList({
+    Key? key,
+    required this.chatObject,
+    this.participantCount,
+    this.onTapMembers,
+  }) : super(key: key);
+
+  final dynamic chatObject;
+  final int? participantCount;
+  final VoidCallback? onTapMembers;
+
   @override
   State<ConversationList> createState() => _ConversationListState();
-  final dynamic chatObject;
 }
 
 class _ConversationListState extends State<ConversationList> {
@@ -95,9 +103,20 @@ class _ConversationListState extends State<ConversationList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            name,
-                            style: TextStyle(fontSize: 16),
+                          Row(
+                            children: [
+                              Text(
+                                name,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              TextButton(
+                                onPressed: widget.onTapMembers,
+                                child: Text(
+                                  'Members: (${widget.participantCount})',
+                                  style: const TextStyle(color: Colors.blue),
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(
                             height: 6,

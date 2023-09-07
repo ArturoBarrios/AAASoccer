@@ -1,8 +1,7 @@
 import '../fragments/request_fragments.dart';
 
 class RequestMutations {
-  String sendEventRequest(Map<String, dynamic> eventRequestInput
-    ) {
+  String sendEventRequest(Map<String, dynamic> eventRequestInput) {
     String createEventRequest = """
       mutation {
         createRequest(
@@ -52,9 +51,8 @@ class RequestMutations {
     return updateRequest;
   }
 
-  String sendTeamRequest(
-      Map<String, dynamic> teamRequestInput) {
-      String sendTeamRequestString = """
+  String sendTeamRequest(Map<String, dynamic> teamRequestInput) {
+    String sendTeamRequestString = """
       mutation {
         createRequest(data: {    
           status: PENDING,
@@ -79,11 +77,10 @@ class RequestMutations {
         """;
 
     return sendTeamRequestString;
-    }
-  
-  String sendTeamEventRequest(
-      Map<String, dynamic> teamRequestInput) {
-      String sendTeamRequestString = """
+  }
+
+  String sendTeamEventRequest(Map<String, dynamic> teamRequestInput) {
+    String sendTeamRequestString = """
       mutation {
         createRequest(data: {    
           status: PENDING,
@@ -111,9 +108,9 @@ class RequestMutations {
         """;
 
     return sendTeamRequestString;
-    }
+  }
 
-    String sendFriendRequest(Map<String, dynamic> sendFriendRequestInput) {
+  String sendFriendRequest(Map<String, dynamic> sendFriendRequestInput) {
     String sendFriendRequestString = """
       mutation {
         createRequest(data: {    
@@ -137,4 +134,40 @@ class RequestMutations {
     return sendFriendRequestString;
   }
 
+  String sendChatRequest(Map<String, dynamic> requestInput) {
+    String request = requestInput['type'] == 'EVENTCHATREQUEST'
+        ? """
+          event: {
+            connect: "${requestInput['typeId']}"            
+          } 
+          """
+        : """
+          team:{
+            connect: "${requestInput['typeId']}"
+          }
+          """;
+
+    String sendTeamRequestString = """
+      mutation {
+        createRequest(data: {    
+          status: PENDING,
+          requestAttempts: 1, 
+          type: ${requestInput['type']},
+          $request           
+          receivers: {
+              connect: [
+                ${requestInput['receiverId']}
+              ]
+            }
+          sender: {
+            connect: "${requestInput['senderId']}"            
+          },  
+          }) {
+            ${RequestFragments().fullRequest()}        
+          }   
+        }
+        """;
+
+    return sendTeamRequestString;
+  }
 }

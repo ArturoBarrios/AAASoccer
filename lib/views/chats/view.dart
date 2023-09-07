@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../commands/chat_command.dart';
+import '../../commands/images_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/footers.dart';
 import '../../components/headers.dart';
@@ -8,6 +9,8 @@ import '../../commands/user_command.dart';
 import '../../components/conversation_list.dart';
 import '../../models/pageModels/chat_page_model.dart';
 import 'package:provider/provider.dart';
+
+import 'add_user_to_chat_view.dart';
 
 class ChatsView extends StatefulWidget {
   const ChatsView({Key? key}) : super(key: key);
@@ -59,6 +62,45 @@ class _ChatsViewState extends State<ChatsView> {
     loadInitialData();
   }
 
+  Future<void> onTapMembers({dynamic selectedChat}) async {
+    final chatMemberList = await processImages(List.from(selectedChat));
+    if (chatMemberList != null) {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (BuildContext context) =>
+              AddUserToChatView(selectedChat: chatMemberList),
+        ),
+      );
+    }
+  }
+
+  Future<dynamic> processImages(List<dynamic> objects) async {
+    List<String> keys = [];
+
+    for (var object in objects) {
+      if (object['images']['data'].isNotEmpty) {
+        keys.add(object['images']['data'].last['key'] ?? '');
+      } else {
+        keys.add('');
+      }
+    }
+
+    final responses = await ImagesCommand().getImagesList(keys);
+    final imageList = responses['data'];
+    for (var object in objects) {
+      for (var image in object['images']['data']) {
+        for (var response in imageList) {
+          if (image['key'] == response['key']) {
+            image['url'] = response['signedUrl'];
+          }
+        }
+      }
+    }
+
+    return objects;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build() in chats view.dart page");
@@ -102,6 +144,10 @@ class _ChatsViewState extends State<ChatsView> {
                           : "No Messages Yet";
                       return ConversationList(
                         chatObject: chats[index],
+                        participantCount:
+                            List.from(chats[index]['users']['data']).length,
+                        onTapMembers: () async => await onTapMembers(
+                            selectedChat: chats[index]['users']['data']),
                       );
                     },
                   )),

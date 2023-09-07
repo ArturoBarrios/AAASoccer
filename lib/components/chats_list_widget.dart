@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../commands/chat_command.dart';
+import '../commands/images_command.dart';
+import '../views/chats/add_user_to_chat_view.dart';
 import '../views/chats/chat/view.dart';
 import 'Loading/loading_screen.dart';
 import 'conversation_list.dart';
@@ -63,6 +67,45 @@ class _ChatsListWidgetState extends State<ChatsListWidget> {
     loadInitialData();
   }
 
+  Future<void> onTapMembers({dynamic selectedChat}) async {
+    final chatMemberList = await processImages(List.from(selectedChat));
+    if (chatMemberList != null) {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (BuildContext context) =>
+              AddUserToChatView(selectedChat: chatMemberList),
+        ),
+      );
+    }
+  }
+
+  Future<dynamic> processImages(List<dynamic> objects) async {
+    List<String> keys = [];
+
+    for (var object in objects) {
+      if (object['images']['data'].isNotEmpty) {
+        keys.add(object['images']['data'].last['key'] ?? '');
+      } else {
+        keys.add('');
+      }
+    }
+
+    final responses = await ImagesCommand().getImagesList(keys);
+    final imageList = responses['data'];
+    for (var object in objects) {
+      for (var image in object['images']['data']) {
+        for (var response in imageList) {
+          if (image['key'] == response['key']) {
+            image['url'] = response['signedUrl'];
+          }
+        }
+      }
+    }
+
+    return objects;
+  }
+
   @override
   Widget build(BuildContext context) {
     return _isLoading
@@ -106,9 +149,15 @@ class _ChatsListWidgetState extends State<ChatsListWidget> {
                     itemBuilder: (context, index) {
                       var chat = chatsToDisplay[index];
                       var isPrivate = chat['isPrivate'];
-
+                      inspect(chatsToDisplay);
                       return ConversationList(
                         chatObject: chat,
+                        participantCount:
+                            List.from(chatsToDisplay[index]['users']['data'])
+                                .length,
+                        onTapMembers: () async => await onTapMembers(
+                            selectedChat: chatsToDisplay[index]['users']
+                                ['data']),
                       );
                     },
                   ),

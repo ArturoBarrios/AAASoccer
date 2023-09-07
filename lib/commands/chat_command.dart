@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../graphql/mutations/chat.dart';
@@ -138,11 +139,12 @@ class ChatCommand extends BaseCommand {
     try {
       chatPageModel.chats = [];
       for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {
-        String imageKey =
+        String? imageKey =
             appModel.currentUser['chats']['data'][i]['mainImageKey'];
-        dynamic imageInput = {"key": imageKey};
+        print("imageKey: $imageKey");
+
         if (imageKey != null) {
-          print("imageKey: $imageKey");
+          dynamic imageInput = {"key": imageKey};
           Map<String, dynamic> getImageUrlResp =
               await ImagesCommand().getImageUrl(imageInput);
           if (getImageUrlResp['success']) {
@@ -150,6 +152,7 @@ class ChatCommand extends BaseCommand {
                 getImageUrlResp['data'];
           }
         }
+
         chatPageModel.chats.add(appModel.currentUser['chats']['data'][i]);
       }
 
@@ -377,6 +380,84 @@ class ChatCommand extends BaseCommand {
     } on ApiException catch (e) {
       print('Mutation failed: $e');
       return archiveChatResponse;
+    }
+  }
+
+  //send chat request to receiver
+  Future<Map<String, dynamic>> sendChatRequest(dynamic requestInput) async {
+    print("sendTeamEventRequest");
+    Map<String, dynamic> sendChatRequestResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      dynamic sendRequestInput = {
+        "type": requestInput['type'],
+        "typeId": requestInput['typeId'],
+        "senderId": appModel.currentUser['_id'],
+        "receiverId": requestInput['receiverId'],
+      };
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': RequestMutations().sendChatRequest(sendRequestInput)
+        }),
+      );
+
+      print("response: ${response.body}");
+      print("sendTeamEventRequest");
+
+      sendChatRequestResponse["success"] = true;
+      sendChatRequestResponse["message"] = "Event Request to Team Created";
+
+      return sendChatRequestResponse;
+    } catch (e) {
+      print("error in sendTeamEventRequest: $e");
+      return sendChatRequestResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> addUserToChat(
+      Map<String, dynamic> chatInput) async {
+    print("add user to chat request start");
+    Map<String, dynamic> addUserToChatResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': ChatMutations().addUserToChat(chatInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      dynamic adduserToCharData =
+          jsonDecode(response.body)['data']['updateChat']['users']['data'];
+      print("adduserToCharData: $adduserToCharData");
+
+      addUserToChatResponse['success'] = true;
+      addUserToChatResponse['message'] = "User added";
+      addUserToChatResponse['data'] = adduserToCharData;
+
+      return addUserToChatResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return addUserToChatResponse;
     }
   }
 }

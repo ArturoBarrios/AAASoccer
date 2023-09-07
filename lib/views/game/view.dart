@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 import 'package:soccermadeeasy/extensions/share_image_text.dart';
+import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
 import '../../commands/base_command.dart';
+import '../../commands/chat_command.dart';
 import '../../commands/event_command.dart';
 import '../../commands/images_command.dart';
 import '../../commands/requests_command.dart';
@@ -23,6 +27,7 @@ import '../../components/get_join_event_widget.dart';
 import '../../components/image_header.dart';
 import '../../components/images_list_widget.dart';
 import '../../components/location_search_bar.dart';
+import '../../components/models/button_model.dart';
 import '../../components/my_map_page.dart';
 import '../../components/object_profile_main_image.dart';
 import '../../components/players_list_widget.dart';
@@ -33,6 +38,7 @@ import '../../components/send_players_request_widget.dart';
 import '../../components/send_teams_request_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../models/enums/RsvpStatus.dart';
+import '../../models/pageModels/chat_page_model.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../profile/profile.dart';
 import '../../components/payment_screen.dart';
@@ -158,7 +164,73 @@ class _PickupViewState extends State<PickupView> {
     });
   }
 
- 
+  Future<void> onTapInviteUserToChat(dynamic mainEvent, String? userId) async {
+    // Map<String, dynamic> request = {
+    //   "type": 'EVENTCHATREQUEST',
+    //   "typeId": mainEvent['_id'],
+    //   "receiverId": userId,
+    // };
+
+    // await ChatCommand().sendChatRequest(request);
+  }
+
+  Future<void> addUserToChat({
+    final String? chatId,
+    final String? userId,
+    final List<dynamic>? chatList,
+  }) async {
+    Map<String, dynamic> request = {
+      "chatId": chatId,
+      "userId": userId,
+    };
+
+    final result = await ChatCommand().addUserToChat(request);
+
+    final modified = updateUser(chatList, chatId, result['data']);
+
+    if (modified != null) {
+      ChatPageModel().chats = modified;
+      setState(() {});
+    }
+  }
+
+  dynamic updateUser(
+      List<dynamic>? chatList, String? chatId, dynamic updatedUsers) {
+    if (chatList != null) {
+      for (var chat in chatList) {
+        if (chat['_id'] == chatId) {
+          chat['users']['data'] = updatedUsers;
+        }
+      }
+    }
+    return chatList;
+  }
+
+  Future<void> onTapShowChatBottomSheet(
+      {required final BuildContext context,
+      final List<dynamic>? chatList,
+      final String? userId}) async {
+    await context.showUserChatOptionsBottomSheet(
+      title: 'Add user to chat',
+      chatList: chatList,
+      addNewChatButton: ButtonModel(
+        text: 'Create',
+        onTap: () {
+          log('add new chat tapped');
+        },
+      ),
+      chatButton: ButtonModel(
+        onTapReturnWithValue: (final value) async {
+          Navigator.of(context).pop();
+          final index = value as int;
+          await addUserToChat(
+              chatId: chatList?[index]['_id'],
+              userId: userId,
+              chatList: chatList);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,15 +242,18 @@ class _PickupViewState extends State<PickupView> {
     List<dynamic> roles =
         context.select<EventPageModel, List<dynamic>>((value) => value.roles);
     bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
-    bool isMember = context.select<EventPageModel, bool>((value) => value.isMember);
+    bool isMember =
+        context.select<EventPageModel, bool>((value) => value.isMember);
     dynamic price =
         context.select<EventPageModel, dynamic>((value) => value.price);
     String amountRemaining = context
         .select<EventPageModel, String>((value) => value.amountRemaining);
-    String amountPaid = context.select<EventPageModel, String>((value) => value.amountPaid);
+    String amountPaid =
+        context.select<EventPageModel, String>((value) => value.amountPaid);
     String teamAmountRemaining = context
         .select<EventPageModel, String>((value) => value.amountRemaining);
-    String teamAmountPaid = context.select<EventPageModel, String>((value) => value.teamAmountPaid);
+    String teamAmountPaid =
+        context.select<EventPageModel, String>((value) => value.teamAmountPaid);
     List userParticipants =
         context.select<EventPageModel, List>((value) => value.userParticipants);
     List teams = context.select<EventPageModel, List>((value) => value.teams);
@@ -257,7 +332,7 @@ class _PickupViewState extends State<PickupView> {
                         "requests": mainEvent['requests']['data']
                       }),
                       //RSP
-                      RSVPWidget(                                                
+                      RSVPWidget(
                         event: mainEvent,
                         userParticipants: userParticipants,
                       ),
@@ -266,7 +341,16 @@ class _PickupViewState extends State<PickupView> {
                           initialValue: mainEvent['location']['data'][0]
                               ['name']),
                       //player list
-                      PlayerList(event: mainEvent, team: null , userParticipants: userParticipants),
+                      PlayerList(
+                        event: mainEvent,
+                        team: null,
+                        userParticipants: userParticipants,
+                        inviteUserToChat: (final userId) async =>
+                            onTapShowChatBottomSheet(
+                                context: context,
+                                chatList: mainEvent['chats']['data'],
+                                userId: userId),
+                      ),
                       //team list
                       TeamsListWidget(mainEvent: mainEvent, teams: teams),
                       //player request widget
@@ -303,8 +387,7 @@ class _PickupViewState extends State<PickupView> {
                               amountPaid: amountPaid,
                               amountRemaining: amountRemaining,
                               isMine: isMine,
-                              isMember: isMember
-                            )
+                              isMember: isMember)
                         ],
                       ),
                       //Team price widget
@@ -312,17 +395,19 @@ class _PickupViewState extends State<PickupView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           PriceWidget(
-                            price: price,
-                            teamPrice: true,
-                            eventPrice: false,
-                            amountPaid: teamAmountPaid,
-                            amountRemaining: teamAmountRemaining,
-                            isMine: isMine,
-                            isMember: isMember
-                          )
+                              price: price,
+                              teamPrice: true,
+                              eventPrice: false,
+                              amountPaid: teamAmountPaid,
+                              amountRemaining: teamAmountRemaining,
+                              isMine: isMine,
+                              isMember: isMember)
                         ],
                       ),
-                      ImagesListWidget(mainEvent: mainEvent, team: null, imageFor: Constants.EVENT ),
+                      ImagesListWidget(
+                          mainEvent: mainEvent,
+                          team: null,
+                          imageFor: Constants.EVENT),
                     ],
                   ),
                 ),
