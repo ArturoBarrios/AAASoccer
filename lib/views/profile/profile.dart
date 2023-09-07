@@ -3,7 +3,7 @@ import 'package:soccermadeeasy/components/teams_list_widget.dart';
 import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import '../../components/info_detail_list_tile.dart';
 import '../../constants.dart';
-import '../../enums/view_status.dart';
+import '../../models/enums/view_status.dart';
 import 'package:flutter/material.dart';
 
 import '../settings/settings_view.dart';

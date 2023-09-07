@@ -9,8 +9,8 @@ import '../../components/create_team_payment.dart';
 import '../../components/create_team_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
-import '../../enums/EventType.dart';
-import '../../models/app_model.dart';
+import '../../models/enums/EventType.dart';
+import '../../models/pageModels/app_model.dart';
 import '../tournament/create.dart';
 
 class LeagueCreate extends StatefulWidget {

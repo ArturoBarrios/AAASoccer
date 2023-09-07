@@ -5,28 +5,25 @@ import '../constants.dart';
 import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
-import '../models/event_page_model.dart';
-import '../models/team_page_model.dart';
-import '/models/app_model.dart';
+import '../models/pageModels/event_page_model.dart';
+import '../models/pageModels/team_page_model.dart';
+import '../models/pageModels/app_model.dart';
 import 'package:flutter/material.dart';
 import '/models/user_model.dart';
-import '/models/home_page_model.dart';
+import '../models/pageModels/home_page_model.dart';
 import '/models/events_model.dart';
-import '/models/games_model.dart';
-import '/models/chat_page_model.dart';
+import '../models/pageModels/chat_page_model.dart';
 import '/models/requests_model.dart';
-import '/models/requests_page_model.dart';
-import '/models/friends_page_model.dart';
+import '../models/pageModels/requests_page_model.dart';
 import '/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/User.dart';
 import '../commands/user_command.dart';
 import '../commands/player_command.dart';
 import '../commands/team_command.dart';
 import '../commands/event_command.dart';
 import '../commands/images_command.dart';
-import '../models/payment_model.dart';
+import '../models/componentModels/payment_model.dart';
 import '../services/geolocation_services.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -49,14 +46,12 @@ class BaseCommand {
   UserModel userModel = _mainContext.read();
   PaymentModel paymentModel = _mainContext.read();
   AppModel appModel = _mainContext.read();
-  EventsModel eventsModel = _mainContext.read();
-  GamesModel gamesModel = _mainContext.read();
+  EventsModel eventsModel = _mainContext.read();  
   HomePageModel homePageModel = _mainContext.read();
   EventPageModel eventPageModel = _mainContext.read();
   TeamPageModel teamPageModel = _mainContext.read();
   RequestsModel requestsModel = _mainContext.read();
-  RequestsPageModel requestsPageModel = _mainContext.read();
-  FriendsPageModel friendsPageModel = _mainContext.read();
+  RequestsPageModel requestsPageModel = _mainContext.read();  
   ChatPageModel chatPageModel = _mainContext.read();
   // Services
   GeoLocationServices geoLocationServices = _mainContext.read();
@@ -178,14 +173,12 @@ class BaseCommand {
     userModel = _mainContext.read();
     paymentModel = _mainContext.read();
     appModel = _mainContext.read();
-    eventsModel = _mainContext.read();
-    gamesModel = _mainContext.read();
+    eventsModel = _mainContext.read();    
     homePageModel = _mainContext.read();
     eventPageModel = _mainContext.read();
     teamPageModel = _mainContext.read();
     requestsModel = _mainContext.read();
-    requestsPageModel = _mainContext.read();
-    friendsPageModel = _mainContext.read();
+    requestsPageModel = _mainContext.read();    
     chatPageModel = _mainContext.read();
 
     // homePageModel.nukeData();
@@ -499,21 +492,6 @@ class BaseCommand {
     return dateTime;
   }
 
-  Future<Map<String, dynamic>> purgeProfile(Map<String, dynamic> data) async {
-    print("purgeProfile");
-    Map<String, dynamic> resp = {
-      "success": false,
-      "message": "profile not purged",
-      "data": null
-    };
-    try {
-      UserCommand().deleteUser(data['userId']);
-    } on ApiException catch (e) {
-      print("handle exception");
-    }
-
-    return resp;
-  }
 
   void initialConditionsMet() {
     appModel.initialConditionsMet = true;
@@ -527,9 +505,6 @@ class BaseCommand {
     userModel.userID = userId;
   }
 
-  void setUser(User user) {
-    // userModel.user = user;
-  }
 
   void setIsSigned(bool signedIn) {
     appModel.isSignedIn = signedIn;

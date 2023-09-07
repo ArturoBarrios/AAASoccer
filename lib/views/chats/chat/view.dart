@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/chat_buble.dart';
-import 'package:soccermadeeasy/models/chat_item.dart';
+import 'package:soccermadeeasy/models/componentModels/chat_item.dart';
 import '../../../commands/chat_command.dart';
 import '../../../commands/images_command.dart';
 import '../../../components/Loading/loading_screen.dart';
@@ -10,7 +10,7 @@ import '../../../constants.dart';
 // import '../../components/payment_screen.dart';
 // import '../../components/card_form_screen.dart';
 import '../../../commands/user_command.dart';
-import '../../../models/chat_page_model.dart';
+import '../../../models/pageModels/chat_page_model.dart';
 import 'package:provider/provider.dart';
 import '../../../components/headers.dart';
 import '../../../components/bottom_text_box.dart';

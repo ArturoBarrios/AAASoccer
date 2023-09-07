@@ -1,6 +1,6 @@
 import 'package:soccermadeeasy/commands/game_command.dart';
 
-import '../../models/app_model.dart';
+import '../../models/pageModels/app_model.dart';
 import '../../commands/user_command.dart';
 import '../../commands/team_command.dart';
 import '../../commands/location_command.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/loading_circular.dart';
-import 'package:soccermadeeasy/enums/view_status.dart';
+import 'package:soccermadeeasy/models/enums/view_status.dart';
 import '../commands/user_command.dart';
 import '../constants.dart';
 import '../../commands/team_command.dart';
@@ -8,7 +8,7 @@ import '../../components/Cards/team_request_card.dart';
 import '../../components/Cards/friend_request_card.dart';
 import '../../components/Cards/event_request_card.dart';
 import '../../commands/requests_command.dart';
-import '../../models/requests_page_model.dart';
+import '../models/pageModels/requests_page_model.dart';
 import '../styles/asset_constants.dart';
 import 'package:provider/provider.dart';
 

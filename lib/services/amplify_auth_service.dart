@@ -1,12 +1,11 @@
 import 'package:soccermadeeasy/commands/base_command.dart';
-import 'package:soccermadeeasy/models/app_model.dart';
+import 'package:soccermadeeasy/models/pageModels/app_model.dart';
 
 import '../amplifyconfiguration.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/ModelProvider.dart';
 import '../commands/user_command.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';
@@ -70,12 +69,7 @@ class AmplifyAuthService {
     /////////////////////////addback in when shortcode is ready
 
     await Amplify.addPlugin(AmplifyAuthCognito());
-
-    await Amplify.addPlugin(AmplifyAPI(modelProvider: ModelProvider.instance));
-    // Add the following lines to your app initialization to add the DataStore plugin
-    AmplifyDataStore datastorePlugin =
-        AmplifyDataStore(modelProvider: ModelProvider.instance);
-    await Amplify.addPlugin(datastorePlugin);
+            
     try {
       // Add the following line to add Auth plugin to your app.
 

@@ -6,7 +6,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:soccermadeeasy/data/services/twilio/twilio_service.dart';
 import 'package:soccermadeeasy/di/di_init.dart';
-import 'package:soccermadeeasy/models/home_page_model.dart';
+import 'package:soccermadeeasy/models/pageModels/home_page_model.dart';
 import 'package:soccermadeeasy/services/network_services.dart';
 import 'package:soccermadeeasy/services/onesignal_service.dart';
 import 'package:soccermadeeasy/services/stripe_service.dart';
@@ -18,17 +18,15 @@ import 'package:soccermadeeasy/utils.dart';
 import 'package:soccermadeeasy/widgets/intl_phone_number_filed.dart';
 import 'commands/base_command.dart';
 import 'commands/player_command.dart';
-import 'models/app_model.dart';
-import 'models/chat_page_model.dart';
-import 'models/event_page_model.dart';
-import 'models/team_page_model.dart';
+import 'models/pageModels/app_model.dart';
+import 'models/pageModels/chat_page_model.dart';
+import 'models/pageModels/event_page_model.dart';
+import 'models/pageModels/team_page_model.dart';
 import 'models/user_model.dart';
 import 'models/events_model.dart';
-import 'models/payment_model.dart';
+import 'models/componentModels/payment_model.dart';
 import 'models/requests_model.dart';
-import 'models/requests_page_model.dart';
-import 'models/friends_page_model.dart';
-import 'models/games_model.dart';
+import 'models/pageModels/requests_page_model.dart';
 import 'services/fauna_db_services.dart';
 import 'services/geolocation_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
@@ -323,13 +321,11 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (c) => AppModel()),
         ChangeNotifierProvider(create: (c) => UserModel()),
-        ChangeNotifierProvider(create: (c) => EventsModel()),
-        ChangeNotifierProvider(create: (c) => GamesModel()),
+        ChangeNotifierProvider(create: (c) => EventsModel()),        
         ChangeNotifierProvider(create: (c) => EventPageModel()),
-        ChangeNotifierProvider(create: (c) => TeamPageModel()),
-        ChangeNotifierProvider(create: (c) => RequestsModel()),
-        ChangeNotifierProvider(create: (c) => RequestsPageModel()),
-        ChangeNotifierProvider(create: (c) => FriendsPageModel()),
+        ChangeNotifierProvider(create: (c) => TeamPageModel()),        
+        ChangeNotifierProvider(create: (c) => RequestsModel()),        
+        ChangeNotifierProvider(create: (c) => RequestsPageModel()),        
         ChangeNotifierProvider(create: (c) => ChatPageModel()),
         ChangeNotifierProvider(create: (c) => HomePageModel()),
         ChangeNotifierProvider(create: (c) => PaymentModel()),

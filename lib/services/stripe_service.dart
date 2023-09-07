@@ -1,12 +1,11 @@
 import 'package:soccermadeeasy/commands/base_command.dart';
-import 'package:soccermadeeasy/models/app_model.dart';
+import 'package:soccermadeeasy/models/pageModels/app_model.dart';
 
 import '../amplifyconfiguration.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_api/amplify_api.dart';
-import '../models/ModelProvider.dart';
 import '../commands/user_command.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';

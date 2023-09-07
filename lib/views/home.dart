@@ -8,7 +8,7 @@ import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 
 import '../components/Loading/loading_screen.dart';
 import '../components/models/button_model.dart';
-import '../models/filter_result_model.dart';
+import '../models/componentModels/filter_result_model.dart';
 
 //import widgets
 import '../components/select_icon_button.dart';
@@ -19,9 +19,9 @@ import '../components/footers.dart';
 import '../components/side_navs.dart';
 
 //models
-import '../models/home_page_model.dart';
-import '../models/app_model.dart';
-import '../models/chat_page_model.dart';
+import '../models/pageModels/home_page_model.dart';
+import '../models/pageModels/app_model.dart';
+import '../models/pageModels/chat_page_model.dart';
 //views
 //commands
 import '../commands/home_page_command.dart';

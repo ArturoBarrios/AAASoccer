@@ -6,7 +6,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import '../commands/user_command.dart';
-import '../models/app_model.dart';
+import '../models/pageModels/app_model.dart';
 import '../graphql/mutations/players.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';

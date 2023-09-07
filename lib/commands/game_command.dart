@@ -4,7 +4,7 @@ import '../constants.dart';
 import 'base_command.dart';
 import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
-import '../models/app_model.dart';
+import '../models/pageModels/app_model.dart';
 import '../commands/event_command.dart';
 import '../models/events_model.dart';
 import '../commands/geolocation_command.dart';
@@ -16,7 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/payment_commands.dart';
-import '../../models/types_models.dart';
+import '../models/enums/EventType.dart';
 
 class GameCommand extends BaseCommand {
   List<dynamic> sortGames(List<dynamic> games, String sortBy) {

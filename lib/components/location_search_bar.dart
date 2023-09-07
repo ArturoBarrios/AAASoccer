@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:soccermadeeasy/models/coordinates.dart';
+import 'package:soccermadeeasy/models/componentModels/coordinates.dart';
 import '../../commands/location_command.dart';
 
 class LocationSearchBar extends StatefulWidget {

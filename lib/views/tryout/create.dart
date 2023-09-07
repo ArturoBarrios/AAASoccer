@@ -10,7 +10,7 @@ import '../../components/create_team_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/headers.dart';
-import '../../enums/EventType.dart';
+import '../../models/enums/EventType.dart';
 
 class TryoutCreate extends StatefulWidget {
   const TryoutCreate({Key? key}) : super(key: key);

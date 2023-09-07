@@ -9,7 +9,7 @@ import '../../components/create_team_payment.dart';
 import '../../components/create_team_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/location_search_bar.dart';
-import '../../enums/EventType.dart';
+import '../../models/enums/EventType.dart';
 import '../../components/headers.dart';
 
 class TrainingCreate extends StatefulWidget {

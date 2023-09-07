@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
-import '../models/chat_page_model.dart';
+import '../models/pageModels/chat_page_model.dart';
 import '../views/chats/chat/view.dart';
 import '../commands/chat_command.dart';
 import 'object_profile_main_image.dart';

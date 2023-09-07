@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
 import 'profile/profile.dart';
-import '../../models/app_model.dart';
+import '../models/pageModels/app_model.dart';
 
 class SendPlayerRequestView extends StatefulWidget {
   const SendPlayerRequestView({Key? key, required this.playerObject})

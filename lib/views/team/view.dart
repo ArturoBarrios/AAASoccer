@@ -3,7 +3,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/components/loading_circular.dart';
 import '../../components/headers.dart';
 import '../../components/update_view_team_form.dart';
-import '../../enums/view_status.dart';
+import '../../models/enums/view_status.dart';
 import 'team_view_controller.dart';
 
 class TeamView extends StatefulWidget {

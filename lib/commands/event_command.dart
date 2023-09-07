@@ -8,13 +8,13 @@ import 'package:soccermadeeasy/commands/network_models/fql_request_models/social
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
-import 'package:soccermadeeasy/models/event_page_model.dart';
+import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
 import '../graphql/queries/events.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../commands/player_command.dart';
-import '../enums/EventType.dart';
+import '../models/enums/EventType.dart';
 import '../graphql/queries/games.dart';
 import '../commands/user_command.dart';
 import '../graphql/mutations/games.dart';

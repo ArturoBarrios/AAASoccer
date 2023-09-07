@@ -4,7 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/app_model.dart';
+import '../../models/pageModels/app_model.dart';
 import '../../commands/event_command.dart';
 import '../../views/tryout/view.dart';
 import 'package:soccermadeeasy/constants.dart';

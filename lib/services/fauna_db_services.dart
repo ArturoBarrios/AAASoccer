@@ -3,7 +3,7 @@ import 'package:faunadb_http/faunadb_http.dart';
 import 'package:faunadb_http/query.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import '../models/app_model.dart';
+import '../models/pageModels/app_model.dart';
 import '../graphql/queries/games.dart';
 
 class FaunaDBServices {

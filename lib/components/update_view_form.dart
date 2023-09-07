@@ -10,7 +10,7 @@ import 'package:soccermadeeasy/components/teams_list_widget.dart';
 
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
-import '../enums/rsv_status.dart';
+import '../models/enums/RsvpStatus.dart';
 import '../views/game/update.dart';
 
 import 'Mixins/event_mixin.dart';
@@ -42,7 +42,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
   CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
   CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
   dynamic images = [];
-  RsvStatus rsvStatus = RsvStatus.maybe;
+  RsvpStatus rsvStatus = RsvpStatus.maybe;
 
   void setupRequestWidgetData() {
     print("setupRequestWidgetData()");
@@ -77,7 +77,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
             widget.userObjectDetails['mainEvent']['userParticipants']['data'],
             appModelUser['_id'])['isAttending']
         .toString()
-        .toRsv;
+        .toRsvpStatus;
     var chats = widget.userObjectDetails['mainEvent']['chats']['data'];
     var filteredChats = [];
 

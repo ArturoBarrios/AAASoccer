@@ -1,6 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/models/app_model.dart';
+import 'package:soccermadeeasy/models/pageModels/app_model.dart';
 import 'package:soccermadeeasy/views/tournament/view.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/event_command.dart';
@@ -11,7 +11,7 @@ import '../../components/create_event_request.dart';
 import '../../components/date_time_picker.dart';
 import '../../components/event_input_widget.dart';
 import '../../components/location_search_bar.dart';
-import '../../enums/EventType.dart';
+import '../../models/enums/EventType.dart';
 
 class TournamentCreate extends StatefulWidget {
   final dynamic league;
