@@ -211,8 +211,10 @@ class _ProfileState extends State<Profile> {
                 //     teams: teams,
 
                 // ),
-                EventsListWidget(
-                    objectEventsDetails: _viewController.eventListDetails),
+                // EventsListWidget(
+                //   team: null,
+                //   user: 
+                //     objectEventsDetails: _viewController.eventListDetails),
                 ImagesListWidget(mainEvent: null, team: null, imageFor: Constants.USER),
 
                 const InfoDetailListTile(
