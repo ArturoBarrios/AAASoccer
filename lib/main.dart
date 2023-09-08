@@ -21,6 +21,7 @@ import 'commands/player_command.dart';
 import 'models/pageModels/app_model.dart';
 import 'models/pageModels/chat_page_model.dart';
 import 'models/pageModels/event_page_model.dart';
+import 'models/pageModels/profile_page_model.dart';
 import 'models/pageModels/team_page_model.dart';
 import 'models/user_model.dart';
 import 'models/events_model.dart';
@@ -324,6 +325,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (c) => EventsModel()),        
         ChangeNotifierProvider(create: (c) => EventPageModel()),
         ChangeNotifierProvider(create: (c) => TeamPageModel()),        
+        ChangeNotifierProvider(create: (c) => ProfilePageModel()),        
         ChangeNotifierProvider(create: (c) => RequestsModel()),        
         ChangeNotifierProvider(create: (c) => RequestsPageModel()),        
         ChangeNotifierProvider(create: (c) => ChatPageModel()),

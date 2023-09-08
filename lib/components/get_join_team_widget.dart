@@ -12,18 +12,31 @@ import 'Mixins/team_mixin.dart';
 import 'card_form_screen.dart';
 
 class GetJoinTeamWidget extends StatefulWidget with TeamMixin {
-  final Map<String, dynamic> userObjectDetails;
+  final dynamic team;
+  final dynamic user;
+  final List<dynamic> roles;
+  final bool isMine;
+  final dynamic price;
+  final String amountRemaining;
 
-  GetJoinTeamWidget({required this.userObjectDetails});
+
+  GetJoinTeamWidget({
+    required this.team, 
+    required this.user, 
+    required this.roles,
+    required this.isMine,
+    required this.price,
+    required this.amountRemaining,
+    });
 
   @override
   _GetJoinTeamWidgetState createState() => _GetJoinTeamWidgetState();
 }
 
 class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
-  dynamic userObject;
-  dynamic team;
-  List<String> participationRoles = [];
+  // dynamic userObject;
+  
+  // List<String> participationRoles = [];
 
   dynamic getTeamJoinConditions(dynamic joinConditions) {
     print("getTeamJoinConditions");
@@ -40,16 +53,16 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
   }
 
   String addRoleToRoles(String addRole) {
-    String roles = "{";
+    String rolesString = "{";
     //get roles
-    participationRoles.forEach((element) {
-      roles += element + ",";
+    widget.roles.forEach((element) {
+      rolesString += element + ",";
     });
     //add new role
-    roles += addRole;
-    roles += "}";
+    rolesString += addRole;
+    rolesString += "}";
 
-    return roles;
+    return rolesString;
   }
 
 
@@ -58,11 +71,11 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
     Navigator.pop(context);
   }
 
-  void purchaseTeam(BuildContext context, dynamic team, List<dynamic> roles,
-      dynamic userObjectDetails) async {
+  void purchaseTeam(BuildContext context, dynamic team, List<dynamic> roles
+      ) async {
     dynamic subscriptionDetails = {
-      "price": userObjectDetails['team']['price'],
-      "objectToPurchase": userObjectDetails['team'],
+      "price": widget.team['price'],
+      "objectToPurchase": widget.team,
       "objectType": Constants.TEAM,     
       "roles": roles,
       "forRole": Constants.PLAYER, 
@@ -96,7 +109,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
 
     indexes.forEach((mainIndex, secondaryIndexes) async {
       dynamic requestChosen = primaryList[mainIndex];
-      await TeamCommand().sendTeamOrganizersRequest(team, requestChosen);
+      await TeamCommand().sendTeamOrganizersRequest(widget.team, requestChosen);
     });
   }
 
@@ -155,19 +168,18 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
         ));
   }
 
-  Container getJoinTeamWidget(BuildContext context, dynamic userObjectDetails) {
+  Container getJoinTeamWidget(BuildContext context) {
     print("getJoinTeamWidget");
-    print(
-        "userObjectDetails['roles']: " + userObjectDetails['roles'].toString());
+    
     dynamic teamJoinCondition =
-        getTeamJoinConditions(team['joinConditions']['data']);
+        getTeamJoinConditions(widget.team['joinConditions']['data']);
     print("teamJoinCondition: " + teamJoinCondition.toString());
-    print("rolesss: "+ widget.userObjectDetails['roles'].toString());
-    List<dynamic> existingRoles = widget.userObjectDetails['roles'];
+    print("rolesss: "+ widget.roles.toString());
+    List<dynamic> existingRoles = widget.roles;
     //if not already a player
-    if (!userObjectDetails['roles'].contains("PLAYER")) {
+    if (!widget.roles.contains("PLAYER")) {
       String roles = addRoleToRoles("PLAYER");
-      if (userObjectDetails['isMine']) {
+      if (widget.isMine) {
         return Container(
             child: GestureDetector(
           onTap: () async{
@@ -178,7 +190,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
               List<dynamic> newRoles = chooseRoleDialog['rolesArray'];                        
               print("newRoles: "+newRoles.toString());             
               String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                                       
-              TeamCommand().addUserToTeam(team, userObject, roles);
+              TeamCommand().addUserToTeam(widget.team, widget.user, roles);
             }
           },
           child: Text("Join my Team"),
@@ -188,7 +200,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
         if (!teamJoinCondition['withPayment'] &&
             !teamJoinCondition['withRequest']) {
           //price exists(join with paying or not paying)
-          if (userObjectDetails['price'] != null) {
+          if (widget.price != null) {
             return Container(
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,7 +213,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                         print("chooseRoleDialog: "+chooseRoleDialog.toString());
                         List<dynamic> roles = chooseRoleDialog['rolesArray'];                        
                         print("roles: "+roles.toString());                        
-                        purchaseTeam(context, team, roles, userObjectDetails);
+                        purchaseTeam(context, widget.team, roles);
                       }
                     },
                     child: Text("Join Team, Pay Now"),
@@ -216,7 +228,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                         List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
                         String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                        
                         print("roles: "+roles.toString());                                                
-                        TeamCommand().addUserToTeam(team, userObject, roles);
+                        TeamCommand().addUserToTeam(widget.team, widget.user, roles);
                       }
                     },
                     child: Text("Join Team, Pay Later"),
@@ -235,7 +247,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                   List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
                   String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                        
                   print("roles: "+roles.toString());                                    
-                  TeamCommand().addUserToTeam(team, userObject, roles);
+                  TeamCommand().addUserToTeam(widget.team, widget.user, roles);
                 }
               },
               child: Text("Join Team, Pay Later"),
@@ -262,7 +274,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                 List<dynamic> roles = chooseRoleDialog['rolesArray'];
                 // BaseCommand().stringifyRoles(roles);
                 print("roles: "+roles.toString());                
-                purchaseTeam(context, team, roles, userObjectDetails);
+                purchaseTeam(context, widget.team, roles);
               }              
             },
             child: Text("Pay to Join Team"),
@@ -272,14 +284,14 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
         //find request element, else send request
         else {
           print("elseeee");
-          print("userObject['requestsSent']: ${userObject['requestsSent']}");
+          print("userObject['requestsSent']: ${widget.user['requestsSent']}");
           //check team request status
           dynamic requestElementObject;
-          userObject['requestsSent']['data'].forEach((requestElement) {
+          widget.user['requestsSent']['data'].forEach((requestElement) {
             print("requestElement: $requestElement");
-            print("team: " + team.toString());
+            print("team: " + widget.team.toString());
             if (requestElement['type'] != 'TEAMREQUEST' &&
-                requestElement['team']['_id'] == team['_id']) {
+                requestElement['team']['_id'] == widget.team['_id']) {
               requestElementObject = requestElement;
             }
           });
@@ -288,7 +300,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                 requestElementObject['status'].toString());
             if (requestElementObject['status'].toString() == "ACCEPTED") {
               //if not paid off
-              if ((double.parse(userObjectDetails['amountRemaining']) / 100)
+              if ((double.parse(widget.amountRemaining) / 100)
                       .toStringAsFixed(2) !=
                   "0.00") {
                 return Container(
@@ -301,7 +313,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                       List<String> roles = chooseRoleDialog['rolesArray'];
                       // BaseCommand().stringifyRoles(roles);
                       print("roles: "+roles.toString());                      
-                      purchaseTeam(context, team, roles, userObjectDetails);
+                      purchaseTeam(context, widget.team, roles);
                     }                    
                   },
                   child: Text("Pay to Join Team"),
@@ -345,8 +357,8 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
   }
 
   void loadInitialData() {
-    userObject = UserCommand().getAppModelUser();
-    team = widget.userObjectDetails['team'];
+    // userObject = UserCommand().getAppModelUser();
+    // team = widget.userObjectDetails['team'];
   }
 
   @override
@@ -358,6 +370,6 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return getJoinTeamWidget(context, widget.userObjectDetails);
+    return getJoinTeamWidget(context);
   }
 }

@@ -90,15 +90,13 @@ class _UpdateViewTeamFormState extends State<UpdateViewTeamForm>
             longitude: widget.userObjectDetails['team']['location']['data'][0]
                 ['longitude']),
       ),
-      widget.userObjectDetails['isMine']
-          ? locationSearchBar = LocationSearchBar(
+      locationSearchBar = LocationSearchBar(
               initialValue: widget.userObjectDetails['team']['location']['data']
-                  [0]['name'])
-          : Text(
-              widget.userObjectDetails['team']['location']['data'][0]['name']),
-      SendMyEventsTeamRequestWidget(
-          userObjectDetails: widget.userObjectDetails,
-          addEventcallback: addEventCallback),
+                  [0]['name']),
+      
+      // SendMyEventsTeamRequestWidget(
+      //     userObjectDetails: widget.userObjectDetails,
+      //     addEventcallback: addEventCallback),
       // widget.userObjectDetails['isMine']
       //     ? SendPlayersRequestWidget(
       //         userObjectDetails: widget.userObjectDetails)

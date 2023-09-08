@@ -14,6 +14,13 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  dynamic _paymentData = null;
+  dynamic get paymentData => _paymentData;
+  set paymentData(dynamic paymentData) {
+    _paymentData = paymentData;
+    notifyListeners();
+  }
+  
   bool _isMine = false;
   bool get isMine => _isMine;
   set isMine(bool isMine) {

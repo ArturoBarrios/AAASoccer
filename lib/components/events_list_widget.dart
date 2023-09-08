@@ -4,24 +4,25 @@ import '../commands/event_command.dart';
 import '../views/game/view.dart';
 
 class EventsListWidget extends StatefulWidget {
-  final Map<String, dynamic> objectEventsDetails;
+  final dynamic team;
+  final dynamic user;
+  final List<dynamic> events;
 
-  EventsListWidget({required this.objectEventsDetails});
+  EventsListWidget({required this.team, required this.user, required this.events});
   
   @override
   _EventsListWidgetState createState() => _EventsListWidgetState();
 
 }
 
-class _EventsListWidgetState extends State<EventsListWidget> {
-  List<dynamic> events = [];
+class _EventsListWidgetState extends State<EventsListWidget> {  
 
    Future<void> removeEventFromObject(dynamic event)async{
     print("removeEventFromObject");  
     
     String teamId = "";
-    if(widget.objectEventsDetails['team'] != null){
-      teamId = widget.objectEventsDetails['team']['_id'];      
+    if(widget.team != null){
+      teamId = widget.team['_id'];      
     }
     
     dynamic removeTeamFromEventInput = {
@@ -32,7 +33,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
     print("removeTeamFromEventResp: " + removeTeamFromEventResp.toString());
     if(removeTeamFromEventResp['success']){
       setState(() {        
-        widget.objectEventsDetails['team']['events']['data'].remove(event);
+        // widget.objectEventsDetails['team']['events']['data'].remove(event);
       });
 
     }
@@ -53,16 +54,16 @@ class _EventsListWidgetState extends State<EventsListWidget> {
 }
 
   void loadInitialData(){
-    if(widget.objectEventsDetails['team'] != null){
-      events = widget.objectEventsDetails['team']['events']['data'];    
-    }
-    else{
-      List<dynamic> eventUserParticipants = widget.objectEventsDetails['eventUserParticipants'];
-      eventUserParticipants.forEach((eventUserParticipant) {
-        events.add(eventUserParticipant['event']);
-      });
+    // if(widget.objectEventsDetails['team'] != null){
+    //   events = widget.objectEventsDetails['team']['events']['data'];    
+    // }
+    // else{
+    //   List<dynamic> eventUserParticipants = widget.objectEventsDetails['eventUserParticipants'];
+    //   eventUserParticipants.forEach((eventUserParticipant) {
+    //     events.add(eventUserParticipant['event']);
+    //   });
 
-    }
+    // }
   }
 
   @override
@@ -75,7 +76,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
   @override
   Widget build(BuildContext context) {
     // List<dynamic> events = widget.objectEventsDetails['team']['events']['data'] ?? [];
-    print("EventsListWidget: " + events.toString());
+    print("EventsListWidget: " + widget.events.toString());
    
   
     return Container(
@@ -96,19 +97,19 @@ class _EventsListWidgetState extends State<EventsListWidget> {
         ),
       ),
       SizedBox(height: 10.0),
-      events.isEmpty
+      widget.events.isEmpty
           ? Center(
               child: Text('No Events'),
             )
           : Column(
-              children: List<Widget>.generate(events.length, (index) {
-                String teamName = events[index]['name'] ?? '';
+              children: List<Widget>.generate(widget.events.length, (index) {
+                String teamName = widget.events[index]['name'] ?? '';
 
                 return InkWell(
                   onTap: () {
                     print("pressed");
                     //go to event
-                    goToEvent(context, events[index]);
+                    goToEvent(context, widget.events[index]);
                     
                   },
                   child: ListTile(
@@ -119,7 +120,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
                         IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {
-                            removeEventFromObject(events[index]);
+                            removeEventFromObject(widget.events[index]);
                           },
                         ),
                       ],

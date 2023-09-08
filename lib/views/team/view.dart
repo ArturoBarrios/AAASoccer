@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/loading_circular.dart';
+import 'package:soccermadeeasy/models/appModels/TeamGroup.dart';
+import 'package:soccermadeeasy/views/onboarding/player_rate_slider.dart';
+import '../../components/SendMyEventsTeamRequestWidget.dart';
+import '../../components/chats_list_widget.dart';
+import '../../components/events_list_widget.dart';
+import '../../components/get_join_team_widget.dart';
 import '../../components/headers.dart';
+import '../../components/images_list_widget.dart';
+import '../../components/location_search_bar.dart';
+import '../../components/my_map_page.dart';
+import '../../components/players_list_widget.dart';
+import '../../components/send_players_request_widget.dart';
 import '../../components/update_view_team_form.dart';
+import '../../constants.dart';
 import '../../models/enums/view_status.dart';
+import '../../models/pageModels/app_model.dart';
 import 'team_view_controller.dart';
+import '../../models/pageModels/team_page_model.dart';
 
 class TeamView extends StatefulWidget {
   const TeamView({Key? key, required this.teamObject}) : super(key: key);
@@ -38,10 +53,33 @@ class _TeamViewState extends State<TeamView> {
     });
   }
 
+  void addEventCallback(dynamic event) {
+    setState(() {
+      // widget.userObjectDetails['team']['events']['data'].add(event);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build() in TeamView");
     print("teamObject: ${widget.teamObject}");
+    LocationSearchBar locationSearchBar = new LocationSearchBar();
+
+    dynamic currentUser = context.select<AppModel, dynamic>((value) => value.currentUser);
+    dynamic team =
+        context.select<TeamPageModel, dynamic>((value) => value.team);
+    bool isMine = context.select<TeamPageModel, bool>((value) => value.isMine);
+    List players =
+        context.select<TeamPageModel, List>((value) => value.players);
+    List roles =
+        context.select<TeamPageModel, List>((value) => value.roles);
+    List userParticipants =
+        context.select<TeamPageModel, List>((value) => value.userParticipants);
+    dynamic price =
+        context.select<TeamPageModel, dynamic>((value) => value.price);
+    String amountRemaining =
+        context.select<TeamPageModel, String>((value) => value.amountRemaining);
+
 
     return Scaffold(
       appBar: const Headers().getBackHeader(context, widget.teamObject['name']),
@@ -118,8 +156,74 @@ class _TeamViewState extends State<TeamView> {
                               child: const Text("Invite Players")),
                         ),
                       ),
-                      UpdateViewTeamForm(
-                          userObjectDetails: _tVC.userTeamDetails),
+                      // UpdateViewTeamForm(
+                      //     userObjectDetails: _tVC.userTeamDetails),
+                      //MyMapPage                      
+                      Container(
+                        margin: const EdgeInsets.all(10.0),
+                        color: Colors.amber[600],
+                        width: MediaQuery.of(context).size.width -
+                            (MediaQuery.of(context).size.width * .1), //10% padding
+                        height: 200.0,
+                        child: MyMapPage(
+                            latitude: team['location']['data'][0]
+                                ['latitude'],
+                            longitude: team['location']['data'][0]
+                                ['longitude']),
+                      ),
+                      //search bar
+                      locationSearchBar = LocationSearchBar(
+                        initialValue: team['location']['data'][0]['name']),
+                      //SendMyEventsTeamRequestWidget
+                      SendMyEventsTeamRequestWidget(
+                        team: team,
+                        isMine: isMine,
+                      ),
+                      //SendPlayersRequestWidget
+                      SendPlayersRequestWidget(
+                        mainEvent: null,
+                        team: team,
+                        players: players,
+                        isMine: isMine,                        
+                      ),
+                      EventsListWidget(
+                        team: team,
+                        user: null,
+                        events: team['events']['data'],                                                
+                      ),
+                      ImagesListWidget(
+                        mainEvent: null,
+                        team: team,
+                        imageFor: Constants.TEAM                      
+                      ),
+                      GetJoinTeamWidget(
+                        user: currentUser,
+                        team: team,
+                        roles: roles,
+                        isMine: isMine,
+                        price: price,
+                        amountRemaining: amountRemaining,
+                      ),
+                      PlayerList(
+                        event: null,
+                        team: team,
+                        userParticipants: userParticipants,
+                      ),
+                      ChatsListWidget(
+                        chats: team['chats']['data']
+                      ),
+                      // createTeamRequestWidget,
+                      // createTeamPaymentWidget,
+
+
+
+
+
+
+
+
+
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

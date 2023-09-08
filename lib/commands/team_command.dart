@@ -56,9 +56,12 @@ class TeamCommand extends BaseCommand {
       "userParticipants": [],
     };
 
+    teamPageModel.team = team;
+
     //get chats
     dynamic chats = team['chats']['data'];
     userTeamDetails['chats'] = chats;
+    teamPageModel.chats = chats;
     print("length of chats in userTeamDetails: ${chats.length}");
 
     List<dynamic> myTeamRoles = getMyTeamRoles(team, appModel.currentUser);
@@ -67,26 +70,36 @@ class TeamCommand extends BaseCommand {
         "myTeamRoles.contains organizer: ${myTeamRoles.contains("ORGANIZER")}");
 
     userTeamDetails['roles'] = myTeamRoles;
+    teamPageModel.roles = myTeamRoles;
     userTeamDetails['isMine'] = myTeamRoles.contains("ORGANIZER");
+    teamPageModel.isMine = myTeamRoles.contains("ORGANIZER");
     userTeamDetails['isMember'] = myTeamRoles.contains("PLAYER");
+    teamPageModel.isMember = myTeamRoles.contains("PLAYER");
 
     List<dynamic> userParticipants = team['userParticipants']['data'];
     userTeamDetails['userParticipants'] = userParticipants;
+    teamPageModel.userParticipants = userParticipants;
     for (int i = 0; i < userParticipants.length; i++) {
       if (myTeamRoles.contains("PLAYER")) {
         userTeamDetails['players'].add(userParticipants[i]['user']);
+        teamPageModel.players.add(userParticipants[i]['user']);
       }
       if (myTeamRoles.contains("ORGANIZER")) {
         userTeamDetails['organizers'].add(userParticipants[i]['user']);
+        teamPageModel.organizers.add(userParticipants[i]['user']);
       }
     }
 
     //get price and payment info
     dynamic payments = team['payments']['data'];
     userTeamDetails['paymentData'] = payments;
+    teamPageModel.paymentData = payments;
     userTeamDetails['amountPaid'] = "0.00";
+    teamPageModel.amountPaid = "0.00";
     userTeamDetails['amountRemaining'] = "0.00";
+    teamPageModel.amountRemaining = "0.00";
     userTeamDetails['price'] = team['price'];
+    teamPageModel.price = team['price'];
     if (team['price'] != null) {
       print("payments: $payments");
       //get payment data
@@ -98,9 +111,13 @@ class TeamCommand extends BaseCommand {
         }
       }
       userTeamDetails['amountPaid'] = (amountPaid).toStringAsFixed(2);
+      teamPageModel.amountPaid = (amountPaid).toStringAsFixed(2);
       userTeamDetails['amountRemaining'] =
           (double.parse(team['price']['amount']) - amountPaid)
               .toStringAsFixed(2);
+      teamPageModel.amountRemaining = (double.parse(team['price']['amount']) -
+              amountPaid)
+          .toStringAsFixed(2);
     }
 
     print(
