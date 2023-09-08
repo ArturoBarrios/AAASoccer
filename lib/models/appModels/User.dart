@@ -1,3 +1,4 @@
+import 'package:soccermadeeasy/models/appModels/Organizer.dart';
 import '../enums/GenderType.dart';
 import '../enums/UserAccountStatus.dart';
 import '../enums/UserType.dart';
@@ -13,7 +14,6 @@ import 'Event.dart';
 import 'Image.dart';
 import 'Referee.dart';
 import 'Coach.dart';
-import 'Organization.dart';
 import 'Player.dart';
 import 'Location.dart';
 import 'FollowRelation.dart';
@@ -31,7 +31,7 @@ class User {
   String? email;
   String? bio;
   String? username;
-  String? birthdate;
+  String? birthdate;  
   int? age;
   List<Team>? teams;
   GenderType? gender;
@@ -60,6 +60,7 @@ class User {
   String? mainImageKey;
   bool? isProfilePrivate;
   List<SocialMediaApp>? socialMediaApps;
+  Organizer? organizer;
 
   User({
     this.stripeCustomers,
@@ -100,5 +101,6 @@ class User {
     this.mainImageKey,    
     this.isProfilePrivate,
     this.socialMediaApps,
+    this.organizer,    
   });
 }

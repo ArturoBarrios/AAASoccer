@@ -194,6 +194,7 @@ type User  {
   following: [FollowRelation] @relation(name: "user_follower")
   location: Location
   player: Player
+  organizer: Organizer
   coach: Coach
   referee: Referee
   status: UserAccountStatus
@@ -286,7 +287,7 @@ type Event   {
   games: [Game] @relation
   users: [User] @relation  
   tryouts: [Tryout] @relation
-  leagues: [League]  @relation
+  leagues: [League]  @relation  
   tournaments: [Tournament] @relation
   trainings: [Training] @relation
   wager: [Wager] @relation
@@ -299,6 +300,7 @@ type Event   {
   capacity: Int
   mainImageKey: String
   SocialMediaApps: [SocialMediaApp] @relation
+  prizes: [Prize] @relation    
 }
 
 type Rsvp {
@@ -539,6 +541,7 @@ type Location   {
   team: Team
   organization: Organization
   Price: [Price] @relation
+  amenities: [Amenities] @relation
 }
 
 type Rating   {
@@ -610,11 +613,13 @@ type Prize {
   amount: String
   type: PrizeType  
   description: String
+  event: Event
 }
 
 type Amenities {
   type: AmenitieType  
-
+  description: String
+  locations: [Location] @Relation
 }
 
 type Discount {
@@ -624,4 +629,14 @@ type Discount {
 type Coupon {
   code: String
   discount: Discount
+}
+
+type Organizer {
+  canOrganizeGame: Boolean
+  canOrganizeLeague: Boolean
+  canOrganizeTournament: Boolean
+  canOrganizeTryout: Boolean
+  canOrganizeTraining: Boolean
+  canOrganizeTeam: Boolean
+  reputationScore: Int
 }
