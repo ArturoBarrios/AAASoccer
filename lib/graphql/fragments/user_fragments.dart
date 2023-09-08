@@ -42,19 +42,7 @@ class UserFragments{
                     name
                   }
                 }
-              }
-              subscriptionTypeUsers{
-                data{
-                  _id
-                  startDate
-                  endDate                  
-                  length
-                  subscriptionType{
-                    _id
-                    name
-                  }
-                }
-              }
+              }              
               images{
                 data{
                   ${ImageFragments().fullImage()}
