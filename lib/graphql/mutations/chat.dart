@@ -129,4 +129,23 @@ class ChatMutations {
 
     return updateChatString;
   }
+
+  String addUserToChat(Map<String, dynamic> chatInput) {
+    String createChatString = """
+      mutation {
+        updateChat(
+        id: "${chatInput['chatId']}", 
+        data: {
+          users: {
+            connect: ["${chatInput['userId']}"]
+          }
+        })
+      {        
+        ${ChatFragments().chatObject()}      
+      }  
+    }
+    """;
+
+    return createChatString;
+  }
 }

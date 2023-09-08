@@ -410,6 +410,34 @@ app.get('/images', async (req, res) => {
 
 });
 
+app.get('/imagesList', async (req, res) => {
+    try {
+        require("dotenv").config();
+        const { getSignedUrl } = require('@aws-sdk/cloudfront-signer');
+
+        const keys = req.query.keys ? req.query.keys.split(',') : [];
+
+        const signedUrls = await Promise.all(keys.map(async (key) => {
+            const url = "https://d3pq1muv3j21qh.cloudfront.net/" + key;
+
+            return {
+                key: key,
+                signedUrl: await getSignedUrl({
+                    url: url,
+                    dateLessThan: new Date(Date.now() + 1000 * 60 * 60 * 24),
+                    privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
+                    keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID
+                })
+            };
+        }));
+
+        res.send({ success: true, signedUrls: signedUrls });
+
+    } catch (e) {
+        return res.send({ error: e.message })
+    }
+});
+
 
 
 

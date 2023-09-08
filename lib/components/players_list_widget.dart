@@ -6,25 +6,19 @@ import '../commands/event_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({Key? key}) : super(key: key);
-
-  @override
-  State<MyWidget> createState() => _MyWidgetState();
-}
-
-class _MyWidgetState extends State<MyWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
-
 class PlayerList extends StatefulWidget {
-  const PlayerList({Key? key, required this.event, required this.team, required this.userParticipants}) : super(key: key);
+  const PlayerList({
+    Key? key,
+    required this.event,
+    required this.team,
+    required this.userParticipants,
+    this.inviteUserToChat,
+  }) : super(key: key);
+
   final List userParticipants;
   final dynamic event;
   final dynamic team;
+  final Function(String?)? inviteUserToChat;
 
   @override
   State<PlayerList> createState() => _PlayerListState();
@@ -78,8 +72,7 @@ class _PlayerListState extends State<PlayerList> {
     if (index != -1) {
       print("in ifff");
       // Replace item at found index
-      dynamic userParticipantRemoved =
-          widget.userParticipants.removeAt(index);
+      dynamic userParticipantRemoved = widget.userParticipants.removeAt(index);
 
       List<String> userRoles = getUserRoles(userParticipantRemoved);
       print("userRoles before remove: " + userRoles.toString());
@@ -128,8 +121,7 @@ class _PlayerListState extends State<PlayerList> {
     int index = widget.userParticipants.indexWhere(
         (userParticipant) => userParticipant['user']['_id'] == user['_id']);
     print("indexWhere:" + index.toString());
-    dynamic userParticipantRemoved =
-        widget.userParticipants.removeAt(index);
+    dynamic userParticipantRemoved = widget.userParticipants.removeAt(index);
     List<String> userRoles = getUserRoles(userParticipantRemoved);
     indexes.forEach((mainIndex, secondaryIndexes) async {
       userRoles.add(primaryList[mainIndex]);
@@ -170,7 +162,6 @@ class _PlayerListState extends State<PlayerList> {
   void initState() {
     super.initState();
     print("initState PlayerList Widget ");
-        
   }
 
   List<String> getUserRoles(dynamic userParticipant) {
@@ -228,12 +219,13 @@ class _PlayerListState extends State<PlayerList> {
               ),
             ),
           Column(
-            children: widget.userParticipants
-                .where((userParticipant) {
+            children: widget.userParticipants.where((userParticipant) {
               List<dynamic> userRoles = getUserRoles(userParticipant);
               return userRoles.contains(_selectedUserType);
             }).map<Widget>((userParticipant) {
               dynamic user = userParticipant['user'];
+              dynamic userRoles = userParticipant['roles'];
+              bool isOrganizer = userRoles.toString().contains('ORGANIZER');
               dynamic profileDetails = {
                 "user": user,
                 "isMine": false,
@@ -262,6 +254,12 @@ class _PlayerListState extends State<PlayerList> {
                               _showPlayerDetailsDialog(context, user['name']);
                             },
                           ),
+                          if (!isOrganizer)
+                            IconButton(
+                              icon: const Icon(Icons.link),
+                              onPressed: () =>
+                                  widget.inviteUserToChat?.call(user['_id']),
+                            ),
                           // ...other icons and actions...
                         ],
                       ),

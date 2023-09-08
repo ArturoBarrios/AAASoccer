@@ -19,10 +19,11 @@ class CustomTileListWithTitle extends StatelessWidget {
       itemBuilder: (final _, final index) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            tileModelList?[index].title ?? '',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-          ),
+          if (tileModelList?[index].title != null)
+            Text(
+              tileModelList?[index].title ?? '',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            ),
           CustomTileList(
             tileList: tileModelList?[index].buttonList,
           ),

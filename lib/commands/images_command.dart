@@ -19,7 +19,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ImagesCommand extends BaseCommand {
   Future<Map<String, dynamic>> deleteImageFromDatabase(
       dynamic imageInput) async {
-
     print("deleteImageFromDatabase()");
     Map<String, dynamic> deleteImageResp = {
       "success": false,
@@ -43,16 +42,14 @@ class ImagesCommand extends BaseCommand {
         deleteImageResp['success'] = true;
         deleteImageResp['message'] = 'Image deleted';
 
-      return deleteImageResp;
+        return deleteImageResp;
       }
       return deleteImageResp;
     } catch (e) {
       print("getImages() error: $e");
       return deleteImageResp;
-    
-  
-      }
-      }
+    }
+  }
 
   Future<Map<String, dynamic>> deleteImageFromS3(dynamic imageInput) async {
     print("deleteImage()");
@@ -124,7 +121,6 @@ class ImagesCommand extends BaseCommand {
       return getUserProfileImageResp;
     }
   }
-      
 
   Future<Map<String, dynamic>> partialUpdateImage(
       dynamic processedImageInput) async {
@@ -223,6 +219,37 @@ class ImagesCommand extends BaseCommand {
       return getImageResponse;
     } catch (e) {
       print('Mutation failed: $e');
+      return getImageResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> getImagesList(List<String> keys) async {
+    print("getImages()");
+
+    Map<String, dynamic> getImageResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": []
+    };
+
+    if (keys.isEmpty) {
+      return getImageResponse;
+    }
+
+    try {
+      final uri =
+          Uri.parse("http://localhost:3000/imagesList?keys=${keys.join(',')}");
+
+      final getSignedUrlResponse = await http.get(uri);
+      print("response: ${json.decode(getSignedUrlResponse.body)}");
+
+      getImageResponse['success'] = true;
+      getImageResponse['data'] =
+          json.decode(getSignedUrlResponse.body)['signedUrls'];
+
+      return getImageResponse;
+    } catch (e) {
+      print('Request failed: $e');
       return getImageResponse;
     }
   }
@@ -480,7 +507,7 @@ class ImagesCommand extends BaseCommand {
     print("deleteImageFromBucket()");
     print("key: $key");
     http.Response response = await http.delete(
-      // Uri.parse('http://10.0.2.2:3000/deleteImage?key=$key'),
+      // Uri.parse('http://localhost:3000/deleteImage?key=$key'),
       Uri.parse("http://localhost:3000/deleteImage?key=$key"),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(<String, String>{
@@ -643,8 +670,7 @@ class ImagesCommand extends BaseCommand {
     }
   }
 
-  
-   //Image pick from device. Returns image path.
+  //Image pick from device. Returns image path.
   Future<String?> pickImageFromDevice(String imageChoiceChosen) async {
     try {
       XFile? image;
@@ -694,7 +720,7 @@ class ImagesCommand extends BaseCommand {
       return pickImageResponse;
     }
   }
-  
+
   //Download image with given image url.
   Future<String?> downloadImage(String? imageUrl) async {
     try {

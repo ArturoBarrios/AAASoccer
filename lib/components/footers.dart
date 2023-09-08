@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/views/event/create.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
+import '../styles/asset_constants.dart';
 import '../views/game/create.dart';
 import '../views/images/view_images.dart';
 import '../views/organization/create.dart';
@@ -12,6 +13,7 @@ import '../views/tryout/create.dart';
 import '../views/team/create/create.dart';
 import '../commands/chat_command.dart';
 import '../views/chats/view.dart';
+import 'images/svg_image.dart';
 
 class Footers extends StatefulWidget {
   const Footers({Key? key}) : super(key: key);
@@ -217,7 +219,9 @@ class Footers extends StatefulWidget {
           label: "Channels",
         ),
         const BottomNavigationBarItem(
-            icon: Icon(Icons.account_box), label: "Profile"),
+            icon: SvgImage(svgPath: AssetConstants.settings), label: "Profile"),
+        const BottomNavigationBarItem(
+            icon: Icon(Icons.notifications), label: "Notifications"),
       ],
     );
 
