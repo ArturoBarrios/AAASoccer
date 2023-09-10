@@ -79,7 +79,7 @@ class _SubscriptionsListState extends State<SubscriptionsList> {
       "subscription_type_id": subscriptions[_currentPage]['_id'],
 
     };
-    dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand().createSubscriptionTypeUser(subscriptionInput);
+    dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand().createSubscription(subscriptionInput);
     if(createSubscriptionTypeUserResp['success']){
       print("createSubscriptionTypeUserResp: " + createSubscriptionTypeUserResp.toString());
 

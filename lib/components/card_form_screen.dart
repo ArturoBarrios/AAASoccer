@@ -112,7 +112,7 @@ class _CardFormScreen extends State<CardFormScreen> {
         };
         print("subscriptionInputt: " + subscriptionInput.toString());
         dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand()
-            .createSubscriptionTypeUser(subscriptionInput);
+            .createSubscription(subscriptionInput);
         print("createSubscriptionTypeUserResp: " +
             createSubscriptionTypeUserResp.toString());
       } else if (widget.paymentDetails['objectType'] == Constants.TEAM) {

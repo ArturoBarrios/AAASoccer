@@ -25,12 +25,11 @@ class SubscriptionMutations {
     return createSubscriptionString;
   }
   
-  String createSubscriptionTypeUser(
-      Map<String, dynamic> subscriptionInput) {    
-    // var teamAmount = priceInput.containsKey('teamAmount') ? priceInput['teamAmount'] : "0";
+  String createSubscription(
+      Map<String, dynamic> subscriptionInput) {        
     String createSubscriptionTypeUserString = """
       mutation {
-        createSubscriptionTypeUser(data: {                                 
+        createSubscription(data: {                                 
           length: 30,
           subscriptionType: {
             connect: "${subscriptionInput['subscription_type_id']}"
