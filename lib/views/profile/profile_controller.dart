@@ -1,13 +1,15 @@
+import 'package:soccermadeeasy/models/pageModels/profile_page_model.dart';
+
 import '../../commands/base_command.dart';
 import '../../commands/images_command.dart';
 import '../../commands/user_command.dart';
 import '../../constants.dart';
 
 class ProfileController extends BaseCommand {
-  dynamic objectImageInput;
-  dynamic currentUser;
-  Map<String, dynamic> eventListDetails = {};
-  Map<String, dynamic> teamListDetails = {};
+  // dynamic objectImageInput;
+  // dynamic currentUser;
+  // Map<String, dynamic> eventListDetails = {};
+  // Map<String, dynamic> teamListDetails = {};
 
   Future<void> loadInitialData(dynamic profileDetails) async {
     print("loadInitialData Profile");
@@ -16,10 +18,11 @@ class ProfileController extends BaseCommand {
 
     if (profileDetails['isMine']) {
       imageUrl = UserCommand().getProfileImage();
-      currentUser = UserCommand().getAppModelUser();
+      profilePageModel.user = UserCommand().getAppModelUser();
+      
 
       if (imageUrl == '') {
-        String? key = currentUser['mainImageKey'];
+        String? key = profilePageModel.user['mainImageKey'];
         if (key != null) {
           Map<String, dynamic> getUserProfileImageResp =
               await ImagesCommand().getImage(key);
@@ -35,8 +38,8 @@ class ProfileController extends BaseCommand {
           await UserCommand().findUserById(profileDetails['user']);
       print("findMyUserByIdResp: $findMyUserByIdResp");
       if (findMyUserByIdResp['success']) {
-        currentUser = findMyUserByIdResp['data'];
-        String? key = currentUser['mainImageKey'];
+        profilePageModel.user = findMyUserByIdResp['data'];
+        String? key = profilePageModel.user['mainImageKey'];
         print("key: $key");
         if (key != null) {
           Map<String, dynamic> getUserProfileImageResp =
@@ -51,22 +54,19 @@ class ProfileController extends BaseCommand {
 
     print("loadInitialData Profile imageUrl: $imageUrl");
 
-    objectImageInput = {
+    profilePageModel.objectImageInput = {
       "imageUrl": imageUrl,
       "containerType": Constants.PROFILEIMAGECIRCLE
     };
 
-    eventListDetails['eventUserParticipants'] =
-        UserCommand().getAppModelMyEvents();
+    profilePageModel.eventUserParticipants = ProfilePageModel().user['eventUserParticipants'];
+    profilePageModel.teamUserParticipants = ProfilePageModel().user['teamUserParticipants'];
 
-    teamListDetails['teamUserParticipants'] =
-        currentUser['teamUserParticipants']['data'];
-    print("eventListDetails: $eventListDetails");
-    print("teamListDetails: $teamListDetails");
+        
   }
 
   void changeImage() {
-    objectImageInput['imageUrl'] = 'selambaba';
+    profilePageModel.objectImageInput['imageUrl'] = 'selambaba';
   }
 
   @override

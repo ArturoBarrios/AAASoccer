@@ -301,6 +301,7 @@ type Event   {
   mainImageKey: String
   SocialMediaApps: [SocialMediaApp] @relation
   prizes: [Prize] @relation    
+  coupons: [Coupon] @relation
 }
 
 type Rsvp {
@@ -336,6 +337,7 @@ type Team   {
   ratings: [Rating] @relation
   SocialMediaApps: [SocialMediaApp] @relation
   capacity: Int
+  coupons: [Coupon] @relation
 }
 
 type Coach   {
@@ -629,6 +631,8 @@ type Discount {
 type Coupon {
   code: String
   discount: Discount
+  event: [Event] @Relation
+  team: [Team] @Relation
 }
 
 type Organizer {
@@ -638,5 +642,10 @@ type Organizer {
   canOrganizeTryout: Boolean
   canOrganizeTraining: Boolean
   canOrganizeTeam: Boolean
-  reputationScore: Int
+  gameReputationScore: Int
+  leagueReputationScore: Int
+  tournamentReputationScore: Int
+  tryoutReputationScore: Int
+  trainingReputationScore: Int
+  teamReputationScore: Int
 }
