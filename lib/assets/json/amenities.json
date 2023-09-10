@@ -1,0 +1,21 @@
+{
+    "amenities": [
+      {
+        "name": "Bathrooms",        
+        "icon": "fa fa-bath"
+      },
+      {
+        "name": "Train",        
+        "icon": "fa fa-bath"
+      },
+      {
+        "name": "Bus",        
+        "icon": "fa fa-bath"
+      },
+      {
+        "name": "Bycicle Rack",        
+        "icon": "fa fa-bath"
+      }
+      
+    ]
+  }

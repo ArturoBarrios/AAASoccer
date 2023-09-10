@@ -24,6 +24,13 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
     print("createSubscriptionsResp: $createSubscriptionsResp");
     
   }
+  
+  Future<void> createAmenities() async{
+    print("createAmenities()");
+    Map<String,dynamic> createAmenitiesResp = await SubscriptionsCommand().createSubscriptionTypes();
+    print("createSubscriptionsResp: $createAmenitiesResp");
+    
+  }
 
   @override
   Widget build(BuildContext context) {

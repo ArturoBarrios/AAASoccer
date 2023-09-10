@@ -58,7 +58,7 @@ class SubscriptionsCommand extends BaseCommand {
     }
   }
   
-  Future<Map<String, dynamic>> createSubscriptionTypeUser(dynamic subscriptionInput) async {
+  Future<Map<String, dynamic>> createSubscription(dynamic subscriptionInput) async {
     print("createSubscriptionTypeUser()");
     Map<String, dynamic> createSubscriptionTypeUserResp = {
       "success": false,
@@ -76,7 +76,7 @@ class SubscriptionsCommand extends BaseCommand {
 
         body: jsonEncode(<String, String>{
           'query':
-              SubscriptionMutations().createSubscriptionTypeUser(subscriptionInput),
+              SubscriptionMutations().createSubscription(subscriptionInput),
         }),
       );        
       print("createSubscriptionResp: " + jsonDecode(createSubscriptionTypeUserQuery.body).toString());
