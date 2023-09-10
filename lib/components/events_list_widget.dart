@@ -6,9 +6,10 @@ import '../views/game/view.dart';
 class EventsListWidget extends StatefulWidget {
   final dynamic team;
   final dynamic user;
-  final List<dynamic> events;
+  final List events;
+  final List eventUserParticipants;
 
-  EventsListWidget({required this.team, required this.user, required this.events});
+  EventsListWidget({required this.team, required this.user, required this.events, required this.eventUserParticipants});
   
   @override
   _EventsListWidgetState createState() => _EventsListWidgetState();

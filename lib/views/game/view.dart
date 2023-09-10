@@ -352,7 +352,7 @@ class _PickupViewState extends State<PickupView> {
                                 userId: userId),
                       ),
                       //team list
-                      TeamsListWidget(mainEvent: mainEvent, teams: teams),
+                      TeamsListWidget(user: null, mainEvent: mainEvent, teams: teams),
                       //player request widget
                       SendPlayersRequestWidget(
                           mainEvent: mainEvent,

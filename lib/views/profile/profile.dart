@@ -1,6 +1,8 @@
+import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/events_list_widget.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
 import 'package:soccermadeeasy/extensions/share_image_text.dart';
+import 'package:soccermadeeasy/models/pageModels/profile_page_model.dart';
 import '../../components/info_detail_list_tile.dart';
 import '../../constants.dart';
 import '../../models/enums/view_status.dart';
@@ -57,6 +59,15 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    dynamic user =
+        context.select<ProfilePageModel, dynamic>((value) => value.user);
+    List teamUserParticipants =
+        context.select<ProfilePageModel, List>((value) => value.teamUserParticipants);
+    List eventUserParticipants =
+        context.select<ProfilePageModel, List>((value) => value.eventUserParticipants);
+    dynamic objectImageInput =
+        context.select<ProfilePageModel, dynamic>((value) => value.objectImageInput);
+
     switch (_viewStatus) {
       case ViewStatus.loading:
         return const LoadingScreen2();
@@ -95,10 +106,10 @@ class _ProfileState extends State<Profile> {
                   ],
                 ),
                 ObjectProfileMainImage(
-                    objectImageInput: _viewController.objectImageInput),
+                    objectImageInput: objectImageInput),
                 const SizedBox(height: 25.0),
                 Text(
-                  _viewController.currentUser['email'] ?? '',
+                  user['email'] ?? '',
                   style: const TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 20.0,
@@ -205,16 +216,18 @@ class _ProfileState extends State<Profile> {
                 ),
 
                 // History(historyDetails: []),
-                // TeamsListWidget(
-                //     // userObjectDetails: _viewController.teamListDetails                    
-                //     mainEvent: null,
-                //     teams: teams,
+                TeamsListWidget(
+                    user: user,                    
+                    mainEvent: null,
+                    teams: teamUserParticipants,
+                ),
+                EventsListWidget(
+                  team: null,
+                  user: user,
+                  events: [],
+                  eventUserParticipants: eventUserParticipants,
 
-                // ),
-                // EventsListWidget(
-                //   team: null,
-                //   user: 
-                //     objectEventsDetails: _viewController.eventListDetails),
+                ),
                 ImagesListWidget(mainEvent: null, team: null, imageFor: Constants.USER),
 
                 const InfoDetailListTile(

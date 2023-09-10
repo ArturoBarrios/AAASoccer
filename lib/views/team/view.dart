@@ -189,7 +189,8 @@ class _TeamViewState extends State<TeamView> {
                       EventsListWidget(
                         team: team,
                         user: null,
-                        events: team['events']['data'],                                                
+                        events: team['events']['data'],   
+                        eventUserParticipants: [],                                             
                       ),
                       ImagesListWidget(
                         mainEvent: null,
