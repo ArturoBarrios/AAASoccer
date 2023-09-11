@@ -48,7 +48,6 @@ class _SocialMediaCardsViewState extends State<SocialMediaCardsView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     dynamic userEventDetails = context.watch<AppModel>().userEventDetails;
-    inspect(userEventDetails);
 
     if (userEventDetails['mainEvent'] == null) {
       return;
@@ -174,7 +173,6 @@ class _SocialMediaCardsViewState extends State<SocialMediaCardsView> {
   @override
   Widget build(BuildContext context) {
     dynamic userEventDetails = context.watch<AppModel>().userEventDetails;
-    // inspect(userEventDetails);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

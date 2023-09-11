@@ -393,8 +393,6 @@ class _Home extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    int messagesLength =
-        context.select<ChatPageModel, int>((value) => value.messagesLength);
     print("buildDDDDDD");
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/extensions/parse_roles.dart';
 import 'package:soccermadeeasy/views/profile/profile.dart';
 
 import '../commands/base_command.dart';
@@ -166,7 +169,7 @@ class _PlayerListState extends State<PlayerList> {
 
   List<String> getUserRoles(dynamic userParticipant) {
     print("getUserRoles(): " + userParticipant.toString());
-    List<String> roles = BaseCommand().parseRoles(userParticipant['roles']);
+    List<String> roles = userParticipant['roles'].toString().parseRoles();
     print("roles: " + roles.toString());
     return roles;
   }
@@ -224,8 +227,6 @@ class _PlayerListState extends State<PlayerList> {
               return userRoles.contains(_selectedUserType);
             }).map<Widget>((userParticipant) {
               dynamic user = userParticipant['user'];
-              dynamic userRoles = userParticipant['roles'];
-              bool isOrganizer = userRoles.toString().contains('ORGANIZER');
               dynamic profileDetails = {
                 "user": user,
                 "isMine": false,
@@ -254,12 +255,11 @@ class _PlayerListState extends State<PlayerList> {
                               _showPlayerDetailsDialog(context, user['name']);
                             },
                           ),
-                          if (!isOrganizer)
-                            IconButton(
-                              icon: const Icon(Icons.link),
-                              onPressed: () =>
-                                  widget.inviteUserToChat?.call(user['_id']),
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.link),
+                            onPressed: () =>
+                                widget.inviteUserToChat?.call(user['_id']),
+                          ),
                           // ...other icons and actions...
                         ],
                       ),

@@ -150,7 +150,12 @@ class Headers extends StatefulWidget {
     return appBar;
   }
 
-  AppBar getChatDetailHeader(BuildContext context, dynamic chatObject) {
+  AppBar getChatDetailHeader({
+    final String? name,
+    final VoidCallback? onTapBack,
+    final VoidCallback? onTapHome,
+    final VoidCallback? onTapProfileImage,
+  }) {
     AppBar appBar = AppBar(
       elevation: 0,
       automaticallyImplyLeading: false,
@@ -159,20 +164,16 @@ class Headers extends StatefulWidget {
         child: Container(
           padding: const EdgeInsets.only(right: 16),
           child: Row(
-            children: <Widget>[
+            children: [
               IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: onTapBack,
                 icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.black,
                 ),
               ),
               IconButton(
-                onPressed: () {
-                  goHome(context);
-                },
+                onPressed: onTapHome,
                 icon: const Icon(
                   Icons.home,
                   color: Colors.black,
@@ -181,10 +182,13 @@ class Headers extends StatefulWidget {
               const SizedBox(
                 width: 2,
               ),
-              const CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "https://randomuser.me/api/portraits/men/5.jpg"),
-                maxRadius: 20,
+              GestureDetector(
+                onTap: onTapProfileImage,
+                child: const CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      "https://randomuser.me/api/portraits/men/5.jpg"),
+                  maxRadius: 20,
+                ),
               ),
               const SizedBox(
                 width: 12,
@@ -193,12 +197,13 @@ class Headers extends StatefulWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      chatObject['name'],
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
+                  children: [
+                    if (name != null)
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
                     const SizedBox(
                       height: 6,
                     ),

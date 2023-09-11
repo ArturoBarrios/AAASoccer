@@ -64,7 +64,7 @@ class SideNavs extends StatefulWidget {
                   maxRadius: 50,
                 ),
                 SizedBox(height: 10),
-                userObject['username'] != null
+                userObject != null && userObject['username'] != null
                     ? Text(userObject['username'])
                     : Text("Guest"),
               ],

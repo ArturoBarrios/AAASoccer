@@ -31,26 +31,25 @@ class Footers extends StatefulWidget {
       "League": (context) => const TournamentCreate(),
       "Training": (context) => const LeagueCreate(),
       "Tryout": (context) => const TrainingCreate(),
-      "Location": (context) => const TryoutCreate(),      
+      "Location": (context) => const TryoutCreate(),
     };
 
-   void goToPage( int indexResult, List<dynamic> primaryList,) {
-  print("goToPage: $indexResult");
-  print("primaryList: $primaryList");
-  if (pages.containsKey(primaryList[indexResult])) {
-    Navigator.push(
-      context,
-      MaterialPageRoute<void>(
-        builder: pages[primaryList[indexResult]]!,
-      ),
-    );
-  } else {
-    print("Page key not found");
-  }
-}
-    void updateMessagesLengthTest() {
-      print("updateMessagesLengthTest");
-      ChatCommand().updateMessagesLengthTest();
+    void goToPage(
+      int indexResult,
+      List<dynamic> primaryList,
+    ) {
+      print("goToPage: $indexResult");
+      print("primaryList: $primaryList");
+      if (pages.containsKey(primaryList[indexResult])) {
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: pages[primaryList[indexResult]]!,
+          ),
+        );
+      } else {
+        print("Page key not found");
+      }
     }
 
     BottomAppBar bottomAppBar = BottomAppBar(
@@ -85,25 +84,24 @@ class Footers extends StatefulWidget {
                   selected: false,
                   onPressed: () async {
                     print("Add New Chat Pressed");
-                  List<dynamic> primaryList = pages.keys.toList();
-                  List<dynamic> secondaryList = [];
-                  Map<int, dynamic> result = await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AnimatedDialog(
-                        details: {"title": "IDK"},
-                        items: primaryList,
-                        singleSelect: false,
-                        secondaryItems: secondaryList,
-                        goToFunctions: [],
-                      );
-                    },
-                  );
-                  if (result.isNotEmpty) {
-                    print("result: " + result.toString());
-                    goToPage(result.keys.first, primaryList);
-                                                  
-                  }
+                    List<dynamic> primaryList = pages.keys.toList();
+                    List<dynamic> secondaryList = [];
+                    Map<int, dynamic> result = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AnimatedDialog(
+                          details: {"title": "IDK"},
+                          items: primaryList,
+                          singleSelect: false,
+                          secondaryItems: secondaryList,
+                          goToFunctions: [],
+                        );
+                      },
+                    );
+                    if (result.isNotEmpty) {
+                      print("result: " + result.toString());
+                      goToPage(result.keys.first, primaryList);
+                    }
                     // int? index = await showAnimatedDialog<int>(
                     //   context: context,
                     //   barrierDismissible: true,
@@ -158,11 +156,6 @@ class Footers extends StatefulWidget {
   }
 
   BottomNavigationBar getChatBottomNav(BuildContext context) {
-    void updateMessagesLengthTest() {
-      print("updateMessagesLengthTest");
-      ChatCommand().updateMessagesLengthTest();
-    }
-
     BottomNavigationBar bottomAppBar = BottomNavigationBar(
       selectedItemColor: Colors.red,
       unselectedItemColor: Colors.grey.shade600,
@@ -179,7 +172,6 @@ class Footers extends StatefulWidget {
             child: const Icon(Icons.group_work),
             onTap: () {
               print("onTap");
-              updateMessagesLengthTest();
             },
           ),
           label: "Channels",

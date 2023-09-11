@@ -5,7 +5,21 @@ class ChatFragments {
           name
           isPrivate
           mainImageKey
-          
+          users{
+            data{
+              _id
+              name
+              images {
+                  data
+                  {
+                    _id  
+                    key
+                    isMainImage
+                    url
+                  }
+                }
+            }
+          }   
           event{
             _id
             name            

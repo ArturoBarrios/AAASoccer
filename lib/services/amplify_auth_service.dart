@@ -69,7 +69,7 @@ class AmplifyAuthService {
     /////////////////////////addback in when shortcode is ready
 
     await Amplify.addPlugin(AmplifyAuthCognito());
-            
+
     try {
       // Add the following line to add Auth plugin to your app.
 
@@ -116,11 +116,10 @@ class AmplifyAuthService {
     }
   }
 
-  static Future<SignInResult> signIn(
-      emailController, passwordController) async {
+  static Future<SignInResult> signIn(String email, String password) async {
     SignInResult res = await Amplify.Auth.signIn(
-      username: emailController.text.trim(),
-      password: passwordController.text.trim(),
+      username: email,
+      password: password,
     );
 
     print("signIn res: $res");

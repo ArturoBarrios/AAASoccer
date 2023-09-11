@@ -122,15 +122,6 @@ class _PickupViewState extends State<PickupView> {
     print("loadEventPayment() finished in loadInitialData()");
   }
 
-  void updateChatsList(dynamic createdChat) {
-    print("updateChatsList");
-    print("createdChat: " + createdChat.toString());
-    setState(() {
-      dynamic userEventDetails = BaseCommand().getUserEventDetailsModel();
-      userEventDetails['mainEvent']['chats']['data'].add(createdChat);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -179,6 +170,7 @@ class _PickupViewState extends State<PickupView> {
     final String? userId,
     final List<dynamic>? chatList,
   }) async {
+    final generalChatList = context.read<ChatPageModel>().generalChatList;
     Map<String, dynamic> request = {
       "chatId": chatId,
       "userId": userId,
@@ -186,15 +178,16 @@ class _PickupViewState extends State<PickupView> {
 
     final result = await ChatCommand().addUserToChat(request);
 
-    final modified = updateUser(chatList, chatId, result['data']);
+    final modifiedEventChatList =
+        updateEventChatList(chatList, chatId, result['data']);
+    final modifiedGeneralChatList =
+        updateEventChatList(generalChatList, chatId, result['data']);
 
-    if (modified != null) {
-      ChatPageModel().chats = modified;
-      setState(() {});
-    }
+    EventCommand().updateEventChat(modifiedEventChatList);
+    ChatCommand().updateGeneralChatList(modifiedGeneralChatList);
   }
 
-  dynamic updateUser(
+  dynamic updateEventChatList(
       List<dynamic>? chatList, String? chatId, dynamic updatedUsers) {
     if (chatList != null) {
       for (var chat in chatList) {
@@ -206,6 +199,17 @@ class _PickupViewState extends State<PickupView> {
     return chatList;
   }
 
+  dynamic updateGeneralChatList(
+      List<dynamic> generalChatList, String? chatId, dynamic updatedUsers) {
+    for (var chat in generalChatList) {
+      if (chat['_id'] == chatId) {
+        chat['users']['data'] = updatedUsers;
+      }
+    }
+
+    return generalChatList;
+  }
+
   Future<void> onTapShowChatBottomSheet(
       {required final BuildContext context,
       final List<dynamic>? chatList,
@@ -213,6 +217,7 @@ class _PickupViewState extends State<PickupView> {
     await context.showUserChatOptionsBottomSheet(
       title: 'Add user to chat',
       chatList: chatList,
+      currentUserId: userId,
       addNewChatButton: ButtonModel(
         text: 'Create',
         onTap: () {
@@ -259,9 +264,8 @@ class _PickupViewState extends State<PickupView> {
     List teams = context.select<EventPageModel, List>((value) => value.teams);
     List players =
         context.select<EventPageModel, List>((value) => value.players);
-    List chats = context.select<EventPageModel, List>((value) => value.chats);
+    List chats = context.watch<EventPageModel>().chats;
 
-    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(
@@ -348,7 +352,7 @@ class _PickupViewState extends State<PickupView> {
                         inviteUserToChat: (final userId) async =>
                             onTapShowChatBottomSheet(
                                 context: context,
-                                chatList: mainEvent['chats']['data'],
+                                chatList: chats,
                                 userId: userId),
                       ),
                       //team list

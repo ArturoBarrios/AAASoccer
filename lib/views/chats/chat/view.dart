@@ -14,6 +14,8 @@ import '../../../models/pageModels/chat_page_model.dart';
 import 'package:provider/provider.dart';
 import '../../../components/headers.dart';
 import '../../../components/bottom_text_box.dart';
+import '../../home.dart';
+import '../chat_settings_view.dart';
 // import 'create.dart';
 
 class ChatView extends StatefulWidget {
@@ -72,13 +74,13 @@ class _ChatViewState extends State<ChatView> {
     });
   }
 
-  void sendMessage() async {
+  Future<void> sendMessage() async {
     String? signedUrl;
     if (selectedImagePath != null) {
       signedUrl = await uploadImageForChat();
     }
 
-    if(messageController.text != ""){
+    if (messageController.text != "" || signedUrl != null) {
       dynamic currentUser = UserCommand().getAppModelUser();
       dynamic messageInput = {
         "content": messageController.text.toString(),
@@ -101,7 +103,6 @@ class _ChatViewState extends State<ChatView> {
         }
       }
     }
-
   }
 
   toggleLoading(final value) {
@@ -166,6 +167,20 @@ class _ChatViewState extends State<ChatView> {
     });
   }
 
+  void onTapHome() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Home()),
+    );
+  }
+
+  void onTapProfileImage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChatSettingsView()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final messages = context
@@ -199,7 +214,12 @@ class _ChatViewState extends State<ChatView> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: selectedImagePath == null,
-        appBar: const Headers().getChatDetailHeader(context, widget.chatObject),
+        appBar: const Headers().getChatDetailHeader(
+          name: widget.chatObject['name'],
+          onTapHome: onTapHome,
+          onTapBack: () => Navigator.pop(context),
+          onTapProfileImage: onTapProfileImage,
+        ),
         body: _isLoading
             ? const SizedBox(
                 height: double.infinity,
@@ -248,10 +268,7 @@ class _ChatViewState extends State<ChatView> {
                         onTapAttachment: () => _showAttachmentOptions(context),
                         isLoading: _isLoadingImage,
                         messageController: messageController,
-                        onTapSend: () {
-                          sendMessage();
-                          
-                        },
+                        onTapSend: sendMessage,
                       ),
                     ],
                   ),
