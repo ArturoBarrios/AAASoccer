@@ -35,13 +35,13 @@ class Footers extends StatefulWidget {
     };
 
    void goToPage( int indexResult, List<dynamic> primaryList,) {
-  print("goToPage: $selectedPageKey");
-  
-  if (pages.containsKey(selectedPageKey)) {
+  print("goToPage: $indexResult");
+  print("primaryList: $primaryList");
+  if (pages.containsKey(primaryList[indexResult])) {
     Navigator.push(
       context,
       MaterialPageRoute<void>(
-        builder: pages[selectedPageKey]!,
+        builder: pages[primaryList[indexResult]]!,
       ),
     );
   } else {
@@ -101,7 +101,7 @@ class Footers extends StatefulWidget {
                   );
                   if (result.isNotEmpty) {
                     print("result: " + result.toString());
-                    goToPage(result[0], primaryList);
+                    goToPage(result.keys.first, primaryList);
                                                   
                   }
                     // int? index = await showAnimatedDialog<int>(
