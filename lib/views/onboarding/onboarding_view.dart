@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/views/home.dart';
 import 'package:soccermadeeasy/views/onboarding/rich_text_selectable_chip_list.dart';
 
+import '../../commands/user_command.dart';
 import '../../components/custom_stepper.dart';
 import '../../components/models/button_model.dart';
 import '../../components/models/custom_stepper_model.dart';
@@ -55,9 +57,35 @@ class _OnboardingViewState extends State<OnboardingView> {
     (activeStep == 0) ? null : changeStepValue(activeStep - 1);
   }
 
+  void updateUserOnboarding() async {
+      print("updateUserOnboarding");
+      dynamic userObjectResp = await UserCommand().findMyUserById();
+      dynamic userObject = userObjectResp['data'];
+      print("userObject: $userObject");
+      Map<String, dynamic> partialUserInput = {
+        'user': {
+          '_id': userObject['_id'],
+          'dataToUpdate': """
+          {
+            onboarded: true
+          }
+          """,
+        },
+      };
+      await UserCommand().partialUpdateUser(partialUserInput);
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return Home();
+          },
+        ),
+      );
+    }
+
   Future<void> onConfirmTap() async {
     (activeStep == (stepperListLength - 1))
-        ? null
+        ? updateUserOnboarding()
         : changeStepValue(activeStep + 1);
   }
 

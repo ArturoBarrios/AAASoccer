@@ -1,6 +1,9 @@
 // migration.dart
 
 
+import '../commands/event_command.dart';
+import '../commands/subscriptions_command.dart';
+
 void main(List<String> arguments) {
   // Connect to your database
   connectToDatabase();
@@ -10,8 +13,16 @@ void main(List<String> arguments) {
   print('Migrations have been run successfully!');
 }
 
-void connectToDatabase() {
-  // Your logic to connect to the database
+Future<void> connectToDatabase() async{
+  await createSubscriptions();  
 }
 
+
+Future<void> createSubscriptions() async{
+    print("createSubscriptions()");
+    Map<String,dynamic> createSubscriptionsResp = await SubscriptionsCommand().createSubscriptionTypes();
+    print("createSubscriptionsResp: $createSubscriptionsResp");
+    
+  }
+  
 

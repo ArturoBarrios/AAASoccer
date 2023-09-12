@@ -13,6 +13,7 @@ import '../views/tryout/create.dart';
 import '../views/team/create/create.dart';
 import '../commands/chat_command.dart';
 import '../views/chats/view.dart';
+import 'Dialogues/animated_dialogu.dart';
 import 'images/svg_image.dart';
 
 class Footers extends StatefulWidget {
@@ -23,85 +24,30 @@ class Footers extends StatefulWidget {
 
   BottomAppBar getMainBottomNav(BuildContext context) {
     int selectIndex = 0;
-    List pages = [
-      "Pickup Game",
-      "Event",
-      "Team",
-      "Tournament",
-      "League",
-      "Training",
-      "Tryout",
-      "Organization",
-      "Region"
-    ];
+    Map<String, Widget Function(BuildContext)> pages = {
+      "Pickup Game": (context) => const GameCreate(),
+      "Team": (context) => const EventCreate(),
+      "Tournament": (context) => const TeamCreate(),
+      "League": (context) => const TournamentCreate(),
+      "Training": (context) => const LeagueCreate(),
+      "Tryout": (context) => const TrainingCreate(),
+      "Location": (context) => const TryoutCreate(),      
+    };
 
-    void goToPage(int selectedIndex) {
-      //  Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => CameraApp()),
-      // );
-      print("goToPage: " + selectedIndex.toString());
-      switch (selectedIndex) {
-        case 0:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const GameCreate();
-            },
-          ));
-          break;
-        case 1:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const EventCreate();
-            },
-          ));
-          break;
-        case 2:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const TeamCreate();
-            },
-          ));
-          break;
-        case 3:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const TournamentCreate();
-            },
-          ));
-          break;
-        case 4:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const LeagueCreate();
-            },
-          ));
-          break;
-        case 5:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const TrainingCreate();
-            },
-          ));
-          break;
-        case 6:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const TryoutCreate();
-            },
-          ));
-          break;
-        case 7:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const OrganizationCreate();
-            },
-          ));
-          break;
-        default:
-      }
-    }
-
+   void goToPage( int indexResult, List<dynamic> primaryList,) {
+  print("goToPage: $indexResult");
+  print("primaryList: $primaryList");
+  if (pages.containsKey(primaryList[indexResult])) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: pages[primaryList[indexResult]]!,
+      ),
+    );
+  } else {
+    print("Page key not found");
+  }
+}
     void updateMessagesLengthTest() {
       print("updateMessagesLengthTest");
       ChatCommand().updateMessagesLengthTest();
@@ -138,27 +84,47 @@ class Footers extends StatefulWidget {
                   icon: Icons.add_outlined,
                   selected: false,
                   onPressed: () async {
-                    int? index = await showAnimatedDialog<int>(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return ClassicListDialogWidget<dynamic>(
-                            selectedIndex: selectIndex,
-                            titleText: 'Title',
-                            listType: ListType.single,
-                            onPositiveClick: () {
-                              print("onPositiveClick: $selectIndex");
-                              goToPage(selectIndex);
-                            },
-                            activeColor: Colors.green,
-                            dataList: pages);
-                      },
-                      animationType: DialogTransitionType.size,
-                      curve: Curves.linear,
-                    );
+                    print("Add New Chat Pressed");
+                  List<dynamic> primaryList = pages.keys.toList();
+                  List<dynamic> secondaryList = [];
+                  Map<int, dynamic> result = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AnimatedDialog(
+                        details: {"title": "IDK"},
+                        items: primaryList,
+                        singleSelect: false,
+                        secondaryItems: secondaryList,
+                        goToFunctions: [],
+                      );
+                    },
+                  );
+                  if (result.isNotEmpty) {
+                    print("result: " + result.toString());
+                    goToPage(result.keys.first, primaryList);
+                                                  
+                  }
+                    // int? index = await showAnimatedDialog<int>(
+                    //   context: context,
+                    //   barrierDismissible: true,
+                    //   builder: (BuildContext context) {
+                    //     return ClassicListDialogWidget<dynamic>(
+                    //         selectedIndex: selectIndex,
+                    //         titleText: 'Title',
+                    //         listType: ListType.single,
+                    //         onPositiveClick: () {
+                    //           print("onPositiveClick: $selectIndex");
+                    //           goToPage(selectIndex);
+                    //         },
+                    //         activeColor: Colors.green,
+                    //         dataList: pages.keys.toList());
+                    //   },
+                    //   animationType: DialogTransitionType.size,
+                    //   curve: Curves.linear,
+                    // );
 
-                    print('selectIndex:$index');
-                    goToPage(index!);
+                    // print('selectIndex:$index');
+                    // goToPage(index!);
                   }),
               IconBottomBar(
                   text: "Cart",
