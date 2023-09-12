@@ -13,6 +13,7 @@ import '../views/tryout/create.dart';
 import '../views/team/create/create.dart';
 import '../commands/chat_command.dart';
 import '../views/chats/view.dart';
+import 'Dialogues/animated_dialogu.dart';
 import 'images/svg_image.dart';
 
 class Footers extends StatefulWidget {
@@ -33,7 +34,7 @@ class Footers extends StatefulWidget {
       "Location": (context) => const TryoutCreate(),      
     };
 
-   void goToPage(String selectedPageKey) {
+   void goToPage( int indexResult, List<dynamic> primaryList,) {
   print("goToPage: $selectedPageKey");
   
   if (pages.containsKey(selectedPageKey)) {
@@ -83,27 +84,47 @@ class Footers extends StatefulWidget {
                   icon: Icons.add_outlined,
                   selected: false,
                   onPressed: () async {
-                    int? index = await showAnimatedDialog<int>(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return ClassicListDialogWidget<dynamic>(
-                            selectedIndex: selectIndex,
-                            titleText: 'Title',
-                            listType: ListType.single,
-                            onPositiveClick: () {
-                              print("onPositiveClick: $selectIndex");
-                              goToPage(selectIndex);
-                            },
-                            activeColor: Colors.green,
-                            dataList: pages.keys.toList());
-                      },
-                      animationType: DialogTransitionType.size,
-                      curve: Curves.linear,
-                    );
+                    print("Add New Chat Pressed");
+                  List<dynamic> primaryList = pages.keys.toList();
+                  List<dynamic> secondaryList = [];
+                  Map<int, dynamic> result = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AnimatedDialog(
+                        details: {"title": "IDK"},
+                        items: primaryList,
+                        singleSelect: false,
+                        secondaryItems: secondaryList,
+                        goToFunctions: [],
+                      );
+                    },
+                  );
+                  if (result.isNotEmpty) {
+                    print("result: " + result.toString());
+                    goToPage(result[0], primaryList);
+                                                  
+                  }
+                    // int? index = await showAnimatedDialog<int>(
+                    //   context: context,
+                    //   barrierDismissible: true,
+                    //   builder: (BuildContext context) {
+                    //     return ClassicListDialogWidget<dynamic>(
+                    //         selectedIndex: selectIndex,
+                    //         titleText: 'Title',
+                    //         listType: ListType.single,
+                    //         onPositiveClick: () {
+                    //           print("onPositiveClick: $selectIndex");
+                    //           goToPage(selectIndex);
+                    //         },
+                    //         activeColor: Colors.green,
+                    //         dataList: pages.keys.toList());
+                    //   },
+                    //   animationType: DialogTransitionType.size,
+                    //   curve: Curves.linear,
+                    // );
 
-                    print('selectIndex:$index');
-                    goToPage(index!);
+                    // print('selectIndex:$index');
+                    // goToPage(index!);
                   }),
               IconBottomBar(
                   text: "Cart",

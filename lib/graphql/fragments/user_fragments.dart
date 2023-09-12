@@ -74,12 +74,7 @@ class UserFragments{
                   roles
                 }
               }
-              events{
-                data{
-                  ${EventFragments().fullEvent()}               
-
-                }                
-              }
+              
               requestsReceived{
                 data{
                   ${RequestFragments().fullRequest()}              
@@ -97,12 +92,6 @@ class UserFragments{
                 }
               }
               
-              stripeCustomers{
-                data{
-                  _id
-                  customerId
-                }
-              }
               
               sentMessages{
                 data{
@@ -116,11 +105,7 @@ class UserFragments{
 
                 }
               }
-              requestsSent{
-                data{
-                  ${RequestFragments().fullRequest()}   
-                }
-              }
+              
     """;
 
     return FullUserReturn;
