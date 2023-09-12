@@ -50,22 +50,21 @@ class PaymentCommand extends BaseCommand {
       dynamic listPaymentMethodsResp = await http.get(uri);
       listPaymentMethodsResp = json.decode(listPaymentMethodsResp.body);
       print("response: " + listPaymentMethodsResp.toString());
-      if(listPaymentMethodsResp['success']){
-
+      if (listPaymentMethodsResp['success']) {
         print("listPaymentMethodsResp['paymentMethods']: " +
             listPaymentMethodsResp['paymentMethods'].toString());
-        dynamic listPaymentMethods = listPaymentMethodsResp['paymentMethods']['data'];
+        dynamic listPaymentMethods =
+            listPaymentMethodsResp['paymentMethods']['data'];
         if (listPaymentMethods.length > 0) {
           getCustomerPaymentMethodsResultResp['success'] = true;
           getCustomerPaymentMethodsResultResp['message'] = "Success";
           getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods;
         }
-      }
-      else{
+      } else {
         getCustomerPaymentMethodsResultResp['success'] = true;
-        getCustomerPaymentMethodsResultResp['message'] = "Something wrong happened";
+        getCustomerPaymentMethodsResultResp['message'] =
+            "Something wrong happened";
         getCustomerPaymentMethodsResultResp['data'] = [];
-
       }
 
       return getCustomerPaymentMethodsResultResp;
@@ -92,7 +91,7 @@ class PaymentCommand extends BaseCommand {
         'customerId': appModel.currentUser['stripeCustomers']['data'][0]
                 ['customerId']
             .toString(),
-      };      
+      };
       final uri = Uri.https('us-central1-soccer-app-a9060.cloudfunctions.net',
           '/getCustomerDetails', queryParams);
       final getCustomerResult = await http.get(uri);
@@ -105,27 +104,26 @@ class PaymentCommand extends BaseCommand {
     }
   }
 
-
   Future<Map<String, dynamic>> createPaymentIntent(
       dynamic createPaymentIntentInput) async {
     print("createPaymentIntent");
-    print("createPaymentIntentInput: " + createPaymentIntentInput.toString());    
+    print("createPaymentIntentInput: " + createPaymentIntentInput.toString());
     Map<String, dynamic> createPaymentIntentResp = {
       "success": false,
       "message": "Default Error",
       "data": null
     };
-    
+
     try {
       String paymentMethodId = "";
-      PaymentCreateIntent paymentEvent = createPaymentIntentInput['paymentCreateIntent'];
+      PaymentCreateIntent paymentEvent =
+          createPaymentIntentInput['paymentCreateIntent'];
 
-      if(createPaymentIntentInput['paymentMethodId'] != null){
-        print("createPaymentIntentInput['paymentMethod']: " + createPaymentIntentInput['paymentMethodId']);
+      if (createPaymentIntentInput['paymentMethodId'] != null) {
+        print("createPaymentIntentInput['paymentMethod']: " +
+            createPaymentIntentInput['paymentMethodId']);
         paymentMethodId = createPaymentIntentInput['paymentMethodId'];
-
-      }
-      else{
+      } else {
         paymentModel.status = PaymentType.loading;
         final paymentMethod = await Stripe.instance.createPaymentMethod(
           params: PaymentMethodParams.card(
@@ -133,14 +131,11 @@ class PaymentCommand extends BaseCommand {
                 PaymentMethodData(billingDetails: paymentEvent.billingDetails),
           ),
         );
-      print("paymentMethod: " + paymentMethod.toString());
+        print("paymentMethod: " + paymentMethod.toString());
 
-      paymentMethodId = paymentMethod.id;
-
+        paymentMethodId = paymentMethod.id;
       }
       dynamic price = createPaymentIntentInput['price'];
-
-
 
       final paymentIntentResults = await _callPayEndpointMethodId(
           useStripeSdk: true,
@@ -208,7 +203,6 @@ class PaymentCommand extends BaseCommand {
               .createUserCustomer(userInput, stripeCustomerInput);
           print("createUserCustomerResp: " + createUserCustomerResp.toString());
         }
-                
       }
 
       createPaymentIntentResp["success"] = true;
@@ -221,18 +215,20 @@ class PaymentCommand extends BaseCommand {
     return createPaymentIntentResp;
   }
 
-  Future<Map<String,dynamic>> createUserObjectPayment(dynamic createUserObjectPaymentInput) async{
-    Map<String,dynamic> createUserObjectPaymentResp = {
+  Future<Map<String, dynamic>> createUserObjectPayment(
+      dynamic createUserObjectPaymentInput) async {
+    Map<String, dynamic> createUserObjectPaymentResp = {
       "success": false,
       "message": "Default Error",
-      "data": null    
+      "data": null
     };
-    print("createUserObjectPaymentInput: " + createUserObjectPaymentInput.toString());
-    try{
+    print("createUserObjectPaymentInput: " +
+        createUserObjectPaymentInput.toString());
+    try {
       DateTime now = DateTime.now();
-        String timestamp = now.millisecondsSinceEpoch.toString();
+      String timestamp = now.millisecondsSinceEpoch.toString();
       //event payment
-      if(createUserObjectPaymentInput['type'] == Constants.PICKUP){
+      if (createUserObjectPaymentInput['type'] == Constants.PICKUP) {
         dynamic createUserEventPaymentInput = {
           'event_id': createUserObjectPaymentInput['mainEvent']['_id'],
           'user_id': appModel.currentUser['_id'],
@@ -253,18 +249,13 @@ class PaymentCommand extends BaseCommand {
         print("createUserEventPayment response: " + response.body.toString());
       }
       //team payment
-      else if(createUserObjectPaymentInput['type'] == Constants.TEAM){
-      
-
-      }
-
+      else if (createUserObjectPaymentInput['type'] == Constants.TEAM) {}
 
       return createUserObjectPaymentResp;
     } catch (e) {
       print('Mutation failed: $e');
       return createUserObjectPaymentResp;
     }
-
   }
 
   bool doesCustomerExist(String customerId) {
@@ -343,12 +334,9 @@ class PaymentCommand extends BaseCommand {
 
       print("Response Status Code: ${response.statusCode}");
 
-      inspect(response);
-
       log(jsonDecode(response.body));
       return {};
     } catch (e) {
-      inspect(e);
       return {};
     }
   }
@@ -414,16 +402,12 @@ class PaymentCommand extends BaseCommand {
     await createPaymentMethod();
   }
 
-  
-
-  
-
   Future<void> createPaymentMethod() async {
     // final paymentMethod =
     //               await Stripe.instance.createPaymentMethod(PaymentMethodParams.card());
   }
 
-  Future<Map<String, dynamic>> updatePrice(dynamic priceObject) async{
+  Future<Map<String, dynamic>> updatePrice(dynamic priceObject) async {
     print("updatePrice");
     print("priceObject: " + priceObject.toString());
     Map<String, dynamic> updatePriceResp = {
@@ -431,7 +415,7 @@ class PaymentCommand extends BaseCommand {
       "message": "",
       "data": null
     };
-    try{
+    try {
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -439,21 +423,18 @@ class PaymentCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': PriceMutations()
-              .updatePrice(priceObject),
+          'query': PriceMutations().updatePrice(priceObject),
         }),
       );
       print("response body: ");
       print(jsonDecode(response.body));
-      Map<String, dynamic> updatedPrice = jsonDecode(response.body)['data']['updatePrice'];
+      Map<String, dynamic> updatedPrice =
+          jsonDecode(response.body)['data']['updatePrice'];
       updatePriceResp['data'] = updatedPrice;
       return updatePriceResp;
     } on Exception catch (e) {
       print('Mutation failed: $e');
       return updatePriceResp;
     }
-
-
   }
-
 }

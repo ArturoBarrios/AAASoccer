@@ -47,13 +47,13 @@ class BaseCommand {
   UserModel userModel = _mainContext.read();
   PaymentModel paymentModel = _mainContext.read();
   AppModel appModel = _mainContext.read();
-  EventsModel eventsModel = _mainContext.read();  
+  EventsModel eventsModel = _mainContext.read();
   HomePageModel homePageModel = _mainContext.read();
   EventPageModel eventPageModel = _mainContext.read();
   TeamPageModel teamPageModel = _mainContext.read();
   ProfilePageModel profilePageModel = _mainContext.read();
   RequestsModel requestsModel = _mainContext.read();
-  RequestsPageModel requestsPageModel = _mainContext.read();  
+  RequestsPageModel requestsPageModel = _mainContext.read();
   ChatPageModel chatPageModel = _mainContext.read();
   // Services
   GeoLocationServices geoLocationServices = _mainContext.read();
@@ -113,7 +113,6 @@ class BaseCommand {
     return roles;
   }
 
-
   dynamic getUserEventDetailsModel() {
     return appModel.userEventDetails;
   }
@@ -152,15 +151,6 @@ class BaseCommand {
     homePageModel.testText = "testingggggg";
   }
 
-  //"{"test1", "test2", "test3"} => ["test1", "test2", "test3"]
-  List<String> parseRoles(String inputString) {
-    // Remove curly braces and split string into individual words
-    List<String> words =
-        inputString.replaceAll('{', '').replaceAll('}', '').split(', ');
-    print("words: $words");
-    return words;
-  }
-
   //["test1", "test2", "test3"] => {"test1", "test2", "test3"}
   String stringifyRoles(List<dynamic> inputList) {
     String rolesString = inputList.toSet().toString();
@@ -175,13 +165,13 @@ class BaseCommand {
     userModel = _mainContext.read();
     paymentModel = _mainContext.read();
     appModel = _mainContext.read();
-    eventsModel = _mainContext.read();    
+    eventsModel = _mainContext.read();
     homePageModel = _mainContext.read();
     eventPageModel = _mainContext.read();
     teamPageModel = _mainContext.read();
     profilePageModel = _mainContext.read();
     requestsModel = _mainContext.read();
-    requestsPageModel = _mainContext.read();    
+    requestsPageModel = _mainContext.read();
     chatPageModel = _mainContext.read();
 
     // homePageModel.nukeData();
@@ -376,6 +366,7 @@ class BaseCommand {
 
   Future<void> setupUser(String email) async {
     Map<String, dynamic> getUserInput = {"email": email};
+
     if (!appModel.isGuest) {
       Map<String, dynamic> getUserResp =
           await UserCommand().getUserByEmail(getUserInput);
@@ -383,6 +374,7 @@ class BaseCommand {
       print(getUserResp);
       if (getUserResp["success"]) {
         dynamic user = getUserResp["data"];
+
         if (user == null) {
           Map<String, dynamic> userInput = {
             "name": "no name",
@@ -403,7 +395,7 @@ class BaseCommand {
         print("app model user: ");
         print(appModel.currentUser);
         print("user['chats']['data']: ${user['chats']['data']}");
-        userModel.chats = user['chats']['data'];
+        chatPageModel.generalChatList = user['chats']['data'];
         //setup onesignal
         await UserCommand().configureOneSignalUserDetails();
         print("testing some shit out!");
@@ -412,7 +404,7 @@ class BaseCommand {
         print(
             "get friends and myEvents from currentUser object: ${appModel.currentUser}");
 
-        ImagesCommand().setUserProfileImage();
+        await ImagesCommand().setUserProfileImage();
       } else {
         print("something went wrong in fetching user");
       }
@@ -489,7 +481,6 @@ class BaseCommand {
     return dateTime;
   }
 
-
   void initialConditionsMet() {
     appModel.initialConditionsMet = true;
   }
@@ -501,7 +492,6 @@ class BaseCommand {
   void setUserId(String userId) {
     userModel.userID = userId;
   }
-
 
   void setIsSigned(bool signedIn) {
     appModel.isSignedIn = signedIn;

@@ -11,7 +11,6 @@ class UserModel extends ChangeNotifier {
   String userID = "";
   String userEmail = "";
 
-
   String _profileImageUrl = "";
   String get profileImageUrl => _profileImageUrl;
   set profileImageUrl(String profileImageUrl) {
@@ -25,23 +24,4 @@ class UserModel extends ChangeNotifier {
     _userSetup = userSetup;
     notifyListeners();
   }
-
-  List _chats = [];
-  List get chats => _chats;
-  set chats(List chats) {
-    _chats = chats;
-    notifyListeners();
-    print("chats updated in user_model");
-    print("chats new length: " + chats.length.toString());
-  }
-
-
-
-
-
-
-  
-
- 
-
 }

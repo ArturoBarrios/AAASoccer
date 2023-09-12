@@ -286,12 +286,12 @@ class ImagesCommand extends BaseCommand {
   void setChatImage(dynamic chat) {
     print("setChatImage()");
     print("chat: $chat");
-    for (int i = 0; i < chatPageModel.chats.length; i++) {
-      dynamic chatCopy = chatPageModel.chats[i];
+    for (int i = 0; i < chatPageModel.generalChatList.length; i++) {
+      dynamic chatCopy = chatPageModel.generalChatList[i];
       if (chatCopy['_id'] == chat['_id']) {
         print("in ifffff");
         chatCopy['mainImageKey'] = chat['key'];
-        chatPageModel.chats[i] = chatCopy;
+        chatPageModel.generalChatList[i] = chatCopy;
       }
     }
   }

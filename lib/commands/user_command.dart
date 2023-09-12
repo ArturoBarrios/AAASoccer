@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:faunadb_http/faunadb_http.dart';
+import 'package:flutter/services.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:soccermadeeasy/commands/home_page_command.dart';
 import 'package:soccermadeeasy/models/user_model.dart';
@@ -65,9 +66,8 @@ class UserCommand extends BaseCommand {
   Future<List<dynamic>> getAppModelMyTeams() async {
     print("getAppModelMyTeams");
     print("appModel.myTeams: " + appModel.myTeams.toString());
-    if(appModel.myTeams.length == 0){
+    if (appModel.myTeams.length == 0) {
       await HomePageCommand().getSelectedObjects(Constants.MYTEAMS);
-
     }
     return appModel.myTeams;
   }
@@ -164,7 +164,6 @@ class UserCommand extends BaseCommand {
       return updateUserResponse;
     }
   }
-
 
   void setUserID() {
     // userModel.userID = userId;
@@ -303,26 +302,25 @@ class UserCommand extends BaseCommand {
     return addEventResponse;
   }
 
-
-  bool isCurrentUserFollowingUser(dynamic userObject){
-  print("isUserFollowingUser");
-  print("userObject: " + userObject.toString());
-  dynamic currentUser = appModel.currentUser;
-  List<dynamic> followings = currentUser['following']['data'];
-  return followings.any((relation) => relation['following']['_id'] == userObject['_id']);
-}
-
-  bool isCurrentUserFollowedByUser(dynamic userObject){
-    print("isUserFollowedByUser");    
+  bool isCurrentUserFollowingUser(dynamic userObject) {
+    print("isUserFollowingUser");
+    print("userObject: " + userObject.toString());
     dynamic currentUser = appModel.currentUser;
-    List<dynamic> followings = currentUser['followers']['data'];
-    return followings.any((relation) => relation['follower']['_id'] == userObject['_id']);
-    
-
+    List<dynamic> followings = currentUser['following']['data'];
+    return followings
+        .any((relation) => relation['following']['_id'] == userObject['_id']);
   }
 
-  Future<Map<String, dynamic>> addTeam(
-      Map<String, dynamic> userInput, Map<String, dynamic> teamInput, String role) async {
+  bool isCurrentUserFollowedByUser(dynamic userObject) {
+    print("isUserFollowedByUser");
+    dynamic currentUser = appModel.currentUser;
+    List<dynamic> followings = currentUser['followers']['data'];
+    return followings
+        .any((relation) => relation['follower']['_id'] == userObject['_id']);
+  }
+
+  Future<Map<String, dynamic>> addTeam(Map<String, dynamic> userInput,
+      Map<String, dynamic> teamInput, String role) async {
     print("addTeam");
     Map<String, dynamic> addTeamResponse = {
       "success": false,
@@ -355,10 +353,9 @@ class UserCommand extends BaseCommand {
     return addTeamResponse;
   }
 
-
-  dynamic getUserDetails(dynamic user){
+  dynamic getUserDetails(dynamic user) {
     print("getUserPlayerDetails");
-    print("user: "+user.toString());
+    print("user: " + user.toString());
     dynamic getUserPlayerDetailsResp = {
       "isFriend": false,
       "followers": user['followers']['data'].length,
@@ -366,24 +363,18 @@ class UserCommand extends BaseCommand {
     };
 
     dynamic currentUser = appModel.currentUser;
-    print("user: "+user.toString());
-    
+    print("user: " + user.toString());
 
     return getUserPlayerDetailsResp;
   }
 
-  
-
-  Future<Map<String, dynamic>> followUser(
-      dynamic followUserInput) async {
+  Future<Map<String, dynamic>> followUser(dynamic followUserInput) async {
     print("followUser");
     Map<String, dynamic> followUserResponse = {
-
       "success": false,
       "message": "Default Error",
       "data": null
     };
-
 
     try {
       http.Response response = await http.post(
@@ -400,26 +391,20 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      if(response.statusCode == 200){
-        dynamic createdFollowRelation = jsonDecode(response.body)['data']['createFollowRelation'];
+      if (response.statusCode == 200) {
+        dynamic createdFollowRelation =
+            jsonDecode(response.body)['data']['createFollowRelation'];
         print("createdFollowRelation: " + createdFollowRelation.toString());
         followUserResponse["success"] = true;
         followUserResponse["message"] = "Followed Player";
         followUserResponse["data"] = createdFollowRelation;
       }
-      
-
-     
-          
     } catch (e) {
       print("error");
     }
 
     return followUserResponse;
   }
-
-
-
 
   void updateUserModelWithUser(dynamic user) {
     print("updateUserModelWithUser");
@@ -474,6 +459,8 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
+      await Clipboard.setData(
+          ClipboardData(text: UserQueries().getUserByEmail(userInput)));
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -509,7 +496,6 @@ class UserCommand extends BaseCommand {
     }
     return getUserResp;
   }
-
 
   Future<Map<String, dynamic>> findMyUserById() async {
     print("findMyUserById()");
@@ -620,7 +606,6 @@ class UserCommand extends BaseCommand {
     }
     return getUserResp;
   }
-
 
   Future<Map<String, dynamic>> getAllUsers() async {
     print("getUsers");

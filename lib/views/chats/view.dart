@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/loading_circular.dart';
 import '../../commands/chat_command.dart';
+import '../../commands/event_command.dart';
 import '../../commands/images_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/footers.dart';
@@ -7,10 +11,12 @@ import '../../components/headers.dart';
 import '../../components/search_bar.dart' as search_bar;
 import '../../commands/user_command.dart';
 import '../../components/conversation_list.dart';
+import '../../models/enums/view_status.dart';
 import '../../models/pageModels/chat_page_model.dart';
 import 'package:provider/provider.dart';
 
-import 'add_user_to_chat_view.dart';
+import '../../models/pageModels/event_page_model.dart';
+import 'chat_members_view.dart';
 
 class ChatsView extends StatefulWidget {
   const ChatsView({Key? key}) : super(key: key);
@@ -30,7 +36,7 @@ class _ChatsViewState extends State<ChatsView> {
 
   dynamic objectImageInput;
 
-  bool _isLoading = true;
+  ViewStatus _viewStatus = ViewStatus.loading;
   late ScrollController _selectEventController = ScrollController();
 
   void goBack() {
@@ -47,9 +53,7 @@ class _ChatsViewState extends State<ChatsView> {
     if (setupChatModelsResp['success'] == true) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
-          setState(() {
-            _isLoading = false;
-          });
+          changeViewStatus(ViewStatus.completed);
         },
       );
     }
@@ -62,67 +66,44 @@ class _ChatsViewState extends State<ChatsView> {
     loadInitialData();
   }
 
-  Future<void> onTapMembers({dynamic selectedChat}) async {
-    final chatMemberList = await processImages(List.from(selectedChat));
-    if (chatMemberList != null) {
-      await Navigator.of(context).push(
-        MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (BuildContext context) =>
-              AddUserToChatView(selectedChat: chatMemberList),
-        ),
-      );
-    }
+  void navigateMemberView() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => const ChatMembersView(),
+      ),
+    );
   }
 
-  Future<dynamic> processImages(List<dynamic> objects) async {
-    List<String> keys = [];
+  changeViewStatus(final ViewStatus status) {
+    setState(() {
+      _viewStatus = status;
+    });
+  }
 
-    for (var object in objects) {
-      if (object['images']['data'].isNotEmpty) {
-        keys.add(object['images']['data'].last['key'] ?? '');
-      } else {
-        keys.add('');
-      }
-    }
+  Future<void> onTapMembers(
+      {final List<dynamic>? chatList, required final int index}) async {
+    ChatCommand().updateSelectedChatIndex(index);
 
-    final responses = await ImagesCommand().getImagesList(keys);
-    final imageList = responses['data'];
-    for (var object in objects) {
-      for (var image in object['images']['data']) {
-        for (var response in imageList) {
-          if (image['key'] == response['key']) {
-            image['url'] = response['signedUrl'];
-          }
-        }
-      }
-    }
+    await EventCommand()
+        .getSelectedEvent({'_id': "${chatList?[index]['event']['_id']}"});
 
-    return objects;
+    navigateMemberView();
+  }
+
+  Future<void> onTapChatItem(
+      {final List<dynamic>? chatList, required final int index}) async {
+    ChatCommand().updateSelectedChatIndex(index);
+    await EventCommand()
+        .getSelectedEvent({'_id': "${chatList?[index]['event']['_id']}"});
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build() in chats view.dart page");
-    List chats = context.watch<ChatPageModel>().chats;
+    List chats = context.watch<ChatPageModel>().generalChatList;
 
-    print("chats: " + chats.toString());
-    // int messagesLength = context.select<ChatPageModel, int>((value) => value.messagesLength);
     return Scaffold(
-      body: _isLoading
-          ? Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: Align(
-                alignment: Alignment.center,
-                child:
-                    // BottomNav()//for times when user deleted in cognito but still signed into app
-                    LoadingScreen(
-                        currentDotColor: Colors.white,
-                        defaultDotColor: Colors.black,
-                        numDots: 10),
-              ),
-            )
+      body: _viewStatus == ViewStatus.loading
+          ? const LoadingCircular()
           : SafeArea(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -146,8 +127,10 @@ class _ChatsViewState extends State<ChatsView> {
                         chatObject: chats[index],
                         participantCount:
                             List.from(chats[index]['users']['data']).length,
-                        onTapMembers: () async => await onTapMembers(
-                            selectedChat: chats[index]['users']['data']),
+                        onTapChatItem: () =>
+                            onTapChatItem(chatList: chats, index: index),
+                        onTapMembers: () async =>
+                            onTapMembers(chatList: chats, index: index),
                       );
                     },
                   )),

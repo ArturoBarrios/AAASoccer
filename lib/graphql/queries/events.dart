@@ -1,5 +1,5 @@
-import 'dart:developer';
 import '../../models/enums/EventType.dart';
+import '../fragments/event_fragments.dart';
 
 class EventQueries {
   String allEventsOfType(
@@ -36,5 +36,17 @@ class EventQueries {
       }
     """;
     return getUserEvents;
+  }
+
+  String getEvent(String id) {
+    String getGame = """
+        query getEvent {
+          findEventByID(id: $id) {                           
+            ${EventFragments().fullEvent()}              
+          }          
+        }
+      """;
+
+    return getGame;
   }
 }

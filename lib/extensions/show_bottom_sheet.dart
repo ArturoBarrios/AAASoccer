@@ -39,6 +39,7 @@ extension CustomBottomSheet on BuildContext {
     final ButtonModel? addNewChatButton,
     final ButtonModel? chatButton,
     final List<dynamic>? chatList,
+    final String? currentUserId,
   }) =>
       showModalBottomSheet(
         context: this,
@@ -53,6 +54,7 @@ extension CustomBottomSheet on BuildContext {
           child: UserChatOptionsBottomSheet(
             title: title,
             chatList: chatList,
+            currentUserId: currentUserId,
             addNewChatButton: addNewChatButton,
             chatButton: chatButton,
           ),

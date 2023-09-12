@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -18,11 +19,6 @@ class ChatCommand extends BaseCommand {
       }
     }
     return indexOfChat;
-  }
-
-  void updateMessagesLengthTest() {
-    print("updateMessagesLengthTest");
-    chatPageModel.messagesLength += 1;
   }
 
   Future<void> setChatMessages(dynamic chat) async {
@@ -81,16 +77,20 @@ class ChatCommand extends BaseCommand {
 
   List getChatsPageModel() {
     print("getChatsPageModel");
-    return chatPageModel.chats;
+    return chatPageModel.generalChatList;
   }
 
   void updateChatModel(dynamic chat) {
     print("updateChatModel");
-    print("chat: $chat");
+    log("chat: ${chat.toString()}");
     int indexOfChat = getIndexOfChat(chat['_id']);
-    print("indexOfChat: $indexOfChat");
-    chatPageModel.chats.remove(chat);
-    chatPageModel.chats.insert(indexOfChat, chat);
+    log("indexOfChat: $indexOfChat");
+    chatPageModel.generalChatList.remove(chat);
+    chatPageModel.generalChatList.insert(indexOfChat, chat);
+  }
+
+  void updateGeneralChatList(dynamic chat) {
+    chatPageModel.generalChatList = chat;
   }
 
   //seperate for now because I don't feel like refactoring
@@ -137,7 +137,7 @@ class ChatCommand extends BaseCommand {
       "data": null
     };
     try {
-      chatPageModel.chats = [];
+      chatPageModel.generalChatList = [];
       for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {
         String? imageKey =
             appModel.currentUser['chats']['data'][i]['mainImageKey'];
@@ -153,7 +153,8 @@ class ChatCommand extends BaseCommand {
           }
         }
 
-        chatPageModel.chats.add(appModel.currentUser['chats']['data'][i]);
+        chatPageModel.generalChatList
+            .add(appModel.currentUser['chats']['data'][i]);
       }
 
       setupChatModelsResp['success'] = true;
@@ -165,6 +166,10 @@ class ChatCommand extends BaseCommand {
       print('Mutation failed: $e');
       return setupChatModelsResp;
     }
+  }
+
+  void updateSelectedChatIndex(int value) {
+    chatPageModel.selectedChat = value;
   }
 
   Future<Map<String, dynamic>> createText(
@@ -207,16 +212,9 @@ class ChatCommand extends BaseCommand {
       print("chat: $chat");
       appModel.currentUser['chats']['data'][indexOfChat] = chat;
 
-      userModel.chats[indexOfChat] = chat;
-
-      print("chat test length before: " +
-          chatPageModel.messages.length.toString());
+      chatPageModel.generalChatList[indexOfChat] = chat;
 
       chatPageModel.messages = chat['messages']['data'];
-
-      chatPageModel.messagesLength = chat['messages']['data'].length;
-      print("chat test length after: " +
-          chatPageModel.messages.length.toString());
 
       createTextResponse['success'] = true;
       createTextResponse['message'] = "Text Created";
@@ -380,6 +378,37 @@ class ChatCommand extends BaseCommand {
     } on ApiException catch (e) {
       print('Mutation failed: $e');
       return archiveChatResponse;
+    }
+  }
+
+  /// Disconnect user from chat.
+  Future<Map<String, dynamic>> disconnectUser(
+      Map<String, dynamic> chatInput) async {
+    print("archiveChat");
+    Map<String, dynamic> disconnectUserResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': ChatMutations().disconnectUser(chatInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      return disconnectUserResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return disconnectUserResponse;
     }
   }
 

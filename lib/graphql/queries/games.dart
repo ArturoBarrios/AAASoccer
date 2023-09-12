@@ -21,18 +21,7 @@ class GameQueries {
     return getGames;
   }
 
-  String getEventGame(String id) {
-    String getGame = """
-        query getEvent {
-          findEventByID(id: $id) {                           
-            ${EventFragments().fullEvent()}              
-          }          
-        }
-      """;
-
-    return getGame;
-  }
-    String getGame(String id) {
+  String getGame(String id) {
     String getGame = """
         query getGame {
           findGameByID(id: $id) {

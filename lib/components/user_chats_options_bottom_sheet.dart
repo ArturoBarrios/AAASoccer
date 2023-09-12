@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 import 'package:collection/collection.dart';
@@ -14,6 +13,7 @@ class UserChatOptionsBottomSheet extends StatelessWidget {
     this.addNewChatButton,
     this.chatButton,
     this.chatList,
+    this.currentUserId,
   }) : super(key: key);
 
   /// Title text.
@@ -26,6 +26,8 @@ class UserChatOptionsBottomSheet extends StatelessWidget {
   final ButtonModel? chatButton;
 
   final List<dynamic>? chatList;
+
+  final String? currentUserId;
 
   @override
   Widget build(final BuildContext context) => Container(
@@ -77,19 +79,23 @@ class UserChatOptionsBottomSheet extends StatelessWidget {
                 if (chatList != null)
                   CustomTileListWithTitle(
                       tileModelList: chatList
-                              ?.mapIndexed(
-                                  (final index, final chat) => TileListModel(
-                                        buttonList: [
-                                          ButtonModel(
-                                            text: chat['name'],
-                                            prefixIconData: Icons.chat,
-                                            onTap: () => chatButton
-                                                ?.onTapReturnWithValue
-                                                ?.call(index),
-                                          ),
-                                        ],
-                                      ))
-                              .toList() ??
+                              ?.mapIndexed((final index, final chat) {
+                            final isAdded = List.from(chat['users']['data'])
+                                .any((element) =>
+                                    element['_id'] == currentUserId);
+
+                            return TileListModel(
+                              buttonList: [
+                                ButtonModel(
+                                  text: chat['name'],
+                                  prefixIconData: Icons.chat,
+                                  suffixIconData: isAdded ? Icons.done : null,
+                                  onTap: () => chatButton?.onTapReturnWithValue
+                                      ?.call(index),
+                                ),
+                              ],
+                            );
+                          }).toList() ??
                           []),
                 const SizedBox(height: 24),
               ],

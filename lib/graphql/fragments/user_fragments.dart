@@ -4,10 +4,9 @@ import 'request_fragments.dart';
 import 'event_fragments.dart';
 import 'team_fragments.dart';
 
-class UserFragments{
-
-  String fullUser(){
-     String FullUserReturn = """
+class UserFragments {
+  String fullUser() {
+    String fullUserReturn = """
        _id      
               name        	
               phone
@@ -108,9 +107,6 @@ class UserFragments{
               
     """;
 
-    return FullUserReturn;
-
+    return fullUserReturn;
   }
-
-  
 }

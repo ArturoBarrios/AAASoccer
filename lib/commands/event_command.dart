@@ -8,6 +8,7 @@ import 'package:soccermadeeasy/commands/network_models/fql_request_models/object
 import 'package:soccermadeeasy/commands/network_models/fql_request_models/social_media_app_data.dart';
 import 'package:soccermadeeasy/commands/notifications_command.dart';
 import 'package:soccermadeeasy/constants.dart';
+import 'package:soccermadeeasy/extensions/parse_roles.dart';
 import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
 import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
@@ -160,20 +161,6 @@ class EventCommand extends BaseCommand {
       print('Mutation failed: $e');
       return addTeamToEventResp;
     }
-  }
-
-  List<dynamic> getEventRoles(dynamic event, dynamic user) {
-    print("getMyTeamRoles()");
-    List<dynamic> roles = [];
-    dynamic userParticipants = event['userParticipants']['data'];
-    print("userParticipants: " + userParticipants.toString());
-    for (int i = 0; i < userParticipants.length; i++) {
-      if (userParticipants[i]['user']['_id'] == user['_id']) {
-        roles = BaseCommand().parseRoles(userParticipants[i]['roles']);
-      }
-    }
-
-    return roles;
   }
 
   Map<String, dynamic> checkIfUpdateRole(dynamic event, dynamic userObject) {
@@ -558,7 +545,7 @@ class EventCommand extends BaseCommand {
       for (var i = 0; i < userParticipants.length; i++) {
         String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles =
-            BaseCommand().parseRoles(userParticipants[i]['roles']);
+            userParticipants[i]['roles'].toString().parseRoles();
         print("roles: " + roles.toString());
         if (roles.contains("ORGANIZER")) {
           organizersString += toUserId + ",";
@@ -730,7 +717,7 @@ class EventCommand extends BaseCommand {
       for (var i = 0; i < userParticipants.length; i++) {
         String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles =
-            BaseCommand().parseRoles(userParticipants[i]['roles']);
+            userParticipants[i]['roles'].toString().parseRoles();
         print("roles: " + roles.toString());
         if (roles.contains("ORGANIZER")) {
           organizersString += toUserId + ",";
@@ -790,38 +777,7 @@ class EventCommand extends BaseCommand {
     return sendOrganizerEventRequestResponse;
   }
 
-  Future<Map<String, dynamic>> getEvent(Map<String, dynamic> eventInput) async {
-    print("getEventt()");
-    print("eventInput: " + eventInput.toString());
-    Map<String, dynamic> getEventResponse = {
-      "success": false,
-      "message": "Default Error",
-      "data": null
-    };
-
-    http.Response response = await http.post(
-      Uri.parse('https://graphql.fauna.com/graphql'),
-      headers: <String, String>{
-        'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-        'Content-Type': 'application/json'
-      },
-      body: jsonEncode(<String, String>{
-        'query': EventMutations().getEvent(eventInput),
-      }),
-    );
-
-    print("response: " + response.body);
-    dynamic event = jsonDecode(response.body)['data']['findEventByID'];
-    print("event: " + event.toString());
-
-    getEventResponse["success"] = true;
-    getEventResponse["message"] = "Event Found";
-    getEventResponse["data"] = event;
-
-    return getEventResponse;
-  }
-
-  Future<Map<String, dynamic>> getEventGame(
+  Future<Map<String, dynamic>> getSelectedEvent(
       Map<String, dynamic> eventRequest) async {
     print("getGameEvent()");
     print("eventRequest: " + eventRequest.toString());
@@ -838,17 +794,17 @@ class EventCommand extends BaseCommand {
         'Content-Type': 'application/json'
       },
       body: jsonEncode(<String, String>{
-        'query': GameQueries().getEventGame(eventRequest['_id']),
+        'query': EventQueries().getEvent(eventRequest['_id']),
       }),
     );
-
     print("response: " + response.body);
-    dynamic game = jsonDecode(response.body)['data']['findEventByID'];
-    print("game: " + game.toString());
+    dynamic event = jsonDecode(response.body)['data']['findEventByID'];
+
+    eventPageModel.mainEvent = event;
 
     getEventResponse["success"] = true;
     getEventResponse["message"] = "Event Found";
-    getEventResponse["data"] = game;
+    getEventResponse["data"] = event;
 
     return getEventResponse;
   }
@@ -885,7 +841,7 @@ class EventCommand extends BaseCommand {
     };
     print("before getEvent");
     print("eventRequestInput: " + eventRequestInput.toString());
-    dynamic getEventGameResp = await getEventGame(eventRequestInput);
+    dynamic getEventGameResp = await getSelectedEvent(eventRequestInput);
     print("getGameEventResp: " + getEventGameResp.toString());
     if (getEventGameResp['success']) {
       dynamic eventGame = getEventGameResp['data'];
@@ -1143,11 +1099,14 @@ class EventCommand extends BaseCommand {
     }
   }
 
+  void updateEventChat(dynamic chat) {
+    eventPageModel.chats = chat;
+  }
+
   //gets isMyEvent, isMember
   Future<Map<String, dynamic>> getUserEventDetails(List<dynamic> events) async {
     print("getUserEventDetails()");
     print("events: " + events.toString());
-
     dynamic isMyEventResp = {
       "success": true,
       "isMine": false,
@@ -1156,13 +1115,13 @@ class EventCommand extends BaseCommand {
       "amountRemaining": "0.00",
       "teamAmountPaid": "0.00",
       "teamAmountRemaining": "0.00",
-      "price": {},      
-      "mainEvent": null,      
-      "players": [],      
+      "price": {},
+      "mainEvent": null,
+      "players": [],
       "organizers": [],
       "teams": [],
       "roles": [],
-      "chats": [],      
+      "chats": [],
       "groupStage": [],
       "tournamentStage": [],
       "userParticipants": [],
@@ -1199,119 +1158,23 @@ class EventCommand extends BaseCommand {
         }
       }
 
-      isMyEventResp['mainEvent'] = event;
-      print("main event: " + event.toString());
-      print("main event user participants: " +
-          event['userParticipants'].toString());
-
+      eventPageModel.currentUserId = appModel.currentUser['_id'];
       eventPageModel.mainEvent = event;
+      isMyEventResp['mainEvent'] = event;
+      isMyEventResp['roles'] = eventPageModel.roles;
+      isMyEventResp['isMine'] = eventPageModel.isMine;
+      isMyEventResp['isMember'] = eventPageModel.isMember;
+      isMyEventResp['teams'] = eventPageModel.teams;
+      isMyEventResp['userParticipants'] = eventPageModel.userParticipants;
+      isMyEventResp['organizers'] = eventPageModel.organizers;
+      isMyEventResp['players'] = eventPageModel.players;
+      isMyEventResp['paymentData'] = eventPageModel.payments;
+      isMyEventResp['price'] = eventPageModel.price;
+      isMyEventResp['amountPaid'] = eventPageModel.amountPaid;
+      isMyEventResp['teamAmountPaid'] = eventPageModel.teamAmountPaid;
+      isMyEventResp['amountRemaining'] = eventPageModel.amountRemaining;
+      isMyEventResp['teamAmountRemaining'] = eventPageModel.teamAmountRemaining;
 
-      //get main event requests
-      // Map<String, dynamic> getMainEventResp = await getEvent(event);
-      // print("getMainEventResp: " + getMainEventResp.toString());
-      // print("requestssss: " +
-      //     getMainEventResp['data']['requests']['data'].toString());
-
-      //get chats
-      print("get chats: " + event['chats'].toString());
-      dynamic chats = event['chats']['data'];
-      eventPageModel.chats = chats;
-
-      List<dynamic> myObjectRoles = getEventRoles(event, appModel.currentUser);
-      print("myObjectRoles: " + myObjectRoles.toString());
-
-      isMyEventResp['roles'] = myObjectRoles;
-      eventPageModel.roles = myObjectRoles;
-
-      isMyEventResp['isMine'] = myObjectRoles.contains("ORGANIZER");
-      eventPageModel.isMine = myObjectRoles.contains("ORGANIZER");
-      isMyEventResp['isMember'] = myObjectRoles.contains("PLAYER");
-      eventPageModel.isMember = myObjectRoles.contains("PLAYER");
-
-      //get teams
-      dynamic teams = event['teams']['data'];
-      print("teams:: " + teams.toString());
-      isMyEventResp['teams'] = teams;
-      eventPageModel.teams = teams;
-
-      //get userParticipation data
-      dynamic userParticipants = event['userParticipants']['data'];
-      isMyEventResp['userParticipants'] = userParticipants;
-      eventPageModel.userParticipants = userParticipants;
-      
-      print("userParticipants: " + userParticipants.toString());
-      for (int i = 0; i < userParticipants.length; i++) {
-        dynamic userParticipant = userParticipants[i];
-        List<String> roles = parseRoles(userParticipant['roles']);
-        if (roles.contains("ORGANIZER")) {
-          print("isMyEvent() = true");
-          isMyEventResp['organizers'].add(userParticipant);          
-          eventPageModel.organizers.add(userParticipants);
-        }
-        if (roles.contains("PLAYER")) {
-          print("isMember() = true");
-          isMyEventResp['players'].add(userParticipant);
-          eventPageModel.players.add(userParticipants);
-          //check if player belongs to team
-          //this code is causing error!
-          // if(userParticipant['user']['teams']['data'].length>0&&teams.length>0){
-          //   bool playerBelongsToTeam = BaseCommand().checkElementExists(userParticipant['teams']['data'], teams);
-          //   print("playerBelongsToTeam: " + playerBelongsToTeam.toString());
-          //   if(!playerBelongsToTeam){
-          //     isMyEventResp['freeAgents'].add(userParticipant);
-          //   }
-
-          // }
-          // else{
-          //     isMyEventResp['freeAgents'].add(userParticipant);
-
-          // }
-        }
-      }
-
-      print("players: " + isMyEventResp['players'].toString());
-
-      //get payment data
-      dynamic payments = event['payments']['data'];
-      isMyEventResp['paymentData'] = payments;
-      // isMyEventResp['amountPaid'] = "0.00";
-      // isMyEventResp['amountRemaining'] = "0.00";
-      isMyEventResp['price'] = event['price'];
-      eventPageModel.price = event['price'];
-      if (event['price'] != null) {
-        print("event['price']: " + event['price'].toString());
-        print("payments: " + payments.toString());
-        //get payment data
-        double amountPaid = 0.00;
-        double teamAmountPaid = 0.00;
-        for (int i = 0; i < payments.length; i++) {
-          if (payments[i]['user']['_id'] == appModel.currentUser['_id']) {
-            if (payments[i]['isPlayerPayment']) {
-              print("isPlayerPayment");
-              print(
-                  "amount before parsing: " + payments[i]['amount'].toString());
-              amountPaid += double.parse(payments[i]['amount']);
-            } else if (payments[i]['isTeamPayment']) {
-              print("isTeamPayment");
-              print(
-                  "amount before parsing: " + payments[i]['amount'].toString());
-              teamAmountPaid += double.parse(payments[i]['amount']);
-            }
-          }
-        }
-        isMyEventResp['amountPaid'] = (amountPaid).toStringAsFixed(2);
-        eventPageModel.amountPaid = (amountPaid).toStringAsFixed(2);
-        isMyEventResp['amountRemaining'] =
-            (double.parse(event['price']['amount']) - amountPaid)
-                .toStringAsFixed(2);
-        isMyEventResp['teamAmountPaid'] = (teamAmountPaid).toStringAsFixed(2);
-        eventPageModel.teamAmountPaid = (teamAmountPaid).toStringAsFixed(2);
-        isMyEventResp['teamAmountRemaining'] =
-            (double.parse(event['price']['teamAmount']) - teamAmountPaid)
-                .toStringAsFixed(2);
-        eventPageModel.teamAmountRemaining = (double.parse(event['price']['teamAmount']) - teamAmountPaid)
-                .toStringAsFixed(2);
-      }
       print("successfully ran details function");
       isMyEventResp["success"] = true;
     } on Exception catch (e) {

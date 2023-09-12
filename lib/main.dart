@@ -178,8 +178,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> signIn(AuthenticatorState state) async {
     try {
       SignInResult signInRes = await AmplifyAuth.AmplifyAuthService.signIn(
-        emailController,
-        passwordController,
+        emailController.text.trim(),
+        passwordController.text.trim(),
       );
       print("signInRes: ${signInRes.nextStep!.signInStep}");
       String signInStep = signInRes.nextStep!.signInStep;
@@ -322,12 +322,12 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (c) => AppModel()),
         ChangeNotifierProvider(create: (c) => UserModel()),
-        ChangeNotifierProvider(create: (c) => EventsModel()),        
+        ChangeNotifierProvider(create: (c) => EventsModel()),
         ChangeNotifierProvider(create: (c) => EventPageModel()),
-        ChangeNotifierProvider(create: (c) => TeamPageModel()),        
-        ChangeNotifierProvider(create: (c) => ProfilePageModel()),        
-        ChangeNotifierProvider(create: (c) => RequestsModel()),        
-        ChangeNotifierProvider(create: (c) => RequestsPageModel()),        
+        ChangeNotifierProvider(create: (c) => TeamPageModel()),
+        ChangeNotifierProvider(create: (c) => ProfilePageModel()),
+        ChangeNotifierProvider(create: (c) => RequestsModel()),
+        ChangeNotifierProvider(create: (c) => RequestsPageModel()),
         ChangeNotifierProvider(create: (c) => ChatPageModel()),
         ChangeNotifierProvider(create: (c) => HomePageModel()),
         ChangeNotifierProvider(create: (c) => PaymentModel()),
@@ -412,8 +412,8 @@ class _MyAppState extends State<MyApp> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 40, vertical: 15),
                                 ),
-                                onPressed: () {
-                                  signIn(state);
+                                onPressed: () async {
+                                  await signIn(state);
                                 },
                                 child: const Text(
                                   'Sign In',
@@ -721,9 +721,20 @@ class AppScaffold extends StatefulWidget {
 
   final dynamic client;
 
-  //assumes email's been set in AppModel
-  //assumes user's been created in FaunaDB
-  //assumes you're signed in/up
+  @override
+  State<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends State<AppScaffold> {
+  @override
+  initState() {
+    print("AppScaffoldState main.dart");
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await loadPlayerDetails();
+    });
+  }
 
   Future<void> loadPlayerDetails() async {
     print("loadPlayerDetails");
@@ -743,37 +754,14 @@ class AppScaffold extends StatefulWidget {
   }
 
   @override
-  State<AppScaffold> createState() => _AppScaffoldState();
-}
-
-class _AppScaffoldState extends State<AppScaffold> {
-  @override
-  initState() {
-    print("AppScaffoldState main.dart");
-    super.initState();
-    widget.loadPlayerDetails();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // Bind to AppModel.currentUser
-    Map<String, dynamic> currentUser = context
-        .select<AppModel, Map<String, dynamic>>((value) => value.currentUser);
-
-    bool isSignedIn =
-        context.select<AppModel, bool>((value) => value.isSignedIn);
-
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
 
-    bool isDialogueViewOpened = context
-        .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
-    print("isSignedINnnnn: ");
-    print(isSignedIn);
     // Return the current view, based on the currentUser value:
     return Scaffold(
 
         //replace first condition with loading screen
-        body: initialConditionsMet == false ? SplashScreen() : Home());
+        body: initialConditionsMet == false ? SplashScreen() : const Home());
   }
 }

@@ -30,8 +30,7 @@ class CustomTileList extends StatelessWidget {
         title: Text(
           tileList?[index].text ?? '',
         ),
-        trailing: Icon(
-            tileList?[index].suffixIconData ?? Icons.arrow_forward_ios_rounded),
+        trailing: Icon(tileList?[index].suffixIconData),
         onTap: tileList?[index].onTap,
       ),
     );

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:soccermadeeasy/extensions/parse_roles.dart';
+
 import '../graphql/fragments/team_fragments.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -20,12 +22,10 @@ import '../graphql/mutations/users.dart';
 import 'home_page_command.dart';
 
 class TeamCommand extends BaseCommand {
-
-
   List getTeamUserRoles() {
     List teamUserRoles = [
-      Constants.PLAYER,      
-      Constants.MAINCOACH,            
+      Constants.PLAYER,
+      Constants.MAINCOACH,
       Constants.ASSISTANTCOACH,
     ];
     return teamUserRoles;
@@ -171,7 +171,7 @@ class TeamCommand extends BaseCommand {
     print("userParticipants: $userParticipants");
     for (int i = 0; i < userParticipants.length; i++) {
       if (userParticipants[i]['user']['_id'] == user['_id']) {
-        roles = BaseCommand().parseRoles(userParticipants[i]['roles']);
+        roles = userParticipants[i]['roles'].toString().parseRoles();
       }
     }
 
@@ -425,7 +425,7 @@ class TeamCommand extends BaseCommand {
       for (var i = 0; i < userParticipants.length; i++) {
         String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles =
-            BaseCommand().parseRoles(userParticipants[i]['roles']);
+            userParticipants[i]['roles'].toString().parseRoles();
         print("roles: $roles");
         if (roles.contains("ORGANIZER")) {
           organizersString += "$toUserId,";
@@ -515,7 +515,7 @@ class TeamCommand extends BaseCommand {
       for (var i = 0; i < userParticipants.length; i++) {
         String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles =
-            BaseCommand().parseRoles(userParticipants[i]['roles']);
+            userParticipants[i]['roles'].toString().parseRoles();
         print("roles: $roles");
         if (roles.contains("ORGANIZER")) {
           organizersString += "$toUserId,";
@@ -616,7 +616,7 @@ class TeamCommand extends BaseCommand {
       for (var i = 0; i < userParticipants.length; i++) {
         String toUserId = userParticipants[i]['user']['_id'];
         List<String> roles =
-            BaseCommand().parseRoles(userParticipants[i]['roles']);
+            userParticipants[i]['roles'].toString().parseRoles();
         print("roles: $roles");
         if (roles.contains("ORGANIZER")) {
           organizersString += "$toUserId,";

@@ -11,11 +11,13 @@ class ConversationList extends StatefulWidget {
     Key? key,
     required this.chatObject,
     this.participantCount,
+    this.onTapChatItem,
     this.onTapMembers,
   }) : super(key: key);
 
   final dynamic chatObject;
   final int? participantCount;
+  final VoidCallback? onTapChatItem;
   final VoidCallback? onTapMembers;
 
   @override
@@ -35,7 +37,7 @@ class _ConversationListState extends State<ConversationList> {
     await ChatCommand().setChatMessages(widget.chatObject);
   }
 
-  void goToChat() async {
+  Future<void> goToChat() async {
     await setChatMessages();
     // ignore: use_build_context_synchronously
     Navigator.push(context, MaterialPageRoute<void>(
@@ -79,12 +81,13 @@ class _ConversationListState extends State<ConversationList> {
 
   @override
   Widget build(BuildContext context) {
-    List chats = context.select<ChatPageModel, List>((value) => value.chats);
+    // List chats = context.select<ChatPageModel, List>((value) => value.chats);
     loadInitialData();
 
     return GestureDetector(
-      onTap: () {
-        goToChat();
+      onTap: () async {
+        widget.onTapChatItem?.call();
+        await goToChat();
       },
       child: Container(
         padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
