@@ -18,20 +18,6 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
     });
   }
 
-  Future<void> createSubscriptions() async{
-    print("createSubscriptions()");
-    Map<String,dynamic> createSubscriptionsResp = await SubscriptionsCommand().createSubscriptionTypes();
-    print("createSubscriptionsResp: $createSubscriptionsResp");
-    
-  }
-  
-  Future<void> createAmenities() async{
-    print("createAmenities()");
-    Map<String,dynamic> createAmenitiesResp = await SubscriptionsCommand().createSubscriptionTypes();
-    print("createSubscriptionsResp: $createAmenitiesResp");
-    
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,8 +30,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
             onPressed: () {
               // This is where you'd typically handle the button press.
               // You could, for example, navigate to another screen.
-              print('Create Subscription button pressed');
-              createSubscriptions();
+              print('Create Subscription button pressed');              
             },
             child: Text(
               'Create Subscription',

@@ -546,7 +546,7 @@ type Location   {
   team: Team
   organization: Organization
   Price: [Price] @relation
-  amenities: [Amenities] @relation
+  amenities: [Amenity] @relation
 }
 
 type Rating   {
@@ -622,9 +622,8 @@ type Prize {
   event: Event
 }
 
-type Amenities {
-  type: AmenitieType  
-  description: String
+type Amenity {  
+  type: AmenitieType    
   locations: [Location] @Relation
 }
 

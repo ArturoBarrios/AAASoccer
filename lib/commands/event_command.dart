@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/services.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/network/base_api_client.dart';
 import 'package:soccermadeeasy/commands/network_models/fql_request_models/in_body.dart';
@@ -37,7 +38,7 @@ import 'network_models/fql_request_models/collection_body.dart';
 import 'network_models/fql_request_models/ref_body.dart';
 import 'network_models/fql_request_models/var_body.dart';
 
-class EventCommand extends BaseCommand {
+class EventCommand extends BaseCommand {  
   List<dynamic> sortEventsBy(List<dynamic> events) {
     print("sortEventsBy");
     List<dynamic> sortedEvents = List.from(events);

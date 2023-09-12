@@ -23,85 +23,30 @@ class Footers extends StatefulWidget {
 
   BottomAppBar getMainBottomNav(BuildContext context) {
     int selectIndex = 0;
-    List pages = [
-      "Pickup Game",
-      "Event",
-      "Team",
-      "Tournament",
-      "League",
-      "Training",
-      "Tryout",
-      "Organization",
-      "Region"
-    ];
+    Map<String, Widget Function(BuildContext)> pages = {
+      "Pickup Game": (context) => const GameCreate(),
+      "Team": (context) => const EventCreate(),
+      "Tournament": (context) => const TeamCreate(),
+      "League": (context) => const TournamentCreate(),
+      "Training": (context) => const LeagueCreate(),
+      "Tryout": (context) => const TrainingCreate(),
+      "Location": (context) => const TryoutCreate(),      
+    };
 
-    void goToPage(int selectedIndex) {
-      //  Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => CameraApp()),
-      // );
-      print("goToPage: " + selectedIndex.toString());
-      switch (selectedIndex) {
-        case 0:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const GameCreate();
-            },
-          ));
-          break;
-        case 1:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const EventCreate();
-            },
-          ));
-          break;
-        case 2:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const TeamCreate();
-            },
-          ));
-          break;
-        case 3:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const TournamentCreate();
-            },
-          ));
-          break;
-        case 4:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const LeagueCreate();
-            },
-          ));
-          break;
-        case 5:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const TrainingCreate();
-            },
-          ));
-          break;
-        case 6:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const TryoutCreate();
-            },
-          ));
-          break;
-        case 7:
-          Navigator.push(context, MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const OrganizationCreate();
-            },
-          ));
-          break;
-        default:
-      }
-    }
-
+   void goToPage(String selectedPageKey) {
+  print("goToPage: $selectedPageKey");
+  
+  if (pages.containsKey(selectedPageKey)) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: pages[selectedPageKey]!,
+      ),
+    );
+  } else {
+    print("Page key not found");
+  }
+}
     void updateMessagesLengthTest() {
       print("updateMessagesLengthTest");
       ChatCommand().updateMessagesLengthTest();
@@ -151,7 +96,7 @@ class Footers extends StatefulWidget {
                               goToPage(selectIndex);
                             },
                             activeColor: Colors.green,
-                            dataList: pages);
+                            dataList: pages.keys.toList());
                       },
                       animationType: DialogTransitionType.size,
                       curve: Curves.linear,

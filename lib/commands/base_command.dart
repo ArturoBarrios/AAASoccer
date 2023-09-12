@@ -440,13 +440,7 @@ class BaseCommand {
       } else {
         await HomePageCommand().eventTypeTapped(Constants.PICKUP);
       }
-      // if(appModel.isGuest){
-      //   await EventCommand().setupEvents(Constants.PICKUP, oneHourAgoTimestamp);
-      // }
-      // else{
-      //   await EventCommand().setupEvents(Constants.MYEVENTS, oneHourAgoTimestamp);
-
-      // }
+      
       print("setup Events done");
 
       //setup players

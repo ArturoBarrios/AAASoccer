@@ -22,6 +22,11 @@ import '../models/enums/PaymentType.dart';
 import 'images_command.dart';
 
 class UserCommand extends BaseCommand {
+
+  updateOrganizer(){
+    //iterate through events and find
+  }
+
   String getProfileImage() {
     print("getProfileImage");
     print("appModel.currentUser.profileImage: ${userModel.profileImageUrl}");
