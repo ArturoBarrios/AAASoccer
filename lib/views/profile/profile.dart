@@ -3,7 +3,9 @@ import 'package:soccermadeeasy/components/events_list_widget.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
 import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import 'package:soccermadeeasy/models/pageModels/profile_page_model.dart';
+import '../../commands/user_command.dart';
 import '../../components/info_detail_list_tile.dart';
+import '../../components/switch_button.dart';
 import '../../constants.dart';
 import '../../models/enums/view_status.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +48,12 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  changeSwitchStatus(final bool value) {
+    setState(() {
+      _viewController.profilePrivateStatus = value;
+    });
+  }
+
   Future<void> onTapShare() async {
     await 'Hey theres, my name is ${widget.profileDetails['user']['username']}'
         .share(imageKey: widget.profileDetails['user']['mainImageKey']);
@@ -57,16 +65,23 @@ class _ProfileState extends State<Profile> {
         ),
       );
 
+  Future<void> onTapChangeProfilePrivateStatus(final bool value) async {
+    final result = await UserCommand()
+        .updateUserProfilePrivateStatus({'isProfilePrivate': value});
+    if (result['data'] != null) {
+      changeSwitchStatus(result['data']['isProfilePrivate']);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    dynamic user =
-        context.select<ProfilePageModel, dynamic>((value) => value.user);
-    List teamUserParticipants =
-        context.select<ProfilePageModel, List>((value) => value.teamUserParticipants);
-    List eventUserParticipants =
-        context.select<ProfilePageModel, List>((value) => value.eventUserParticipants);
+    dynamic user = context.watch<ProfilePageModel>().user;
+    dynamic teamUserParticipants =
+        context.watch<ProfilePageModel>().teamUserParticipants;
+    dynamic eventUserParticipants =
+        context.watch<ProfilePageModel>().eventUserParticipants;
     dynamic objectImageInput =
-        context.select<ProfilePageModel, dynamic>((value) => value.objectImageInput);
+        context.watch<ProfilePageModel>().objectImageInput;
 
     switch (_viewStatus) {
       case ViewStatus.loading:
@@ -89,7 +104,11 @@ class _ProfileState extends State<Profile> {
                         Navigator.pop(context);
                       },
                     ),
-                    const Spacer(), // This will take up all available space between the elements
+                    const Spacer(),
+                    SwitchButton(
+                      isActive: _viewController.profilePrivateStatus,
+                      onTap: onTapChangeProfilePrivateStatus,
+                    ),
                     IconButton(
                       icon: const Icon(
                         Icons.share,
@@ -105,8 +124,7 @@ class _ProfileState extends State<Profile> {
                         onPressed: onTapSettings)
                   ],
                 ),
-                ObjectProfileMainImage(
-                    objectImageInput: objectImageInput),
+                ObjectProfileMainImage(objectImageInput: objectImageInput),
                 const SizedBox(height: 25.0),
                 Text(
                   user['email'] ?? '',
@@ -217,18 +235,18 @@ class _ProfileState extends State<Profile> {
 
                 // History(historyDetails: []),
                 TeamsListWidget(
-                    user: user,                    
-                    mainEvent: null,
-                    teams: teamUserParticipants,
+                  user: user,
+                  mainEvent: null,
+                  teams: teamUserParticipants,
                 ),
                 EventsListWidget(
                   team: null,
                   user: user,
                   events: [],
                   eventUserParticipants: eventUserParticipants,
-
                 ),
-                ImagesListWidget(mainEvent: null, team: null, imageFor: Constants.USER),
+                ImagesListWidget(
+                    mainEvent: null, team: null, imageFor: Constants.USER),
 
                 const InfoDetailListTile(
                     name: "Excellent Perfomance",

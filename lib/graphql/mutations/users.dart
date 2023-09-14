@@ -110,6 +110,22 @@ class UserMutations {
     return updateUserString;
   }
 
+  String updateUserPrivateStatus(Map<String, dynamic> userInput) {
+    String updateUserString = """      
+      mutation {
+        updateUser(id: ${userInput['userId']},
+  				data: {            
+            isProfilePrivate: ${userInput['isProfilePrivate']}                                                                                
+          }                      
+        ){
+          ${UserFragments().fullUser()}                                  			
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
   String followUser(dynamic followUserInput) {
     String addFriendString = """      
       mutation {

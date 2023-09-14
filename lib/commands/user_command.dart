@@ -1,30 +1,21 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:flutter/services.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:soccermadeeasy/commands/home_page_command.dart';
-import 'package:soccermadeeasy/models/user_model.dart';
 import '../constants.dart';
 import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
-import 'package:faunadb_http/query.dart';
-import '../models/pageModels/app_model.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+
 import '../graphql/queries/users.dart';
 import '../graphql/mutations/users.dart';
-import '../graphql/mutations/teams.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/notifications_command.dart';
 import '../models/enums/PaymentType.dart';
-import 'images_command.dart';
 
 class UserCommand extends BaseCommand {
-
-  updateOrganizer(){
+  updateOrganizer() {
     //iterate through events and find
   }
 
@@ -122,6 +113,49 @@ class UserCommand extends BaseCommand {
     } on ApiException catch (e) {
       print('Mutation failed: $e');
       return updateUserResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> updateUserProfilePrivateStatus(
+      Map<String, dynamic> userInput) async {
+    Map<String, dynamic> updateUserProfilePrivateStatusResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      userInput['userId'] = appModel.currentUser['_id'];
+
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().updateUserPrivateStatus(userInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      Map<String, dynamic> user =
+          jsonDecode(response.body)['data']['updateUser'];
+
+      if (user['_id'] != null) {
+        appModel.currentUser = user;
+        profilePageModel.user = user;
+      }
+
+      updateUserProfilePrivateStatusResponse["success"] = true;
+      updateUserProfilePrivateStatusResponse["message"] = "User Updated";
+      updateUserProfilePrivateStatusResponse["data"] = user;
+
+      return updateUserProfilePrivateStatusResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return updateUserProfilePrivateStatusResponse;
     }
   }
 
@@ -459,8 +493,6 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
-      await Clipboard.setData(
-          ClipboardData(text: UserQueries().getUserByEmail(userInput)));
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{

@@ -1,5 +1,3 @@
-import 'package:soccermadeeasy/models/pageModels/profile_page_model.dart';
-
 import '../../commands/base_command.dart';
 import '../../commands/images_command.dart';
 import '../../commands/user_command.dart';
@@ -10,6 +8,7 @@ class ProfileController extends BaseCommand {
   // dynamic currentUser;
   // Map<String, dynamic> eventListDetails = {};
   // Map<String, dynamic> teamListDetails = {};
+  bool profilePrivateStatus = false;
 
   Future<void> loadInitialData(dynamic profileDetails) async {
     print("loadInitialData Profile");
@@ -19,7 +18,6 @@ class ProfileController extends BaseCommand {
     if (profileDetails['isMine']) {
       imageUrl = UserCommand().getProfileImage();
       profilePageModel.user = UserCommand().getAppModelUser();
-      
 
       if (imageUrl == '') {
         String? key = profilePageModel.user['mainImageKey'];
@@ -59,14 +57,18 @@ class ProfileController extends BaseCommand {
       "containerType": Constants.PROFILEIMAGECIRCLE
     };
 
-    profilePageModel.eventUserParticipants = ProfilePageModel().user['eventUserParticipants'];
-    profilePageModel.teamUserParticipants = ProfilePageModel().user['teamUserParticipants'];
+    /// Throwing error.
 
-        
-  }
+    // profilePageModel.eventUserParticipants =
+    //     ProfilePageModel().user['eventUserParticipants'];
+    // profilePageModel.teamUserParticipants =
+    //     ProfilePageModel().user['teamUserParticipants'];
 
-  void changeImage() {
-    profilePageModel.objectImageInput['imageUrl'] = 'selambaba';
+    profilePageModel.eventUserParticipants =
+        profilePageModel.user['eventUserParticipants']['data'];
+    profilePageModel.teamUserParticipants =
+        profilePageModel.user['teamUserParticipants']['data'];
+    profilePrivateStatus = profilePageModel.user['isProfilePrivate'];
   }
 
   @override

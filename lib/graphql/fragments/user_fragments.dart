@@ -16,6 +16,7 @@ class UserFragments {
               gender
               OSPID
               mainImageKey
+              isProfilePrivate
               updatedAt
               followers{
                 data{
