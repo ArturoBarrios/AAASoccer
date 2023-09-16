@@ -547,6 +547,8 @@ type Location   {
   organization: Organization
   Price: [Price] @relation
   amenities: [Amenity] @relation
+  url: String
+  socialMediaApps: [SocialMediaApp] @relation
 }
 
 type Rating   {
@@ -591,6 +593,7 @@ type SocialMediaApp   {
   user: User
   team: Team
   event: Event
+  location: Location
 }
 
 type Item {
