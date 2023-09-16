@@ -46,17 +46,31 @@ class UserMutations {
   }
 
   String createUserEventPayment(dynamic createUserEventPaymentInput) {
+    String paymentType = createUserEventPaymentInput['paymentType'] == 'player'
+        ? """
+          event: {
+            connect: "${createUserEventPaymentInput['eventId']}"            
+          }
+          isPlayerPayment: true
+          isTeamPayment: false
+        """
+        : """
+          team: {
+            connect: "${createUserEventPaymentInput['teamId']}"            
+          }
+          isPlayerPayment: false
+          isTeamPayment: true
+        """;
+
     String createUserEventPaymentString = """      
       mutation {
         createPayment(data: {
-          amount: "${createUserEventPaymentInput['amount']}",, 
+          amount: "${createUserEventPaymentInput['amount']}",
           user: {
-            connect: "${createUserEventPaymentInput['user']['_id']}"            
+            connect: "${createUserEventPaymentInput['userId']}"            
           } 
-          event: {
-            connect: "${createUserEventPaymentInput['event']['_id']}"            
-          }
           paidAt: "${createUserEventPaymentInput['paidAt']}"
+          $paymentType
           }) {
             _id
             amount

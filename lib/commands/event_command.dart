@@ -39,7 +39,7 @@ import 'network_models/fql_request_models/collection_body.dart';
 import 'network_models/fql_request_models/ref_body.dart';
 import 'network_models/fql_request_models/var_body.dart';
 
-class EventCommand extends BaseCommand {  
+class EventCommand extends BaseCommand {
   List<dynamic> sortEventsBy(List<dynamic> events) {
     print("sortEventsBy");
     List<dynamic> sortedEvents = List.from(events);
@@ -237,7 +237,7 @@ class EventCommand extends BaseCommand {
       dynamic updateRoleResp =
           EventCommand().checkIfUpdateRole(eventInput, userObject);
       if (updateRoleResp['updateRole']) {
-        updateUserRolesInEvent(eventInput, userInput, roles,
+        await updateUserRolesInEvent(eventInput, userInput, roles,
             updateRoleResp['eventUserParticipant']);
       } else {
         print("will add user to event with input: " +
@@ -260,8 +260,11 @@ class EventCommand extends BaseCommand {
 
         print("response body: ");
         print(jsonDecode(response.body));
+        addUserToEventResponse['data'] =
+            jsonDecode(response.body)['data']['updateEvent'];
 
-        addEventToMyEvents(jsonDecode(response.body)['data']['updateEvent']);
+        await addEventToMyEvents(
+            jsonDecode(response.body)['data']['updateEvent']);
       }
 
       return addUserToEventResponse;
@@ -295,7 +298,7 @@ class EventCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      addEventToMyEvents(jsonDecode(response.body)['data']
+      await addEventToMyEvents(jsonDecode(response.body)['data']
           ['partialUpdateEventUserParticipant']['event']);
 
       return addUserToEventResponse;

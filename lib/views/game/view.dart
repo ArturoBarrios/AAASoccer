@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
+import 'package:soccermadeeasy/models/enums/payment_type.dart';
 import '../../commands/base_command.dart';
 import '../../commands/chat_command.dart';
 import '../../commands/event_command.dart';
@@ -30,6 +31,7 @@ import '../../components/location_search_bar.dart';
 import '../../components/models/button_model.dart';
 import '../../components/my_map_page.dart';
 import '../../components/object_profile_main_image.dart';
+import '../../components/payment_list_widget.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/price_widget.dart';
 import '../../components/requests_list.dart';
@@ -78,7 +80,7 @@ class _PickupViewState extends State<PickupView> {
   CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
 
   bool _isLoading = true;
-  late LatLng _center = LatLng(45.521563, -122.677433);
+  late LatLng _center = const LatLng(45.521563, -122.677433);
   dynamic priceObject;
   dynamic objectImageInput = {
     "imageUrl": "",
@@ -141,7 +143,7 @@ class _PickupViewState extends State<PickupView> {
     Navigator.of(context).push(
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (BuildContext context) => SocialMediaCardsView(
+        builder: (BuildContext context) => const SocialMediaCardsView(
             // object: widget.game,
             ),
       ),
@@ -237,6 +239,51 @@ class _PickupViewState extends State<PickupView> {
     );
   }
 
+  List<dynamic> modifiedParticipantList(
+      List userParticipants, List payments, String? price) {
+    final amount = double.tryParse(price ?? '0') ?? 0;
+
+    for (var participant in userParticipants) {
+      var userId = participant['user']['_id'];
+
+      var payment = payments.firstWhere(
+        (p) => p['user']['_id'] == userId,
+        orElse: () => null,
+      );
+
+      if (payment != null) {
+        double paymentAmount = double.tryParse(payment['amount'] ?? '') ?? 0;
+
+        if (paymentAmount == 0) {
+          participant['paymentStatus'] = 'Free';
+        } else if (paymentAmount < amount) {
+          participant['paymentStatus'] = 'Partially';
+        } else if (paymentAmount == amount) {
+          participant['paymentStatus'] = 'Paid';
+        }
+      } else {
+        participant['paymentStatus'] = 'Free';
+      }
+    }
+
+    return userParticipants;
+  }
+
+  List<dynamic> getPaidUsers(
+    List userParticipants,
+    List payments,
+  ) {
+    Set<String> paymentIds =
+        payments.map((payment) => payment['user']['_id'].toString()).toSet();
+
+    final paidUsers = userParticipants
+        .where((participant) =>
+            paymentIds.contains(participant['user']?['_id'].toString()))
+        .toList();
+
+    return paidUsers;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build()");
@@ -249,8 +296,6 @@ class _PickupViewState extends State<PickupView> {
     bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
     bool isMember =
         context.select<EventPageModel, bool>((value) => value.isMember);
-    dynamic price =
-        context.select<EventPageModel, dynamic>((value) => value.price);
     String amountRemaining = context
         .select<EventPageModel, String>((value) => value.amountRemaining);
     String amountPaid =
@@ -265,6 +310,8 @@ class _PickupViewState extends State<PickupView> {
     List players =
         context.select<EventPageModel, List>((value) => value.players);
     List chats = context.watch<EventPageModel>().chats;
+    List payments = context.watch<EventPageModel>().payments;
+    dynamic price = context.watch<EventPageModel>().price;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -348,7 +395,8 @@ class _PickupViewState extends State<PickupView> {
                       PlayerList(
                         event: mainEvent,
                         team: null,
-                        userParticipants: userParticipants,
+                        userParticipants: modifiedParticipantList(
+                            userParticipants, payments, price['amount']),
                         inviteUserToChat: (final userId) async =>
                             onTapShowChatBottomSheet(
                                 context: context,
@@ -356,7 +404,8 @@ class _PickupViewState extends State<PickupView> {
                                 userId: userId),
                       ),
                       //team list
-                      TeamsListWidget(user: null, mainEvent: mainEvent, teams: teams),
+                      TeamsListWidget(
+                          user: null, mainEvent: mainEvent, teams: teams),
                       //player request widget
                       SendPlayersRequestWidget(
                           mainEvent: mainEvent,
@@ -408,6 +457,12 @@ class _PickupViewState extends State<PickupView> {
                               isMember: isMember)
                         ],
                       ),
+                      const SizedBox(height: 20),
+                      PaymentListWidget(
+                        paidUsers: getPaidUsers(userParticipants, payments),
+                        paymentType: PaymentType.user,
+                      ),
+                      const SizedBox(height: 60),
                       ImagesListWidget(
                           mainEvent: mainEvent,
                           team: null,

@@ -55,8 +55,6 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     });
   }
 
- 
-
   void loadInitialData() {
     print("loadInitialData()");
     dynamic setupRequestWidgetResp =
@@ -90,8 +88,6 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
     widget.userObjectDetails['mainEvent']['chats']['data'] = filteredChats;
   }
 
-  
-
   dynamic getParticipantIdByUserId(List<dynamic> dataList, String userId) {
     for (var data in dataList) {
       if (data['user']['_id'] == userId) {
@@ -116,7 +112,10 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
         child: Expanded(
           child: Column(
             children: [
-              EventDateWidget(canEdit: widget.userObjectDetails['isMine'], startTime: widget.userObjectDetails['startTime'], endTime: widget.userObjectDetails['endTime']),
+              EventDateWidget(
+                  canEdit: widget.userObjectDetails['isMine'],
+                  startTime: widget.userObjectDetails['startTime'],
+                  endTime: widget.userObjectDetails['endTime']),
 
               // Container(
               //   margin: const EdgeInsets.all(10.0),
@@ -126,7 +125,7 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
               //   height: 200.0,
               //   child:
 
-                    //map
+              //map
               //       MyMapPage(
               //           latitude: widget.userObjectDetails['mainEvent']
               //               ['location']['data'][0]['latitude'],
@@ -167,10 +166,10 @@ class _UpdateViewFormState extends State<UpdateViewForm> {
               ChatsListWidget(
                 chats: widget.userObjectDetails['mainEvent']['chats']['data'],
               ),
-              
+
               createEventRequestWidget,
-              createEventPaymentWidget,              
-              createTeamRequestWidget,              
+              createEventPaymentWidget,
+              createTeamRequestWidget,
               createTeamPaymentWidget,
 
               // Row(

@@ -14,11 +14,9 @@ import '../../components/update_view_form.dart';
 import '../../constants.dart';
 
 class TrainingView extends StatefulWidget with EventMixin, ImagesMixin {
-  TrainingView(
-    {Key? key, required this.training })
-    : super(key: key);
-    
-    final dynamic training;
+  TrainingView({Key? key, required this.training}) : super(key: key);
+
+  final dynamic training;
 
   @override
   _TrainingViewState createState() => _TrainingViewState();
@@ -32,163 +30,151 @@ class _TrainingViewState extends State<TrainingView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
-  
+
   dynamic userEventDetails;
   String imageUrl = "";
   dynamic objectImageInput = {
-      "imageUrl": "",
-      "containerType": Constants.IMAGEBANNER,
-      "mainEvent": null,
-      "isMyEvent": false
-    };
-
+    "imageUrl": "",
+    "containerType": Constants.IMAGEBANNER,
+    "mainEvent": null,
+    "isMyEvent": false
+  };
 
   bool _isLoading = true;
 
-  void updateChatsList(dynamic createdChat){
+  void updateChatsList(dynamic createdChat) {
     setState(() {
-      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+      userEventDetails['mainEvent']['chats']['data'].add(createdChat);
     });
   }
 
-  void goBack(){
+  void goBack() {
     Navigator.pop(context);
   }
 
   dynamic priceObject;
 
-
   void loadEventPayment() {
     priceObject = widget.training['price'];
   }
 
-  
-  Future<void> loadInitialData() async{
+  Future<void> loadInitialData() async {
     print("loadInitialData");
-    loadEventPayment();    
-    widget.setupPlayerList();    
-    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.training]);
+    loadEventPayment();
+    widget.setupPlayerList();
+    dynamic getEventDetailsResp =
+        await EventCommand().getUserEventDetails([widget.training]);
     userEventDetails = getEventDetailsResp;
     print("getEventDetailsResp: " + userEventDetails.toString());
     //setup image
-   objectImageInput = await widget.loadEventMainImage(userEventDetails);
+    objectImageInput = await widget.loadEventMainImage(userEventDetails);
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
     setState(() {
-      
       _isLoading = false;
       print("setState finished");
     });
     print("loadInitialData finished");
   }
 
-  
-
   @override
   void initState() {
-    super.initState();  
+    super.initState();
     print("initState");
-    print("training: " + widget.training.toString());  
-    loadInitialData();          
+    print("training: " + widget.training.toString());
+    loadInitialData();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("TrainingView build() widget.training: "+ widget.training.toString());
+    print(
+        "TrainingView build() widget.training: " + widget.training.toString());
 
     return Scaffold(
-      appBar: PreferredSize(
-    preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
-    child: ObjectProfileMainImage(
-          objectImageInput:
-              objectImageInput), 
-  ),
-      body: _isLoading 
-      ? Container(
-      height: double.infinity,
-      width: double.infinity,
-      child: Align(
-        alignment: Alignment.center,
-        child:
-            // BottomNav()//for times when user deleted in cognito but still signed into app
-            LoadingScreen(
-                currentDotColor: Colors.white,
-                defaultDotColor: Colors.black,
-                numDots: 10),
-      ),
-    )
-      : ListView(
-        padding: EdgeInsets.all(16),
-        children: [
-            !userEventDetails['isMine'] ? 
-            Container(
-                height: 20,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: GestureDetector(
-                      onTap: () async {
-                        print("onTap: ");
-                        List<int>? requestIndexes =
-                            await showAnimatedDialog<dynamic>(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: widget.selectedRequestTypeIndexes,
-                                titleText: 'Choose User Type',
-                                positiveText: "Send Request",
-                                listType: ListType.multiSelect,
-                                activeColor: Colors.green,
-                                dataList: widget.requestUserTypes);
-                          },
-                          animationType: DialogTransitionType.size,
-                          curve: Curves.linear,
-                        );
-
-                        widget.selectedRequestTypeIndexes =
-                            requestIndexes ?? widget.selectedRequestTypeIndexes;
-                        print(
-                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                        await widget.requestTypeSelected(widget.selectedRequestTypeIndexes);
-                        await widget.sendEventRequest(widget.training, {0: {}}, widget.requestUserTypes, []);
-                      },
-                      child: Text("Send Request")),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(
+              200.0), // You can adjust the height value as per your requirement.
+          child: ObjectProfileMainImage(objectImageInput: objectImageInput),
+        ),
+        body: _isLoading
+            ? Container(
+                height: double.infinity,
+                width: double.infinity,
+                child: Align(
+                  alignment: Alignment.center,
+                  child:
+                      // BottomNav()//for times when user deleted in cognito but still signed into app
+                      LoadingScreen(
+                          currentDotColor: Colors.white,
+                          defaultDotColor: Colors.black,
+                          numDots: 10),
                 ),
-              ) :
-              Container(),
+              )
+            : ListView(padding: EdgeInsets.all(16), children: [
+                !userEventDetails['isMine']
+                    ? Container(
+                        height: 20,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: GestureDetector(
+                              onTap: () async {
+                                print("onTap: ");
+                                List<int>? requestIndexes =
+                                    await showAnimatedDialog<dynamic>(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return ClassicListDialogWidget<dynamic>(
+                                        selectedIndexes:
+                                            widget.selectedRequestTypeIndexes,
+                                        titleText: 'Choose User Type',
+                                        positiveText: "Send Request",
+                                        listType: ListType.multiSelect,
+                                        activeColor: Colors.green,
+                                        dataList: widget.requestUserTypes);
+                                  },
+                                  animationType: DialogTransitionType.size,
+                                  curve: Curves.linear,
+                                );
 
-              UpdateViewForm(userObjectDetails: userEventDetails)
-            //    Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         widget.getPriceWidget(widget.userEventDetails),
-            //         // Text(
-            //         //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-            //         widget.userEventDetails['isMine']
-            //             ? ElevatedButton(
-            //                 onPressed: () {
-            //                   // Add button onPressed logic here
-            //                 },
-            //                 child: Text('Update Payment'),
-            //               )
-            //             : Container(),
-            //       ],
-            //     ),
-            //     widget.getJoinGameWidget(context, widget.userEventDetails, widget.training['event'], widget.userObject),
-            //     widget.getChatWidget(context, true, false, widget.userEventDetails, updateChatsList),
+                                widget.selectedRequestTypeIndexes =
+                                    requestIndexes ??
+                                        widget.selectedRequestTypeIndexes;
+                                print(
+                                    'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                                await widget.requestTypeSelected(
+                                    widget.selectedRequestTypeIndexes);
+                                await widget.sendEventRequest(widget.training,
+                                    {0: {}}, widget.requestUserTypes, []);
+                              },
+                              child: Text("Send Request")),
+                        ),
+                      )
+                    : Container(),
 
-            //     widget.userEventDetails['isMine']
-            // ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-            // : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
-        
-     
+                UpdateViewForm(userObjectDetails: userEventDetails)
+                //    Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         widget.getPriceWidget(widget.userEventDetails),
+                //         // Text(
+                //         //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                //         widget.userEventDetails['isMine']
+                //             ? ElevatedButton(
+                //                 onPressed: () {
+                //                   // Add button onPressed logic here
+                //                 },
+                //                 child: Text('Update Payment'),
+                //               )
+                //             : Container(),
+                //       ],
+                //     ),
+                //     widget.getJoinGameWidget(context, widget.userEventDetails, widget.training['event'], widget.userObject),
+                //     widget.getChatWidget(context, true, false, widget.userEventDetails, updateChatsList),
 
-
-
-
-        ]
-      )
-      
-    );
+                //     widget.userEventDetails['isMine']
+                // ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
+                // : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
+              ]));
   }
 }

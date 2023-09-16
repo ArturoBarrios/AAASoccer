@@ -112,39 +112,41 @@ class _TryoutCreateState extends State<TryoutCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const Headers().getBackHeader(context, "Create Tryout"),
-      body: Center(
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration.collapsed(hintText: 'Name'),
-            ),
-            locationSearchBar,
-            createEventRequestWidget,
-            createEventPaymentWidget,
-            createTeamRequestWidget,
-            createTeamPaymentWidget,
-            dateTimePicker,
-            TextField(
-              controller: priceController,
-              decoration: const InputDecoration.collapsed(hintText: 'Price'),
-            ),
-            TextField(
-              controller: imagesController,
-              decoration: const InputDecoration.collapsed(hintText: 'Images'),
-            ),
-            GestureDetector(
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration.collapsed(hintText: 'Name'),
+              ),
+              locationSearchBar,
+              createEventRequestWidget,
+              createEventPaymentWidget,
+              createTeamRequestWidget,
+              createTeamPaymentWidget,
+              dateTimePicker,
+              TextField(
+                controller: priceController,
+                decoration: const InputDecoration.collapsed(hintText: 'Price'),
+              ),
+              TextField(
+                controller: imagesController,
+                decoration: const InputDecoration.collapsed(hintText: 'Images'),
+              ),
+              GestureDetector(
+                  onTap: () {
+                    createTryout();
+                  },
+                  child: const Text("tap me")),
+              GestureDetector(
                 onTap: () {
-                  createTryout();
+                  goBack();
                 },
-                child: const Text("tap me")),
-            GestureDetector(
-              onTap: () {
-                goBack();
-              },
-              child: const Text("Back to Home"),
-            ),
-          ],
+                child: const Text("Back to Home"),
+              ),
+            ],
+          ),
         ),
       ),
     );

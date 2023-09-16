@@ -227,6 +227,7 @@ class _PlayerListState extends State<PlayerList> {
               return userRoles.contains(_selectedUserType);
             }).map<Widget>((userParticipant) {
               dynamic user = userParticipant['user'];
+              dynamic paymentStatus = userParticipant['paymentStatus'];
               dynamic profileDetails = {
                 "user": user,
                 "isMine": false,
@@ -249,6 +250,7 @@ class _PlayerListState extends State<PlayerList> {
                           Expanded(
                             child: Text(user['username']),
                           ),
+                          if (paymentStatus != null) Text(paymentStatus ?? ''),
                           IconButton(
                             icon: Icon(Icons.info),
                             onPressed: () {

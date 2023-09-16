@@ -1,11 +1,12 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import '../../commands/location_command.dart';
 
 class LocationCreate extends StatefulWidget {
+  const LocationCreate({Key? key}) : super(key: key);
+
   @override
-  _LocationCreateState createState() => _LocationCreateState();
+  State<LocationCreate> createState() => _LocationCreateState();
 }
 
 class _LocationCreateState extends State<LocationCreate> {
@@ -35,8 +36,9 @@ class _LocationCreateState extends State<LocationCreate> {
         "fieldSize": fieldSizeController.text.trim(),
         "private": privateController.text.trim()
       };
-      Map<String, dynamic> createLocationRes = await LocationCommand().createLocation(createLocationInput);
-      if(createLocationRes['success']){
+      Map<String, dynamic> createLocationRes =
+          await LocationCommand().createLocation(createLocationInput);
+      if (createLocationRes['success']) {
         createLocationResponse['success'] = true;
       }
 

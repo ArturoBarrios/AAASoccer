@@ -67,6 +67,8 @@ class TeamFragments {
               data{
                 _id
                 amount
+                isPlayerPayment
+                isTeamPayment
                 user{
                   _id
                   name

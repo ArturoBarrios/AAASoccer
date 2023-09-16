@@ -1,9 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/loading_circular.dart';
-import 'package:soccermadeeasy/models/appModels/TeamGroup.dart';
-import 'package:soccermadeeasy/views/onboarding/player_rate_slider.dart';
 import '../../components/SendMyEventsTeamRequestWidget.dart';
 import '../../components/chats_list_widget.dart';
 import '../../components/events_list_widget.dart';
@@ -12,10 +12,11 @@ import '../../components/headers.dart';
 import '../../components/images_list_widget.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
+import '../../components/payment_list_widget.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/send_players_request_widget.dart';
-import '../../components/update_view_team_form.dart';
 import '../../constants.dart';
+import '../../models/enums/payment_type.dart';
 import '../../models/enums/view_status.dart';
 import '../../models/pageModels/app_model.dart';
 import 'team_view_controller.dart';
@@ -59,27 +60,93 @@ class _TeamViewState extends State<TeamView> {
     });
   }
 
+  List<dynamic> modifiedParticipantList(
+      List userParticipants, List payments, String? price) {
+    final amount = double.tryParse(price ?? '0') ?? 0;
+
+    for (var participant in userParticipants) {
+      var userId = participant['user']['_id'];
+
+      var payment = payments.firstWhere(
+        (p) => p['user']['_id'] == userId,
+        orElse: () => null,
+      );
+
+      if (payment != null) {
+        double paymentAmount = double.tryParse(payment['amount'] ?? '') ?? 0;
+
+        if (paymentAmount == 0) {
+          participant['paymentStatus'] = 'Free';
+        } else if (paymentAmount < amount) {
+          participant['paymentStatus'] = 'Partially';
+        } else if (paymentAmount == amount) {
+          participant['paymentStatus'] = 'Paid';
+        }
+      } else {
+        participant['paymentStatus'] = 'Free';
+      }
+      participant['paymentType'] = (payment != null &&
+              payment['isPlayerPayment'] != null &&
+              payment['isPlayerPayment'] == true)
+          ? 'Player Payment'
+          : (payment != null &&
+                  payment['isTeamPayment'] != null &&
+                  payment['isTeamPayment'] == true)
+              ? 'Team Payment'
+              : 'freePayment';
+    }
+
+    return userParticipants;
+  }
+
+  Map<String, List<dynamic>> getPaidUsers(
+    List userParticipants,
+    List payments,
+  ) {
+    Set<String> paymentIds =
+        payments.map((payment) => payment['user']['_id'].toString()).toSet();
+
+    final paidUsers = userParticipants.where((participant) {
+      return paymentIds.contains(participant['user']?['_id'].toString());
+    }).toList();
+
+    Map<String, List<dynamic>> categorizedPayments = {};
+
+    for (var user in paidUsers) {
+      if (user['paymentType'] != null) {
+        String key = user['paymentType'];
+        if (categorizedPayments.containsKey(key)) {
+          categorizedPayments[key]?.add(user);
+        } else {
+          categorizedPayments[key] = [user];
+        }
+      }
+    }
+
+    return categorizedPayments;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build() in TeamView");
     print("teamObject: ${widget.teamObject}");
     LocationSearchBar locationSearchBar = new LocationSearchBar();
 
-    dynamic currentUser = context.select<AppModel, dynamic>((value) => value.currentUser);
+    dynamic currentUser =
+        context.select<AppModel, dynamic>((value) => value.currentUser);
     dynamic team =
         context.select<TeamPageModel, dynamic>((value) => value.team);
     bool isMine = context.select<TeamPageModel, bool>((value) => value.isMine);
     List players =
         context.select<TeamPageModel, List>((value) => value.players);
-    List roles =
-        context.select<TeamPageModel, List>((value) => value.roles);
+    List roles = context.select<TeamPageModel, List>((value) => value.roles);
     List userParticipants =
         context.select<TeamPageModel, List>((value) => value.userParticipants);
     dynamic price =
         context.select<TeamPageModel, dynamic>((value) => value.price);
     String amountRemaining =
         context.select<TeamPageModel, String>((value) => value.amountRemaining);
-
+    List payments = context.watch<TeamPageModel>().payments;
 
     return Scaffold(
       appBar: const Headers().getBackHeader(context, widget.teamObject['name']),
@@ -158,22 +225,22 @@ class _TeamViewState extends State<TeamView> {
                       ),
                       // UpdateViewTeamForm(
                       //     userObjectDetails: _tVC.userTeamDetails),
-                      //MyMapPage                      
+                      //MyMapPage
                       Container(
                         margin: const EdgeInsets.all(10.0),
                         color: Colors.amber[600],
                         width: MediaQuery.of(context).size.width -
-                            (MediaQuery.of(context).size.width * .1), //10% padding
+                            (MediaQuery.of(context).size.width *
+                                .1), //10% padding
                         height: 200.0,
                         child: MyMapPage(
-                            latitude: team['location']['data'][0]
-                                ['latitude'],
+                            latitude: team['location']['data'][0]['latitude'],
                             longitude: team['location']['data'][0]
                                 ['longitude']),
                       ),
                       //search bar
                       locationSearchBar = LocationSearchBar(
-                        initialValue: team['location']['data'][0]['name']),
+                          initialValue: team['location']['data'][0]['name']),
                       //SendMyEventsTeamRequestWidget
                       SendMyEventsTeamRequestWidget(
                         team: team,
@@ -184,19 +251,18 @@ class _TeamViewState extends State<TeamView> {
                         mainEvent: null,
                         team: team,
                         players: players,
-                        isMine: isMine,                        
+                        isMine: isMine,
                       ),
                       EventsListWidget(
                         team: team,
                         user: null,
-                        events: team['events']['data'],   
-                        eventUserParticipants: [],                                             
+                        events: team['events']['data'],
+                        eventUserParticipants: [],
                       ),
                       ImagesListWidget(
-                        mainEvent: null,
-                        team: team,
-                        imageFor: Constants.TEAM                      
-                      ),
+                          mainEvent: null,
+                          team: team,
+                          imageFor: Constants.TEAM),
                       GetJoinTeamWidget(
                         user: currentUser,
                         team: team,
@@ -208,23 +274,19 @@ class _TeamViewState extends State<TeamView> {
                       PlayerList(
                         event: null,
                         team: team,
-                        userParticipants: userParticipants,
+                        userParticipants: modifiedParticipantList(
+                            userParticipants, payments, price['amount']),
                       ),
-                      ChatsListWidget(
-                        chats: team['chats']['data']
-                      ),
+                      ChatsListWidget(chats: team['chats']['data']),
                       // createTeamRequestWidget,
                       // createTeamPaymentWidget,
-
-
-
-
-
-
-
-
-
-
+                      const SizedBox(height: 20),
+                      PaymentListWidget(
+                        categorizedPaidUsers:
+                            getPaidUsers(userParticipants, payments),
+                        paymentType: PaymentType.team,
+                      ),
+                      const SizedBox(height: 60),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/views/request/view.dart';
 import '../styles/asset_constants.dart';
 import '../views/game/create.dart';
 import '../views/images/view_images.dart';
+import '../views/location/create.dart';
 import '../views/organization/create.dart';
 import '../views/tournament/create.dart';
 import '../views/league/create.dart';
@@ -26,12 +27,12 @@ class Footers extends StatefulWidget {
     int selectIndex = 0;
     Map<String, Widget Function(BuildContext)> pages = {
       "Pickup Game": (context) => const GameCreate(),
-      "Team": (context) => const EventCreate(),
-      "Tournament": (context) => const TeamCreate(),
-      "League": (context) => const TournamentCreate(),
-      "Training": (context) => const LeagueCreate(),
-      "Tryout": (context) => const TrainingCreate(),
-      "Location": (context) => const TryoutCreate(),
+      "Team": (context) => const TeamCreate(),
+      "Tournament": (context) => const TournamentCreate(),
+      "League": (context) => const LeagueCreate(),
+      "Training": (context) => const TrainingCreate(),
+      "Tryout": (context) => const TryoutCreate(),
+      "Location": (context) => const LocationCreate(),
     };
 
     void goToPage(

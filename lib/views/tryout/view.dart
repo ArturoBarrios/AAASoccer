@@ -13,11 +13,9 @@ import '../../components/update_view_form.dart';
 import '../../constants.dart';
 
 class TryoutView extends StatefulWidget with EventMixin, ImagesMixin {
-   TryoutView(
-    { Key? key, required this.tryout })
-    : super(key: key);
-    
-    final dynamic tryout;
+  TryoutView({Key? key, required this.tryout}) : super(key: key);
+
+  final dynamic tryout;
 
   @override
   _TryoutViewState createState() => _TryoutViewState();
@@ -40,23 +38,20 @@ class _TryoutViewState extends State<TryoutView> {
     "mainEvent": null,
     "isMyEvent": false
   };
-  
-
 
   bool _isLoading = true;
 
-  void updateChatsList(dynamic createdChat){
+  void updateChatsList(dynamic createdChat) {
     setState(() {
-      userEventDetails['mainEvent']['chats']['data'].add(createdChat);      
+      userEventDetails['mainEvent']['chats']['data'].add(createdChat);
     });
   }
 
-  void goBack(){
+  void goBack() {
     Navigator.pop(context);
   }
 
   dynamic priceObject;
-
 
   void loadEventPayment() {
     priceObject = widget.tryout['price'];
@@ -70,15 +65,15 @@ class _TryoutViewState extends State<TryoutView> {
     Constants.MAINCOACH.toString(),
     Constants.ASSISTANTCOACH.toString(),
     Constants.REF.toString(),
-  ];  
+  ];
   List<String> selectedRequestTypeObjects = [];
 
-
-  Future<void> loadInitialData() async{
+  Future<void> loadInitialData() async {
     print("loadInitialData");
-    dynamic getEventDetailsResp = await EventCommand().getUserEventDetails([widget.tryout]);
+    dynamic getEventDetailsResp =
+        await EventCommand().getUserEventDetails([widget.tryout]);
     userEventDetails = getEventDetailsResp;
-    widget.setupPlayerList();    
+    widget.setupPlayerList();
     print("getEventDetailsResp: " + getEventDetailsResp.toString());
     //setup image
     objectImageInput = await widget.loadEventMainImage(userEventDetails);
@@ -88,113 +83,104 @@ class _TryoutViewState extends State<TryoutView> {
       _isLoading = false;
       print("setState finished");
     });
-    loadEventPayment();    
+    loadEventPayment();
     print("loadInitialData finished");
   }
-
 
   @override
   void initState() {
     super.initState();
     print("initState");
-    print("training: " + widget.tryout.toString());    
+    print("training: " + widget.tryout.toString());
     loadInitialData();
-        
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-    preferredSize: Size.fromHeight(200.0),  // You can adjust the height value as per your requirement.
-    child: ObjectProfileMainImage(
-          objectImageInput:
-              objectImageInput), 
-  ),
-      body: _isLoading 
-      ? Container(
-      height: double.infinity,
-      width: double.infinity,
-      child: Align(
-        alignment: Alignment.center,
-        child:
-            // BottomNav()//for times when user deleted in cognito but still signed into app
-            LoadingScreen(
-                currentDotColor: Colors.white,
-                defaultDotColor: Colors.black,
-                numDots: 10),
-      ),
-    )
-      : ListView(
-        padding: EdgeInsets.all(16),
-        children: [          
-            !userEventDetails['isMine'] ? 
-            Container(
-                height: 20,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: GestureDetector(
-                      onTap: () async {
-                        print("onTap: ");
-                        List<int>? requestIndexes =
-                            await showAnimatedDialog<dynamic>(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            return ClassicListDialogWidget<dynamic>(
-                                selectedIndexes: widget.selectedRequestTypeIndexes,
-                                titleText: 'Choose User Type',
-                                positiveText: "Send Request",
-                                listType: ListType.multiSelect,
-                                activeColor: Colors.green,
-                                dataList: widget.requestUserTypes);
-                          },
-                          animationType: DialogTransitionType.size,
-                          curve: Curves.linear,
-                        );
-
-                        widget.selectedRequestTypeIndexes =
-                            requestIndexes ?? widget.selectedRequestTypeIndexes;
-                        print(
-                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                        await widget.requestTypeSelected(widget.selectedRequestTypeIndexes);
-                        await widget.sendEventRequest(widget.tryout, {0: {}}, widget.requestUserTypes, []);
-                      },
-                      child: Text("Send Request")),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(
+              200.0), // You can adjust the height value as per your requirement.
+          child: ObjectProfileMainImage(objectImageInput: objectImageInput),
+        ),
+        body: _isLoading
+            ? Container(
+                height: double.infinity,
+                width: double.infinity,
+                child: Align(
+                  alignment: Alignment.center,
+                  child:
+                      // BottomNav()//for times when user deleted in cognito but still signed into app
+                      LoadingScreen(
+                          currentDotColor: Colors.white,
+                          defaultDotColor: Colors.black,
+                          numDots: 10),
                 ),
-              ) :
-              Container(),
-              UpdateViewForm(userObjectDetails: userEventDetails)
-            //    Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         widget.getPriceWidget(widget.userEventDetails),
-            //         // Text(
-            //         //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
-            //         widget.userEventDetails['isMine']
-            //             ? ElevatedButton(
-            //                 onPressed: () {
-            //                   // Add button onPressed logic here
-            //                 },
-            //                 child: Text('Update Payment'),
-            //               )
-            //             : Container(),
-            //       ],
-            //     ),
-            //     widget.getJoinGameWidget(context, widget.userEventDetails, widget.tryout['event'], widget.userObject),
-            //     widget.getChatWidget(context, true, false, widget.userEventDetails, updateChatsList),
+              )
+            : ListView(padding: EdgeInsets.all(16), children: [
+                !userEventDetails['isMine']
+                    ? Container(
+                        height: 20,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: GestureDetector(
+                              onTap: () async {
+                                print("onTap: ");
+                                List<int>? requestIndexes =
+                                    await showAnimatedDialog<dynamic>(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return ClassicListDialogWidget<dynamic>(
+                                        selectedIndexes:
+                                            widget.selectedRequestTypeIndexes,
+                                        titleText: 'Choose User Type',
+                                        positiveText: "Send Request",
+                                        listType: ListType.multiSelect,
+                                        activeColor: Colors.green,
+                                        dataList: widget.requestUserTypes);
+                                  },
+                                  animationType: DialogTransitionType.size,
+                                  curve: Curves.linear,
+                                );
 
-            //     widget.userEventDetails['isMine']
-            // ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
-            // : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
-     
+                                widget.selectedRequestTypeIndexes =
+                                    requestIndexes ??
+                                        widget.selectedRequestTypeIndexes;
+                                print(
+                                    'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                                await widget.requestTypeSelected(
+                                    widget.selectedRequestTypeIndexes);
+                                await widget.sendEventRequest(widget.tryout,
+                                    {0: {}}, widget.requestUserTypes, []);
+                              },
+                              child: Text("Send Request")),
+                        ),
+                      )
+                    : Container(),
+                UpdateViewForm(userObjectDetails: userEventDetails)
+                //    Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         widget.getPriceWidget(widget.userEventDetails),
+                //         // Text(
+                //         //     "Price: \$${(double.parse(priceObject['amount']) / 100).toStringAsFixed(2)}"),
+                //         widget.userEventDetails['isMine']
+                //             ? ElevatedButton(
+                //                 onPressed: () {
+                //                   // Add button onPressed logic here
+                //                 },
+                //                 child: Text('Update Payment'),
+                //               )
+                //             : Container(),
+                //       ],
+                //     ),
+                //     widget.getJoinGameWidget(context, widget.userEventDetails, widget.tryout['event'], widget.userObject),
+                //     widget.getChatWidget(context, true, false, widget.userEventDetails, updateChatsList),
 
-
-
-
-        ]
-      )
-      
-    );
+                //     widget.userEventDetails['isMine']
+                // ? widget.sendPlayersRequestWidget(context, widget.userEventDetails)
+                // : widget.sendOrganizerPlayerEventRequest(context, widget.userEventDetails),
+              ]));
   }
 }

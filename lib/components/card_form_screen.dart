@@ -1,14 +1,10 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
-import 'dart:ui';
 import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:flutter/material.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
 import 'package:soccermadeeasy/commands/paypal_payment/models/response/orders/paypal_create_order_response.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
-import 'package:soccermadeeasy/models/pageModels/app_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
 import '../commands/paypal_payment/models/request/orders/paypal_create_order_request.dart';
@@ -17,13 +13,10 @@ import '../commands/paypal_payment/paypal_repository.dart';
 import '../commands/subscriptions_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
-import '../models/enums/PaymentType.dart';
+import '../models/enums/payment_status_type.dart';
 import '../models/componentModels/payment_model.dart';
-import '../components/Cards/payment_card.dart';
-import '../components/my_painter.dart';
 import '../commands/payment_commands.dart';
 import '../commands/user_command.dart';
-import '../views/home.dart';
 import 'dart:async';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
@@ -31,7 +24,6 @@ import 'package:flip_card/flip_card_controller.dart';
 import 'Buttons/apple_google_pay_button.dart';
 import 'paypal_payment_view.dart';
 
-// // // // // // // // // // // // // // //
 class CardFormScreen extends StatefulWidget {
   const CardFormScreen(
       {Key? key, required this.paymentDetails, required this.callbackFunction})
@@ -41,10 +33,10 @@ class CardFormScreen extends StatefulWidget {
   final Function callbackFunction;
 
   @override
-  _CardFormScreen createState() => _CardFormScreen();
+  State<CardFormScreen> createState() => _CardFormScreenState();
 }
 
-class _CardFormScreen extends State<CardFormScreen> {
+class _CardFormScreenState extends State<CardFormScreen> {
   bool isLoading = true;
   bool isPaymentProcessing = false;
   bool showCardForm = true;
@@ -62,9 +54,20 @@ class _CardFormScreen extends State<CardFormScreen> {
   ];
   String? _selectedPayment = "Pay With Existing Card";
 
-  void createPaymentIntent() async {
+  Future<void> createPaymentIntent() async {
     setState(() {});
+    DateTime now = DateTime.now();
+    String timestamp = now.millisecondsSinceEpoch.toString();
     Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
+
+    final paymentInput = {
+      'paymentType': widget.paymentDetails['objectType'] == Constants.TEAM
+          ? 'team'
+          : 'player',
+      'amount': widget.paymentDetails['price']['amount'],
+      'userId': currentUser['_id'],
+      'paidAt': timestamp,
+    };
     print("currentUser: " + currentUser.toString());
     print("createPaymentIntent");
     print("priceObject in CardFormScreen: " +
@@ -102,6 +105,12 @@ class _CardFormScreen extends State<CardFormScreen> {
             widget.paymentDetails['objectToPurchase'],
             currentUser,
             widget.paymentDetails['roles']);
+        if (addEventResp['data'] != null) {
+          paymentInput['eventId'] =
+              widget.paymentDetails['objectToPurchase']['_id'];
+          await PaymentCommand().createUserObjectPayment(paymentInput);
+        }
+
         print("addEventResp: " + addEventResp.toString());
       } else if (widget.paymentDetails['objectType'] ==
           Constants.SUBSCRIPTION) {
@@ -111,15 +120,20 @@ class _CardFormScreen extends State<CardFormScreen> {
               ['_id'],
         };
         print("subscriptionInputt: " + subscriptionInput.toString());
-        dynamic createSubscriptionTypeUserResp = await SubscriptionsCommand()
-            .createSubscription(subscriptionInput);
+        dynamic createSubscriptionTypeUserResp =
+            await SubscriptionsCommand().createSubscription(subscriptionInput);
         print("createSubscriptionTypeUserResp: " +
             createSubscriptionTypeUserResp.toString());
       } else if (widget.paymentDetails['objectType'] == Constants.TEAM) {
         dynamic addEventResp = await TeamCommand().addUserToTeam(
-            widget.paymentDetails['objectToPurchase'],
-            currentUser,
-            widget.paymentDetails['roles']);
+          widget.paymentDetails['objectToPurchase'],
+          currentUser,
+          widget.paymentDetails['roles'],
+        );
+        paymentInput['teamId'] =
+            widget.paymentDetails['objectToPurchase']['_id'];
+        await PaymentCommand().createUserObjectPayment(paymentInput);
+
         print("addEventResp: " + addEventResp.toString());
       }
       //move on to next screen
@@ -132,7 +146,7 @@ class _CardFormScreen extends State<CardFormScreen> {
     }
   }
 
-  Widget paymentWidgetToShow(PaymentType status) {
+  Widget paymentWidgetToShow(PaymentStatusType status) {
     print("PaymentType status to show: " + status.name);
     CardFormEditController controller = CardFormEditController(
         initialDetails: PaymentModel().cardFieldInputDetails);
@@ -150,14 +164,8 @@ class _CardFormScreen extends State<CardFormScreen> {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                    onPressed: () {
-                      (controller.details.complete)
-                          ? createPaymentIntent()
-                          : ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('The form is not complete.'),
-                              ),
-                            );
+                    onPressed: () async {
+                      await createPaymentIntent();
                     },
                     child: const Text('Pay'))
               ]));
@@ -306,8 +314,8 @@ class _CardFormScreen extends State<CardFormScreen> {
   @override
   Widget build(BuildContext context) {
     final paypalRepository = ProviderContainer().read(paypalRepositoryProvider);
-    PaymentType status =
-        context.select<PaymentModel, PaymentType>((value) => value.status);
+    PaymentStatusType status = context
+        .select<PaymentModel, PaymentStatusType>((value) => value.status);
 
     CardFieldInputDetails _cardFieldInputDetails =
         context.select<PaymentModel, CardFieldInputDetails>(
