@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../commands/base_command.dart';
@@ -19,15 +21,14 @@ class GetJoinTeamWidget extends StatefulWidget with TeamMixin {
   final dynamic price;
   final String amountRemaining;
 
-
   GetJoinTeamWidget({
-    required this.team, 
-    required this.user, 
+    required this.team,
+    required this.user,
     required this.roles,
     required this.isMine,
     required this.price,
     required this.amountRemaining,
-    });
+  });
 
   @override
   _GetJoinTeamWidgetState createState() => _GetJoinTeamWidgetState();
@@ -35,7 +36,7 @@ class GetJoinTeamWidget extends StatefulWidget with TeamMixin {
 
 class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
   // dynamic userObject;
-  
+
   // List<String> participationRoles = [];
 
   dynamic getTeamJoinConditions(dynamic joinConditions) {
@@ -65,34 +66,32 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
     return rolesString;
   }
 
-
-
-  void goToTeam(){
+  void goToTeam() {
     Navigator.pop(context);
   }
 
-  void purchaseTeam(BuildContext context, dynamic team, List<dynamic> roles
-      ) async {
+  void purchaseTeam(
+      BuildContext context, dynamic team, List<dynamic> roles) async {
     dynamic subscriptionDetails = {
       "price": widget.team['price'],
       "objectToPurchase": widget.team,
-      "objectType": Constants.TEAM,     
-      "roles": roles,
-      "forRole": Constants.PLAYER, 
+      "objectType": Constants.TEAM,
+      "roles": BaseCommand().stringifyRoles(roles),
+      "forRole": Constants.PLAYER,
     };
+
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => CardFormScreen(
-              paymentDetails: subscriptionDetails,
-              callbackFunction: goToTeam,
+                paymentDetails: subscriptionDetails,
+                callbackFunction: goToTeam,
               )),
     );
     // await AdaptyPaymentService().makePurchase();
   }
 
-  void leaveTeam(String roles, String roleToLeave){
-    
+  void leaveTeam(String roles, String roleToLeave) {
     // if (roles == "{}") {
     //   UserCommand().leaveTeam(team, roles);
     // } else {
@@ -143,7 +142,7 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                   },
                 );
                 if (result.isNotEmpty) {
-                  await sendTeamRequest(result, primaryList, secondaryList );                 
+                  await sendTeamRequest(result, primaryList, secondaryList);
                 }
                 // List<int>? requestIndexes =
                 //     await showAnimatedDialog<dynamic>(
@@ -170,11 +169,11 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
 
   Container getJoinTeamWidget(BuildContext context) {
     print("getJoinTeamWidget");
-    
+
     dynamic teamJoinCondition =
         getTeamJoinConditions(widget.team['joinConditions']['data']);
     print("teamJoinCondition: " + teamJoinCondition.toString());
-    print("rolesss: "+ widget.roles.toString());
+    print("rolesss: " + widget.roles.toString());
     List<dynamic> existingRoles = widget.roles;
     //if not already a player
     if (!widget.roles.contains("PLAYER")) {
@@ -182,14 +181,16 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
       if (widget.isMine) {
         return Container(
             child: GestureDetector(
-          onTap: () async{
+          onTap: () async {
             print("onTap Join My Team");
-            dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-            if(chooseRoleDialog != null){
-              print("chooseRoleDialog: "+chooseRoleDialog.toString());
-              List<dynamic> newRoles = chooseRoleDialog['rolesArray'];                        
-              print("newRoles: "+newRoles.toString());             
-              String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                                       
+            dynamic chooseRoleDialog =
+                await widget.chooseRolesDialogue(context);
+            if (chooseRoleDialog != null) {
+              print("chooseRoleDialog: " + chooseRoleDialog.toString());
+              List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
+              print("newRoles: " + newRoles.toString());
+              String roles = BaseCommand()
+                  .addRolesToExistingRoles(existingRoles, newRoles);
               TeamCommand().addUserToTeam(widget.team, widget.user, roles);
             }
           },
@@ -206,13 +207,15 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                   GestureDetector(
-                    onTap: () async{
+                    onTap: () async {
                       print("!withPayment&&!withRequest");
-                      dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-                      if(chooseRoleDialog != null){
-                        print("chooseRoleDialog: "+chooseRoleDialog.toString());
-                        List<dynamic> roles = chooseRoleDialog['rolesArray'];                        
-                        print("roles: "+roles.toString());                        
+                      dynamic chooseRoleDialog =
+                          await widget.chooseRolesDialogue(context);
+                      if (chooseRoleDialog != null) {
+                        print(
+                            "chooseRoleDialog: " + chooseRoleDialog.toString());
+                        List<dynamic> roles = chooseRoleDialog['rolesArray'];
+                        print("roles: " + roles.toString());
                         purchaseTeam(context, widget.team, roles);
                       }
                     },
@@ -222,13 +225,17 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                       child: GestureDetector(
                     onTap: () async {
                       print("!withPayment&&!withRequest");
-                      dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-                      if(chooseRoleDialog != null){
-                        print("chooseRoleDialog: "+chooseRoleDialog.toString());
+                      dynamic chooseRoleDialog =
+                          await widget.chooseRolesDialogue(context);
+                      if (chooseRoleDialog != null) {
+                        print(
+                            "chooseRoleDialog: " + chooseRoleDialog.toString());
                         List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
-                        String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                        
-                        print("roles: "+roles.toString());                                                
-                        TeamCommand().addUserToTeam(widget.team, widget.user, roles);
+                        String roles = BaseCommand()
+                            .addRolesToExistingRoles(existingRoles, newRoles);
+                        print("roles: " + roles.toString());
+                        TeamCommand()
+                            .addUserToTeam(widget.team, widget.user, roles);
                       }
                     },
                     child: Text("Join Team, Pay Later"),
@@ -239,14 +246,16 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
           else {
             return Container(
                 child: GestureDetector(
-              onTap: () async{
+              onTap: () async {
                 print("!withPayment&&!withRequest");
-                dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-                if(chooseRoleDialog != null){
-                  print("chooseRoleDialog: "+chooseRoleDialog.toString());
+                dynamic chooseRoleDialog =
+                    await widget.chooseRolesDialogue(context);
+                if (chooseRoleDialog != null) {
+                  print("chooseRoleDialog: " + chooseRoleDialog.toString());
                   List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
-                  String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                        
-                  print("roles: "+roles.toString());                                    
+                  String roles = BaseCommand()
+                      .addRolesToExistingRoles(existingRoles, newRoles);
+                  print("roles: " + roles.toString());
                   TeamCommand().addUserToTeam(widget.team, widget.user, roles);
                 }
               },
@@ -266,16 +275,17 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
 
           return Container(
               child: GestureDetector(
-            onTap: () async{
+            onTap: () async {
               print("withPayment && !withRequest");
-               dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-              if(chooseRoleDialog != null){
-                print("chooseRoleDialog: "+chooseRoleDialog.toString());
+              dynamic chooseRoleDialog =
+                  await widget.chooseRolesDialogue(context);
+              if (chooseRoleDialog != null) {
+                print("chooseRoleDialog: " + chooseRoleDialog.toString());
                 List<dynamic> roles = chooseRoleDialog['rolesArray'];
                 // BaseCommand().stringifyRoles(roles);
-                print("roles: "+roles.toString());                
+                print("roles: " + roles.toString());
                 purchaseTeam(context, widget.team, roles);
-              }              
+              }
             },
             child: Text("Pay to Join Team"),
           ));
@@ -305,16 +315,17 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
                   "0.00") {
                 return Container(
                     child: GestureDetector(
-                  onTap: () async{
+                  onTap: () async {
                     print("withPayment && withRequest");
-                    dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-                    if(chooseRoleDialog != null){
-                      print("chooseRoleDialog: "+chooseRoleDialog.toString());
+                    dynamic chooseRoleDialog =
+                        await widget.chooseRolesDialogue(context);
+                    if (chooseRoleDialog != null) {
+                      print("chooseRoleDialog: " + chooseRoleDialog.toString());
                       List<String> roles = chooseRoleDialog['rolesArray'];
                       // BaseCommand().stringifyRoles(roles);
-                      print("roles: "+roles.toString());                      
+                      print("roles: " + roles.toString());
                       purchaseTeam(context, widget.team, roles);
-                    }                    
+                    }
                   },
                   child: Text("Pay to Join Team"),
                 ));
@@ -349,7 +360,6 @@ class _GetJoinTeamWidgetState extends State<GetJoinTeamWidget> {
           print("onTap Leave Team");
           String roleToLeave = "PLAYER";
           // leaveTeam(roles, roleToLeave);
-          
         },
         child: Text("Leave Team"),
       ));

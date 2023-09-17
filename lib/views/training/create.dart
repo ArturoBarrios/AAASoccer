@@ -107,38 +107,41 @@ class _TrainingCreateState extends State<TrainingCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const Headers().getMainHeader(context),
-      body: Center(
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration.collapsed(hintText: 'Name'),
-            ),
-            locationSearchBar,
-            createEventRequestWidget,
-            createEventPaymentWidget,
-            createTeamRequestWidget,
-            createTeamPaymentWidget,
-            dateTimePicker,
-            TextField(
-              controller: priceController,
-              decoration: const InputDecoration.collapsed(hintText: 'Price'),
-            ),
-            TextField(
-              controller: locationController,
-              decoration: const InputDecoration.collapsed(hintText: 'Location'),
-            ),
-            TextField(
-              controller: imagesController,
-              decoration: const InputDecoration.collapsed(hintText: 'Images'),
-            ),
-            GestureDetector(
-              onTap: () {
-                createTraining();
-              },
-              child: const Text("tap me"),
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration.collapsed(hintText: 'Name'),
+              ),
+              locationSearchBar,
+              createEventRequestWidget,
+              createEventPaymentWidget,
+              createTeamRequestWidget,
+              createTeamPaymentWidget,
+              dateTimePicker,
+              TextField(
+                controller: priceController,
+                decoration: const InputDecoration.collapsed(hintText: 'Price'),
+              ),
+              TextField(
+                controller: locationController,
+                decoration:
+                    const InputDecoration.collapsed(hintText: 'Location'),
+              ),
+              TextField(
+                controller: imagesController,
+                decoration: const InputDecoration.collapsed(hintText: 'Images'),
+              ),
+              GestureDetector(
+                onTap: () {
+                  createTraining();
+                },
+                child: const Text("tap me"),
+              ),
+            ],
+          ),
         ),
       ),
     );

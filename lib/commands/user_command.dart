@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:soccermadeeasy/commands/home_page_command.dart';
@@ -12,7 +11,7 @@ import '../graphql/mutations/users.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/notifications_command.dart';
-import '../models/enums/PaymentType.dart';
+import '../models/enums/payment_status_type.dart';
 
 class UserCommand extends BaseCommand {
   updateOrganizer() {
@@ -72,7 +71,7 @@ class UserCommand extends BaseCommand {
     return null;
   }
 
-  void updatePaymentStatus(PaymentType status) {
+  void updatePaymentStatus(PaymentStatusType status) {
     print("updatePaymentStatus");
     print("paymentModel.status before....: " + paymentModel.status.toString());
     paymentModel.status = status;

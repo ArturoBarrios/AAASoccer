@@ -1,18 +1,14 @@
 import 'dart:convert';
+
 import 'package:soccermadeeasy/extensions/parse_roles.dart';
 
 import '../graphql/fragments/team_fragments.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
-import '../models/pageModels/app_model.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/teams.dart';
 import '../graphql/mutations/requests.dart';
-import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../commands/geolocation_command.dart';
 // import 'package:geolocator/geolocator.dart';
 import '../graphql/queries/teams.dart';
 import '../commands/notifications_command.dart';
@@ -93,7 +89,7 @@ class TeamCommand extends BaseCommand {
     //get price and payment info
     dynamic payments = team['payments']['data'];
     userTeamDetails['paymentData'] = payments;
-    teamPageModel.paymentData = payments;
+    teamPageModel.payments = payments;
     userTeamDetails['amountPaid'] = "0.00";
     teamPageModel.amountPaid = "0.00";
     userTeamDetails['amountRemaining'] = "0.00";
@@ -115,9 +111,9 @@ class TeamCommand extends BaseCommand {
       userTeamDetails['amountRemaining'] =
           (double.parse(team['price']['amount']) - amountPaid)
               .toStringAsFixed(2);
-      teamPageModel.amountRemaining = (double.parse(team['price']['amount']) -
-              amountPaid)
-          .toStringAsFixed(2);
+      teamPageModel.amountRemaining =
+          (double.parse(team['price']['amount']) - amountPaid)
+              .toStringAsFixed(2);
     }
 
     print(
@@ -138,6 +134,7 @@ class TeamCommand extends BaseCommand {
     try {
       print("teamInput: ");
       print(teamInput);
+
       http.Response response = await http.post(
         Uri.parse('https://graphql.fauna.com/graphql'),
         headers: <String, String>{
@@ -837,7 +834,7 @@ class TeamCommand extends BaseCommand {
       dynamic updateRoleResp = TeamCommand()
           .checkIfUpdateRole(teamInput, userObject, teamInput['forRole']);
       if (updateRoleResp['updateRole']) {
-        updateUserRolesInTeam(
+        await updateUserRolesInTeam(
             teamInput, userInput, roles, updateRoleResp['teamUserParticipant']);
       } else {
         http.Response response = await http.post(
@@ -854,7 +851,7 @@ class TeamCommand extends BaseCommand {
         print("response body: ");
         print(jsonDecode(response.body));
 
-        addTeamToMyTeams(jsonDecode(response.body)['data']['updateTeam']);
+        await addTeamToMyTeams(jsonDecode(response.body)['data']['updateTeam']);
       }
 
       return addUserToTeamResponse;

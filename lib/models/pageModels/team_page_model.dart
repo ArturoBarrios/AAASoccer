@@ -1,23 +1,21 @@
 import 'package:flutter/foundation.dart';
 
 class TeamPageModel extends ChangeNotifier {
-
-
   dynamic _team = null;
   dynamic get team => _team;
   set team(dynamic team) {
     _team = team;
     notifyListeners();
   }
-  
+
   /////////////////
-  dynamic _paymentData = null;
-  dynamic get paymentData => _paymentData;
-  set paymentData(dynamic paymentData) {
-    _paymentData = paymentData;
+  dynamic _payments = null;
+  dynamic get payments => _payments;
+  set payments(dynamic payments) {
+    _payments = payments;
     notifyListeners();
   }
-  
+
   /////////////////
   bool _isMine = false;
   bool get isMine => _isMine;
@@ -25,7 +23,7 @@ class TeamPageModel extends ChangeNotifier {
     _isMine = isMine;
     notifyListeners();
   }
-  
+
   /////////////////
   bool _isMember = false;
   bool get isMember => _isMember;
@@ -33,7 +31,7 @@ class TeamPageModel extends ChangeNotifier {
     _isMember = isMember;
     notifyListeners();
   }
-  
+
   /////////////////
   String _amountPaid = "0.00";
   String get amountPaid => _amountPaid;
@@ -41,7 +39,7 @@ class TeamPageModel extends ChangeNotifier {
     _amountPaid = amountPaid;
     notifyListeners();
   }
-  
+
   /////////////////
   String _amountRemaining = "0.00";
   String get amountRemaining => _amountRemaining;
@@ -49,8 +47,7 @@ class TeamPageModel extends ChangeNotifier {
     _amountPaid = amountRemaining;
     notifyListeners();
   }
- 
-  
+
   /////////////////
   dynamic _price = {};
   dynamic get price => _price;
@@ -66,7 +63,7 @@ class TeamPageModel extends ChangeNotifier {
     _players = players;
     notifyListeners();
   }
-   
+
   /////////////////
   List _organizers = [];
   List get organizers => _organizers;
@@ -74,7 +71,7 @@ class TeamPageModel extends ChangeNotifier {
     _organizers = organizers;
     notifyListeners();
   }
-  
+
   /////////////////
   List _roles = [];
   List get roles => _roles;
@@ -82,7 +79,7 @@ class TeamPageModel extends ChangeNotifier {
     _roles = roles;
     notifyListeners();
   }
-  
+
   /////////////////
   List _chats = [];
   List get chats => _chats;
@@ -90,7 +87,7 @@ class TeamPageModel extends ChangeNotifier {
     _chats = chats;
     notifyListeners();
   }
-  
+
   /////////////////
   List _userParticipants = [];
   List get userParticipants => _userParticipants;
@@ -98,7 +95,4 @@ class TeamPageModel extends ChangeNotifier {
     _userParticipants = userParticipants;
     notifyListeners();
   }
-
-  
-
 }

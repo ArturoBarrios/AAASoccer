@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../commands/base_command.dart';
@@ -12,21 +14,28 @@ import 'Mixins/event_mixin.dart';
 import 'card_form_screen.dart';
 
 class GetJoinEventWidget extends StatefulWidget with EventMixin {
+  GetJoinEventWidget({
+    Key? key,
+    required this.mainEvent,
+    required this.roles,
+    required this.isMine,
+    required this.price,
+    required this.amountRemaining,
+  }) : super(key: key);
+
   final dynamic mainEvent;
   final List<dynamic> roles;
   final bool isMine;
   final dynamic price;
   final String amountRemaining;
 
-  GetJoinEventWidget({required this.mainEvent, required this.roles, required this.isMine, required this.price, required this.amountRemaining,  });
-
   @override
-  _GetJoinEventWidgetState createState() => _GetJoinEventWidgetState();
+  State<GetJoinEventWidget> createState() => _GetJoinEventWidgetState();
 }
 
 class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
   dynamic userObject;
-  dynamic event;  
+  dynamic event;
   String roles = "";
 
   List requestUserTypes = [
@@ -38,82 +47,74 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     Constants.REF.toString(),
   ];
 
-
-  dynamic getEventJoinConditions(dynamic joinConditions){
+  dynamic getEventJoinConditions(dynamic joinConditions) {
     print("getEventJoinConditions");
-    print("joinConditions: "+joinConditions.toString());
+    print("joinConditions: " + joinConditions.toString());
     dynamic joinConditionResp = null;
     joinConditions.forEach((joinCondition) {
-      print("joinCondition: "+ joinCondition.toString());
-      if(joinCondition['forTeam']!=null){
+      print("joinCondition: " + joinCondition.toString());
+      if (joinCondition['forTeam'] != null) {
         print("in ifffff");
         joinConditionResp = joinCondition;
       }
-      
     });
 
     return joinConditionResp;
-
   }
 
-  void goToEvent(){
+  void goToEvent() {
     print("goToEvent");
     Navigator.pop(context);
     // BaseCommand().popToHome(context);
   }
 
-  void purchaseEvent(BuildContext context, dynamic event, List<dynamic> roles
-      ) async {
+  void purchaseEvent(
+      BuildContext context, dynamic event, List<dynamic> roles) async {
     print("purchaseEvent");
     String rolesString = BaseCommand().stringifyRoles(roles);
-     dynamic subscriptionDetails = {
+    dynamic subscriptionDetails = {
       "price": widget.price,
       "objectToPurchase": widget.mainEvent,
-      "objectType": Constants.EVENT,    
-      "roles": rolesString,  
+      "objectType": Constants.EVENT,
+      "roles": rolesString,
       "forRole": Constants.PLAYER,
     };
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => CardFormScreen(
-              paymentDetails: subscriptionDetails,
-              callbackFunction: goToEvent,
+                paymentDetails: subscriptionDetails,
+                callbackFunction: goToEvent,
               )),
     );
-
   }
 
-  Future<void> removeUserFromEvent(dynamic event, dynamic userObject, List<dynamic> rolesToRemove, List<dynamic> existingRoles) async{
-      
+  Future<void> removeUserFromEvent(dynamic event, dynamic userObject,
+      List<String> rolesToRemove, List<dynamic> existingRoles) async {
     List<dynamic> updatedRoles = [];
     existingRoles.forEach((element) {
-      if(!rolesToRemove.contains(element)){
+      if (!rolesToRemove.contains(element)) {
         updatedRoles.add(element);
       }
     });
     //remove event from user and user from event
-    if(updatedRoles.length == 0){
-      dynamic removeUserFromEventResp = await 
-      EventCommand().removeUserFromEvent(event, userObject);
-      if(removeUserFromEventResp['success']){
-        print("removeUserFromEventResp: "+removeUserFromEventResp.toString());
+    if (updatedRoles.length == 0) {
+      dynamic removeUserFromEventResp =
+          await EventCommand().removeUserFromEvent(event, userObject);
+      if (removeUserFromEventResp['success']) {
+        print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
         dynamic eventToRemove = removeUserFromEventResp['data'];
         EventCommand().updateViewModelsWithEvent(eventToRemove, false);
         // setState(() {
         //   event['userParticipants']['data'].removeWhere((element) => element['user']['_id']==userObject['_id']);
-        //   widget.userObjectDetails['roles'] = [];        
-        // }); 
-      } 
-    }
-    else{
-
-    }
-    
-
+        //   widget.userObjectDetails['roles'] = [];
+        // });
+      }
+    } else {}
   }
 
-  Future<void> addUserToEvent(dynamic event, userObject, List<dynamic> rolesToAdd, List<dynamic>existingRoles) async{
+  Future<void> addUserToEvent(dynamic event, userObject,
+      List<dynamic> rolesToAdd, List<dynamic> existingRoles) async {
     List<dynamic> updatedRoles = [];
   }
 
@@ -153,8 +154,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     // }
   }
 
-  Container sendOrganizerPlayerEventRequest(
-      BuildContext context) {
+  Container sendOrganizerPlayerEventRequest(BuildContext context) {
     return Container(
       height: 20,
       child: ClipRRect(
@@ -177,8 +177,8 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
               if (result.isNotEmpty) {
                 print('Selected items: $result');
                 // await requestTypeSelected(selectedRequestTypeIndexes);
-                await sendEventRequest(widget.mainEvent, result,
-                    primaryList, secondaryList);
+                await sendEventRequest(
+                    widget.mainEvent, result, primaryList, secondaryList);
               }
             },
             child: Container(
@@ -191,16 +191,12 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     );
   }
 
-
-
-
-
-
   Container getJoinEventWidget(BuildContext context) {
     print("getJoinEventWidget()");
-    dynamic eventJoinCondition = getEventJoinConditions(event['joinConditions']['data']);
-    print("eventJoinCondition: "+eventJoinCondition.toString());
-    print("rolesss: "+ widget.roles.toString());
+    dynamic eventJoinCondition =
+        getEventJoinConditions(event['joinConditions']['data']);
+    print("eventJoinCondition: " + eventJoinCondition.toString());
+    print("rolesss: " + widget.roles.toString());
     List<dynamic> existingRoles = widget.roles;
     //if not already a player
     if (!widget.roles.contains("PLAYER")) {
@@ -210,15 +206,16 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
             child: GestureDetector(
           onTap: () async {
             print("onTap Join My Game");
-            dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-            if(chooseRoleDialog != null){
-              print("chooseRoleDialog: "+chooseRoleDialog.toString());
-              List<dynamic> newRoles = chooseRoleDialog['rolesArray'];                        
-              print("newRoles: "+newRoles.toString());             
-              String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                         
+            dynamic chooseRoleDialog =
+                await widget.chooseRolesDialogue(context);
+            if (chooseRoleDialog != null) {
+              print("chooseRoleDialog: " + chooseRoleDialog.toString());
+              List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
+              print("newRoles: " + newRoles.toString());
+              String roles = BaseCommand()
+                  .addRolesToExistingRoles(existingRoles, newRoles);
               EventCommand().addUserToEvent(event, userObject, roles);
             }
-            
           },
           child: Text("Join my Game"),
         ));
@@ -233,13 +230,15 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                   GestureDetector(
-                    onTap: () async{
+                    onTap: () async {
                       print("!withPayment&&!withRequest");
-                      dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-                      if(chooseRoleDialog != null){
-                        print("chooseRoleDialog: "+chooseRoleDialog.toString());
-                        List<dynamic> roles = chooseRoleDialog['rolesArray'];                        
-                        print("roles: "+roles.toString());
+                      dynamic chooseRoleDialog =
+                          await widget.chooseRolesDialogue(context);
+                      if (chooseRoleDialog != null) {
+                        print(
+                            "chooseRoleDialog: " + chooseRoleDialog.toString());
+                        List<dynamic> roles = chooseRoleDialog['rolesArray'];
+                        print("roles: " + roles.toString());
                         purchaseEvent(context, event, roles);
                       }
                     },
@@ -249,12 +248,15 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                       child: GestureDetector(
                     onTap: () async {
                       print("!withPayment&&!withRequest");
-                      dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-                      if(chooseRoleDialog != null){
-                        print("chooseRoleDialog: "+chooseRoleDialog.toString());
+                      dynamic chooseRoleDialog =
+                          await widget.chooseRolesDialogue(context);
+                      if (chooseRoleDialog != null) {
+                        print(
+                            "chooseRoleDialog: " + chooseRoleDialog.toString());
                         List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
-                        String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                        
-                        print("roles: "+roles.toString());
+                        String roles = BaseCommand()
+                            .addRolesToExistingRoles(existingRoles, newRoles);
+                        print("roles: " + roles.toString());
                         // purchaseEvent(context, event, roles, widget.userObjectDetails);
                         EventCommand().addUserToEvent(event, userObject, roles);
                       }
@@ -268,13 +270,15 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
             return Container(
                 child: GestureDetector(
               onTap: () async {
-                print("!withPayment&&!withRequest");                
-                dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-                if(chooseRoleDialog != null){
-                  print("chooseRoleDialog: "+chooseRoleDialog.toString());
+                print("!withPayment&&!withRequest");
+                dynamic chooseRoleDialog =
+                    await widget.chooseRolesDialogue(context);
+                if (chooseRoleDialog != null) {
+                  print("chooseRoleDialog: " + chooseRoleDialog.toString());
                   List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
-                  String roles = BaseCommand().addRolesToExistingRoles(existingRoles, newRoles);                        
-                  print("roles: "+roles.toString());                  
+                  String roles = BaseCommand()
+                      .addRolesToExistingRoles(existingRoles, newRoles);
+                  print("roles: " + roles.toString());
                   EventCommand().addUserToEvent(event, userObject, roles);
                 }
               },
@@ -294,16 +298,17 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
           return Container(
               child: GestureDetector(
-            onTap: () async{
+            onTap: () async {
               print("withPayment && !withRequest");
-              dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-              if(chooseRoleDialog != null){
-                print("chooseRoleDialog: "+chooseRoleDialog.toString());
+              dynamic chooseRoleDialog =
+                  await widget.chooseRolesDialogue(context);
+              if (chooseRoleDialog != null) {
+                print("chooseRoleDialog: " + chooseRoleDialog.toString());
                 List<dynamic> roles = chooseRoleDialog['rolesArray'];
                 // BaseCommand().stringifyRoles(roles);
-                print("roles: "+roles.toString());
+                print("roles: " + roles.toString());
                 purchaseEvent(context, event, roles);
-              }              
+              }
             },
             child: Text("Pay to Join Game"),
           ));
@@ -333,16 +338,17 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                   "0.00") {
                 return Container(
                     child: GestureDetector(
-                  onTap: () async{
+                  onTap: () async {
                     print("withPayment && withRequest");
-                    dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-                      if(chooseRoleDialog != null){
-                        print("chooseRoleDialog: "+chooseRoleDialog.toString());
-                        List<String> roles = chooseRoleDialog['rolesArray'];
-                        // BaseCommand().stringifyRoles(roles);
-                        print("roles: "+roles.toString());
-                        purchaseEvent(context, event, roles);
-                      }                    
+                    dynamic chooseRoleDialog =
+                        await widget.chooseRolesDialogue(context);
+                    if (chooseRoleDialog != null) {
+                      print("chooseRoleDialog: " + chooseRoleDialog.toString());
+                      List<String> roles = chooseRoleDialog['rolesArray'];
+                      // BaseCommand().stringifyRoles(roles);
+                      print("roles: " + roles.toString());
+                      purchaseEvent(context, event, roles);
+                    }
                   },
                   child: Text("Pay to Join Game"),
                 ));
@@ -360,13 +366,10 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                 child: Text("Request Pending"),
               ));
             } else {
-              return sendOrganizerPlayerEventRequest(
-                  context);
-
+              return sendOrganizerPlayerEventRequest(context);
             }
           } else {
             return sendOrganizerPlayerEventRequest(context);
-
           }
         }
       }
@@ -377,22 +380,18 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
           print("onTap Leave Game");
           print("onTap Join My Game");
           dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-          if(chooseRoleDialog != null){
-            print("chooseRoleDialog: "+chooseRoleDialog.toString());
-            List<String> roles = chooseRoleDialog['rolesArray'];
+          if (chooseRoleDialog != null) {
+            print("chooseRoleDialog: " + chooseRoleDialog.toString());
+            List<String> roles = List.from(chooseRoleDialog['rolesArray']);
             // BaseCommand().stringifyRoles(roles);
-            print("roles: "+roles.toString());
-            removeUserFromEvent(event, userObject, roles, existingRoles);                        
-          }                    
-            
+            print("roles: " + roles.toString());
+            await removeUserFromEvent(event, userObject, roles, existingRoles);
+          }
         },
         child: Text("Leave Game"),
       ));
     }
   }
- 
-
-  
 
   void loadInitialData() {
     userObject = UserCommand().getAppModelUser();
