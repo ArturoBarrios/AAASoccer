@@ -80,6 +80,13 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List _allEvents = [];
+  List get allEvents => _allEvents;
+  set allEvents(List allEvents) {
+    _allEvents = allEvents;
+    notifyListeners();
+  }
+
   List _players = [];
   List get players => _players;
   set players(List players) {
@@ -115,7 +122,7 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List _groupStage = [];
+List _groupStage = [];
   List get groupStage => _groupStage;
   set groupStage(List groupStage) {
     _groupStage = groupStage;
