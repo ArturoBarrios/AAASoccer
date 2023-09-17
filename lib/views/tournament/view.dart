@@ -192,12 +192,7 @@ class _TournamentViewState extends State<TournamentView> {
                       //Requests widget
                       RequestsList(objectDetails: {
                         "requests": mainEvent['requests']['data']
-                      }),
-                      //RSP
-                      RSVPWidget(
-                        event: mainEvent,
-                        userParticipants: userParticipants,
-                      ),
+                      }),                     
                       //location search bar
                       locationSearchBar = LocationSearchBar(
                           initialValue: mainEvent['location']['data'][0]

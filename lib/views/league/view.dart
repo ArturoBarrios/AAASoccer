@@ -9,15 +9,28 @@ import '../../components/Mixins/event_mixin.dart';
 import '../../components/Mixins/images_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/chats_list_widget.dart';
+import '../../components/event_date_widget.dart';
 import '../../components/events_calendar.dart';
+import '../../components/get_join_event_widget.dart';
 import '../../components/headers.dart';
+import '../../components/images_list_widget.dart';
 import '../../components/league_table_widget.dart';
+import '../../components/location_search_bar.dart';
+import '../../components/my_map_page.dart';
 import '../../components/object_profile_main_image.dart';
+import '../../components/payment_list_widget.dart';
 import '../../components/players_list_widget.dart';
+import '../../components/price_widget.dart';
+import '../../components/requests_list.dart';
+import '../../components/rsvp_widget.dart';
+import '../../components/send_players_request_widget.dart';
+import '../../components/send_teams_request_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
+import '../../models/enums/payment_type.dart';
 import '../../models/pageModels/app_model.dart';
+import '../../models/pageModels/event_page_model.dart';
 import '../tournament/view.dart';
 
 class LeagueView extends StatefulWidget with EventMixin, PaymentMixin, ImagesMixin {
@@ -38,15 +51,9 @@ class _LeagueViewState extends State<LeagueView> {
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
 
-  dynamic objectImageInput = {
-    "imageUrl": "",
-    "containerType": Constants.IMAGEBANNER,
-    "mainEvent": null,
-    "isMyEvent": false
-  };
 
   bool _isLoading = true;
-  dynamic priceObject;
+  LocationSearchBar locationSearchBar = new LocationSearchBar();  
   dynamic leagueEvents = [];  
   dynamic teamListWidgetDetails;
   dynamic leagueTableData = [];
@@ -60,13 +67,7 @@ class _LeagueViewState extends State<LeagueView> {
 
   void goBack() {
     Navigator.pop(context);
-  }
-
-  void loadEventPayment() {
-    dynamic userEventDetails = BaseCommand().getUserEventDetailsModel();
-    priceObject = userEventDetails['mainEvent']['price'];
-  }
-
+  } 
  
 
 
@@ -76,21 +77,16 @@ class _LeagueViewState extends State<LeagueView> {
     widget.setupMyTeams();
 
     dynamic getEventDetailsResp = await 
-        EventCommand().getUserEventDetails([widget.league]);
-    dynamic userEventDetails = getEventDetailsResp;
-    //setup image
-    objectImageInput = await widget.loadEventMainImage(userEventDetails);
-    // getEventDetailsResp['league'] = widget.league;
+        EventCommand().getUserEventDetails([widget.league]);    
+        
     widget.setupRequestWidgetData(getEventDetailsResp);    
-    widget.setupPlayerList();    
-    teamListWidgetDetails =
-        await widget.getTeamListWidgetDetails(getEventDetailsResp);
-    print("mainEvent type: "+ userEventDetails['mainEvent']['type']);    
+    // widget.setupPlayerList();    
+    // teamListWidgetDetails =
+    //     await widget.getTeamListWidgetDetails(getEventDetailsResp);    
     // BaseCommand().updateUserEventDetailsModel(userEventDetails);
     setState(() {
       _isLoading = false;
-    });
-    loadEventPayment();
+    });    
   }
 
   
@@ -105,7 +101,35 @@ class _LeagueViewState extends State<LeagueView> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic userEventDetails = context.watch<AppModel>().userEventDetails;
+    dynamic mainEvent =
+        context.select<EventPageModel, dynamic>((value) => value.mainEvent);
+    dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
+    List<dynamic> roles =
+        context.select<EventPageModel, List<dynamic>>((value) => value.roles);
+    List<dynamic> allEvents = context
+        .select<EventPageModel, List<dynamic>>((value) => value.allEvents);
+    bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
+    bool isMember =
+        context.select<EventPageModel, bool>((value) => value.isMember);
+    String amountRemaining = context
+        .select<EventPageModel, String>((value) => value.amountRemaining);
+    String amountPaid =
+        context.select<EventPageModel, String>((value) => value.amountPaid);
+    String teamAmountRemaining = context
+        .select<EventPageModel, String>((value) => value.amountRemaining);
+    String teamAmountPaid =
+        context.select<EventPageModel, String>((value) => value.teamAmountPaid);
+    List userParticipants =
+        context.select<EventPageModel, List>((value) => value.userParticipants);
+    List teams = context.select<EventPageModel, List>((value) => value.teams);
+    List players =
+        context.select<EventPageModel, List>((value) => value.players);
+    List chats = context.watch<EventPageModel>().chats;
+    List payments = context.watch<EventPageModel>().payments;
+    dynamic price = context.watch<EventPageModel>().price;
+    dynamic groupStage = context.watch<EventPageModel>().groupStage;
+    dynamic tournamentStage = context.watch<EventPageModel>().tournamentStage;
+
 
     return Scaffold(
       appBar: PreferredSize(
@@ -120,55 +144,13 @@ class _LeagueViewState extends State<LeagueView> {
               widget.getParticipationRolesWidget(),
               Container(
                 height: 500,
-                child: EventsCalendar(testText: "test", events: ""),
+                child: EventsCalendar(testText: "test", events: allEvents),
               ),
-              !userEventDetails['isMine']
-                  ? Container(
-                      height: 20,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: GestureDetector(
-                            onTap: () async {
-                              print("onTap: ");
-                              List<int>? requestIndexes =
-                                  await showAnimatedDialog<dynamic>(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return ClassicListDialogWidget<dynamic>(
-                                      selectedIndexes:
-                                          widget.selectedRequestTypeIndexes,
-                                      titleText: 'Choose User Type',
-                                      positiveText: "Send Request",
-                                      listType: ListType.multiSelect,
-                                      activeColor: Colors.green,
-                                      dataList: widget.requestUserTypes);
-                                },
-                                animationType: DialogTransitionType.size,
-                                curve: Curves.linear,
-                              );
-                              widget.selectedRequestTypeIndexes =
-                                  requestIndexes ??
-                                      widget.selectedRequestTypeIndexes;
-                              print(
-                                  'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
-                              await widget.requestTypeSelected(
-                                  widget.selectedRequestTypeIndexes);
-                              await widget.sendEventRequest(
-                                  userEventDetails['mainEvent'],
-                                  {0: {}},
-                                  widget.requestUserTypes,
-                                  []);
-                            },
-                            child: Text("Send Request")),
-                      ),
-                    )
-                  : Container(),
+             
               InkWell(
                 onTap: () {
                   // Handle navigation to tournament view here
                   // You can use Navigator.push to navigate to the tournament view
-
                   showAnimatedDialog(
                     context: context,
                     barrierDismissible: true,
@@ -190,7 +172,144 @@ class _LeagueViewState extends State<LeagueView> {
                   ),
                 ),
               ),
-              UpdateViewForm(userObjectDetails: userEventDetails),
+              IconButton(
+                        icon: const Icon(
+                          Icons.share,
+                          color: Colors.blue,
+                        ),
+                        onPressed: () async {
+                          await EventCommand()
+                              .onTapShare(mainEvent['mainImageKey']);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.social_distance,
+                          color: Colors.red,
+                        ),
+                        onPressed: () async {
+                          await EventCommand().onTapSocialMediaApp(context);
+                        },
+                      ),
+                      //date
+                      EventDateWidget(
+                          canEdit: isMine,
+                          startTime: mainEvent['startTime'],
+                          endTime: mainEvent['endTime']),
+                      //map
+                      Container(
+                        margin: const EdgeInsets.all(10.0),
+                        color: Colors.amber[600],
+                        width: MediaQuery.of(context).size.width -
+                            (MediaQuery.of(context).size.width *
+                                .1), //10% padding
+                        height: 200.0,
+                        child: MyMapPage(
+                            latitude: mainEvent['location']['data'][0]
+                                ['latitude'],
+                            longitude: mainEvent['location']['data'][0]
+                                ['longitude']),
+                      ),
+                      //join widget
+                      GetJoinEventWidget(
+                          mainEvent: mainEvent,
+                          roles: roles,
+                          isMine: isMine,
+                          price: price,
+                          amountRemaining: amountRemaining),
+                      //Requests widget
+                      RequestsList(objectDetails: {
+                        "requests": mainEvent['requests']['data']
+                      }),                      
+                      //location search bar
+                      locationSearchBar = LocationSearchBar(
+                          initialValue: mainEvent['location']['data'][0]
+                              ['name']),
+                      //player list
+                      PlayerList(
+                        event: mainEvent,
+                        team: null,
+                        userParticipants: widget.modifiedParticipantList(
+                            userParticipants, payments, price['amount']),
+                        inviteUserToChat: (final userId) async =>
+                            widget.onTapShowChatBottomSheet(
+                                context: context,
+                                chatList: chats,
+                                userId: userId),
+                      ),
+                      //team list
+                      TeamsListWidget(
+                          user: null, mainEvent: mainEvent, teams: teams),
+                      //player request widget
+                      SendPlayersRequestWidget(
+                          mainEvent: mainEvent,
+                          team: null,
+                          players: players,
+                          isMine: isMine),
+                      //team request widget
+                      SendTeamsRequestWidget(
+                        mainEvent: mainEvent,
+                        isMine: isMine,
+                        teams: teams,
+                        addTeamCallback: EventCommand().addTeamCallback,
+                      ),
+                      //chat widget
+                      // GetChatWidget(
+                      //     mainEvent: mainEvent,
+                      //     team: null,
+                      //     players: players,
+                      //     isMine: isMine,
+                      //     updatechatsList: updateChatsList),
+                      ChatsListWidget(
+                        chats: chats,
+                      ),
+                      // Player price widget
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PriceWidget(
+                              price: price,
+                              teamPrice: false,
+                              eventPrice: true,
+                              amountPaid: amountPaid,
+                              amountRemaining: amountRemaining,
+                              isMine: isMine,
+                              isMember: isMember)
+                        ],
+                      ),
+                      //Team price widget
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PriceWidget(
+                              price: price,
+                              teamPrice: true,
+                              eventPrice: false,
+                              amountPaid: teamAmountPaid,
+                              amountRemaining: teamAmountRemaining,
+                              isMine: isMine,
+                              isMember: isMember)
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      PaymentListWidget(
+                        paidUsers:
+                            widget.getPaidUsers(userParticipants, payments),
+                        paymentType: PaymentType.user,
+                      ),
+                      const SizedBox(height: 60),
+                      ImagesListWidget(
+                          mainEvent: mainEvent,
+                          team: null,
+                          imageFor: Constants.EVENT),
+
+
+
+
+
+
+
+              
               
             ]))
           : Container(
