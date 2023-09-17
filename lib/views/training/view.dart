@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/images_mixin.dart';
 import '../../commands/event_command.dart';
 import '../../commands/images_command.dart';
@@ -12,6 +13,7 @@ import '../../components/my_map_page.dart';
 import '../../components/object_profile_main_image.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
+import '../../models/pageModels/event_page_model.dart';
 
 class TrainingView extends StatefulWidget with EventMixin, ImagesMixin {
   TrainingView(
@@ -94,7 +96,30 @@ class _TrainingViewState extends State<TrainingView> {
 
   @override
   Widget build(BuildContext context) {
-    print("TrainingView build() widget.training: "+ widget.training.toString());
+    dynamic mainEvent =
+        context.select<EventPageModel, dynamic>((value) => value.mainEvent);
+    List<dynamic> roles =
+        context.select<EventPageModel, List<dynamic>>((value) => value.roles);
+    bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
+    bool isMember =
+        context.select<EventPageModel, bool>((value) => value.isMember);
+    dynamic price =
+        context.select<EventPageModel, dynamic>((value) => value.price);
+    String amountRemaining = context
+        .select<EventPageModel, String>((value) => value.amountRemaining);
+    String amountPaid =
+        context.select<EventPageModel, String>((value) => value.amountPaid);
+    String teamAmountRemaining = context
+        .select<EventPageModel, String>((value) => value.amountRemaining);
+    String teamAmountPaid =
+        context.select<EventPageModel, String>((value) => value.teamAmountPaid);
+    List userParticipants =
+        context.select<EventPageModel, List>((value) => value.userParticipants);
+    List teams = context.select<EventPageModel, List>((value) => value.teams);
+    List players =
+        context.select<EventPageModel, List>((value) => value.players);
+    List chats = context.watch<EventPageModel>().chats;
+
 
     return Scaffold(
       appBar: PreferredSize(
@@ -157,7 +182,7 @@ class _TrainingViewState extends State<TrainingView> {
               ) :
               Container(),
 
-              UpdateViewForm(userObjectDetails: userEventDetails)
+              // UpdateViewForm(userObjectDetails: userEventDetails)
             //    Row(
             //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
             //       children: [

@@ -78,14 +78,8 @@ class _PickupViewState extends State<PickupView> {
   CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
 
   bool _isLoading = true;
-  late LatLng _center = LatLng(45.521563, -122.677433);
-  dynamic priceObject;
-  dynamic objectImageInput = {
-    "imageUrl": "",
-    "containerType": Constants.IMAGEBANNER,
-    "mainEvent": null,
-    "isMine": false
-  };
+  late LatLng _center = LatLng(45.521563, -122.677433);  
+ 
   String imageUrl = "";
 
   LocationSearchBar locationSearchBar = new LocationSearchBar();
@@ -96,30 +90,20 @@ class _PickupViewState extends State<PickupView> {
 
   void goBack() {
     Navigator.pop(context);
-  }
-
-  void loadEventPayment() {
-    priceObject = widget.game['price'];
-  }
+  }  
 
   Future<void> loadInitialData() async {
-    print("loadInitialData() in GameView");
-    dynamic getEventDetailsResp =
-        await EventCommand().getUserEventDetails([widget.game]);
+    print("loadInitialData() in GameView");    
+    await EventCommand().getUserEventDetails([widget.game]);
     widget.setupPlayerList();
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
-    dynamic userEventDetails = getEventDetailsResp;
-    //setup image
-    objectImageInput = await widget.loadEventMainImage(userEventDetails);
+        
 
     setState(() {
       _isLoading = false;
     });
-    print("loadInitialData() finished!");
-    print("loadEventPayment() in loadInitialData()");
-    loadEventPayment();
-    print("loadEventPayment() finished in loadInitialData()");
+
   }
 
   @override
@@ -155,15 +139,6 @@ class _PickupViewState extends State<PickupView> {
     });
   }
 
-  Future<void> onTapInviteUserToChat(dynamic mainEvent, String? userId) async {
-    // Map<String, dynamic> request = {
-    //   "type": 'EVENTCHATREQUEST',
-    //   "typeId": mainEvent['_id'],
-    //   "receiverId": userId,
-    // };
-
-    // await ChatCommand().sendChatRequest(request);
-  }
 
   Future<void> addUserToChat({
     final String? chatId,
@@ -244,6 +219,8 @@ class _PickupViewState extends State<PickupView> {
 
     dynamic mainEvent =
         context.select<EventPageModel, dynamic>((value) => value.mainEvent);
+    dynamic objectImageInput =
+        context.watch<EventPageModel>().objectImageInput;
     List<dynamic> roles =
         context.select<EventPageModel, List<dynamic>>((value) => value.roles);
     bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
