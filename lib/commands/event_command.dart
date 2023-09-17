@@ -1161,9 +1161,7 @@ class EventCommand extends BaseCommand {
       dynamic event = events[0];
 
       print("getEventGame(): " + event.toString());
-      //get updated event
-      // dynamic updatedEventResp = await getEventGame(event);
-      // event = updatedEventResp['data'];
+      
 
       print("event type: " + event['type'].toString());
       if (event['type'] == "TOURNAMENT") {
@@ -1174,6 +1172,8 @@ class EventCommand extends BaseCommand {
           dynamic tournament = findTournamentByIdResp['data'];
           isMyEventResp['groupStage'] = tournament['groupStage'];
           isMyEventResp['tournamentStage'] = tournament['tournamentStage'];
+          eventPageModel.groupStage = tournament['groupStage'];
+          eventPageModel.tournamentStage = tournament['tournamentStage'];
         }
       }
       if (event['type'] == "LEAGUE") {
@@ -1183,15 +1183,25 @@ class EventCommand extends BaseCommand {
         if (findLeagueByIdResp['success']) {
           dynamic league = findLeagueByIdResp['data'];
           isMyEventResp['league'] = league;
+          eventPageModel.league = league;
         }
+      }
+      if(event['type'] == 'TOURNAMENT' || event['type'] == 'LEAGUE'){
+       print("allEventsss: ");
+
+
       }
 
 
 
       eventPageModel.currentUserId = appModel.currentUser['_id'];
-      eventPageModel.mainEvent = event;
+      eventPageModel.mainEvent = event;   
+      eventPageModel.allEvents = events;
 
       eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
+
+
+      
       isMyEventResp['mainEvent'] = event;
       isMyEventResp['roles'] = eventPageModel.roles;
       isMyEventResp['isMine'] = eventPageModel.isMine;

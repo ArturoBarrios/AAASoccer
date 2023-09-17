@@ -11,11 +11,17 @@ class EventPageModel extends ChangeNotifier {
   dynamic _objectImageInput = null;
   dynamic get objectImageInput => _objectImageInput;
   set objectImageInput(dynamic objectImageInput) {
-    _objectImageInput = objectImageInput;    
-    print("notify listeners objectImageInput: " + objectImageInput.toString());
+    _objectImageInput = objectImageInput;        
     notifyListeners();
   }
   
+  dynamic _league = null;
+  dynamic get league => _league;
+  set league(dynamic league) {
+    _league = league;    
+    notifyListeners();
+  }
+
   dynamic _mainEvent = null;
   dynamic get mainEvent => _mainEvent;
   set mainEvent(dynamic mainEvent) {
@@ -122,16 +128,16 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-List _groupStage = [];
-  List get groupStage => _groupStage;
-  set groupStage(List groupStage) {
+  dynamic _groupStage = [];
+  dynamic get groupStage => _groupStage;
+  set groupStage(dynamic groupStage) {
     _groupStage = groupStage;
     notifyListeners();
   }
 
-  List _tournamentStage = [];
-  List get tournamentStage => _tournamentStage;
-  set tournamentStage(List tournamentStage) {
+  dynamic _tournamentStage = [];
+  dynamic get tournamentStage => _tournamentStage;
+  set tournamentStage(dynamic tournamentStage) {
     _tournamentStage = tournamentStage;
     notifyListeners();
   }
@@ -169,6 +175,7 @@ List _groupStage = [];
       payments = _mainEvent['payments']['data'];
       _getAmountPaid();
       price = _mainEvent['price'];
+      
     }
   }
 
