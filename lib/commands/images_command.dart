@@ -299,7 +299,7 @@ class ImagesCommand extends BaseCommand {
   void setEventImage(dynamic event) {
     print("setEventImage()");
     print("event: $event");
-    appModel.userEventDetails['mainEvent'] = event;
+    eventPageModel.mainEvent = event;
   }
 
   Future<Map<String, dynamic>> addImageToUserProfile(

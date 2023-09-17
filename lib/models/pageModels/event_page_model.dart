@@ -5,7 +5,17 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 import '../../constants.dart';
 import '../appModels/Price.dart';
 
-class EventPageModel extends ChangeNotifier {
+class EventPageModel extends ChangeNotifier {  
+
+  
+  dynamic _objectImageInput = null;
+  dynamic get objectImageInput => _objectImageInput;
+  set objectImageInput(dynamic objectImageInput) {
+    _objectImageInput = objectImageInput;    
+    print("notify listeners objectImageInput: " + objectImageInput.toString());
+    notifyListeners();
+  }
+  
   dynamic _mainEvent = null;
   dynamic get mainEvent => _mainEvent;
   set mainEvent(dynamic mainEvent) {

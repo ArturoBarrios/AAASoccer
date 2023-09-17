@@ -124,7 +124,8 @@ mixin ImagesMixin {
           await ImagesCommand().storeImageInDatabaseForTeam(imageInput);
       dynamic storedImage = storeImageInDatabaseForUserResp['data'];
       chooseImageCallback(storedImage);
-    } else if (imageFor == Constants.EVENT) {      
+    } else if (imageFor == Constants.EVENT) {    
+      print("for eventtt: "+objectFor.toString());  
       imageInput['event_id'] = objectFor['_id'];
       //get current User
       dynamic currentUser = await UserCommand().getAppModelUser();

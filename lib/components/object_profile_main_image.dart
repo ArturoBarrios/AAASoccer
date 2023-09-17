@@ -337,7 +337,7 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
     String profileImageUrl =
         context.select<UserModel, String>((value) => value.profileImageUrl);
 
-    print(widget.objectImageInput);
+    print("widget.objectImageInputttt: "+widget.objectImageInput.toString());
 
     print(
         "widget.objectImageInput['containerType']: ${widget.objectImageInput['containerType']}");

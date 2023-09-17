@@ -29,6 +29,7 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'home_page_command.dart';
+import 'images_command.dart';
 import 'network/util/api_graphql_operation_type.dart';
 import 'network/util/api_response.dart';
 import 'network_models/add_social_media_apps_request.dart';
@@ -1158,8 +1159,12 @@ class EventCommand extends BaseCommand {
         }
       }
 
+
+
       eventPageModel.currentUserId = appModel.currentUser['_id'];
       eventPageModel.mainEvent = event;
+
+      eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
       isMyEventResp['mainEvent'] = event;
       isMyEventResp['roles'] = eventPageModel.roles;
       isMyEventResp['isMine'] = eventPageModel.isMine;
@@ -1183,6 +1188,39 @@ class EventCommand extends BaseCommand {
     }
 
     return isMyEventResp;
+  }
+
+
+  Future<dynamic> loadEventMainImage(dynamic event, bool isMine,  ) async {
+    print("loadEventMainImage() "+event.toString());
+    String? imageKey = event['mainImageKey'];
+    String imageUrl = "";
+    dynamic objectImageInput = {
+      "imageUrl": "",
+      "containerType": Constants.IMAGEBANNER,
+      "mainEvent": event,
+      "isMine": isMine
+    };
+
+    if (imageKey != null) {
+      dynamic imageInput = {"key": imageKey};
+      print("imageKey: $imageKey");
+      Map<String, dynamic> getImageUrlResp =
+          await ImagesCommand().getImageUrl(imageInput);
+      print("getImageUrlRespppp: $getImageUrlResp");
+      if (getImageUrlResp['success']) {
+        imageUrl = getImageUrlResp['data'];
+        event['mainImageUrl'] = imageUrl;
+
+        objectImageInput = {
+          "imageUrl": imageUrl,
+          "containerType": Constants.IMAGEBANNER,
+          "mainEvent": event,
+          "isMine": isMine,
+        };
+      }
+    }
+    return objectImageInput;
   }
 
   Future<Map<String, dynamic>> createPrice(

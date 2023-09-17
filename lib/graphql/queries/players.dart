@@ -21,13 +21,8 @@ class PlayerQueries {
         String getUserPlayers = """
           query getUserPlayers {
             allUsers {
-              data {      
-                _id              
-              
-                  ${(UserFragments().fullUser())}
-                    
-                   
-                    
+              data {                               
+                  ${(UserFragments().fullUser())}                                                          
                   }
                 }
               }
