@@ -1,6 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
+
+import '../components/models/button_model.dart';
 import '../graphql/mutations/requests.dart';
+import '../models/pageModels/chat_page_model.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../graphql/mutations/chat.dart';
@@ -8,9 +14,13 @@ import '../graphql/queries/chat.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/user_command.dart';
+import 'event_command.dart';
 import 'images_command.dart';
 
 class ChatCommand extends BaseCommand {
+
+ 
+
   int getIndexOfChat(String chatId) {
     int indexOfChat = 0;
     for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {

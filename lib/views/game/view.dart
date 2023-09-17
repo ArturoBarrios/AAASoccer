@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
-import 'package:soccermadeeasy/extensions/share_image_text.dart';
+
 import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
 import 'package:soccermadeeasy/models/enums/payment_type.dart';
 import '../../commands/base_command.dart';
@@ -116,65 +116,14 @@ class _PickupViewState extends State<PickupView> {
     print("game: " + widget.game.toString());
     loadInitialData();
     // _isLoading = false;
-  }
+  }  
 
-  Future<void> onTapShare() async {
-    await 'Hey there, check out this event'
-        .share(imageKey: widget.game['mainImageKey']);
-  }
-
-  Future<void> onTapSocialMediaApp() async {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (BuildContext context) => const SocialMediaCardsView(
-            // object: widget.game,
-            ),
-      ),
-    );
-  }
-
-  void addTeamCallback(dynamic team) {
-    setState(() {
-      // widget.userObjectDetails['mainEvent']['teams']['data'].add(team);
-      // BaseCommand().updateUserEventDetailsModel(widget.userObjectDetails);
-    });
-  }
+  
 
 
-  Future<void> addUserToChat({
-    final String? chatId,
-    final String? userId,
-    final List<dynamic>? chatList,
-  }) async {
-    final generalChatList = context.read<ChatPageModel>().generalChatList;
-    Map<String, dynamic> request = {
-      "chatId": chatId,
-      "userId": userId,
-    };
 
-    final result = await ChatCommand().addUserToChat(request);
 
-    final modifiedEventChatList =
-        updateEventChatList(chatList, chatId, result['data']);
-    final modifiedGeneralChatList =
-        updateEventChatList(generalChatList, chatId, result['data']);
-
-    EventCommand().updateEventChat(modifiedEventChatList);
-    ChatCommand().updateGeneralChatList(modifiedGeneralChatList);
-  }
-
-  dynamic updateEventChatList(
-      List<dynamic>? chatList, String? chatId, dynamic updatedUsers) {
-    if (chatList != null) {
-      for (var chat in chatList) {
-        if (chat['_id'] == chatId) {
-          chat['users']['data'] = updatedUsers;
-        }
-      }
-    }
-    return chatList;
-  }
+  
 
   dynamic updateGeneralChatList(
       List<dynamic> generalChatList, String? chatId, dynamic updatedUsers) {
@@ -187,77 +136,7 @@ class _PickupViewState extends State<PickupView> {
     return generalChatList;
   }
 
-  Future<void> onTapShowChatBottomSheet(
-      {required final BuildContext context,
-      final List<dynamic>? chatList,
-      final String? userId}) async {
-    await context.showUserChatOptionsBottomSheet(
-      title: 'Add user to chat',
-      chatList: chatList,
-      currentUserId: userId,
-      addNewChatButton: ButtonModel(
-        text: 'Create',
-        onTap: () {
-          log('add new chat tapped');
-        },
-      ),
-      chatButton: ButtonModel(
-        onTapReturnWithValue: (final value) async {
-          Navigator.of(context).pop();
-          final index = value as int;
-          await addUserToChat(
-              chatId: chatList?[index]['_id'],
-              userId: userId,
-              chatList: chatList);
-        },
-      ),
-    );
-  }
 
-  List<dynamic> modifiedParticipantList(
-      List userParticipants, List payments, String? price) {
-    final amount = double.tryParse(price ?? '0') ?? 0;
-
-    for (var participant in userParticipants) {
-      var userId = participant['user']['_id'];
-
-      var payment = payments.firstWhere(
-        (p) => p['user']['_id'] == userId,
-        orElse: () => null,
-      );
-
-      if (payment != null) {
-        double paymentAmount = double.tryParse(payment['amount'] ?? '') ?? 0;
-
-        if (paymentAmount == 0) {
-          participant['paymentStatus'] = 'Free';
-        } else if (paymentAmount < amount) {
-          participant['paymentStatus'] = 'Partially';
-        } else if (paymentAmount == amount) {
-          participant['paymentStatus'] = 'Paid';
-        }
-      } else {
-        participant['paymentStatus'] = 'Free';
-      }
-    }
-
-    return userParticipants;
-  }
-
-  List<dynamic> getPaidUsers(
-    List userParticipants,
-    List payments,
-  ) {
-    Set<String> paymentIds =
-        payments.map((payment) => payment['user']['_id'].toString()).toSet();
-
-    final paidUsers = userParticipants
-        .where((participant) =>
-            paymentIds.contains(participant['user']?['_id'].toString()))
-        .toList();
-
-    return paidUsers;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -266,8 +145,7 @@ class _PickupViewState extends State<PickupView> {
 
     dynamic mainEvent =
         context.select<EventPageModel, dynamic>((value) => value.mainEvent);
-    dynamic objectImageInput =
-        context.watch<EventPageModel>().objectImageInput;
+    dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
     List<dynamic> roles =
         context.select<EventPageModel, List<dynamic>>((value) => value.roles);
     bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
@@ -320,14 +198,18 @@ class _PickupViewState extends State<PickupView> {
                           Icons.share,
                           color: Colors.blue,
                         ),
-                        onPressed: onTapShare,
+                        onPressed:() async{
+                          await EventCommand().onTapShare(mainEvent['mainImageKey']);
+                        },
                       ),
                       IconButton(
                         icon: const Icon(
                           Icons.social_distance,
                           color: Colors.red,
                         ),
-                        onPressed: onTapSocialMediaApp,
+                        onPressed: () async {
+                          await EventCommand().onTapSocialMediaApp(context); 
+                        },
                       ),
                       //date
                       EventDateWidget(
@@ -372,10 +254,10 @@ class _PickupViewState extends State<PickupView> {
                       PlayerList(
                         event: mainEvent,
                         team: null,
-                        userParticipants: modifiedParticipantList(
+                        userParticipants: widget.modifiedParticipantList(
                             userParticipants, payments, price['amount']),
                         inviteUserToChat: (final userId) async =>
-                            onTapShowChatBottomSheet(
+                            widget.onTapShowChatBottomSheet(
                                 context: context,
                                 chatList: chats,
                                 userId: userId),
@@ -394,7 +276,7 @@ class _PickupViewState extends State<PickupView> {
                         mainEvent: mainEvent,
                         isMine: isMine,
                         teams: teams,
-                        addTeamCallback: addTeamCallback,
+                        addTeamCallback: EventCommand().addTeamCallback,
                       ),
                       //chat widget
                       // GetChatWidget(
@@ -436,7 +318,7 @@ class _PickupViewState extends State<PickupView> {
                       ),
                       const SizedBox(height: 20),
                       PaymentListWidget(
-                        paidUsers: getPaidUsers(userParticipants, payments),
+                        paidUsers: widget.getPaidUsers(userParticipants, payments),
                         paymentType: PaymentType.user,
                       ),
                       const SizedBox(height: 60),

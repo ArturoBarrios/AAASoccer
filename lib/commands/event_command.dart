@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/network/base_api_client.dart';
@@ -13,6 +15,7 @@ import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
 import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
 import '../graphql/queries/events.dart';
+import '../views/social_media_cards_view/social_media_cards_view.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../commands/player_command.dart';
@@ -39,8 +42,29 @@ import 'network_models/fql_request_models/add_social_media_apps_let.dart';
 import 'network_models/fql_request_models/collection_body.dart';
 import 'network_models/fql_request_models/ref_body.dart';
 import 'network_models/fql_request_models/var_body.dart';
+import 'package:soccermadeeasy/extensions/share_image_text.dart';
 
-class EventCommand extends BaseCommand {
+class EventCommand extends BaseCommand {  
+  void addTeamCallback(dynamic team) {
+   
+  }
+
+  Future<void> onTapShare(String mainImageKey) async {
+    await 'Hey there, check out this event'
+        .share(imageKey: mainImageKey);
+  }
+
+  Future<void> onTapSocialMediaApp(BuildContext context) async {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (BuildContext context) => const SocialMediaCardsView(
+            // object: widget.game,
+            ),
+      ),
+    );
+  }
+
   List<dynamic> sortEventsBy(List<dynamic> events) {
     print("sortEventsBy");
     List<dynamic> sortedEvents = List.from(events);
