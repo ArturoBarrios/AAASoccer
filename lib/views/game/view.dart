@@ -27,6 +27,7 @@ import '../../components/get_chat_widget.dart';
 import '../../components/get_join_event_widget.dart';
 import '../../components/image_header.dart';
 import '../../components/images_list_widget.dart';
+import '../../components/join_condition.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/models/button_model.dart';
 import '../../components/my_map_page.dart';
@@ -96,7 +97,7 @@ class _PickupViewState extends State<PickupView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in GameView");    
-    await EventCommand().getUserEventDetails([widget.game]);
+    // await EventCommand().getUserEventDetails([widget.game]);
     widget.setupPlayerList();
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
@@ -118,12 +119,6 @@ class _PickupViewState extends State<PickupView> {
     // _isLoading = false;
   }  
 
-  
-
-
-
-
-  
 
   dynamic updateGeneralChatList(
       List<dynamic> generalChatList, String? chatId, dynamic updatedUsers) {
@@ -167,6 +162,10 @@ class _PickupViewState extends State<PickupView> {
     List chats = context.watch<EventPageModel>().chats;
     List payments = context.watch<EventPageModel>().payments;
     dynamic price = context.watch<EventPageModel>().price;
+    JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
+    JoinCondition eventPaymentJoin = context.watch<EventPageModel>().eventPaymentJoin;
+    JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
+    JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -193,6 +192,10 @@ class _PickupViewState extends State<PickupView> {
                 child: Expanded(
                   child: Column(
                     children: [
+                      eventRequestJoin,
+                      eventPaymentJoin,
+                      teamRequestJoin,
+                      teamPaymentJoin,
                       IconButton(
                         icon: const Icon(
                           Icons.share,

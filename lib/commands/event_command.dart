@@ -14,6 +14,7 @@ import 'package:soccermadeeasy/extensions/parse_roles.dart';
 import 'package:soccermadeeasy/graphql/fragments/event_fragments.dart';
 import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
+import '../components/join_condition.dart';
 import '../graphql/queries/events.dart';
 import '../views/social_media_cards_view/social_media_cards_view.dart';
 import 'base_command.dart';
@@ -1197,6 +1198,18 @@ class EventCommand extends BaseCommand {
       eventPageModel.currentUserId = appModel.currentUser['_id'];
       eventPageModel.mainEvent = event;   
       eventPageModel.allEvents = events;
+      print("eventPageModel.mainEvent['joinConditions']: " + eventPageModel.mainEvent['joinConditions'].toString());
+      //join conditions
+      eventPageModel.mainEvent['joinConditions']['data'].forEach((joinCondition) {
+        if(joinCondition['forEvent'] != null){
+          eventPageModel.eventRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
+          eventPageModel.eventRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']);                     
+        }
+        else{
+          eventPageModel.teamRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
+          eventPageModel.teamRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
+        } 
+      });
 
       eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
 

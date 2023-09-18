@@ -14,6 +14,7 @@ import '../../components/event_date_widget.dart';
 import '../../components/get_join_event_widget.dart';
 import '../../components/headers.dart';
 import '../../components/images_list_widget.dart';
+import '../../components/join_condition.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
 import '../../components/object_profile_main_image.dart';
@@ -66,7 +67,7 @@ class _TrainingViewState extends State<TrainingView> {
   Future<void> loadInitialData() async {
     print("loadInitialData");
     widget.setupPlayerList();
-    await EventCommand().getUserEventDetails([widget.training]);
+    
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
     setState(() {
@@ -111,6 +112,10 @@ class _TrainingViewState extends State<TrainingView> {
         context.select<EventPageModel, List>((value) => value.players);
     List chats = context.watch<EventPageModel>().chats;
     List payments = context.watch<EventPageModel>().payments;
+    JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
+    JoinCondition eventPaymentJoin = context.watch<EventPageModel>().eventPaymentJoin;
+    JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
+    JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
 
     return Scaffold(
         appBar: PreferredSize(
@@ -133,6 +138,10 @@ class _TrainingViewState extends State<TrainingView> {
                 ),
               )
             : ListView(padding: EdgeInsets.all(16), children: [
+              eventRequestJoin,
+                      eventPaymentJoin,
+                      teamRequestJoin,
+                      teamPaymentJoin,
                 IconButton(
                   icon: const Icon(
                     Icons.share,

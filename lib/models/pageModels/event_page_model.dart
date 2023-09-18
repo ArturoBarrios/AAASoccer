@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:soccermadeeasy/extensions/parse_roles.dart';
+import '../../components/join_condition.dart';
 import '../../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../../constants.dart';
@@ -162,6 +163,34 @@ class EventPageModel extends ChangeNotifier {
     _payments = payments;
     notifyListeners();
   }
+  
+  
+  JoinCondition _eventRequestJoin =  JoinCondition(label: "");
+  JoinCondition get eventRequestJoin => _eventRequestJoin;
+  set eventRequestJoin(JoinCondition eventRequestJoin) {
+    _eventRequestJoin = eventRequestJoin;
+    notifyListeners();
+  }
+  JoinCondition _eventPaymentJoin =  JoinCondition(label: "");
+  JoinCondition get eventPaymentJoin => _eventPaymentJoin;
+  set eventPaymentJoin(JoinCondition eventPaymentJoin) {
+    _eventPaymentJoin = eventPaymentJoin;
+    notifyListeners();
+  }
+  JoinCondition _teamRequestJoin =  JoinCondition(label: "");
+  JoinCondition get teamRequestJoin => _teamRequestJoin;
+  set teamRequestJoin(JoinCondition teamRequestJoin) {
+    _teamRequestJoin = teamRequestJoin;
+    notifyListeners();
+  }
+  JoinCondition _teamPaymentJoin =  JoinCondition(label: "");
+  JoinCondition get teamPaymentJoin => _teamPaymentJoin;
+  set teamPaymentJoin(JoinCondition teamPaymentJoin) {
+    _teamPaymentJoin = teamPaymentJoin;
+    notifyListeners();
+  }
+
+
 
   void _updateFieldsBasedOnMainEvent() {
     if (_mainEvent != null) {

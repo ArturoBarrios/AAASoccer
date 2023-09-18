@@ -24,6 +24,7 @@ import '../create_event_payment.dart';
 import '../create_event_request.dart';
 import '../create_team_payment.dart';
 import '../create_team_request.dart';
+import '../join_condition.dart';
 import '../models/button_model.dart';
 
 mixin EventMixin {
@@ -800,7 +801,7 @@ mixin EventMixin {
 
   Map<String,dynamic> setupRequestWidgetData(dynamic userObjectDetails){
     print("setupRequestWidgetData()");
-
+    
     CreateEventRequest createEventRequestWidget = new CreateEventRequest();
     CreateEventPayment createEventPaymentWidget = new CreateEventPayment();
     CreateTeamRequest createTeamRequestWidget = new CreateTeamRequest();

@@ -14,6 +14,7 @@ import '../../components/events_calendar.dart';
 import '../../components/get_join_event_widget.dart';
 import '../../components/headers.dart';
 import '../../components/images_list_widget.dart';
+import '../../components/join_condition.dart';
 import '../../components/league_table_widget.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
@@ -75,11 +76,9 @@ class _LeagueViewState extends State<LeagueView> {
     print("loadInitialData() in LeagueView");
     await widget.setupTeamList();
     widget.setupMyTeams();
-
-    dynamic getEventDetailsResp = await 
-        EventCommand().getUserEventDetails([widget.league]);    
+     
         
-    widget.setupRequestWidgetData(getEventDetailsResp);    
+    // widget.setupRequestWidgetData();    
     // widget.setupPlayerList();    
     // teamListWidgetDetails =
     //     await widget.getTeamListWidgetDetails(getEventDetailsResp);    
@@ -129,6 +128,10 @@ class _LeagueViewState extends State<LeagueView> {
     dynamic price = context.watch<EventPageModel>().price;
     dynamic groupStage = context.watch<EventPageModel>().groupStage;
     dynamic tournamentStage = context.watch<EventPageModel>().tournamentStage;
+    JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
+    JoinCondition eventPaymentJoin = context.watch<EventPageModel>().eventPaymentJoin;
+    JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
+    JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
 
 
     return Scaffold(
@@ -182,6 +185,10 @@ class _LeagueViewState extends State<LeagueView> {
                               .onTapShare(mainEvent['mainImageKey']);
                         },
                       ),
+                      eventRequestJoin,
+                      eventPaymentJoin,
+                      teamRequestJoin,
+                      teamPaymentJoin,
                       IconButton(
                         icon: const Icon(
                           Icons.social_distance,
