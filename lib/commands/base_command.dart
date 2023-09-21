@@ -36,6 +36,7 @@ import 'package:http/http.dart' as http;
 
 import 'chat_command.dart';
 import 'home_page_command.dart';
+import 'location_command.dart';
 
 late BuildContext _mainContext;
 // The commands will use this to access the Provided models and services.
@@ -440,8 +441,8 @@ class BaseCommand {
 
       //,teams, players near me data.
       //get location and update user location
-      Position userPosition = await GeoLocationCommand().determinePosition();
-      appModel.currentPosition = userPosition;
+      Position userPosition = await GeoLocationCommand().determinePosition();      
+      LocationCommand().setCurrentPosition(userPosition);
       print("userPosition: $userPosition");
       appModel.currentUser['currentPosition'] = userPosition;
       await GeoLocationCommand()

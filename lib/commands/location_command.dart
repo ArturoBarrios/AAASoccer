@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
+
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -10,25 +12,24 @@ import '../graphql/mutations/locations.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'geolocation_command.dart';
+
 
 class LocationCommand extends BaseCommand {
 
+  void setCurrentPosition(Position position){
+    appModel.currentPosition = position;    
+  }
 
-// Future<List<Prediction>> searchLocation(BuildContext context, String text) async {
-//     if(text != null && text.isNotEmpty) {
-//       http.Response response = await getLocationData(text);
-//       var data = jsonDecode(response.body.toString());
-//       print("my status is "+data["status"]);
-//       if ( data['status']== 'OK') {
-//         _predictionList = [];
-//         data['predictions'].forEach((prediction)
-//         => _predictionList.add(Prediction.fromJson(prediction)));
-//       } else {
-//         // ApiChecker.checkApi(response);
-//       }
-//     }
-//     return _predictionList;
-//   }
+  Future<Position> getCurrentPosition() async{
+    //check if current position is set
+    if(appModel.currentPosition.latitude == 0){
+      Position userPosition = await GeoLocationCommand().determinePosition();
+      LocationCommand().setCurrentPosition(userPosition);      
+    }          
+    
+    return appModel.currentPosition;
+  }
 
    Future<Map<String, dynamic>> place_api_autocomplete(String searchText) async{        
         print("place_api_autocomplete()");

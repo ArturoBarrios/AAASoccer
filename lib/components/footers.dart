@@ -6,6 +6,7 @@ import '../styles/asset_constants.dart';
 import '../views/game/create.dart';
 import '../views/images/view_images.dart';
 import '../views/location/create.dart';
+import '../views/location/map.dart';
 import '../views/organization/create.dart';
 import '../views/tournament/create.dart';
 import '../views/league/create.dart';
@@ -69,13 +70,13 @@ class Footers extends StatefulWidget {
                   selected: true,
                   onPressed: () {}),
               IconBottomBar(
-                  text: "images",
-                  icon: Icons.image,
+                  text: "Locations",
+                  icon: Icons.location_on,
                   selected: false,
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return const ImagesView();
+                        return const ShowLocations();
                       },
                     ));
                   }),
