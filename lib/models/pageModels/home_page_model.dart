@@ -13,7 +13,7 @@ import '../../views/tournament/create.dart';
 import '../../views/training/create.dart';
 import '../../views/tryout/create.dart';
 import '../../views/team/create/create.dart';
-import '../../views/locations/create.dart';
+import '../../views/location/create.dart';
 
 class HomePageModel extends ChangeNotifier {
   String _testText = "";

@@ -1,91 +1,92 @@
-import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/headers.dart';
+import 'package:soccermadeeasy/views/chats/view.dart';
+import 'package:soccermadeeasy/views/home.dart';
 import '../../commands/location_command.dart';
+import '../profile/profile.dart';
+import '../../commands/chat_command.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class LocationCreate extends StatefulWidget {
-  const LocationCreate({Key? key}) : super(key: key);
+  const LocationCreate(
+      {Key? key})
+      : super(key: key);  
 
   @override
-  State<LocationCreate> createState() => _LocationCreateState();
+  _LocationCreateState createState() => _LocationCreateState();
 }
 
 class _LocationCreateState extends State<LocationCreate> {
   final nameController = TextEditingController();
-  final imageController = TextEditingController();
-  final secondaryNameController = TextEditingController();
-  final addressController = TextEditingController();
+  final descriptionController = TextEditingController();
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
 
-  bool _isLoading = false;
+  bool isPrivate = false;
+  
 
-  Future<Map<String, dynamic>> createLocation() async {
+  void goBack() {
+    Navigator.pop(context);
+  }  
+
+  void createLocation() async {
     print("createLocation");
-    Map<String, dynamic> createLocationResponse = {
-      "success": false,
-      "message": "Default Error"
-    };
-    try {
-      Map<String, dynamic> createLocationInput = {
-        "name": nameController.text.trim(),
-        "secondaryName": secondaryNameController.text.trim(),
-        "address": addressController.text.trim(),
-        "surface": surfaceController.text.trim(),
-        "images": imageController.text.trim(),
-        "fieldSize": fieldSizeController.text.trim(),
-        "private": privateController.text.trim()
-      };
-      Map<String, dynamic> createLocationRes =
-          await LocationCommand().createLocation(createLocationInput);
-      if (createLocationRes['success']) {
-        createLocationResponse['success'] = true;
-      }
+    
+  }
 
-      return createLocationResponse;
-    } on ApiException catch (e) {
-      return createLocationResponse;
-    }
+  @override
+  void initState() {
+    print("views/locations/create.dart init state");
+    super.initState();
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const Headers()
+          .getBackHeader(context, "Create Location"),
       body: Center(
           child: Column(children: [
         TextField(
+          readOnly: false,
           controller: nameController,
           decoration: new InputDecoration.collapsed(hintText: 'Name'),
         ),
         TextField(
-          controller: imageController,
-          decoration: new InputDecoration.collapsed(hintText: 'Image'),
+          readOnly: true,
+          controller: nameController,
+          decoration: new InputDecoration.collapsed(hintText: 'Home'),
         ),
-        TextField(
-          controller: secondaryNameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Secondary Name'),
+        Column(
+          children: [
+            Checkbox(
+              value: isPrivate,
+              onChanged: (value) {
+                setState(() {
+                  isPrivate = value!;
+                });
+              },
+            ),
+            TextField(
+              decoration:
+                  InputDecoration.collapsed(hintText: 'Make Chat Private'),
+            ),
+          ],
         ),
-        TextField(
-          controller: addressController,
-          decoration: new InputDecoration.collapsed(hintText: 'Address'),
-        ),
-        TextField(
-          controller: surfaceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Surface'),
-        ),
-        TextField(
-          controller: fieldSizeController,
-          decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
-        ),
-        TextField(
-          controller: privateController,
-          decoration: new InputDecoration.collapsed(hintText: 'Private'),
+        IconButton(
+          icon: const Icon(Icons.mark_chat_unread_rounded),
+          tooltip: 'Chat',
+          onPressed: () {
+            createLocation();
+          },
         ),
         GestureDetector(
             onTap: () {
-              // createLocation();
+              goBack();
             },
-            child: Text("tap me")),
+            child: Text("Back to Home")),
       ])),
     );
   }

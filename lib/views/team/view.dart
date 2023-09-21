@@ -155,9 +155,7 @@ class _TeamViewState extends State<TeamView> {
               child: Center(
                 child: Expanded(
                   child: Column(
-                    children: [
-                      // userTeamDetails['isMine']
-                      //     ?
+                    children: [                      
                       SizedBox(
                         height: 20,
                         child: ClipRRect(
