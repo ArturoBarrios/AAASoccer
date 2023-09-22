@@ -37,6 +37,7 @@ import 'package:http/http.dart' as http;
 import 'chat_command.dart';
 import 'home_page_command.dart';
 import 'location_command.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 late BuildContext _mainContext;
 // The commands will use this to access the Provided models and services.
@@ -60,6 +61,18 @@ class BaseCommand {
   GeoLocationServices geoLocationServices = _mainContext.read();
 
   void initializeData() {}
+
+  List<Svg> getLocationSvgs(){
+    return appModel.locationSvgs;
+  }
+  
+  List<Svg> getPriceSvgs(){
+    return appModel.priceSvgs;
+  }
+
+  int getDistanceFilter(){
+    return appModel.distanceFilter;
+  }
 
   String xHoursAgoString(int x) {
     DateTime xHoursAgo = DateTime.now().subtract(Duration(hours: x));
@@ -452,12 +465,7 @@ class BaseCommand {
       //assume you have the latest events
       Map<String, dynamic> findEventsNearPointResp =
           await EventCommand().findEventsNearPoint(eventsModel.events, 50);
-      print("findEventsNearPointResp: $findEventsNearPointResp");
-      if (findEventsNearPointResp["success"]) {
-        dynamic eventsNearPoint = findEventsNearPointResp["data"];
-        eventsModel.eventsNearMe = eventsNearPoint;
-        print("eventsNearPoint: $eventsNearPoint");
-      }
+      
 
       resp["success"] = true;
       resp["message"] = "setup successfull";

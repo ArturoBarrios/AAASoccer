@@ -1,12 +1,26 @@
 class LocationMutations {
-  String createLocation(
-      Map<String, dynamic> locationInput) {
+  String createLocation(Map<String, dynamic> locationInput) {
+    List<String> fields = [];
+
+    if (locationInput['name'] != null) {
+      fields.add('name: "${locationInput['name']}"');
+    }
+
+    if (locationInput['latitude'] != null) {
+      fields.add('latitude: ${locationInput['latitude']}');
+    }
+
+    if (locationInput['longitude'] != null) {
+      fields.add('longitude: ${locationInput['longitude']}');
+    }
+    if (locationInput['url'] != null) {
+      fields.add('longitude: ${locationInput['longitude']}');
+    }
+
     String createLocation = """
       mutation {
         createLocation(data: {            
-              name: "${locationInput['name']}",
-              latitude: ${locationInput['latitude']},
-              longitude: ${locationInput['longitude']},                                    
+              ${fields.join(',')}                               
           }) {
             _id
             name

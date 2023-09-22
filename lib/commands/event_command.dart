@@ -522,7 +522,7 @@ class EventCommand extends BaseCommand {
       double longitude = event['location']['data'][0]['longitude'];
 
       double distanceFromUser =
-          await GeoLocationCommand().getDistanceFromUser(latitude, longitude);
+          await GeoLocationCommand().getDistanceFromPoint(latitude, longitude, appModel.currentPosition);
       print("distanceFromUser: " + distanceFromUser.toString());
       if (distanceFromUser > distanceFrom) {
         events.remove(event);

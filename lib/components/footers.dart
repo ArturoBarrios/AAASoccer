@@ -76,7 +76,7 @@ class Footers extends StatefulWidget {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute<void>(
                       builder: (BuildContext context) {
-                        return const ShowLocations();
+                        return const LocationsMap();
                       },
                     ));
                   }),

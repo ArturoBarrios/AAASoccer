@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../commands/event_command.dart';
 import '../../commands/location_command.dart';
+import '../../commands/team_command.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/headers.dart';
 import '../../components/my_map_page.dart';
+import '../../models/appModels/Location.dart';
 
 
 class LocationsMap extends StatefulWidget {
@@ -18,12 +22,38 @@ class LocationsMap extends StatefulWidget {
 
 class _LocationsMapState extends State<LocationsMap> {
   bool _isLoading = true;
-  late Position location;  
+  late Position initialLocation;    
+  LatLng initialLatLng = LatLng(0, 0);
+  List<LatLng> eventLatLngs = [];
+  List<LatLng> teamLatLngs = [];
+  List<Location> locations = [];
+  
+  BitmapDescriptor locationIcon = BitmapDescriptor.defaultMarker;
+  
+  
 
+  
+  Future<void> addCustomIcons() async{
+     BitmapDescriptor.fromAssetImage(
+          const ImageConfiguration(), "assets/Location_marker.png")
+      .then(
+    (icon) {
+      setState(() {
+        locationIcon = icon;
+      });
+    },
+  );
+
+  }
+  
+  void loadLocations(){    
+    LocationCommand().getLocationsNearMe();
+  }
 
   Future<void> loadInitialData() async{
     print("loadInitialData");
-    location = await LocationCommand().getCurrentPosition();
+    initialLocation = await LocationCommand().getCurrentPosition();
+    initialLatLng = LatLng(initialLocation.latitude, initialLocation.longitude);
 
     setState(() {
       _isLoading = false;
@@ -35,6 +65,7 @@ class _LocationsMapState extends State<LocationsMap> {
   void initState() {
     print("views/locations/create.dart init state");
     super.initState();
+    loadInitialData();
   }
   
 
@@ -57,9 +88,30 @@ class _LocationsMapState extends State<LocationsMap> {
                           numDots: 10),
                 ),
               )
-            : Container(
-              
-            )
+            : GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: LatLng(37.422131, -122.084801),//initialLatLng,
+          zoom: 14,
+        ),
+        markers: {
+  Marker(
+    markerId: const MarkerId("marker1"),
+    position: const LatLng(37.422131, -122.084801),
+    icon: locationIcon,
+    draggable: true,
+    onDragEnd: (value) {
+      // value is the new position
+    },
+    // To do: custom marker icon
+  ),
+  
+  Marker(
+    markerId: const MarkerId("marker2"),
+    position: const LatLng(37.415768808487435, -122.08440050482749),
+  ),
+},
+        // ToDO: add markers
+      ),
     );
   }
 }

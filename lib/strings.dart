@@ -30,6 +30,10 @@ class StringConstants {
   static const String priceHint = 'Please Enter Price';
   static const String priceErrorValue = 'Price';
 
+  static const String urlLabel = 'URL*';
+  static const String urlHint = 'Please Enter URL';
+  static const String urlErrorValue = 'Not a Valid URL';
+
   static const String capacityLabel = 'Capacity*';
   static const String capacityHint = 'Please Enter Capacity';
   static const String capacityErrorValue = 'Capacity';

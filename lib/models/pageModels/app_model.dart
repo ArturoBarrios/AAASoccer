@@ -2,8 +2,25 @@ import 'package:flutter/foundation.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../svg_widgets.dart';
+import '../appModels/Location.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+
 class AppModel extends ChangeNotifier {
   void nukeModelData() {}
+
+  List<Svg> locationSvgs = [
+    SVGWidgets().getSoccerBallSVGImage(),
+    SVGWidgets().deleteSVGImage(),
+    SVGWidgets().friendsSVGImage(),
+    SVGWidgets().plusCircleOutline(),
+  ];
+  
+  List<Svg> priceSvgs = [
+    SVGWidgets().getSoccerBallSVGImage(),
+    SVGWidgets().deleteSVGImage(),
+    SVGWidgets().deleteSVGImage(),
+  ];
 
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
@@ -16,6 +33,13 @@ class AppModel extends ChangeNotifier {
   bool get onesignalUserDetailsSetup => _onesignalUserDetailsSetup;
   set onesignalUserDetailsSetup(bool onesignalUserDetailsSetup) {
     _onesignalUserDetailsSetup = onesignalUserDetailsSetup;
+    notifyListeners();
+  }
+  
+  int _distanceFilter = 200;
+  int get distanceFilter => _distanceFilter;
+  set distanceFilter(int distanceFilter) {
+    _distanceFilter = distanceFilter;
     notifyListeners();
   }
 
@@ -91,13 +115,6 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List _teamsNearMe = [];
-  List get teamsNearMe => _teamsNearMe;
-  set teamsNearMe(List teamsNearMe) {
-    _teamsNearMe = teamsNearMe;
-    notifyListeners();
-  }
-
   List _teams = [];
   List get teams => _teams;
   set teams(List teams) {
@@ -116,6 +133,13 @@ class AppModel extends ChangeNotifier {
   List get friends => _friends;
   set friends(List friends) {
     _friends = friends;
+    notifyListeners();
+  }
+  
+  List<Location> _locations = [];
+  List<Location> get locations => _locations;
+  set locations(List<Location> locations) {
+    _locations = locations;
     notifyListeners();
   }
 

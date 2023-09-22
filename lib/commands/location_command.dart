@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 
+import '../models/appModels/Location.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -15,7 +16,28 @@ import 'package:url_launcher/url_launcher.dart';
 import 'geolocation_command.dart';
 
 
+
 class LocationCommand extends BaseCommand {
+  
+  //get locations with conditions: 
+  //2+ events in the last 30 days
+  //2+ teams in the last 30 days
+  //location details filled out(description, url)
+  Future<List<Location>> getLocationsNearMe() async{
+    int distance = appModel.distanceFilter;
+    Position currentLocation = await LocationCommand().getCurrentPosition();
+    List<Location> locations = [];
+    locations.forEach((location) async {
+      double distanceFromUser = await GeoLocationCommand().getDistanceFromPoint(location.latitude!, location.longitude!, currentLocation);
+      if(distanceFromUser <= distance){
+        locations.add(location);
+      }
+      
+    });
+
+    return locations;
+
+  }
 
   void setCurrentPosition(Position position){
     appModel.currentPosition = position;    
