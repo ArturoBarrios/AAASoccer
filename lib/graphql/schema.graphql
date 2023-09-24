@@ -636,6 +636,7 @@ type FieldLocation   {
   locationReputation: LocationReputation @relation  
   schedule: Schedule
   parkingOptions: [ParkingOption]
+  field: Field
 
 }
 
@@ -781,11 +782,21 @@ type Subscription  {
 
 type Schedule {
   days: [Day]
+  organizers: [Organizer] @relation
+  FieldLocation: [FieldLocation] @relation #maybe only FieldLocation or locations????
 }
 
 type Day {
-  timestamp: String  
+  day: String    
+  slots: [Slot] @relation
+}
+
+type Slot {
+  startTime: String
+  endTime: String
   events: [Event]
+  organizers: [Organizer] @relation
+  field: [Field] @relation
 }
 
 type Event {
