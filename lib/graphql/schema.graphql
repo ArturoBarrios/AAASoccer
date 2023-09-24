@@ -183,15 +183,6 @@ enum PrizeType {
   OTHER
 }
 
-enum RatingType {
-  ORGANIZATION
-  TEAM
-  EVENT
-  LOCATION
-  PLAYER
-  COACH
-  REFEREE
-}
 
 enum LocationType {
   TEAM
@@ -264,7 +255,7 @@ type User  {
   mainImageKey: String
   isProfilePrivate: Boolean @default(value: false)
   socialMediaApps: [SocialMediaApp] @relation
-  subscriptions: [Subscription] @relation
+  appSubscriptions: [AppSubscription] @relation
   coupons: [Coupon] @relation
 }
 
@@ -279,8 +270,9 @@ type Player   {
   playerReputation: [PlayerReputation] @relation
 }
 
-type PlayerReputation {
+type PlayerReputation {  
   ratings: [Rating] @relation  
+  player: Player
 }
 
 
@@ -356,6 +348,7 @@ type Event   {
   prizes: [Prize] @relation    
   coupons: [Coupon] @relation
   eventReputation: EventReputation @relation
+  slot: Slot
 }
 
 type EventReputation {
@@ -379,7 +372,7 @@ type Team   {
   images: [Image] @relation
   users: [User] @relation
   sponsors: [Sponsor] @relation
-  location: [Location] @relation
+  teamLocation: [TeamLocation] @relation
   userParticipants: [TeamUserParticipant] @relation
   regions: [Region] @relation
   status: String
@@ -440,8 +433,7 @@ type Payment   {
 # allow org to behave as Sponsor
 type Organization   {
   name: String
-  images: [Image] @relation
-  rating: [Rating] @relation
+  images: [Image] @relation  
   events: [Event] @relation
   teams: [Team] @relation
   # suborgs: [Organization] @relation
@@ -454,8 +446,16 @@ type Organization   {
   private: Boolean #it won't show up in public search
   isMainOrg: Boolean
   userParticipants: [EventUserParticipant] @relation
-  location: [Location] @relation
+  organizationLocation: [OrganizationLocation] @relation
+  facilities: [Facility] @relation
+  organizationReputation: [OrganizationReputation] @relation  
 }
+
+type OrganizationReputation {
+  ratings: [Rating] @relation
+  organization: Organization
+}
+
 
 # sponsor is an org
 type Sponsor {
@@ -622,9 +622,15 @@ type TeamLocation   {
   team: Team    
 }
 
+type OrganizationLocation{
+  location: Location
+  organization: Organization
+}
+
 
 type FieldLocation   {
   location: Location
+  facility: Facility
   events: [Event] @relation
   fieldSize: FieldPlayerOccupancySize  
   surface: SurfaceType
@@ -633,15 +639,16 @@ type FieldLocation   {
   url: String
   socialMediaApps: [SocialMediaApp] @relation  
   organization: Organization
-  locationReputation: LocationReputation @relation  
+  fieldLocationReputation: FieldLocationReputation @relation  
   schedule: Schedule
   parkingOptions: [ParkingOption]
   field: Field
 
+
 }
 
 type ParkingOption {
-  location: Location
+  fieldLocation: FieldLocation
   parkingTypes: [ParkingType]
   info: String
 }
@@ -650,27 +657,28 @@ type ParkingOption {
 
 
 
-type LocationReputation {
+type FieldLocationReputation {
   ratings: [Rating] @relation
-  location: Location
+  fieldLocation: FieldLocation
   verified: Boolean
 }
 
 type Rating   {
   rating: Int
   description: String
+  organizationReputations: [OrganizationReputation] @relation
   organizerReputations: [OrganizerReputation] @relation
   teamReputation: [TeamReputation] @relation
   eventReputations: [EventReputation] @relation
-  locationReputations: [LocationReputation] @relation
+  fieldLocationReputations: [FieldLocationReputation] @relation
   playerReputations: [PlayerReputation] @relation
   coachReputations: [CoachReputation] @relation
   refereeReputations: [RefereeReputation] @relation
-  ratingCategory: [RatingCategory] @relation
-  ratingType: [RatingType] @relation
+  ratingCategory: [RatingCategory] @relation  
 }
 
 type RatingCategory {
+  rating: [Rating] @relation
   ratingCategoryType: RatingCategoryType  
 }
 
@@ -691,7 +699,7 @@ type SocialMediaApp   {
   user: User
   team: Team
   event: Event
-  location: Location
+  fieldLocation: FieldLocation
 }
 
 type Item {
@@ -725,7 +733,7 @@ type Prize {
 
 type Amenity {  
   type: AmenitieType    
-  locations: [Location] @Relation
+  fieldLocations: [FieldLocation] @Relation
 }
 
 type Discount {
@@ -743,6 +751,8 @@ type Coupon {
 
 type Organizer {
   organizerReputation: OrganizerReputation
+  slots: [Slot] @relation
+  schedules: [Schedule] @relation
 }
 
 
@@ -769,10 +779,10 @@ type SubscriptionType {
   description: String
   price: Price
   lengths: String
-  subscriptions: [Subscription] @relation
+  appSubscriptions: [AppSubscription] @relation
 }
 
-type Subscription  {
+type AppSubscription  {
   subscriptionType: SubscriptionType
   user: User
   startDate: String
@@ -781,27 +791,27 @@ type Subscription  {
 }
 
 type Schedule {
-  days: [Day]
+  slots: [Slot] @relation
   organizers: [Organizer] @relation
-  FieldLocation: [FieldLocation] @relation #maybe only FieldLocation or locations????
+  fieldLocation: [FieldLocation] @relation #maybe only FieldLocation or locations????
 }
 
-type Day {
-  day: String    
-  slots: [Slot] @relation
-}
 
 type Slot {
   startTime: String
   endTime: String
   events: [Event]
-  organizers: [Organizer] @relation
+  slotCreators: [Organizer] @relation
   field: [Field] @relation
+  schedule: Schedule 
 }
 
-type Event {
-  time: String  // "HH:MM" or Unix time
-  description: String
-  location: String
+type Field {
+  name: String
+  fieldLocation: FieldLocation
+  slots: [Slot] @relation
 }
 
+type Facility {
+  organizations: [Organization] @relation
+}
