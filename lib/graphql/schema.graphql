@@ -67,6 +67,24 @@ enum MessageType {
   AUDIO
 }
 
+enum SocialMediaType {
+  FACEBOOK
+  INSTAGRAM
+  X
+  YOUTUBE
+  LINKEDIN
+}
+
+enum ParkingType {
+  STREET
+  GARAGE
+  LOT
+  METERED
+  FREE
+  LIMITED
+  PAID
+}
+
 enum SurfaceType {
   TURFPOOR
   TURFOKAY
@@ -133,6 +151,19 @@ enum RequestType{
   EVENTCHATREQUEST
 }
 
+# when someone rates anything, their relationship to the
+# thing they are rating is stored in the rating object
+# maybe define this as a number indicating how strong
+# the relationship is
+enum RatingCategoryType{
+  TEAMMATE
+  OPPONENT
+  COACH
+  REFEREE
+  ORGANIZER
+  PARTICIPANT 
+}
+
 enum EventUserParticipantAttendingOptions {
   YES
   NO
@@ -150,6 +181,23 @@ enum PrizeType {
   TROPHY
   MEDAL
   OTHER
+}
+
+enum RatingType {
+  ORGANIZATION
+  TEAM
+  EVENT
+  LOCATION
+  PLAYER
+  COACH
+  REFEREE
+}
+
+enum LocationType {
+  TEAM
+  EVENT
+  ORGANIZATION
+  USER
 }
 
 type Request {
@@ -212,8 +260,7 @@ type User  {
   chats: [Chat] @relation(name: "user_chats")
   sentMessages: [Message] @relation(name: "messages_sent")
   messagesDirectedForMe: [Message] @relation(name: "messages_for")
-  onboarded: Boolean @default(value: false)
-  ratings: [Rating] @relation
+  onboarded: Boolean @default(value: false)  
   mainImageKey: String
   isProfilePrivate: Boolean @default(value: false)
   socialMediaApps: [SocialMediaApp] @relation
@@ -222,7 +269,6 @@ type User  {
 }
 
 type Player   {
-  wagerRating: String
   wagers: [Wager] @relation  
   competitiveLevel: String
   hasRating: String
@@ -230,8 +276,13 @@ type Player   {
   user: User
   selfRating: Int
   sponsors: [Sponsor] @relation
-  ratings: [Rating] @relation
+  playerReputation: [PlayerReputation] @relation
 }
+
+type PlayerReputation {
+  ratings: [Rating] @relation  
+}
+
 
 
 type EventUserParticipant {
@@ -279,10 +330,9 @@ type Event   {
   price: Price @relation(name: "event_price")
   requests: [Request] @relation
   coorganizations: [Organization] @relation
-  sponsors: [Sponsor] @relation
-  ratings: [Rating] @relation
+  sponsors: [Sponsor] @relation  
   images: [Image] @relation
-  location: [Location] @relation
+  fieldLocations: [FieldLocation] @relation
   type: EventType
   payments: [Payment] @relation
   chats: [Chat] @relation
@@ -305,6 +355,12 @@ type Event   {
   SocialMediaApps: [SocialMediaApp] @relation
   prizes: [Prize] @relation    
   coupons: [Coupon] @relation
+  eventReputation: EventReputation @relation
+}
+
+type EventReputation {
+  ratings: [Rating] @relation
+  event: Event
 }
 
 type Rsvp {
@@ -336,21 +392,36 @@ type Team   {
   payments: [Payment] @relation
   joinConditions: [JoinConditions] @relation
   teamOrders: [TeamOrder] @relation
-  organization: Organization
-  ratings: [Rating] @relation
+  organization: Organization  
   SocialMediaApps: [SocialMediaApp] @relation
   capacity: Int
   coupons: [Coupon] @relation
+  teamReputation: TeamReputation @relation
+}
+
+type TeamReputation {
+  ratings: [Rating] @relation
+  team: Team
 }
 
 type Coach   {
-  user: User
+  user: User  
+  coachReputation: CoachReputation
+}
+
+type CoachReputation {
   ratings: [Rating] @relation
+  coach: Coach
 }
 
 type Referee   {
   user: User
+  refereeReputation: [RefereeReputation] @relation
+}
+
+type RefereeReputation {
   ratings: [Rating] @relation
+  referee: Referee
 }
 
 # a payment is attached to event
@@ -530,44 +601,78 @@ type Chat  {
 }
 
 
+
+
 type Location   {
   name: String
   secondaryName: String
-  address: String
-  surface: SurfaceType
-  images: [Image] @relation
-  fieldSize: FieldPlayerOccupancySize
-  private: Boolean
-  schedule: String
+  address: String  
   latitude: Float!
-  longitude: Float!
-  events: [Event] @relation
+  longitude: Float!    
+  locationType: LocationType
+}
+
+type UserLocation   {
   user: User
-  team: Team
-  organization: Organization
-  Price: [Price] @relation
+  location: Location
+}
+
+type TeamLocation   {
+  location: Location
+  team: Team    
+}
+
+
+type FieldLocation   {
+  location: Location
+  events: [Event] @relation
+  fieldSize: FieldPlayerOccupancySize  
+  surface: SurfaceType
+  private: Boolean
   amenities: [Amenity] @relation
   url: String
-  socialMediaApps: [SocialMediaApp] @relation
+  socialMediaApps: [SocialMediaApp] @relation  
+  organization: Organization
+  locationReputation: LocationReputation @relation  
+  schedule: Schedule
+  parkingOptions: [ParkingOption]
+
+}
+
+type ParkingOption {
+  location: Location
+  parkingTypes: [ParkingType]
+  info: String
+}
+
+
+
+
+
+type LocationReputation {
+  ratings: [Rating] @relation
+  location: Location
+  verified: Boolean
 }
 
 type Rating   {
   rating: Int
-  organizations: [Organization] @relation
-  teams: [Team] @relation
-  events: [Event] @relation
-  users: [User] @relation
-  players: [Player] @relation
-  coaches: [Coach] @relation
-  referees: [Referee] @relation
+  description: String
+  organizerReputations: [OrganizerReputation] @relation
+  teamReputation: [TeamReputation] @relation
+  eventReputations: [EventReputation] @relation
+  locationReputations: [LocationReputation] @relation
+  playerReputations: [PlayerReputation] @relation
+  coachReputations: [CoachReputation] @relation
+  refereeReputations: [RefereeReputation] @relation
   ratingCategory: [RatingCategory] @relation
+  ratingType: [RatingType] @relation
 }
 
 type RatingCategory {
-  name: String
-  weight: Float!
-  ratings: [Rating] @relation
+  ratingCategoryType: RatingCategoryType  
 }
+
 
 type Price   {
   amount: String
@@ -577,14 +682,6 @@ type Price   {
   teamAmount: String
   time: Int #in minutes
   subscriptionType: SubscriptionType
-}
-
-enum SocialMediaType {
-  FACEBOOK
-  INSTAGRAM
-  X
-  YOUTUBE
-  LINKEDIN
 }
 
 type SocialMediaApp   {
@@ -644,6 +741,13 @@ type Coupon {
 }
 
 type Organizer {
+  organizerReputation: OrganizerReputation
+}
+
+
+
+type OrganizerReputation {
+  ratings: [Rating] @relation
   canOrganizeGame: Boolean
   canOrganizeLeague: Boolean
   canOrganizeTournament: Boolean
@@ -656,6 +760,7 @@ type Organizer {
   tryoutReputationScore: Int
   trainingReputationScore: Int
   teamReputationScore: Int
+  
 }
 
 type SubscriptionType {
@@ -673,3 +778,19 @@ type Subscription  {
   endDate: String
   length: Int
 }
+
+type Schedule {
+  days: [Day]
+}
+
+type Day {
+  timestamp: String  
+  events: [Event]
+}
+
+type Event {
+  time: String  // "HH:MM" or Unix time
+  description: String
+  location: String
+}
+
