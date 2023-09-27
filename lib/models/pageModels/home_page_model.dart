@@ -16,6 +16,8 @@ import '../../views/team/create/create.dart';
 import '../../views/location/create.dart';
 
 class HomePageModel extends ChangeNotifier {
+
+  
   String _testText = "";
   String get testText => _testText;
   set testText(String text) {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '../styles/colors.dart';
 import '../views/home.dart';
+import 'logo.dart';
+import 'logo_text.dart';
 import 'models/button_model.dart';
 
 class Headers extends StatefulWidget {
@@ -21,20 +24,30 @@ class Headers extends StatefulWidget {
   AppBar getMainHeader(BuildContext context) {
     AppBar appBar = AppBar(
       elevation: 2,
-      centerTitle: false,
-      title: const Padding(
-          padding: EdgeInsets.only(left: 20.0),
-          child: Text("Find Soccer Near You")),
-      backgroundColor: Colors.orange.shade500,
+      centerTitle: true,
+      title: LogoTextWidget(
+        width: 200.0,
+        height: 30.0, //Replace with your actual image provider
+        backgroundColor: Colors.transparent,
+      ),
+      backgroundColor: AppColors.tsnBlack,
       actions: <Widget>[
-        if (playerStepperButton != null)
           IconButton(
-              onPressed: playerStepperButton?.onTap,
-              icon: Icon(playerStepperButton?.prefixIconData)),
-        if (filterButton != null)
+            onPressed: playerStepperButton?.onTap,
+            icon: Icon(Icons.calendar_month_outlined)
+          ),
           IconButton(
-              onPressed: filterButton?.onTap,
-              icon: Icon(filterButton?.prefixIconData))
+            onPressed: playerStepperButton?.onTap,
+            icon: Icon(Icons.chat)
+          ),
+        // if (playerStepperButton != null)
+        //   IconButton(
+        //       onPressed: playerStepperButton?.onTap,
+        //       icon: Icon(playerStepperButton?.prefixIconData)),
+        // if (filterButton != null)
+        //   IconButton(
+        //       onPressed: filterButton?.onTap,
+        //       icon: Icon(filterButton?.prefixIconData))
       ],
     );
     return appBar;

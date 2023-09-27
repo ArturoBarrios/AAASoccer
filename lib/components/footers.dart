@@ -3,6 +3,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:soccermadeeasy/views/event/create.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
 import '../styles/asset_constants.dart';
+import '../styles/colors.dart';
 import '../views/game/create.dart';
 import '../views/images/view_images.dart';
 import '../views/location/create.dart';
@@ -24,7 +25,7 @@ class Footers extends StatefulWidget {
   @override
   State<Footers> createState() => _Footers();
 
-  BottomAppBar getMainBottomNav(BuildContext context) {
+  Widget getMainBottomNav(BuildContext context) {
     int selectIndex = 0;
     Map<String, Widget Function(BuildContext)> pages = {
       "Pickup Game": (context) => const GameCreate(),
@@ -54,107 +55,37 @@ class Footers extends StatefulWidget {
       }
     }
 
-    BottomAppBar bottomAppBar = BottomAppBar(
-      color: Colors.white,
-      child: SizedBox(
-        height: 56,
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconBottomBar(
-                  text: "Home",
-                  icon: Icons.home_outlined,
-                  selected: true,
-                  onPressed: () {}),
-              IconBottomBar(
-                  text: "Locations",
-                  icon: Icons.location_on,
-                  selected: false,
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute<void>(
-                      builder: (BuildContext context) {
-                        return const LocationsMap();
-                      },
-                    ));
-                  }),
-              IconBottomBar2(
-                  text: "Add",
-                  icon: Icons.add_outlined,
-                  selected: false,
-                  onPressed: () async {
-                    print("Add New Chat Pressed");
-                    List<dynamic> primaryList = pages.keys.toList();
-                    List<dynamic> secondaryList = [];
-                    Map<int, dynamic> result = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AnimatedDialog(
-                          details: {"title": "IDK"},
-                          items: primaryList,
-                          singleSelect: false,
-                          secondaryItems: secondaryList,
-                          goToFunctions: [],
-                        );
-                      },
-                    );
-                    if (result.isNotEmpty) {
-                      print("result: " + result.toString());
-                      goToPage(result.keys.first, primaryList);
-                    }
-                    // int? index = await showAnimatedDialog<int>(
-                    //   context: context,
-                    //   barrierDismissible: true,
-                    //   builder: (BuildContext context) {
-                    //     return ClassicListDialogWidget<dynamic>(
-                    //         selectedIndex: selectIndex,
-                    //         titleText: 'Title',
-                    //         listType: ListType.single,
-                    //         onPositiveClick: () {
-                    //           print("onPositiveClick: $selectIndex");
-                    //           goToPage(selectIndex);
-                    //         },
-                    //         activeColor: Colors.green,
-                    //         dataList: pages.keys.toList());
-                    //   },
-                    //   animationType: DialogTransitionType.size,
-                    //   curve: Curves.linear,
-                    // );
-
-                    // print('selectIndex:$index');
-                    // goToPage(index!);
-                  }),
-              IconBottomBar(
-                  text: "Cart",
-                  icon: Icons.chat,
-                  selected: false,
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute<void>(
-                      builder: (BuildContext context) {
-                        return const ChatsView();
-                      },
-                    ));
-                  }),
-              IconBottomBar(
-                  text: "Requests",
-                  icon: Icons.notifications_active_rounded,
-                  selected: false,
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute<void>(
-                      builder: (BuildContext context) {
-                        return RequestsView();
-                      },
-                    ));
-                  })
-            ],
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20, left: 12, right: 12), // Add margin from bottom and sides
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(25), // Make it rounded
+        child: BottomAppBar(
+          color: AppColors.tsnAlmostBlack,
+          child: SizedBox(
+            height: 36,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Placeholder for your IconBottomBar widget
+                  IconButton(icon: Icon(Icons.home), onPressed: () {}), 
+                  // Placeholder for your IconBottomBar widget with Locations
+                  IconButton(icon: Icon(Icons.location_on), onPressed: () {}), 
+                  // Placeholder for your IconBottomBar2 widget
+                  IconButton(icon: Icon(Icons.add), onPressed: () {}), 
+                  // Placeholder for your IconBottomBar widget with Cart
+                  IconButton(icon: Icon(Icons.chat), onPressed: () {}), 
+                  // Placeholder for your IconBottomBar widget with Requests
+                  IconButton(icon: Icon(Icons.notifications), onPressed: () {}), 
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
-
-    return bottomAppBar;
   }
 
   BottomNavigationBar getChatBottomNav(BuildContext context) {

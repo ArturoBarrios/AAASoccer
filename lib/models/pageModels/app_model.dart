@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../constants.dart';
 import '../../svg_widgets.dart';
 import '../appModels/Location.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -9,11 +10,12 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 class AppModel extends ChangeNotifier {
   void nukeModelData() {}
 
+    
+
   List<Svg> locationSvgs = [
     SVGWidgets().getSoccerBallSVGImage(),
     SVGWidgets().deleteSVGImage(),
-    SVGWidgets().friendsSVGImage(),
-    SVGWidgets().plusCircleOutline(),
+    SVGWidgets().friendsSVGImage(),    
   ];
   
   List<Svg> priceSvgs = [
@@ -26,6 +28,13 @@ class AppModel extends ChangeNotifier {
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
   set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
     _faunaClient = faunaClient;
+    notifyListeners();
+  }
+
+  String _appColorMode = Constants.DEFAULTMODE;
+  String get appColorMode => _appColorMode;
+  set appColorMode(String appColorMode) {
+    _appColorMode = appColorMode;
     notifyListeners();
   }
 
