@@ -372,7 +372,7 @@ type Team   {
   images: [Image] @relation
   users: [User] @relation
   sponsors: [Sponsor] @relation
-  teamLocation: [TeamLocation] @relation
+  teamLocations: [TeamLocation] @relation
   userParticipants: [TeamUserParticipant] @relation
   regions: [Region] @relation
   status: String
@@ -628,7 +628,7 @@ type OrganizationLocation{
 }
 
 
-type FieldLocation   {
+type FieldLocation  {
   location: Location
   facility: Facility
   events: [Event] @relation

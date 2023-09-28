@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/playground_widget.dart';
 import '../styles/colors.dart';
 import '../views/home.dart';
 import 'logo.dart';
@@ -22,7 +23,7 @@ class Headers extends StatefulWidget {
   }
 
   AppBar getMainHeader(BuildContext context) {
-    AppBar appBar = AppBar(
+    AppBar appBar = AppBar(      
       elevation: 2,
       centerTitle: true,
       title: LogoTextWidget(
@@ -33,13 +34,19 @@ class Headers extends StatefulWidget {
       backgroundColor: AppColors.tsnBlack,
       actions: <Widget>[
           IconButton(
-            onPressed: playerStepperButton?.onTap,
-            icon: Icon(Icons.calendar_month_outlined)
+            onPressed:() {
+              Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return PlaygroundWidget();
+              },
+            ));
+            },
+            icon: Icon(Icons.play_circle_filled_sharp)
           ),
-          IconButton(
-            onPressed: playerStepperButton?.onTap,
-            icon: Icon(Icons.chat)
-          ),
+          // IconButton(
+          //   onPressed: playerStepperButton?.onTap,
+          //   icon: Icon(Icons.notifications)
+          // ),
         // if (playerStepperButton != null)
         //   IconButton(
         //       onPressed: playerStepperButton?.onTap,

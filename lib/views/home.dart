@@ -612,7 +612,10 @@ class _Home extends State<Home> {
           ),
         ),
       ),
-      bottomNavigationBar: const Footers().getMainBottomNav(context),
+      bottomNavigationBar: 
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0), // Padding from the bottom of the screen
+          child:const Footers().getMainBottomNav(context)),
     );
   }
 }

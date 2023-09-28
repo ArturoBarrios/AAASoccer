@@ -29,7 +29,7 @@ class LogoTextWidget extends StatelessWidget {
             width: height, // Using height to keep the image square
             height: height,
             image: logo,
-            color: AppColors.tsnLightGreen,
+            // color: AppColors.tra,
           ),
           SizedBox(width: 16), // Optional: for spacing between image and text
           Column(

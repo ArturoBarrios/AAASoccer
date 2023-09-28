@@ -18,7 +18,7 @@ class SVGWidgets {
     return svgImage;
   }
   Svg logo() {
-    Svg svgImage = Svg('lib/assets/icons/soccer_ball.svg');
+    Svg svgImage = Svg('lib/assets/tsn-icons/logo.svg');
 
     return svgImage;
   }

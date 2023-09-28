@@ -37,6 +37,29 @@ class Footers extends StatefulWidget {
       "Location": (context) => const LocationCreate(),
     };
 
+    final List<Map<String, dynamic>> items = [
+    {
+      'title': 'Home',
+      'icon': Icons.home,
+      'onTap': () => print('Home tapped'),
+    },
+    {
+      'title': 'Location',
+      'icon': Icons.location_on,
+      'onTap': () => print('Location tapped'),
+    },
+    {
+      'title': 'Chats',
+      'icon': Icons.chat,
+      'onTap': () => print('Event tapped'),
+    },
+    {
+      'title': 'Schedule',
+      'icon': Icons.calendar_month_outlined,
+      'onTap': () => print('Event tapped'),
+    },
+  ];
+
     void goToPage(
       int indexResult,
       List<dynamic> primaryList,
@@ -55,37 +78,61 @@ class Footers extends StatefulWidget {
       }
     }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20, left: 12, right: 12), // Add margin from bottom and sides
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25), // Make it rounded
-        child: BottomAppBar(
-          color: AppColors.tsnAlmostBlack,
-          child: SizedBox(
-            height: 36,
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Placeholder for your IconBottomBar widget
-                  IconButton(icon: Icon(Icons.home), onPressed: () {}), 
-                  // Placeholder for your IconBottomBar widget with Locations
-                  IconButton(icon: Icon(Icons.location_on), onPressed: () {}), 
-                  // Placeholder for your IconBottomBar2 widget
-                  IconButton(icon: Icon(Icons.add), onPressed: () {}), 
-                  // Placeholder for your IconBottomBar widget with Cart
-                  IconButton(icon: Icon(Icons.chat), onPressed: () {}), 
-                  // Placeholder for your IconBottomBar widget with Requests
-                  IconButton(icon: Icon(Icons.notifications), onPressed: () {}), 
-                ],
+  return Container(
+  width: 300,
+  height: 50,
+  margin: const EdgeInsets.all(4.0),
+  decoration: BoxDecoration(
+    color: AppColors.tsnBlack,
+    borderRadius: BorderRadius.circular(32), // Increased the roundness
+  ),
+  child: Row(
+    children: items.map((item) {
+      return Expanded(
+        child: GestureDetector(
+          onTap: item['onTap'],
+          child: Container(
+            margin: const EdgeInsets.all(2.0),
+            padding: const EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppColors.tsnLightGreen,
+                width: 2,
               ),
+              borderRadius: BorderRadius.circular(32), // Increased the roundness
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  item['icon'],
+                  size: 18,
+                  color: AppColors.tsnGreyerWhite
+                ),
+                SizedBox(height: 2),
+                Text(
+                  item['title'],
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.tsnGreyerWhite
+                  )
+                ),
+              ],
             ),
           ),
         ),
-      ),
-    );
+      );
+    }).toList(),
+  ),
+);
+
+
+
+
+
+
+
   }
 
   BottomNavigationBar getChatBottomNav(BuildContext context) {

@@ -68,10 +68,10 @@ double screenWidth = MediaQuery.of(context).size.width;
     ],
   ),
   bottomRight: Text('Bottom Right'),
-  backgroundColor: Colors.blue,
+  backgroundColor: AppColors.tsnAlmostBlack,
   svgImage: SVGWidgets().getSoccerBallSVGImage(),
   width: 300,  // set your width
-  height: 400, // set your height
+  height: 150, // set your height
 ),
 LogoWidget(
   width: 100.0,

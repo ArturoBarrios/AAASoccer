@@ -127,12 +127,14 @@ class EventFragments {
             ${TeamFragments().fullTeam()}
           }
         }
-      location{
+      fieldLocations{
         data{
-        name
-        _id
-        latitude
-        longitude
+          location{
+            name
+            _id
+            latitude
+            longitude
+          }
         }
       }
       userParticipants{     
@@ -199,12 +201,14 @@ class EventFragments {
             _id
           }
         }
-      location{
+      fieldLocations{
         data{
-        name
-        _id
-        latitude
-        longitude
+          location{
+            name
+            _id
+            latitude
+            longitude
+          }
         }
       }
       userParticipants{     

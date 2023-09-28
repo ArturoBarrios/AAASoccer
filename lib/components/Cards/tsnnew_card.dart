@@ -50,7 +50,7 @@ class NewCardTSN extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(child: topLeft),
+                    Expanded(child: topLeft),                    
                     Expanded(child: topRight),
                   ],
                 ),
