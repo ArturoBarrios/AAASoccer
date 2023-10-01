@@ -24,7 +24,7 @@ class Headers extends StatefulWidget {
 
   AppBar getMainHeader(BuildContext context) {
     AppBar appBar = AppBar(      
-      elevation: 2,
+      elevation: 5,
       centerTitle: true,
       title: LogoTextWidget(
         width: 200.0,

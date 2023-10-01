@@ -36,7 +36,7 @@ import '../strings.dart';
 import '../constants.dart';
 import '../models/events_model.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-
+import '../components/search_field.dart';
 import 'onboarding/onboarding_view.dart';
 
 class Home extends StatefulWidget {
@@ -466,6 +466,10 @@ class _Home extends State<Home> {
             children: <Widget>[
               Column(
                 children: [
+                  Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: SearchField(label: StringConstants.searchLabel)
+                  ),
                   SizedBox(
                     height:
                         200, // Define the height you want for your card section
@@ -475,17 +479,14 @@ class _Home extends State<Home> {
                       itemCount: enabledSelections2.length,
                       itemBuilder: (_, index) {
                         dynamic key = enabledSelections2.keys.elementAt(index);
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10),
-                          child: SelectIconButton(
+                        return SelectIconButton(
                             eventObject: enabledSelections2[key],
-                            svgImage: svgImage,
+                            svgImage: enabledSelections2[key]['image'],
                             index: index,
                             onTapEvent: () => isFilteringEnabled
                                 ? clearFiltering(isPop: false)
                                 : null,
-                          ),
+                          
                         );
                       },
                     ),

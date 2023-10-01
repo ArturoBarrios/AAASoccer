@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../constants.dart';
+import '../../strings.dart';
 import '../../svg_widgets.dart';
 import '../appModels/Location.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -11,6 +12,36 @@ class AppModel extends ChangeNotifier {
   void nukeModelData() {}
 
     
+    Map<dynamic, dynamic> _selectedPage = {
+    Constants.HOMEPAGE: {
+      "key": Constants.HOMEPAGE,
+      "enabled": true,
+      "name": StringConstants.HOMEPAGETITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    Constants.LOCATIONSPAGE: {
+      "key": Constants.LOCATIONSPAGE,
+      "enabled": true,
+      "name": StringConstants.LOCATIONSPAGETITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    Constants.CHATSPAGE: {
+      "key": Constants.CHATSPAGE,
+      "enabled": true,
+      "name": StringConstants.CHATSPAGETITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+    Constants.SCHEDULEPAGE: {
+      "key": Constants.SCHEDULEPAGE,
+      "enabled": true,
+      "name": StringConstants.SCHEDULEPAGETITLE,
+      "description": "",
+      "image": SVGWidgets().getSoccerBallSVGImage(),
+    },
+  };
 
   List<Svg> locationSvgs = [
     SVGWidgets().getSoccerBallSVGImage(),

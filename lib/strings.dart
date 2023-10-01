@@ -91,4 +91,15 @@ class StringConstants {
   static const String backBtn = 'Back';
   static const String createGameBtn = 'Create Game';
   static const String nextBtn = 'Next';
+    
+  static const String searchLabel = 'Search';
+
+  //pages
+  static const String HOMEPAGETITLE = "Home";
+  static const String LOCATIONSPAGETITLE = "Locations";
+  static const String CHATSPAGETITLE = "Chats";
+  static const String SCHEDULEPAGETITLE = "Schedule";
+
+
+
 }
