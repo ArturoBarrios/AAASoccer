@@ -459,10 +459,10 @@ class _Home extends State<Home> {
         child:
             Drawer(child: const SideNavs().getMainSideNav(context, userObject)),
       ),
-      body: RefreshIndicator(
+      body: 
+      RefreshIndicator(
         onRefresh: onReload,
-        child: SingleChildScrollView(
-          child: Stack(
+        child:  Stack(
             children: <Widget>[
               Column(
                 children: [
@@ -472,7 +472,7 @@ class _Home extends State<Home> {
                   ),
                   SizedBox(
                     height:
-                        200, // Define the height you want for your card section
+                        80, // Define the height you want for your card section
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       controller: _selectEventTypeController,
@@ -580,21 +580,23 @@ class _Home extends State<Home> {
                         )
                       : Container(),
                   !cardsLoading
-                      ?
+                      ?                      
                       //list view
-                      ListView.builder(
-                          controller: _selectEventController,
-                          itemCount: cards.length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (_, index) => Card(
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 10,
+                      Expanded(child: 
+                        ListView.builder(
+                            controller: _selectEventController,
+                            itemCount: cards.length,
+                            shrinkWrap: true,
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemBuilder: (_, index) => Card(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 10,
+                              ),
+                              child: cards[index],
                             ),
-                            child: cards[index],
-                          ),
-                        )
+                          )                     
+                      )
                       : const SizedBox(
                           height: 100,
                           width: 100,
@@ -606,12 +608,12 @@ class _Home extends State<Home> {
                               numDots: 10,
                             ),
                           ),
-                        ),
+                      ),
                 ],
               )
             ],
           ),
-        ),
+        
       ),
       bottomNavigationBar: 
         Padding(

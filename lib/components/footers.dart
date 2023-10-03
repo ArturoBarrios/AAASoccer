@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/views/event/create.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
+import '../models/pageModels/app_model.dart';
 import '../styles/asset_constants.dart';
 import '../styles/colors.dart';
 import '../views/game/create.dart';
@@ -26,6 +28,9 @@ class Footers extends StatefulWidget {
   State<Footers> createState() => _Footers();
 
   Widget getMainBottomNav(BuildContext context) {
+    Map<dynamic,dynamic>selectedPages = 
+      context.select<AppModel, Map<dynamic, dynamic>>((value) => value.selectedPages);
+
     int selectIndex = 0;
     Map<String, Widget Function(BuildContext)> pages = {
       "Pickup Game": (context) => const GameCreate(),
@@ -35,30 +40,7 @@ class Footers extends StatefulWidget {
       "Training": (context) => const TrainingCreate(),
       "Tryout": (context) => const TryoutCreate(),
       "Location": (context) => const LocationCreate(),
-    };
-
-    final List<Map<String, dynamic>> items = [
-    {
-      'title': 'Home',
-      'icon': Icons.home,
-      'onTap': () => print('Home tapped'),
-    },
-    {
-      'title': 'Location',
-      'icon': Icons.location_on,
-      'onTap': () => print('Location tapped'),
-    },
-    {
-      'title': 'Chats',
-      'icon': Icons.chat,
-      'onTap': () => print('Event tapped'),
-    },
-    {
-      'title': 'Schedule',
-      'icon': Icons.calendar_month_outlined,
-      'onTap': () => print('Event tapped'),
-    },
-  ];
+    };    
 
     void goToPage(
       int indexResult,
@@ -87,43 +69,52 @@ class Footers extends StatefulWidget {
     borderRadius: BorderRadius.circular(32), // Increased the roundness
   ),
   child: Row(
-    children: items.map((item) {
-      return Expanded(
-        child: GestureDetector(
-          onTap: item['onTap'],
-          child: Container(
-            margin: const EdgeInsets.all(2.0),
-            padding: const EdgeInsets.all(4.0),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: AppColors.tsnLightGreen,
-                width: 2,
+  children: selectedPages.entries.map<Widget>((MapEntry<dynamic, dynamic> entry) {
+    // Now you have both the key and the value for each entry in selectedPages
+    dynamic key = entry.key;
+    Map<dynamic, dynamic> item = entry.value;
+    print("item: " + item.toString());
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => {
+          print("onTap"),
+          item['selectAction'](context),
+        }, // Assuming onTap is a function
+        child: Container(
+          margin: const EdgeInsets.all(2.0),
+          padding: const EdgeInsets.all(4.0),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: item['enabled'] ? AppColors.tsnLightGreen : Colors.transparent,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(32), // Increased the roundness
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                item['icon'],
+                size: 18,
+                color: AppColors.tsnGreyerWhite
               ),
-              borderRadius: BorderRadius.circular(32), // Increased the roundness
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  item['icon'],
-                  size: 18,
+              SizedBox(height: 2),
+              Text(
+                item['name'],
+                style: TextStyle(
+                  fontSize: 12,
                   color: AppColors.tsnGreyerWhite
-                ),
-                SizedBox(height: 2),
-                Text(
-                  item['title'],
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.tsnGreyerWhite
-                  )
-                ),
-              ],
-            ),
+                )
+              ),
+            ],
           ),
         ),
-      );
-    }).toList(),
+      ),
+    );
+  }).toList(),
+
+
   ),
 );
 

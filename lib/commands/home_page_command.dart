@@ -3,6 +3,7 @@ import 'package:soccermadeeasy/commands/player_command.dart';
 import 'package:soccermadeeasy/commands/team_command.dart';
 import 'package:soccermadeeasy/commands/tournament_command.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
+import 'package:soccermadeeasy/styles/colors.dart';
 
 import '../models/enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
@@ -22,6 +23,7 @@ import '../components/Cards/tryout_card.dart';
 import '../components/Cards/tournament_card.dart';
 import '../components/Cards/league_card.dart';
 import '../components/Cards/team_card.dart';
+import '../components/Cards/tsn_pickup_card.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 
@@ -57,10 +59,19 @@ class HomePageCommand extends BaseCommand {
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject]);
       print("after getEventDetails");
-      card = PickupCard2(
-          gameObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
+      card = TSNPickupCard(
+        topLeft: [Text("07/26/1997")], 
+        topRight: [Text("07/26/1997")], 
+        bottomLeft: [Text("07/26/1997")], 
+        bottomRight: [Text("07/26/1997")], 
+        backgroundColor: AppColors.tsnAlmostBlack, 
+        svgImage: svgImage, 
+        
+      );
+      // card = PickupCard2(
+      //     gameObject: selectedObject,
+      //     svgImage: svgImage,
+      //     userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TRAINING) {
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject]);
@@ -130,7 +141,7 @@ class HomePageCommand extends BaseCommand {
 
         dynamic getEventDetailsResp =
             await EventCommand().getUserEventDetails([selectedObject['event']]);
-        print("getEventDetailsResp: " + getEventDetailsResp.toString());
+        print("getEventDetailsResp: " + getEventDetailsResp.toString());        
         card = PickupCard2(
             gameObject: selectedObject['event'],
             svgImage: svgImage,

@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../constants.dart';
 import '../../strings.dart';
 import '../../svg_widgets.dart';
+import '../../views/home.dart';
+import '../../views/location/map.dart';
 import '../appModels/Location.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -12,36 +15,85 @@ class AppModel extends ChangeNotifier {
   void nukeModelData() {}
 
     
-    Map<dynamic, dynamic> _selectedPage = {
-    Constants.HOMEPAGE: {
-      "key": Constants.HOMEPAGE,
-      "enabled": true,
-      "name": StringConstants.HOMEPAGETITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-    Constants.LOCATIONSPAGE: {
-      "key": Constants.LOCATIONSPAGE,
-      "enabled": true,
-      "name": StringConstants.LOCATIONSPAGETITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-    Constants.CHATSPAGE: {
-      "key": Constants.CHATSPAGE,
-      "enabled": true,
-      "name": StringConstants.CHATSPAGETITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
-    Constants.SCHEDULEPAGE: {
-      "key": Constants.SCHEDULEPAGE,
-      "enabled": true,
-      "name": StringConstants.SCHEDULEPAGETITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
+    Map<dynamic, dynamic> _selectedPages = {
+      Constants.HOMEPAGE: {
+        "key": Constants.HOMEPAGE,
+        "enabled": true,
+        "name": StringConstants.HOMEPAGETITLE,
+        "description": "",      
+        'icon': Icons.home,   
+        'selectAction': (BuildContext context) {
+          print("in selectAction");
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const Home();
+              },
+            ),
+          );
+        },     
+      },
+      Constants.LOCATIONSPAGE: {
+        "key": Constants.LOCATIONSPAGE,
+        "enabled": false,
+        "name": StringConstants.LOCATIONSPAGETITLE,
+        "description": "",
+        'icon': Icons.location_on,
+        'selectAction': (BuildContext context) {
+          print("in selectAction");
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const LocationsMap();
+              },
+            ),
+          );
+        }, 
+      },
+      Constants.CHATSPAGE: {
+        "key": Constants.CHATSPAGE,
+        "enabled": false,
+        "name": StringConstants.CHATSPAGETITLE,
+        "description": "",
+        'icon': Icons.chat,
+        'selectAction': (BuildContext context) {
+          print("in selectAction");
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const Home();
+              },
+            ),
+          );
+        }, 
+      },
+      Constants.SCHEDULEPAGE: {
+        "key": Constants.SCHEDULEPAGE,
+        "enabled": false,
+        "name": StringConstants.SCHEDULEPAGETITLE,
+        "description": "",
+        "icon": Icons.calendar_month_outlined,
+        'selectAction': (BuildContext context) {
+          print("in selectAction");
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const Home();
+              },
+            ),
+          );
+        }, 
+      },
   };
+  Map<dynamic, dynamic> get selectedPages => _selectedPages;
+  set selectedPages(Map<dynamic, dynamic> selectedPages) {
+    _selectedPages = selectedPages;
+    notifyListeners();
+  }
 
   List<Svg> locationSvgs = [
     SVGWidgets().getSoccerBallSVGImage(),
@@ -176,6 +228,13 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  List<Location> _facilityLocations = [];
+  List<Location> get facilityLocations => _facilityLocations;
+  set facilityLocations(List<Location> facilityLocations) {
+    _facilityLocations = facilityLocations;
+    notifyListeners();
+  }
+
   List<Location> _locations = [];
   List<Location> get locations => _locations;
   set locations(List<Location> locations) {

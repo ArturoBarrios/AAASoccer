@@ -189,6 +189,7 @@ enum LocationType {
   EVENT
   ORGANIZATION
   USER
+  FACILITY
 }
 
 type Request {

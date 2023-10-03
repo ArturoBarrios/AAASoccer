@@ -5,7 +5,8 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 import '../commands/subscriptions_command.dart';
 import '../styles/colors.dart';
 import 'Buttons/basic_elevated_button.dart';
-import 'Cards/tsnnew_card.dart';
+import 'Buttons/circle_outline_icon.dart';
+import 'Cards/tsn_pickup_card.dart';
 import 'Loading/loading_icon.dart';
 import 'logo_text.dart';
 
@@ -28,7 +29,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text('Playground Widget'),
@@ -49,30 +50,28 @@ double screenWidth = MediaQuery.of(context).size.width;
             ),
           ),
         BasicElevatedButton(
+          icon: SVGWidgets().getSoccerBallSVGImage(),
           height: screenHeight * 0.05,  // 10% of screen height
           width: screenWidth * 0.35,
-          backgroundColor: AppColors.tsnGreen,),
-          LoadingIcon(width: 20, height: 20, svgImage: SVGWidgets().getSoccerBallSVGImage()),
-         NewCardTSN(
-  topLeft: Column(
-    children: [
-      Text('Top Left 1'),
-      Text('Top Left 2'),
-    ],
-  ),
-  topRight: Text('Top Right'),
-  bottomLeft: Column(
-    children: [
-      Text('Bottom Left 1'),
-      Text('Bottom Left 2'),
-    ],
-  ),
-  bottomRight: Text('Bottom Right'),
-  backgroundColor: AppColors.tsnAlmostBlack,
-  svgImage: SVGWidgets().getSoccerBallSVGImage(),
-  width: 300,  // set your width
-  height: 150, // set your height
+          backgroundColor: AppColors.tsnGreen, text: "Enable"),
+          CircleOutlineIcon(
+  icon: Icon(Icons.star, color: Colors.white),
+  backgroundColor: Colors.blue,
+  borderColor: Colors.red,
+  circleSize: 60.0,
+  borderThickness: 3.0,
 ),
+
+          LoadingIcon(width: 20, height: 20, svgImage: SVGWidgets().getSoccerBallSVGImage()),
+  TSNPickupCard(
+        topLeft: [Text("07/26/1997")], 
+        topRight: [Text("07/26/1997")], 
+        bottomLeft: [Text("07/26/1997")], 
+        bottomRight: [Text("07/26/1997")], 
+        backgroundColor: AppColors.tsnAlmostBlack, 
+         
+        
+      ),
 LogoWidget(
   width: 100.0,
   height: 100.0,  //Replace with your actual image provider
