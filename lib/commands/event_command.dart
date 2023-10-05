@@ -1153,7 +1153,8 @@ class EventCommand extends BaseCommand {
       "chats": [],
       "groupStage": [],
       "tournamentStage": [],
-      "userParticipants": [],
+      "userParticipants": [],      
+      "fieldLocations": [],
     };
     print("events length: " + events.length.toString());
 
@@ -1229,6 +1230,7 @@ class EventCommand extends BaseCommand {
       isMyEventResp['teamAmountPaid'] = eventPageModel.teamAmountPaid;
       isMyEventResp['amountRemaining'] = eventPageModel.amountRemaining;
       isMyEventResp['teamAmountRemaining'] = eventPageModel.teamAmountRemaining;
+      isMyEventResp['fieldLocations'] = eventPageModel.fieldLocations;
 
       print("successfully ran details function");
       isMyEventResp["success"] = true;

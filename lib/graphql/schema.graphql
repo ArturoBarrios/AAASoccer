@@ -6,12 +6,7 @@ type Query {
   allCurrentUserEventParticipants(userId: ID!, startTime: String!): [EventUserParticipant!] @resolver(name: "allCurrentUserEventParticipants")
   getAllTeams(from: String!): [Team!] @resolver(name: "getAllTeams")
   getAllTeamUserParticipants(userId: ID!): [TeamUserParticipant!] @resolver(name: "getAllTeamUserParticipants")
-  allCurrentUserEventParticipantsByDistance(
-    userLatitude: Float!,
-    userLongitude: Float!,
-    startTime: String!,
-    distance: Float!
-  ): [EventUserParticipant!] @resolver(name: "allCurrentUserEventParticipantsByDistance")
+  
 
 
   #  teams
@@ -192,6 +187,11 @@ enum LocationType {
   FACILITY
 }
 
+type AppPreference {
+  language: String @default(value: "en")
+  user: User
+}
+
 type Request {
   type: RequestType
   sender: User @relation(name: "requests_sent")
@@ -218,6 +218,7 @@ type FollowRelation {
 }
 
 type User  {
+  appPreference: AppPreference
   stripeCustomers: [StripeCustomer] @relation
   payments: [Payment] @relation
   userType: UserType
@@ -630,14 +631,14 @@ type OrganizationLocation{
 
 
 type FieldLocation  {
+  isMainField: Boolean @default(value: false)
   location: Location
   facility: Facility
   events: [Event] @relation
   fieldSize: FieldPlayerOccupancySize  
   surface: SurfaceType
   private: Boolean
-  amenities: [Amenity] @relation
-  url: String
+  amenities: [Amenity] @relation  
   socialMediaApps: [SocialMediaApp] @relation  
   organization: Organization
   fieldLocationReputation: FieldLocationReputation @relation  
@@ -815,4 +816,5 @@ type Field {
 
 type Facility {
   organizations: [Organization] @relation
+  url: String
 }

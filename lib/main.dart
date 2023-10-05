@@ -38,6 +38,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  Locale locale = Locale('en');
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");

@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:soccermadeeasy/extensions/parse_roles.dart';
 import '../../components/join_condition.dart';
@@ -163,7 +164,13 @@ class EventPageModel extends ChangeNotifier {
     _payments = payments;
     notifyListeners();
   }
-  
+
+  List _fieldLocations = [];
+  List get fieldLocations => _fieldLocations;
+  set fieldLocations(List fieldLocations) {
+    _fieldLocations = fieldLocations;
+    notifyListeners();
+  }  
   
   JoinCondition _eventRequestJoin =  JoinCondition(label: "");
   JoinCondition get eventRequestJoin => _eventRequestJoin;
@@ -200,6 +207,7 @@ class EventPageModel extends ChangeNotifier {
       isMember = roles.contains("PLAYER");
       chats = _mainEvent['chats']['data'];
       teams = _mainEvent['teams']['data'];
+      fieldLocations = _mainEvent['fieldLocations']['data'];
       _getParticipants();
       payments = _mainEvent['payments']['data'];
       _getAmountPaid();
