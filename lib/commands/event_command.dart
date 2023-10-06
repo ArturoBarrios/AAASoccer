@@ -1132,7 +1132,117 @@ class EventCommand extends BaseCommand {
     eventPageModel.chats = chat;
   }
 
-  //gets isMyEvent, isMember
+  
+  Future<Map<String, dynamic>> getMinimalUserEventDetails(List<dynamic> events) async {
+    print("getUserEventDetails()");
+    print("events: " + events.toString());
+    dynamic isMyEventResp = {
+      "success": true,
+      "isMine": false,
+      "isMember": false,
+      "amountPaid": "0.00",
+      "amountRemaining": "0.00",
+      "teamAmountPaid": "0.00",
+      "teamAmountRemaining": "0.00",
+      "price": {},
+      "mainEvent": null,
+      "players": [],
+      "organizers": [],
+      "teams": [],
+      "roles": [],
+      "chats": [],
+      "groupStage": [],
+      "tournamentStage": [],
+      "userParticipants": [],      
+      "fieldLocations": [],
+    };
+    print("events length: " + events.length.toString());
+
+    try {
+      //get event
+      dynamic event = events[0];
+
+      print("getEventGame(): " + event.toString());
+      
+
+      print("event type: " + event['type'].toString());
+      if (event['type'] == "TOURNAMENT") {
+        print("type is tournament");
+        dynamic findTournamentByIdResp = await TournamentCommand()
+            .findTournamentById(event['tournaments']['data'][0]['_id']);
+        if (findTournamentByIdResp['success']) {
+          dynamic tournament = findTournamentByIdResp['data'];
+          isMyEventResp['groupStage'] = tournament['groupStage'];
+          isMyEventResp['tournamentStage'] = tournament['tournamentStage'];
+          eventPageModel.groupStage = tournament['groupStage'];
+          eventPageModel.tournamentStage = tournament['tournamentStage'];
+        }
+      }
+      if (event['type'] == "LEAGUE") {
+        print("type is league");
+        dynamic findLeagueByIdResp = await LeagueCommand()
+            .findLeagueById(event['leagues']['data'][0]['_id']);
+        if (findLeagueByIdResp['success']) {
+          dynamic league = findLeagueByIdResp['data'];
+          isMyEventResp['league'] = league;
+          eventPageModel.league = league;
+        }
+      }
+      if(event['type'] == 'TOURNAMENT' || event['type'] == 'LEAGUE'){
+       print("allEventsss: ");
+
+
+      }
+
+
+
+      eventPageModel.currentUserId = appModel.currentUser['_id'];
+      eventPageModel.mainEvent = event;   
+      eventPageModel.allEvents = events;
+      print("eventPageModel.mainEvent['joinConditions']: " + eventPageModel.mainEvent['joinConditions'].toString());
+      //join conditions
+      eventPageModel.mainEvent['joinConditions']['data'].forEach((joinCondition) {
+        if(joinCondition['forEvent'] != null){
+          eventPageModel.eventRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
+          eventPageModel.eventRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']);                     
+        }
+        else{
+          eventPageModel.teamRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
+          eventPageModel.teamRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
+        } 
+      });
+
+      eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
+
+
+      
+      isMyEventResp['mainEvent'] = event;
+      isMyEventResp['roles'] = eventPageModel.roles;
+      isMyEventResp['isMine'] = eventPageModel.isMine;
+      isMyEventResp['isMember'] = eventPageModel.isMember;
+      isMyEventResp['teams'] = eventPageModel.teams;
+      isMyEventResp['userParticipants'] = eventPageModel.userParticipants;
+      isMyEventResp['organizers'] = eventPageModel.organizers;
+      isMyEventResp['players'] = eventPageModel.players;
+      isMyEventResp['paymentData'] = eventPageModel.payments;
+      isMyEventResp['price'] = eventPageModel.price;
+      isMyEventResp['amountPaid'] = eventPageModel.amountPaid;
+      isMyEventResp['teamAmountPaid'] = eventPageModel.teamAmountPaid;
+      isMyEventResp['amountRemaining'] = eventPageModel.amountRemaining;
+      isMyEventResp['teamAmountRemaining'] = eventPageModel.teamAmountRemaining;
+      isMyEventResp['fieldLocations'] = eventPageModel.fieldLocations;
+
+      print("successfully ran details function");
+      isMyEventResp["success"] = true;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return isMyEventResp;
+    }
+
+    return isMyEventResp;
+  }
+
+  
   Future<Map<String, dynamic>> getUserEventDetails(List<dynamic> events) async {
     print("getUserEventDetails()");
     print("events: " + events.toString());

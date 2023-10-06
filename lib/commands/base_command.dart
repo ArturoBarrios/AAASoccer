@@ -62,6 +62,22 @@ class BaseCommand {
 
   void initializeData() {}
 
+  startReloadTimer(){
+    print("startReloadTimer");
+    appModel.startTimer();
+  }
+
+  stopReloadTimer(){
+    print("stopReloadTimer");
+    appModel.stopTimer();
+  }
+
+  void resetReloadTimer(){
+    print("resetReloadTimer");
+    appModel.appTimeSinceLastLoad = 0;
+    startReloadTimer();
+  }
+
   void goToCreatePage(
     BuildContext context,    
     int indexResult,
@@ -484,6 +500,7 @@ class BaseCommand {
       //assume you have the latest events
       Map<String, dynamic> findEventsNearPointResp =
           await EventCommand().findEventsNearPoint(eventsModel.events, 50);
+      BaseCommand().startReloadTimer();
 
       resp["success"] = true;
       resp["message"] = "setup successfull";

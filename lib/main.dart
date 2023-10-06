@@ -52,7 +52,8 @@ void main() async {
   await NetworkServices().enableLocationService();
   await OneSignalService().configureOneSignal();
   await StripeServices().configureStripeService();
-  print("===============================================");
+  print("===============================================");  
+  
 
   runApp(MyApp(client: client));
 }

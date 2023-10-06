@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:provider/provider.dart';
 
+import '../../models/pageModels/event_page_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
+import '../join_condition.dart';
 
 class TSNPickupCard extends StatelessWidget {
   final List<Widget> topLeft;
@@ -25,10 +28,47 @@ class TSNPickupCard extends StatelessWidget {
     this.height,
   });
 
+  
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
+    //event model data
+    dynamic mainEvent =
+        context.select<EventPageModel, dynamic>((value) => value.mainEvent);
+    dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
+    List<dynamic> roles =
+        context.select<EventPageModel, List<dynamic>>((value) => value.roles);
+    bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
+    bool isMember =
+        context.select<EventPageModel, bool>((value) => value.isMember);
+    String amountRemaining = context
+        .select<EventPageModel, String>((value) => value.amountRemaining);
+    String amountPaid =
+        context.select<EventPageModel, String>((value) => value.amountPaid);
+    String teamAmountRemaining = context
+        .select<EventPageModel, String>((value) => value.amountRemaining);
+    String teamAmountPaid =
+        context.select<EventPageModel, String>((value) => value.teamAmountPaid);
+    List userParticipants =
+        context.select<EventPageModel, List>((value) => value.userParticipants);
+    List teams = context.select<EventPageModel, List>((value) => value.teams);
+    List players =
+        context.select<EventPageModel, List>((value) => value.players);
+    List chats = context.watch<EventPageModel>().chats;
+    List payments = context.watch<EventPageModel>().payments;
+    List fieldLocations = context.watch<EventPageModel>().fieldLocations;
+    dynamic price = context.watch<EventPageModel>().price;
+    JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
+    JoinCondition eventPaymentJoin = context.watch<EventPageModel>().eventPaymentJoin;
+    JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
+    JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
+
+
+
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),

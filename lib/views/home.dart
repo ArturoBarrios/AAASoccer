@@ -392,7 +392,9 @@ class _Home extends State<Home> {
   }
 
   Future<void> onReload() async {
+    BaseCommand().stopReloadTimer();
     await HomePageCommand().setCards();
+    BaseCommand().resetReloadTimer();
   }
 
   @override
