@@ -8,9 +8,10 @@ class BasicElevatedButton extends StatefulWidget {
   final Svg? icon;
   final String? text;
   final Color? backgroundColor;
+  final Function? onPressed;
 
 
-  const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.icon, this.text }) : super(key: key);
+  const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.icon, this.text, this.onPressed }) : super(key: key);
 
   @override
   State<BasicElevatedButton> createState() => _BasicElevatedButton();
@@ -18,6 +19,7 @@ class BasicElevatedButton extends StatefulWidget {
 
 class _BasicElevatedButton extends State<BasicElevatedButton> {
   bool visible = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
     style: buttonStyle,
     onPressed: () {
       setState(() {
-        visible = !visible;
+        widget.onPressed!();
       });
       print("test");
     },
@@ -57,7 +59,7 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
       children: [
         if (widget.icon != null)
           Icon(
-            Icons.abc_outlined,
+            Icons.add,
             color: Colors.white,
             size: iconSize,
           ), // your icon here
@@ -66,7 +68,7 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
         if (widget.text != null) // replace widget.text with your actual text variable
           Expanded(
             child: Text(
-              'Enabled', // replace 'Enabled' with your actual text variable
+              widget.text!, // replace 'Enabled' with your actual text variable
               textAlign: widget.icon == null ? TextAlign.center : TextAlign.left,
               style: TextStyle(fontSize: fontSize),
             ),

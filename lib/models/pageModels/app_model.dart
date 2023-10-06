@@ -6,15 +6,31 @@ import 'package:geolocator/geolocator.dart';
 import '../../constants.dart';
 import '../../strings.dart';
 import '../../svg_widgets.dart';
+import '../../views/game/create.dart';
 import '../../views/home.dart';
+import '../../views/league/create.dart';
+import '../../views/location/create.dart';
 import '../../views/location/map.dart';
+import '../../views/team/create/create.dart';
+import '../../views/tournament/create.dart';
+import '../../views/training/create.dart';
+import '../../views/tryout/create.dart';
 import '../appModels/Location.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class AppModel extends ChangeNotifier {
   void nukeModelData() {}
 
-    
+    Map<String, Widget Function(BuildContext)> createPages = {
+      "Pickup Game": (context) => const GameCreate(),
+      "Team": (context) => const TeamCreate(),
+      "Tournament": (context) => const TournamentCreate(),
+      "League": (context) => const LeagueCreate(),
+      "Training": (context) => const TrainingCreate(),
+      "Tryout": (context) => const TryoutCreate(),
+      "Location": (context) => const LocationCreate(),
+    };
+
     Map<dynamic, dynamic> _selectedPages = {
       Constants.HOMEPAGE: {
         "key": Constants.HOMEPAGE,

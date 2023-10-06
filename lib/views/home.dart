@@ -6,6 +6,9 @@ import 'package:soccermadeeasy/extensions/filter_extension.dart';
 import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 
+import '../commands/base_command.dart';
+import '../components/Buttons/basic_elevated_button.dart';
+import '../components/Dialogues/animated_dialogu.dart';
 import '../components/Loading/loading_screen.dart';
 import '../components/models/button_model.dart';
 import '../models/componentModels/filter_result_model.dart';
@@ -37,6 +40,7 @@ import '../constants.dart';
 import '../models/events_model.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../components/search_field.dart';
+import '../styles/colors.dart';
 import 'onboarding/onboarding_view.dart';
 
 class Home extends StatefulWidget {
@@ -425,6 +429,11 @@ class _Home extends State<Home> {
     context.select<AppModel, List<dynamic>>((value) => value.myEvents);
 
     context.select<AppModel, List<dynamic>>((value) => value.teams);
+    
+    Map<String, Widget Function(BuildContext)> createPages = context.select<AppModel, Map<String,Widget Function(BuildContext)>>((value) => value.createPages);
+    
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     print("selectedKey in build: " + selectedKey.toString());
     print("selectedObjects length in build: " +
@@ -468,7 +477,46 @@ class _Home extends State<Home> {
                 children: [
                   Padding(
                           padding: EdgeInsets.all(10.0),
-                          child: SearchField(label: StringConstants.searchLabel)
+                          child: Row(
+                            children: [
+                                Expanded( child:
+                              SearchField(label: StringConstants.searchLabel)
+                                ),
+                              SizedBox(width: 10), // Add some spacing between the search field and the button
+                              BasicElevatedButton(
+                                icon: SVGWidgets().getSoccerBallSVGImage(),
+                                height: screenHeight * 0.05,  // 10% of screen height
+                                width: screenWidth * 0.25,
+                                backgroundColor: AppColors.tsnGreen, text: "Create",
+                                onPressed: () async {
+                                    print("Add New Chat Pressed");
+                                    List<dynamic> primaryList = createPages.keys.toList();
+                                    List<dynamic> secondaryList = [];
+                                    Map<int, dynamic> result = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AnimatedDialog(
+                                          details: {"title": "IDK"},
+                                          items: primaryList,
+                                          singleSelect: false,
+                                          secondaryItems: secondaryList,
+                                          goToFunctions: [],
+                                        );
+                                      },
+                                    );
+                                    if (result.isNotEmpty) {
+                                      print("result: " + result.toString());
+                                      // goToPage(result.keys.first, primaryList);
+                                      BaseCommand().goToCreatePage(
+                                        context, 
+                                        result.keys.first, 
+                                        primaryList
+                                      );
+                                    }
+                                                }
+                              ),
+                            ],
+                          )
                   ),
                   SizedBox(
                     height:
