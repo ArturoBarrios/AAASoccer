@@ -486,7 +486,7 @@ class _Home extends State<Home> {
                                 ),
                               SizedBox(width: 10), // Add some spacing between the search field and the button
                               BasicElevatedButton(
-                                icon: SVGWidgets().getSoccerBallSVGImage(),
+                                customIcon: SVGWidgets().getSoccerBallSVGImage(),
                                 height: screenHeight * 0.05,  // 10% of screen height
                                 width: screenWidth * 0.25,
                                 backgroundColor: AppColors.tsnGreen, text: "Create",

@@ -1210,10 +1210,7 @@ class EventCommand extends BaseCommand {
           eventPageModel.teamRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
           eventPageModel.teamRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
         } 
-      });
-
-      eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
-
+      });      
 
       
       isMyEventResp['mainEvent'] = event;

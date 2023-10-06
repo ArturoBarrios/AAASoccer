@@ -10,6 +10,20 @@ import '../appModels/Price.dart';
 class EventPageModel extends ChangeNotifier {  
 
   
+  String _startTime = "";
+  String get startTime => _startTime;
+  set startTime(String startTime) {
+    _startTime = startTime;        
+    notifyListeners();
+  }
+  
+  String _endTime = "";
+  String get endTime => _endTime;
+  set endTime(String endTime) {
+    _endTime = endTime;        
+    notifyListeners();
+  }
+
   dynamic _objectImageInput = null;
   dynamic get objectImageInput => _objectImageInput;
   set objectImageInput(dynamic objectImageInput) {
@@ -207,6 +221,8 @@ class EventPageModel extends ChangeNotifier {
       isMember = roles.contains("PLAYER");
       chats = _mainEvent['chats']['data'];
       teams = _mainEvent['teams']['data'];
+      startTime = _mainEvent['startTime'];
+      endTime = _mainEvent['endTime'];      
       fieldLocations = _mainEvent['fieldLocations']['data'];
       _getParticipants();
       payments = _mainEvent['payments']['data'];

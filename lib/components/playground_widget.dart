@@ -50,7 +50,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
             ),
           ),
         BasicElevatedButton(
-          icon: SVGWidgets().getSoccerBallSVGImage(),
+          customIcon: SVGWidgets().getSoccerBallSVGImage(),
           height: screenHeight * 0.05,  // 10% of screen height
           width: screenWidth * 0.35,
           backgroundColor: AppColors.tsnGreen, text: "Enable"),

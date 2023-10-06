@@ -5,13 +5,15 @@ import '../../styles/colors.dart';
 class BasicElevatedButton extends StatefulWidget {
   final double? height;
   final double? width;
-  final Svg? icon;
+  final Svg? customIcon;
+  final IconData? icon; 
   final String? text;
   final Color? backgroundColor;
+  final Color? iconColor;
   final Function? onPressed;
 
 
-  const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.icon, this.text, this.onPressed }) : super(key: key);
+  const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.customIcon, this.icon, this.iconColor, this.text, this.onPressed }) : super(key: key);
 
   @override
   State<BasicElevatedButton> createState() => _BasicElevatedButton();
@@ -53,23 +55,30 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
       mainAxisAlignment:
           widget.icon == null && widget.text != null // replace widget.text with your actual text variable
               ? MainAxisAlignment.center
-              : widget.icon != null && widget.text == null // replace widget.text with your actual text variable
+              : (widget.icon != null || widget.customIcon != null) && widget.text == null // replace widget.text with your actual text variable
                   ? MainAxisAlignment.center
                   : MainAxisAlignment.start,
       children: [
-        if (widget.icon != null)
+        if (widget.icon != null || widget.customIcon != null) // replace widget.icon with your actual icon variable
+          widget.icon != null ? 
           Icon(
-            Icons.add,
-            color: Colors.white,
+            widget.icon,
+            color: widget.iconColor,
             size: iconSize,
-          ), // your icon here
-        if (widget.icon != null && widget.text != null) // replace widget.text with your actual text variable
+          ) : 
+          Image(            
+              width: iconSize,
+              height: iconSize,
+              image: widget.customIcon!,
+              color: widget.iconColor
+            ),
+        if ((widget.icon != null || widget.customIcon != null) && widget.text != null) // replace widget.text with your actual text variable
           SizedBox(width: 8), // Add spacing only if icon and text exist
         if (widget.text != null) // replace widget.text with your actual text variable
           Expanded(
             child: Text(
               widget.text!, // replace 'Enabled' with your actual text variable
-              textAlign: widget.icon == null ? TextAlign.center : TextAlign.left,
+              textAlign: (widget.icon == null && widget.customIcon == null) ? TextAlign.center : TextAlign.left,
               style: TextStyle(fontSize: fontSize),
             ),
           ),

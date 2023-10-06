@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
+import '../../svg_widgets.dart';
+import '../Buttons/basic_elevated_button.dart';
+import '../Buttons/circle_outline_icon.dart';
 import '../join_condition.dart';
 
 class TSNPickupCard extends StatelessWidget {
@@ -42,6 +45,8 @@ class TSNPickupCard extends StatelessWidget {
     List<dynamic> roles =
         context.select<EventPageModel, List<dynamic>>((value) => value.roles);
     bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
+    String startTime = context.select<EventPageModel, String>((value) => value.startTime);
+    String endTime = context.select<EventPageModel, String>((value) => value.endTime);    
     bool isMember =
         context.select<EventPageModel, bool>((value) => value.isMember);
     String amountRemaining = context
@@ -99,7 +104,7 @@ class TSNPickupCard extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Text("07/26/1997",
+                                Text(startTime,
                                     style: TextStyle(
                                       color: AppColors.tsnWhite,                                      
                                       fontSize: FontSizes.xxs(context),
@@ -135,8 +140,26 @@ class TSNPickupCard extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                Text("TR 2a"),
-                                Text("TR 2b"),
+                               
+                                  BasicElevatedButton(
+                                    icon: Icons.person,
+                                    height: screenHeight * 0.05,  // 10% of screen height
+                                    width: screenWidth * 0.35,
+                                    backgroundColor: AppColors.tsnDarkGrey, text: "5/12"
+                                  ),
+
+                                   // price['amount'] == 0 ? 
+                                  BasicElevatedButton(
+                                    customIcon: SVGWidgets().getSoccerBallSVGImage(),
+                                    height: screenHeight * 0.05,  // 10% of screen height
+                                    width: screenWidth * 0.35,
+                                    backgroundColor: AppColors.tsnGreen, text: "Join"
+                                  ),
+
+                                  //  : 
+
+                                // Text("TR 2a"),
+                                // Text("TR 2b"),
                               ],
                             ),
                           ],
