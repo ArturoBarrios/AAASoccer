@@ -16,6 +16,8 @@ import '../../views/team/create/create.dart';
 import '../../views/location/create.dart';
 
 class HomePageModel extends ChangeNotifier {
+
+  
   String _testText = "";
   String get testText => _testText;
   set testText(String text) {
@@ -95,71 +97,71 @@ class HomePageModel extends ChangeNotifier {
       "enabled": true,
       "name": StringConstants.MYEVENTSTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().pickup(),
     },
     Constants.MYTEAMS: {
       "key": Constants.MYTEAMS,
       "enabled": false,
       "name": StringConstants.MYTEAMSTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().pickup(),
     },
     Constants.PICKUP: {
       "key": Constants.PICKUP,
       "enabled": false,
       "name": StringConstants.PICKUPGAMESTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().pickup(),
     },
     Constants.PLAYER: {
       "key": Constants.PLAYER,
       "enabled": false,
       "name": StringConstants.PLAYERSTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().pickup(),
     },
     Constants.TEAM: {
       "key": Constants.TEAM,
       "enabled": false,
       "name": StringConstants.TEAMSTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().pickup(),
     },
     Constants.TRAINING: {
       "key": Constants.TRAINING,
       "enabled": false,
       "name": StringConstants.TRAININGSTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().training(),
     },
     Constants.TRYOUT: {
       "key": Constants.TRYOUT,
       "enabled": false,
       "name": StringConstants.TRYOUTSTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().tryout(),
     },
     Constants.TOURNAMENT: {
       "key": Constants.TOURNAMENT,
       "enabled": false,
       "name": StringConstants.TOURNAMENTSTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().tournament(),
     },
     Constants.LEAGUE: {
       "key": Constants.LEAGUE,
       "enabled": false,
       "name": StringConstants.LEAGUESTITLE,
       "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
+      "image": SVGWidgets().league(),
     },
-    Constants.LOCATION: {
-      "key": Constants.LOCATION,
-      "enabled": false,
-      "name": StringConstants.LOCATIONSTITLE,
-      "description": "",
-      "image": SVGWidgets().getSoccerBallSVGImage(),
-    },
+    // Constants.LOCATION: {
+    //   "key": Constants.LOCATION,
+    //   "enabled": false,
+    //   "name": StringConstants.LOCATIONSTITLE,
+    //   "description": "",
+    //   "image": SVGWidgets().pickup(),
+    // },
   };
 
   Map<dynamic, dynamic> get enabledSelections2 => _enabledSelections2;

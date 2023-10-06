@@ -183,8 +183,7 @@ class TeamCommand extends BaseCommand {
       List<dynamic> teams = getTeamsNearLocationResp['data'];
       print("teams: ");
       print(teams);
-      appModel.teams = teams;
-      appModel.teamsNearMe = teams;
+      appModel.teams = teams;      
     }
 
     if (!appModel.isGuest) {
@@ -192,11 +191,11 @@ class TeamCommand extends BaseCommand {
     }
   }
 
-  List<dynamic> getAppModelTeamsNearMe() {
-    print("getAppModelTeamsNearMe");
-    print("appModel.teamsNearMe: ${appModel.teamsNearMe}");
-    return appModel.teamsNearMe;
+  List<dynamic> getAppModelTeams(){
+    return appModel.teams;
   }
+
+
 
   List<dynamic> sortTeams(List<dynamic> teams, String sortBy) {
     //assume teams are sorted by date for now

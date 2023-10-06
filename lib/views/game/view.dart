@@ -161,6 +161,7 @@ class _PickupViewState extends State<PickupView> {
         context.select<EventPageModel, List>((value) => value.players);
     List chats = context.watch<EventPageModel>().chats;
     List payments = context.watch<EventPageModel>().payments;
+    List fieldLocations = context.watch<EventPageModel>().fieldLocations;
     dynamic price = context.watch<EventPageModel>().price;
     JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
     JoinCondition eventPaymentJoin = context.watch<EventPageModel>().eventPaymentJoin;
@@ -228,10 +229,14 @@ class _PickupViewState extends State<PickupView> {
                                 .1), //10% padding
                         height: 200.0,
                         child: MyMapPage(
-                            latitude: mainEvent['location']['data'][0]
-                                ['latitude'],
-                            longitude: mainEvent['location']['data'][0]
-                                ['longitude']),
+                            latitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['latitude']
+                              : 0.0,
+                            longitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['data'][0]['longitude']
+                              : 0.0,
+                          ),
+
                       ),
                       //join widget
                       GetJoinEventWidget(
@@ -250,9 +255,9 @@ class _PickupViewState extends State<PickupView> {
                         userParticipants: userParticipants,
                       ),
                       //location search bar
-                      locationSearchBar = LocationSearchBar(
-                          initialValue: mainEvent['location']['data'][0]
-                              ['name']),
+                      // locationSearchBar = LocationSearchBar(
+                      //     initialValue: mainEvent['location']['data'][0]
+                      //         ['name']),
                       //player list
                       PlayerList(
                         event: mainEvent,

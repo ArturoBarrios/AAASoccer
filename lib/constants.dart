@@ -72,6 +72,19 @@ class Constants {
   static const String MEDICALSTAFF = "MEDICALSTAFF"; 
   static const String VOLUNTEERCOORDINATOR = "VOLUNTEERCOORDINATOR"; 
   static const String SPONSORLIAISON = "SPONSORLIAISON"; 
+
+  //color modes
+  static const String DEFAULTMODE = "DEFAULTMODE";
+  static const String DARKMODE = "DARKMODE";
+
+  //pages
+  static const String HOMEPAGE = "HOMEPAGE";
+  static const String LOCATIONSPAGE = "LOCATIONSPAGE";
+  static const String CHATSPAGE = "CHATSPAGE";
+  static const String SCHEDULEPAGE = "SCHEDULEPAGE";
+
+  
+
   
 
 

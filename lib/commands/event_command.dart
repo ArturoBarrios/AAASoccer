@@ -522,7 +522,7 @@ class EventCommand extends BaseCommand {
       double longitude = event['location']['data'][0]['longitude'];
 
       double distanceFromUser =
-          await GeoLocationCommand().getDistanceFromUser(latitude, longitude);
+          await GeoLocationCommand().getDistanceFromPoint(latitude, longitude, appModel.currentPosition);
       print("distanceFromUser: " + distanceFromUser.toString());
       if (distanceFromUser > distanceFrom) {
         events.remove(event);
@@ -1153,7 +1153,8 @@ class EventCommand extends BaseCommand {
       "chats": [],
       "groupStage": [],
       "tournamentStage": [],
-      "userParticipants": [],
+      "userParticipants": [],      
+      "fieldLocations": [],
     };
     print("events length: " + events.length.toString());
 
@@ -1229,6 +1230,7 @@ class EventCommand extends BaseCommand {
       isMyEventResp['teamAmountPaid'] = eventPageModel.teamAmountPaid;
       isMyEventResp['amountRemaining'] = eventPageModel.amountRemaining;
       isMyEventResp['teamAmountRemaining'] = eventPageModel.teamAmountRemaining;
+      isMyEventResp['fieldLocations'] = eventPageModel.fieldLocations;
 
       print("successfully ran details function");
       isMyEventResp["success"] = true;

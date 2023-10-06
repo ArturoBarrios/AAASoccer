@@ -190,7 +190,7 @@ mixin EventMixin {
 
   Future<void> setupTeamList() async {
     print("setupTeamList");
-    teamList = await TeamCommand().getAppModelTeamsNearMe();
+    teamList = await TeamCommand().getAppModelTeams();
     teamList.forEach((element) {
       print("teamList element: " + element.toString());
       

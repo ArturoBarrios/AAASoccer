@@ -1,6 +1,7 @@
 import 'package:soccermadeeasy/graphql/fragments/request_fragments.dart';
 import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
 import 'package:soccermadeeasy/graphql/fragments/chat_fragments.dart';
+import 'package:soccermadeeasy/graphql/fragments/location_fragments.dart';
 
 import 'image_fragments.dart';
 
@@ -127,12 +128,9 @@ class EventFragments {
             ${TeamFragments().fullTeam()}
           }
         }
-      location{
+      fieldLocations{
         data{
-        name
-        _id
-        latitude
-        longitude
+          ${LocationFragments().FieldLocationFull()}        
         }
       }
       userParticipants{     
@@ -192,21 +190,18 @@ class EventFragments {
       startTime
       endTime  
       capacity
-      createdAt                  
-      
+      createdAt                 
+      fieldLocations{
+        data{
+          ${LocationFragments().FieldLocationFull()}
+        }
+      } 
       teams{
           data{
             _id
           }
         }
-      location{
-        data{
-        name
-        _id
-        latitude
-        longitude
-        }
-      }
+      
       userParticipants{     
         data{
           _id

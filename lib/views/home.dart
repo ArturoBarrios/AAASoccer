@@ -6,6 +6,9 @@ import 'package:soccermadeeasy/extensions/filter_extension.dart';
 import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 
+import '../commands/base_command.dart';
+import '../components/Buttons/basic_elevated_button.dart';
+import '../components/Dialogues/animated_dialogu.dart';
 import '../components/Loading/loading_screen.dart';
 import '../components/models/button_model.dart';
 import '../models/componentModels/filter_result_model.dart';
@@ -36,7 +39,8 @@ import '../strings.dart';
 import '../constants.dart';
 import '../models/events_model.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-
+import '../components/search_field.dart';
+import '../styles/colors.dart';
 import 'onboarding/onboarding_view.dart';
 
 class Home extends StatefulWidget {
@@ -425,6 +429,11 @@ class _Home extends State<Home> {
     context.select<AppModel, List<dynamic>>((value) => value.myEvents);
 
     context.select<AppModel, List<dynamic>>((value) => value.teams);
+    
+    Map<String, Widget Function(BuildContext)> createPages = context.select<AppModel, Map<String,Widget Function(BuildContext)>>((value) => value.createPages);
+    
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     print("selectedKey in build: " + selectedKey.toString());
     print("selectedObjects length in build: " +
@@ -459,33 +468,73 @@ class _Home extends State<Home> {
         child:
             Drawer(child: const SideNavs().getMainSideNav(context, userObject)),
       ),
-      body: RefreshIndicator(
+      body: 
+      RefreshIndicator(
         onRefresh: onReload,
-        child: SingleChildScrollView(
-          child: Stack(
+        child:  Stack(
             children: <Widget>[
               Column(
                 children: [
+                  Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Row(
+                            children: [
+                                Expanded( child:
+                              SearchField(label: StringConstants.searchLabel)
+                                ),
+                              SizedBox(width: 10), // Add some spacing between the search field and the button
+                              BasicElevatedButton(
+                                icon: SVGWidgets().getSoccerBallSVGImage(),
+                                height: screenHeight * 0.05,  // 10% of screen height
+                                width: screenWidth * 0.25,
+                                backgroundColor: AppColors.tsnGreen, text: "Create",
+                                onPressed: () async {
+                                    print("Add New Chat Pressed");
+                                    List<dynamic> primaryList = createPages.keys.toList();
+                                    List<dynamic> secondaryList = [];
+                                    Map<int, dynamic> result = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AnimatedDialog(
+                                          details: {"title": "IDK"},
+                                          items: primaryList,
+                                          singleSelect: false,
+                                          secondaryItems: secondaryList,
+                                          goToFunctions: [],
+                                        );
+                                      },
+                                    );
+                                    if (result.isNotEmpty) {
+                                      print("result: " + result.toString());
+                                      // goToPage(result.keys.first, primaryList);
+                                      BaseCommand().goToCreatePage(
+                                        context, 
+                                        result.keys.first, 
+                                        primaryList
+                                      );
+                                    }
+                                                }
+                              ),
+                            ],
+                          )
+                  ),
                   SizedBox(
                     height:
-                        200, // Define the height you want for your card section
+                        80, // Define the height you want for your card section
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       controller: _selectEventTypeController,
                       itemCount: enabledSelections2.length,
                       itemBuilder: (_, index) {
                         dynamic key = enabledSelections2.keys.elementAt(index);
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10),
-                          child: SelectIconButton(
+                        return SelectIconButton(
                             eventObject: enabledSelections2[key],
-                            svgImage: svgImage,
+                            svgImage: enabledSelections2[key]['image'],
                             index: index,
                             onTapEvent: () => isFilteringEnabled
                                 ? clearFiltering(isPop: false)
                                 : null,
-                          ),
+                          
                         );
                       },
                     ),
@@ -579,21 +628,23 @@ class _Home extends State<Home> {
                         )
                       : Container(),
                   !cardsLoading
-                      ?
+                      ?                      
                       //list view
-                      ListView.builder(
-                          controller: _selectEventController,
-                          itemCount: cards.length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (_, index) => Card(
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 10,
+                      Expanded(child: 
+                        ListView.builder(
+                            controller: _selectEventController,
+                            itemCount: cards.length,
+                            shrinkWrap: true,
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemBuilder: (_, index) => Card(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 10,
+                              ),
+                              child: cards[index],
                             ),
-                            child: cards[index],
-                          ),
-                        )
+                          )                     
+                      )
                       : const SizedBox(
                           height: 100,
                           width: 100,
@@ -605,14 +656,17 @@ class _Home extends State<Home> {
                               numDots: 10,
                             ),
                           ),
-                        ),
+                      ),
                 ],
               )
             ],
           ),
-        ),
+        
       ),
-      bottomNavigationBar: const Footers().getMainBottomNav(context),
+      bottomNavigationBar: 
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0), // Padding from the bottom of the screen
+          child:const Footers().getMainBottomNav(context)),
     );
   }
 }

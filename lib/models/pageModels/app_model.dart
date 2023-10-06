@@ -1,9 +1,127 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../constants.dart';
+import '../../strings.dart';
+import '../../svg_widgets.dart';
+import '../../views/game/create.dart';
+import '../../views/home.dart';
+import '../../views/league/create.dart';
+import '../../views/location/create.dart';
+import '../../views/location/map.dart';
+import '../../views/team/create/create.dart';
+import '../../views/tournament/create.dart';
+import '../../views/training/create.dart';
+import '../../views/tryout/create.dart';
+import '../appModels/Location.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+
 class AppModel extends ChangeNotifier {
   void nukeModelData() {}
+
+    Map<String, Widget Function(BuildContext)> createPages = {
+      "Pickup Game": (context) => const GameCreate(),
+      "Team": (context) => const TeamCreate(),
+      "Tournament": (context) => const TournamentCreate(),
+      "League": (context) => const LeagueCreate(),
+      "Training": (context) => const TrainingCreate(),
+      "Tryout": (context) => const TryoutCreate(),
+      "Location": (context) => const LocationCreate(),
+    };
+
+    Map<dynamic, dynamic> _selectedPages = {
+      Constants.HOMEPAGE: {
+        "key": Constants.HOMEPAGE,
+        "enabled": true,
+        "name": StringConstants.HOMEPAGETITLE,
+        "description": "",      
+        'icon': Icons.home,   
+        'selectAction': (BuildContext context) {
+          print("in selectAction");
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const Home();
+              },
+            ),
+          );
+        },     
+      },
+      Constants.LOCATIONSPAGE: {
+        "key": Constants.LOCATIONSPAGE,
+        "enabled": false,
+        "name": StringConstants.LOCATIONSPAGETITLE,
+        "description": "",
+        'icon': Icons.location_on,
+        'selectAction': (BuildContext context) {
+          print("in selectAction");
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const LocationsMap();
+              },
+            ),
+          );
+        }, 
+      },
+      Constants.CHATSPAGE: {
+        "key": Constants.CHATSPAGE,
+        "enabled": false,
+        "name": StringConstants.CHATSPAGETITLE,
+        "description": "",
+        'icon': Icons.chat,
+        'selectAction': (BuildContext context) {
+          print("in selectAction");
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const Home();
+              },
+            ),
+          );
+        }, 
+      },
+      Constants.SCHEDULEPAGE: {
+        "key": Constants.SCHEDULEPAGE,
+        "enabled": false,
+        "name": StringConstants.SCHEDULEPAGETITLE,
+        "description": "",
+        "icon": Icons.calendar_month_outlined,
+        'selectAction': (BuildContext context) {
+          print("in selectAction");
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return const Home();
+              },
+            ),
+          );
+        }, 
+      },
+  };
+  Map<dynamic, dynamic> get selectedPages => _selectedPages;
+  set selectedPages(Map<dynamic, dynamic> selectedPages) {
+    _selectedPages = selectedPages;
+    notifyListeners();
+  }
+
+  List<Svg> locationSvgs = [
+    SVGWidgets().getSoccerBallSVGImage(),
+    SVGWidgets().deleteSVGImage(),
+    SVGWidgets().friendsSVGImage(),    
+  ];
+  
+  List<Svg> priceSvgs = [
+    SVGWidgets().getSoccerBallSVGImage(),
+    SVGWidgets().deleteSVGImage(),
+    SVGWidgets().deleteSVGImage(),
+  ];
 
   ValueNotifier<GraphQLClient>? _faunaClient = null;
   ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
@@ -12,10 +130,24 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _appColorMode = Constants.DEFAULTMODE;
+  String get appColorMode => _appColorMode;
+  set appColorMode(String appColorMode) {
+    _appColorMode = appColorMode;
+    notifyListeners();
+  }
+
   bool _onesignalUserDetailsSetup = false;
   bool get onesignalUserDetailsSetup => _onesignalUserDetailsSetup;
   set onesignalUserDetailsSetup(bool onesignalUserDetailsSetup) {
     _onesignalUserDetailsSetup = onesignalUserDetailsSetup;
+    notifyListeners();
+  }
+  
+  int _distanceFilter = 200;
+  int get distanceFilter => _distanceFilter;
+  set distanceFilter(int distanceFilter) {
+    _distanceFilter = distanceFilter;
     notifyListeners();
   }
 
@@ -91,13 +223,6 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List _teamsNearMe = [];
-  List get teamsNearMe => _teamsNearMe;
-  set teamsNearMe(List teamsNearMe) {
-    _teamsNearMe = teamsNearMe;
-    notifyListeners();
-  }
-
   List _teams = [];
   List get teams => _teams;
   set teams(List teams) {
@@ -116,6 +241,20 @@ class AppModel extends ChangeNotifier {
   List get friends => _friends;
   set friends(List friends) {
     _friends = friends;
+    notifyListeners();
+  }
+  
+  List<Location> _facilityLocations = [];
+  List<Location> get facilityLocations => _facilityLocations;
+  set facilityLocations(List<Location> facilityLocations) {
+    _facilityLocations = facilityLocations;
+    notifyListeners();
+  }
+
+  List<Location> _locations = [];
+  List<Location> get locations => _locations;
+  set locations(List<Location> locations) {
+    _locations = locations;
     notifyListeners();
   }
 

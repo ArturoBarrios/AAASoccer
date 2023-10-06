@@ -30,6 +30,10 @@ class StringConstants {
   static const String priceHint = 'Please Enter Price';
   static const String priceErrorValue = 'Price';
 
+  static const String urlLabel = 'URL*';
+  static const String urlHint = 'Please Enter URL';
+  static const String urlErrorValue = 'Not a Valid URL';
+
   static const String capacityLabel = 'Capacity*';
   static const String capacityHint = 'Please Enter Capacity';
   static const String capacityErrorValue = 'Capacity';
@@ -87,4 +91,15 @@ class StringConstants {
   static const String backBtn = 'Back';
   static const String createGameBtn = 'Create Game';
   static const String nextBtn = 'Next';
+    
+  static const String searchLabel = 'Search';
+
+  //pages
+  static const String HOMEPAGETITLE = "Home";
+  static const String LOCATIONSPAGETITLE = "Locations";
+  static const String CHATSPAGETITLE = "Chats";
+  static const String SCHEDULEPAGETITLE = "Schedule";
+
+
+
 }

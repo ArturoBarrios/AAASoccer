@@ -25,12 +25,14 @@ class TeamFragments {
 
               }
             }
-            location{
+            teamLocations{
               data{
-                name
-                _id
-                latitude
-                longitude
+                location{
+                  name
+                  _id
+                  latitude
+                  longitude
+                }
               }
             }    
             userParticipants{
@@ -97,14 +99,16 @@ class TeamFragments {
 
               }
             }
-            location{
+            teamLocations{
               data{
-                name
-                _id
-                latitude
-                longitude
+                location{
+                  name
+                  _id
+                  latitude
+                  longitude
+                }
               }
-            }    
+            }  
             userParticipants{
               data{
                 _id

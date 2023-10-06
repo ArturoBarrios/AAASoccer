@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/views/event/create.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
+import '../models/pageModels/app_model.dart';
 import '../styles/asset_constants.dart';
+import '../styles/colors.dart';
 import '../views/game/create.dart';
 import '../views/images/view_images.dart';
 import '../views/location/create.dart';
@@ -24,7 +27,10 @@ class Footers extends StatefulWidget {
   @override
   State<Footers> createState() => _Footers();
 
-  BottomAppBar getMainBottomNav(BuildContext context) {
+  Widget getMainBottomNav(BuildContext context) {
+    Map<dynamic,dynamic>selectedPages = 
+      context.select<AppModel, Map<dynamic, dynamic>>((value) => value.selectedPages);
+
     int selectIndex = 0;
     Map<String, Widget Function(BuildContext)> pages = {
       "Pickup Game": (context) => const GameCreate(),
@@ -34,7 +40,7 @@ class Footers extends StatefulWidget {
       "Training": (context) => const TrainingCreate(),
       "Tryout": (context) => const TryoutCreate(),
       "Location": (context) => const LocationCreate(),
-    };
+    };    
 
     void goToPage(
       int indexResult,
@@ -54,107 +60,70 @@ class Footers extends StatefulWidget {
       }
     }
 
-    BottomAppBar bottomAppBar = BottomAppBar(
-      color: Colors.white,
-      child: SizedBox(
-        height: 56,
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  return Container(
+  width: 300,
+  height: 50,
+  margin: const EdgeInsets.all(4.0),
+  decoration: BoxDecoration(
+    color: AppColors.tsnBlack,
+    borderRadius: BorderRadius.circular(32), // Increased the roundness
+  ),
+  child: Row(
+  children: selectedPages.entries.map<Widget>((MapEntry<dynamic, dynamic> entry) {
+    // Now you have both the key and the value for each entry in selectedPages
+    dynamic key = entry.key;
+    Map<dynamic, dynamic> item = entry.value;
+    print("item: " + item.toString());
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => {
+          print("onTap"),
+          item['selectAction'](context),
+        }, // Assuming onTap is a function
+        child: Container(
+          margin: const EdgeInsets.all(2.0),
+          padding: const EdgeInsets.all(4.0),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: item['enabled'] ? AppColors.tsnLightGreen : Colors.transparent,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(32), // Increased the roundness
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconBottomBar(
-                  text: "Home",
-                  icon: Icons.home_outlined,
-                  selected: true,
-                  onPressed: () {}),
-              IconBottomBar(
-                  text: "Locations",
-                  icon: Icons.location_on,
-                  selected: false,
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute<void>(
-                      builder: (BuildContext context) {
-                        return const ShowLocations();
-                      },
-                    ));
-                  }),
-              IconBottomBar2(
-                  text: "Add",
-                  icon: Icons.add_outlined,
-                  selected: false,
-                  onPressed: () async {
-                    print("Add New Chat Pressed");
-                    List<dynamic> primaryList = pages.keys.toList();
-                    List<dynamic> secondaryList = [];
-                    Map<int, dynamic> result = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AnimatedDialog(
-                          details: {"title": "IDK"},
-                          items: primaryList,
-                          singleSelect: false,
-                          secondaryItems: secondaryList,
-                          goToFunctions: [],
-                        );
-                      },
-                    );
-                    if (result.isNotEmpty) {
-                      print("result: " + result.toString());
-                      goToPage(result.keys.first, primaryList);
-                    }
-                    // int? index = await showAnimatedDialog<int>(
-                    //   context: context,
-                    //   barrierDismissible: true,
-                    //   builder: (BuildContext context) {
-                    //     return ClassicListDialogWidget<dynamic>(
-                    //         selectedIndex: selectIndex,
-                    //         titleText: 'Title',
-                    //         listType: ListType.single,
-                    //         onPositiveClick: () {
-                    //           print("onPositiveClick: $selectIndex");
-                    //           goToPage(selectIndex);
-                    //         },
-                    //         activeColor: Colors.green,
-                    //         dataList: pages.keys.toList());
-                    //   },
-                    //   animationType: DialogTransitionType.size,
-                    //   curve: Curves.linear,
-                    // );
-
-                    // print('selectIndex:$index');
-                    // goToPage(index!);
-                  }),
-              IconBottomBar(
-                  text: "Cart",
-                  icon: Icons.chat,
-                  selected: false,
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute<void>(
-                      builder: (BuildContext context) {
-                        return const ChatsView();
-                      },
-                    ));
-                  }),
-              IconBottomBar(
-                  text: "Requests",
-                  icon: Icons.notifications_active_rounded,
-                  selected: false,
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute<void>(
-                      builder: (BuildContext context) {
-                        return RequestsView();
-                      },
-                    ));
-                  })
+              Icon(
+                item['icon'],
+                size: 18,
+                color: AppColors.tsnGreyerWhite
+              ),
+              SizedBox(height: 2),
+              Text(
+                item['name'],
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.tsnGreyerWhite
+                )
+              ),
             ],
           ),
         ),
       ),
     );
+  }).toList(),
 
-    return bottomAppBar;
+
+  ),
+);
+
+
+
+
+
+
+
   }
 
   BottomNavigationBar getChatBottomNav(BuildContext context) {

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 
+import '../models/appModels/Location.dart';
+import '../models/enums/LocationType.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -15,7 +17,57 @@ import 'package:url_launcher/url_launcher.dart';
 import 'geolocation_command.dart';
 
 
+
 class LocationCommand extends BaseCommand {
+  
+  //get locations with conditions: 
+  //2+ events in the last 30 days
+  //2+ teams in the last 30 days
+  //location details filled out(description, url)
+  Future<Map<String,dynamic>> getLocationsNearMe(LocationType locationType) async{
+    Map<String, dynamic> getLocationsNearMeResp = {"success": false, "message": "Default", "data": null};
+    try{
+      int distance = appModel.distanceFilter;
+      Position currentLocation = await LocationCommand().getCurrentPosition();
+      List<Location> locations = [];
+      if(locationType == LocationType.FACILITY){
+        locations = appModel.facilityLocations;
+        if(locations.length == 0){
+          locations = await getLocationsByType(LocationType.FACILITY);
+        }  
+      } 
+      
+      locations.forEach((location) async {
+        double distanceFromUser = await GeoLocationCommand().getDistanceFromPoint(location.latitude!, location.longitude!, currentLocation);
+        if(distanceFromUser <= distance){
+          locations.add(location);
+        }      
+      });
+
+      getLocationsNearMeResp["success"] = true;
+      getLocationsNearMeResp["message"] = "Success";
+      getLocationsNearMeResp["data"] = locations;
+
+    } on ApiException catch(e){
+      print('Query failed: $e');
+      return getLocationsNearMeResp;
+    }
+
+    return getLocationsNearMeResp;
+  }
+
+  Future<List<Location>> getLocationsByType(LocationType locationType) async{
+    List<Location> locations = [];
+    try{
+      
+      return locations;
+    } on ApiException catch(e){
+      print('Query failed: $e');
+      return locations;
+    }
+  }
+
+  
 
   void setCurrentPosition(Position position){
     appModel.currentPosition = position;    

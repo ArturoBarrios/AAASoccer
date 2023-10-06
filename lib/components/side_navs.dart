@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/components/playground_widget.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
+import '../styles/colors.dart';
 import '../views/profile/profile.dart';
 import '../views/chats/view.dart';
 import '../views/home.dart';
@@ -52,7 +53,7 @@ class SideNavs extends StatefulWidget {
           },
           child: DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.orange,
+              color: AppColors.tsnBlack,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -65,8 +66,16 @@ class SideNavs extends StatefulWidget {
                 ),
                 SizedBox(height: 10),
                 userObject != null && userObject['username'] != null
-                    ? Text(userObject['username'])
-                    : Text("Guest"),
+                    ? Text(
+                        userObject['username'],
+                        style: TextStyle(
+                          color: AppColors.tsnWhite, // Replace with your desired color
+                        ),
+                      )
+                    : Text("Guest",
+                        style: TextStyle(
+                          color: AppColors.tsnWhite, // Replace with your desired color
+                        )),
               ],
             ),
           ),
