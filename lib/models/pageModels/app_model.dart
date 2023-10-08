@@ -28,7 +28,7 @@ class AppModel extends ChangeNotifier {
   // Setter remains the same if you still need to set this value manually
   set appTimeSinceLastLoad(double appTimeSinceLastLoad) {
     _appTimeSinceLastLoad = appTimeSinceLastLoad;
-    print("_appTimeSinceLastLoad: $_appTimeSinceLastLoad");
+    // print("_appTimeSinceLastLoad: $_appTimeSinceLastLoad");
     if(_appTimeSinceLastLoad == 300){
       print("in appTimeSinceLastLoad == 300");
       this.shouldReloadEvents = true;

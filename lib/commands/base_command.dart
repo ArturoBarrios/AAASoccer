@@ -38,6 +38,7 @@ import 'chat_command.dart';
 import 'home_page_command.dart';
 import 'location_command.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:intl/intl.dart';
 
 late BuildContext _mainContext;
 // The commands will use this to access the Provided models and services.
@@ -62,24 +63,48 @@ class BaseCommand {
 
   void initializeData() {}
 
-  startReloadTimer(){
+  String formatEventTime(String startTime, String endTime) {
+    int startTimeInt = int.parse(startTime);
+    int endTimeInt = int.parse(endTime);
+
+    DateTime startDateTime = DateTime.fromMillisecondsSinceEpoch(startTimeInt);
+    DateTime endDateTime = DateTime.fromMillisecondsSinceEpoch(endTimeInt);
+    DateTime now = DateTime.now();
+
+    String formattedStart;
+    String formattedEnd;
+
+    // Check if the year is the current year
+    if (startDateTime.year == now.year) {
+      formattedStart = DateFormat('M/d h:mma').format(startDateTime);
+    } else {
+      formattedStart = DateFormat('M/d/yyyy h:mma').format(startDateTime);
+    }
+
+    // Assuming the end time is on the same day as the start time
+    formattedEnd = DateFormat('h:mma').format(endDateTime);
+
+    return '$formattedStart-$formattedEnd';
+  }
+
+  startReloadTimer() {
     print("startReloadTimer");
     appModel.startTimer();
   }
 
-  stopReloadTimer(){
+  stopReloadTimer() {
     print("stopReloadTimer");
     appModel.stopTimer();
   }
 
-  void resetReloadTimer(){
+  void resetReloadTimer() {
     print("resetReloadTimer");
     appModel.appTimeSinceLastLoad = 0;
     startReloadTimer();
   }
 
   void goToCreatePage(
-    BuildContext context,    
+    BuildContext context,
     int indexResult,
     List<dynamic> primaryList,
   ) {

@@ -1,6 +1,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:soccermadeeasy/extensions/parse_roles.dart';
+import '../../commands/base_command.dart';
 import '../../components/join_condition.dart';
 import '../../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
@@ -14,6 +15,13 @@ class EventPageModel extends ChangeNotifier {
   String get startTime => _startTime;
   set startTime(String startTime) {
     _startTime = startTime;        
+    notifyListeners();
+  }
+  
+  String _formattedEventTime = "";
+  String get formattedEventTime => _formattedEventTime;
+  set formattedEventTime(String formattedEventTime) {
+    _formattedEventTime = formattedEventTime;        
     notifyListeners();
   }
   
@@ -41,8 +49,7 @@ class EventPageModel extends ChangeNotifier {
   dynamic _mainEvent = null;
   dynamic get mainEvent => _mainEvent;
   set mainEvent(dynamic mainEvent) {
-    _mainEvent = mainEvent;
-    _updateFieldsBasedOnMainEvent();
+    _mainEvent = mainEvent;   
     notifyListeners();
   }
 
@@ -165,13 +172,6 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _currentUserId = "";
-  String get currentUserId => _currentUserId;
-  set currentUserId(String currentUserId) {
-    _currentUserId = currentUserId;
-    notifyListeners();
-  }
-
   List _payments = [];
   List get payments => _payments;
   set payments(List payments) {
@@ -212,79 +212,4 @@ class EventPageModel extends ChangeNotifier {
   }
 
 
-
-  void _updateFieldsBasedOnMainEvent() {
-    if (_mainEvent != null) {
-      userParticipants = _mainEvent['userParticipants']['data'];
-      roles = _getEventRoles();
-      isMine = roles.contains("ORGANIZER");
-      isMember = roles.contains("PLAYER");
-      chats = _mainEvent['chats']['data'];
-      teams = _mainEvent['teams']['data'];
-      startTime = _mainEvent['startTime'];
-      endTime = _mainEvent['endTime'];      
-      fieldLocations = _mainEvent['fieldLocations']['data'];
-      _getParticipants();
-      payments = _mainEvent['payments']['data'];
-      _getAmountPaid();
-      price = _mainEvent['price'];
-      
-    }
-  }
-
-  List<dynamic> _getEventRoles() {
-    List<dynamic> tempRoles = [];
-
-    for (int i = 0; i < userParticipants.length; i++) {
-      if (userParticipants[i]['user']['_id'] == currentUserId) {
-        tempRoles = userParticipants[i]['roles'].toString().parseRoles();
-      }
-    }
-
-    return tempRoles;
-  }
-
-  void _getParticipants() {
-    List<dynamic> tempOrganizers = [];
-    List<dynamic> tempPlayers = [];
-
-    for (int i = 0; i < userParticipants.length; i++) {
-      dynamic participant = userParticipants[i];
-      List<String> roles = participant['roles'].toString().parseRoles();
-      if (roles.contains("ORGANIZER")) {
-        tempOrganizers.add(userParticipants);
-      }
-      if (roles.contains("PLAYER")) {
-        tempPlayers.add(userParticipants);
-      }
-    }
-
-    organizers = tempOrganizers;
-    players = tempPlayers;
-  }
-
-  void _getAmountPaid() {
-    if (price == null) return;
-
-    double tempAmountPaid = 0.00;
-    double tempTeamAmountPaid = 0.00;
-
-    for (int i = 0; i < payments.length; i++) {
-      if (payments[i]['user']['_id'] == currentUserId) {
-        if (payments[i]['isPlayerPayment']) {
-          tempAmountPaid += double.parse(payments[i]['amount']);
-        } else if (payments[i]['isTeamPayment']) {
-          tempTeamAmountPaid += double.parse(payments[i]['amount']);
-        }
-      }
-    }
-    amountPaid = (tempAmountPaid).toStringAsFixed(2);
-    teamAmountPaid = (tempTeamAmountPaid).toStringAsFixed(2);
-    amountRemaining =
-        (double.parse(mainEvent['price']['amount']) - tempAmountPaid)
-            .toStringAsFixed(2);
-    teamAmountRemaining =
-        (double.parse(mainEvent['price']['teamAmount']) - tempTeamAmountPaid)
-            .toStringAsFixed(2);
-  }
 }

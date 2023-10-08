@@ -11,27 +11,19 @@ import '../Buttons/circle_outline_icon.dart';
 import '../join_condition.dart';
 
 class TSNPickupCard extends StatelessWidget {
-  final List<Widget> topLeft;
-  final List<Widget> topRight;
-  final List<Widget> bottomLeft;
-  final List<Widget> bottomRight;
+  final dynamic pickupCardDetails;
   final Color backgroundColor;
   final Svg? svgImage;
   final double? width;
   final double? height;
 
-  TSNPickupCard({
-    required this.topLeft,
-    required this.topRight,
-    required this.bottomLeft,
-    required this.bottomRight,
+  TSNPickupCard({    
+    required this.pickupCardDetails,
     required this.backgroundColor,
     this.svgImage,
     this.width,
     this.height,
   });
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -39,40 +31,23 @@ class TSNPickupCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     //event model data
-    dynamic mainEvent =
-        context.select<EventPageModel, dynamic>((value) => value.mainEvent);
-    dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
-    List<dynamic> roles =
-        context.select<EventPageModel, List<dynamic>>((value) => value.roles);
-    bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
-    String startTime = context.select<EventPageModel, String>((value) => value.startTime);
-    String endTime = context.select<EventPageModel, String>((value) => value.endTime);    
-    bool isMember =
-        context.select<EventPageModel, bool>((value) => value.isMember);
-    String amountRemaining = context
-        .select<EventPageModel, String>((value) => value.amountRemaining);
-    String amountPaid =
-        context.select<EventPageModel, String>((value) => value.amountPaid);
-    String teamAmountRemaining = context
-        .select<EventPageModel, String>((value) => value.amountRemaining);
-    String teamAmountPaid =
-        context.select<EventPageModel, String>((value) => value.teamAmountPaid);
-    List userParticipants =
-        context.select<EventPageModel, List>((value) => value.userParticipants);
-    List teams = context.select<EventPageModel, List>((value) => value.teams);
-    List players =
-        context.select<EventPageModel, List>((value) => value.players);
-    List chats = context.watch<EventPageModel>().chats;
-    List payments = context.watch<EventPageModel>().payments;
-    List fieldLocations = context.watch<EventPageModel>().fieldLocations;
-    dynamic price = context.watch<EventPageModel>().price;
-    JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
-    JoinCondition eventPaymentJoin = context.watch<EventPageModel>().eventPaymentJoin;
-    JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
-    JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
-
-
-
+    dynamic mainEvent = pickupCardDetails['mainEvent'];
+        
+    List<dynamic> roles = pickupCardDetails['roles'];        
+    bool isMine = pickupCardDetails['isMine'];
+    String formattedEventTime = pickupCardDetails['formattedEventTime'];                    
+    bool isMember = pickupCardDetails['isMember'];        
+    String amountRemaining = pickupCardDetails['amountRemaining'];        
+    String amountPaid = pickupCardDetails['amountPaid'];        
+    String teamAmountRemaining = pickupCardDetails['teamAmountRemaining'];        
+    String teamAmountPaid = pickupCardDetails['teamAmountPaid'];                    
+    List organizers = pickupCardDetails['organizers'];                
+    List fieldLocations = pickupCardDetails['fieldLocations'];
+    dynamic price = pickupCardDetails['price'];
+    JoinCondition eventRequestJoin = pickupCardDetails['eventRequestJoin'];        
+    JoinCondition eventPaymentJoin = pickupCardDetails['eventPaymentJoin'];        
+    JoinCondition teamRequestJoin = pickupCardDetails['teamRequestJoin'];        
+    JoinCondition teamPaymentJoin = pickupCardDetails['teamPaymentJoin'];        
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -81,7 +56,7 @@ class TSNPickupCard extends StatelessWidget {
       color: backgroundColor,
       child: Container(
         width: width,
-        height: screenHeight*.2,
+        height: screenHeight * .2,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
         ),
@@ -104,29 +79,29 @@ class TSNPickupCard extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Text(startTime,
+                                Text(formattedEventTime,
                                     style: TextStyle(
-                                      color: AppColors.tsnWhite,                                      
+                                      color: AppColors.tsnWhite,
                                       fontSize: FontSizes.xxs(context),
                                     )),
                                 // Text("TL 1b"),
                               ],
                             ),
+                            SizedBox(height: 6),
                             Row(
                               children: [
                                 Icon(Icons.location_on,
                                     color: AppColors.tsnGreen),
-                                Text(
-                                  "Philadelphia, PA",
-                               style: TextStyle(
-                                      color: AppColors.tsnGrey,                                      
+                                Text("Philadelphia, PA",
+                                    style: TextStyle(
+                                      color: AppColors.tsnGrey,
                                       fontSize: FontSizes.xxs(context),
                                     )),
                                 // Text("TL 2b"),
                               ],
                             ),
                           ],
-                        ),  
+                        ),
                       ),
                       Flexible(
                         child: Column(
@@ -140,23 +115,34 @@ class TSNPickupCard extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                               
-                                  BasicElevatedButton(
-                                    icon: Icons.person,
-                                    height: screenHeight * 0.05,  // 10% of screen height
-                                    width: screenWidth * 0.35,
-                                    backgroundColor: AppColors.tsnDarkGrey, text: "5/12"
-                                  ),
+                                Expanded(
+                                    flex: 9,
+                                    child: BasicElevatedButton(
+                                        icon: Icons.person,
+                                        // height: screenHeight * 0.05,  // 10% of screen height
+                                        // width: screenWidth * 0.35,
+                                        backgroundColor: AppColors.tsnDarkGrey,
+                                        text: "5/12",
+                                        fontSize: FontSizes.xxs(context),
 
-                                   // price['amount'] == 0 ? 
-                                  BasicElevatedButton(
-                                    customIcon: SVGWidgets().getSoccerBallSVGImage(),
-                                    height: screenHeight * 0.05,  // 10% of screen height
-                                    width: screenWidth * 0.35,
-                                    backgroundColor: AppColors.tsnGreen, text: "Join"
+                                      )
                                   ),
+                                  SizedBox(width: 6),
+                                Expanded(
+                                    flex: 11,
+                                    child:
+                                        // price['amount'] == 0 ?
+                                        BasicElevatedButton(
+                                            icon: Icons.add,
+                                            // height: screenHeight * 0.05,  // 10% of screen height
+                                            // width: screenWidth * 0.35,
+                                            backgroundColor: AppColors.tsnGreen,
+                                            text: "Join",
+                                            fontSize: FontSizes.s(context),
+                                            
+                                            )),
 
-                                  //  : 
+                                //  :
 
                                 // Text("TR 2a"),
                                 // Text("TR 2b"),
@@ -176,14 +162,36 @@ class TSNPickupCard extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Text("BL 1a"),
-                                Text("BL 1b"),
+                                Text(mainEvent['name'], 
+                                  style: TextStyle(
+                                    color: AppColors.tsnWhite,
+                                    fontSize: FontSizes.m(context),
+                                  )                                
+                                )
+                                // Text("BL 1a"),
+                                // Text("BL 1b"),
                               ],
                             ),
+                            SizedBox(height: 6),
                             Row(
                               children: [
-                                Text("BL 2a"),
-                                Text("BL 2b"),
+                                Image(
+                                  width: 20,
+                                  height: 20,
+                                  image: SVGWidgets().pickup(),
+                                  color: AppColors.tsnGreen,
+                                ),
+                                SizedBox(width: 6),
+                                Text("Pickup", 
+                                  style: TextStyle(
+                                    color: AppColors.tsnWhite,
+                                    fontSize: FontSizes.xxs(context),
+                                  )
+
+                                  
+                                  )
+                                // Text("BL 2a"),
+                                // Text("BL 2b"),
                               ],
                             ),
                           ],
@@ -195,14 +203,26 @@ class TSNPickupCard extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Text("BR 1a"),
-                                Text("BR 1b"),
+                                // Text("BR 1a"),
+                                // Text("BR 1b"),
                               ],
                             ),
                             Row(
                               children: [
-                                Text("BR 2a"),
-                                Text("BR 2b"),
+                                Image(
+                                  width: 20,
+                                  height: 20,
+                                  image: SVGWidgets().host(),
+                                  color: AppColors.tsnLightGreen,
+                                ),
+                                SizedBox(width: 6),
+                                Text("Host: "+organizers[0]['user']['name'].toString(), 
+                                  style: TextStyle(
+                                    color: AppColors.tsnGrey,
+                                    fontSize: FontSizes.xxs(context),
+                                  ))
+                                // Text("BR 2a"),
+                                // Text("BR 2b"),
                               ],
                             ),
                           ],

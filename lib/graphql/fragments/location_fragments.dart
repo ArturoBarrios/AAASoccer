@@ -2,8 +2,7 @@ class LocationFragments{
 
   String FieldLocationFull(){
      String fieldLocationFullReturn = """                  
-         _id
-         url
+         _id         
          location{
           ${LocationFull()}    
 

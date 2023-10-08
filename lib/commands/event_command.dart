@@ -1132,115 +1132,27 @@ class EventCommand extends BaseCommand {
     eventPageModel.chats = chat;
   }
 
-  
-  Future<Map<String, dynamic>> getMinimalUserEventDetails(List<dynamic> events) async {
-    print("getUserEventDetails()");
-    print("events: " + events.toString());
-    dynamic isMyEventResp = {
-      "success": true,
-      "isMine": false,
-      "isMember": false,
-      "amountPaid": "0.00",
-      "amountRemaining": "0.00",
-      "teamAmountPaid": "0.00",
-      "teamAmountRemaining": "0.00",
-      "price": {},
-      "mainEvent": null,
-      "players": [],
-      "organizers": [],
-      "teams": [],
-      "roles": [],
-      "chats": [],
-      "groupStage": [],
-      "tournamentStage": [],
-      "userParticipants": [],      
-      "fieldLocations": [],
-    };
-    print("events length: " + events.length.toString());
+ 
 
-    try {
-      //get event
-      dynamic event = events[0];
+   List<dynamic> getEventRoles(dynamic user, List<dynamic> userParticipants) {
+    List<dynamic> tempRoles = [];
 
-      print("getEventGame(): " + event.toString());
-      
-
-      print("event type: " + event['type'].toString());
-      if (event['type'] == "TOURNAMENT") {
-        print("type is tournament");
-        dynamic findTournamentByIdResp = await TournamentCommand()
-            .findTournamentById(event['tournaments']['data'][0]['_id']);
-        if (findTournamentByIdResp['success']) {
-          dynamic tournament = findTournamentByIdResp['data'];
-          isMyEventResp['groupStage'] = tournament['groupStage'];
-          isMyEventResp['tournamentStage'] = tournament['tournamentStage'];
-          eventPageModel.groupStage = tournament['groupStage'];
-          eventPageModel.tournamentStage = tournament['tournamentStage'];
-        }
+    for (int i = 0; i < eventPageModel.userParticipants.length; i++) {
+      if (eventPageModel.userParticipants[i]['user']['_id'] == user['_id']) {
+        tempRoles = userParticipants[i]['roles'].toString().parseRoles();
       }
-      if (event['type'] == "LEAGUE") {
-        print("type is league");
-        dynamic findLeagueByIdResp = await LeagueCommand()
-            .findLeagueById(event['leagues']['data'][0]['_id']);
-        if (findLeagueByIdResp['success']) {
-          dynamic league = findLeagueByIdResp['data'];
-          isMyEventResp['league'] = league;
-          eventPageModel.league = league;
-        }
-      }
-      if(event['type'] == 'TOURNAMENT' || event['type'] == 'LEAGUE'){
-       print("allEventsss: ");
-
-
-      }
-
-
-
-      eventPageModel.currentUserId = appModel.currentUser['_id'];
-      eventPageModel.mainEvent = event;   
-      eventPageModel.allEvents = events;
-      print("eventPageModel.mainEvent['joinConditions']: " + eventPageModel.mainEvent['joinConditions'].toString());
-      //join conditions
-      eventPageModel.mainEvent['joinConditions']['data'].forEach((joinCondition) {
-        if(joinCondition['forEvent'] != null){
-          eventPageModel.eventRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
-          eventPageModel.eventRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']);                     
-        }
-        else{
-          eventPageModel.teamRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
-          eventPageModel.teamRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
-        } 
-      });      
-
-      
-      isMyEventResp['mainEvent'] = event;
-      isMyEventResp['roles'] = eventPageModel.roles;
-      isMyEventResp['isMine'] = eventPageModel.isMine;
-      isMyEventResp['isMember'] = eventPageModel.isMember;
-      isMyEventResp['teams'] = eventPageModel.teams;
-      isMyEventResp['userParticipants'] = eventPageModel.userParticipants;
-      isMyEventResp['organizers'] = eventPageModel.organizers;
-      isMyEventResp['players'] = eventPageModel.players;
-      isMyEventResp['paymentData'] = eventPageModel.payments;
-      isMyEventResp['price'] = eventPageModel.price;
-      isMyEventResp['amountPaid'] = eventPageModel.amountPaid;
-      isMyEventResp['teamAmountPaid'] = eventPageModel.teamAmountPaid;
-      isMyEventResp['amountRemaining'] = eventPageModel.amountRemaining;
-      isMyEventResp['teamAmountRemaining'] = eventPageModel.teamAmountRemaining;
-      isMyEventResp['fieldLocations'] = eventPageModel.fieldLocations;
-
-      print("successfully ran details function");
-      isMyEventResp["success"] = true;
-    } on Exception catch (e) {
-      print('Mutation failed: $e');
-      return isMyEventResp;
     }
 
-    return isMyEventResp;
+    return tempRoles;
   }
 
+
+
+
+    
+
   
-  Future<Map<String, dynamic>> getUserEventDetails(List<dynamic> events) async {
+  Future<Map<String, dynamic>> getUserEventDetails(List<dynamic> events, bool addToEventPageModel) async {
     print("getUserEventDetails()");
     print("events: " + events.toString());
     dynamic isMyEventResp = {
@@ -1281,8 +1193,8 @@ class EventCommand extends BaseCommand {
           dynamic tournament = findTournamentByIdResp['data'];
           isMyEventResp['groupStage'] = tournament['groupStage'];
           isMyEventResp['tournamentStage'] = tournament['tournamentStage'];
-          eventPageModel.groupStage = tournament['groupStage'];
-          eventPageModel.tournamentStage = tournament['tournamentStage'];
+          // eventPageModel.groupStage = tournament['groupStage'];
+          // eventPageModel.tournamentStage = tournament['tournamentStage'];
         }
       }
       if (event['type'] == "LEAGUE") {
@@ -1292,52 +1204,85 @@ class EventCommand extends BaseCommand {
         if (findLeagueByIdResp['success']) {
           dynamic league = findLeagueByIdResp['data'];
           isMyEventResp['league'] = league;
-          eventPageModel.league = league;
+          // eventPageModel.league = league;
         }
       }
-      if(event['type'] == 'TOURNAMENT' || event['type'] == 'LEAGUE'){
-       print("allEventsss: ");
+      
 
+      isMyEventResp['mainEvent'] = event;
+      isMyEventResp['allEvents'] = events;
 
-      }
-
-
-
-      eventPageModel.currentUserId = appModel.currentUser['_id'];
-      eventPageModel.mainEvent = event;   
-      eventPageModel.allEvents = events;
-      print("eventPageModel.mainEvent['joinConditions']: " + eventPageModel.mainEvent['joinConditions'].toString());
+      
+      // eventPageModel.mainEvent = event;   
+      // eventPageModel.allEvents = events;
+      // print("eventPageModel.mainEvent['joinConditions']: " + eventPageModel.mainEvent['joinConditions'].toString());
       //join conditions
-      eventPageModel.mainEvent['joinConditions']['data'].forEach((joinCondition) {
+      isMyEventResp['mainEvent']['joinConditions']['data'].forEach((joinCondition) {
         if(joinCondition['forEvent'] != null){
-          eventPageModel.eventRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
-          eventPageModel.eventRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']);                     
+          isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
+          isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']);                     
         }
         else{
-          eventPageModel.teamRequestJoin = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
-          eventPageModel.teamRequestJoin = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
+          isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
+          isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
         } 
       });
 
-      eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
+      // eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
+      isMyEventResp['userParticipants'] = isMyEventResp['mainEvent']['userParticipants']['data'];
+      eventPageModel.roles = getEventRoles(appModel.currentUser, isMyEventResp['userParticipants']);
+      isMyEventResp['isMine'] = isMyEventResp['roles'].contains("ORGANIZER");
+      isMyEventResp['isMember'] = isMyEventResp['roles'].contains("PLAYER");
+      isMyEventResp['chats'] = isMyEventResp['mainEvent']['chats']['data'];
+      isMyEventResp['teams'] = isMyEventResp['mainEvent']['teams']['data'];
+      isMyEventResp['startTime'] = isMyEventResp['mainEvent']['startTime'];
+      isMyEventResp['endTime'] = isMyEventResp['mainEvent']['endTime'];      
+      isMyEventResp['formattedEventTime'] = BaseCommand().formatEventTime(isMyEventResp['startTime'], isMyEventResp['endTime']);
+    
+      isMyEventResp['fieldLocations'] = isMyEventResp['mainEvent']['fieldLocations']['data'];
+      for (int i = 0; i < isMyEventResp['userParticipants'].length; i++) {
+        dynamic participant = isMyEventResp['userParticipants'][i];
+        List<String> roles = participant['roles'].toString().parseRoles();
+        if (roles.contains("ORGANIZER")) {
+          isMyEventResp['organizers'].add(participant);
+        }
+        if (roles.contains("PLAYER")) {
+          isMyEventResp['players'].add(participant);
+        }
+      }
+
+      isMyEventResp['price'] = isMyEventResp['mainEvent']['price'];
+  
+      isMyEventResp['payments'] = isMyEventResp['mainEvent']['payments']['data'];
+             
+
+      double tempAmountPaid = 0.00;
+      double tempTeamAmountPaid = 0.00;
+
+      for (int i = 0; i < isMyEventResp['payments'].length; i++) {
+        if (isMyEventResp['payments'][i]['user']['_id'] == appModel.currentUser['_id']) {
+          if (isMyEventResp['payments'][i]['isPlayerPayment']) {
+            tempAmountPaid += double.parse(isMyEventResp['payments'][i]['amount']);
+          } else if (isMyEventResp['payments'][i]['isTeamPayment']) {
+            tempTeamAmountPaid += double.parse(isMyEventResp['payments'][i]['amount']);
+          }
+        }
+      }
+      isMyEventResp['amountPaid'] = (tempAmountPaid).toStringAsFixed(2);
+      isMyEventResp['teamAmountPaid'] = (tempTeamAmountPaid).toStringAsFixed(2);
+      isMyEventResp['amountRemaining'] =
+          (double.parse(isMyEventResp['mainEvent']['price']['amount']) - tempAmountPaid)
+              .toStringAsFixed(2);
+      isMyEventResp['teamAmountRemaining'] =
+          (double.parse(isMyEventResp['mainEvent']['price']['teamAmount']) - tempTeamAmountPaid)
+              .toStringAsFixed(2);
 
 
-      
-      isMyEventResp['mainEvent'] = event;
-      isMyEventResp['roles'] = eventPageModel.roles;
-      isMyEventResp['isMine'] = eventPageModel.isMine;
-      isMyEventResp['isMember'] = eventPageModel.isMember;
-      isMyEventResp['teams'] = eventPageModel.teams;
-      isMyEventResp['userParticipants'] = eventPageModel.userParticipants;
-      isMyEventResp['organizers'] = eventPageModel.organizers;
-      isMyEventResp['players'] = eventPageModel.players;
-      isMyEventResp['paymentData'] = eventPageModel.payments;
-      isMyEventResp['price'] = eventPageModel.price;
-      isMyEventResp['amountPaid'] = eventPageModel.amountPaid;
-      isMyEventResp['teamAmountPaid'] = eventPageModel.teamAmountPaid;
-      isMyEventResp['amountRemaining'] = eventPageModel.amountRemaining;
-      isMyEventResp['teamAmountRemaining'] = eventPageModel.teamAmountRemaining;
-      isMyEventResp['fieldLocations'] = eventPageModel.fieldLocations;
+
+      if(addToEventPageModel){
+          
+      }
+
 
       print("successfully ran details function");
       isMyEventResp["success"] = true;

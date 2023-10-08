@@ -40,7 +40,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
             onPressed: () {
               // This is where you'd typically handle the button press.
               // You could, for example, navigate to another screen.
-              print('Create Subscription button pressed');              
+              print('Create Subscription button pressed');
             },
             child: Text(
               'Create Subscription',
@@ -49,45 +49,41 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
               ),
             ),
           ),
-        BasicElevatedButton(
-          customIcon: SVGWidgets().getSoccerBallSVGImage(),
-          height: screenHeight * 0.05,  // 10% of screen height
-          width: screenWidth * 0.35,
-          backgroundColor: AppColors.tsnGreen, text: "Enable"),
+          BasicElevatedButton(
+              customIcon: SVGWidgets().getSoccerBallSVGImage(),
+              height: screenHeight * 0.05, // 10% of screen height
+              width: screenWidth * 0.35,
+              backgroundColor: AppColors.tsnGreen,
+              text: "Enable"),
           CircleOutlineIcon(
-  icon: Icon(Icons.star, color: Colors.white),
-  backgroundColor: Colors.blue,
-  borderColor: Colors.red,
-  circleSize: 60.0,
-  borderThickness: 3.0,
-),
-
-          LoadingIcon(width: 20, height: 20, svgImage: SVGWidgets().getSoccerBallSVGImage()),
-  TSNPickupCard(
-        topLeft: [Text("07/26/1997")], 
-        topRight: [Text("07/26/1997")], 
-        bottomLeft: [Text("07/26/1997")], 
-        bottomRight: [Text("07/26/1997")], 
-        backgroundColor: AppColors.tsnAlmostBlack, 
-         
-        
-      ),
-LogoWidget(
-  width: 100.0,
-  height: 100.0,  //Replace with your actual image provider
-  backgroundColor: Colors.transparent,
-),
-LogoTextWidget(
-  width: 300.0,
-  height: 50.0,  //Replace with your actual image provider
-  backgroundColor: Colors.transparent,
-),
-
-
-
-
-
-
+            icon: Icon(Icons.star, color: Colors.white),
+            backgroundColor: Colors.blue,
+            borderColor: Colors.red,
+            circleSize: 60.0,
+            borderThickness: 3.0,
+          ),
+          LoadingIcon(
+              width: 20,
+              height: 20,
+              svgImage: SVGWidgets().getSoccerBallSVGImage()),
+          TSNPickupCard(
+            pickupCardDetails: {
+              'name': 'Pickup Game',
+              'image': SVGWidgets().getSoccerBallSVGImage(),
+              'description': 'Create a pickup game'
+            },
+            backgroundColor: AppColors.tsnAlmostBlack,
+          ),
+          LogoWidget(
+            width: 100.0,
+            height: 100.0, //Replace with your actual image provider
+            backgroundColor: Colors.transparent,
+          ),
+          LogoTextWidget(
+            width: 300.0,
+            height: 50.0, //Replace with your actual image provider
+            backgroundColor: Colors.transparent,
+          ),
         ]),
       ),
       floatingActionButton: FloatingActionButton(

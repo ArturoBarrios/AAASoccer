@@ -431,9 +431,11 @@ class _Home extends State<Home> {
     context.select<AppModel, List<dynamic>>((value) => value.myEvents);
 
     context.select<AppModel, List<dynamic>>((value) => value.teams);
-    
-    Map<String, Widget Function(BuildContext)> createPages = context.select<AppModel, Map<String,Widget Function(BuildContext)>>((value) => value.createPages);
-    
+
+    Map<String, Widget Function(BuildContext)> createPages =
+        context.select<AppModel, Map<String, Widget Function(BuildContext)>>(
+            (value) => value.createPages);
+
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -470,205 +472,203 @@ class _Home extends State<Home> {
         child:
             Drawer(child: const SideNavs().getMainSideNav(context, userObject)),
       ),
-      body: 
-      RefreshIndicator(
+      body: RefreshIndicator(
         onRefresh: onReload,
-        child:  Stack(
-            children: <Widget>[
-              Column(
-                children: [
-                  Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Row(
-                            children: [
-                                Expanded( child:
-                              SearchField(label: StringConstants.searchLabel)
-                                ),
-                              SizedBox(width: 10), // Add some spacing between the search field and the button
-                              BasicElevatedButton(
-                                customIcon: SVGWidgets().getSoccerBallSVGImage(),
-                                height: screenHeight * 0.05,  // 10% of screen height
-                                width: screenWidth * 0.25,
-                                backgroundColor: AppColors.tsnGreen, text: "Create",
-                                onPressed: () async {
-                                    print("Add New Chat Pressed");
-                                    List<dynamic> primaryList = createPages.keys.toList();
-                                    List<dynamic> secondaryList = [];
-                                    Map<int, dynamic> result = await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AnimatedDialog(
-                                          details: {"title": "IDK"},
-                                          items: primaryList,
-                                          singleSelect: false,
-                                          secondaryItems: secondaryList,
-                                          goToFunctions: [],
-                                        );
-                                      },
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            flex: 14,
+                            child: SearchField(
+                                label: StringConstants.searchLabel)),
+                        SizedBox(width: 6),
+                        Expanded(
+                          flex: 6,
+                          child: BasicElevatedButton(
+                              icon: Icons.add,
+                              // height: screenHeight * 0.05,  // 10% of screen height
+                              // width: screenWidth * 0.25,
+                              backgroundColor: AppColors.tsnGreen,
+                              text: "Create",
+                              onPressed: () async {
+                                print("Add New Chat Pressed");
+                                List<dynamic> primaryList =
+                                    createPages.keys.toList();
+                                List<dynamic> secondaryList = [];
+                                Map<int, dynamic> result = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AnimatedDialog(
+                                      details: {"title": "IDK"},
+                                      items: primaryList,
+                                      singleSelect: false,
+                                      secondaryItems: secondaryList,
+                                      goToFunctions: [],
                                     );
-                                    if (result.isNotEmpty) {
-                                      print("result: " + result.toString());
-                                      // goToPage(result.keys.first, primaryList);
-                                      BaseCommand().goToCreatePage(
-                                        context, 
-                                        result.keys.first, 
-                                        primaryList
-                                      );
-                                    }
-                                                }
-                              ),
-                            ],
-                          )
+                                  },
+                                );
+                                if (result.isNotEmpty) {
+                                  print("result: " + result.toString());
+                                  // goToPage(result.keys.first, primaryList);
+                                  BaseCommand().goToCreatePage(
+                                      context, result.keys.first, primaryList);
+                                }
+                              }),
+                        )
+                      ],
+                    )),
+                SizedBox(
+                  height:
+                      80, // Define the height you want for your card section
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    controller: _selectEventTypeController,
+                    itemCount: enabledSelections2.length,
+                    itemBuilder: (_, index) {
+                      dynamic key = enabledSelections2.keys.elementAt(index);
+                      return SelectIconButton(
+                        eventObject: enabledSelections2[key],
+                        svgImage: enabledSelections2[key]['image'],
+                        index: index,
+                        onTapEvent: () => isFilteringEnabled
+                            ? clearFiltering(isPop: false)
+                            : null,
+                      );
+                    },
                   ),
-                  SizedBox(
-                    height:
-                        80, // Define the height you want for your card section
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      controller: _selectEventTypeController,
-                      itemCount: enabledSelections2.length,
-                      itemBuilder: (_, index) {
-                        dynamic key = enabledSelections2.keys.elementAt(index);
-                        return SelectIconButton(
-                            eventObject: enabledSelections2[key],
-                            svgImage: enabledSelections2[key]['image'],
-                            index: index,
-                            onTapEvent: () => isFilteringEnabled
-                                ? clearFiltering(isPop: false)
-                                : null,
-                          
-                        );
-                      },
-                    ),
-                  ),
-                  //logic/button for sending team/event requests to
-                  // multiple players
-                  userObjectSelections.isNotEmpty
-                      ? GestureDetector(
-                          onTap: () async {
-                            int? index = await showAnimatedDialog<int>(
+                ),
+                //logic/button for sending team/event requests to
+                // multiple players
+                userObjectSelections.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () async {
+                          int? index = await showAnimatedDialog<int>(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return ClassicListDialogWidget<dynamic>(
+                                  selectedIndex: selectIndex,
+                                  titleText: 'Title',
+                                  listType: ListType.singleSelect,
+                                  positiveText: "Next",
+                                  activeColor: Colors.green,
+                                  dataList: teamEventList);
+                            },
+                            animationType: DialogTransitionType.size,
+                            curve: Curves.linear,
+                          );
+                          print("index: " + index.toString());
+                          setupEventTeamToChoose(index!);
+                          if (eventTeamChosen != "") {
+                            List<int>? indexes = await showAnimatedDialog(
                               context: context,
                               barrierDismissible: true,
                               builder: (BuildContext context) {
                                 return ClassicListDialogWidget<dynamic>(
-                                    selectedIndex: selectIndex,
-                                    titleText: 'Title',
-                                    listType: ListType.singleSelect,
+                                    selectedIndexes: selectedEventTeamIndexes,
+                                    titleText: 'Choose Players',
                                     positiveText: "Next",
+                                    listType: ListType.multiSelect,
                                     activeColor: Colors.green,
-                                    dataList: teamEventList);
+                                    dataList: choices);
                               },
                               animationType: DialogTransitionType.size,
                               curve: Curves.linear,
                             );
-                            print("index: " + index.toString());
-                            setupEventTeamToChoose(index!);
-                            if (eventTeamChosen != "") {
-                              List<int>? indexes = await showAnimatedDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return ClassicListDialogWidget<dynamic>(
-                                      selectedIndexes: selectedEventTeamIndexes,
-                                      titleText: 'Choose Players',
-                                      positiveText: "Next",
-                                      listType: ListType.multiSelect,
-                                      activeColor: Colors.green,
-                                      dataList: choices);
-                                },
-                                animationType: DialogTransitionType.size,
-                                curve: Curves.linear,
-                              );
-                              selectedEventTeamIndexes =
-                                  indexes ?? selectedEventTeamIndexes;
-                              print(
-                                  'selectedIndex:${selectedEventTeamIndexes?.toString()}');
-                              eventTeamsSelected(selectedEventTeamIndexes);
-                            }
-                            if (selectedEventTeamIndexes!.isNotEmpty) {
-                              List<int>? requestIndexes =
-                                  await showAnimatedDialog<dynamic>(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return ClassicListDialogWidget<dynamic>(
-                                      selectedIndexes:
-                                          selectedRequestTypeIndexes,
-                                      titleText: 'Choose User Type',
-                                      positiveText: "Send Request",
-                                      listType: ListType.multiSelect,
-                                      onNegativeClick: () {
-                                        print("onNegativeClick");
-                                        selectedEventTeamIndexes = [];
-                                        //pop
-                                        Navigator.pop(context);
-                                      },
-                                      activeColor: Colors.green,
-                                      dataList: requestUserTypes);
-                                },
-                                animationType: DialogTransitionType.size,
-                                curve: Curves.linear,
-                              );
+                            selectedEventTeamIndexes =
+                                indexes ?? selectedEventTeamIndexes;
+                            print(
+                                'selectedIndex:${selectedEventTeamIndexes?.toString()}');
+                            eventTeamsSelected(selectedEventTeamIndexes);
+                          }
+                          if (selectedEventTeamIndexes!.isNotEmpty) {
+                            List<int>? requestIndexes =
+                                await showAnimatedDialog<dynamic>(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) {
+                                return ClassicListDialogWidget<dynamic>(
+                                    selectedIndexes: selectedRequestTypeIndexes,
+                                    titleText: 'Choose User Type',
+                                    positiveText: "Send Request",
+                                    listType: ListType.multiSelect,
+                                    onNegativeClick: () {
+                                      print("onNegativeClick");
+                                      selectedEventTeamIndexes = [];
+                                      //pop
+                                      Navigator.pop(context);
+                                    },
+                                    activeColor: Colors.green,
+                                    dataList: requestUserTypes);
+                              },
+                              animationType: DialogTransitionType.size,
+                              curve: Curves.linear,
+                            );
 
-                              selectedRequestTypeIndexes =
-                                  requestIndexes ?? selectedRequestTypeIndexes;
-                              print(
-                                  'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                              await requestTypesSelected(
-                                  selectedRequestTypeIndexes);
-                              await sendPlayerRequests();
-                            }
-                          },
-                          child: Container(
-                            width: 200,
-                            height: 50,
-                            color: Colors.blue,
-                            child: const Center(
-                              child: Text("Send Event/Team Request"),
-                            ),
+                            selectedRequestTypeIndexes =
+                                requestIndexes ?? selectedRequestTypeIndexes;
+                            print(
+                                'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                            await requestTypesSelected(
+                                selectedRequestTypeIndexes);
+                            await sendPlayerRequests();
+                          }
+                        },
+                        child: Container(
+                          width: 200,
+                          height: 50,
+                          color: Colors.blue,
+                          child: const Center(
+                            child: Text("Send Event/Team Request"),
                           ),
-                        )
-                      : Container(),
-                  !cardsLoading
-                      ?                      
-                      //list view
-                      Expanded(child: 
-                        ListView.builder(
-                            controller: _selectEventController,
-                            itemCount: cards.length,
-                            shrinkWrap: true,
-                            physics: AlwaysScrollableScrollPhysics(),
-                            itemBuilder: (_, index) => Card(
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 10,
-                              ),
-                              child: cards[index],
-                            ),
-                          )                     
+                        ),
                       )
-                      : const SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: LoadingScreen(
-                              currentDotColor: Colors.white,
-                              defaultDotColor: Colors.black,
-                              numDots: 10,
-                            ),
+                    : Container(),
+                !cardsLoading
+                    ?
+                    //list view
+                    Expanded(
+                        child: ListView.builder(
+                        controller: _selectEventController,
+                        itemCount: cards.length,
+                        shrinkWrap: true,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (_, index) => Card(
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 10,
                           ),
+                          child: cards[index],
+                        ),
+                      ))
+                    : const SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: LoadingScreen(
+                            currentDotColor: Colors.white,
+                            defaultDotColor: Colors.black,
+                            numDots: 10,
+                          ),
+                        ),
                       ),
-                ],
-              )
-            ],
-          ),
-        
+              ],
+            )
+          ],
+        ),
       ),
-      bottomNavigationBar: 
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0), // Padding from the bottom of the screen
-          child:const Footers().getMainBottomNav(context)),
+      bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0), // Padding from the bottom of the screen
+          child: const Footers().getMainBottomNav(context)),
     );
   }
 }
