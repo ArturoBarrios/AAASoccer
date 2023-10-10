@@ -97,14 +97,14 @@ class Footers extends StatefulWidget {
               Icon(
                 item['icon'],
                 size: 18,
-                color: AppColors.tsnGreyerWhite
+                color: item['enabled'] ? AppColors.tsnLightGreen : AppColors.tsnGreyerWhite
               ),
               SizedBox(height: 2),
               Text(
                 item['name'],
                 style: TextStyle(
                   fontSize: 12,
-                  color: AppColors.tsnGreyerWhite
+                  color: item['enabled'] ? AppColors.tsnLightGreen : AppColors.tsnGreyerWhite
                 )
               ),
             ],

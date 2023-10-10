@@ -57,9 +57,9 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
       children: [
         if (widget.icon != null || widget.customIcon != null)
           Container(
-            // decoration: BoxDecoration(
-            //   border: Border.all(color: Colors.red),
-            // ),
+            decoration: BoxDecoration(
+              // border: Border.all(color: Colors.red),
+            ),
             child: widget.icon != null
                 ? Icon(
                     widget.icon,
@@ -79,9 +79,9 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
           Expanded(
             flex: 16,
             child: Container(
-              // decoration: BoxDecoration(
-              //   border: Border.all(color: Colors.red),
-              // ),
+              decoration: BoxDecoration(
+                // border: Border.all(color: Colors.red),
+              ),
               child: Text(
                 widget.text!,
                 textAlign: (widget.icon == null && widget.customIcon == null)

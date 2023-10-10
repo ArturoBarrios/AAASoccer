@@ -4,8 +4,10 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 
 import '../commands/subscriptions_command.dart';
 import '../styles/colors.dart';
+import '../styles/font_sizes.dart';
 import 'Buttons/basic_elevated_button.dart';
 import 'Buttons/circle_outline_icon.dart';
+import 'Buttons/custom_button.dart';
 import 'Cards/tsn_pickup_card.dart';
 import 'Loading/loading_icon.dart';
 import 'logo_text.dart';
@@ -36,6 +38,12 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
+          CustomButton(
+  iconData: Icons.person, 
+  buttonText: "5/12",
+  fontSize: FontSizes.xxs(context),
+),
+
           TextButton(
             onPressed: () {
               // This is where you'd typically handle the button press.
@@ -54,7 +62,10 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
               height: screenHeight * 0.05, // 10% of screen height
               width: screenWidth * 0.35,
               backgroundColor: AppColors.tsnGreen,
-              text: "Enable"),
+              text: "Enable",
+              fontSize: FontSizes.xxs(context),
+              
+              ),
           CircleOutlineIcon(
             icon: Icon(Icons.star, color: Colors.white),
             backgroundColor: Colors.blue,
@@ -66,14 +77,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
               width: 20,
               height: 20,
               svgImage: SVGWidgets().getSoccerBallSVGImage()),
-          TSNPickupCard(
-            pickupCardDetails: {
-              'name': 'Pickup Game',
-              'image': SVGWidgets().getSoccerBallSVGImage(),
-              'description': 'Create a pickup game'
-            },
-            backgroundColor: AppColors.tsnAlmostBlack,
-          ),
+         
           LogoWidget(
             width: 100.0,
             height: 100.0, //Replace with your actual image provider

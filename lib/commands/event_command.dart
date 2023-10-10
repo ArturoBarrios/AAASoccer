@@ -1220,17 +1220,17 @@ class EventCommand extends BaseCommand {
       isMyEventResp['mainEvent']['joinConditions']['data'].forEach((joinCondition) {
         if(joinCondition['forEvent'] != null){
           isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
-          isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']);                     
+          isMyEventResp['eventPaymentJoin'] = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']);                     
         }
         else{
           isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
-          isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
+          isMyEventResp['teamPaymentJoin'] = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
         } 
       });
 
       // eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
       isMyEventResp['userParticipants'] = isMyEventResp['mainEvent']['userParticipants']['data'];
-      eventPageModel.roles = getEventRoles(appModel.currentUser, isMyEventResp['userParticipants']);
+      isMyEventResp['roles'] = getEventRoles(appModel.currentUser, isMyEventResp['userParticipants']);
       isMyEventResp['isMine'] = isMyEventResp['roles'].contains("ORGANIZER");
       isMyEventResp['isMember'] = isMyEventResp['roles'].contains("PLAYER");
       isMyEventResp['chats'] = isMyEventResp['mainEvent']['chats']['data'];
@@ -1280,7 +1280,26 @@ class EventCommand extends BaseCommand {
 
 
       if(addToEventPageModel){
-          
+        eventPageModel.mainEvent = isMyEventResp['mainEvent'];
+        eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
+        eventPageModel.roles = isMyEventResp['roles'];
+        eventPageModel.isMine = isMyEventResp['isMine'];
+        eventPageModel.isMember = isMyEventResp['isMember'];
+        eventPageModel.amountRemaining = isMyEventResp['amountRemaining'];
+        eventPageModel.amountPaid = isMyEventResp['amountPaid'];
+        eventPageModel.teamAmountRemaining = isMyEventResp['teamAmountRemaining'];
+        eventPageModel.teamAmountPaid = isMyEventResp['teamAmountPaid'];
+        eventPageModel.userParticipants = isMyEventResp['userParticipants'];
+        eventPageModel.teams = isMyEventResp['teams'];
+        eventPageModel.players = isMyEventResp['players'];
+        eventPageModel.chats = isMyEventResp['chats'];
+        eventPageModel.payments = isMyEventResp['payments'];
+        eventPageModel.fieldLocations = isMyEventResp['fieldLocations'];
+        eventPageModel.price = isMyEventResp['price'];
+        eventPageModel.eventRequestJoin = isMyEventResp['eventRequestJoin'];
+        eventPageModel.eventPaymentJoin = isMyEventResp['eventPaymentJoin'];
+        eventPageModel.teamRequestJoin = isMyEventResp['teamRequestJoin'];
+        eventPageModel.teamPaymentJoin = isMyEventResp['teamPaymentJoin'];
       }
 
 

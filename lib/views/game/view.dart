@@ -97,7 +97,7 @@ class _PickupViewState extends State<PickupView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in GameView");    
-    // await EventCommand().getUserEventDetails([widget.game]);
+    await EventCommand().getUserEventDetails([widget.game], true);
     widget.setupPlayerList();
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
@@ -136,10 +136,9 @@ class _PickupViewState extends State<PickupView> {
   @override
   Widget build(BuildContext context) {
     print("build()");
-    print("game: " + widget.game.toString());
 
     dynamic mainEvent =
-        context.select<EventPageModel, dynamic>((value) => value.mainEvent);
+        context.select<EventPageModel, dynamic>((value) => value.mainEvent);    
     dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
     List<dynamic> roles =
         context.select<EventPageModel, List<dynamic>>((value) => value.roles);
