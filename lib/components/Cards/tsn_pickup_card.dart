@@ -9,6 +9,7 @@ import '../../svg_widgets.dart';
 import '../../views/game/view.dart';
 import '../Buttons/basic_elevated_button.dart';
 import '../Buttons/circle_outline_icon.dart';
+import '../get_join_event_widget.dart';
 import '../join_condition.dart';
 
 class TSNPickupCard extends StatelessWidget {
@@ -50,16 +51,16 @@ class TSNPickupCard extends StatelessWidget {
     JoinCondition teamRequestJoin = pickupCardDetails['teamRequestJoin'];
     JoinCondition teamPaymentJoin = pickupCardDetails['teamPaymentJoin'];
 
+    print("eventRequestJoin: " + eventRequestJoin.required.value.toString());
+
     return GestureDetector(
         onTap: () {
           // Handle tap on the entire card here
-            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PickupView(
-                                                          game: mainEvent)),
-                                            );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PickupView(game: mainEvent)),
+          );
           print("Card Clicked");
         },
         child: Card(
@@ -142,6 +143,19 @@ class TSNPickupCard extends StatelessWidget {
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),
+                                    //join widget
+                                    GetJoinEventWidget(
+                                        mainEvent: mainEvent,
+                                        roles: roles,
+                                        isMine: isMine,
+                                        price: price,
+                                        amountRemaining: amountRemaining,                                        
+                                        eventRequestJoin: eventRequestJoin,
+                                        eventPaymentJoin: eventPaymentJoin,
+                                        teamRequestJoin: teamRequestJoin,
+                                        teamPaymentJoin: teamPaymentJoin                                        
+                                        
+                                    ),
                                     Expanded(
                                         flex: 11,
                                         child:
@@ -154,7 +168,6 @@ class TSNPickupCard extends StatelessWidget {
                                           text: "Join",
                                           fontSize: FontSizes.s(context),
                                           onPressed: () {
-                                          
                                             print("Join Button Pressed");
                                           },
                                         )),
@@ -227,7 +240,6 @@ class TSNPickupCard extends StatelessWidget {
                                       // height: 60,
                                       image: SVGWidgets().rightRocket(),
                                       color: AppColors.tsnGrey,
-                                      
                                     ),
                                     SizedBox(width: 2),
                                     Image(

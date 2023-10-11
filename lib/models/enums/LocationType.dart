@@ -3,5 +3,6 @@ enum LocationType {
   EVENT,
   ORGANIZATION,
   USER,
+  FIELDLOCATION,
   FACILITY
 }

@@ -3,6 +3,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/views/event/create.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
+import '../commands/base_command.dart';
 import '../models/pageModels/app_model.dart';
 import '../styles/asset_constants.dart';
 import '../styles/colors.dart';
@@ -78,7 +79,16 @@ class Footers extends StatefulWidget {
       child: GestureDetector(
         onTap: () => {
           print("onTap"),
-          item['selectAction'](context),
+          BaseCommand().onTapBottomNav(context, key, item),
+          // selectedPages.forEach((otherKey, otherItem) {
+          //   if (otherKey == key) {
+          //     otherItem['enabled'] = true;
+          //   } else {
+          //     otherItem['enabled'] = false;
+          //   }
+          // }),
+          // item['selectAction'](context),
+          // item['enabled'] = true,
         }, // Assuming onTap is a function
         child: Container(
           margin: const EdgeInsets.all(2.0),

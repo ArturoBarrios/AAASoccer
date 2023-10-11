@@ -63,6 +63,11 @@ class BaseCommand {
 
   void initializeData() {}
 
+  onTapBottomNav(context, key, item){
+    appModel.onTapBottomNav(context,key,item);
+
+  }
+
   String formatEventTime(String startTime, String endTime) {
     int startTimeInt = int.parse(startTime);
     int endTimeInt = int.parse(endTime);

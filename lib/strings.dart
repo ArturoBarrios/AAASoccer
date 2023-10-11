@@ -1,5 +1,5 @@
 class StringConstants {
-  static const String PICKUPGAMESTITLE = "Pickup Games";
+  static const String PICKUPGAMESTITLE = "Pickup";
   static const String TOURNAMENTSTITLE = "Tournaments";
   static const String TRAININGSTITLE = "Training Sessions";
   static const String LEAGUESTITLE = "Leagues";

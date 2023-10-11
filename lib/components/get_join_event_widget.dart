@@ -12,6 +12,7 @@ import '../views/game/view.dart';
 import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/event_mixin.dart';
 import 'card_form_screen.dart';
+import 'join_condition.dart';
 
 class GetJoinEventWidget extends StatefulWidget with EventMixin {
   GetJoinEventWidget({
@@ -21,10 +22,18 @@ class GetJoinEventWidget extends StatefulWidget with EventMixin {
     required this.isMine,
     required this.price,
     required this.amountRemaining,
+    this.eventRequestJoin,
+    this.eventPaymentJoin,
+    this.teamRequestJoin,
+    this.teamPaymentJoin,
   }) : super(key: key);
 
   final dynamic mainEvent;
   final List<dynamic> roles;
+  final JoinCondition? eventRequestJoin;
+  final JoinCondition? eventPaymentJoin;
+  final JoinCondition? teamRequestJoin;
+  final JoinCondition? teamPaymentJoin;
   final bool isMine;
   final dynamic price;
   final String amountRemaining;
@@ -193,17 +202,18 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
   Container getJoinEventWidget(BuildContext context) {
     print("getJoinEventWidget()");
-    dynamic eventJoinCondition =
-        getEventJoinConditions(event['joinConditions']['data']);
-    print("eventJoinCondition: " + eventJoinCondition.toString());
+    // dynamic eventJoinCondition =
+    //     getEventJoinConditions(event['joinConditions']['data']);
+    // print("eventJoinCondition: " + eventJoinCondition.toString());
+
     print("rolesss: " + widget.roles.toString());
     List<dynamic> existingRoles = widget.roles;
     //if not already a player
-    if (!widget.roles.contains("PLAYER")) {
-      // String roles = addRoleToRoles("PLAYER");
+    if (!widget.roles.contains("PLAYER")) {      
       if (widget.isMine) {
-        return Container(
-            child: GestureDetector(
+        return 
+        Container(
+          child: GestureDetector(
           onTap: () async {
             print("onTap Join My Game");
             dynamic chooseRoleDialog =
@@ -221,8 +231,10 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         ));
       } else {
         //!withPayment&&!withRequest
-        if (!eventJoinCondition['withPayment'] &&
-            !eventJoinCondition['withRequest']) {
+        // if (!eventJoinCondition['withPayment'] &&
+        //     !eventJoinCondition['withRequest']) {
+        if (!widget.eventPaymentJoin!.required.value &&
+            !widget.eventRequestJoin!.required.value) {
           //price exists(join with paying or not paying)
           if (widget.price != null) {
             return Container(
@@ -287,13 +299,13 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
           }
         }
         //!withPayment&&withRequestt
-        else if (!eventJoinCondition['withPayment'] &&
-            eventJoinCondition['withRequest']) {
+        else if (!widget.eventPaymentJoin!.required.value &&
+            widget.eventRequestJoin!.required.value) {
           return sendOrganizerPlayerEventRequest(context);
         }
         //withPayment && !withRequest
-        else if (eventJoinCondition['withPayment'] &&
-            !eventJoinCondition['withRequest']) {
+        else if (widget.eventPaymentJoin!.required.value &&
+            !widget.eventRequestJoin!.required.value) {
           //if amount is 0
 
           return Container(

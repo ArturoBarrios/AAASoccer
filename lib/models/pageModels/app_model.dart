@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../commands/home_page_command.dart';
 import '../../constants.dart';
 import '../../strings.dart';
 import '../../svg_widgets.dart';
@@ -64,6 +65,18 @@ class AppModel extends ChangeNotifier {
 
   void nukeModelData() {}
 
+  onTapBottomNav(context, key, item){
+    selectedPages.forEach((otherKey, otherItem) {
+            if (otherKey == key) {
+              otherItem['enabled'] = true;
+            } else {
+              otherItem['enabled'] = false;
+            }
+          });
+          item['selectAction'](context);
+          item['enabled'] = true;
+  }
+
   Map<String, Widget Function(BuildContext)> createPages = {
     "Pickup Game": (context) => const GameCreate(),
     "Team": (context) => const TeamCreate(),
@@ -93,6 +106,46 @@ class AppModel extends ChangeNotifier {
         );
       },
     },
+    Constants.MYEVENTS: {
+      "key": Constants.MYEVENTS,
+      "enabled": false,
+      "name": "My Events",
+      "description": "",
+      'icon': Icons.wheelchair_pickup,
+      'selectAction': (BuildContext context) async{
+        print("in selectAction");
+        await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
+        await HomePageCommand().setCards();
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute<void>(
+        //     builder: (BuildContext context) {
+        //       return const Home();
+        //     },
+        //   ),
+        // );
+      },
+    },
+    Constants.MYTEAMS: {
+      "key": Constants.MYTEAMS,
+      "enabled": false,
+      "name": StringConstants.MYTEAMSTITLE,
+      "description": "",
+      "icon": Icons.group_work_sharp,
+      'selectAction': (BuildContext context) async{
+        print("in selectAction");
+        await HomePageCommand().eventTypeTapped(Constants.MYTEAMS);
+        await HomePageCommand().setCards();
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute<void>(
+        //     builder: (BuildContext context) {
+        //       return const Home();
+        //     },
+        //   ),
+        // );
+      },
+    },
     Constants.LOCATIONSPAGE: {
       "key": Constants.LOCATIONSPAGE,
       "enabled": false,
@@ -111,42 +164,7 @@ class AppModel extends ChangeNotifier {
         );
       },
     },
-    Constants.CHATSPAGE: {
-      "key": Constants.CHATSPAGE,
-      "enabled": false,
-      "name": StringConstants.CHATSPAGETITLE,
-      "description": "",
-      'icon': Icons.chat,
-      'selectAction': (BuildContext context) {
-        print("in selectAction");
-        Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const Home();
-            },
-          ),
-        );
-      },
-    },
-    Constants.SCHEDULEPAGE: {
-      "key": Constants.SCHEDULEPAGE,
-      "enabled": false,
-      "name": StringConstants.SCHEDULEPAGETITLE,
-      "description": "",
-      "icon": Icons.calendar_month_outlined,
-      'selectAction': (BuildContext context) {
-        print("in selectAction");
-        Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const Home();
-            },
-          ),
-        );
-      },
-    },
+    
   };
   Map<dynamic, dynamic> get selectedPages => _selectedPages;
   set selectedPages(Map<dynamic, dynamic> selectedPages) {

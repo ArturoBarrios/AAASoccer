@@ -12,6 +12,7 @@ type Query {
   #  teams
 
   # querieds
+  allFieldLocations: [FieldLocation!]
   allGames(pickup: Boolean): [Game!]
   allTrainings: [Training!]
   allTryouts: [Tryout!]
@@ -629,6 +630,11 @@ type OrganizationLocation{
   organization: Organization
 }
 
+type StoreLocation{
+  location: Location
+  store: Store
+}
+     
 
 type FieldLocation  {
   isMainField: Boolean @default(value: false)
@@ -738,19 +744,6 @@ type Amenity {
   fieldLocations: [FieldLocation] @Relation
 }
 
-type Discount {
-  percentage: Int, 
-  amount: String
-}
-
-type Coupon {
-  code: String
-  discount: Discount
-  event: [Event] @Relation
-  team: [Team] @Relation
-  user: [User] @Relation
-}
-
 type Organizer {
   organizerReputation: OrganizerReputation
   slots: [Slot] @relation
@@ -817,4 +810,36 @@ type Field {
 type Facility {
   organizations: [Organization] @relation
   url: String
+}
+
+type Advertisement {
+  store: Store
+  
+}
+
+type Discount {
+  percentage: Int, 
+  amount: String
+}
+
+type Coupon {
+  code: String
+  discount: Discount
+  event: [Event] @Relation
+  team: [Team] @Relation
+  user: [User] @Relation
+
+}
+
+type Store{
+  name: String
+  address: String
+  storeLocation: StoreLocation
+  parentStore: parentStore
+}
+
+type parentStore{
+  name: String
+  address: String
+  stores: [Store] @relation
 }

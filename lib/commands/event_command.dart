@@ -1136,9 +1136,10 @@ class EventCommand extends BaseCommand {
 
    List<dynamic> getEventRoles(dynamic user, List<dynamic> userParticipants) {
     List<dynamic> tempRoles = [];
-
-    for (int i = 0; i < eventPageModel.userParticipants.length; i++) {
-      if (eventPageModel.userParticipants[i]['user']['_id'] == user['_id']) {
+    print("getEventRoles: " + userParticipants.toString());
+    print("user passed in: "+ user.toString());
+    for (int i = 0; i < userParticipants.length; i++) {
+      if (userParticipants[i]['user']['_id'] == user['_id']) {
         tempRoles = userParticipants[i]['roles'].toString().parseRoles();
       }
     }
@@ -1219,18 +1220,19 @@ class EventCommand extends BaseCommand {
       //join conditions
       isMyEventResp['mainEvent']['joinConditions']['data'].forEach((joinCondition) {
         if(joinCondition['forEvent'] != null){
-          isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
-          isMyEventResp['eventPaymentJoin'] = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']);                     
+          isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "With Request", required: joinCondition['withRequest']); 
+          isMyEventResp['eventPaymentJoin'] = new JoinCondition(label: "With Payment", required: joinCondition['withPayment']);                     
         }
         else{
-          isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "With Request", withRequest: joinCondition['withRequest']); 
-          isMyEventResp['teamPaymentJoin'] = new JoinCondition(label: "With Payment", withRequest: joinCondition['withPayment']); 
+          isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "With Request", required: joinCondition['withRequest']); 
+          isMyEventResp['teamPaymentJoin'] = new JoinCondition(label: "With Payment", required: joinCondition['withPayment']); 
         } 
       });
 
       // eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
       isMyEventResp['userParticipants'] = isMyEventResp['mainEvent']['userParticipants']['data'];
       isMyEventResp['roles'] = getEventRoles(appModel.currentUser, isMyEventResp['userParticipants']);
+      print("isMyEventResp['roles']: " + isMyEventResp['roles'].toString());
       isMyEventResp['isMine'] = isMyEventResp['roles'].contains("ORGANIZER");
       isMyEventResp['isMember'] = isMyEventResp['roles'].contains("PLAYER");
       isMyEventResp['chats'] = isMyEventResp['mainEvent']['chats']['data'];

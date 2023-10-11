@@ -522,6 +522,7 @@ class _Home extends State<Home> {
                         )
                       ],
                     )),
+                    
                 SizedBox(
                   height:
                       80, // Define the height you want for your card section

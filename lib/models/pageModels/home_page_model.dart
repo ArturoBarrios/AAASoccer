@@ -97,7 +97,7 @@ class HomePageModel extends ChangeNotifier {
       "enabled": true,
       "name": StringConstants.MYEVENTSTITLE,
       "description": "",
-      "image": SVGWidgets().pickup(),
+      "image": SVGWidgets().pickup(),      
     },
     Constants.MYTEAMS: {
       "key": Constants.MYTEAMS,
