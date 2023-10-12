@@ -144,33 +144,36 @@ class TSNPickupCard extends StatelessWidget {
                                         )),
                                     SizedBox(width: 6),
                                     //join widget
-                                    GetJoinEventWidget(
-                                        mainEvent: mainEvent,
-                                        roles: roles,
-                                        isMine: isMine,
-                                        price: price,
-                                        amountRemaining: amountRemaining,                                        
-                                        eventRequestJoin: eventRequestJoin,
-                                        eventPaymentJoin: eventPaymentJoin,
-                                        teamRequestJoin: teamRequestJoin,
-                                        teamPaymentJoin: teamPaymentJoin                                        
-                                        
-                                    ),
                                     Expanded(
-                                        flex: 11,
-                                        child:
-                                            // price['amount'] == 0 ?
-                                            BasicElevatedButton(
-                                          icon: Icons.add,
-                                          // height: screenHeight * 0.05,  // 10% of screen height
-                                          // width: screenWidth * 0.35,
-                                          backgroundColor: AppColors.tsnGreen,
-                                          text: "Join",
-                                          fontSize: FontSizes.s(context),
-                                          onPressed: () {
-                                            print("Join Button Pressed");
-                                          },
-                                        )),
+                                      flex: 11,
+                                      child:
+                                        GetJoinEventWidget(
+                                            mainEvent: mainEvent,
+                                            roles: roles,
+                                            isMine: isMine,
+                                            price: price,
+                                            amountRemaining: amountRemaining,                                        
+                                            eventRequestJoin: eventRequestJoin,
+                                            eventPaymentJoin: eventPaymentJoin,
+                                            teamRequestJoin: teamRequestJoin,
+                                            teamPaymentJoin: teamPaymentJoin                                                                                    
+                                        )
+                                    ),
+                                    // Expanded(
+                                    //     flex: 11,
+                                    //     child:
+                                    //         // price['amount'] == 0 ?
+                                    //         BasicElevatedButton(
+                                    //       icon: Icons.add,
+                                    //       // height: screenHeight * 0.05,  // 10% of screen height
+                                    //       // width: screenWidth * 0.35,
+                                    //       backgroundColor: AppColors.tsnGreen,
+                                    //       text: "Join",
+                                    //       fontSize: FontSizes.s(context),
+                                    //       onPressed: () {
+                                    //         print("Join Button Pressed");
+                                    //       },
+                                    //     )),
 
                                     //  :
 

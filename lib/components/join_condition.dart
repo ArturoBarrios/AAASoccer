@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class JoinCondition extends StatefulWidget {
   ValueNotifier<bool> required;
+  final String label;
 
-  JoinCondition({bool required = false, required String label })
+  JoinCondition({bool required = false, required String this.label })
       : required = ValueNotifier(required);
 
   @override
@@ -54,7 +55,7 @@ class _JoinCondition extends State<JoinCondition> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("Join With Request?"),
+                Text(widget.label),
                 Checkbox(                  
                   value: value,
                   onChanged: (bool? newValue) {

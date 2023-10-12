@@ -75,6 +75,7 @@ class AppModel extends ChangeNotifier {
           });
           item['selectAction'](context);
           item['enabled'] = true;
+      print("selectedPages on Tap: $selectedPages");
   }
 
   Map<String, Widget Function(BuildContext)> createPages = {
@@ -155,15 +156,15 @@ class AppModel extends ChangeNotifier {
       "description": "",
       'icon': Icons.location_on,
       'selectAction': (BuildContext context) {
-        print("in selectAction");
-        Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const LocationsMap();
-            },
-          ),
-        );
+        
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute<void>(
+        //     builder: (BuildContext context) {
+        //       return const LocationsMap();
+        //     },
+        //   ),
+        // );
       },
     },
     

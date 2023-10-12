@@ -41,6 +41,7 @@ import '../models/events_model.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../components/search_field.dart';
 import '../styles/colors.dart';
+import 'location/map.dart';
 import 'onboarding/onboarding_view.dart';
 
 class Home extends StatefulWidget {
@@ -403,6 +404,16 @@ class _Home extends State<Home> {
     BaseCommand().resetReloadTimer();
   }
 
+  bool isLocationPageSelected(){
+    if(AppModel().selectedPages[Constants.LOCATIONSPAGE]['enabled']){
+      return true;
+    }
+    else{
+      return false;
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     print("buildDDDDDD");
@@ -442,6 +453,9 @@ class _Home extends State<Home> {
         context.select<AppModel, Map<String, Widget Function(BuildContext)>>(
             (value) => value.createPages);
 
+    Map<dynamic,dynamic>selectedPages = 
+      context.watch<AppModel>().selectedPages;
+
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -478,9 +492,14 @@ class _Home extends State<Home> {
         child:
             Drawer(child: const SideNavs().getMainSideNav(context, userObject)),
       ),
-      body: RefreshIndicator(
+      body: 
+      
+    !selectedPages[Constants.LOCATIONSPAGE]['enabled'] ? 
+      RefreshIndicator(
         onRefresh: onReload,
-        child: Stack(
+        child: 
+        
+        Stack(
           children: <Widget>[
             Column(
               children: [
@@ -529,8 +548,8 @@ class _Home extends State<Home> {
                       ],
                     )),
                 Visibility(
-  visible: hideSelectionItems(enabledSelections2),
-  child: 
+                visible: hideSelectionItems(enabledSelections2),
+                child: 
                 SizedBox(
                   height:
                       80, // Define the height you want for your card section
@@ -679,7 +698,7 @@ class _Home extends State<Home> {
             )
           ],
         ),
-      ),
+      ) :  LocationsMap(),
       bottomNavigationBar: Padding(
           padding: const EdgeInsets.only(
               bottom: 16.0,

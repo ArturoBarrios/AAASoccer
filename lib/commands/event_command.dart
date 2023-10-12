@@ -1220,12 +1220,12 @@ class EventCommand extends BaseCommand {
       //join conditions
       isMyEventResp['mainEvent']['joinConditions']['data'].forEach((joinCondition) {
         if(joinCondition['forEvent'] != null){
-          isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "With Request", required: joinCondition['withRequest']); 
-          isMyEventResp['eventPaymentJoin'] = new JoinCondition(label: "With Payment", required: joinCondition['withPayment']);                     
+          isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "Join With Request", required: joinCondition['withRequest']); 
+          isMyEventResp['eventPaymentJoin'] = new JoinCondition(label: "Join With Payment", required: joinCondition['withPayment']);                     
         }
         else{
-          isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "With Request", required: joinCondition['withRequest']); 
-          isMyEventResp['teamPaymentJoin'] = new JoinCondition(label: "With Payment", required: joinCondition['withPayment']); 
+          isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "Team Join With Request", required: joinCondition['withRequest']); 
+          isMyEventResp['teamPaymentJoin'] = new JoinCondition(label: "Team Join With Payment", required: joinCondition['withPayment']); 
         } 
       });
 
