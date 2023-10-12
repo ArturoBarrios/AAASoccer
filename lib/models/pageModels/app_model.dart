@@ -93,17 +93,19 @@ class AppModel extends ChangeNotifier {
       "enabled": true,
       "name": StringConstants.HOMEPAGETITLE,
       "description": "",
-      'icon': Icons.home,
-      'selectAction': (BuildContext context) {
+      'icon': Icons.blur_circular_sharp,
+      'selectAction': (BuildContext context) async {
         print("in selectAction");
-        Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) {
-              return const Home();
-            },
-          ),
-        );
+        // Navigator.push(
+        //   context,
+          // MaterialPageRoute<void>(
+            // builder: (BuildContext context)  {
+        await HomePageCommand().eventTypeTapped(Constants.PICKUP);
+        await HomePageCommand().setCards();
+              // return const Home();
+            // },
+          // ),
+        // );
       },
     },
     Constants.MYEVENTS: {

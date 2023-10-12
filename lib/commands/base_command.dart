@@ -506,11 +506,11 @@ class BaseCommand {
           oneHourAgoTimestamp);
       //setup events
       print("Setup Events");
-      if (!appModel.isGuest) {
-        await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
-      } else {
+        // if (!appModel.isGuest) {
+        //   await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
+        // } else {
         await HomePageCommand().eventTypeTapped(Constants.PICKUP);
-      }
+      // }
 
       print("setup Events done");
 

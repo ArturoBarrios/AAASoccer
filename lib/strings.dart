@@ -95,7 +95,7 @@ class StringConstants {
   static const String searchLabel = 'Search';
 
   //pages
-  static const String HOMEPAGETITLE = "Home";
+  static const String HOMEPAGETITLE = "Explore";
   static const String LOCATIONSPAGETITLE = "Locations";
   static const String CHATSPAGETITLE = "Chats";
   static const String SCHEDULEPAGETITLE = "Schedule";
