@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:soccermadeeasy/extensions/parse_roles.dart';
 
+import '../components/join_condition.dart';
 import '../graphql/fragments/team_fragments.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -27,7 +28,7 @@ class TeamCommand extends BaseCommand {
     return teamUserRoles;
   }
 
-  Future<dynamic> getUserTeamDetails(dynamic team) async {
+  Future<dynamic> getUserTeamDetails(dynamic team, bool addToEventPageModel) async {
     print("getUserTeamDetails()");
     //get team most up to date
     if (team == null) {
@@ -49,53 +50,61 @@ class TeamCommand extends BaseCommand {
       "events": [],
       "roles": [],
       "chats": [],
-      "userParticipants": [],
+      "userParticipants": [],      
     };
 
-    teamPageModel.team = team;
+    
+    
 
     //get chats
     dynamic chats = team['chats']['data'];
     userTeamDetails['chats'] = chats;
-    teamPageModel.chats = chats;
+    
     print("length of chats in userTeamDetails: ${chats.length}");
 
     List<dynamic> myTeamRoles = getMyTeamRoles(team, appModel.currentUser);
     print("myTeamRoless: $myTeamRoles");
-    print(
-        "myTeamRoles.contains organizer: ${myTeamRoles.contains("ORGANIZER")}");
+    print("myTeamRoles.contains organizer: ${myTeamRoles.contains("ORGANIZER")}");
 
     userTeamDetails['roles'] = myTeamRoles;
-    teamPageModel.roles = myTeamRoles;
+    
     userTeamDetails['isMine'] = myTeamRoles.contains("ORGANIZER");
-    teamPageModel.isMine = myTeamRoles.contains("ORGANIZER");
+    
     userTeamDetails['isMember'] = myTeamRoles.contains("PLAYER");
-    teamPageModel.isMember = myTeamRoles.contains("PLAYER");
+    
+    userTeamDetails['teamLocations'] = team['teamLocations']['data'];
 
     List<dynamic> userParticipants = team['userParticipants']['data'];
-    userTeamDetails['userParticipants'] = userParticipants;
-    teamPageModel.userParticipants = userParticipants;
+    userTeamDetails['userParticipants'] = userParticipants;   
     for (int i = 0; i < userParticipants.length; i++) {
       if (myTeamRoles.contains("PLAYER")) {
         userTeamDetails['players'].add(userParticipants[i]['user']);
-        teamPageModel.players.add(userParticipants[i]['user']);
+        
       }
       if (myTeamRoles.contains("ORGANIZER")) {
         userTeamDetails['organizers'].add(userParticipants[i]['user']);
-        teamPageModel.organizers.add(userParticipants[i]['user']);
+        
       }
     }
+
+    //join conditions
+      userTeamDetails['team']['joinConditions']['data'].forEach((joinCondition) {
+        if(joinCondition['forTeam']){
+          userTeamDetails['teamRequestJoin'] = new JoinCondition(label: "Join With Request", required: joinCondition['withRequest']); 
+          userTeamDetails['teamPaymentJoin'] = new JoinCondition(label: "Join With Payment", required: joinCondition['withPayment']);                     
+        }        
+      });
 
     //get price and payment info
     dynamic payments = team['payments']['data'];
     userTeamDetails['paymentData'] = payments;
-    teamPageModel.payments = payments;
+    
     userTeamDetails['amountPaid'] = "0.00";
-    teamPageModel.amountPaid = "0.00";
+    
     userTeamDetails['amountRemaining'] = "0.00";
-    teamPageModel.amountRemaining = "0.00";
+    
     userTeamDetails['price'] = team['price'];
-    teamPageModel.price = team['price'];
+    
     if (team['price'] != null) {
       print("payments: $payments");
       //get payment data
@@ -107,17 +116,34 @@ class TeamCommand extends BaseCommand {
         }
       }
       userTeamDetails['amountPaid'] = (amountPaid).toStringAsFixed(2);
-      teamPageModel.amountPaid = (amountPaid).toStringAsFixed(2);
+      
       userTeamDetails['amountRemaining'] =
           (double.parse(team['price']['amount']) - amountPaid)
-              .toStringAsFixed(2);
-      teamPageModel.amountRemaining =
-          (double.parse(team['price']['amount']) - amountPaid)
-              .toStringAsFixed(2);
+              .toStringAsFixed(2);      
     }
 
     print(
         "getUserTeamDetails() finished with userTeamDetails: $userTeamDetails");
+
+    if (addToEventPageModel) {
+      teamPageModel.team = userTeamDetails['team'];
+      teamPageModel.chats = userTeamDetails['chats'];
+      teamPageModel.roles = userTeamDetails['roles'];
+      teamPageModel.isMine = userTeamDetails['isMine'];
+      teamPageModel.isMember = userTeamDetails['isMember'];
+      teamPageModel.userParticipants = userTeamDetails['userParticipants'];
+      teamPageModel.players = userTeamDetails['players'];
+      teamPageModel.organizers = userTeamDetails['organizers'];
+      teamPageModel.payments = userTeamDetails['payments'];
+      teamPageModel.amountPaid = userTeamDetails['amountPaid'];
+      teamPageModel.amountRemaining = userTeamDetails['amountRemaining'];
+      teamPageModel.price = userTeamDetails['price'];
+      teamPageModel.teamLocations = userTeamDetails['teamLocations'];
+      teamPageModel.teamRequestJoin = userTeamDetails['teamRequestJoin'];
+      teamPageModel.teamPaymentJoin = userTeamDetails['teamPaymentJoin'];
+    } 
+
+
 
     return userTeamDetails;
   }

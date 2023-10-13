@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/commands/tournament_command.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
+import '../components/Cards/tsn_team_card.dart';
 import '../models/enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
 import '../graphql/fragments/team_fragments.dart';
@@ -107,17 +108,21 @@ class HomePageCommand extends BaseCommand {
           playerDetails: playerDetails,
           svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {
-      dynamic userTeamDetails =
-          await TeamCommand().getUserTeamDetails(selectedObject);
-      card = TeamCard(
-          teamObject: selectedObject,
-          svgImage: svgImage,
-          userTeamDetails: userTeamDetails);
+      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject, false);
+      card = TSNTeamCard(
+        teamCardDetails: userTeamDetails,
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );
+      // TeamCard(
+      //     teamObject: selectedObject,
+      //     svgImage: svgImage,
+      //     userTeamDetails: userTeamDetails);
     } else if (selectedKey == Constants.MYTEAMS) {
       print("selectedKey == MYTEAMS");
       print("selectedObject: " + selectedObject.toString());
       dynamic team = selectedObject['team'];
-      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team);
+      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team, true);
       print("teammmmmm: " + team.toString());
       print("userTeamDetails: " + userTeamDetails.toString());
       card = TeamCard(

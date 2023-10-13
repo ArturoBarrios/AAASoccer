@@ -83,7 +83,7 @@ class _RequestsListState extends State<RequestsList> {
           .findTeamById({"_id": requestObject['team']['_id']});
       dynamic team = findTeamByIdResponse['data'];
       print("team: " + team.toString());
-      dynamic teamDetails = await TeamCommand().getUserTeamDetails(team);
+      dynamic teamDetails = await TeamCommand().getUserTeamDetails(team, false);
       print("teamDetails: " + teamDetails.toString());
       Widget card = TeamRequestCard(
         teamRequestObject: requestObject,
