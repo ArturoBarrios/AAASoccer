@@ -7,41 +7,43 @@ import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
 import '../../svg_widgets.dart';
 import '../../views/game/view.dart';
+import '../../views/player/view.dart';
+import '../../views/profile/profile.dart';
 import '../Buttons/basic_elevated_button.dart';
 import '../Buttons/circle_outline_icon.dart';
 import '../get_join_event_widget.dart';
 import '../join_condition.dart';
 
 class TSNPlayerCard extends StatelessWidget {
-  final dynamic pickupCardDetails;
+  final dynamic playerCardDetails;
   final Color backgroundColor;
   final Svg? svgImage;
   final double? width;
   final double? height;
 
   TSNPlayerCard({
-    required this.pickupCardDetails,
+    required this.playerCardDetails,
     required this.backgroundColor,
     this.svgImage,
     this.width,
     this.height,
   });
 
-  goToPlayer(BuildContext context) {
-    print("goToPlayer");
-    dynamic profileDetails = {
-      "user": widget.playerObject,
-      "isMine": false,
-      "userDetails": widget.playerDetails
-    };
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Profile(
-                profileDetails: profileDetails,
-              )),
-    );
-  }
+  // goToPlayer(BuildContext context) {
+  //   print("goToPlayer");
+  //   dynamic profileDetails = {
+  //     "user": widget.playerObject,
+  //     "isMine": false,
+  //     "userDetails": widget.playerDetails
+  //   };
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => Profile(
+  //               profileDetails: profileDetails,
+  //             )),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -49,25 +51,16 @@ class TSNPlayerCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     //event model data
-    dynamic mainEvent = pickupCardDetails['mainEvent'];
+    dynamic user = playerCardDetails['user'];
+    bool isProfilePrivate = playerCardDetails['isProfilePrivate'];
+    dynamic objectImageInput = playerCardDetails['objectImageInput'];
+    List followers = playerCardDetails['followers'];
+    List following = playerCardDetails['following'];
+    List eventUserParticipants = playerCardDetails['eventUserParticipants'];
+    List teamUserParticipants = playerCardDetails['teamUserParticipants'];
 
-    List<dynamic> roles = pickupCardDetails['roles'];
-    bool isMine = pickupCardDetails['isMine'];
-    String formattedEventTime = pickupCardDetails['formattedEventTime'];
-    bool isMember = pickupCardDetails['isMember'];
-    String amountRemaining = pickupCardDetails['amountRemaining'];
-    String amountPaid = pickupCardDetails['amountPaid'];
-    String teamAmountRemaining = pickupCardDetails['teamAmountRemaining'];
-    String teamAmountPaid = pickupCardDetails['teamAmountPaid'];
-    List organizers = pickupCardDetails['organizers'];
-    List fieldLocations = pickupCardDetails['fieldLocations'];
-    dynamic price = pickupCardDetails['price'];
-    JoinCondition eventRequestJoin = pickupCardDetails['eventRequestJoin'];
-    JoinCondition eventPaymentJoin = pickupCardDetails['eventPaymentJoin'];
-    JoinCondition teamRequestJoin = pickupCardDetails['teamRequestJoin'];
-    JoinCondition teamPaymentJoin = pickupCardDetails['teamPaymentJoin'];
 
-    print("eventRequestJoin: " + eventRequestJoin.required.value.toString());
+      
 
     return GestureDetector(
         onTap: () {
@@ -75,7 +68,7 @@ class TSNPlayerCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PlayerView(game: mainEvent)),
+                builder: (context) => PlayerView(userPlayerObject: user)),
           );
           print("Card Clicked");
         },
@@ -110,11 +103,11 @@ class TSNPlayerCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(formattedEventTime,
-                                        style: TextStyle(
-                                          color: AppColors.tsnWhite,
-                                          fontSize: FontSizes.xxs(context),
-                                        )),
+                                    // Text(formattedEventTime,
+                                    //     style: TextStyle(
+                                    //       color: AppColors.tsnWhite,
+                                    //       fontSize: FontSizes.xxs(context),
+                                    //     )),
                                     // Text("TL 1b"),
                                   ],
                                 ),
@@ -160,21 +153,7 @@ class TSNPlayerCard extends StatelessWidget {
                                         )),
                                     SizedBox(width: 6),
                                     //join widget
-                                    Expanded(
-                                      flex: 11,
-                                      child:
-                                        GetJoinEventWidget(
-                                            mainEvent: mainEvent,
-                                            roles: roles,
-                                            isMine: isMine,
-                                            price: price,
-                                            amountRemaining: amountRemaining,                                        
-                                            eventRequestJoin: eventRequestJoin,
-                                            eventPaymentJoin: eventPaymentJoin,
-                                            teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin                                                                                    
-                                        )
-                                    ),
+                                    
                                     // Expanded(
                                     //     flex: 11,
                                     //     child:
@@ -211,7 +190,7 @@ class TSNPlayerCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(mainEvent['name'],
+                                    Text(user['name'],
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.m(context),
@@ -268,14 +247,14 @@ class TSNPlayerCard extends StatelessWidget {
                                       color: AppColors.tsnLightGreen,
                                     ),
                                     SizedBox(width: 6),
-                                    Text(
-                                        "Host: " +
-                                            organizers[0]['user']['name']
-                                                .toString(),
-                                        style: TextStyle(
-                                          color: AppColors.tsnGrey,
-                                          fontSize: FontSizes.xxs(context),
-                                        ))
+                                    // Text(
+                                    //     "Host: " +
+                                    //         organizers[0]['user']['name']
+                                    //             .toString(),
+                                    //     style: TextStyle(
+                                    //       color: AppColors.tsnGrey,
+                                    //       fontSize: FontSizes.xxs(context),
+                                    //     ))
                                     // Text("BR 2a"),
                                     // Text("BR 2b"),
                                   ],

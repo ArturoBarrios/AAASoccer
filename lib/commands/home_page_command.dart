@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/commands/tournament_command.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
+import '../components/Cards/tsn_player_card.dart';
 import '../components/Cards/tsn_team_card.dart';
 import '../models/enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
@@ -102,11 +103,16 @@ class HomePageCommand extends BaseCommand {
           userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
       dynamic playerDetails =
-          await UserCommand().getUserDetails(selectedObject);
-      card = PlayerCard(
-          playerObject: selectedObject,
-          playerDetails: playerDetails,
-          svgImage: svgImage);
+          await UserCommand().getUserDetails(selectedObject, false);
+      card = TSNPlayerCard(
+        playerCardDetails: playerDetails,
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );
+      // card = PlayerCard(
+      //     playerObject: selectedObject,
+      //     playerDetails: playerDetails,
+      //     svgImage: svgImage);
     } else if (selectedKey == Constants.TEAM) {
       dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject, false);
       card = TSNTeamCard(

@@ -466,21 +466,6 @@ class UserCommand extends BaseCommand {
     return addTeamResponse;
   }
 
-  dynamic getUserDetails(dynamic user) {
-    print("getUserPlayerDetails");
-    print("user: " + user.toString());
-    dynamic getUserPlayerDetailsResp = {
-      "isFriend": false,
-      "followers": user['followers']['data'].length,
-      "following": user['following']['data'].length,
-    };
-
-    dynamic currentUser = appModel.currentUser;
-    print("user: " + user.toString());
-
-    return getUserPlayerDetailsResp;
-  }
-
   Future<Map<String, dynamic>> followUser(dynamic followUserInput) async {
     print("followUser");
     Map<String, dynamic> followUserResponse = {

@@ -46,9 +46,11 @@ class _ProfileState extends State<Profile> {
 
   changeSwitchStatus(final bool value) {
     setState(() {
-      _viewController.profilePrivateStatus = value;
+      // _viewController.profilePrivateStatus = value;
     });
   }
+
+  
 
   Future<void> onTapShare() async {
     await 'Hey theres, my name is ${widget.profileDetails['user']['username']}'
@@ -78,6 +80,8 @@ class _ProfileState extends State<Profile> {
         context.watch<ProfilePageModel>().eventUserParticipants;
     dynamic objectImageInput =
         context.watch<ProfilePageModel>().objectImageInput;
+    bool profilePrivateStatus =
+        context.watch<ProfilePageModel>().objectImageInput;
 
     switch (_viewStatus) {
       case ViewStatus.loading:
@@ -102,7 +106,7 @@ class _ProfileState extends State<Profile> {
                     ),
                     const Spacer(),
                     SwitchButton(
-                      isActive: _viewController.profilePrivateStatus,
+                      isActive: profilePrivateStatus,
                       onTap: onTapChangeProfilePrivateStatus,
                     ),
                     IconButton(
@@ -267,7 +271,9 @@ class _ProfileState extends State<Profile> {
                 Container(
                   margin: const EdgeInsets.all(25),
                   child: ElevatedButton(
-                    onPressed: () => signOut(),
+                    onPressed: () {
+
+                    },
                     // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                     style: ElevatedButton.styleFrom(
                         elevation: 12.0,
