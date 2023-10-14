@@ -8,6 +8,13 @@ class ProfilePageModel extends ChangeNotifier {
     _user = user;
     notifyListeners();
   }
+  
+  bool _isProfilePrivate = false;
+  bool get isProfilePrivate => _isProfilePrivate;
+  set isProfilePrivate(bool isProfilePrivate) {
+    _isProfilePrivate = isProfilePrivate;
+    notifyListeners();
+  }
 
   dynamic _objectImageInput = null;
   dynamic get objectImageInput => _objectImageInput;
@@ -43,4 +50,6 @@ class ProfilePageModel extends ChangeNotifier {
     _teamUserParticipants = teamUserParticipants;
     notifyListeners();
   }
+
+
 }

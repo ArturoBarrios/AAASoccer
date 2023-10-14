@@ -1157,7 +1157,7 @@ class EventCommand extends BaseCommand {
     print("getUserEventDetails()");
     print("events: " + events.toString());
     dynamic isMyEventResp = {
-      "success": true,
+      "success": false,
       "isMine": false,
       "isMember": false,
       "amountPaid": "0.00",
@@ -1307,12 +1307,14 @@ class EventCommand extends BaseCommand {
 
       print("successfully ran details function");
       isMyEventResp["success"] = true;
+
+      return isMyEventResp;
     } on Exception catch (e) {
       print('Mutation failed: $e');
       return isMyEventResp;
     }
 
-    return isMyEventResp;
+    
   }
 
 

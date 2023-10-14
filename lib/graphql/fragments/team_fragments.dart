@@ -54,6 +54,7 @@ class TeamFragments {
                 _id
                 withRequest
                 withPayment
+                forTeam
 
               }
             }

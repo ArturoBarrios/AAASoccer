@@ -28,18 +28,12 @@ class TeamCommand extends BaseCommand {
     return teamUserRoles;
   }
 
-  Future<dynamic> getUserTeamDetails(dynamic team, bool addToEventPageModel) async {
+  Future<Map<String,dynamic>> getUserTeamDetails(dynamic team, bool addToEventPageModel) async {
     print("getUserTeamDetails()");
-    //get team most up to date
-    if (team == null) {
-      return;
-    }
-    dynamic teamResp = await findTeamById(team);
-    print("teamResp: $teamResp");
-    team = teamResp['data'];
-    dynamic userTeamDetails = {
-      "success": true,
-      "isMine": false,
+
+    Map<String,dynamic> userTeamDetails = {
+      "success": false,
+       "isMine": false,
       "isMember": "",
       "amountPaid": 0,
       "paymentObjects": [],
@@ -50,8 +44,15 @@ class TeamCommand extends BaseCommand {
       "events": [],
       "roles": [],
       "chats": [],
-      "userParticipants": [],      
+      "userParticipants": [], 
+    
     };
+
+    try{
+       dynamic teamResp = await findTeamById(team);
+    print("teamResp: $teamResp");
+    team = teamResp['data'];
+    
 
     
     
@@ -141,11 +142,17 @@ class TeamCommand extends BaseCommand {
       teamPageModel.teamLocations = userTeamDetails['teamLocations'];
       teamPageModel.teamRequestJoin = userTeamDetails['teamRequestJoin'];
       teamPageModel.teamPaymentJoin = userTeamDetails['teamPaymentJoin'];
-    } 
+    }
 
+      userTeamDetails['success'] = true; 
 
-
-    return userTeamDetails;
+      return userTeamDetails;
+    } catch(e){
+      print("error in getUserTeamDetails: $e");
+      return userTeamDetails;
+    }
+    
+      
   }
 
   Future<Map<String, dynamic>> findTeamById(

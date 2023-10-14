@@ -428,9 +428,9 @@ class _Home extends State<Home> {
     userObjectSelections = context
         .select<HomePageModel, List>((value) => value.userObjectSelections);
 
-    // Map<dynamic, dynamic> enabledSelections2 =
-    //     context.select<HomePageModel, Map<dynamic, dynamic>>(
-    //         (value) => value.enabledSelections2);
+    Map<dynamic, dynamic> enabledSelections2 =
+        context.select<HomePageModel, Map<dynamic, dynamic>>(
+            (value) => value.enabledSelections2);
 
     List cards = context.select<HomePageModel, List>((value) => value.cards);
     bool isFilteringEnabled = context
@@ -548,37 +548,37 @@ class _Home extends State<Home> {
                         )
                       ],
                     )),
-                // Visibility(
-                // visible: hideSelectionItems(enabledSelections2),
-                // child: 
-                // SizedBox(
-                //   height:
-                //       80, // Define the height you want for your card section
-                //   child: ListView.builder(
-                //     scrollDirection: Axis.horizontal,
-                //     controller: _selectEventTypeController,
-                //     itemCount: enabledSelections2.length,
-                //     itemBuilder: (_, index) {
-                //       dynamic key = enabledSelections2.keys.elementAt(index);
-                //       print("enabledSelections2[key]['show']: " +
-                //           enabledSelections2[key]['show'].toString());
-                //       if(enabledSelections2[key]['show']){
-                //         return SelectIconButton(
-                //           eventObject: enabledSelections2[key],
-                //           svgImage: enabledSelections2[key]['image'],
-                //           index: index,
-                //           onTapEvent: () => isFilteringEnabled
-                //               ? clearFiltering(isPop: false)
-                //               : null,
-                //         );
+                Visibility(
+                visible: hideSelectionItems(enabledSelections2),
+                child: 
+                SizedBox(
+                  height:
+                      80, // Define the height you want for your card section
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    controller: _selectEventTypeController,
+                    itemCount: enabledSelections2.length,
+                    itemBuilder: (_, index) {
+                      dynamic key = enabledSelections2.keys.elementAt(index);
+                      print("enabledSelections2[key]['show']: " +
+                          enabledSelections2[key]['show'].toString());
+                      if(enabledSelections2[key]['show']){
+                        return SelectIconButton(
+                          eventObject: enabledSelections2[key],
+                          svgImage: enabledSelections2[key]['image'],
+                          index: index,
+                          onTapEvent: () => isFilteringEnabled
+                              ? clearFiltering(isPop: false)
+                              : null,
+                        );
 
-                //       }
-                //       else{
-                //         return Container();
-                //       }
-                //     },
-                //   ),
-                // )),
+                      }
+                      else{
+                        return Container();
+                      }
+                    },
+                  ),
+                )),
                 //logic/button for sending team/event requests to
                 // multiple players
                 userObjectSelections.isNotEmpty

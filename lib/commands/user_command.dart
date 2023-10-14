@@ -12,10 +12,90 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/notifications_command.dart';
 import '../models/enums/payment_status_type.dart';
+import 'images_command.dart';
 
 class UserCommand extends BaseCommand {
   updateOrganizer() {
     //iterate through events and find
+  }
+
+  Future<Map<String,dynamic>> getUserDetails(dynamic user, bool addToProfilePageModel) async {
+    print("loadInitialData Profile");
+    Map<String,dynamic> getUserDetailsResp = {
+      "success": false,
+      "user": user,
+      "objectImageInput": {},
+      "followers": [],
+      "following": [],
+      "eventUserParticipants": [],
+      "teamUserParticipants": [],
+    };
+
+    try{
+       //get current user
+    String imageUrl = "";
+
+    if (appModel.currentUser['_id'] == user['_id']) {
+      imageUrl = UserCommand().getProfileImage();      
+      // profilePageModel.user = UserCommand().getAppModelUser();
+
+      if (imageUrl == '') {
+        String? key = user['mainImageKey'];
+        if (key != null) {
+          Map<String, dynamic> getUserProfileImageResp =
+              await ImagesCommand().getImage(key);
+          print("getUserProfileImageResp: $getUserProfileImageResp");
+          if (getUserProfileImageResp['success']) {
+            imageUrl = getUserProfileImageResp['data']['signedUrl'];
+            userModel.profileImageUrl = imageUrl;
+          }
+        }
+      }
+    } else {
+      Map<String, dynamic> findMyUserByIdResp =
+          await UserCommand().findUserById(user);
+      print("findMyUserByIdResp: $findMyUserByIdResp");
+      if (findMyUserByIdResp['success']) {
+        // profilePageModel.user = findMyUserByIdResp['data'];
+        String? key = user['mainImageKey'];
+        print("key: $key");
+        if (key != null) {
+          Map<String, dynamic> getUserProfileImageResp =
+              await ImagesCommand().getImage(key);
+          print("getUserProfileImageResp: $getUserProfileImageResp");
+          if (getUserProfileImageResp['success']) {
+            imageUrl = getUserProfileImageResp['data']['signedUrl'];
+          }
+        }
+      }
+    }
+    print("loadInitialData Profile imageUrl: $imageUrl");
+
+    getUserDetailsResp['objectImageInput'] = {
+      "imageUrl": imageUrl,
+      "containerType": Constants.PROFILEIMAGECIRCLE
+    };
+
+    getUserDetailsResp['eventUserParticipants'] =
+      user['eventUserParticipants']['data'];
+    getUserDetailsResp['teamUserParticipants'] =
+        user['teamUserParticipants']['data'];
+    getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
+
+    if(addToProfilePageModel){
+      profilePageModel.user = user;
+      profilePageModel.objectImageInput = getUserDetailsResp['objectImageInput'];
+      profilePageModel.eventUserParticipants = getUserDetailsResp['eventUserParticipants'];
+      profilePageModel.teamUserParticipants = getUserDetailsResp['teamUserParticipants'];
+      profilePageModel.isProfilePrivate = getUserDetailsResp['isProfilePrivate'];
+
+    }
+      return getUserDetailsResp;
+    } catch(e) {
+
+      return getUserDetailsResp;
+    }
+   
   }
 
   String getProfileImage() {

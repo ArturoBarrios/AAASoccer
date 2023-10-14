@@ -14,7 +14,6 @@ import '../settings/settings_view.dart';
 import '../../components/images_list_widget.dart';
 import '../../components/loading_screen2.dart';
 import '../../components/object_profile_main_image.dart';
-import 'profile_controller.dart';
 
 // // // // // // // // // // // // // // //
 class Profile extends StatefulWidget {
@@ -28,7 +27,6 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   ViewStatus _viewStatus = ViewStatus.loading;
-  final ProfileController _viewController = ProfileController();
 
   @override
   void initState() {
@@ -36,9 +34,7 @@ class _ProfileState extends State<Profile> {
     loadInitialData();
   }
 
-  Future<void> loadInitialData() async {
-    await _viewController.loadInitialData(widget.profileDetails);
-
+  Future<void> loadInitialData() async {    
     changeViewStatus(ViewStatus.completed);
   }
 
@@ -271,7 +267,7 @@ class _ProfileState extends State<Profile> {
                 Container(
                   margin: const EdgeInsets.all(25),
                   child: ElevatedButton(
-                    onPressed: () => _viewController.signOut(),
+                    onPressed: () => signOut(),
                     // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                     style: ElevatedButton.styleFrom(
                         elevation: 12.0,
