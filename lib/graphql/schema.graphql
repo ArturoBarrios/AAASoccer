@@ -621,6 +621,7 @@ type UserLocation   {
 }
 
 type TeamLocation   {
+  isMainField: Boolean @default(value: false)
   location: Location
   team: Team    
 }

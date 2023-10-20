@@ -244,6 +244,15 @@ class AppModel extends ChangeNotifier {
     _userConditionsMet = userConditionsMet;
     notifyListeners();
   }
+ 
+ 
+
+  bool _onboarded = false;
+  bool get onboarded => _onboarded;
+  set onboarded(bool onboarded) {
+    _onboarded = onboarded;
+    notifyListeners();
+  }
 
   bool _initialConditionsMet = false;
   bool get initialConditionsMet => _initialConditionsMet;

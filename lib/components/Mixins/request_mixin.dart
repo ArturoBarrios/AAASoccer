@@ -80,7 +80,8 @@ mixin RequestMixin {
       context,
       MaterialPageRoute(
           builder: (context) => Profile(
-                profileDetails: profileDetails,
+                user: user
+                
               )),
     );
   }

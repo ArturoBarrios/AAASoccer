@@ -45,8 +45,8 @@ class SideNavs extends StatefulWidget {
                   "user": userObject,
                   "userDetails": userDetails
                 };
-                return Profile(
-                  profileDetails: profileDetails,
+                return Profile(    
+                  user: userObject,              
                 );
               },
             ));

@@ -12,6 +12,7 @@ import 'package:soccermadeeasy/services/onesignal_service.dart';
 import 'package:soccermadeeasy/services/stripe_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:soccermadeeasy/views/onboarding/onboarding_view.dart';
 import 'package:soccermadeeasy/views/splash_screen.dart';
 
 import 'package:soccermadeeasy/utils.dart';
@@ -275,8 +276,14 @@ class _MyAppState extends State<MyApp> {
       ///////////////////////// add back in when shortcode is ready
       // print("resppp: " + resp.toString());
       // if (resp['success']) {
-      await BaseCommand().setupUser(emailController.text.trim());
-      BaseCommand().initialUserConditionsMet();
+      Map<String,dynamic> setupUserResp = await BaseCommand().setupUser(emailController.text.trim());
+      print("setupUserResp: "+setupUserResp.toString());
+      if(setupUserResp['success']){
+        dynamic user = setupUserResp['data'];
+        BaseCommand().setOnboarded(user['onboarded']);
+          
+        BaseCommand().initialUserConditionsMet();          
+      }
 
       print("initialConditionsMett");
       // } else {
@@ -341,6 +348,9 @@ class _MyAppState extends State<MyApp> {
           Commands.init(context);
           bool userConditionsMet = context
               .select<AppModel, bool>((value) => value.userConditionsMet);
+          bool onboarded = context
+              .select<AppModel, bool>((value) => value.onboarded);
+          
           return Authenticator(
             authenticatorBuilder:
                 (BuildContext context, AuthenticatorState state) {
@@ -700,9 +710,10 @@ class _MyAppState extends State<MyApp> {
             child: MaterialApp(
               navigatorKey: navigatorKey,
               builder: Authenticator.builder(),
-              home: userConditionsMet
-                  ? AppScaffold(client: widget.client)
-                  : SplashScreen(),
+              home: userConditionsMet && onboarded
+                  ? AppScaffold(client: widget.client) :
+                     (userConditionsMet && !onboarded) ?        
+                      OnboardingView() : SplashScreen(),
               routes: {
                 // When navigating to the "/" route, build the HomeScreen widget.
                 '/home': (context) => Home(),
@@ -733,9 +744,9 @@ class _AppScaffoldState extends State<AppScaffold> {
     print("AppScaffoldState main.dart");
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await loadPlayerDetails();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+      //  loadPlayerDetails();
+    // });
   }
 
   Future<void> loadPlayerDetails() async {
@@ -757,13 +768,13 @@ class _AppScaffoldState extends State<AppScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    bool initialConditionsMet =
-        context.select<AppModel, bool>((value) => value.initialConditionsMet);
-
+    // bool initialConditionsMet =
+    //     context.select<AppModel, bool>((value) => value.initialConditionsMet);
+// print("initialConditionsMetttttt: "+ initialConditionsMet.toString());
     // Return the current view, based on the currentUser value:
     return Scaffold(
 
         //replace first condition with loading screen
-        body: initialConditionsMet == false ? SplashScreen() : const Home());
+        body:  const Home());
   }
 }

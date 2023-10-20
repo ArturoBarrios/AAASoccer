@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/loading_circular.dart';
+import '../../commands/team_command.dart';
 import '../../components/SendMyEventsTeamRequestWidget.dart';
 import '../../components/chats_list_widget.dart';
 import '../../components/events_list_widget.dart';
 import '../../components/get_join_team_widget.dart';
 import '../../components/headers.dart';
 import '../../components/images_list_widget.dart';
+import '../../components/join_condition.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/my_map_page.dart';
 import '../../components/payment_list_widget.dart';
@@ -31,8 +33,7 @@ class TeamView extends StatefulWidget {
 }
 
 class _TeamViewState extends State<TeamView> {
-  ViewStatus _viewStatus = ViewStatus.loading;
-  final TeamViewController _tVC = TeamViewController();
+  ViewStatus _viewStatus = ViewStatus.loading;  
 
   @override
   void initState() {
@@ -44,7 +45,8 @@ class _TeamViewState extends State<TeamView> {
   }
 
   Future<void> loadInitialData() async {
-    await _tVC.loadInitialData(widget.teamObject);
+    // await _tVC.loadInitialData(widget.teamObject);
+    await TeamCommand().getUserTeamDetails(widget.teamObject, true);
     changeViewStatus(ViewStatus.completed);
   }
 
@@ -129,24 +131,26 @@ class _TeamViewState extends State<TeamView> {
   @override
   Widget build(BuildContext context) {
     print("build() in TeamView");
-    print("teamObject: ${widget.teamObject}");
+    
     LocationSearchBar locationSearchBar = new LocationSearchBar();
 
-    dynamic currentUser =
-        context.select<AppModel, dynamic>((value) => value.currentUser);
-    dynamic team =
-        context.select<TeamPageModel, dynamic>((value) => value.team);
-    bool isMine = context.select<TeamPageModel, bool>((value) => value.isMine);
-    List players =
-        context.select<TeamPageModel, List>((value) => value.players);
-    List roles = context.select<TeamPageModel, List>((value) => value.roles);
-    List userParticipants =
-        context.select<TeamPageModel, List>((value) => value.userParticipants);
-    dynamic price =
-        context.select<TeamPageModel, dynamic>((value) => value.price);
-    String amountRemaining =
-        context.select<TeamPageModel, String>((value) => value.amountRemaining);
-    List payments = context.watch<TeamPageModel>().payments;
+    dynamic team = context.select<TeamPageModel, dynamic>((value) => value.team);
+    List<dynamic> roles = context.select<TeamPageModel, List<dynamic>>((value) => value.roles);
+    bool isMine = context.select<TeamPageModel, bool>((value) => value.isMine);    
+    bool isMember = context.select<TeamPageModel, bool>((value) => value.isMember);
+    String amountRemaining = context.select<TeamPageModel, String>((value) => value.amountRemaining);
+    String amountPaid = context.select<TeamPageModel, String>((value) => value.amountPaid);
+    List players = context.select<TeamPageModel, List>((value) => value.players);
+    List userParticipants = context.select<TeamPageModel, List>((value) => value.userParticipants);
+    List organizers = context.select<TeamPageModel, List>((value) => value.organizers);  
+    List teamLocations = context.select<TeamPageModel, List>((value) => value.teamLocations);    
+    List payments = context.select<TeamPageModel, List>((value) => value.payments);    
+    dynamic price = context.select<TeamPageModel, dynamic>((value) => value.price); 
+    JoinCondition teamRequestJoin = context.select<TeamPageModel, JoinCondition>((value) => value.teamRequestJoin);
+    JoinCondition teamPaymentJoin = context.select<TeamPageModel, JoinCondition>((value) => value.teamPaymentJoin);
+
+    print("teamObject: ${team}");
+  
 
     return Scaffold(
       appBar: const Headers().getBackHeader(context, widget.teamObject['name']),
@@ -164,59 +168,59 @@ class _TeamViewState extends State<TeamView> {
                               onTap: () async {
                                 print("onTap: ");
 
-                                List<int>? playerIndexes =
-                                    await showAnimatedDialog<dynamic>(
-                                  context: context,
-                                  barrierDismissible: true,
-                                  builder: (BuildContext context) {
-                                    return ClassicListDialogWidget<dynamic>(
-                                        selectedIndexes:
-                                            _tVC.selectedPlayerIndexes,
-                                        titleText: 'Choose Players',
-                                        listType: ListType.multiSelect,
-                                        positiveText: "Next",
-                                        activeColor: Colors.green,
-                                        dataList: _tVC.playerList);
-                                  },
-                                  animationType: DialogTransitionType.size,
-                                  curve: Curves.linear,
-                                );
-                                _tVC.selectedPlayerIndexes =
-                                    playerIndexes ?? _tVC.selectedPlayerIndexes;
-                                print(
-                                    'selectedIndex:${_tVC.selectedPlayerIndexes?.toString()}');
-                                _tVC.playersSelected(
-                                    _tVC.selectedPlayerIndexes!);
+                                // List<int>? playerIndexes =
+                                //     await showAnimatedDialog<dynamic>(
+                                //   context: context,
+                                //   barrierDismissible: true,
+                                //   builder: (BuildContext context) {
+                                //     return ClassicListDialogWidget<dynamic>(
+                                //         selectedIndexes:
+                                //             _tVC. selectedPlayerIndexes,
+                                //         titleText: 'Choose Players',
+                                //         listType: ListType.multiSelect,
+                                //         positiveText: "Next",
+                                //         activeColor: Colors.green,
+                                //         dataList: _tVC.playerList);
+                                //   },
+                                //   animationType: DialogTransitionType.size,
+                                //   curve: Curves.linear,
+                                // );
+                                // _tVC.selectedPlayerIndexes =
+                                //     playerIndexes ?? _tVC.selectedPlayerIndexes;
+                                // print(
+                                //     'selectedIndex:${_tVC.selectedPlayerIndexes?.toString()}');
+                                // _tVC.playersSelected(
+                                //     _tVC.selectedPlayerIndexes!);
 
-                                if (_tVC.playersSelectedList.isNotEmpty &&
-                                    context.mounted) {
-                                  List<int>? requestIndexes =
-                                      await showAnimatedDialog<dynamic>(
-                                    context: context,
-                                    barrierDismissible: true,
-                                    builder: (BuildContext context) {
-                                      return ClassicListDialogWidget<dynamic>(
-                                          selectedIndexes:
-                                              _tVC.selectedRequestTypeIndexes,
-                                          titleText: 'Choose User Type',
-                                          positiveText: "Send Request",
-                                          listType: ListType.multiSelect,
-                                          activeColor: Colors.green,
-                                          dataList: _tVC.requestUserTypes);
-                                    },
-                                    animationType: DialogTransitionType.size,
-                                    curve: Curves.linear,
-                                  );
+                                // if (_tVC.playersSelectedList.isNotEmpty &&
+                                //     context.mounted) {
+                                //   List<int>? requestIndexes =
+                                //       await showAnimatedDialog<dynamic>(
+                                //     context: context,
+                                //     barrierDismissible: true,
+                                //     builder: (BuildContext context) {
+                                //       return ClassicListDialogWidget<dynamic>(
+                                //           selectedIndexes:
+                                //               _tVC.selectedRequestTypeIndexes,
+                                //           titleText: 'Choose User Type',
+                                //           positiveText: "Send Request",
+                                //           listType: ListType.multiSelect,
+                                //           activeColor: Colors.green,
+                                //           dataList: _tVC.requestUserTypes);
+                                //     },
+                                //     animationType: DialogTransitionType.size,
+                                //     curve: Curves.linear,
+                                //   );
 
-                                  _tVC.selectedRequestTypeIndexes =
-                                      requestIndexes ??
-                                          _tVC.selectedRequestTypeIndexes;
-                                  print(
-                                      'selectedIndex:${_tVC.selectedRequestTypeIndexes?.toString()}');
-                                  await _tVC.requestTypeSelected(
-                                      _tVC.selectedRequestTypeIndexes);
-                                  // await sendPlayersTeamRequest();
-                                }
+                                //   _tVC.selectedRequestTypeIndexes =
+                                //       requestIndexes ??
+                                //           _tVC.selectedRequestTypeIndexes;
+                                //   print(
+                                //       'selectedIndex:${_tVC.selectedRequestTypeIndexes?.toString()}');
+                                //   await _tVC.requestTypeSelected(
+                                //       _tVC.selectedRequestTypeIndexes);
+                                //   // await sendPlayersTeamRequest();
+                                // }
                               },
                               child: const Text("Invite Players")),
                         ),
@@ -224,21 +228,22 @@ class _TeamViewState extends State<TeamView> {
                       // UpdateViewTeamForm(
                       //     userObjectDetails: _tVC.userTeamDetails),
                       //MyMapPage
-                      Container(
-                        margin: const EdgeInsets.all(10.0),
-                        color: Colors.amber[600],
-                        width: MediaQuery.of(context).size.width -
-                            (MediaQuery.of(context).size.width *
-                                .1), //10% padding
-                        height: 200.0,
-                        child: MyMapPage(
-                            latitude: team['location']['data'][0]['latitude'],
-                            longitude: team['location']['data'][0]
-                                ['longitude']),
-                      ),
+                      // Container(
+                      //   margin: const EdgeInsets.all(10.0),
+                      //   color: Colors.amber[600],
+                      //   width: MediaQuery.of(context).size.width -
+                      //       (MediaQuery.of(context).size.width *
+                      //           .1), //10% padding
+                      //   height: 200.0,
+                      //   child: 
+                      //   MyMapPage(
+                      //       latitude: teamLocations[0]['latitude'],
+                      //       longitude: teamLocations[0]
+                      //           ['longitude']),
+                      // ),
                       //search bar
-                      locationSearchBar = LocationSearchBar(
-                          initialValue: team['location']['data'][0]['name']),
+                      // locationSearchBar = LocationSearchBar(
+                      //     initialValue: teamLocations[0]['name']),
                       //SendMyEventsTeamRequestWidget
                       SendMyEventsTeamRequestWidget(
                         team: team,
@@ -261,14 +266,14 @@ class _TeamViewState extends State<TeamView> {
                           mainEvent: null,
                           team: team,
                           imageFor: Constants.TEAM),
-                      GetJoinTeamWidget(
-                        user: currentUser,
-                        team: team,
-                        roles: roles,
-                        isMine: isMine,
-                        price: price,
-                        amountRemaining: amountRemaining,
-                      ),
+                      // GetJoinTeamWidget(
+                      //   user: currentUser,
+                      //   team: team,
+                      //   roles: roles,
+                      //   isMine: isMine,
+                      //   price: price,
+                      //   amountRemaining: amountRemaining,
+                      // ),
                       PlayerList(
                         event: null,
                         team: team,
@@ -288,8 +293,8 @@ class _TeamViewState extends State<TeamView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _tVC.getPriceWidget(_tVC.userTeamDetails),
-                          _tVC.userTeamDetails['isMine']
+                          // _tVC.getPriceWidget(_tVC.userTeamDetails),
+                          isMine
                               ? ElevatedButton(
                                   onPressed: () {
                                     // Add button onPressed logic here

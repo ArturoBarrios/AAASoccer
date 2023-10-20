@@ -69,7 +69,7 @@ class _PlayerCard extends State<PlayerCard> {
       context,
       MaterialPageRoute(
           builder: (context) => Profile(
-                profileDetails: profileDetails,
+                user: widget.playerObject['user']
               )),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/views/home.dart';
 import 'package:soccermadeeasy/views/onboarding/rich_text_selectable_chip_list.dart';
 
+import '../../commands/base_command.dart';
 import '../../commands/user_command.dart';
 import '../../components/custom_stepper.dart';
 import '../../components/models/button_model.dart';
@@ -72,7 +73,10 @@ class _OnboardingViewState extends State<OnboardingView> {
           """,
         },
       };
+      BaseCommand().initialUserConditionsMet();
       await UserCommand().partialUpdateUser(partialUserInput);
+      BaseCommand().setOnboarded(true);
+      
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(

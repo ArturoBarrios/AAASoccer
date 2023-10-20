@@ -238,7 +238,7 @@ class _PlayerListState extends State<PlayerList> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => Profile(
-                                profileDetails: profileDetails,
+                                user: user,
                               )),
                     );
                   },

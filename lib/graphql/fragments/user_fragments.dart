@@ -15,6 +15,7 @@ class UserFragments {
               birthdate              
               gender
               OSPID
+              onboarded
               mainImageKey
               isProfilePrivate
               updatedAt
@@ -105,6 +106,7 @@ class UserFragments {
 
                 }
               }
+              
               
     """;
 

@@ -11,9 +11,9 @@ class TeamPageModel extends ChangeNotifier {
   }
 
   /////////////////
-  dynamic _payments = null;
-  dynamic get payments => _payments;
-  set payments(dynamic payments) {
+  List _payments = [];
+  List get payments => _payments;
+  set payments(List payments) {
     _payments = payments;
     notifyListeners();
   }

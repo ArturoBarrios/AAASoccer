@@ -97,8 +97,8 @@ class TeamCommand extends BaseCommand {
       });
 
     //get price and payment info
-    dynamic payments = team['payments']['data'];
-    userTeamDetails['paymentData'] = payments;
+    List payments = team['payments']['data'];
+    userTeamDetails['payments'] = payments;
     
     userTeamDetails['amountPaid'] = "0.00";
     

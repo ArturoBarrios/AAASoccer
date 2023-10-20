@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/extensions/filter_extension.dart';
 import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
+import 'package:soccermadeeasy/views/splash_screen.dart';
 
 import '../commands/base_command.dart';
 import '../components/Buttons/basic_elevated_button.dart';
@@ -304,7 +305,25 @@ class _Home extends State<Home> {
     HomePageCommand().updateUpdatedCards(value);
   }
 
+  Future<void> loadPlayerDetails() async {
+    print("loadPlayerDetails");
+    // await TwilioServices().configureTwilio();
+
+    ///////////////////////// add back in when shortcode is ready
+    // print("resppp: " + resp.toString());
+    // if (resp['success']) {
+    await BaseCommand().setupInitialAppModels();
+    BaseCommand().initialConditionsMet();
+
+    print("initialConditionsMett");
+    // } else {
+    //   print("try again....");
+
+    // }
+  }
+
   Future<void> loadInitialData() async {
+    await loadPlayerDetails();
     print("loadInitialData");
     _selectEventController = ScrollController()..addListener(_loadMore);
     userObject = UserCommand().getAppModelUser();
@@ -418,6 +437,9 @@ class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
     print("buildDDDDDD");
+    bool initialConditionsMet =
+        context.select<AppModel, bool>((value) => value.initialConditionsMet);
+        
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
 
@@ -469,7 +491,9 @@ class _Home extends State<Home> {
       loadInitialData();
     }
 
-    return Scaffold(
+    return 
+    initialConditionsMet == false ? SplashScreen() : 
+    Scaffold(
       appBar: Headers(
         playerStepperButton: ButtonModel(
           prefixIconData: Icons.play_circle_fill_rounded,

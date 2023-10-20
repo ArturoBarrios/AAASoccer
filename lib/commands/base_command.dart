@@ -63,9 +63,8 @@ class BaseCommand {
 
   void initializeData() {}
 
-  onTapBottomNav(context, key, item){
-    appModel.onTapBottomNav(context,key,item);
-
+  onTapBottomNav(context, key, item) {
+    appModel.onTapBottomNav(context, key, item);
   }
 
   String formatEventTime(String startTime, String endTime) {
@@ -443,52 +442,69 @@ class BaseCommand {
     }
   }
 
-  Future<void> setupUser(String email) async {
+  Future<Map<String, dynamic>> setupUser(String email) async {
+    print("setupUser");
+    Map<String, dynamic> setupUserResp = {
+      "success": false,
+      "data": null,
+    };
     Map<String, dynamic> getUserInput = {"email": email};
 
-    if (!appModel.isGuest) {
-      Map<String, dynamic> getUserResp =
-          await UserCommand().getUserByEmail(getUserInput);
-      print("getUserResp: ");
-      print(getUserResp);
-      if (getUserResp["success"]) {
-        dynamic user = getUserResp["data"];
+    try {
+      if (!appModel.isGuest) {
+        Map<String, dynamic> getUserResp =
+            await UserCommand().getUserByEmail(getUserInput);
+        print("getUserResp: ");
+        print(getUserResp);
+        if (getUserResp["success"]) {
+          dynamic user = getUserResp["data"];
 
-        if (user == null) {
-          Map<String, dynamic> userInput = {
-            "name": "no name",
-            "email": email,
-            "username": "username",
-            "phone": "2672136006",
-            "birthdate": "07/26/1997",
-            "gender": "male",
-            "address": "random address",
-            "status": "SignedUp"
-          };
-          Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};
-          Map<String, dynamic> createPlayerResp = await PlayerCommand()
-              .createPlayer(userInput, {}, locationInput, false);
-          user = createPlayerResp['data'];
+          if (user == null) {
+            Map<String, dynamic> userInput = {
+              "name": "no name",
+              "email": email,
+              "username": "username",
+              "phone": "2672136006",
+              "birthdate": "07/26/1997",
+              "gender": "male",
+              "address": "random address",
+              "status": "SignedUp"
+            };
+            Map<String, dynamic> locationInput = {
+              "latitude": 0,
+              "longitude": 0
+            };
+            Map<String, dynamic> createPlayerResp = await PlayerCommand()
+                .createPlayer(userInput, {}, locationInput, false);
+            user = createPlayerResp['data'];
+          }
+          appModel.currentUser = user;
+          print("app model user: ");
+          print(appModel.currentUser);
+          print("user['chats']['data']: ${user['chats']['data']}");
+          chatPageModel.generalChatList = user['chats']['data'];
+          //setup onesignal
+          await UserCommand().configureOneSignalUserDetails();
+          print("testing some shit out!");
+          //not being used so commented out
+          // await loadUserImagesFromAWS();
+          print(
+              "get friends and myEvents from currentUser object: ${appModel.currentUser}");
+
+          // await ImagesCommand().setUserProfileImage();
+          setupUserResp['success'] = true;
+          setupUserResp['data'] = user;
+        } else {
+          print("something went wrong in fetching user");
         }
-        appModel.currentUser = user;
-        print("app model user: ");
-        print(appModel.currentUser);
-        print("user['chats']['data']: ${user['chats']['data']}");
-        chatPageModel.generalChatList = user['chats']['data'];
-        //setup onesignal
-        await UserCommand().configureOneSignalUserDetails();
-        print("testing some shit out!");
-        //not being used so commented out
-        // await loadUserImagesFromAWS();
-        print(
-            "get friends and myEvents from currentUser object: ${appModel.currentUser}");
-
-        await ImagesCommand().setUserProfileImage();
       } else {
-        print("something went wrong in fetching user");
+        print("is guest");
       }
-    } else {
-      print("is guest");
+      return setupUserResp;
+    } catch (e) {
+      print("error in setupUser: ");
+      print(e);
+      return setupUserResp;
     }
   }
 
@@ -506,10 +522,10 @@ class BaseCommand {
           oneHourAgoTimestamp);
       //setup events
       print("Setup Events");
-        // if (!appModel.isGuest) {
-        //   await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
-        // } else {
-        await HomePageCommand().eventTypeTapped(Constants.PICKUP);
+      // if (!appModel.isGuest) {
+      //   await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
+      // } else {
+      await HomePageCommand().eventTypeTapped(Constants.PICKUP);
       // }
 
       print("setup Events done");
@@ -561,6 +577,10 @@ class BaseCommand {
 
   void initialUserConditionsMet() {
     appModel.userConditionsMet = true;
+  }
+  
+  void setOnboarded(bool onboarded) {
+    appModel.onboarded = onboarded;
   }
 
   void setUserId(String userId) {

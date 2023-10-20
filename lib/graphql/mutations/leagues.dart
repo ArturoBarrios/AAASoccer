@@ -60,14 +60,20 @@ class LeagueMutations{
                                        
                   }                                     
               },  
-              location: {
-                create: 
-                {
-                  name: "${locationInput['name']}",
-                  latitude: ${locationInput['latitude']},
-                  longitude: ${locationInput ['longitude']},
-                }
-              }
+              fieldLocations: {
+                create: [
+                  {
+                    isMainField: true
+                    location: {    
+                      create: {
+                        name: "${locationInput['name']}",
+                        latitude: ${locationInput['latitude']},
+                        longitude: ${locationInput ['longitude']},
+                      }            
+                    }
+                  }
+                ]
+              }                
             }
           } 
           }) {                         

@@ -17,9 +17,9 @@ import '../../components/object_profile_main_image.dart';
 
 // // // // // // // // // // // // // // //
 class Profile extends StatefulWidget {
-  const Profile({Key? key, required this.profileDetails}) : super(key: key);
+  const Profile({Key? key, required this.user}) : super(key: key);
 
-  final dynamic profileDetails;
+  final dynamic user;
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -35,6 +35,8 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> loadInitialData() async {    
+    
+  await UserCommand().getUserDetails(widget.user, true);
     changeViewStatus(ViewStatus.completed);
   }
 
@@ -52,9 +54,9 @@ class _ProfileState extends State<Profile> {
 
   
 
-  Future<void> onTapShare() async {
-    await 'Hey theres, my name is ${widget.profileDetails['user']['username']}'
-        .share(imageKey: widget.profileDetails['user']['mainImageKey']);
+  Future<void> onTapShare(dynamic user) async {
+    await 'Hey theres, my name is ${user['username']}'
+        .share(imageKey: user['mainImageKey']);
   }
 
   Future<void> onTapSettings() async => Navigator.of(context).push(
@@ -80,8 +82,10 @@ class _ProfileState extends State<Profile> {
         context.watch<ProfilePageModel>().eventUserParticipants;
     dynamic objectImageInput =
         context.watch<ProfilePageModel>().objectImageInput;
-    bool profilePrivateStatus =
-        context.watch<ProfilePageModel>().objectImageInput;
+    bool isProfilePrivate =
+        context.watch<ProfilePageModel>().isProfilePrivate;
+    List followers = context.watch<ProfilePageModel>().followers;
+    List following = context.watch<ProfilePageModel>().following;
 
     switch (_viewStatus) {
       case ViewStatus.loading:
@@ -106,7 +110,7 @@ class _ProfileState extends State<Profile> {
                     ),
                     const Spacer(),
                     SwitchButton(
-                      isActive: profilePrivateStatus,
+                      isActive: isProfilePrivate,
                       onTap: onTapChangeProfilePrivateStatus,
                     ),
                     IconButton(
@@ -114,7 +118,7 @@ class _ProfileState extends State<Profile> {
                         Icons.share,
                         color: Colors.blue,
                       ),
-                      onPressed: onTapShare,
+                      onPressed: () => onTapShare(user),
                     ),
                     IconButton(
                         icon: const Icon(
@@ -149,7 +153,7 @@ class _ProfileState extends State<Profile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            widget.profileDetails['userDetails']['followers']
+                            followers
                                 .toString(),
                             style: const TextStyle(
                                 fontFamily: 'Montserrat',
@@ -167,7 +171,7 @@ class _ProfileState extends State<Profile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            widget.profileDetails['userDetails']['following']
+                            following
                                 .toString(),
                             style: const TextStyle(
                                 fontFamily: 'Montserrat',

@@ -68,7 +68,9 @@ class TSNPlayerCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PlayerView(userPlayerObject: user)),
+                builder: (context) => Profile(
+                  user: user
+                )),
           );
           print("Card Clicked");
         },
