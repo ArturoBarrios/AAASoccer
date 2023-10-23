@@ -29,7 +29,7 @@ class Headers extends StatefulWidget {
       title: LogoTextWidget(
         width: 200.0,
         height: 30.0, //Replace with your actual image provider
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent,        
       ),
       backgroundColor: AppColors.tsnBlack,
       actions: <Widget>[

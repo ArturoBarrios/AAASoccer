@@ -23,4 +23,13 @@ class AppColors {
   static const Color grayColorShade400 = Color(0xFFBDBDBD);
   static const Color redColor = Color(0xFFF44336);
   static const Color redColorShade200 = Color(0xFFEF9A9A);
+  
+  
+  //component colors
+  static const Color fieldFillDark = tsnAlmostBlack;
+  static const Color fieldTextInsideDarkFill = tsnWhite;
+  static const Color submitFillButton = tsnGreen;
+  static const Color linkColor = tsnGreen;
+
+
 }

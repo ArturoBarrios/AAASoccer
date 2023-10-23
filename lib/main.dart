@@ -12,6 +12,7 @@ import 'package:soccermadeeasy/services/onesignal_service.dart';
 import 'package:soccermadeeasy/services/stripe_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:soccermadeeasy/styles/colors.dart';
 import 'package:soccermadeeasy/views/onboarding/onboarding_view.dart';
 import 'package:soccermadeeasy/views/splash_screen.dart';
 
@@ -19,6 +20,7 @@ import 'package:soccermadeeasy/utils.dart';
 import 'package:soccermadeeasy/widgets/intl_phone_number_filed.dart';
 import 'commands/base_command.dart';
 import 'commands/player_command.dart';
+import 'components/logo_text.dart';
 import 'models/pageModels/app_model.dart';
 import 'models/pageModels/chat_page_model.dart';
 import 'models/pageModels/event_page_model.dart';
@@ -355,34 +357,45 @@ class _MyAppState extends State<MyApp> {
             authenticatorBuilder:
                 (BuildContext context, AuthenticatorState state) {
               const padding =
-                  EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
+                  EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 16);
               switch (state.currentStep) {
                 case AuthenticatorStep.signIn:
                   return Scaffold(
-                    backgroundColor: Colors.white,
+                    backgroundColor: AppColors.tsnWhite,
+                    appBar: AppBar(
+                      backgroundColor: AppColors.tsnBlack,
+                      elevation: 0,
+                      title: LogoTextWidget(
+                                width: 200.0,
+                                height: 30.0, //Replace with your actual image provider
+                                backgroundColor: Colors.transparent,
+                              ),
+                    ),
                     body: Padding(
                       padding: const EdgeInsets.all(20),
-                      child: Center(
-                        child: SingleChildScrollView(
+                      child: 
+                         SingleChildScrollView(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text(
-                                "Welcome Back",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 50),
+                             
+                              // const Text(
+                              //   "Welcome Back",
+                              //   style: TextStyle(
+                              //     color: Colors.black,
+                              //     fontSize: 32,
+                              //     fontWeight: FontWeight.bold,
+                              //   ),
+                              // ),
+                              // const SizedBox(height: 50),
                               TextField(
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   hintText: 'Email',
+                                  hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                                   filled: true,
-                                  fillColor: Colors.grey[200],
+                                  fillColor: AppColors.fieldFillDark,
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25),
                                     borderSide: BorderSide.none,
@@ -405,8 +418,9 @@ class _MyAppState extends State<MyApp> {
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   hintText: 'Password',
+                                  hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                                   filled: true,
-                                  fillColor: Colors.grey[200],
+                                  fillColor: AppColors.fieldFillDark,
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25),
                                     borderSide: BorderSide.none,
@@ -416,7 +430,7 @@ class _MyAppState extends State<MyApp> {
                               const SizedBox(height: 50),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background color
+                                  primary: AppColors.submitFillButton, // background color
                                   onPrimary: Colors.white, // foreground color
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25),
@@ -429,7 +443,8 @@ class _MyAppState extends State<MyApp> {
                                 },
                                 child: const Text(
                                   'Sign In',
-                                  style: TextStyle(fontSize: 20),
+                                  style: TextStyle(
+                                    fontSize: 20, color: AppColors.tsnWhite),
                                 ),
                               ),
                               const SizedBox(height: 30),
@@ -442,7 +457,7 @@ class _MyAppState extends State<MyApp> {
                                         .changeStep(AuthenticatorStep.signUp),
                                     child: const Text(
                                       'Sign Up',
-                                      style: TextStyle(color: Colors.blue),
+                                      style: TextStyle(color: AppColors.linkColor),
                                     ),
                                   ),
                                 ],
@@ -454,7 +469,7 @@ class _MyAppState extends State<MyApp> {
                                     onPressed: () => continueAsGuest(state),
                                     child: const Text(
                                       'Continue as Guest',
-                                      style: TextStyle(color: Colors.blue),
+                                      style: TextStyle(color: AppColors.linkColor),
                                     ),
                                   ),
                                 ],
@@ -462,25 +477,22 @@ class _MyAppState extends State<MyApp> {
                             ],
                           ),
                         ),
-                      ),
+                      
                     ),
                   );
 
                 case AuthenticatorStep.signUp:
                   return Scaffold(
                     appBar: AppBar(
-                      backgroundColor: Colors.white,
+                      backgroundColor: AppColors.tsnBlack,
                       elevation: 0,
-                      title: const Text(
-                        "Create Account",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      title: LogoTextWidget(
+                                width: 200.0,
+                                height: 30.0, //Replace with your actual image provider
+                                backgroundColor: Colors.transparent,
+                              ),
                     ),
-                    backgroundColor: Colors.white,
+                    backgroundColor: AppColors.tsnWhite,
                     body: SingleChildScrollView(
                       padding: const EdgeInsets.all(24),
                       child: Form(
@@ -490,8 +502,9 @@ class _MyAppState extends State<MyApp> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                               controller: emailController,
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.emailAddress,                              
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return "This field is required";
@@ -502,17 +515,19 @@ class _MyAppState extends State<MyApp> {
                                 return null;
                               },
                               decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),                                                                                                
                                 hintText: 'Email',
-                                filled: true,
-                                fillColor: Colors.grey[200],
+                                filled: true,                                
+                                fillColor: AppColors.fieldFillDark,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25),
-                                  borderSide: BorderSide.none,
+                                  borderSide: BorderSide.none,                                  
                                 ),
                               ),
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                               controller: usernameController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -521,9 +536,10 @@ class _MyAppState extends State<MyApp> {
                                 return null;
                               },
                               decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),                                                                                                
                                 hintText: 'Username',
                                 filled: true,
-                                fillColor: Colors.grey[200],
+                                fillColor: AppColors.fieldFillDark,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25),
                                   borderSide: BorderSide.none,
@@ -541,6 +557,7 @@ class _MyAppState extends State<MyApp> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                               controller: passwordController,
                               keyboardType: TextInputType.visiblePassword,
                               obscureText: true,
@@ -553,7 +570,8 @@ class _MyAppState extends State<MyApp> {
                               decoration: InputDecoration(
                                 hintText: 'Password',
                                 filled: true,
-                                fillColor: Colors.grey[200],
+                                hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),                                                                                                
+                                fillColor: AppColors.fieldFillDark,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25),
                                   borderSide: BorderSide.none,
@@ -562,6 +580,7 @@ class _MyAppState extends State<MyApp> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                               controller: birthdateController,
                               keyboardType: TextInputType.datetime,
                               validator: (value) {
@@ -572,39 +591,40 @@ class _MyAppState extends State<MyApp> {
                               },
                               inputFormatters: [birthdateFormatter],
                               decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),                                                                                                
                                 hintText: 'Birthdate',
-                                helperText: "mm-dd-yyyy",
+                                // helperText: "mm-dd-yyyy",
                                 filled: true,
-                                fillColor: Colors.grey[200],
+                                fillColor: AppColors.fieldFillDark,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25),
                                   borderSide: BorderSide.none,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: genderController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "This field is required";
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'Gender',
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
+                            // const SizedBox(height: 20),
+                            // TextFormField(
+                            //   controller: genderController,
+                            //   validator: (value) {
+                            //     if (value == null || value.isEmpty) {
+                            //       return "This field is required";
+                            //     }
+                            //     return null;
+                            //   },
+                            //   decoration: InputDecoration(
+                            //     hintText: 'Gender',
+                            //     filled: true,
+                            //     fillColor: Colors.grey[200],
+                            //     border: OutlineInputBorder(
+                            //       borderRadius: BorderRadius.circular(25),
+                            //       borderSide: BorderSide.none,
+                            //     ),
+                            //   ),
+                            // ),
                             const SizedBox(height: 50),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.blue, // background color
+                                primary: AppColors.submitFillButton, // background color
                                 onPrimary: Colors.white, // foreground color
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25),
@@ -618,21 +638,25 @@ class _MyAppState extends State<MyApp> {
                                 }
                               },
                               child: const Text(
+                                
                                 'Sign Up',
-                                style: TextStyle(fontSize: 20),
+                                style: TextStyle(fontSize: 20, 
+                                  color: AppColors.tsnWhite),
                               ),
                             ),
                             const SizedBox(height: 30),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text('Already have an account?'),
+                                const Text('Already have an account?',
+                                  style: TextStyle(color: AppColors.tsnBlack)
+                                  ),
                                 TextButton(
                                   onPressed: () => state
                                       .changeStep(AuthenticatorStep.signIn),
                                   child: const Text(
                                     'Sign In',
-                                    style: TextStyle(color: Colors.blue),
+                                    style: TextStyle(color: AppColors.linkColor),
                                   ),
                                 ),
                               ],
@@ -644,7 +668,7 @@ class _MyAppState extends State<MyApp> {
                                   onPressed: () => continueAsGuest(state),
                                   child: const Text(
                                     'Continue as Guest',
-                                    style: TextStyle(color: Colors.blue),
+                                    style: TextStyle(color: AppColors.linkColor),
                                   ),
                                 ),
                               ],
