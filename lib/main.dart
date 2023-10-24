@@ -390,10 +390,11 @@ class _MyAppState extends State<MyApp> {
                               // const SizedBox(height: 50),
                               TextField(
                                 controller: emailController,
+                                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   hintText: 'Email',
-                                  hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
                                   filled: true,
                                   fillColor: AppColors.fieldFillDark,
                                   border: OutlineInputBorder(
@@ -416,9 +417,10 @@ class _MyAppState extends State<MyApp> {
                                 controller: passwordController,
                                 keyboardType: TextInputType.visiblePassword,
                                 obscureText: true,
+                                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                                 decoration: InputDecoration(
                                   hintText: 'Password',
-                                  hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
                                   filled: true,
                                   fillColor: AppColors.fieldFillDark,
                                   border: OutlineInputBorder(
@@ -515,7 +517,7 @@ class _MyAppState extends State<MyApp> {
                                 return null;
                               },
                               decoration: InputDecoration(
-                                hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),                                                                                                
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
                                 hintText: 'Email',
                                 filled: true,                                
                                 fillColor: AppColors.fieldFillDark,
@@ -536,7 +538,7 @@ class _MyAppState extends State<MyApp> {
                                 return null;
                               },
                               decoration: InputDecoration(
-                                hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),                                                                                                
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
                                 hintText: 'Username',
                                 filled: true,
                                 fillColor: AppColors.fieldFillDark,
@@ -570,7 +572,7 @@ class _MyAppState extends State<MyApp> {
                               decoration: InputDecoration(
                                 hintText: 'Password',
                                 filled: true,
-                                hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),                                                                                                
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
                                 fillColor: AppColors.fieldFillDark,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(25),
@@ -591,7 +593,7 @@ class _MyAppState extends State<MyApp> {
                               },
                               inputFormatters: [birthdateFormatter],
                               decoration: InputDecoration(
-                                hintStyle: TextStyle(color: AppColors.fieldTextInsideDarkFill,),                                                                                                
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
                                 hintText: 'Birthdate',
                                 // helperText: "mm-dd-yyyy",
                                 filled: true,

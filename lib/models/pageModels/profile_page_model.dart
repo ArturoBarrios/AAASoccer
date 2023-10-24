@@ -9,6 +9,13 @@ class ProfilePageModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  bool _isMine = false;
+  bool get isMine => _isMine;
+  set isMine(bool isMine) {
+    _isMine = isMine;
+    notifyListeners();
+  }
+
   bool _isProfilePrivate = false;
   bool get isProfilePrivate => _isProfilePrivate;
   set isProfilePrivate(bool isProfilePrivate) {

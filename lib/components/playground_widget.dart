@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/logo.dart';
+import 'package:soccermadeeasy/components/sideways_pill_widget.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 
 import '../commands/subscriptions_command.dart';
@@ -38,6 +39,11 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
+          SidewaysPillWidget(
+  text: "Follow",
+  // icon: Icons.star,
+),
+        
           CustomButton(
   iconData: Icons.person, 
   buttonText: "5/12",

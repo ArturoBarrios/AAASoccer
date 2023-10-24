@@ -161,7 +161,7 @@ class _IntlPhoneNumberFiledState extends State<IntlPhoneNumberFiled> {
               inputDecoration: InputDecoration(
                 border: InputBorder.none,
                 hintStyle: const TextStyle(
-                  color: AppColors.fieldTextInsideDarkFill,
+                  color: AppColors.fieldLabelTextInsideDarkFill,
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),

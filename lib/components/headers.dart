@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/playground_widget.dart';
 import '../styles/colors.dart';
+import '../styles/font_sizes.dart';
 import '../views/home.dart';
 import 'logo.dart';
 import 'logo_text.dart';
@@ -29,33 +30,12 @@ class Headers extends StatefulWidget {
       title: LogoTextWidget(
         width: 200.0,
         height: 30.0, //Replace with your actual image provider
-        backgroundColor: Colors.transparent,        
+        backgroundColor: Colors.transparent,      
+        fontSize: FontSizes.xs(context),
+          
       ),
       backgroundColor: AppColors.tsnBlack,
-      actions: <Widget>[
-          IconButton(
-            onPressed:() {
-              Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return PlaygroundWidget();
-              },
-            ));
-            },
-            icon: Icon(Icons.play_circle_filled_sharp)
-          ),
-          // IconButton(
-          //   onPressed: playerStepperButton?.onTap,
-          //   icon: Icon(Icons.notifications)
-          // ),
-        // if (playerStepperButton != null)
-        //   IconButton(
-        //       onPressed: playerStepperButton?.onTap,
-        //       icon: Icon(playerStepperButton?.prefixIconData)),
-        // if (filterButton != null)
-        //   IconButton(
-        //       onPressed: filterButton?.onTap,
-        //       icon: Icon(filterButton?.prefixIconData))
-      ],
+      
     );
     return appBar;
   }

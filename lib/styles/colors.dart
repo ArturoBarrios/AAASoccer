@@ -27,6 +27,7 @@ class AppColors {
   
   //component colors
   static const Color fieldFillDark = tsnAlmostBlack;
+  static const Color fieldLabelTextInsideDarkFill = tsnGrey;
   static const Color fieldTextInsideDarkFill = tsnWhite;
   static const Color submitFillButton = tsnGreen;
   static const Color linkColor = tsnGreen;

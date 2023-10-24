@@ -29,13 +29,16 @@ class UserCommand extends BaseCommand {
       "following": [],
       "eventUserParticipants": [],
       "teamUserParticipants": [],
+      "isMine": false,
     };
 
     try{
        //get current user
     String imageUrl = "";
 
+
     if (appModel.currentUser['_id'] == user['_id']) {
+      getUserDetailsResp['isMine'] = true;
       imageUrl = UserCommand().getProfileImage();      
       // profilePageModel.user = UserCommand().getAppModelUser();
 
@@ -83,6 +86,8 @@ class UserCommand extends BaseCommand {
     getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
 
     if(addToProfilePageModel){
+      
+      profilePageModel.isMine = getUserDetailsResp['isMine'];
       profilePageModel.user = user;
       profilePageModel.objectImageInput = getUserDetailsResp['objectImageInput'];
       profilePageModel.eventUserParticipants = getUserDetailsResp['eventUserParticipants'];

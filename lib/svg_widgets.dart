@@ -57,5 +57,7 @@ class SVGWidgets {
 
     return svgImage;
   }
+  
+  
  
 }
