@@ -13,6 +13,7 @@ import '../models/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../views/settings/settings_view.dart';
 import '../views/subscriptions_list.dart';
 
 class SideNavs extends StatefulWidget {
@@ -147,19 +148,19 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        // ListTile(
-        //   leading: Icon(
-        //     Icons.attach_money_outlined,
-        //   ),
-        //   title: const Text('Subscriptions'),
-        //   onTap: () {
-        //     Navigator.push(context, MaterialPageRoute<void>(
-        //       builder: (BuildContext context) {
-        //         return SubscriptionsList();
-        //       },
-        //     ));
-        //   },
-        // ),
+        ListTile(
+          leading: Icon(
+            Icons.settings,
+          ),
+          title: const Text('Settings'),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return SettingsView();
+              },
+            ));
+          },
+        ),
         // ListTile(
         //   leading: Icon(
         //     Icons.history,

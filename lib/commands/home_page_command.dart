@@ -131,10 +131,15 @@ class HomePageCommand extends BaseCommand {
       dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team, true);
       print("teammmmmm: " + team.toString());
       print("userTeamDetails: " + userTeamDetails.toString());
-      card = TeamCard(
-          teamObject: team,
-          svgImage: svgImage,
-          userTeamDetails: userTeamDetails);
+      card = TSNTeamCard(
+        teamCardDetails: userTeamDetails,
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );
+      // TeamCard(
+      //     teamObject: team,
+      //     svgImage: svgImage,
+      //     userTeamDetails: userTeamDetails);
     }
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {

@@ -446,7 +446,7 @@ class _Home extends State<Home> {
     selectedKey =
         context.select<HomePageModel, dynamic>((value) => value.selectedKey);
 
-    List selectedObjects = context.watch<HomePageModel>().selectedObjects;
+    // List selectedObjects = context.watch<HomePageModel>().selectedObjects;
     userObjectSelections = context
         .select<HomePageModel, List>((value) => value.userObjectSelections);
 
@@ -476,8 +476,9 @@ class _Home extends State<Home> {
         context.select<AppModel, Map<String, Widget Function(BuildContext)>>(
             (value) => value.createPages);
 
-    Map<dynamic,dynamic>selectedPages = 
-      context.watch<AppModel>().selectedPages;
+    Map<dynamic,dynamic>selectedPages = context.select<AppModel, Map<dynamic,dynamic>>((value) => value.selectedPages);
+    // Map<dynamic,dynamic>selectedPages = 
+    //   context.watch<AppModel>().selectedPages;
 
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -532,44 +533,6 @@ class _Home extends State<Home> {
                     padding: EdgeInsets.all(10.0),
                     child: Row(
                       children: [
-                        Expanded(
-                            flex: 14,
-                            child: SearchField(
-                                label: StringConstants.searchLabel)),
-                        SizedBox(width: 6),
-                        Expanded(
-                          flex: 6,
-                          child: BasicElevatedButton(
-                              icon: Icons.add,
-                              // height: screenHeight * 0.05,  // 10% of screen height
-                              // width: screenWidth * 0.25,
-                              backgroundColor: AppColors.tsnGreen,
-                              text: "Create",
-                              onPressed: () async {
-                                print("Add New Chat Pressed");
-                                List<dynamic> primaryList =
-                                    createPages.keys.toList();
-                                List<dynamic> secondaryList = [];
-                                Map<int, dynamic> result = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AnimatedDialog(
-                                      details: {"title": "IDK"},
-                                      items: primaryList,
-                                      singleSelect: false,
-                                      secondaryItems: secondaryList,
-                                      goToFunctions: [],
-                                    );
-                                  },
-                                );
-                                if (result.isNotEmpty) {
-                                  print("result: " + result.toString());
-                                  // goToPage(result.keys.first, primaryList);
-                                  BaseCommand().goToCreatePage(
-                                      context, result.keys.first, primaryList);
-                                }
-                              }),
-                        )
                       ],
                     )),
                 Visibility(
@@ -727,10 +690,12 @@ class _Home extends State<Home> {
       ) :  LocationsMap(),
       bottomNavigationBar: Padding(
           padding: const EdgeInsets.only(
+              top:26.0,
               bottom: 16.0,
               left: 16.0,
-              right: 16.0), // Padding from the bottom of the screen
-          child: const Footers().getMainBottomNav(context)),
+              right: 16.0), 
+          child: const Footers().getMainBottomNav(context)
+          ),
     );
   }
 }

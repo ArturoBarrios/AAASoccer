@@ -29,6 +29,10 @@ class Footers extends StatefulWidget {
   State<Footers> createState() => _Footers();
 
   Widget getMainBottomNav(BuildContext context) {
+    Map<String, Widget Function(BuildContext)> createPages =
+        context.select<AppModel, Map<String, Widget Function(BuildContext)>>(
+            (value) => value.createPages);
+
     Map<dynamic,dynamic>selectedPages = 
       context.select<AppModel, Map<dynamic, dynamic>>((value) => value.selectedPages);
 
@@ -61,72 +65,98 @@ class Footers extends StatefulWidget {
       }
     }
 
-  return Container(
-  width: 300,
-  height: 50,
-  margin: const EdgeInsets.all(4.0),
-  decoration: BoxDecoration(
-    color: AppColors.tsnBlack,
-    borderRadius: BorderRadius.circular(32), // Increased the roundness
-  ),
-  child: Row(
-  children: selectedPages.entries.map<Widget>((MapEntry<dynamic, dynamic> entry) {
-    // Now you have both the key and the value for each entry in selectedPages
-    dynamic key = entry.key;
-    Map<dynamic, dynamic> item = entry.value;
-    print("item: " + item.toString());
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => {
-          print("onTap"),
-          BaseCommand().onTapBottomNav(context, key, item),
-          // selectedPages.forEach((otherKey, otherItem) {
-          //   if (otherKey == key) {
-          //     otherItem['enabled'] = true;
-          //   } else {
-          //     otherItem['enabled'] = false;
-          //   }
-          // }),
-          // item['selectAction'](context),
-          // item['enabled'] = true,
-        }, // Assuming onTap is a function
-        child: Container(
-          margin: const EdgeInsets.all(2.0),
-          padding: const EdgeInsets.all(4.0),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: item['enabled'] ? AppColors.tsnLightGreen : Colors.transparent,
-              width: 2,
+  return Stack(
+  children: [
+    Container(
+      width: double.infinity,  // Taking full width
+      height: 50,
+      margin: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        color: AppColors.tsnBlack,
+        borderRadius: BorderRadius.circular(32),
+      ),
+      child: Row(
+        children: selectedPages.entries.map<Widget>((MapEntry<dynamic, dynamic> entry) {
+          dynamic key = entry.key;
+          Map<dynamic, dynamic> item = entry.value;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () {
+                BaseCommand().onTapBottomNav(context, key, item);
+              },
+              child: Container(
+                margin: const EdgeInsets.all(2.0),
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: item['enabled'] ? AppColors.tsnLightGreen : Colors.transparent,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      item['icon'],
+                      size: 18,
+                      color: item['enabled'] ? AppColors.tsnLightGreen : AppColors.tsnGreyerWhite,
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      item['name'],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: item['enabled'] ? AppColors.tsnLightGreen : AppColors.tsnGreyerWhite,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            borderRadius: BorderRadius.circular(32), // Increased the roundness
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                item['icon'],
-                size: 18,
-                color: item['enabled'] ? AppColors.tsnLightGreen : AppColors.tsnGreyerWhite
-              ),
-              SizedBox(height: 2),
-              Text(
-                item['name'],
-                style: TextStyle(
-                  fontSize: 12,
-                  color: item['enabled'] ? AppColors.tsnLightGreen : AppColors.tsnGreyerWhite
-                )
-              ),
-            ],
-          ),
+          );
+        }).toList(),
+      ),
+    ),
+    Positioned(
+      left: 0,
+      right: 0,
+      bottom: 25,
+      child: Center(
+        child: FloatingActionButton(
+          onPressed: () async{
+            // Your floating button logic here
+            print("Add New Chat Pressed");
+                                List<dynamic> primaryList =
+                                    createPages.keys.toList();
+                                List<dynamic> secondaryList = [];
+                                Map<int, dynamic> result = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AnimatedDialog(
+                                      details: {"title": "IDK"},
+                                      items: primaryList,
+                                      singleSelect: false,
+                                      secondaryItems: secondaryList,
+                                      goToFunctions: [],
+                                    );
+                                  },
+                                );
+                                if (result.isNotEmpty) {
+                                  print("result: " + result.toString());
+                                  // goToPage(result.keys.first, primaryList);
+                                  BaseCommand().goToCreatePage(
+                                      context, result.keys.first, primaryList);
+                                }
+          },
+          child: Icon(Icons.add),
         ),
       ),
-    );
-  }).toList(),
-
-
-  ),
+    ),
+  ],
 );
+
 
 
 
