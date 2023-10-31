@@ -32,9 +32,9 @@ import '../../models/pageModels/event_page_model.dart';
 import 'package:soccermadeeasy/models/enums/payment_type.dart';
 
 class TrainingView extends StatefulWidget with EventMixin, ImagesMixin {
-  TrainingView({Key? key, required this.training}) : super(key: key);
+  TrainingView({Key? key, required this.event}) : super(key: key);
 
-  final dynamic training;
+  final dynamic event;
 
   @override
   _TrainingViewState createState() => _TrainingViewState();
@@ -66,6 +66,7 @@ class _TrainingViewState extends State<TrainingView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData");
+    await EventCommand().getUserEventDetails([widget.event], true);
     widget.setupPlayerList();
     
     //wait for 3 seconds
@@ -81,7 +82,7 @@ class _TrainingViewState extends State<TrainingView> {
   void initState() {
     super.initState();
     print("initState");
-    print("training: " + widget.training.toString());
+    print("training: " + widget.event.toString());
     loadInitialData();
   }
 
@@ -110,6 +111,7 @@ class _TrainingViewState extends State<TrainingView> {
     List teams = context.select<EventPageModel, List>((value) => value.teams);
     List players =
         context.select<EventPageModel, List>((value) => value.players);
+      List fieldLocations = context.watch<EventPageModel>().fieldLocations;
     List chats = context.watch<EventPageModel>().chats;
     List payments = context.watch<EventPageModel>().payments;
     JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
@@ -117,6 +119,7 @@ class _TrainingViewState extends State<TrainingView> {
     JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
     JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
 
+    print("training view test: "+ mainEvent.toString());
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(
@@ -173,8 +176,12 @@ class _TrainingViewState extends State<TrainingView> {
                       (MediaQuery.of(context).size.width * .1), //10% padding
                   height: 200.0,
                   child: MyMapPage(
-                      latitude: mainEvent['location']['data'][0]['latitude'],
-                      longitude: mainEvent['location']['data'][0]['longitude']),
+                      latitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['latitude']
+                              : 0.0,
+                            longitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['longitude']
+                              : 0.0,)
                 ),
                 //join widget
                 GetJoinEventWidget(
@@ -192,8 +199,8 @@ class _TrainingViewState extends State<TrainingView> {
                   userParticipants: userParticipants,
                 ),
                 //location search bar
-                locationSearchBar = LocationSearchBar(
-                    initialValue: mainEvent['location']['data'][0]['name']),
+                // locationSearchBar = LocationSearchBar(
+                //     initialValue: fieldLocations[0]['location']['data']['name']),
                 //player list
                 PlayerList(
                   event: mainEvent,

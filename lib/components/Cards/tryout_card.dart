@@ -67,7 +67,7 @@ class _TryoutCard extends State<TryoutCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TryoutView( tryout: widget.tryoutObject);
+            return TryoutView( event: widget.tryoutObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,

@@ -232,7 +232,7 @@ class _PickupViewState extends State<PickupView> {
                               fieldLocations[0]['location']['latitude']
                               : 0.0,
                             longitude: fieldLocations.length>0 ? 
-                              fieldLocations[0]['location']['data'][0]['longitude']
+                              fieldLocations[0]['location']['longitude']
                               : 0.0,
                           ),
 

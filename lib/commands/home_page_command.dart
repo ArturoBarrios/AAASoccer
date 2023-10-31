@@ -7,6 +7,8 @@ import 'package:soccermadeeasy/styles/colors.dart';
 
 import '../components/Cards/tsn_player_card.dart';
 import '../components/Cards/tsn_team_card.dart';
+import '../components/Cards/tsn_training_card.dart';
+import '../components/Cards/tsn_tryout_card.dart';
 import '../models/enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
 import '../graphql/fragments/team_fragments.dart';
@@ -65,26 +67,28 @@ class HomePageCommand extends BaseCommand {
         pickupCardDetails: getEventDetailsResp,
         backgroundColor: AppColors.tsnAlmostBlack, 
         svgImage: svgImage,         
-      );
-      // card = PickupCard2(
-      //     gameObject: selectedObject,
-      //     svgImage: svgImage,
-      //     userEventDetails: getEventDetailsResp);
+      );      
     } else if (selectedKey == Constants.TRAINING) {
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject], false);
-      card = TrainingCard(
-          trainingObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
+      card = TSNTrainingCard(
+        trainingCardDetails: getEventDetailsResp,
+        backgroundColor: AppColors.tsnAlmostBlack, 
+        svgImage: svgImage,    
+      );     
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject], false);
-      card = TryoutCard(
-          tryoutObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
+      card = TSNTryoutCard(
+        tryoutCardDetails: getEventDetailsResp,
+        backgroundColor: AppColors.tsnAlmostBlack, 
+        svgImage: svgImage,    
+      );   
+      // TryoutCard(
+      //     tryoutObject: selectedObject,
+      //     svgImage: svgImage,
+      //     userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.TOURNAMENT) {
       print("selectedObject: " + selectedObject.toString());
       dynamic getEventDetailsResp =
@@ -108,22 +112,14 @@ class HomePageCommand extends BaseCommand {
         playerCardDetails: playerDetails,
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
-      );
-      // card = PlayerCard(
-      //     playerObject: selectedObject,
-      //     playerDetails: playerDetails,
-      //     svgImage: svgImage);
+      );      
     } else if (selectedKey == Constants.TEAM) {
       dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject, false);
       card = TSNTeamCard(
         teamCardDetails: userTeamDetails,
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
-      );
-      // TeamCard(
-      //     teamObject: selectedObject,
-      //     svgImage: svgImage,
-      //     userTeamDetails: userTeamDetails);
+      );      
     } else if (selectedKey == Constants.MYTEAMS) {
       print("selectedKey == MYTEAMS");
       print("selectedObject: " + selectedObject.toString());
@@ -135,16 +131,11 @@ class HomePageCommand extends BaseCommand {
         teamCardDetails: userTeamDetails,
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
-      );
-      // TeamCard(
-      //     teamObject: team,
-      //     svgImage: svgImage,
-      //     userTeamDetails: userTeamDetails);
+      );      
     }
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {
       dynamic event = null;
-
       print("MYEVENTS");
       print(selectedObject['event']);
       if (selectedObject['event'] == null) {
@@ -154,10 +145,15 @@ class HomePageCommand extends BaseCommand {
         dynamic getEventDetailsResp =
             await EventCommand().getUserEventDetails([selectedObject['event']], false);
         print("getEventDetailsResp: " + getEventDetailsResp.toString());        
-        card = PickupCard2(
-            gameObject: selectedObject['event'],
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
+        card = TSNPickupCard(
+        pickupCardDetails: getEventDetailsResp,
+        backgroundColor: AppColors.tsnAlmostBlack, 
+        svgImage: svgImage,         
+      );     
+        // PickupCard2(
+        //     gameObject: selectedObject['event'],
+        //     svgImage: svgImage,
+        //     userEventDetails: getEventDetailsResp);
       } else if (selectedObject['event']['type'].toString() == "TRAINING") {
         print("selectedObject['event']['trainings']: " +
             selectedObject['event']['trainings'].toString());
