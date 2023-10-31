@@ -68,6 +68,7 @@ class _TournamentViewState extends State<TournamentView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in TournamentView");
+    await EventCommand().getUserEventDetails([widget.tournament], true);
     widget.setupTeamList();
     widget.setupMyTeams();    
 
@@ -111,6 +112,7 @@ class _TournamentViewState extends State<TournamentView> {
         context.select<EventPageModel, List>((value) => value.players);
     List chats = context.watch<EventPageModel>().chats;
     List payments = context.watch<EventPageModel>().payments;
+    List fieldLocations = context.watch<EventPageModel>().fieldLocations;
     dynamic price = context.watch<EventPageModel>().price;
     dynamic groupStage = context.watch<EventPageModel>().groupStage;
     dynamic tournamentStage = context.watch<EventPageModel>().tournamentStage;
@@ -183,11 +185,14 @@ class _TournamentViewState extends State<TournamentView> {
                             (MediaQuery.of(context).size.width *
                                 .1), //10% padding
                         height: 200.0,
-                        child: MyMapPage(
-                            latitude: mainEvent['location']['data'][0]
-                                ['latitude'],
-                            longitude: mainEvent['location']['data'][0]
-                                ['longitude']),
+                        child:  MyMapPage(
+                            latitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['latitude']
+                              : 0.0,
+                            longitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['longitude']
+                              : 0.0,
+                          ),
                       ),
                       //join widget
                       GetJoinEventWidget(
@@ -201,9 +206,9 @@ class _TournamentViewState extends State<TournamentView> {
                         "requests": mainEvent['requests']['data']
                       }),                     
                       //location search bar
-                      locationSearchBar = LocationSearchBar(
-                          initialValue: mainEvent['location']['data'][0]
-                              ['name']),
+                      // locationSearchBar = LocationSearchBar(
+                      //     initialValue: mainEvent['location']['data'][0]
+                      //         ['name']),
                       //player list
                       PlayerList(
                         event: mainEvent,

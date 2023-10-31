@@ -1172,6 +1172,7 @@ class EventCommand extends BaseCommand {
       "roles": [],
       "chats": [],
       "groupStage": [],
+      "tournament": null,
       "tournamentStage": [],
       "userParticipants": [],      
       "fieldLocations": [],
@@ -1192,10 +1193,9 @@ class EventCommand extends BaseCommand {
             .findTournamentById(event['tournaments']['data'][0]['_id']);
         if (findTournamentByIdResp['success']) {
           dynamic tournament = findTournamentByIdResp['data'];
+          isMyEventResp['tournament'] = tournament;
           isMyEventResp['groupStage'] = tournament['groupStage'];
-          isMyEventResp['tournamentStage'] = tournament['tournamentStage'];
-          // eventPageModel.groupStage = tournament['groupStage'];
-          // eventPageModel.tournamentStage = tournament['tournamentStage'];
+          isMyEventResp['tournamentStage'] = tournament['tournamentStage'];          
         }
       }
       if (event['type'] == "LEAGUE") {
@@ -1204,8 +1204,7 @@ class EventCommand extends BaseCommand {
             .findLeagueById(event['leagues']['data'][0]['_id']);
         if (findLeagueByIdResp['success']) {
           dynamic league = findLeagueByIdResp['data'];
-          isMyEventResp['league'] = league;
-          // eventPageModel.league = league;
+          isMyEventResp['league'] = league;          
         }
       }
       
@@ -1302,6 +1301,9 @@ class EventCommand extends BaseCommand {
         eventPageModel.eventPaymentJoin = isMyEventResp['eventPaymentJoin'];
         eventPageModel.teamRequestJoin = isMyEventResp['teamRequestJoin'];
         eventPageModel.teamPaymentJoin = isMyEventResp['teamPaymentJoin'];
+        eventPageModel.tournament = isMyEventResp['tournament'];
+        eventPageModel.groupStage = isMyEventResp['groupStage'];
+        eventPageModel.tournamentStage = isMyEventResp['tournamentStage'];
       }
 
 

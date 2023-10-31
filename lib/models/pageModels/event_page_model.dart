@@ -164,6 +164,13 @@ class EventPageModel extends ChangeNotifier {
     _tournamentStage = tournamentStage;
     notifyListeners();
   }
+  
+  dynamic _tournament = {};
+  dynamic get tournament => _tournament;
+  set tournament(dynamic tournament) {
+    _tournament = tournament;
+    notifyListeners();
+  }
 
   List _userParticipants = [];
   List get userParticipants => _userParticipants;
