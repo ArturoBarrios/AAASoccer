@@ -12,6 +12,7 @@ class BasicElevatedButton extends StatefulWidget {
   final Color? iconColor;
   final Function? onPressed;  
   final double? fontSize;
+  
 
 
   const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.customIcon, this.icon, this.iconColor, this.text, this.onPressed, this.fontSize }) : super(key: key);

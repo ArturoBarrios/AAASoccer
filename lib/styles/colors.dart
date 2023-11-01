@@ -9,6 +9,7 @@ class AppColors {
   static const Color tsnGreen = Color(0xFF6CB632);
   static const Color tsnAlmostBlack = Color(0xFF222221);
   static const Color tsnBlack = Color(0xFF0F1107);
+  static const Color tsnRed = Color(0xFFEE5944);
 
 
   static const Color primaryColor = Color(0xFF00FF00); // Green

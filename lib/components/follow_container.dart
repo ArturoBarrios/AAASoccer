@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 
 import '../commands/user_command.dart';
+import '../styles/colors.dart';
 
 class FollowContainer extends StatefulWidget {
   const FollowContainer({Key? key, required this.userObject})
@@ -24,7 +26,7 @@ class _FollowContainerState extends State<FollowContainer> {
     UserCommand().followUser(followUserInput);
   }
   
-  Container followUserContainer() {
+  Widget followUserContainer() {
     bool isUserFollowingPlayer =
         UserCommand().isCurrentUserFollowingUser(widget.userObject);
     bool isUserFollowedByPlayer =
@@ -33,66 +35,47 @@ class _FollowContainerState extends State<FollowContainer> {
         "followUserContainerValues: $isUserFollowingPlayer, $isUserFollowedByPlayer");
     //follow
     if (!isUserFollowingPlayer && !isUserFollowedByPlayer) {
-      return Container(
-          child: GestureDetector(
-        onTap: () {
-          //potentially show dialogue
-          //with different request options
-          followPlayer();
-        },
-        child: Container(
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0), child: Text("Follow")),
-        ),
-      ));
+      return 
+        BasicElevatedButton(
+          text: "Follow",
+          onPressed: () {
+            followPlayer();
+          },
+        );
+        
+      
     }
     //follow back
     else if (isUserFollowedByPlayer && !isUserFollowingPlayer) {
-      return Container(
-          child: GestureDetector(
-        onTap: () {
-          //potentially show dialogue
-          //with different request options
-          followPlayer();
-        },
-        child: Container(
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Text("Follow Back")),
-        ),
-      ));
+      return BasicElevatedButton(
+          text: "Follow Back",
+          onPressed: () {
+            followPlayer();
+          },
+        );     
     }
     //unfollow
     else if (!isUserFollowedByPlayer && isUserFollowingPlayer) {
-      return Container(
-          child: GestureDetector(
-        onTap: () {
-          //potentially show dialogue
-          //with different request options
-          followPlayer();
-        },
-        child: Container(
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Text("Unfollow")),
-        ),
-      ));
+      return 
+      BasicElevatedButton(
+          text: "Unfollow",
+          backgroundColor: AppColors.tsnRed,
+          onPressed: () {
+            // unfollowPlayer();
+          },
+        );
+      
     }
     //friends
     else {
-      return Container(
-          child: GestureDetector(
-        onTap: () {
-          //potentially show dialogue
-          //with different request options
-          followPlayer();
-        },
-        child: Container(
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Text("Unfollow")),
-        ),
-      ));
+      return 
+      BasicElevatedButton(
+          text: "Unfollow",
+          backgroundColor: AppColors.tsnRed,
+          onPressed: () {
+            // unfollowPlayer();
+          },
+        );
     }
   }
 

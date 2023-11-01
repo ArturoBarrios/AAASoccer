@@ -33,8 +33,9 @@ class Footers extends StatefulWidget {
         context.select<AppModel, Map<String, Widget Function(BuildContext)>>(
             (value) => value.createPages);
 
-    Map<dynamic,dynamic>selectedPages = 
-      context.select<AppModel, Map<dynamic, dynamic>>((value) => value.selectedPages);
+    Map<dynamic, dynamic> selectedPages =
+        context.select<AppModel, Map<dynamic, dynamic>>(
+            (value) => value.selectedPages);
 
     int selectIndex = 0;
     Map<String, Widget Function(BuildContext)> pages = {
@@ -45,7 +46,7 @@ class Footers extends StatefulWidget {
       "Training": (context) => const TrainingCreate(),
       "Tryout": (context) => const TryoutCreate(),
       "Location": (context) => const LocationCreate(),
-    };    
+    };
 
     void goToPage(
       int indexResult,
@@ -65,105 +66,103 @@ class Footers extends StatefulWidget {
       }
     }
 
-  return Stack(
-  children: [
-    Container(
-      width: double.infinity,  // Taking full width
-      height: 50,
-      margin: const EdgeInsets.all(4.0),
-      decoration: BoxDecoration(
-        color: AppColors.tsnBlack,
-        borderRadius: BorderRadius.circular(32),
-      ),
-      child: Row(
-        children: selectedPages.entries.map<Widget>((MapEntry<dynamic, dynamic> entry) {
-          dynamic key = entry.key;
-          Map<dynamic, dynamic> item = entry.value;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () {
-                BaseCommand().onTapBottomNav(context, key, item);
-              },
-              child: Container(
-                margin: const EdgeInsets.all(2.0),
-                padding: const EdgeInsets.all(4.0),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: item['enabled'] ? AppColors.tsnLightGreen : Colors.transparent,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      item['icon'],
-                      size: 18,
-                      color: item['enabled'] ? AppColors.tsnLightGreen : AppColors.tsnGreyerWhite,
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      item['name'],
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: item['enabled'] ? AppColors.tsnLightGreen : AppColors.tsnGreyerWhite,
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity, // Taking full width
+          height: 50,
+          margin: const EdgeInsets.all(4.0),
+          decoration: BoxDecoration(
+            color: AppColors.tsnBlack,
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: Row(
+            children: selectedPages.entries
+                .map<Widget>((MapEntry<dynamic, dynamic> entry) {
+              dynamic key = entry.key;
+              Map<dynamic, dynamic> item = entry.value;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    BaseCommand().onTapBottomNav(context, key, item);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(2.0),
+                    padding: const EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: item['enabled']
+                            ? AppColors.tsnLightGreen
+                            : Colors.transparent,
+                        width: 2,
                       ),
+                      borderRadius: BorderRadius.circular(32),
                     ),
-                  ],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          item['icon'],
+                          size: 18,
+                          color: item['enabled']
+                              ? AppColors.tsnLightGreen
+                              : AppColors.tsnGreyerWhite,
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          item['name'],
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: item['enabled']
+                                ? AppColors.tsnLightGreen
+                                : AppColors.tsnGreyerWhite,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    ),
-    Positioned(
-      left: 0,
-      right: 0,
-      bottom: 25,
-      child: Center(
-        child: FloatingActionButton(
-          onPressed: () async{
-            // Your floating button logic here
-            print("Add New Chat Pressed");
-                                List<dynamic> primaryList =
-                                    createPages.keys.toList();
-                                List<dynamic> secondaryList = [];
-                                Map<int, dynamic> result = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AnimatedDialog(
-                                      details: {"title": "IDK"},
-                                      items: primaryList,
-                                      singleSelect: false,
-                                      secondaryItems: secondaryList,
-                                      goToFunctions: [],
-                                    );
-                                  },
-                                );
-                                if (result.isNotEmpty) {
-                                  print("result: " + result.toString());
-                                  // goToPage(result.keys.first, primaryList);
-                                  BaseCommand().goToCreatePage(
-                                      context, result.keys.first, primaryList);
-                                }
-          },
-          child: Icon(Icons.add),
+              );
+            }).toList(),
+          ),
         ),
-      ),
-    ),
-  ],
-);
-
-
-
-
-
-
-
-
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 25,
+          child: Center(
+            child: FloatingActionButton(
+              onPressed: () async {
+                // Your floating button logic here
+                print("Add New Chat Pressed");
+                List<dynamic> primaryList = createPages.keys.toList();
+                List<dynamic> secondaryList = [];
+                Map<int, dynamic> result = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AnimatedDialog(
+                      details: {"title": "IDK"},
+                      items: primaryList,
+                      singleSelect: false,
+                      secondaryItems: secondaryList,
+                      goToFunctions: [],
+                    );
+                  },
+                );
+                if (result.isNotEmpty) {
+                  print("result: " + result.toString());
+                  // goToPage(result.keys.first, primaryList);
+                  BaseCommand()
+                      .goToCreatePage(context, result.keys.first, primaryList);
+                }
+              },
+              child: Icon(Icons.add),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   BottomNavigationBar getChatBottomNav(BuildContext context) {

@@ -688,14 +688,15 @@ class _Home extends State<Home> {
           ],
         ),
       ) :  LocationsMap(),
-      bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(
-              top:26.0,
-              bottom: 16.0,
-              left: 16.0,
-              right: 16.0), 
-          child: const Footers().getMainBottomNav(context)
-          ),
+      
+      // bottomNavigationBar: Padding(
+      //     padding: const EdgeInsets.only(
+      //         top:26.0,
+      //         bottom: 16.0,
+      //         left: 16.0,
+      //         right: 16.0), 
+      //     child: const Footers().getMainBottomNav(context)
+      //     ),
     );
   }
 }
