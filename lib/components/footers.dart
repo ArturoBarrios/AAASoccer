@@ -130,7 +130,7 @@ class Footers extends StatefulWidget {
         Positioned(
           left: 0,
           right: 0,
-          bottom: 25,
+          bottom: 0,
           child: Center(
             child: FloatingActionButton(
               onPressed: () async {

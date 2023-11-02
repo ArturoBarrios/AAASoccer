@@ -191,11 +191,14 @@ class TSNTeamCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
+
+                                        Expanded(flex: 9,
+                                        child: 
                                     Text(team['name'],
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.m(context),
-                                        ))
+                                        )))
                                     // Text("BL 1a"),
                                     // Text("BL 1b"),
                                   ],
@@ -234,26 +237,8 @@ class TSNTeamCard extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    Image(
-                                      // width: 20,
-                                      // height: 60,
-                                      image: SVGWidgets().rightRocket(),
-                                      color: AppColors.tsnGrey,
-                                    ),
-                                    SizedBox(width: 2),
-                                    Image(
-                                      width: 20,
-                                      height: 20,
-                                      image: SVGWidgets().host(),
-                                      color: AppColors.tsnLightGreen,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text(
-                                        "Host: " ,
-                                        style: TextStyle(
-                                          color: AppColors.tsnGrey,
-                                          fontSize: FontSizes.xxs(context),
-                                        ))
+                                    
+                                    
                                     // Text("BR 2a"),
                                     // Text("BR 2b"),
                                   ],

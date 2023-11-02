@@ -11,6 +11,7 @@ import '../../views/player/view.dart';
 import '../../views/profile/profile.dart';
 import '../Buttons/basic_elevated_button.dart';
 import '../Buttons/circle_outline_icon.dart';
+import '../follow_container.dart';
 import '../get_join_event_widget.dart';
 import '../join_condition.dart';
 
@@ -145,15 +146,19 @@ class TSNPlayerCard extends StatelessWidget {
                                     Expanded(
                                         flex: 9,
                                         child: BasicElevatedButton(
-                                          icon: Icons.person,
+                                          
                                           // height: screenHeight * 0.05,  // 10% of screen height
                                           // width: screenWidth * 0.35,
                                           backgroundColor:
                                               AppColors.tsnDarkGrey,
-                                          text: "5/12",
+                                          text: "5 Followers",
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),
+                                        
+                                    Expanded(
+                                        flex: 9,
+                                        child: FollowContainer(userObject: user)),
                                     //join widget
                                     
                                     // Expanded(
@@ -211,7 +216,7 @@ class TSNPlayerCard extends StatelessWidget {
                                       color: AppColors.tsnGreen,
                                     ),
                                     SizedBox(width: 6),
-                                    Text("Player",
+                                    Text("Beginner",
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.xxs(context),

@@ -90,6 +90,9 @@ class _ProfileState extends State<Profile> {
     List followers = context.watch<ProfilePageModel>().followers;
     List following = context.watch<ProfilePageModel>().following;
 
+    print("profile details: ");
+    print("eventUserParticipants: "+ eventUserParticipants.toString());
+    print("teamUserParticipants: "+ teamUserParticipants.toString());
     switch (_viewStatus) {
       case ViewStatus.loading:
         return const LoadingScreen2();
@@ -114,45 +117,17 @@ class _ProfileState extends State<Profile> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // Row(
-                  //   children: [
-                  //     IconButton(
-                  //       icon: const Icon(Icons.arrow_back),
-                  //       tooltip: 'Go back',
-                  //       onPressed: () {
-                  //         Navigator.pop(context);
-                  //       },
-                  //     ),
-                  //     const Spacer(),
-                  //     SwitchButton(
-                  //       isActive: isProfilePrivate,
-                  //       onTap: onTapChangeProfilePrivateStatus,
-                  //     ),
-                  //     IconButton(
-                  //       icon: const Icon(
-                  //         Icons.share,
-                  //         color: Colors.blue,
-                  //       ),
-                  //       onPressed: () => onTapShare(user),
-                  //     ),
-                  //     IconButton(
-                  //         icon: const Icon(
-                  //           Icons.settings,
-                  //           color: Colors.blue,
-                  //         ),
-                  //         onPressed: onTapSettings)
-                  //   ],
-                  // ),
+
                   ObjectProfileMainImage(objectImageInput: objectImageInput),
-                  FollowContainer(userObject: widget.user),
+                  
+                  Center( // Wrap the FollowContainer with a Center widget
+  child: Container( // Then, wrap it with a Container to specify width
+    width: MediaQuery.of(context).size.width * (2/5), // Set width to 3/5 of screen width
+    child: FollowContainer(userObject: widget.user),
+  ),
+),
+
                   const SizedBox(height: 10.0),
-                  // Text(
-                  //   user['name'] ?? '',
-                  //   style: const TextStyle(
-                  //       fontFamily: 'Montserrat',
-                  //       fontSize: 20.0,
-                  //       fontWeight: FontWeight.bold),
-                  // ),
                   Text(
                     "@" + user['username'] ?? '',
                     style: const TextStyle(
@@ -238,48 +213,16 @@ class _ProfileState extends State<Profile> {
                             ),
                             SizedBox(height: 5.0),
                             Text(
-                              'Stars',
+                              'Games',
                               style: TextStyle(
                                   fontFamily: 'Montserrat', color: Colors.grey),
                             )
                           ],
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const <Widget>[
-                            Text(
-                              '10',
-                              style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 5.0),
-                            Text(
-                              "Level",
-                              style: TextStyle(
-                                  fontFamily: 'Montserrat', color: Colors.grey),
-                            )
-                          ],
-                        )
+                        
                       ],
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const <Widget>[
-                        Text("History")
-                        // IconButton(icon: Icon(Icons.table_chart),onPressed: (){},),
-                        // IconButton(
-                        //   icon: Icon(Icons.menu),
-                        //   onPressed: () {},
-                        // )
-                      ],
-                    ),
-                  ),
-
-                  // History(historyDetails: []),
+                  ),                                    
                   TeamsListWidget(
                     user: user,
                     mainEvent: null,
@@ -294,26 +237,7 @@ class _ProfileState extends State<Profile> {
                   ImagesListWidget(
                       mainEvent: null, team: null, imageFor: Constants.USER),
 
-                  const InfoDetailListTile(
-                      name: "Excellent Perfomance",
-                      value: "Top 1%",
-                      tooltip: "Today",
-                      date: "02/23/2019"),
-                  const InfoDetailListTile(
-                      name: "Amazing value!",
-                      value: "😂",
-                      tooltip: "Today",
-                      date: "02/22/2019"),
-                  const InfoDetailListTile(
-                      name: "Runner-up of Voting Cup",
-                      value: "#3",
-                      tooltip: "Yesterday",
-                      date: "02/22/2019"),
-                  const InfoDetailListTile(
-                      name: "Victory is super close",
-                      value: "🔥",
-                      tooltip: "Yesterday",
-                      date: "02/22/2019"),
+                 
                   Container(
                     margin: const EdgeInsets.all(25),
                     child: ElevatedButton(

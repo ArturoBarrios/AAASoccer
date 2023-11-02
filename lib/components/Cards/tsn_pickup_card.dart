@@ -232,18 +232,17 @@ class TSNPickupCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
+                                    Icon(Icons.star, color: AppColors.tsnGreen),
+                                    Icon(Icons.star, color: AppColors.tsnGreen),
+                                    Icon(Icons.star, color: AppColors.tsnGreen),
+                                    Icon(Icons.star, color: AppColors.tsnGreen),
+                                    Icon(Icons.star, color: AppColors.tsnGreen),
                                     // Text("BR 1a"),
                                     // Text("BR 1b"),
                                   ],
                                 ),
                                 Row(
-                                  children: [
-                                    Image(
-                                      // width: 20,
-                                      // height: 60,
-                                      image: SVGWidgets().rightRocket(),
-                                      color: AppColors.tsnGrey,
-                                    ),
+                                  children: [                                   
                                     SizedBox(width: 2),
                                     Image(
                                       width: 20,

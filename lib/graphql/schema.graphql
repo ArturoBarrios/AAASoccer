@@ -259,7 +259,7 @@ type User  {
   isProfilePrivate: Boolean @default(value: false)
   socialMediaApps: [SocialMediaApp] @relation
   appSubscriptions: [AppSubscription] @relation
-  coupons: [Coupon] @relation
+  coupons: [Coupon] @relation  
 }
 
 type Player   {
@@ -346,6 +346,7 @@ type Event   {
   endTime: String
   createdAt: String
   capacity: Int
+  teamCapacity: Int
   mainImageKey: String
   SocialMediaApps: [SocialMediaApp] @relation
   prizes: [Prize] @relation    

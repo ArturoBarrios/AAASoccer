@@ -653,6 +653,7 @@ class _Home extends State<Home> {
                         ),
                       )
                     : Container(),
+                    
                 !cardsLoading
                     ?
                     //list view
@@ -683,12 +684,15 @@ class _Home extends State<Home> {
                           ),
                         ),
                       ),
+                      const Footers().getMainBottomNav(context),
               ],
-            )
+            ),
+            
+            
           ],
         ),
       ) :  LocationsMap(),
-      
+
       // bottomNavigationBar: Padding(
       //     padding: const EdgeInsets.only(
       //         top:26.0,
