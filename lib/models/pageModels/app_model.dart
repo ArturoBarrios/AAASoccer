@@ -10,6 +10,7 @@ import '../../constants.dart';
 import '../../strings.dart';
 import '../../svg_widgets.dart';
 import '../../views/game/create.dart';
+import '../../views/group/create/create.dart';
 import '../../views/home.dart';
 import '../../views/league/create.dart';
 import '../../views/location/create.dart';
@@ -80,6 +81,7 @@ class AppModel extends ChangeNotifier {
 
   Map<String, Widget Function(BuildContext)> createPages = {
     "Pickup Game": (context) => const GameCreate(),
+    "Group": (context) => const GroupCreate(),
     "Team": (context) => const TeamCreate(),
     "Tournament": (context) => const TournamentCreate(),
     "League": (context) => const LeagueCreate(),

@@ -32,21 +32,8 @@ import '../components/Cards/tsn_pickup_card.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 
-class HomePageCommand extends BaseCommand {
-  void testUpdateText() {
-    homePageModel.testText = "testingggggg";
-  }
+class ProfilePageCommand extends BaseCommand {  
 
-  void cardTapped() {
-    print("opencard");
-    homePageModel.isDialogueViewOpened =
-        !homePageModel.isDialogueViewOpened ? true : false;
-  }
-
-  void closeCard() {
-    print("closeCard");
-    homePageModel.isDialogueViewOpened = false;
-  }
 
  
 
@@ -55,7 +42,21 @@ class HomePageCommand extends BaseCommand {
     homePageModel.updatedCards = value;
   }
 
-  Future<void> setCards() async {
+  Future<void> setTeamCards() async {
+    print("setCards()");
+    print("set cards for selectedObject: " +
+        homePageModel.selectedObjects.toString());
+    profilePageModel.teamCards = [];        
+    
+    for (int i = 0; i < objectList.length; i++) {
+      Widget card =
+          await BaseCommand().getCard(homePageModel.selectedKey, objectList[i], svgImage);
+      homePageModel.cards.add(card);
+    }
+    homePageModel.cardsLoading = false;
+  }
+  
+  Future<void> setEventCards() async {
     print("setCards()");
     print("set cards for selectedObject: " +
         homePageModel.selectedObjects.toString());
@@ -74,44 +75,9 @@ class HomePageCommand extends BaseCommand {
     homePageModel.cardsLoading = false;
   }
 
-  void filterObjects(List dynamic) {
-    homePageModel.filteredObjects = dynamic;
-  }
+ 
 
-  void changeFilteringStatus(bool value) {
-    homePageModel.isFilteringEnabled = value;
-  }
-
-  Future<void> eventTypeTapped(dynamic key) async {
-    print("eventTypeTapped");
-    print(key);
-    print(homePageModel.enabledSelections2[key]['enabled']);
-    homePageModel.enabledSelections2.forEach(
-        (k, v) => {homePageModel.enabledSelections2[k]['enabled'] = false});
-    homePageModel.enabledSelections2[key]['enabled'] =
-        !homePageModel.enabledSelections2[key]['enabled'];
-    homePageModel.selectedKey = key;
-    await getSelectedObjects(key);
-  }
-
-  void addPlayerToObjectSelection(dynamic object) {
-    print("addPlayerToObjectSelection");
-    if (!homePageModel.userObjectSelections.contains(object)) {
-      homePageModel.userObjectSelections.add(object);
-    }
-    print("homePageModel.userObjectSelections: " +
-        homePageModel.userObjectSelections.toString());
-  }
-
-  void removePlayerToObjectSelection(dynamic object) {
-    print("removePlayerToObjectSelection");
-    print(object);
-    if (homePageModel.userObjectSelections.contains(object)) {
-      homePageModel.userObjectSelections.remove(object);
-    }
-    print("homePageModel.userObjectSelections: " +
-        homePageModel.userObjectSelections.toString());
-  }
+  
 
   Future<void> getSelectedObjects(dynamic newSelectedKey) async {
     print("getSelectedEvents");
@@ -120,7 +86,7 @@ class HomePageCommand extends BaseCommand {
     //get events
     if (BaseCommand().isEventType(newSelectedKey)) {
       String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(
-          1); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
+          1); 
       Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
           await EventCommand().getEventsOfTypeNearLocation(
               newSelectedKey, EventFragments().fullEvent(), xHoursAgoTimestamp);
@@ -140,7 +106,7 @@ class HomePageCommand extends BaseCommand {
       }
     } else if (newSelectedKey == Constants.TEAM) {
       String oneYearAgoTimestamp = BaseCommand().xHoursAgoString(
-          8760); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
+          8760); 
       print("oneYearAgoTimestamppppp: " + oneYearAgoTimestamp);
       Map<String, dynamic> getAllTeamsResp = await TeamCommand()
           .getAllTeams(oneYearAgoTimestamp, TeamFragments().fullTeam());

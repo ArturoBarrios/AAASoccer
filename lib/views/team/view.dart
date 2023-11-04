@@ -5,6 +5,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/loading_circular.dart';
 import '../../commands/team_command.dart';
+import '../../commands/user_command.dart';
 import '../../components/SendMyEventsTeamRequestWidget.dart';
 import '../../components/chats_list_widget.dart';
 import '../../components/events_list_widget.dart';
@@ -34,21 +35,9 @@ class TeamView extends StatefulWidget {
 
 class _TeamViewState extends State<TeamView> {
   ViewStatus _viewStatus = ViewStatus.loading;  
+  dynamic currentUser = null;
 
-  @override
-  void initState() {
-    super.initState();
-    print("initState()");
-    print("loadIinitialData() in initState()");
-    loadInitialData();
-    print("initState finished!");
-  }
-
-  Future<void> loadInitialData() async {
-    // await _tVC.loadInitialData(widget.teamObject);
-    await TeamCommand().getUserTeamDetails(widget.teamObject, true);
-    changeViewStatus(ViewStatus.completed);
-  }
+  
 
   changeViewStatus(final ViewStatus status) {
     setState(() {
@@ -127,6 +116,24 @@ class _TeamViewState extends State<TeamView> {
 
     return categorizedPayments;
   }
+
+
+  Future<void> loadInitialData() async {
+    // await _tVC.loadInitialData(widget.teamObject);
+    await TeamCommand().getUserTeamDetails(widget.teamObject, true);
+    currentUser = UserCommand().getAppModelUser();
+    changeViewStatus(ViewStatus.completed);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("initState()");
+    print("loadIinitialData() in initState()");
+    loadInitialData();
+    print("initState finished!");
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -266,14 +273,14 @@ class _TeamViewState extends State<TeamView> {
                           mainEvent: null,
                           team: team,
                           imageFor: Constants.TEAM),
-                      // GetJoinTeamWidget(
-                      //   user: currentUser,
-                      //   team: team,
-                      //   roles: roles,
-                      //   isMine: isMine,
-                      //   price: price,
-                      //   amountRemaining: amountRemaining,
-                      // ),
+                      GetJoinTeamWidget(
+                        user: currentUser,
+                        team: team,
+                        roles: roles,
+                        isMine: isMine,
+                        price: price,
+                        amountRemaining: amountRemaining,
+                      ),
                       PlayerList(
                         event: null,
                         team: team,

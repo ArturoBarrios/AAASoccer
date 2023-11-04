@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../commands/user_command.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
@@ -11,22 +12,44 @@ import '../../views/team/view.dart';
 import '../Buttons/basic_elevated_button.dart';
 import '../Buttons/circle_outline_icon.dart';
 import '../get_join_event_widget.dart';
+import '../get_join_team_widget.dart';
 import '../join_condition.dart';
 
-class TSNTeamCard extends StatelessWidget {
+class TSNTeamCard extends StatefulWidget {
+  
+  TSNTeamCard({
+    Key? key,
+    required this.teamCardDetails,
+    required this.backgroundColor,
+    this.svgImage,
+    this.width,
+    this.height,
+  }) : super(key: key);
+
   final dynamic teamCardDetails;
   final Color backgroundColor;
   final Svg? svgImage;
   final double? width;
   final double? height;
 
-  TSNTeamCard({
-    required this.teamCardDetails,
-    required this.backgroundColor,
-    this.svgImage,
-    this.width,
-    this.height,
-  });
+  @override
+  State<TSNTeamCard> createState() => _TSNTeamCard();
+
+
+}
+
+class _TSNTeamCard extends State<TSNTeamCard> {
+  dynamic currentUser = null;
+
+  void loadInitialData(){
+    print("loadInitialData() in TSNTeamCard");
+    currentUser = UserCommand().getAppModelUser();
+  }
+
+  @override initState(){
+    super.initState();
+    loadInitialData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +57,19 @@ class TSNTeamCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     //event model data
-    dynamic team = teamCardDetails['team'];
+    dynamic team = widget.teamCardDetails['team'];
 
-    List<dynamic> roles = teamCardDetails['roles'];
-    bool isMine = teamCardDetails['isMine'];    
-    bool isMember = teamCardDetails['isMember'];
-    String amountRemaining = teamCardDetails['amountRemaining'];
-    String amountPaid = teamCardDetails['amountPaid'];    
-    List players = teamCardDetails['players'];    
-    List organizers = teamCardDetails['organizers'];    
-    List teamLocations = teamCardDetails['teamLocations'];    
-    dynamic price = teamCardDetails['price'];    
-    JoinCondition teamRequestJoin = teamCardDetails['teamRequestJoin'];
-    JoinCondition teamPaymentJoin = teamCardDetails['teamPaymentJoin'];
+    List<dynamic> roles = widget.teamCardDetails['roles'];
+    bool isMine = widget.teamCardDetails['isMine'];    
+    bool isMember = widget.teamCardDetails['isMember'];
+    String amountRemaining = widget.teamCardDetails['amountRemaining'];
+    String amountPaid = widget.teamCardDetails['amountPaid'];    
+    List players = widget.teamCardDetails['players'];    
+    List organizers = widget.teamCardDetails['organizers'];    
+    List teamLocations = widget.teamCardDetails['teamLocations'];    
+    dynamic price = widget.teamCardDetails['price'];    
+    JoinCondition teamRequestJoin = widget.teamCardDetails['teamRequestJoin'];
+    JoinCondition teamPaymentJoin = widget.teamCardDetails['teamPaymentJoin'];
     
 
     return GestureDetector(
@@ -63,9 +86,9 @@ class TSNTeamCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
-          color: backgroundColor,
+          color: widget.backgroundColor,
           child: Container(
-            width: width,
+            width: widget.width,
             height: screenHeight * .2,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),
@@ -139,22 +162,19 @@ class TSNTeamCard extends StatelessWidget {
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),
-                                    //join widget
-                                    // Expanded(
-                                    //   flex: 11,
-                                    //   child:
-                                        // GetJoinTeamWidget(
-                                        //     mainEvent: mainEvent,
-                                        //     roles: roles,
-                                        //     isMine: isMine,
-                                        //     price: price,
-                                        //     amountRemaining: amountRemaining,                                        
-                                        //     eventRequestJoin: eventRequestJoin,
-                                        //     eventPaymentJoin: eventPaymentJoin,
-                                        //     teamRequestJoin: teamRequestJoin,
-                                        //     teamPaymentJoin: teamPaymentJoin                                                                                    
-                                        // )
-                                    // ),
+                                    // join widget
+                                    Expanded(
+                                      flex: 11,
+                                      child:
+                                        GetJoinTeamWidget(
+                                          user: currentUser,
+                                          team: team,
+                                          roles: roles,
+                                          isMine: isMine,
+                                          price: price,
+                                          amountRemaining: amountRemaining,
+                                        )
+                                    ),
                                     // Expanded(
                                     //     flex: 11,
                                     //     child:

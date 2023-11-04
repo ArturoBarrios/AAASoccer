@@ -4,6 +4,7 @@ import 'package:soccermadeeasy/components/follow_container.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
 import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import 'package:soccermadeeasy/models/pageModels/profile_page_model.dart';
+import '../../commands/profile_page_command.dart';
 import '../../commands/user_command.dart';
 import '../../components/headers.dart';
 import '../../components/info_detail_list_tile.dart';
@@ -42,6 +43,8 @@ class _ProfileState extends State<Profile> {
 
   Future<void> loadInitialData() async {
     await UserCommand().getUserDetails(widget.user, true);
+    ProfilePageCommand().setTeamCards();
+    ProfilePageCommand().setEventCards();
     changeViewStatus(ViewStatus.completed);
   }
 
@@ -89,6 +92,8 @@ class _ProfileState extends State<Profile> {
     bool isProfilePrivate = context.watch<ProfilePageModel>().isProfilePrivate;
     List followers = context.watch<ProfilePageModel>().followers;
     List following = context.watch<ProfilePageModel>().following;
+    List teamCards = context.watch<ProfilePageModel>().teamCards;
+    List eventCards = context.watch<ProfilePageModel>().eventCards;
 
     print("profile details: ");
     print("eventUserParticipants: "+ eventUserParticipants.toString());
@@ -226,7 +231,8 @@ class _ProfileState extends State<Profile> {
                   TeamsListWidget(
                     user: user,
                     mainEvent: null,
-                    teams: teamUserParticipants,
+                    teams: [],
+                    teamUserParticipants: teamUserParticipants,
                   ),
                   EventsListWidget(
                     team: null,

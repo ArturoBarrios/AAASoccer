@@ -203,6 +203,7 @@ type Request {
   fromOrganizer: Boolean
   event: Event
   team: Team
+  group: Group
   forRole: String
   sentAt: Int
   acceptedAt: Int
@@ -295,6 +296,13 @@ type TeamUserParticipant {
   isAttending: EventUserParticipantAttendingOptions
 }
 
+type GroupUserParticipant {
+  group: Group
+  user: User
+  roles: String
+  isAttending: EventUserParticipantAttendingOptions
+}
+
 type Game {
   hometeam: Team
   awayteam: Team
@@ -315,6 +323,7 @@ type JoinConditions {
   forEvent: Boolean
   event: Event
   team: Team
+  group: Group
 }
 
 type Event   {
@@ -369,6 +378,28 @@ type Rsvp {
 }
 
 
+type Group   {
+  name: String  
+  events: [Event] @relation
+  images: [Image] @relation
+  users: [User] @relation
+  sponsors: [Sponsor] @relation
+  groupLocations: [GroupLocation] @relation
+  userParticipants: [GroupUserParticipant] @relation    
+  deleted: Boolean
+  createdAt: String
+  updatedAt: String
+  request: [Request] @relation
+  chats: [Chat] @relation
+  price: Price
+  payments: [Payment] @relation
+  joinConditions: [JoinConditions] @relation  
+  organization: Organization  
+  SocialMediaApps: [SocialMediaApp] @relation  
+  coupons: [Coupon] @relation
+  groupReputation: GroupReputation @relation
+}
+
 type Team   {
   name: String
   color: String
@@ -401,6 +432,11 @@ type TeamReputation {
   team: Team
 }
 
+type GroupReputation {
+  ratings: [Rating] @relation
+  group: Group
+}
+
 type Coach   {
   user: User  
   coachReputation: CoachReputation
@@ -427,6 +463,7 @@ type Payment   {
   amount: String
   event: Event
   team: Team
+  group: Group
   paidAt: String
   user: User
   isPlayerPayment: Boolean
@@ -440,6 +477,7 @@ type Organization   {
   images: [Image] @relation  
   events: [Event] @relation
   teams: [Team] @relation
+  groups: [Group] @relation
   # suborgs: [Organization] @relation
   # sponsor: Sponsor
   sponsors: [Sponsor] @relation
@@ -467,11 +505,12 @@ type Sponsor {
   name: String
   images: [Image] @relation
   description: String
-  url: String
+  url: String    
   event: [Event] @relation
   sponsoredOrgs: [Organization] @relation
   sponsoredPlayers: [Player] @relation
   sponsoredTeams: [Team] @relation
+  sponsoredGroups: [Group] @relation
 }
 
 type Wager   {
@@ -597,6 +636,7 @@ type Chat  {
   users: [User] @relation(name: "user_chats")
   event: Event
   team: Team
+  group: Group
   archived: Boolean @default(value: false)
   isPrivate: Boolean
   IsMainChat: Boolean
@@ -619,6 +659,11 @@ type Location   {
 type UserLocation   {
   user: User
   location: Location
+}
+
+type GroupLocation   {  
+  location: Location
+  group: Group    
 }
 
 type TeamLocation   {
@@ -697,6 +742,7 @@ type Price   {
   amount: String
   event: Event @relation(name: "event_price")
   team: Team
+  group: Group
   location: Location
   teamAmount: String
   time: Int #in minutes
@@ -709,6 +755,7 @@ type SocialMediaApp   {
   user: User
   team: Team
   event: Event
+  group: Group
   fieldLocation: FieldLocation
 }
 
@@ -828,8 +875,9 @@ type Coupon {
   code: String
   discount: Discount
   event: [Event] @Relation
-  team: [Team] @Relation
-  user: [User] @Relation
+  teams: [Team] @Relation
+  users: [User] @Relation
+  groups: [Group] @Relation
 
 }
 
