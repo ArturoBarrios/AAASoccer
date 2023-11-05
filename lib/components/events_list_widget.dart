@@ -10,12 +10,14 @@ class EventsListWidget extends StatefulWidget {
   final dynamic user;
   List events;
   List eventUserParticipants;
+  List? eventCards;
 
   EventsListWidget(
       {required this.team,
       required this.user,
       required this.events,
-      required this.eventUserParticipants});
+      required this.eventUserParticipants,
+       this.eventCards});
 
   @override
   _EventsListWidgetState createState() => _EventsListWidgetState();
@@ -60,17 +62,8 @@ class _EventsListWidgetState extends State<EventsListWidget> {
   }
 
   void loadInitialData() {
-    widget.eventUserParticipants.forEach((participantMap) {
-      print("participantMap['event']: " + participantMap['event'].toString());
-    });
-    if (widget.eventUserParticipants.isNotEmpty) {
-      widget.events = widget.eventUserParticipants
-          .where((participantMap) =>
-              participantMap.containsKey('event') &&
-              participantMap['event'] != null)
-          .map((participantMap) => participantMap['event'])
-          .toList();
-    }
+    
+   
 
     setState(() {
       isLoading = false;
@@ -88,6 +81,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
   Widget build(BuildContext context) {
     // List<dynamic> events = widget.objectEventsDetails['team']['events']['data'] ?? [];
     print("EventsListWidget: " + widget.events.toString());
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
       padding: EdgeInsets.all(8.0),
@@ -106,46 +100,31 @@ class _EventsListWidgetState extends State<EventsListWidget> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10.0),
-          isLoading
-              ? LoadingScreen(
-                  currentDotColor: Colors.white,
-                  defaultDotColor: Colors.black,
-                  numDots: 10,
-                )
-              : (widget.events.isEmpty
-                  ? Center(
-                      child: Text('No Events'),
-                    )
-                  : Column(
-                      children:
-                          List<Widget>.generate(widget.events.length, (index) {
-                        print("eventttt: " + widget.events[index].toString());
-                        String teamName = widget.events[index]['name'] ?? '';
+         SizedBox(height: 10.0),
+                   
+                        
 
-                        return InkWell(
-                          onTap: () {
-                            print("pressed");
-                            //go to event
-                            goToEvent(context, widget.events[index]);
-                          },
-                          child: ListTile(
-                            title: Text(teamName),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () {
-                                    removeEventFromObject(widget.events[index]);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                    )),
+                        (widget.eventCards!.isEmpty
+              ? Center(
+                  child: Text('No Teams'),
+                )
+              : SizedBox(
+                  height: screenHeight *
+                      .2, // Set a fixed height for the list. Adjust as necessary for your ListTile height.
+                  child: ListView.builder(
+                    scrollDirection:
+                        Axis.horizontal, // Set the direction to horizontal
+                    itemCount: widget
+                        .eventCards!.length, // The number of items in the list
+                    itemBuilder: (context, index) {
+                      return IntrinsicWidth(
+                          // This will size the width based on the child's intrinsic size.
+                          child: widget.eventCards![index]);
+                    },
+                  ),
+                )
+                      
+                    ),
         ],
       ),
     );

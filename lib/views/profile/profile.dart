@@ -6,6 +6,7 @@ import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import 'package:soccermadeeasy/models/pageModels/profile_page_model.dart';
 import '../../commands/profile_page_command.dart';
 import '../../commands/user_command.dart';
+import '../../components/Loading/loading_screen.dart';
 import '../../components/headers.dart';
 import '../../components/info_detail_list_tile.dart';
 import '../../components/models/button_model.dart';
@@ -34,19 +35,6 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   ViewStatus _viewStatus = ViewStatus.loading;
-
-  @override
-  void initState() {
-    super.initState();
-    loadInitialData();
-  }
-
-  Future<void> loadInitialData() async {
-    await UserCommand().getUserDetails(widget.user, true);
-    ProfilePageCommand().setTeamCards();
-    ProfilePageCommand().setEventCards();
-    changeViewStatus(ViewStatus.completed);
-  }
 
   changeViewStatus(final ViewStatus status) {
     setState(() {
@@ -79,6 +67,23 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  Future<void> loadInitialData() async {
+    await UserCommand().getUserDetails(widget.user, true);
+    await ProfilePageCommand().setEvents();
+    await ProfilePageCommand().setTeams();
+    await ProfilePageCommand().setTeamCards();
+    await ProfilePageCommand().setEventCards();
+    changeViewStatus(ViewStatus.completed);
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    loadInitialData();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     bool isMine = context.watch<ProfilePageModel>().isMine;
@@ -94,6 +99,12 @@ class _ProfileState extends State<Profile> {
     List following = context.watch<ProfilePageModel>().following;
     List teamCards = context.watch<ProfilePageModel>().teamCards;
     List eventCards = context.watch<ProfilePageModel>().eventCards;
+    List teams = context.watch<ProfilePageModel>().teams;
+    List events = context.watch<ProfilePageModel>().events;
+    
+
+    bool teamCardsLoading = context.watch<ProfilePageModel>().teamCardsLoading;
+    bool eventCardsLoading = context.watch<ProfilePageModel>().eventCardsLoading;
 
     print("profile details: ");
     print("eventUserParticipants: "+ eventUserParticipants.toString());
@@ -227,18 +238,34 @@ class _ProfileState extends State<Profile> {
                         
                       ],
                     ),
-                  ),                                    
+                  ),        
+                   teamCardsLoading 
+              ? LoadingScreen(
+                  currentDotColor: Colors.white,
+                  defaultDotColor: Colors.black,
+                  numDots: 10,
+                )
+              :                            
                   TeamsListWidget(
                     user: user,
                     mainEvent: null,
-                    teams: [],
+                    teams: teams,
                     teamUserParticipants: teamUserParticipants,
+                    teamCards: teamCards,
                   ),
+                   eventCardsLoading 
+              ? LoadingScreen(
+                  currentDotColor: Colors.white,
+                  defaultDotColor: Colors.black,
+                  numDots: 10,
+                )
+              :  
                   EventsListWidget(
                     team: null,
                     user: user,
-                    events: [],
+                    events: events,
                     eventUserParticipants: eventUserParticipants,
+                    eventCards: eventCards,
                   ),
                   ImagesListWidget(
                       mainEvent: null, team: null, imageFor: Constants.USER),

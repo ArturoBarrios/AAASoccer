@@ -661,7 +661,7 @@ class _Home extends State<Home> {
                         child: 
                         ListView.builder(
                         controller: _selectEventController,
-                        itemCount: cards.length,
+                        itemCount: cards.length,                        
                         shrinkWrap: true,
                         physics: AlwaysScrollableScrollPhysics(),
                         itemBuilder: (_, index) => Card(

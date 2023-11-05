@@ -57,6 +57,20 @@ class ProfilePageModel extends ChangeNotifier {
     _teamUserParticipants = teamUserParticipants;
     notifyListeners();
   }
+  
+  List _teams = [];
+  List get teams => _teams;
+  set teams(List teams) {
+    _teams = teams;
+    notifyListeners();
+  }
+  
+  List _events = [];
+  List get events => _events;
+  set events(List events) {
+    _events = events;
+    notifyListeners();
+  }
 
   List _teamCards = [];
   List get teamCards => _teamCards;
@@ -71,6 +85,20 @@ class ProfilePageModel extends ChangeNotifier {
   set eventCards(List eventCards) {
     print("set profilePageModel eventCards!");
     _eventCards = eventCards;
+    notifyListeners();
+  }
+
+  bool _teamCardsLoading = true;
+  bool get teamCardsLoading => _teamCardsLoading;
+  set teamCardsLoading(bool teamCardsLoading) {
+    _teamCardsLoading = teamCardsLoading;
+    notifyListeners();
+  }
+  
+  bool _eventCardsLoading = true;
+  bool get eventCardsLoading => _eventCardsLoading;
+  set eventCardsLoading(bool eventCardsLoading) {
+    _eventCardsLoading = eventCardsLoading;
     notifyListeners();
   }
 

@@ -10,13 +10,16 @@ class TeamsListWidget extends StatefulWidget {
   final dynamic mainEvent;
   List? teams;
   List? teamUserParticipants;
+  List? teamCards;
   // final void Function(dynamic) addTeam; // Optional function input parameter
 
-  TeamsListWidget(
-      {required this.user,
-      required this.mainEvent,
-      this.teams,
-      this.teamUserParticipants}); // Include required modifier
+  TeamsListWidget({
+    required this.user,
+    required this.mainEvent,
+    this.teams,
+    this.teamUserParticipants,
+    this.teamCards,
+  }); // Include required modifier
 
   @override
   _TeamsListWidgetState createState() => _TeamsListWidgetState();
@@ -24,7 +27,7 @@ class TeamsListWidget extends StatefulWidget {
 
 class _TeamsListWidgetState extends State<TeamsListWidget> {
   bool iterateOverTeams = true;
-  bool isLoading = true;
+  late ScrollController _selectTeamController = ScrollController();
 
   Future<void> removeUserFromTeam(dynamic team) async {
     print("removeUserFromTeam");
@@ -62,19 +65,6 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
 
   void loadInitialData() {
     print("loadInitialData");
-    print("widget.teamUserParticipants: " +
-        widget.teamUserParticipants.toString());
-    if (widget.teamUserParticipants!.isNotEmpty) {
-      widget.teams = widget.teamUserParticipants!
-          .where((participantMap) => participantMap.containsKey('team'))
-          .map((participantMap) => participantMap['team'])
-          .toList();
-    }
-    print("widget.teams: " + widget.teams.toString());
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   void goToTeam(dynamic team) {
@@ -96,6 +86,7 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
     return Container(
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -106,60 +97,33 @@ class _TeamsListWidgetState extends State<TeamsListWidget> {
       ),
       child: Column(
         children: <Widget>[
-          Text(
+          Text(            
             'Team List',
-            style: TextStyle(
+            style: TextStyle(              
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
             ),
           ),
           SizedBox(height: 10.0),
-          isLoading
-              ? LoadingScreen(
-                  currentDotColor: Colors.white,
-                  defaultDotColor: Colors.black,
-                  numDots: 10,
+          (widget.teamCards!.isEmpty
+              ? Center(
+                  child: Text('No Teams'),
                 )
-              : (widget.teams!.isEmpty
-                  ? Center(
-                      child: Text('No Teams'),
-                    )
-                  : Column(
-                      children: List<Widget>.generate(widget.teams!.length, (index) {
-                        String teamName = widget.teams![index]['name'] ?? '';
-
-                        return InkWell(
-                          onTap: () {
-                            print('Team pressed');
-                            goToTeam(widget.teams![index]);
-                            // Implement your logic here when ListTile is clicked.
-                          },
-                          child: ListTile(
-                            title: Text(teamName),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              //can add multiple buttons here
-                              children: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () {
-                                    removeTeamFromEvent(widget.teams![index]);
-                                  },
-                                ),
-                                // Check if addTeam function exists before displaying the icon button
-                                // if (widget.addTeam != null)
-                                //   IconButton(
-                                //     icon: Icon(Icons.add),
-                                //     onPressed: () {
-                                //       widget.addTeam(teams[index]);
-                                //     },
-                                //   ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                    )),
+              : SizedBox(
+                  height: screenHeight *
+                      .2, // Set a fixed height for the list. Adjust as necessary for your ListTile height.
+                  child: ListView.builder(
+                    scrollDirection:
+                        Axis.horizontal, // Set the direction to horizontal
+                    itemCount: widget
+                        .teamCards!.length, // The number of items in the list
+                    itemBuilder: (context, index) {
+                      return IntrinsicWidth(
+                          // This will size the width based on the child's intrinsic size.
+                          child: widget.teamCards![index]);
+                    },
+                  ),
+                )),
         ],
       ),
     );
