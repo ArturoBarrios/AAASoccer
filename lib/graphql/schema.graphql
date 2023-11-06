@@ -11,7 +11,7 @@ type Query {
 
   #  teams
 
-  # querieds
+  # queries
   allFieldLocations: [FieldLocation!]
   allGames(pickup: Boolean): [Game!]
   allTrainings: [Training!]
@@ -22,6 +22,7 @@ type Query {
   allPlayers: [Player!]
   allRequests: [Request!]
   allTeams: [Team!]
+  allGroups: [Group!]
   getUserByEmail(email: String): User
   getUserByPhone(phone: String): User
   getUserByUsername(username: String): User
@@ -261,6 +262,7 @@ type User  {
   socialMediaApps: [SocialMediaApp] @relation
   appSubscriptions: [AppSubscription] @relation
   coupons: [Coupon] @relation  
+  groups: [Group] @relation
 }
 
 type Player   {
@@ -362,6 +364,7 @@ type Event   {
   coupons: [Coupon] @relation
   eventReputation: EventReputation @relation
   slot: Slot
+  group: Group
 }
 
 type EventReputation {
@@ -380,6 +383,7 @@ type Rsvp {
 
 type Group   {
   name: String  
+  description: String
   events: [Event] @relation
   images: [Image] @relation
   users: [User] @relation
@@ -398,6 +402,7 @@ type Group   {
   SocialMediaApps: [SocialMediaApp] @relation  
   coupons: [Coupon] @relation
   groupReputation: GroupReputation @relation
+  status: String
 }
 
 type Team   {
@@ -543,7 +548,7 @@ type Season {
 type TeamOrder {
   team: Team
   points: Int
-  group: Group
+  group: TournamentGroup
   order: Int
 
 }
@@ -553,14 +558,14 @@ type TeamGroup {
 
 }
 
-type Group {
+type TournamentGroup {
   groupNumber: Int
   groupStage: GroupStage
   teamOrders: [TeamOrder] @relation
 }
 
 type GroupStage {
-  groups: [Group] @relation
+  groups: [TournamentGroup] @relation
   numberOfTeams: Int
   numberOfRoundsPerTeam: Int
   tournament: Tournament
@@ -606,6 +611,7 @@ type Image   {
   event: Event
   chat: Chat
   team: Team
+  group: Group
   location: Location
   organization: Organization  
   sponsor: Sponsor
@@ -729,7 +735,8 @@ type Rating   {
   playerReputations: [PlayerReputation] @relation
   coachReputations: [CoachReputation] @relation
   refereeReputations: [RefereeReputation] @relation
-  ratingCategory: [RatingCategory] @relation  
+  ratingCategory: [RatingCategory] @relation 
+  groupReputation: [GroupReputation] @relation
 }
 
 type RatingCategory {

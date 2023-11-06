@@ -1,4 +1,4 @@
-import '../fragments/groups.dart';
+import '../fragments/group_fragments.dart';
 
 class GroupMutations {
   String createGroup(
@@ -9,9 +9,8 @@ class GroupMutations {
       mutation {
         createGroup(data: {
           name: "${groupInput['name']}",
-          color: "${groupInput['color']}",          
-          status: "ACTIVE",
-          capacity:${groupInput['capacity']},
+          description: "${groupInput['description']}",          
+          status: "ACTIVE",          
           createdAt: "${groupInput['createdAt']}",
           updatedAt: "${groupInput['updatedAt']}",
           chats: {

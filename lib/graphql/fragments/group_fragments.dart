@@ -6,7 +6,7 @@ class GroupFragments {
     String fullGroupReturn = """
             _id
             name
-            color
+            description
             createdAt
             images{
               data{
@@ -53,8 +53,7 @@ class GroupFragments {
               data{
                 _id
                 withRequest
-                withPayment
-                forGroup
+                withPayment                
 
               }
             }
@@ -71,7 +70,7 @@ class GroupFragments {
                 _id
                 amount
                 isPlayerPayment
-                isGroupPayment
+                isTeamPayment
                 user{
                   _id
                   name

@@ -16,7 +16,7 @@ class GroupCreate extends StatefulWidget {
 
 class _GroupCreateState extends State<GroupCreate> {
   final nameController = TextEditingController();
-  final colorController = TextEditingController();
+  final descriptionController = TextEditingController();
   final logoController = TextEditingController();
   final imagesController = TextEditingController();
   final capacityController = TextEditingController();
@@ -57,10 +57,9 @@ class _GroupCreateState extends State<GroupCreate> {
     try {
       Map<String, dynamic> createGroupInput = {
         'name': nameController.text.trim(),
-        'color': colorController.text.trim(),
+        'description': descriptionController.text.trim(),
         'logo': logoController.text.trim(),
-        'images': imagesController.text.trim(),
-        'capacity': capacityController.text.trim(),
+        'images': imagesController.text.trim(),        
         'price': double.parse(priceController.text.toString()),
         'withRequest': createEventRequestWidget.withRequest.value,
         'withPayment': createEventPaymentWidget.withPayment.value,
@@ -154,10 +153,10 @@ class _GroupCreateState extends State<GroupCreate> {
               height: 8,
             ),
             TextField(
-              controller: colorController,
+              controller: descriptionController,
               decoration: const InputDecoration(
-                hintText: 'Color',
-                labelText: 'Color',
+                hintText: 'Description',
+                labelText: 'Description',
                 border: InputBorder.none,
                 filled: true,
               ),

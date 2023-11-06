@@ -10,10 +10,12 @@ import '../components/Cards/tsn_team_card.dart';
 import '../components/Cards/tsn_tournament_card.dart';
 import '../components/Cards/tsn_training_card.dart';
 import '../components/Cards/tsn_tryout_card.dart';
+import '../graphql/fragments/group_fragments.dart';
 import '../models/enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
 import '../graphql/fragments/team_fragments.dart';
 import 'base_command.dart';
+import 'group_command.dart';
 import 'league_command.dart';
 import 'refresh_posts_command.dart';
 import 'event_command.dart';
@@ -150,7 +152,21 @@ class HomePageCommand extends BaseCommand {
         homePageModel.selectedObjects = newSelectedObjects;
         appModel.teams = newSelectedObjects;
       }
-    } else if (newSelectedKey == Constants.PLAYER) {
+    } 
+    else if (newSelectedKey == Constants.GROUP) {
+      String oneYearAgoTimestamp = BaseCommand().xHoursAgoString(
+          8760); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
+      print("oneYearAgoTimestamppppp: " + oneYearAgoTimestamp);
+      Map<String, dynamic> getAllGroupsResp = await GroupCommand()
+          .getAllGroups();
+      print("getAllGroupsRespRespppp: " + getAllGroupsResp.toString());
+      if (getAllGroupsResp['success']) {
+        newSelectedObjects = getAllGroupsResp['data'];
+        homePageModel.selectedObjects = newSelectedObjects;
+        appModel.groups = newSelectedObjects;
+      }
+    }
+    else if (newSelectedKey == Constants.PLAYER) {
       print("check players: ");
       Map<String, dynamic> getPlayersNearLocationResp =
           await PlayerCommand().getPlayersNearLocation();

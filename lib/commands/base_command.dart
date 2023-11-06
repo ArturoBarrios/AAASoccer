@@ -16,6 +16,7 @@ import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
 import '../models/pageModels/event_page_model.dart';
+import '../models/pageModels/group_page_model.dart';
 import '../models/pageModels/profile_page_model.dart';
 import '../models/pageModels/team_page_model.dart';
 import '../models/pageModels/app_model.dart';
@@ -46,6 +47,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 
 import 'chat_command.dart';
+import 'group_command.dart';
 import 'home_page_command.dart';
 import 'location_command.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -65,6 +67,7 @@ class BaseCommand {
   HomePageModel homePageModel = _mainContext.read();
   EventPageModel eventPageModel = _mainContext.read();
   TeamPageModel teamPageModel = _mainContext.read();
+  GroupPageModel groupPageModel = _mainContext.read();
   ProfilePageModel profilePageModel = _mainContext.read();
   RequestsModel requestsModel = _mainContext.read();
   RequestsPageModel requestsPageModel = _mainContext.read();
@@ -258,6 +261,7 @@ class BaseCommand {
     homePageModel = _mainContext.read();
     eventPageModel = _mainContext.read();
     teamPageModel = _mainContext.read();
+    groupPageModel = _mainContext.read();
     profilePageModel = _mainContext.read();
     requestsModel = _mainContext.read();
     requestsPageModel = _mainContext.read();
@@ -699,7 +703,16 @@ class BaseCommand {
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
       );      
-    } else if (selectedKey == Constants.MYTEAMS) {
+    }
+    else if (selectedKey == Constants.GROUP) {
+      dynamic userTeamDetails = await GroupCommand().getUserGroupDetails(selectedObject, false);
+      card = TSNGroupCard(
+        groupCardDetails: userGroupDetails,
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );      
+    }
+     else if (selectedKey == Constants.MYTEAMS) {
       print("selectedKey == MYTEAMS");
       print("selectedObject: " + selectedObject.toString());
       dynamic team = selectedObject['team'];

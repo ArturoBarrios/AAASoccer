@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/components/Dialogues/congrats_dialogue.dart';
+import 'package:soccermadeeasy/components/Dialogues/rating_dialogue.dart';
 import 'package:soccermadeeasy/components/logo.dart';
 import 'package:soccermadeeasy/components/sideways_pill_widget.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 
+import '../commands/base_command.dart';
 import '../commands/subscriptions_command.dart';
 import '../styles/colors.dart';
 import '../styles/font_sizes.dart';
@@ -11,6 +14,7 @@ import 'Buttons/circle_outline_icon.dart';
 import 'Buttons/custom_button.dart';
 import 'Cards/tsn_pickup_card.dart';
 import 'Loading/loading_icon.dart';
+import 'custom_footer.dart';
 import 'logo_text.dart';
 
 class PlaygroundWidget extends StatefulWidget {
@@ -39,6 +43,9 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
+          CustomFooter(),
+          RatingDialogue(),
+          
           SidewaysPillWidget(
   text: "Follow",
   // icon: Icons.star,

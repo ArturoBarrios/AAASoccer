@@ -3,6 +3,7 @@ import 'models/enums/EventType.dart';
 class Constants {
   static const EventType PICKUP = EventType.GAME;
   static const String TEAM = "TEAM";
+  static const String GROUP = "GROUP";
   static const EventType LEAGUE = EventType.LEAGUE;
   static const EventType TOURNAMENT = EventType.TOURNAMENT;
   static const EventType TRYOUT = EventType.TRYOUT;
@@ -16,6 +17,8 @@ class Constants {
   static const String VIEWEVENT = "View Event";
   static const String VIEWUSER = "View User";
   static const String VIEWTEAM = "View Team";
+  static const String REQUESTSSENT = "REQUESTSSENT";
+  static const String REQUESTSRECEIVED = "REQUESTSRECEIVED";
   //request type
   static const String GAMEREQUEST = "GAMEREQUEST";
   static const String TOURNAMENTREQUEST = "TOURNAMENTREQUEST";

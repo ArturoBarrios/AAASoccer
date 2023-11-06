@@ -383,10 +383,36 @@ class _Home extends State<Home> {
     setState(() {});
   }
 
-  bool hideSelectionItems(Map<dynamic, dynamic> items) {
-  bool value = items.values.any((item) => !item['show'] && item['enabled']);
-  print("hasVisibleItems: " + value.toString());
-  return !value;
+  bool hideShowSelectionItems(Map<dynamic, dynamic> items) {
+    bool value = items.values.any((item) => (!item['showExplore'] || !item['showMyActivity']) && item['enabled']);
+    print("hasVisibleItems: " + value.toString());
+    return !value;
+}
+
+bool showExplore(Map<dynamic, dynamic> enabledSelections) {
+  // Iterate through each key-value pair in the map
+  for (var entry in enabledSelections.entries) {
+    // Check if 'showExplore' is true and 'enabled' is also true
+    if (entry.value["showExplore"] == true && entry.value["enabled"] == true) {
+      // If any entry meets the conditions, return true
+      return true;
+    }
+  }
+  // If no entries meet the conditions, return false
+  return false;
+}
+
+bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
+  // Iterate through each key-value pair in the map
+  for (var entry in enabledSelections.entries) {
+    // Check if 'showExplore' is true and 'enabled' is also true
+    if (entry.value["showMyActivity"] == true && entry.value["enabled"] == true) {
+      // If any entry meets the conditions, return true
+      return true;
+    }
+  }
+  // If no entries meet the conditions, return false
+  return false;
 }
 
   Future<void> showBottomSheet(
@@ -495,6 +521,7 @@ class _Home extends State<Home> {
     return 
     initialConditionsMet == false ? SplashScreen() : 
     Scaffold(
+      extendBody: true,
       appBar: Headers(
         playerStepperButton: ButtonModel(
           prefixIconData: Icons.play_circle_fill_rounded,
@@ -520,15 +547,17 @@ class _Home extends State<Home> {
       ),
       body: 
       
+      
     !selectedPages[Constants.LOCATIONSPAGE]['enabled'] ? 
+        
       RefreshIndicator(
         onRefresh: onReload,
         child: 
-        
         Stack(
           children: <Widget>[
             Column(
               children: [
+                             
                 Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Row(
@@ -536,7 +565,7 @@ class _Home extends State<Home> {
                       ],
                     )),
                 Visibility(
-                visible: hideSelectionItems(enabledSelections2),
+                // visible: hideShowSelectionItems(enabledSelections2),
                 child: 
                 SizedBox(
                   height:
@@ -547,9 +576,9 @@ class _Home extends State<Home> {
                     itemCount: enabledSelections2.length,
                     itemBuilder: (_, index) {
                       dynamic key = enabledSelections2.keys.elementAt(index);
-                      print("enabledSelections2[key]['show']: " +
-                          enabledSelections2[key]['show'].toString());
-                      if(enabledSelections2[key]['show']){
+                      print("enabledSelections2[key]['showExplore']: " +
+                          enabledSelections2[key]['showExplore'].toString());
+                      if(showExplore(enabledSelections2) && enabledSelections2[key]['showExplore']){
                         return SelectIconButton(
                           eventObject: enabledSelections2[key],
                           svgImage: enabledSelections2[key]['image'],
@@ -559,6 +588,17 @@ class _Home extends State<Home> {
                               : null,
                         );
 
+                      }
+                      else if(showMyActivity(enabledSelections2) && enabledSelections2[key]['showMyActivity']){
+                        
+                        return SelectIconButton(
+                          eventObject: enabledSelections2[key],
+                          svgImage: enabledSelections2[key]['image'],
+                          index: index,
+                          onTapEvent: () => isFilteringEnabled
+                              ? clearFiltering(isPop: false)
+                              : null,
+                        );
                       }
                       else{
                         return Container();
@@ -684,7 +724,7 @@ class _Home extends State<Home> {
                           ),
                         ),
                       ),
-                      const Footers().getMainBottomNav(context),
+                      // const Footers().getMainBottomNav(context),
               ],
             ),
             
@@ -693,14 +733,16 @@ class _Home extends State<Home> {
         ),
       ) :  LocationsMap(),
 
-      // bottomNavigationBar: Padding(
-      //     padding: const EdgeInsets.only(
-      //         top:26.0,
-      //         bottom: 16.0,
-      //         left: 16.0,
-      //         right: 16.0), 
-      //     child: const Footers().getMainBottomNav(context)
-      //     ),
+      bottomNavigationBar: 
+        
+        Padding(
+          padding: const EdgeInsets.only(
+              top:26.0,
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0), 
+          child: const Footers().getMainBottomNav(context)
+          ),
     );
   }
 }

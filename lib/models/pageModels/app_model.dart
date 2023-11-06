@@ -114,7 +114,7 @@ class AppModel extends ChangeNotifier {
     Constants.MYEVENTS: {
       "key": Constants.MYEVENTS,
       "enabled": false,
-      "name": "My Events",
+      "name": "My Activity",
       "description": "",
       'icon': Icons.wheelchair_pickup,
       'selectAction': (BuildContext context) async{
@@ -302,6 +302,13 @@ class AppModel extends ChangeNotifier {
   List get teams => _teams;
   set teams(List teams) {
     _teams = teams;
+    notifyListeners();
+  }
+
+  List _groups = [];
+  List get groups => _groups;
+  set groups(List groups) {
+    _groups = groups;
     notifyListeners();
   }
 

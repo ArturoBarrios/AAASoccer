@@ -4,12 +4,17 @@ class StringConstants {
   static const String TRAININGSTITLE = "Training Sessions";
   static const String LEAGUESTITLE = "Leagues";
   static const String TEAMSTITLE = "Teams";
+  static const String GROUPSTITLE = "Groups";
   static const String TRYOUTSTITLE = "Tryouts";
   static const String PLAYERSTITLE = "Players";
   static const String FRIENDSTITLE = "Friends";
   static const String MYEVENTSTITLE = "Upcoming Events";
   static const String MYTEAMSTITLE = "My Teams";
+  static const String MYGROUPSTITLE = "My Groups";
   static const String LOCATIONSTITLE = "Locations";
+  static const String REQUESTSSENTTITLE = "REQUESTS SENT";
+  static const String REQUESTSRECEIVEDTITLE = "REQUESTS RECEIVED";
+  
 
   // game create Strings + Tournment screen strings
 
