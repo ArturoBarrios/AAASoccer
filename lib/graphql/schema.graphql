@@ -368,6 +368,7 @@ type Event   {
 }
 
 type EventReputation {
+  eventRatings: [EventRating] @relation
   ratings: [Rating] @relation
   event: Event
 }
@@ -726,7 +727,7 @@ type FieldLocationReputation {
 
 type Rating   {
   rating: Int
-  description: String
+  feedback: String
   organizationReputations: [OrganizationReputation] @relation
   organizerReputations: [OrganizerReputation] @relation
   teamReputation: [TeamReputation] @relation
@@ -737,6 +738,12 @@ type Rating   {
   refereeReputations: [RefereeReputation] @relation
   ratingCategory: [RatingCategory] @relation 
   groupReputation: [GroupReputation] @relation
+}
+
+type EventRating   {
+  ratings: String
+  feedback: String  
+  eventReputation: EventReputation
 }
 
 type RatingCategory {
@@ -905,4 +912,11 @@ type parentStore {
 
 type Access {
   accessType: String
+  coupon: Coupon
+}
+
+type AppFeedback {
+  feedbackType: String
+  
+
 }
