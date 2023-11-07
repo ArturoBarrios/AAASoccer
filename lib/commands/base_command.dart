@@ -4,6 +4,7 @@ import '../components/Cards/league_card.dart';
 import '../components/Cards/tournament_card.dart';
 import '../components/Cards/training_card.dart';
 import '../components/Cards/tryout_card.dart';
+import '../components/Cards/tsn_group_card.dart';
 import '../components/Cards/tsn_pickup_card.dart';
 import '../components/Cards/tsn_player_card.dart';
 import '../components/Cards/tsn_team_card.dart';
@@ -705,7 +706,7 @@ class BaseCommand {
       );      
     }
     else if (selectedKey == Constants.GROUP) {
-      dynamic userTeamDetails = await GroupCommand().getUserGroupDetails(selectedObject, false);
+      dynamic userGroupDetails = await GroupCommand().getUserGroupDetails(selectedObject, false);
       card = TSNGroupCard(
         groupCardDetails: userGroupDetails,
         backgroundColor: AppColors.tsnAlmostBlack,

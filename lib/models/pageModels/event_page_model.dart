@@ -218,5 +218,19 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  int _eventRating = 0;
+  int get eventRating => _eventRating;
+  set eventRating(int eventRating) {
+    _eventRating = eventRating;
+    notifyListeners();
+  }
+  
+  int _numberOfRatings = 0;
+  int get numberOfRatings => _numberOfRatings;
+  set numberOfRatings(int numberOfRatings) {
+    _numberOfRatings = numberOfRatings;
+    notifyListeners();
+  }
+
 
 }

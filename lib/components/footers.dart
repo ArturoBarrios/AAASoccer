@@ -66,75 +66,78 @@ class Footers extends StatefulWidget {
       }
     }
 
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity, // Taking full width
-          height: 50,
-          margin: const EdgeInsets.all(4.0),
-          decoration: BoxDecoration(
-            color: AppColors.tsnBlack,
-            borderRadius: BorderRadius.circular(32),
-          ),
-          child: Row(
-            children: selectedPages.entries
-                .map<Widget>((MapEntry<dynamic, dynamic> entry) {
-              dynamic key = entry.key;
-              Map<dynamic, dynamic> item = entry.value;
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    BaseCommand().onTapBottomNav(context, key, item);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(2.0),
-                    padding: const EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
+   return Stack(
+  clipBehavior: Clip.none, // Allow overflowing of the FAB
+  alignment: Alignment.topCenter,
+  children: [
+    Padding(
+      padding: const EdgeInsets.only(top: 28.0), // Add padding for the top part of the FAB
+      child: Container(
+        width: double.infinity, // Taking full width
+        height: 50,
+        margin: const EdgeInsets.all(4.0),
+        decoration: BoxDecoration(
+          color: AppColors.tsnBlack,
+          borderRadius: BorderRadius.circular(32),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: selectedPages.entries
+              .map<Widget>((MapEntry<dynamic, dynamic> entry) {
+            dynamic key = entry.key;
+            Map<dynamic, dynamic> item = entry.value;
+            return GestureDetector(
+              onTap: () {
+                BaseCommand().onTapBottomNav(context, key, item);
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 2.0),
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: item['enabled']
+                        ? AppColors.tsnLightGreen
+                        : Colors.transparent,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      item['icon'],
+                      size: 18,
+                      color: item['enabled']
+                          ? AppColors.tsnLightGreen
+                          : AppColors.tsnGreyerWhite,
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      item['name'],
+                      style: TextStyle(
+                        fontSize: 12,
                         color: item['enabled']
                             ? AppColors.tsnLightGreen
-                            : Colors.transparent,
-                        width: 2,
+                            : AppColors.tsnGreyerWhite,
                       ),
-                      borderRadius: BorderRadius.circular(32),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          item['icon'],
-                          size: 18,
-                          color: item['enabled']
-                              ? AppColors.tsnLightGreen
-                              : AppColors.tsnGreyerWhite,
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          item['name'],
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: item['enabled']
-                                ? AppColors.tsnLightGreen
-                                : AppColors.tsnGreyerWhite,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
-              );
-            }).toList(),
-          ),
+              ),
+            );
+          }).toList(),
         ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: Center(
-            child: FloatingActionButton(
-              onPressed: () async {
-                // Your floating button logic here
+      ),
+    ),
+    Positioned(
+      left: 0,
+      right: 0,
+      bottom: 50 / 2, // Position the FAB so that it is half above the top of the nav bar
+      child: FloatingActionButton(
+        onPressed: () async {
+          // Your floating button logic here
                 print("Add New Chat Pressed");
                 List<dynamic> primaryList = createPages.keys.toList();
                 List<dynamic> secondaryList = [];
@@ -156,13 +159,14 @@ class Footers extends StatefulWidget {
                   BaseCommand()
                       .goToCreatePage(context, result.keys.first, primaryList);
                 }
-              },
-              child: Icon(Icons.add),
-            ),
-          ),
-        ),
-      ],
-    );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue, // Assuming you want a blue FAB
+      ),
+    ),
+  ],
+);
+
   }
 
   BottomNavigationBar getChatBottomNav(BuildContext context) {

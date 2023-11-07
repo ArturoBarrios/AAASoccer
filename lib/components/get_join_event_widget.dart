@@ -212,8 +212,24 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
     print("rolesss: " + widget.roles.toString());
     List<dynamic> existingRoles = widget.roles;
+    //expired
+   // Assuming widget.mainEvent['endTime'] is a String representing milliseconds since Epoch
+if (widget.mainEvent['endTime'] != null &&
+    DateTime.fromMillisecondsSinceEpoch(int.parse(widget.mainEvent['endTime'])).isBefore(DateTime.now().subtract(Duration(hours: 1)))) {
+  return BasicElevatedButton(
+    backgroundColor: AppColors.tsnRed,
+    text: "Leave",
+    fontSize: FontSizes.xxs(context),
+    onPressed: () async {
+      await removeUserFromEvent(event, userObject, ["PLAYER"], existingRoles);
+    },
+  );
+
+
+}
+
     //if not already a player
-    if (!widget.roles.contains("PLAYER")) {      
+    else if (!widget.roles.contains("PLAYER")) {      
       if (widget.isMine) {
         return 
         Container(

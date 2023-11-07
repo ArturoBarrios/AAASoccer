@@ -36,8 +36,7 @@ class GroupMutations {
           joinConditions: {
             create: {
               withRequest: ${groupInput['withRequest']},
-              withPayment: ${groupInput['withPayment']},
-              forGroup: true
+              withPayment: ${groupInput['withPayment']},              
 
             }
           },
@@ -54,8 +53,7 @@ class GroupMutations {
               },  
           groupLocations: {
                 create: [
-                  {
-                    isMainField: true                    
+                  {                                 
                     location: {    
                       create: {
                         name: "${locationInput['name']}",

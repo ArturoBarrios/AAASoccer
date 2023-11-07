@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Dialogues/congrats_dialogue.dart';
 import 'package:soccermadeeasy/components/Dialogues/rating_dialogue.dart';
 import 'package:soccermadeeasy/components/logo.dart';
+import 'package:soccermadeeasy/components/rating_widget.dart';
 import 'package:soccermadeeasy/components/sideways_pill_widget.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 
@@ -43,6 +44,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
+          RatingWidget(rating: 5),
           CustomFooter(),
           RatingDialogue(),
           

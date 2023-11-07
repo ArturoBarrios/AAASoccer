@@ -59,6 +59,14 @@ class EventFragments {
       endTime  
       capacity
       createdAt
+      eventReputation{
+        ratings{
+          data{
+            _id
+            rating
+          }
+        }
+      }
       requests{
         data{
           ${RequestFragments().fullRequest()}

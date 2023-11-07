@@ -1176,6 +1176,8 @@ class EventCommand extends BaseCommand {
       "tournamentStage": [],
       "userParticipants": [],      
       "fieldLocations": [],
+      "eventRating": 4,
+      "numberOfRatings": 0,
     };
     print("events length: " + events.length.toString());
 

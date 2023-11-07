@@ -18,6 +18,22 @@ class GroupFragments {
                 ${ChatFragments().chatObject()}
               }
             }
+            joinConditions{
+              data{
+                _id
+                withRequest
+                withPayment                
+
+              }
+            }
+            price{                    
+              _id
+              amount
+              group{
+                _id
+                name                      
+              }
+            }
             events{
               data{
                 _id
@@ -49,22 +65,7 @@ class GroupFragments {
                 isAttending
               }
             } 
-            joinConditions{
-              data{
-                _id
-                withRequest
-                withPayment                
-
-              }
-            }
-            price{                    
-              _id
-              amount
-              group{
-                _id
-                name                      
-              }
-            }
+            
             payments{
               data{
                 _id

@@ -24,6 +24,7 @@ import 'components/logo_text.dart';
 import 'models/pageModels/app_model.dart';
 import 'models/pageModels/chat_page_model.dart';
 import 'models/pageModels/event_page_model.dart';
+import 'models/pageModels/group_page_model.dart';
 import 'models/pageModels/profile_page_model.dart';
 import 'models/pageModels/team_page_model.dart';
 import 'models/user_model.dart';
@@ -336,6 +337,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (c) => EventsModel()),
         ChangeNotifierProvider(create: (c) => EventPageModel()),
         ChangeNotifierProvider(create: (c) => TeamPageModel()),
+        ChangeNotifierProvider(create: (c) => GroupPageModel()),
         ChangeNotifierProvider(create: (c) => ProfilePageModel()),
         ChangeNotifierProvider(create: (c) => RequestsModel()),
         ChangeNotifierProvider(create: (c) => RequestsPageModel()),

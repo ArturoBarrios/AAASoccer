@@ -29,6 +29,79 @@ class RatingCommand extends BaseCommand {
     
   }
   
+  Future<Map<String,dynamic>> showRatingForEvent()async {
+    Map<String,dynamic> showRatingForEventResp = {
+      "success": false,
+      "message": "Failed to create rating category",
+      "data": 5
+    };
+    try{
+      
+
+      return showRatingForEventResp;
+    } catch (e) {
+      print("Error creating rating category: $e");
+      return showRatingForEventResp;
+    }
+
+    
+  }
+  
+  Future<Map<String,dynamic>> calculateRatingForEvent()async {
+    Map<String,dynamic> showRatingForEventResp = {
+      "success": false,
+      "message": "Failed to create rating category",
+      "data": 5
+    };
+    try{
+
+
+      return showRatingForEventResp;
+    } catch (e) {
+      print("Error creating rating category: $e");
+      return showRatingForEventResp;
+    }
+
+    
+  }
+  
+  Future<Map<String,dynamic>> calculateRatingForGroup()async {
+    Map<String,dynamic> showRatingForEventResp = {
+      "success": false,
+      "message": "Failed to create rating category",
+      "data": 5    
+    };
+    try{
+
+
+      return showRatingForEventResp;
+    } catch (e) {
+      print("Error creating rating category: $e");
+      return showRatingForEventResp;
+    }
+
+    
+  }
+  
+  Future<Map<String,dynamic>> calculateRatingForHost()async {
+    Map<String,dynamic> showRatingForEventResp = {
+      "success": false,
+      "message": "Failed to create rating category"    
+    };
+    try{
+
+
+      return showRatingForEventResp;
+    } catch (e) {
+      print("Error creating rating category: $e");
+      return showRatingForEventResp;
+    }
+
+    
+  }
+
+
+  
 
   
 

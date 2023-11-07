@@ -885,7 +885,9 @@ type Coupon {
   teams: [Team] @Relation
   users: [User] @Relation
   groups: [Group] @Relation
-
+  access: [Access] @Relation
+  accessCoupon: Boolean @default(value: false)
+  capacity: Int
 }
 
 type Store{
@@ -895,8 +897,12 @@ type Store{
   parentStore: parentStore
 }
 
-type parentStore{
+type parentStore {
   name: String
   address: String
   stores: [Store] @relation
+}
+
+type Access {
+  accessType: String
 }

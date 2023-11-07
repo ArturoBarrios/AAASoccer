@@ -90,7 +90,7 @@ class GroupCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
       if (response.statusCode == 200) {
-        dynamic result = jsonDecode(response.body)['data']['getGroups'];
+        dynamic result = jsonDecode(response.body)['data']['allGroups']['data'];
         print("getAllGroups result: $result");
         getAllGroupsResp["success"] = true;
         getAllGroupsResp["message"] = "Groups Retrieved";
@@ -101,6 +101,20 @@ class GroupCommand extends BaseCommand {
       print('Mutation failed: $e');
       return getAllGroupsResp;
     }
+  }
+
+  List<dynamic> getMyGroupRoles(dynamic group, dynamic user) {
+    print("getMyGroupRoles()");
+    List<dynamic> roles = [];
+    dynamic userParticipants = group['userParticipants']['data'];
+    print("userParticipants: $userParticipants");
+    for (int i = 0; i < userParticipants.length; i++) {
+      if (userParticipants[i]['user']['_id'] == user['_id']) {
+        roles = userParticipants[i]['roles'].toString().parseRoles();
+      }
+    }
+
+    return roles;
   }
 
   Future<Map<String,dynamic>> getUserGroupDetails(dynamic group, bool addToEventPageModel) async {
@@ -120,7 +134,9 @@ class GroupCommand extends BaseCommand {
       "roles": [],
       "chats": [],
       "userParticipants": [], 
-    
+      "groupRequestJoin": false,
+      "groupPaymentJoin": false,
+      "payments: ": [],
     };
 
     try{
@@ -139,7 +155,6 @@ class GroupCommand extends BaseCommand {
     print("length of chats in userGroupDetails: ${chats.length}");
 
     List<dynamic> myGroupRoles = getMyGroupRoles(group, appModel.currentUser);
-    print("myGroupRoless: $myGroupRoles");
     print("myGroupRoles.contains organizer: ${myGroupRoles.contains("ORGANIZER")}");
 
     userGroupDetails['roles'] = myGroupRoles;
@@ -162,7 +177,10 @@ class GroupCommand extends BaseCommand {
         
       }
     }
+    print("aaaaaa");
 
+    
+print("userGroupDetails['group']['joinConditions']: "+ userGroupDetails['group']['joinConditions'].toString());
     //join conditions
       userGroupDetails['group']['joinConditions']['data'].forEach((joinCondition) {
         if(joinCondition['forGroup']){
@@ -170,9 +188,12 @@ class GroupCommand extends BaseCommand {
           userGroupDetails['groupPaymentJoin'] = new JoinCondition(label: "Join With Payment", required: joinCondition['withPayment']);                     
         }        
       });
+    print("aaaaaa22222");
+      
 
     //get price and payment info
     List payments = group['payments']['data'];
+    print("aaaaaa33333");
     userGroupDetails['payments'] = payments;
     
     userGroupDetails['amountPaid'] = "0.00";
@@ -180,6 +201,7 @@ class GroupCommand extends BaseCommand {
     userGroupDetails['amountRemaining'] = "0.00";
     
     userGroupDetails['price'] = group['price'];
+    print("aaaaaa44444");
     
     if (group['price'] != null) {
       print("payments: $payments");
@@ -198,6 +220,7 @@ class GroupCommand extends BaseCommand {
               .toStringAsFixed(2);      
     }
 
+    print("aaaaaa55555");
     print(
         "getUserGroupDetails() finished with userGroupDetails: $userGroupDetails");
 

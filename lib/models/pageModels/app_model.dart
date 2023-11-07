@@ -131,26 +131,7 @@ class AppModel extends ChangeNotifier {
         // );
       },
     },
-    Constants.MYTEAMS: {
-      "key": Constants.MYTEAMS,
-      "enabled": false,
-      "name": StringConstants.MYTEAMSTITLE,
-      "description": "",
-      "icon": Icons.group_work_sharp,
-      'selectAction': (BuildContext context) async{
-        print("in selectAction");
-        await HomePageCommand().eventTypeTapped(Constants.MYTEAMS);
-        await HomePageCommand().setCards();
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute<void>(
-        //     builder: (BuildContext context) {
-        //       return const Home();
-        //     },
-        //   ),
-        // );
-      },
-    },
+   
     Constants.LOCATIONSPAGE: {
       "key": Constants.LOCATIONSPAGE,
       "enabled": false,

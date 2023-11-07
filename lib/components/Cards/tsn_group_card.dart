@@ -2,31 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../commands/user_command.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
 import '../../svg_widgets.dart';
 import '../../views/game/view.dart';
+import '../../views/group/view.dart';
 import '../Buttons/basic_elevated_button.dart';
 import '../Buttons/circle_outline_icon.dart';
 import '../get_join_event_widget.dart';
+import '../get_join_group_widget.dart';
 import '../join_condition.dart';
-import '../rating_widget.dart';
 
-class TSNPickupCard extends StatelessWidget {
-  final dynamic pickupCardDetails;
+class TSNGroupCard extends StatefulWidget {
+  
+  TSNGroupCard({
+    Key? key,
+    required this.groupCardDetails,
+    required this.backgroundColor,
+    this.svgImage,
+    this.width,
+    this.height,
+  }) : super(key: key);
+
+  final dynamic groupCardDetails;
   final Color backgroundColor;
   final Svg? svgImage;
   final double? width;
   final double? height;
 
-  TSNPickupCard({
-    required this.pickupCardDetails,
-    required this.backgroundColor,
-    this.svgImage,
-    this.width,
-    this.height,
-  });
+  @override
+  State<TSNGroupCard> createState() => _TSNGroupCard();
+
+
+}
+
+class _TSNGroupCard extends State<TSNGroupCard> {
+  dynamic currentUser = null;
+
+  void loadInitialData(){
+    print("loadInitialData() in TSNGroupCard");
+    currentUser = UserCommand().getAppModelUser();
+  }
+
+  @override initState(){
+    super.initState();
+    loadInitialData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,27 +57,20 @@ class TSNPickupCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     //event model data
-    dynamic mainEvent = pickupCardDetails['mainEvent'];
+    dynamic group = widget.groupCardDetails['group'];
 
-    List<dynamic> roles = pickupCardDetails['roles'];
-    bool isMine = pickupCardDetails['isMine'];
-    String formattedEventTime = pickupCardDetails['formattedEventTime'];
-    bool isMember = pickupCardDetails['isMember'];
-    String amountRemaining = pickupCardDetails['amountRemaining'];
-    String amountPaid = pickupCardDetails['amountPaid'];
-    String teamAmountRemaining = pickupCardDetails['teamAmountRemaining'];
-    String teamAmountPaid = pickupCardDetails['teamAmountPaid'];
-    List organizers = pickupCardDetails['organizers'];
-    List fieldLocations = pickupCardDetails['fieldLocations'];
-    dynamic price = pickupCardDetails['price'];
-    JoinCondition eventRequestJoin = pickupCardDetails['eventRequestJoin'];
-    JoinCondition eventPaymentJoin = pickupCardDetails['eventPaymentJoin'];
-    JoinCondition teamRequestJoin = pickupCardDetails['teamRequestJoin'];
-    JoinCondition teamPaymentJoin = pickupCardDetails['teamPaymentJoin'];
-    int eventRating = pickupCardDetails['eventRating'];
-    int numberOfRatings = pickupCardDetails['numberOfRatings'];
-
-    print("eventRequestJoin: " + eventRequestJoin.required.value.toString());
+    List<dynamic> roles = widget.groupCardDetails['roles'];
+    bool isMine = widget.groupCardDetails['isMine'];    
+    bool isMember = widget.groupCardDetails['isMember'];
+    String amountRemaining = widget.groupCardDetails['amountRemaining'];
+    String amountPaid = widget.groupCardDetails['amountPaid'];    
+    List players = widget.groupCardDetails['players'];    
+    List organizers = widget.groupCardDetails['organizers'];    
+    List groupLocations = widget.groupCardDetails['groupLocations'];    
+    dynamic price = widget.groupCardDetails['price'];    
+    JoinCondition groupRequestJoin = widget.groupCardDetails['groupRequestJoin'];
+    JoinCondition groupPaymentJoin = widget.groupCardDetails['groupPaymentJoin'];
+    
 
     return GestureDetector(
         onTap: () {
@@ -62,7 +78,7 @@ class TSNPickupCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PickupView(game: mainEvent)),
+                builder: (context) => GroupView(groupObject: group)),
           );
           print("Card Clicked");
         },
@@ -70,9 +86,9 @@ class TSNPickupCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
-          color: backgroundColor,
+          color: widget.backgroundColor,
           child: Container(
-            width: width,
+            width: widget.width,
             height: screenHeight * .2,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),
@@ -97,11 +113,11 @@ class TSNPickupCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(formattedEventTime,
-                                        style: TextStyle(
-                                          color: AppColors.tsnWhite,
-                                          fontSize: FontSizes.xxs(context),
-                                        )),
+                                    // Text(formattedEventTime,
+                                    //     style: TextStyle(
+                                    //       color: AppColors.tsnWhite,
+                                    //       fontSize: FontSizes.xxs(context),
+                                    //     )),
                                     // Text("TL 1b"),
                                   ],
                                 ),
@@ -146,41 +162,22 @@ class TSNPickupCard extends StatelessWidget {
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),
-                                    //join widget
+                                    // join widget
                                     Expanded(
                                       flex: 11,
                                       child:
-                                        GetJoinEventWidget(
-                                            mainEvent: mainEvent,
-                                            roles: roles,
-                                            isMine: isMine,
-                                            price: price,
-                                            amountRemaining: amountRemaining,                                        
-                                            eventRequestJoin: eventRequestJoin,
-                                            eventPaymentJoin: eventPaymentJoin,
-                                            teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin                                                                                    
-                                        )
+                                      
+                                    //     GetJoinGroupWidget(
+                                    //       user: currentUser,
+                                    //       group: group,
+                                    //       roles: roles,
+                                    //       isMine: isMine,
+                                    //       price: price,
+                                    //       amountRemaining: amountRemaining,
+                                    //     )
+                                    Text("TR 2a"),
                                     ),
-                                    // Expanded(
-                                    //     flex: 11,
-                                    //     child:
-                                    //         // price['amount'] == 0 ?
-                                    //         BasicElevatedButton(
-                                    //       icon: Icons.add,
-                                    //       // height: screenHeight * 0.05,  // 10% of screen height
-                                    //       // width: screenWidth * 0.35,
-                                    //       backgroundColor: AppColors.tsnGreen,
-                                    //       text: "Join",
-                                    //       fontSize: FontSizes.s(context),
-                                    //       onPressed: () {
-                                    //         print("Join Button Pressed");
-                                    //       },
-                                    //     )),
-
-                                    //  :
-
-                                    // Text("TR 2a"),
+                                   
                                     // Text("TR 2b"),
                                   ],
                                 ),
@@ -198,11 +195,14 @@ class TSNPickupCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(mainEvent['name'],
+
+                                        Expanded(flex: 9,
+                                        child: 
+                                    Text(group['name'],
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.m(context),
-                                        ))
+                                        )))
                                     // Text("BL 1a"),
                                     // Text("BL 1b"),
                                   ],
@@ -217,7 +217,7 @@ class TSNPickupCard extends StatelessWidget {
                                       color: AppColors.tsnGreen,
                                     ),
                                     SizedBox(width: 6),
-                                    Text("Pickup",
+                                    Text("Group",
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.xxs(context),
@@ -235,29 +235,14 @@ class TSNPickupCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    RatingWidget(rating: eventRating),                                    
                                     // Text("BR 1a"),
                                     // Text("BR 1b"),
                                   ],
                                 ),
                                 Row(
-                                  children: [                                   
-                                    SizedBox(width: 2),
-                                    Image(
-                                      width: 20,
-                                      height: 20,
-                                      image: SVGWidgets().host(),
-                                      color: AppColors.tsnLightGreen,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text(
-                                        "Host: " +
-                                            organizers[0]['user']['name']
-                                                .toString(),
-                                        style: TextStyle(
-                                          color: AppColors.tsnGrey,
-                                          fontSize: FontSizes.xxs(context),
-                                        ))
+                                  children: [
+                                    
+                                    
                                     // Text("BR 2a"),
                                     // Text("BR 2b"),
                                   ],
