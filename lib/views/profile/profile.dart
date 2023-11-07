@@ -4,8 +4,10 @@ import 'package:soccermadeeasy/components/follow_container.dart';
 import 'package:soccermadeeasy/components/teams_list_widget.dart';
 import 'package:soccermadeeasy/extensions/share_image_text.dart';
 import 'package:soccermadeeasy/models/pageModels/profile_page_model.dart';
+import '../../commands/base_command.dart';
 import '../../commands/profile_page_command.dart';
 import '../../commands/user_command.dart';
+import '../../components/Buttons/basic_elevated_button.dart';
 import '../../components/Loading/loading_screen.dart';
 import '../../components/headers.dart';
 import '../../components/info_detail_list_tile.dart';
@@ -17,11 +19,13 @@ import '../../models/enums/view_status.dart';
 import 'package:flutter/material.dart';
 
 import '../../styles/colors.dart';
+import '../../styles/font_sizes.dart';
 import '../onboarding/onboarding_view.dart';
 import '../settings/settings_view.dart';
 import '../../components/images_list_widget.dart';
 import '../../components/loading_screen2.dart';
 import '../../components/object_profile_main_image.dart';
+import '../splash_screen.dart';
 
 // // // // // // // // // // // // // // //
 class Profile extends StatefulWidget {
@@ -111,7 +115,7 @@ class _ProfileState extends State<Profile> {
     print("teamUserParticipants: "+ teamUserParticipants.toString());
     switch (_viewStatus) {
       case ViewStatus.loading:
-        return const LoadingScreen2();
+        return SplashScreen();
       case ViewStatus.completed:
         return Scaffold(
           appBar: Headers(
@@ -267,21 +271,21 @@ class _ProfileState extends State<Profile> {
                     eventUserParticipants: eventUserParticipants,
                     eventCards: eventCards,
                   ),
-                  ImagesListWidget(
-                      mainEvent: null, team: null, imageFor: Constants.USER),
+                  // ImagesListWidget(
+                  //     mainEvent: null, team: null, imageFor: Constants.USER),
 
                  
-                  Container(
-                    margin: const EdgeInsets.all(25),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                      style: ElevatedButton.styleFrom(
-                          elevation: 12.0,
-                          textStyle: const TextStyle(color: Colors.white)),
-                      child: const Text('Sign Out'),
-                    ),
-                  ),
+                 Container(
+                margin: EdgeInsets.all(25),
+                child: 
+            BasicElevatedButton(
+    backgroundColor: AppColors.tsnRed,
+    text: "Sign Out",
+    fontSize: FontSizes.s(context),
+    onPressed: () async {
+      BaseCommand().signOut();
+    },
+  ))
                 ],
               )
             ],

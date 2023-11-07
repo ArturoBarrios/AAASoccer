@@ -35,11 +35,11 @@ class Headers extends StatefulWidget {
           
       ),
       backgroundColor: AppColors.tsnBlack,
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 12.0),
-        child: Icon(Icons.calendar_month))
-      ],
+      // actions: [
+      //   Padding(
+      //     padding: EdgeInsets.only(right: 12.0),
+      //   child: Icon(Icons.calendar_month))
+      // ],
     );
     return appBar;
   }

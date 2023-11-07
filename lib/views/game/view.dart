@@ -56,6 +56,7 @@ import '../../components/update_view_form.dart';
 import '../../constants.dart';
 import '../../models/pageModels/app_model.dart';
 import '../social_media_cards_view/social_media_cards_view.dart';
+import '../splash_screen.dart';
 
 class PickupView extends StatefulWidget with EventMixin, ImagesMixin {
   PickupView({Key? key, required this.game}) : super(key: key);
@@ -167,31 +168,49 @@ class _PickupViewState extends State<PickupView> {
     JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
     JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(
-            200.0), // You can adjust the height value as per your requirement.
-        child: ObjectProfileMainImage(objectImageInput: objectImageInput),
-      ),
-      body: _isLoading
-          ? SizedBox(
-              height: 120,
-              width: MediaQuery.of(context).size.width,
-              child: const Align(
-                alignment: Alignment.center,
-                child:
-                    // BottomNav()//for times when user deleted in cognito but still signed into app
-                    LoadingScreen(
-                        currentDotColor: Colors.white,
-                        defaultDotColor: Colors.black,
-                        numDots: 10),
-              ),
-            )
-          : SingleChildScrollView(
+return _isLoading 
+          ? 
+           SplashScreen() 
+          : 
+     Scaffold(
+      appBar:  Headers(
+            playerStepperButton: ButtonModel(
+              prefixIconData: Icons.play_circle_fill_rounded,
+              onTap: () {
+                
+              },
+            ),
+          ).getMainHeader(context),
+
+      // PreferredSize(
+      //   preferredSize: const Size.fromHeight(
+      //       200.0), // You can adjust the height value as per your requirement.
+      //   child: ObjectProfileMainImage(objectImageInput: objectImageInput),
+      // ),
+      body: 
+      
+          SingleChildScrollView(
               child: Center(
                 child: Expanded(
                   child: Column(
                     children: [
+                      Container(
+                        margin: const EdgeInsets.all(10.0),
+                        color: Colors.amber[600],
+                        width: MediaQuery.of(context).size.width -
+                            (MediaQuery.of(context).size.width *
+                                .1), //10% padding
+                        height: 200.0,
+                        child: MyMapPage(
+                            latitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['latitude']
+                              : 0.0,
+                            longitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['longitude']
+                              : 0.0,
+                          ),
+
+                      ),
                       eventRequestJoin,
                       eventPaymentJoin,
                       teamRequestJoin,
@@ -220,23 +239,7 @@ class _PickupViewState extends State<PickupView> {
                           startTime: mainEvent['startTime'],
                           endTime: mainEvent['endTime']),
                       //map
-                      Container(
-                        margin: const EdgeInsets.all(10.0),
-                        color: Colors.amber[600],
-                        width: MediaQuery.of(context).size.width -
-                            (MediaQuery.of(context).size.width *
-                                .1), //10% padding
-                        height: 200.0,
-                        child: MyMapPage(
-                            latitude: fieldLocations.length>0 ? 
-                              fieldLocations[0]['location']['latitude']
-                              : 0.0,
-                            longitude: fieldLocations.length>0 ? 
-                              fieldLocations[0]['location']['longitude']
-                              : 0.0,
-                          ),
-
-                      ),
+                      
                       //join widget
                       GetJoinEventWidget(
                           mainEvent: mainEvent,

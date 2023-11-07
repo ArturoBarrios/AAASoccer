@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/views/request/view.dart';
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
 import '../styles/colors.dart';
+import '../styles/font_sizes.dart';
 import '../views/profile/profile.dart';
 import '../views/chats/view.dart';
 import '../views/home.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../views/settings/settings_view.dart';
 import '../views/subscriptions_list.dart';
+import 'Buttons/basic_elevated_button.dart';
 
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);
@@ -188,32 +190,61 @@ class SideNavs extends StatefulWidget {
           },
         ),
         !isGuest
-            ? Container(
+            ? 
+            Container(
+                margin: EdgeInsets.fromLTRB(5,5,5,5),
+                child: 
+            BasicElevatedButton(
+    backgroundColor: AppColors.tsnRed,
+    text: "Sign Out",
+    fontSize: FontSizes.s(context),
+    onPressed: () async {
+      BaseCommand().signOut();
+    },
+  ))
+            // Container(
+            //     margin: EdgeInsets.all(25),
+            //     color: AppColors.tsnRed,
+            //     child: ElevatedButton(
+                  
+            //       onPressed: () {
+            //         BaseCommand().signOut();
+            //       },
+            //       // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: AppColors.tsnRed,
+                      
+            //           textStyle: const TextStyle(color: AppColors.tsnRed)),
+            //       child: const Text('Sign Out'),
+            //     ),
+            //   )
+            : 
+            Container(
                 margin: EdgeInsets.all(25),
-                child: ElevatedButton(
-                  onPressed: () {
-                    BaseCommand().signOut();
-                  },
-                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                  style: ElevatedButton.styleFrom(
-                      elevation: 12.0,
-                      textStyle: const TextStyle(color: Colors.white)),
-                  child: const Text('Sign Out'),
-                ),
-              )
-            : Container(
-                margin: EdgeInsets.all(25),
-                child: ElevatedButton(
-                  onPressed: () {
-                    BaseCommand().signOut();
-                  },
-                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                  style: ElevatedButton.styleFrom(
-                      elevation: 12.0,
-                      textStyle: const TextStyle(color: Colors.white)),
-                  child: const Text('Go to Sign Up'),
-                ),
-              )
+                child: 
+            BasicElevatedButton(
+    backgroundColor: AppColors.tsnGreen,
+    text: "Sign Up",
+    fontSize: FontSizes.s(context),
+    onPressed: () async {
+      BaseCommand().signOut();
+    },
+  ))
+            // Container(
+            //   color: AppColors.tsnGreen,
+            //     margin: EdgeInsets.all(25),
+            //     child: ElevatedButton(
+            //       onPressed: () {
+            //         BaseCommand().signOut();
+            //       },
+            //       // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: AppColors.tsnGreen,
+                      
+            //           textStyle: const TextStyle(color: AppColors.tsnRed)),
+            //       child: const Text('Go to Sign Up'),
+            //     ),
+            //   )
       ],
     );
 
