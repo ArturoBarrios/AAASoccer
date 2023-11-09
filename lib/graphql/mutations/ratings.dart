@@ -23,4 +23,30 @@ class RatingMutations {
 }
 
 
+String createEventRating(
+    Map<String, dynamic> eventRatingInput,    
+  ) {   
+    String createEventRating = """
+   mutation {
+      createEventRating(data: {      
+        ratings: "${eventRatingInput['ratings']}",  
+        ratingCategories: "${eventRatingInput['ratingCategories']}",
+        feedbacks: "${eventRatingInput['feedbacks']}",
+        event: {
+            connect: "${eventRatingInput['_id']}"
+          },
+                                  
+        }) {
+          ${RatingFragments().fullEventRating()}
+          }                                  
+        }
+      }
+      """;
+
+    return createEventRating;
+  }
+
+
+
+
 }

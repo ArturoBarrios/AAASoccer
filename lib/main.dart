@@ -354,6 +354,9 @@ class _MyAppState extends State<MyApp> {
               .select<AppModel, bool>((value) => value.userConditionsMet);
           bool onboarded = context
               .select<AppModel, bool>((value) => value.onboarded);
+
+              print("userConditionsMet: "+userConditionsMet.toString());
+              print("onboarded: "+onboarded.toString());
           
           return Authenticator(
             authenticatorBuilder:

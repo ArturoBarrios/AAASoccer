@@ -19,6 +19,17 @@ class RatingFragments{
 
   }
 
+   String fullEventRating(){
+     String ratingObjectString = r'''      
+        	_id
+          ratings
+          ratingCategories                           
+    ''';
+
+    return ratingObjectString;
+
+  }
+
   String ratingCategory(){
      String ratingCategoryString = r'''      
         	_id

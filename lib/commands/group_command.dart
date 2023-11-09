@@ -183,10 +183,10 @@ class GroupCommand extends BaseCommand {
 print("userGroupDetails['group']['joinConditions']: "+ userGroupDetails['group']['joinConditions'].toString());
     //join conditions
       userGroupDetails['group']['joinConditions']['data'].forEach((joinCondition) {
-        if(joinCondition['forGroup']){
+        
           userGroupDetails['groupRequestJoin'] = new JoinCondition(label: "Join With Request", required: joinCondition['withRequest']); 
           userGroupDetails['groupPaymentJoin'] = new JoinCondition(label: "Join With Payment", required: joinCondition['withPayment']);                     
-        }        
+        
       });
     print("aaaaaa22222");
       

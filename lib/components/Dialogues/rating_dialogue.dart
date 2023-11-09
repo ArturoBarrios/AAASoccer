@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../commands/rating_command.dart';
+
 class RatingDialogue extends StatefulWidget {
   const RatingDialogue({Key? key}) : super(key: key);
 
@@ -25,6 +27,25 @@ class _RatingDialogueState extends State<RatingDialogue> {
         );
       }),
     );
+  }
+
+  createEventRating(){
+    //EHL(Event, Host, Location)
+    //5,5,5
+    String ratings = "5,5,5";
+    //EHF(Event, Host, Field)
+    String ratingCategories = "E,H,F";
+    String feedbacks = "{}";
+
+    dynamic eventRatingInput = {
+      "ratings": ratings,
+      "ratingCategories": ratingCategories,
+      "feedbacks": "test",
+      "_id": "60f9b0b0c9b7c40015f1b0a0",
+
+    };
+
+    RatingCommand().createRatingForEvent(eventRatingInput);
   }
 
   @override
@@ -103,12 +124,13 @@ class _RatingDialogueState extends State<RatingDialogue> {
                   const SizedBox(width: 8.0),
                   ElevatedButton(
                     onPressed: () {
+                      createEventRating();
                       // Process the ratings
-                      Navigator.pop(context, {
-                        'gameRating': _gameRating,
-                        'hostRating': _hostRating,
-                        'locationRating': _locationRating,
-                      });
+                    //   Navigator.pop(context, {
+                    //     'gameRating': _gameRating,
+                    //     'hostRating': _hostRating,
+                    //     'locationRating': _locationRating,
+                    //   });
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.deepOrange,

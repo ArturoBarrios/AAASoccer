@@ -594,8 +594,15 @@ class BaseCommand {
   void initialUserConditionsMet() {
     appModel.userConditionsMet = true;
   }
+
+  void updateIsRatingDialogueShowing(bool newVal){
+    appModel.isRatingDialogueShowing = newVal;
+  }
   
   void setOnboarded(bool onboarded) {
+    if(onboarded == null){
+      onboarded = false;
+    }
     appModel.onboarded = onboarded;
   }
 

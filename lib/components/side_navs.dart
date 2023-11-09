@@ -163,6 +163,19 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
+        ListTile(
+          leading: Icon(
+            Icons.settings,
+          ),
+          title: const Text('Subscriptions'),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return SubscriptionsList();
+              },
+            ));
+          },
+        ),
         // ListTile(
         //   leading: Icon(
         //     Icons.history,

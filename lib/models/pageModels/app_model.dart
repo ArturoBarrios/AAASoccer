@@ -257,6 +257,13 @@ class AppModel extends ChangeNotifier {
     _isGuest = isGuest;
     notifyListeners();
   }
+  
+  bool _isRatingDialogueShowing = false;
+  bool get isRatingDialogueShowing => _isRatingDialogueShowing;
+  set isRatingDialogueShowing(bool isRatingDialogueShowing) {
+    _isRatingDialogueShowing = isRatingDialogueShowing;
+    notifyListeners();
+  }
 
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;

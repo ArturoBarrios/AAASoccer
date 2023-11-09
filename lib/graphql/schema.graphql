@@ -742,7 +742,8 @@ type Rating   {
 
 type EventRating   {
   ratings: String
-  feedback: String  
+  ratingCategories: String
+  feedbacks: String  
   eventReputation: EventReputation
 }
 

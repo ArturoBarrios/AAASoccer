@@ -8,8 +8,10 @@ import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 import 'package:soccermadeeasy/views/splash_screen.dart';
 
 import '../commands/base_command.dart';
+import '../commands/rating_command.dart';
 import '../components/Buttons/basic_elevated_button.dart';
 import '../components/Dialogues/animated_dialogu.dart';
+import '../components/Dialogues/rating_dialogue.dart';
 import '../components/Loading/loading_screen.dart';
 import '../components/models/button_model.dart';
 import '../models/componentModels/filter_result_model.dart';
@@ -460,9 +462,52 @@ bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
 
   }
 
+  Future<void> showRating(BuildContext context) async{
+    bool res = false; 
+    Map<String,dynamic> showRatingForEventResp = await RatingCommand().showRatingForEvent();
+    print("showRatingForEventResp: "+ showRatingForEventResp.toString());
+    if(showRatingForEventResp['success']){
+      res = showRatingForEventResp['data'];    
+      if(res){
+
+        showRatingDialog(context);
+        BaseCommand().updateIsRatingDialogueShowing(true);
+      }  
+    }
+
+
+
+    
+  }
+
+  
+
+  Future<void> showRatingDialog(BuildContext context) async {
+    print("ensure single callback");
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: true, // set to false if you do not want to dismiss the dialog by tapping outside it
+    builder: (BuildContext context) {
+      return RatingDialogue(); // Replace with your actual RatingWidget
+    },
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     print("buildDDDDDD");
+    
+    bool isRatingDialogueShowing =
+        context.select<AppModel, bool>((value) => value.isRatingDialogueShowing);
+    
+    if(!isRatingDialogueShowing){      
+      WidgetsBinding.instance.addPostFrameCallback((_) async{
+        showRating(context);
+
+      });
+
+    }
+
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
         
@@ -546,6 +591,7 @@ bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
             Drawer(child: const SideNavs().getMainSideNav(context, userObject)),
       ),
       body: 
+      
       
       
     !selectedPages[Constants.LOCATIONSPAGE]['enabled'] ? 
