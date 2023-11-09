@@ -134,4 +134,25 @@ class UserFragments {
 
     return fullUserReturn;
   }
+  
+  String eventUserParticipants() {
+    String fullUserReturn = """
+       _id      
+              name        	
+             
+              eventUserParticipants{
+                data{
+                  _id
+                  event{
+                    _id
+                  }
+                  roles
+                }
+              }
+              
+              
+    """;
+
+    return fullUserReturn;
+  }
 }

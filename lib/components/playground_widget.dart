@@ -46,7 +46,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
         child: Column(children: [
           RatingWidget(rating: 5),
           CustomFooter(),
-          RatingDialogue(),
+          // RatingDialogue(),
           
           SidewaysPillWidget(
   text: "Follow",

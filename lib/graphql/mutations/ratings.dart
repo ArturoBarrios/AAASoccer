@@ -33,8 +33,11 @@ String createEventRating(
         ratingCategories: "${eventRatingInput['ratingCategories']}",
         feedbacks: "${eventRatingInput['feedbacks']}",
         event: {
-            connect: "${eventRatingInput['_id']}"
+            connect: "${eventRatingInput['eventId']}"
           },
+        user: {
+            connect: "${eventRatingInput['userId']}"
+        }
                                   
         }) {
           ${RatingFragments().fullEventRating()}

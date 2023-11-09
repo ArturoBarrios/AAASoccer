@@ -462,36 +462,7 @@ bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
 
   }
 
-  Future<void> showRating(BuildContext context) async{
-    bool res = false; 
-    Map<String,dynamic> showRatingForEventResp = await RatingCommand().showRatingForEvent();
-    print("showRatingForEventResp: "+ showRatingForEventResp.toString());
-    if(showRatingForEventResp['success']){
-      res = showRatingForEventResp['data'];    
-      if(res){
 
-        showRatingDialog(context);
-        BaseCommand().updateIsRatingDialogueShowing(true);
-      }  
-    }
-
-
-
-    
-  }
-
-  
-
-  Future<void> showRatingDialog(BuildContext context) async {
-    print("ensure single callback");
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: true, // set to false if you do not want to dismiss the dialog by tapping outside it
-    builder: (BuildContext context) {
-      return RatingDialogue(); // Replace with your actual RatingWidget
-    },
-  );
-}
 
   @override
   Widget build(BuildContext context) {
@@ -502,7 +473,7 @@ bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
     
     if(!isRatingDialogueShowing){      
       WidgetsBinding.instance.addPostFrameCallback((_) async{
-        showRating(context);
+        RatingCommand().showRating(context);
 
       });
 

@@ -264,6 +264,8 @@ type User  {
   appSubscriptions: [AppSubscription] @relation
   coupons: [Coupon] @relation  
   groups: [Group] @relation
+  ratings: [Rating] @relation
+  eventRatings: [EventRating] @relation
 }
 
 type Player   {
@@ -363,15 +365,9 @@ type Event   {
   SocialMediaApps: [SocialMediaApp] @relation
   prizes: [Prize] @relation    
   coupons: [Coupon] @relation
-  eventReputation: EventReputation @relation
+  eventRatings: [EventRating] @relation
   slot: Slot
   group: Group
-}
-
-type EventReputation {
-  eventRatings: [EventRating] @relation
-  ratings: [Rating] @relation
-  event: Event
 }
 
 type Rsvp {
@@ -729,10 +725,10 @@ type FieldLocationReputation {
 type Rating   {
   rating: Int
   feedback: String
+  user: User
   organizationReputations: [OrganizationReputation] @relation
   organizerReputations: [OrganizerReputation] @relation
-  teamReputation: [TeamReputation] @relation
-  eventReputations: [EventReputation] @relation
+  teamReputation: [TeamReputation] @relation  
   fieldLocationReputations: [FieldLocationReputation] @relation
   playerReputations: [PlayerReputation] @relation
   coachReputations: [CoachReputation] @relation
@@ -742,10 +738,11 @@ type Rating   {
 }
 
 type EventRating   {
+  event: Event
+  user: User
   ratings: String
   ratingCategories: String
-  feedbacks: String  
-  eventReputation: EventReputation
+  feedbacks: String    
 }
 
 type RatingCategory {

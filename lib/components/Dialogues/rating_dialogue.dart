@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import '../../commands/rating_command.dart';
 
 class RatingDialogue extends StatefulWidget {
-  const RatingDialogue({Key? key}) : super(key: key);
+  const RatingDialogue({Key? key, 
+    required this.ratingInput
+  }) : super(key: key);
+
+  final ratingInput;
 
   @override
   _RatingDialogueState createState() => _RatingDialogueState();
@@ -41,7 +45,8 @@ class _RatingDialogueState extends State<RatingDialogue> {
       "ratings": ratings,
       "ratingCategories": ratingCategories,
       "feedbacks": "test",
-      "_id": "60f9b0b0c9b7c40015f1b0a0",
+      "eventId": widget.ratingInput['eventId'],
+      "userId": widget.ratingInput['userId'],
 
     };
 
