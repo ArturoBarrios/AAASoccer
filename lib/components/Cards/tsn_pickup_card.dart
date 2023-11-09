@@ -53,6 +53,8 @@ class TSNPickupCard extends StatelessWidget {
     JoinCondition teamPaymentJoin = pickupCardDetails['teamPaymentJoin'];
     int eventRating = pickupCardDetails['eventRating'];
     int numberOfRatings = pickupCardDetails['numberOfRatings'];
+    int capacity = pickupCardDetails['capacity'];
+    int numberOfParticipants = pickupCardDetails['numberOfParticipants'];
 
     print("eventRequestJoin: " + eventRequestJoin.required.value.toString());
 
@@ -142,7 +144,8 @@ class TSNPickupCard extends StatelessWidget {
                                           // width: screenWidth * 0.35,
                                           backgroundColor:
                                               AppColors.tsnDarkGrey,
-                                          text: "5/12",
+                                          text: numberOfParticipants.toString()
+                                            +"/"+capacity.toString(),
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),

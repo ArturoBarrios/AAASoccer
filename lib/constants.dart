@@ -13,6 +13,7 @@ class Constants {
   static const String MYEVENTS = "10";
   static const String LOCATION = "11";
   static const String MYTEAMS = "12";
+  static const String MYGROUPS = "13";
   static const String EVENT = "EVENT";
   static const String VIEWEVENT = "View Event";
   static const String VIEWUSER = "View User";

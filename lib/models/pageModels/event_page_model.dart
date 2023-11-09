@@ -231,6 +231,20 @@ class EventPageModel extends ChangeNotifier {
     _numberOfRatings = numberOfRatings;
     notifyListeners();
   }
+  
+  int _numberOfParticipants = 0;
+  int get numberOfParticipants => _numberOfParticipants;
+  set numberOfParticipants(int numberOfParticipants) {
+    _numberOfParticipants = numberOfParticipants;
+    notifyListeners();
+  }
+  
+  int _capacity = 0;
+  int get capacity => _capacity;
+  set capacity(int capacity) {
+    _capacity = capacity;
+    notifyListeners();
+  }  
 
 
 }

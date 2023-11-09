@@ -249,6 +249,7 @@ type User  {
   events: [Event] @relation
   eventUserParticipants: [EventUserParticipant] @relation
   teamUserParticipants: [TeamUserParticipant] @relation
+  groupUserParticipants: [GroupUserParticipant] @relation
   regionUserParticipants: [RegionUserParticipant] @relation
   requestsSent: [Request]  @relation(name: "requests_sent")
   requestsReceived: [Request] @relation(name: "request_receivers")

@@ -594,7 +594,7 @@ bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
       
       
       
-    !selectedPages[Constants.LOCATIONSPAGE]['enabled'] ? 
+    // !selectedPages[Constants.LOCATIONSPAGE]['enabled'] ? 
         
       RefreshIndicator(
         onRefresh: onReload,
@@ -610,9 +610,8 @@ bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
                       children: [
                       ],
                     )),
-                Visibility(
-                // visible: hideShowSelectionItems(enabledSelections2),
-                child: 
+                              
+                
                 SizedBox(
                   height:
                       80, // Define the height you want for your card section
@@ -651,7 +650,7 @@ bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
                       }
                     },
                   ),
-                )),
+                ),
                 //logic/button for sending team/event requests to
                 // multiple players
                 userObjectSelections.isNotEmpty
@@ -769,15 +768,15 @@ bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
                             numDots: 10,
                           ),
                         ),
-                      ),
-                      // const Footers().getMainBottomNav(context),
+                      ),                      
               ],
             ),
             
             
           ],
         ),
-      ) :  LocationsMap(),
+      ),
+      // :  LocationsMap(),
 
       bottomNavigationBar: 
         

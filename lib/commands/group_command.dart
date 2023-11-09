@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/extensions/parse_roles.dart';
 import '../components/join_condition.dart';
 import '../graphql/fragments/group_fragments.dart';
 import '../graphql/queries/groups.dart';
+import '../graphql/queries/users.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:http/http.dart' as http;
@@ -115,6 +116,44 @@ class GroupCommand extends BaseCommand {
     }
 
     return roles;
+  }
+
+  Future<Map<String, dynamic>> getAllGroupUserParticipants(
+      String userId, String groupFragment) async {
+    print("getAllGroupUserParticipants");
+    Map<String, dynamic> getAllGroupUserParticipantsResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query':
+              UserQueries().findUserByID({"_id": userId}, groupFragment),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+      if (response.statusCode == 200) {
+        dynamic result =
+            jsonDecode(response.body)['data']['findUserByID']['groupUserParticipants']['data'];
+        print("findUserByID result: $result");
+        getAllGroupUserParticipantsResp["success"] = true;
+        getAllGroupUserParticipantsResp["message"] = "Games Retrieved";
+        getAllGroupUserParticipantsResp["data"] = result;
+      }
+      return getAllGroupUserParticipantsResp;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return getAllGroupUserParticipantsResp;
+    }
   }
 
   Future<Map<String,dynamic>> getUserGroupDetails(dynamic group, bool addToEventPageModel) async {

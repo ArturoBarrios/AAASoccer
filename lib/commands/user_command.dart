@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:soccermadeeasy/commands/home_page_command.dart';
+import 'package:soccermadeeasy/graphql/fragments/user_fragments.dart';
 import '../constants.dart';
 import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
@@ -615,7 +616,7 @@ class UserCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserQueries().findUserByID(appModel.currentUser),
+          'query': UserQueries().findUserByID(appModel.currentUser, UserFragments().fullUser()),
         }),
       );
 
@@ -652,7 +653,7 @@ class UserCommand extends BaseCommand {
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserQueries().findUserByID(userInput),
+          'query': UserQueries().findUserByID(userInput, UserFragments().fullUser()),
         }),
       );
 

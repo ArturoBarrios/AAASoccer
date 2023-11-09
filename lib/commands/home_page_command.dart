@@ -11,6 +11,7 @@ import '../components/Cards/tsn_tournament_card.dart';
 import '../components/Cards/tsn_training_card.dart';
 import '../components/Cards/tsn_tryout_card.dart';
 import '../graphql/fragments/group_fragments.dart';
+import '../graphql/fragments/user_fragments.dart';
 import '../models/enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
 import '../graphql/fragments/team_fragments.dart';
@@ -234,7 +235,8 @@ class HomePageCommand extends BaseCommand {
         homePageModel.selectedObjects = newSelectedObjects;
         appModel.myEvents = newSelectedObjects;
       }
-    } else if (newSelectedKey == Constants.MYTEAMS) {
+    } 
+    else if (newSelectedKey == Constants.MYTEAMS) {
       print("check my teams: ");
       print(appModel.myTeams);
       Map<String, dynamic> getAllTeamUserParticipantsResp = await TeamCommand()
@@ -246,6 +248,20 @@ class HomePageCommand extends BaseCommand {
         newSelectedObjects = getAllTeamUserParticipantsResp['data'];
         homePageModel.selectedObjects = newSelectedObjects;
         appModel.myTeams = newSelectedObjects;
+      }
+    }
+    else if (newSelectedKey == Constants.MYGROUPS) {
+      print("check my groups: ");
+      print(appModel.myGroups);
+      Map<String, dynamic> getAllGroupUserParticipantsResp = await GroupCommand()
+          .getAllGroupUserParticipants(
+              appModel.currentUser['_id'], UserFragments().userGroupParticipants());
+      print("getAllGroupUserParticipantsResp: " +
+          getAllGroupUserParticipantsResp.toString());
+      if (getAllGroupUserParticipantsResp['success']) {
+        newSelectedObjects = getAllGroupUserParticipantsResp['data'];
+        homePageModel.selectedObjects = newSelectedObjects;
+        appModel.myGroups = newSelectedObjects;
       }
     }
   }

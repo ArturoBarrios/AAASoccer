@@ -1178,6 +1178,8 @@ class EventCommand extends BaseCommand {
       "fieldLocations": [],
       "eventRating": 4,
       "numberOfRatings": 0,
+      "numberOfParticipants": 0,
+      "capacity": 0
     };
     print("events length: " + events.length.toString());
 
@@ -1213,6 +1215,9 @@ class EventCommand extends BaseCommand {
 
       isMyEventResp['mainEvent'] = event;
       isMyEventResp['allEvents'] = events;
+
+      
+          
 
       
       // eventPageModel.mainEvent = event;   
@@ -1253,6 +1258,9 @@ class EventCommand extends BaseCommand {
           isMyEventResp['players'].add(participant);
         }
       }
+
+      isMyEventResp['capacity'] = event['capacity'];
+      isMyEventResp['numberOfParticipants'] = isMyEventResp['players'].length;
 
       isMyEventResp['price'] = isMyEventResp['mainEvent']['price'];
   
@@ -1306,6 +1314,8 @@ class EventCommand extends BaseCommand {
         eventPageModel.tournament = isMyEventResp['tournament'];
         eventPageModel.groupStage = isMyEventResp['groupStage'];
         eventPageModel.tournamentStage = isMyEventResp['tournamentStage'];
+        eventPageModel.capacity = isMyEventResp['capacity'];
+        eventPageModel.numberOfParticipants = isMyEventResp['numberOfParticipants'];
       }
 
 

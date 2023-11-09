@@ -82,11 +82,11 @@ class AppModel extends ChangeNotifier {
   Map<String, Widget Function(BuildContext)> createPages = {
     "Pickup Game": (context) => const GameCreate(),
     "Group": (context) => const GroupCreate(),
-    "Team": (context) => const TeamCreate(),
-    "Tournament": (context) => const TournamentCreate(),
-    "League": (context) => const LeagueCreate(),
-    "Training": (context) => const TrainingCreate(),
-    "Tryout": (context) => const TryoutCreate(),
+    // "Team": (context) => const TeamCreate(),
+    // "Tournament": (context) => const TournamentCreate(),
+    // "League": (context) => const LeagueCreate(),
+    // "Training": (context) => const TrainingCreate(),
+    // "Tryout": (context) => const TryoutCreate(),
     "Location": (context) => const LocationCreate(),
   };
 
@@ -99,16 +99,8 @@ class AppModel extends ChangeNotifier {
       'icon': Icons.blur_circular_sharp,
       'selectAction': (BuildContext context) async {
         print("in selectAction");
-        // Navigator.push(
-        //   context,
-          // MaterialPageRoute<void>(
-            // builder: (BuildContext context)  {
         await HomePageCommand().eventTypeTapped(Constants.PICKUP);
         await HomePageCommand().setCards();
-              // return const Home();
-            // },
-          // ),
-        // );
       },
     },
     Constants.MYEVENTS: {
@@ -121,35 +113,18 @@ class AppModel extends ChangeNotifier {
         print("in selectAction");
         await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
         await HomePageCommand().setCards();
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute<void>(
-        //     builder: (BuildContext context) {
-        //       return const Home();
-        //     },
-        //   ),
-        // );
       },
     },
    
-    Constants.LOCATIONSPAGE: {
-      "key": Constants.LOCATIONSPAGE,
-      "enabled": false,
-      "name": StringConstants.LOCATIONSPAGETITLE,
-      "description": "",
-      'icon': Icons.location_on,
-      'selectAction': (BuildContext context) {
-        
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute<void>(
-        //     builder: (BuildContext context) {
-        //       return const LocationsMap();
-        //     },
-        //   ),
-        // );
-      },
-    },
+    // Constants.LOCATIONSPAGE: {
+    //   "key": Constants.LOCATIONSPAGE,
+    //   "enabled": false,
+    //   "name": StringConstants.LOCATIONSPAGETITLE,
+    //   "description": "",
+    //   'icon': Icons.location_on,
+    //   'selectAction': (BuildContext context) {
+    //   },
+    // },
     
   };
   Map<dynamic, dynamic> get selectedPages => _selectedPages;
@@ -304,6 +279,13 @@ class AppModel extends ChangeNotifier {
   List get myTeams => _myTeams;
   set myTeams(List myTeams) {
     _myTeams = myTeams;
+    notifyListeners();
+  }
+
+  List _myGroups = [];
+  List get myGroups => _myGroups;
+  set myGroups(List myGroups) {
+    _myGroups = myGroups;
     notifyListeners();
   }
 

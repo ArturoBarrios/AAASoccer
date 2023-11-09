@@ -1,4 +1,5 @@
 import 'chat_fragments.dart';
+import 'group_fragments.dart';
 import 'image_fragments.dart';
 import 'request_fragments.dart';
 import 'event_fragments.dart';
@@ -104,6 +105,27 @@ class UserFragments {
                 data{
                   ${ChatFragments().chatObject()}               
 
+                }
+              }
+              
+              
+    """;
+
+    return fullUserReturn;
+  }
+  
+  String userGroupParticipants() {
+    String fullUserReturn = """
+       _id      
+              name        	
+             
+              groupUserParticipants{
+                data{
+                  _id
+                  group{
+                    ${GroupFragments().fullGroup()}  
+                  }
+                  roles
                 }
               }
               

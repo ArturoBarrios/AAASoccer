@@ -733,6 +733,19 @@ class BaseCommand {
         svgImage: svgImage,
       );      
     }
+     else if (selectedKey == Constants.MYGROUPS) {
+      print("selectedKey == MYGROUPS");
+      print("selectedObject: " + selectedObject.toString());
+      dynamic group = selectedObject['group'];
+      dynamic userGroupDetails = await GroupCommand().getUserGroupDetails(group, true);
+      print("grouppup: " + group.toString());
+      print("userGroupDetails: " + userGroupDetails.toString());
+      card = TSNGroupCard(
+        groupCardDetails: userGroupDetails,
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );      
+    }
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {
       dynamic event = null;
@@ -750,7 +763,8 @@ class BaseCommand {
         backgroundColor: AppColors.tsnAlmostBlack, 
         svgImage: svgImage,         
       );     
-      } else if (selectedObject['event']['type'].toString() == "TRAINING") {
+      } 
+      else if (selectedObject['event']['type'].toString() == "TRAINING") {
         print("selectedObject['event']['trainings']: " +
             selectedObject['event']['trainings'].toString());
         dynamic getEventDetailsResp =
