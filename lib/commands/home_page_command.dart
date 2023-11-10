@@ -219,7 +219,7 @@ class HomePageCommand extends BaseCommand {
     } else if (newSelectedKey == Constants.MYEVENTS) {
       print("check my events: ");
       print("appModel.currentUser: " + appModel.currentUser.toString());
-      String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(1);
+      String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(24);
       dynamic allUserEventParticipantsInput = {
         "userId": appModel.currentUser['_id'],
         "startTime": xHoursAgoTimestamp,

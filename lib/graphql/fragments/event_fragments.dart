@@ -62,8 +62,9 @@ class EventFragments {
       eventRatings{
         data{
           _id
-          ratings
-          feedbacks
+          eventRating
+          hostRating
+          fieldLocationRating          
           user{
             _id
           }

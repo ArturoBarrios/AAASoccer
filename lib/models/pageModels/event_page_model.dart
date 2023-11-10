@@ -74,6 +74,13 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _location = "";
+  String get location => _location;
+  set location(String location) {
+    _location = location;
+    notifyListeners();
+  }
+
   String _amountPaid = "0.00";
   String get amountPaid => _amountPaid;
   set amountPaid(String amountPaid) {
@@ -245,6 +252,8 @@ class EventPageModel extends ChangeNotifier {
     _capacity = capacity;
     notifyListeners();
   }  
+
+
 
 
 }

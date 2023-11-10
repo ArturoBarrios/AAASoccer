@@ -44,6 +44,7 @@ class TSNPickupCard extends StatelessWidget {
     String amountPaid = pickupCardDetails['amountPaid'];
     String teamAmountRemaining = pickupCardDetails['teamAmountRemaining'];
     String teamAmountPaid = pickupCardDetails['teamAmountPaid'];
+    String location = pickupCardDetails['location'];
     List organizers = pickupCardDetails['organizers'];
     List fieldLocations = pickupCardDetails['fieldLocations'];
     dynamic price = pickupCardDetails['price'];
@@ -56,7 +57,7 @@ class TSNPickupCard extends StatelessWidget {
     int capacity = pickupCardDetails['capacity'];
     int numberOfParticipants = pickupCardDetails['numberOfParticipants'];
 
-    print("eventRequestJoin: " + eventRequestJoin.required.value.toString());
+    print("fieldLocations: " + fieldLocations.toString());
 
     return GestureDetector(
         onTap: () {
@@ -112,11 +113,23 @@ class TSNPickupCard extends StatelessWidget {
                                   children: [
                                     Icon(Icons.location_on,
                                         color: AppColors.tsnGreen),
-                                    Text("Philadelphia, PA",
+                                    Text(location.toString(),
                                         style: TextStyle(
                                           color: AppColors.tsnGrey,
                                           fontSize: FontSizes.xxs(context),
                                         )),
+                                    // Text("TL 2b"),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    // Icon(Icons.location_on,
+                                    //     color: AppColors.tsnGreen),
+                                    // Text(fieldLocations[0]['name'].toString(),
+                                    //     style: TextStyle(
+                                    //       color: AppColors.tsnGrey,
+                                    //       fontSize: FontSizes.xxs(context),
+                                    //     )),
                                     // Text("TL 2b"),
                                   ],
                                 ),

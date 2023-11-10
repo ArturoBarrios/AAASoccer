@@ -687,7 +687,7 @@ type StoreLocation{
 }
      
 
-type FieldLocation  {
+type FieldLocation  {  
   isMainField: Boolean @default(value: false)
   location: Location
   facility: Facility
@@ -702,6 +702,7 @@ type FieldLocation  {
   schedule: Schedule
   parkingOptions: [ParkingOption]
   field: Field
+  eventRatings: [EventRating] @relation
 
 
 }
@@ -740,9 +741,13 @@ type Rating   {
 type EventRating   {
   event: Event
   user: User
-  ratings: String
-  ratingCategories: String
-  feedbacks: String    
+  fieldLocation: FieldLocation
+  eventRating: Int
+  hostRating: Int
+  fieldLocationRating: Int 
+  eventFeedback: String
+  hostFeedback: String
+  fieldLocationFeedback: String
 }
 
 type RatingCategory {

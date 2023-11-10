@@ -34,6 +34,7 @@ class RatingCommand extends BaseCommand {
   }
 
   Future<void> showRating(BuildContext context) async {
+    print("showRating");
     bool showRatingRes = false;
     Map<String, dynamic> showRatingForEventResp = await showRatingForEvents();
     print("showRatingForEventResp: " + showRatingForEventResp.toString());
@@ -42,7 +43,8 @@ class RatingCommand extends BaseCommand {
       if (showRatingRes) {
         dynamic ratingInput = {
           "eventId": showRatingForEventResp['data']['eventId'],
-          "userId": showRatingForEventResp['data']['userId']
+          "userId": showRatingForEventResp['data']['userId'],
+          "fieldLocationId": showRatingForEventResp['data']['fieldLocationId']
         };
         showRatingDialog(context, ratingInput);
         BaseCommand().updateIsRatingDialogueShowing(true);
@@ -100,23 +102,28 @@ class RatingCommand extends BaseCommand {
     }
   }
 
-  // get user events, see if any are in the past [1-24] hours
+  // get user events, see if any are in the past [2-24] hours
   // if any have not been rated
   Future<Map<String, dynamic>> showRatingForEvents() async {
     print("showRatingForEvents");
     Map<String, dynamic> showRatingForEventResp = {
       "success": true,
       "message": "Failed to determine if should show rating",
-      "data": {"showRating": false, "eventId": ""}
+      "data": {"showRating": false, 
+        "eventId": "", 
+        "fieldLocationId": "",
+        "userId": ""
+        }
     };
     try {
-      List<dynamic> eventUserParticipants =
-          appModel.currentUser['eventUserParticipants']['data'];
+      
+      
 
-      for (int i = 0; i < eventUserParticipants.length; i++) {
-        dynamic event = eventUserParticipants[i]['event'];
-        print("eventUserParticipant id: " + eventUserParticipants[i]['_id'].toString());
+      for (int i = 0; i < appModel.myArchivedEvents.length; i++) {
+        dynamic event = appModel.myArchivedEvents[i]['event'];
+        print("eventUserParticipant id: " + appModel.myArchivedEvents[i]['_id'].toString());
         print("eventttttttt: "+event.toString());
+        print("eventttttttt endtime: "+event['endTime'].toString());
         bool userRatingFound = false;
         int j = 0;
         //check if rating already exists
@@ -126,27 +133,32 @@ class RatingCommand extends BaseCommand {
               appModel.currentUser['_id']) {
             userRatingFound = true;
           }
+            }
           //check if user participation is PLAYER
-          //&& event has happened in past [1-24 hours]
+          //&& event has happened in past [2-24 hours]
           if (!userRatingFound) {
-            if (eventUserParticipants[i]['roles']
+            print("user rating not found");
+            if (appModel.myArchivedEvents[i]['roles']
                 .toString()
                 .parseRoles()
                 .contains('PLAYER')) {
               String millisecondsEndtime =
-                  eventUserParticipants[i]['event']['endTime'].toString();
+                  appModel.myArchivedEvents[i]['event']['endTime'].toString();
               DateTime endDateTime =
                   BaseCommand().dateTimeFromMilliseconds(millisecondsEndtime);
               if (endDateTime
-                      .isBefore(DateTime.now().subtract(Duration(hours: 1))) &&
+                      .isBefore(DateTime.now().subtract(Duration(hours: 2))) &&
                   endDateTime
                       .isAfter(DateTime.now().subtract(Duration(hours: 24)))) {
+                        print("fieldLocations test: "+ event['fieldLocations'].toString());
                 showRatingForEventResp['data']['showRating'] = true;
                 showRatingForEventResp['data']['eventId'] = event['_id'];
+                showRatingForEventResp['data']['userId'] = appModel.currentUser['_id'];
+                showRatingForEventResp['data']['fieldLocationId'] = event['fieldLocations']['data'][0]['_id'];
               }
             }
           }
-        }
+        
       }
 
       return showRatingForEventResp;

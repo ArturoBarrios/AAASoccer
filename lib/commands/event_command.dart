@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/network/base_api_client.dart';
 import 'package:soccermadeeasy/commands/network_models/fql_request_models/in_body.dart';
@@ -45,14 +46,11 @@ import 'network_models/fql_request_models/ref_body.dart';
 import 'network_models/fql_request_models/var_body.dart';
 import 'package:soccermadeeasy/extensions/share_image_text.dart';
 
-class EventCommand extends BaseCommand {  
-  void addTeamCallback(dynamic team) {
-   
-  }
+class EventCommand extends BaseCommand {
+  void addTeamCallback(dynamic team) {}
 
   Future<void> onTapShare(String mainImageKey) async {
-    await 'Hey there, check out this event'
-        .share(imageKey: mainImageKey);
+    await 'Hey there, check out this event'.share(imageKey: mainImageKey);
   }
 
   Future<void> onTapSocialMediaApp(BuildContext context) async {
@@ -521,8 +519,8 @@ class EventCommand extends BaseCommand {
       double latitude = event['location']['data'][0]['latitude'];
       double longitude = event['location']['data'][0]['longitude'];
 
-      double distanceFromUser =
-          await GeoLocationCommand().getDistanceFromPoint(latitude, longitude, appModel.currentPosition);
+      double distanceFromUser = await GeoLocationCommand()
+          .getDistanceFromPoint(latitude, longitude, appModel.currentPosition);
       print("distanceFromUser: " + distanceFromUser.toString());
       if (distanceFromUser > distanceFrom) {
         events.remove(event);
@@ -1132,12 +1130,10 @@ class EventCommand extends BaseCommand {
     eventPageModel.chats = chat;
   }
 
- 
-
-   List<dynamic> getEventRoles(dynamic user, List<dynamic> userParticipants) {
+  List<dynamic> getEventRoles(dynamic user, List<dynamic> userParticipants) {
     List<dynamic> tempRoles = [];
     print("getEventRoles: " + userParticipants.toString());
-    print("user passed in: "+ user.toString());
+    print("user passed in: " + user.toString());
     for (int i = 0; i < userParticipants.length; i++) {
       if (userParticipants[i]['user']['_id'] == user['_id']) {
         tempRoles = userParticipants[i]['roles'].toString().parseRoles();
@@ -1147,13 +1143,8 @@ class EventCommand extends BaseCommand {
     return tempRoles;
   }
 
-
-
-
-    
-
-  
-  Future<Map<String, dynamic>> getUserEventDetails(List<dynamic> events, bool addToEventPageModel) async {
+  Future<Map<String, dynamic>> getUserEventDetails(
+      List<dynamic> events, bool addToEventPageModel) async {
     print("getUserEventDetails()");
     print("events: " + events.toString());
     dynamic isMyEventResp = {
@@ -1164,6 +1155,7 @@ class EventCommand extends BaseCommand {
       "amountRemaining": "0.00",
       "teamAmountPaid": "0.00",
       "teamAmountRemaining": "0.00",
+      "location": "",
       "price": {},
       "mainEvent": null,
       "players": [],
@@ -1174,7 +1166,7 @@ class EventCommand extends BaseCommand {
       "groupStage": [],
       "tournament": null,
       "tournamentStage": [],
-      "userParticipants": [],      
+      "userParticipants": [],
       "fieldLocations": [],
       "eventRating": 4,
       "numberOfRatings": 0,
@@ -1188,66 +1180,87 @@ class EventCommand extends BaseCommand {
       dynamic event = events[0];
 
       print("getEventGame(): " + event.toString());
-      
+      if (event['fieldLocations']['data'].length > 0) {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          event['fieldLocations']['data'][0]['location']['latitude'],
+          event['fieldLocations']['data'][0]['location']['longitude'],
+        );
+        print("placemarkssss: " + placemarks[0].toString());
+        print("placemarkssss: " + placemarks[0].locality.toString());
+        print("placemarkssss: " + placemarks[0].administrativeArea.toString());
 
-      print("event type: " + event['type'].toString());
-      if (event['type'] == "TOURNAMENT") {
-        print("type is tournament");
-        dynamic findTournamentByIdResp = await TournamentCommand()
-            .findTournamentById(event['tournaments']['data'][0]['_id']);
-        if (findTournamentByIdResp['success']) {
-          dynamic tournament = findTournamentByIdResp['data'];
-          isMyEventResp['tournament'] = tournament;
-          isMyEventResp['groupStage'] = tournament['groupStage'];
-          isMyEventResp['tournamentStage'] = tournament['tournamentStage'];          
-        }
+        isMyEventResp['location'] = placemarks[0].locality.toString() +
+            ", " +
+            placemarks[0].administrativeArea.toString();
       }
-      if (event['type'] == "LEAGUE") {
-        print("type is league");
-        dynamic findLeagueByIdResp = await LeagueCommand()
-            .findLeagueById(event['leagues']['data'][0]['_id']);
-        if (findLeagueByIdResp['success']) {
-          dynamic league = findLeagueByIdResp['data'];
-          isMyEventResp['league'] = league;          
-        }
-      }
-      
+
+      // print("event type: " + event['type'].toString());
+      // if (event['type'] == "TOURNAMENT") {
+      //   print("event['tournaments']: "+ event['tournaments'].toString());
+      //   print("type is tournament");
+
+      //   dynamic findTournamentByIdResp = await TournamentCommand()
+      //       .findTournamentById(event['tournaments']['data'][0]['_id']);
+      //   if (findTournamentByIdResp['success']) {
+      //     dynamic tournament = findTournamentByIdResp['data'];
+      //     isMyEventResp['tournament'] = tournament;
+      //     isMyEventResp['groupStage'] = tournament['groupStage'];
+      //     isMyEventResp['tournamentStage'] = tournament['tournamentStage'];
+      //   }
+      // }
+      // if (event['type'] == "LEAGUE") {
+      //   print("type is league");
+      //   dynamic findLeagueByIdResp = await LeagueCommand()
+      //       .findLeagueById(event['leagues']['data'][0]['_id']);
+      //   if (findLeagueByIdResp['success']) {
+      //     dynamic league = findLeagueByIdResp['data'];
+      //     isMyEventResp['league'] = league;
+      //   }
+      // }
 
       isMyEventResp['mainEvent'] = event;
       isMyEventResp['allEvents'] = events;
 
-      
-          
-
-      
-      // eventPageModel.mainEvent = event;   
+      // eventPageModel.mainEvent = event;
       // eventPageModel.allEvents = events;
       // print("eventPageModel.mainEvent['joinConditions']: " + eventPageModel.mainEvent['joinConditions'].toString());
       //join conditions
-      isMyEventResp['mainEvent']['joinConditions']['data'].forEach((joinCondition) {
-        if(joinCondition['forEvent'] != null){
-          isMyEventResp['eventRequestJoin'] = new JoinCondition(label: "Join With Request", required: joinCondition['withRequest']); 
-          isMyEventResp['eventPaymentJoin'] = new JoinCondition(label: "Join With Payment", required: joinCondition['withPayment']);                     
+      isMyEventResp['mainEvent']['joinConditions']['data']
+          .forEach((joinCondition) {
+        if (joinCondition['forEvent'] != null) {
+          isMyEventResp['eventRequestJoin'] = new JoinCondition(
+              label: "Join With Request",
+              required: joinCondition['withRequest']);
+          isMyEventResp['eventPaymentJoin'] = new JoinCondition(
+              label: "Join With Payment",
+              required: joinCondition['withPayment']);
+        } else {
+          isMyEventResp['teamRequestJoin'] = new JoinCondition(
+              label: "Team Join With Request",
+              required: joinCondition['withRequest']);
+          isMyEventResp['teamPaymentJoin'] = new JoinCondition(
+              label: "Team Join With Payment",
+              required: joinCondition['withPayment']);
         }
-        else{
-          isMyEventResp['teamRequestJoin'] = new JoinCondition(label: "Team Join With Request", required: joinCondition['withRequest']); 
-          isMyEventResp['teamPaymentJoin'] = new JoinCondition(label: "Team Join With Payment", required: joinCondition['withPayment']); 
-        } 
       });
 
       // eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
-      isMyEventResp['userParticipants'] = isMyEventResp['mainEvent']['userParticipants']['data'];
-      isMyEventResp['roles'] = getEventRoles(appModel.currentUser, isMyEventResp['userParticipants']);
+      isMyEventResp['userParticipants'] =
+          isMyEventResp['mainEvent']['userParticipants']['data'];
+      isMyEventResp['roles'] = getEventRoles(
+          appModel.currentUser, isMyEventResp['userParticipants']);
       print("isMyEventResp['roles']: " + isMyEventResp['roles'].toString());
       isMyEventResp['isMine'] = isMyEventResp['roles'].contains("ORGANIZER");
       isMyEventResp['isMember'] = isMyEventResp['roles'].contains("PLAYER");
       isMyEventResp['chats'] = isMyEventResp['mainEvent']['chats']['data'];
       isMyEventResp['teams'] = isMyEventResp['mainEvent']['teams']['data'];
       isMyEventResp['startTime'] = isMyEventResp['mainEvent']['startTime'];
-      isMyEventResp['endTime'] = isMyEventResp['mainEvent']['endTime'];      
-      isMyEventResp['formattedEventTime'] = BaseCommand().formatEventTime(isMyEventResp['startTime'], isMyEventResp['endTime']);
-    
-      isMyEventResp['fieldLocations'] = isMyEventResp['mainEvent']['fieldLocations']['data'];
+      isMyEventResp['endTime'] = isMyEventResp['mainEvent']['endTime'];
+      isMyEventResp['formattedEventTime'] = BaseCommand().formatEventTime(
+          isMyEventResp['startTime'], isMyEventResp['endTime']);
+
+      isMyEventResp['fieldLocations'] =
+          isMyEventResp['mainEvent']['fieldLocations']['data'];
       for (int i = 0; i < isMyEventResp['userParticipants'].length; i++) {
         dynamic participant = isMyEventResp['userParticipants'][i];
         List<String> roles = participant['roles'].toString().parseRoles();
@@ -1263,42 +1276,47 @@ class EventCommand extends BaseCommand {
       isMyEventResp['numberOfParticipants'] = isMyEventResp['players'].length;
 
       isMyEventResp['price'] = isMyEventResp['mainEvent']['price'];
-  
-      isMyEventResp['payments'] = isMyEventResp['mainEvent']['payments']['data'];
-             
+
+      isMyEventResp['payments'] =
+          isMyEventResp['mainEvent']['payments']['data'];
 
       double tempAmountPaid = 0.00;
       double tempTeamAmountPaid = 0.00;
 
       for (int i = 0; i < isMyEventResp['payments'].length; i++) {
-        if (isMyEventResp['payments'][i]['user']['_id'] == appModel.currentUser['_id']) {
+        if (isMyEventResp['payments'][i]['user']['_id'] ==
+            appModel.currentUser['_id']) {
           if (isMyEventResp['payments'][i]['isPlayerPayment']) {
-            tempAmountPaid += double.parse(isMyEventResp['payments'][i]['amount']);
+            tempAmountPaid +=
+                double.parse(isMyEventResp['payments'][i]['amount']);
           } else if (isMyEventResp['payments'][i]['isTeamPayment']) {
-            tempTeamAmountPaid += double.parse(isMyEventResp['payments'][i]['amount']);
+            tempTeamAmountPaid +=
+                double.parse(isMyEventResp['payments'][i]['amount']);
           }
         }
       }
       isMyEventResp['amountPaid'] = (tempAmountPaid).toStringAsFixed(2);
       isMyEventResp['teamAmountPaid'] = (tempTeamAmountPaid).toStringAsFixed(2);
       isMyEventResp['amountRemaining'] =
-          (double.parse(isMyEventResp['mainEvent']['price']['amount']) - tempAmountPaid)
+          (double.parse(isMyEventResp['mainEvent']['price']['amount']) -
+                  tempAmountPaid)
               .toStringAsFixed(2);
       isMyEventResp['teamAmountRemaining'] =
-          (double.parse(isMyEventResp['mainEvent']['price']['teamAmount']) - tempTeamAmountPaid)
+          (double.parse(isMyEventResp['mainEvent']['price']['teamAmount']) -
+                  tempTeamAmountPaid)
               .toStringAsFixed(2);
 
-
-
-      if(addToEventPageModel){
+      if (addToEventPageModel) {
         eventPageModel.mainEvent = isMyEventResp['mainEvent'];
-        eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
+        eventPageModel.objectImageInput =
+            await loadEventMainImage(event, eventPageModel.isMine);
         eventPageModel.roles = isMyEventResp['roles'];
         eventPageModel.isMine = isMyEventResp['isMine'];
         eventPageModel.isMember = isMyEventResp['isMember'];
         eventPageModel.amountRemaining = isMyEventResp['amountRemaining'];
         eventPageModel.amountPaid = isMyEventResp['amountPaid'];
-        eventPageModel.teamAmountRemaining = isMyEventResp['teamAmountRemaining'];
+        eventPageModel.teamAmountRemaining =
+            isMyEventResp['teamAmountRemaining'];
         eventPageModel.teamAmountPaid = isMyEventResp['teamAmountPaid'];
         eventPageModel.userParticipants = isMyEventResp['userParticipants'];
         eventPageModel.teams = isMyEventResp['teams'];
@@ -1315,9 +1333,9 @@ class EventCommand extends BaseCommand {
         eventPageModel.groupStage = isMyEventResp['groupStage'];
         eventPageModel.tournamentStage = isMyEventResp['tournamentStage'];
         eventPageModel.capacity = isMyEventResp['capacity'];
-        eventPageModel.numberOfParticipants = isMyEventResp['numberOfParticipants'];
+        eventPageModel.numberOfParticipants =
+            isMyEventResp['numberOfParticipants'];
       }
-
 
       print("successfully ran details function");
       isMyEventResp["success"] = true;
@@ -1327,13 +1345,13 @@ class EventCommand extends BaseCommand {
       print('Mutation failed: $e');
       return isMyEventResp;
     }
-
-    
   }
 
-
-  Future<dynamic> loadEventMainImage(dynamic event, bool isMine,  ) async {
-    print("loadEventMainImage() "+event.toString());
+  Future<dynamic> loadEventMainImage(
+    dynamic event,
+    bool isMine,
+  ) async {
+    print("loadEventMainImage() " + event.toString());
     String? imageKey = event['mainImageKey'];
     String imageUrl = "";
     dynamic objectImageInput = {
@@ -1400,6 +1418,16 @@ class EventCommand extends BaseCommand {
     }
   }
 
+  void setMyEvents(List myEvents) {
+    appModel.myEvents = myEvents;
+    //filter out archived events
+    appModel.myArchivedEvents = myEvents
+        .where((event) => BaseCommand()
+            .dateTimeFromMilliseconds(event['event']['endTime'].toString())
+            .isBefore(DateTime.now()))
+        .toList();
+  }
+
   Future<Map<String, dynamic>> setupEvents(
       dynamic type, String afterTimestamp) async {
     print("setupEvents()()");
@@ -1433,9 +1461,16 @@ class EventCommand extends BaseCommand {
           List myEvents = allMyEvents;
           print("myEvents.length before: " + myEvents.length.toString());
           //filter out archived events
-          myEvents.removeWhere((event) => BaseCommand()
-              .dateTimeFromMilliseconds(event['event']['endTime'].toString())
-              .isBefore(DateTime.now()));
+          appModel.myArchivedEvents = myEvents
+              .where((event) => BaseCommand()
+                  .dateTimeFromMilliseconds(
+                      event['event']['endTime'].toString())
+                  .isBefore(DateTime.now()))
+              .toList();
+
+          appModel.myArchivedEvents.forEach((element) {
+            print("archived eventttt: " + element.toString());
+          });
           //sort by createdAt
           myEvents.sort((a, b) {
             int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;

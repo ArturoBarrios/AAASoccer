@@ -53,7 +53,7 @@ class _GameCreateState extends State<GameCreate> {
   initState() {
     locationSearchBar = LocationSearchBar(
       onCoordinatesChange: (coordinates, address) {
-        locationInput['name'] = address;
+        locationInput['address'] = address;
         locationInput['latitude'] = coordinates.latitude;
         locationInput['longitude'] = coordinates.longitude;
       },

@@ -29,14 +29,17 @@ String createEventRating(
     String createEventRating = """
    mutation {
       createEventRating(data: {      
-        ratings: "${eventRatingInput['ratings']}",  
-        ratingCategories: "${eventRatingInput['ratingCategories']}",
-        feedbacks: "${eventRatingInput['feedbacks']}",
+        eventRating: ${eventRatingInput['eventRating']},
+        hostRating: ${eventRatingInput['hostRating']},
+        fieldLocationRating: ${eventRatingInput['fieldLocationRating']},
         event: {
             connect: "${eventRatingInput['eventId']}"
           },
         user: {
             connect: "${eventRatingInput['userId']}"
+        }
+        fieldLocation: {
+            connect: "${eventRatingInput['fieldLocationId']}"
         }
                                   
         }) {

@@ -173,6 +173,7 @@ return _isLoading
            SplashScreen() 
           : 
      Scaffold(
+      extendBody: true,
       appBar:  Headers(
             playerStepperButton: ButtonModel(
               prefixIconData: Icons.play_circle_fill_rounded,
@@ -211,51 +212,42 @@ return _isLoading
                           ),
 
                       ),
-                      eventRequestJoin,
-                      eventPaymentJoin,
-                      teamRequestJoin,
-                      teamPaymentJoin,
-                      IconButton(
-                        icon: const Icon(
-                          Icons.share,
-                          color: Colors.blue,
-                        ),
-                        onPressed:() async{
-                          await EventCommand().onTapShare(mainEvent['mainImageKey']);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.social_distance,
-                          color: Colors.red,
-                        ),
-                        onPressed: () async {
-                          await EventCommand().onTapSocialMediaApp(context); 
-                        },
-                      ),
+                      // eventRequestJoin,
+                      // eventPaymentJoin,
+                      // teamRequestJoin,
+                      // teamPaymentJoin,
+                      // IconButton(
+                      //   icon: const Icon(
+                      //     Icons.share,
+                      //     color: Colors.blue,
+                      //   ),
+                      //   onPressed:() async{
+                      //     await EventCommand().onTapShare(mainEvent['mainImageKey']);
+                      //   },
+                      // ),
+                      // IconButton(
+                      //   icon: const Icon(
+                      //     Icons.social_distance,
+                      //     color: Colors.red,
+                      //   ),
+                      //   onPressed: () async {
+                      //     await EventCommand().onTapSocialMediaApp(context); 
+                      //   },
+                      // ),
                       //date
                       EventDateWidget(
                           canEdit: isMine,
                           startTime: mainEvent['startTime'],
-                          endTime: mainEvent['endTime']),
-                      //map
-                      
-                      //join widget
-                      GetJoinEventWidget(
-                          mainEvent: mainEvent,
-                          roles: roles,
-                          isMine: isMine,
-                          price: price,
-                          amountRemaining: amountRemaining),
+                          endTime: mainEvent['endTime']),                                                                 
                       //Requests widget
-                      RequestsList(objectDetails: {
-                        "requests": mainEvent['requests']['data']
-                      }),
-                      //RSP
-                      RSVPWidget(
-                        event: mainEvent,
-                        userParticipants: userParticipants,
-                      ),
+                      // RequestsList(objectDetails: {
+                      //   "requests": mainEvent['requests']['data']
+                      // }),
+                      //RSVP
+                      // RSVPWidget(
+                      //   event: mainEvent,
+                      //   userParticipants: userParticipants,
+                      // ),
                       //location search bar
                       // locationSearchBar = LocationSearchBar(
                       //     initialValue: mainEvent['location']['data'][0]
@@ -273,8 +265,8 @@ return _isLoading
                                 userId: userId),
                       ),
                       //team list
-                      TeamsListWidget(
-                          user: null, mainEvent: mainEvent, teams: teams),
+                      // TeamsListWidget(
+                      //     user: null, mainEvent: mainEvent, teams: teams),
                       //player request widget
                       SendPlayersRequestWidget(
                           mainEvent: mainEvent,
@@ -327,20 +319,37 @@ return _isLoading
                         ],
                       ),
                       const SizedBox(height: 20),
-                      PaymentListWidget(
-                        paidUsers: widget.getPaidUsers(userParticipants, payments),
-                        paymentType: PaymentType.user,
-                      ),
-                      const SizedBox(height: 60),
-                      ImagesListWidget(
-                          mainEvent: mainEvent,
-                          team: null,
-                          imageFor: Constants.EVENT),
+                      // PaymentListWidget(
+                      //   paidUsers: widget.getPaidUsers(userParticipants, payments),
+                      //   paymentType: PaymentType.user,
+                      // ),
+                      // const SizedBox(height: 60),
+                      // ImagesListWidget(
+                      //     mainEvent: mainEvent,
+                      //     team: null,
+                      //     imageFor: Constants.EVENT),
+                      const SizedBox(height: 100),
                     ],
                   ),
                 ),
               ),
             ),
+            bottomNavigationBar: 
+        
+        Padding(
+          padding: const EdgeInsets.only(
+              top:26.0,
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0), 
+          child:  //join widget
+                      GetJoinEventWidget(
+                          mainEvent: mainEvent,
+                          roles: roles,
+                          isMine: isMine,
+                          price: price,
+                          amountRemaining: amountRemaining),
+          ),
     );
   }
 }

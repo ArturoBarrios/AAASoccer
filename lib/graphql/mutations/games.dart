@@ -132,6 +132,7 @@ class GameMutations {
                     location: {
                       create: {
                         name: "${locationInput['name']}",
+                        address: "${locationInput['address']}",
                         latitude: ${locationInput['latitude']},
                         longitude: ${locationInput['longitude']}
                       }

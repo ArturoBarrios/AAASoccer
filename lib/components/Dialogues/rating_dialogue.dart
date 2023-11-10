@@ -18,6 +18,10 @@ class _RatingDialogueState extends State<RatingDialogue> {
   int _hostRating = 4;
   int _locationRating = 4;
 
+  TextEditingController _gameFeedbackController = TextEditingController(text: "");
+  TextEditingController _hostFeedbackController = TextEditingController(text: "");
+  TextEditingController _locationFeedbackController = TextEditingController(text: "");
+
   Widget _buildStarRow(int ratingValue, Function(int) onRatingSelected) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -33,121 +37,159 @@ class _RatingDialogueState extends State<RatingDialogue> {
     );
   }
 
-  createEventRating(){
-    //EHL(Event, Host, Location)
-    //5,5,5
-    String ratings = "5,5,5";
-    //EHF(Event, Host, Field)
-    String ratingCategories = "E,H,F";
-    String feedbacks = "{}";
+
+
+  createEventRating(){   
+    
+  
 
     dynamic eventRatingInput = {
-      "ratings": ratings,
-      "ratingCategories": ratingCategories,
-      "feedbacks": "test",
+      "eventRating": _gameRating,
+      "hostRating": _hostRating,
+      "fieldLocationRating": _locationRating,      
+      "eventFeedback": _gameFeedbackController.text,
+      "hostFeedback": _hostFeedbackController.text,
+      "fieldLocationFeedback": _locationFeedbackController.text,
       "eventId": widget.ratingInput['eventId'],
       "userId": widget.ratingInput['userId'],
+      "fieldLocationId": widget.ratingInput['fieldLocationId'],
 
     };
 
-    RatingCommand().createRatingForEvent(eventRatingInput);
+    print("eventRatingInput: "+ eventRatingInput.toString());
+
+    // RatingCommand().createRatingForEvent(eventRatingInput);
+  }
+
+   @override
+  void dispose() {
+    // Don't forget to dispose of the controllers when the widget is disposed
+    _gameFeedbackController.dispose();
+    _hostFeedbackController.dispose();
+    _locationFeedbackController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20.0),
+  ),
+  child: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.grey),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          Text(
+            'Rate your game',
+            style: const TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepOrange,
+            ),
+          ),
+          _buildStarRow(_gameRating, (rating) {
+            setState(() {
+              _gameRating = rating;
+            });
+          }),
+          const SizedBox(height: 8),
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Game feedback',
+              border: OutlineInputBorder(),              
+            ),
+            // Other TextField properties as needed
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Rate your host',
+            style: const TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepOrange,
+            ),
+          ),
+          _buildStarRow(_hostRating, (rating) {
+            setState(() {
+              _hostRating = rating;
+            });
+          }),
+          const SizedBox(height: 8),
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Host feedback',
+              border: OutlineInputBorder(),
+            ),
+            // Other TextField properties as needed
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Rate the location',
+            style: const TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepOrange,
+            ),
+          ),
+          _buildStarRow(_locationRating, (rating) {
+            setState(() {
+              _locationRating = rating;
+            });
+          }),
+          const SizedBox(height: 8),
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Location feedback',
+              border: OutlineInputBorder(),
+            ),
+            // Other TextField properties as needed
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.grey),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+              TextButton(
+                child: const Text('CANCEL', style: TextStyle(color: Colors.deepOrange)),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              Text(
-                'Rate your game',
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepOrange,
+              const SizedBox(width: 8.0),
+              ElevatedButton(
+                onPressed: () {
+                  createEventRating();
+                  // Process the ratings
+                  // Navigator.pop(context, {
+                  //   'gameRating': _gameRating,
+                  //   'hostRating': _hostRating,
+                  //   'locationRating': _locationRating,
+                  // });
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.deepOrange,
                 ),
-              ),
-              _buildStarRow(_gameRating, (rating) {
-                setState(() {
-                  _gameRating = rating;
-                });
-              }),
-              const SizedBox(height: 16),
-              Text(
-                'Rate your host',
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepOrange,
-                ),
-              ),
-              _buildStarRow(_hostRating, (rating) {
-                setState(() {
-                  _hostRating = rating;
-                });
-              }),
-              const SizedBox(height: 16),
-              Text(
-                'Rate the location',
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepOrange,
-                ),
-              ),
-              _buildStarRow(_locationRating, (rating) {
-                setState(() {
-                  _locationRating = rating;
-                });
-              }),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    child: const Text('CANCEL', style: TextStyle(color: Colors.deepOrange)),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  const SizedBox(width: 8.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      createEventRating();
-                      // Process the ratings
-                    //   Navigator.pop(context, {
-                    //     'gameRating': _gameRating,
-                    //     'hostRating': _hostRating,
-                    //     'locationRating': _locationRating,
-                    //   });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.deepOrange,
-                    ),
-                    child: const Text('OK'),
-                  ),
-                ],
+                child: const Text('OK'),
               ),
             ],
           ),
-        ),
+        ],
       ),
-    );
+    ),
+  ),
+);
+
   }
 }
