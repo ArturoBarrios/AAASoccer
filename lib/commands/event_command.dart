@@ -1170,6 +1170,8 @@ class EventCommand extends BaseCommand {
       "fieldLocations": [],
       "eventRating": 4,
       "numberOfRatings": 0,
+      "fieldRating": 4,
+      "numberOfFieldRatings": 0,
       "numberOfParticipants": 0,
       "capacity": 0
     };

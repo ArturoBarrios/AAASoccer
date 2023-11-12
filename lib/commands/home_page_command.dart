@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/player_command.dart';
+import 'package:soccermadeeasy/commands/requests_command.dart';
 import 'package:soccermadeeasy/commands/team_command.dart';
 import 'package:soccermadeeasy/commands/tournament_command.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
@@ -141,7 +142,17 @@ class HomePageCommand extends BaseCommand {
       if (eventsModel.games.isEmpty) {
         eventsModel.games = newSelectedObjects;
       }
-    } else if (newSelectedKey == Constants.TEAM) {
+    } 
+    else if (newSelectedKey == Constants.REQUESTSRECEIVED) {
+      print("check REQUESTS: ");
+      if(requestsPageModel.selectedObjects.length==0){
+        await RequestsCommand().updatedSelectedRequests("RECEIVED");
+
+      }
+      homePageModel.selectedObjects = requestsPageModel.selectedObjects;
+      
+    } 
+    else if (newSelectedKey == Constants.TEAM) {
       String oneYearAgoTimestamp = BaseCommand().xHoursAgoString(
           8760); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
       print("oneYearAgoTimestamppppp: " + oneYearAgoTimestamp);

@@ -1,5 +1,14 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'package:flutter/cupertino.dart';
+import 'package:soccermadeeasy/commands/team_command.dart';
+import 'package:soccermadeeasy/styles/colors.dart';
+
+import '../components/Cards/event_request_card.dart';
+import '../components/Cards/friend_request_card.dart';
+import '../components/Cards/team_request_card.dart';
+import '../components/Cards/tsn_event_request_card.dart';
+import '../constants.dart';
 import 'base_command.dart';
 import '../commands/event_command.dart';
 import '../commands/user_command.dart';
@@ -17,6 +26,60 @@ import '../models/enums/RequestStatus.dart';
 class RequestsCommand extends BaseCommand {
   
 
+   Future<Widget> getRequestCard(
+      String selectedKey, dynamic requestObject) async {
+    print("getRequestCard()");
+    print("selectedKey: " + selectedKey);
+    print("requestObject: " + requestObject.toString());
+    print("requestObject['type'].toString(): " +
+        requestObject['type'].toString());
+    dynamic user = UserCommand().getAppModelUser();
+    bool didSendRequest = user['_id'] == requestObject['sender']['_id'];
+    if (requestObject['type'].toString() ==
+        Constants.FRIENDREQUEST.toString()) {
+      Widget card = FriendRequestCard(
+        friendRequestObject: requestObject,
+        didSendRequest: didSendRequest,
+      );
+      return card;
+    } else if (requestObject['type'].toString() ==
+            Constants.GAMEREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TOURNAMENTREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.LEAGUEREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TRAININGREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TRYOUTREQUEST.toString()) {
+       Widget card = TSNEventRequestCard(
+          eventRequestCardDetails: requestObject,                    
+          backgroundColor: AppColors.tsnAlmostBlack,
+      );
+      // Widget card = EventRequestCard(
+      //     eventRequestObject: requestObject,
+      //     type: requestObject['type'],
+      //     didSendRequest: didSendRequest);
+      return card;
+    } else {
+      print("elseeeeee");
+      print("team: " + requestObject['team'].toString());
+      dynamic findTeamByIdResponse = await TeamCommand()
+          .findTeamById({"_id": requestObject['team']['_id']});
+      dynamic team = findTeamByIdResponse['data'];
+      print("team: " + team.toString());
+      dynamic teamDetails = await TeamCommand().getUserTeamDetails(team, false);
+      print("teamDetails: " + teamDetails.toString());
+      Widget card = TeamRequestCard(
+        teamRequestObject: requestObject,
+        didSendRequest: didSendRequest,
+        userTeamDetails: teamDetails,
+      );
+      return card;
+    }
+  }
+  
+
   //gets most up to date user model and assigns
   //requests appropriately
   Future<void> updatedSelectedRequests(String requestType) async {
@@ -26,8 +89,7 @@ class RequestsCommand extends BaseCommand {
         await UserCommand().getCurrentUserByEmail();
     print("getRequestsResp: " + getRequestsResp.toString());
 
-    if (getRequestsResp['success']) {
-      // UserCommand().updateUserModelWithUser(getRequestsResp['data']);
+    if (getRequestsResp['success']) {      
       List requestsSent = getRequestsResp['data']['requestsSent']['data'];
       List requestsReceived =
           getRequestsResp['data']['requestsReceived']['data'];

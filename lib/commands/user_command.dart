@@ -21,7 +21,7 @@ class UserCommand extends BaseCommand {
   }
 
   Future<Map<String,dynamic>> getUserDetails(dynamic user, bool addToProfilePageModel) async {
-    print("loadInitialData Profile");
+    print("loadInitialData Profile: " + user.toString());
     Map<String,dynamic> getUserDetailsResp = {
       "success": false,
       "user": user,
@@ -39,6 +39,7 @@ class UserCommand extends BaseCommand {
 
 
     if (appModel.currentUser['_id'] == user['_id']) {
+      user = appModel.currentUser;
       getUserDetailsResp['isMine'] = true;
       imageUrl = UserCommand().getProfileImage();      
       // profilePageModel.user = UserCommand().getAppModelUser();

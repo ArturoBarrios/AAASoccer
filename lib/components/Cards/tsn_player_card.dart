@@ -65,6 +65,7 @@ class TSNPlayerCard extends StatelessWidget {
 
     return GestureDetector(
         onTap: () {
+          print("onTap: "+ user.toString());
           // Handle tap on the entire card here
           Navigator.push(
             context,

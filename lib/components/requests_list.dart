@@ -12,6 +12,8 @@ import '../models/pageModels/requests_page_model.dart';
 import '../styles/asset_constants.dart';
 import 'package:provider/provider.dart';
 
+import '../styles/colors.dart';
+import 'Cards/tsn_event_request_card.dart';
 import 'images/svg_image.dart';
 
 class RequestsList extends StatefulWidget {
@@ -71,10 +73,14 @@ class _RequestsListState extends State<RequestsList> {
             Constants.TRAININGREQUEST.toString() ||
         requestObject['type'].toString() ==
             Constants.TRYOUTREQUEST.toString()) {
-      Widget card = EventRequestCard(
-          eventRequestObject: requestObject,
-          type: requestObject['type'],
-          didSendRequest: didSendRequest);
+      Widget card = TSNEventRequestCard(
+          eventRequestCardDetails: requestObject,                    
+          backgroundColor: AppColors.tsnAlmostBlack,
+      );
+      // EventRequestCard(
+      //     eventRequestObject: requestObject,
+      //     type: requestObject['type'],
+      //     didSendRequest: didSendRequest);
       return card;
     } else {
       print("elseeeeee");

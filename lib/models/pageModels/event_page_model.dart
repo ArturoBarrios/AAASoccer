@@ -232,6 +232,20 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
   
+  int _fieldLocationRating = 0;
+  int get fieldLocationRating => _fieldLocationRating;
+  set fieldLocationRating(int fieldLocationRating) {
+    _fieldLocationRating = fieldLocationRating;
+    notifyListeners();
+  }
+  
+  int _numberOfFieldLocationRatings = 0;
+  int get numberOfFieldLocationRatings => _numberOfFieldLocationRatings;
+  set numberOfFieldLocationRatings(int numberOfFieldLocationRatings) {
+    _numberOfFieldLocationRatings = numberOfFieldLocationRatings;
+    notifyListeners();
+  }
+  
   int _numberOfRatings = 0;
   int get numberOfRatings => _numberOfRatings;
   set numberOfRatings(int numberOfRatings) {

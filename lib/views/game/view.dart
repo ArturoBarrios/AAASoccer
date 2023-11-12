@@ -195,6 +195,20 @@ return _isLoading
                 child: Expanded(
                   child: Column(
                     children: [
+                      //name
+                      Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: Align(
+    alignment: Alignment.centerLeft,
+    child: Text(
+      mainEvent['name'],
+      style: const TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ),
+),
                       Container(
                         margin: const EdgeInsets.all(10.0),
                         color: Colors.amber[600],

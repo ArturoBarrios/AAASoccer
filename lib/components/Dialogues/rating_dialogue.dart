@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../commands/rating_command.dart';
+import '../../styles/colors.dart';
 
 class RatingDialogue extends StatefulWidget {
   const RatingDialogue({Key? key, 
@@ -30,7 +31,7 @@ class _RatingDialogueState extends State<RatingDialogue> {
           onPressed: () => onRatingSelected(index + 1),
           icon: Icon(
             index < ratingValue ? Icons.star : Icons.star_border,
-            color: Colors.deepOrange,
+            color: AppColors.tsnGreen,
           ),
         );
       }),
@@ -97,7 +98,7 @@ class _RatingDialogueState extends State<RatingDialogue> {
             style: const TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
-              color: Colors.deepOrange,
+              color: AppColors.tsnAlmostBlack,
             ),
           ),
           _buildStarRow(_gameRating, (rating) {
@@ -109,7 +110,8 @@ class _RatingDialogueState extends State<RatingDialogue> {
           TextField(
             decoration: InputDecoration(
               labelText: 'Game feedback',
-              border: OutlineInputBorder(),              
+              border: OutlineInputBorder(),   
+                         
             ),
             // Other TextField properties as needed
           ),
@@ -119,7 +121,7 @@ class _RatingDialogueState extends State<RatingDialogue> {
             style: const TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
-              color: Colors.deepOrange,
+              color: AppColors.tsnAlmostBlack,
             ),
           ),
           _buildStarRow(_hostRating, (rating) {
@@ -141,7 +143,7 @@ class _RatingDialogueState extends State<RatingDialogue> {
             style: const TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
-              color: Colors.deepOrange,
+              color: AppColors.tsnAlmostBlack,
             ),
           ),
           _buildStarRow(_locationRating, (rating) {
@@ -162,7 +164,7 @@ class _RatingDialogueState extends State<RatingDialogue> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
-                child: const Text('CANCEL', style: TextStyle(color: Colors.deepOrange)),
+                child: const Text('CANCEL', style: TextStyle(color: AppColors.tsnRed)),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -179,7 +181,7 @@ class _RatingDialogueState extends State<RatingDialogue> {
                   // });
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.deepOrange,
+                  primary: AppColors.tsnGreen,
                 ),
                 child: const Text('OK'),
               ),

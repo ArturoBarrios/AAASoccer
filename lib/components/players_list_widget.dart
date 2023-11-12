@@ -7,7 +7,10 @@ import 'package:soccermadeeasy/views/profile/profile.dart';
 import '../commands/base_command.dart';
 import '../commands/event_command.dart';
 import '../commands/team_command.dart';
+import '../commands/user_command.dart';
 import '../constants.dart';
+import '../styles/colors.dart';
+import 'Cards/tsn_player_card.dart';
 
 class PlayerList extends StatefulWidget {
   const PlayerList({
@@ -29,7 +32,7 @@ class PlayerList extends StatefulWidget {
 
 class _PlayerListState extends State<PlayerList> {
   bool _isExpanded = true;
-  String _selectedUserType = "PLAYER"; // Default selection: "PLAYER"
+  String _selectedUserType = "Players"; // Default selection: "PLAYER"
   List<String> _userTypes = [
     "PLAYER",
     "ORGANIZER",
@@ -161,6 +164,13 @@ class _PlayerListState extends State<PlayerList> {
     }
   }
 
+  Future<dynamic> fetchUserDetails(dynamic user) async{
+    print("fetchUserDetails");
+    dynamic playerDetails =
+          await UserCommand().getUserDetails(user, false);
+    return playerDetails;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -201,72 +211,94 @@ class _PlayerListState extends State<PlayerList> {
               ),
             ),
           ),
-          if (_isExpanded)
-            Container(
-              padding: EdgeInsets.all(8.0),
-              child: Wrap(
-                spacing: 8.0,
-                children: _userTypes.map((userType) {
-                  return FilterChip(
-                    label: Text(userType),
-                    onSelected: (isSelected) {
-                      setState(() {
-                        if (isSelected) {
-                          _selectedUserType = userType;
-                        }
-                      });
-                    },
-                    selected: _selectedUserType == userType,
-                  );
-                }).toList(),
-              ),
-            ),
+          // if (_isExpanded)
+          //   Container(
+          //     padding: EdgeInsets.all(8.0),
+          //     child: Wrap(
+          //       spacing: 8.0,
+          //       children: _userTypes.map((userType) {
+          //         return FilterChip(
+          //           label: Text(userType),
+          //           onSelected: (isSelected) {
+          //             setState(() {
+          //               if (isSelected) {
+          //                 _selectedUserType = userType;
+          //               }
+          //             });
+          //           },
+          //           selected: _selectedUserType == userType,
+          //         );
+          //       }).toList(),
+          //     ),
+          //   ),
           Column(
-            children: widget.userParticipants.where((userParticipant) {
-              List<dynamic> userRoles = getUserRoles(userParticipant);
-              return userRoles.contains(_selectedUserType);
-            }).map<Widget>((userParticipant) {
-              dynamic user = userParticipant['user'];
-              dynamic paymentStatus = userParticipant['paymentStatus'];
-              dynamic profileDetails = {
-                "user": user,
-                "isMine": false,
-              };
-              return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Profile(
-                                user: user,
-                              )),
-                    );
-                  },
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(user['username']),
-                          ),
-                          if (paymentStatus != null) Text(paymentStatus ?? ''),
-                          IconButton(
-                            icon: Icon(Icons.info),
-                            onPressed: () {
-                              _showPlayerDetailsDialog(context, user['name']);
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.link),
-                            onPressed: () =>
-                                widget.inviteUserToChat?.call(user['_id']),
-                          ),
-                          // ...other icons and actions...
-                        ],
-                      ),
-                    ),
-                  ));
+          //   children: widget.userParticipants.where((userParticipant) {
+          //     List<dynamic> userRoles = getUserRoles(userParticipant);
+          //     return userRoles.contains(_selectedUserType);
+          //   }).map<Widget>((userParticipant) {
+          //     dynamic user = userParticipant['user'];
+          //     dynamic paymentStatus = userParticipant['paymentStatus'];
+          //     dynamic profileDetails = {
+          //       "user": user,
+          //       "isMine": false,
+          //     };
+          //     return InkWell(
+          //         onTap: () async {
+                    
+          //           Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //                 builder: (context) => Profile(
+          //                       user: user,
+          //                     )),
+          //           );
+          //         },
+          //         child: 
+                  // Card(
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(8.0),
+                  //     child: Row(
+                  //       children: [
+                  //         Expanded(
+                  //           child: Text(user['username']),
+                  //         ),
+                  //         if (paymentStatus != null) Text(paymentStatus ?? ''),
+                  //         IconButton(
+                  //           icon: Icon(Icons.info),
+                  //           onPressed: () {
+                  //             _showPlayerDetailsDialog(context, user['name']);
+                  //           },
+                  //         ),
+                  //         IconButton(
+                  //           icon: const Icon(Icons.link),
+                  //           onPressed: () =>
+                  //               widget.inviteUserToChat?.call(user['_id']),
+                  //         ),
+                  //         // ...other icons and actions...
+                  //       ],
+                  //     ),
+                  //   ),
+                  // )
+                  
+                  children: widget.userParticipants.map<Widget>((userParticipant) {
+    return FutureBuilder<dynamic>(
+      future: fetchUserDetails(userParticipant['user']),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Show loading indicator while waiting
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}'); // Error handling
+        } else {
+          // Build the card with player details
+          dynamic playerDetails = snapshot.data;
+          return TSNPlayerCard(
+        playerCardDetails: playerDetails,
+        backgroundColor: AppColors.tsnAlmostBlack,
+        
+      );      
+        }
+      },
+    );
             }).toList(),
           ),
         ],

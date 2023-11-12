@@ -1,9 +1,14 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
+import 'package:soccermadeeasy/commands/requests_command.dart';
+import '../components/Cards/event_request_card.dart';
+import '../components/Cards/friend_request_card.dart';
 import '../components/Cards/league_card.dart';
+import '../components/Cards/team_request_card.dart';
 import '../components/Cards/tournament_card.dart';
 import '../components/Cards/training_card.dart';
 import '../components/Cards/tryout_card.dart';
+import '../components/Cards/tsn_event_request_card.dart';
 import '../components/Cards/tsn_group_card.dart';
 import '../components/Cards/tsn_pickup_card.dart';
 import '../components/Cards/tsn_player_card.dart';
@@ -641,6 +646,59 @@ class BaseCommand {
     return false;
   }
 
+   Future<Widget> getRequestCard(
+      String selectedKey, dynamic requestObject) async {
+    print("getRequestCard()");
+    print("selectedKey: " + selectedKey);
+    print("requestObject: " + requestObject.toString());
+    print("requestObject['type'].toString(): " +
+        requestObject['type'].toString());
+    dynamic user = UserCommand().getAppModelUser();
+    bool didSendRequest = user['_id'] == requestObject['sender']['_id'];
+    if (requestObject['type'].toString() ==
+        Constants.FRIENDREQUEST.toString()) {
+      Widget card = FriendRequestCard(
+        friendRequestObject: requestObject,
+        didSendRequest: didSendRequest,
+      );
+      return card;
+    } else if (requestObject['type'].toString() ==
+            Constants.GAMEREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TOURNAMENTREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.LEAGUEREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TRAININGREQUEST.toString() ||
+        requestObject['type'].toString() ==
+            Constants.TRYOUTREQUEST.toString()) {
+      Widget card = TSNEventRequestCard(
+          eventRequestCardDetails: requestObject,                    
+          backgroundColor: AppColors.tsnAlmostBlack,
+      );
+      // Widget card = EventRequestCard(
+      //     eventRequestObject: requestObject,
+      //     type: requestObject['type'],
+      //     didSendRequest: didSendRequest);
+      return card;
+    } else {
+      print("elseeeeee");
+      print("team: " + requestObject['team'].toString());
+      dynamic findTeamByIdResponse = await TeamCommand()
+          .findTeamById({"_id": requestObject['team']['_id']});
+      dynamic team = findTeamByIdResponse['data'];
+      print("team: " + team.toString());
+      dynamic teamDetails = await TeamCommand().getUserTeamDetails(team, false);
+      print("teamDetails: " + teamDetails.toString());
+      Widget card = TeamRequestCard(
+        teamRequestObject: requestObject,
+        didSendRequest: didSendRequest,
+        userTeamDetails: teamDetails,
+      );
+      return card;
+    }
+  }
+
    Future<Widget> getCard(
       dynamic selectedKey, dynamic selectedObject, Svg svgImage) async {
     print("getCard()");
@@ -662,7 +720,14 @@ class BaseCommand {
         backgroundColor: AppColors.tsnAlmostBlack, 
         svgImage: svgImage,         
       );      
-    } else if (selectedKey == Constants.TRAINING) {
+    } 
+    else if (selectedKey == Constants.REQUESTSSENT ||
+        selectedKey == Constants.REQUESTSRECEIVED) {      
+      card =
+          await RequestsCommand().getRequestCard("EVENTREQUEST", selectedObject);
+      
+    } 
+    else if (selectedKey == Constants.TRAINING) {
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject], false);
       card = TSNTrainingCard(
@@ -697,6 +762,7 @@ class BaseCommand {
           svgImage: svgImage,
           userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
+
       dynamic playerDetails =
           await UserCommand().getUserDetails(selectedObject, false);
       card = TSNPlayerCard(

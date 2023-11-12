@@ -13,15 +13,15 @@ import '../get_join_event_widget.dart';
 import '../join_condition.dart';
 import '../rating_widget.dart';
 
-class TSNPickupCard extends StatelessWidget {
-  final dynamic pickupCardDetails;
+class TSNEventRequestCard extends StatelessWidget {
+  final dynamic eventRequestCardDetails;
   final Color backgroundColor;
   final Svg? svgImage;
   final double? width;
   final double? height;
 
-  TSNPickupCard({
-    required this.pickupCardDetails,
+  TSNEventRequestCard({
+    required this.eventRequestCardDetails,
     required this.backgroundColor,
     this.svgImage,
     this.width,
@@ -34,39 +34,18 @@ class TSNPickupCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     //event model data
-    dynamic mainEvent = pickupCardDetails['mainEvent'];
+    // dynamic mainEvent = eventRequestCardDetails['mainEvent'];
 
-    List<dynamic> roles = pickupCardDetails['roles'];
-    bool isMine = pickupCardDetails['isMine'];
-    String formattedEventTime = pickupCardDetails['formattedEventTime'];
-    bool isMember = pickupCardDetails['isMember'];
-    String amountRemaining = pickupCardDetails['amountRemaining'];
-    String amountPaid = pickupCardDetails['amountPaid'];
-    String teamAmountRemaining = pickupCardDetails['teamAmountRemaining'];
-    String teamAmountPaid = pickupCardDetails['teamAmountPaid'];
-    String location = pickupCardDetails['location'];
-    List organizers = pickupCardDetails['organizers'];
-    List fieldLocations = pickupCardDetails['fieldLocations'];
-    dynamic price = pickupCardDetails['price'];
-    JoinCondition eventRequestJoin = pickupCardDetails['eventRequestJoin'];
-    JoinCondition eventPaymentJoin = pickupCardDetails['eventPaymentJoin'];
-    JoinCondition teamRequestJoin = pickupCardDetails['teamRequestJoin'];
-    JoinCondition teamPaymentJoin = pickupCardDetails['teamPaymentJoin'];
-    int eventRating = pickupCardDetails['eventRating'];
-    int numberOfRatings = pickupCardDetails['numberOfRatings'];
-    int capacity = pickupCardDetails['capacity'];
-    int numberOfParticipants = pickupCardDetails['numberOfParticipants'];
-
-    print("fieldLocations: " + fieldLocations.toString());
+      
 
     return GestureDetector(
         onTap: () {
           // Handle tap on the entire card here
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PickupView(game: mainEvent)),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //       builder: (context) => EventRequestView(game: mainEvent)),
+          // );
           print("Card Clicked");
         },
         child: Card(
@@ -100,7 +79,8 @@ class TSNPickupCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(formattedEventTime,
+                                    Text(
+                                      "something",
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.xxs(context),
@@ -113,7 +93,8 @@ class TSNPickupCard extends StatelessWidget {
                                   children: [
                                     Icon(Icons.location_on,
                                         color: AppColors.tsnGreen),
-                                    Text(location.toString(),
+                                    Text(
+                                      "something",
                                         style: TextStyle(
                                           color: AppColors.tsnGrey,
                                           fontSize: FontSizes.xxs(context),
@@ -123,7 +104,7 @@ class TSNPickupCard extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    RatingWidget(rating: eventRating),
+                                    RatingWidget(rating: 5),
                                     // Icon(Icons.location_on,
                                     //     color: AppColors.tsnGreen),
                                     // Text(fieldLocations[0]['name'].toString(),
@@ -158,26 +139,16 @@ class TSNPickupCard extends StatelessWidget {
                                           // width: screenWidth * 0.35,
                                           backgroundColor:
                                               AppColors.tsnDarkGrey,
-                                          text: numberOfParticipants.toString()
-                                            +"/"+capacity.toString(),
+                                          text: 
+                                          "5/12",
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),
                                     //join widget
                                     Expanded(
                                       flex: 11,
-                                      child:
-                                        GetJoinEventWidget(
-                                            mainEvent: mainEvent,
-                                            roles: roles,
-                                            isMine: isMine,
-                                            price: price,
-                                            amountRemaining: amountRemaining,                                        
-                                            eventRequestJoin: eventRequestJoin,
-                                            eventPaymentJoin: eventPaymentJoin,
-                                            teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin                                                                                    
-                                        )
+                                      child: Text("something")
+                                        
                                     ),
                                     // Expanded(
                                     //     flex: 11,
@@ -215,7 +186,7 @@ class TSNPickupCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(mainEvent['name'],
+                                    Text("some request",
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.m(context),
@@ -234,7 +205,7 @@ class TSNPickupCard extends StatelessWidget {
                                       color: AppColors.tsnGreen,
                                     ),
                                     SizedBox(width: 6),
-                                    Text("Pickup",
+                                    Text("EventRequest",
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.xxs(context),
@@ -252,7 +223,7 @@ class TSNPickupCard extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    RatingWidget(rating: eventRating),                                    
+                                    RatingWidget(rating: 5),                                    
                                     // Text("BR 1a"),
                                     // Text("BR 1b"),
                                   ],
@@ -269,8 +240,7 @@ class TSNPickupCard extends StatelessWidget {
                                     SizedBox(width: 6),
                                     Text(
                                         "Host: " +
-                                            organizers[0]['user']['name']
-                                                .toString(),
+                                            "Arturo",
                                         style: TextStyle(
                                           color: AppColors.tsnGrey,
                                           fontSize: FontSizes.xxs(context),
