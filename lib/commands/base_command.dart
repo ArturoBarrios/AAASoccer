@@ -441,26 +441,26 @@ class BaseCommand {
       "data": null
     };
 
-    var deviceState = await OneSignal.shared.getDeviceState();
+    // var deviceState = await OneSignal.getDeviceState();
 
     //return if no deviceState is found
-    if (deviceState == null || deviceState.userId == null) {
-      print("no deviceState found");
-      return updateUserOSPIDResponse;
-    } else {
+    // if (deviceState == null || deviceState.userId == null) {
+    //   print("no deviceState found");
+    //   return updateUserOSPIDResponse;
+    // } else {
       //coming out to null
       print("deviceState found for userID: " + appModel.currentUser['_id']);
-      var playerId = deviceState.userId!;
+      // var playerId = deviceState.userId!;
       Map<String, dynamic> userInput = {
         '_id': appModel.currentUser['_id'],
-        "OSPID": playerId
+        // "OSPID": playerId
       };
       await UserCommand().updateUser(userInput);
 
       updateUserOSPIDResponse["success"] = true;
 
       return updateUserOSPIDResponse;
-    }
+    // }
   }
 
   Future<Map<String, dynamic>> setupUser(String email) async {

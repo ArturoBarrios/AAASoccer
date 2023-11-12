@@ -750,12 +750,12 @@ class UserCommand extends BaseCommand {
     try {
       // Add the following line to add Auth plugin to your app.
       // Pass in email provided by customer
-      OneSignal.shared.setEmail(email: appModel.currentUser['email']);
+      // OneSignal.shared.setEmail(email: appModel.currentUser['email']);
       print("phone number to set: " + appModel.currentUser['phone']);
       // Pass in phone number provided by customer
-      OneSignal.shared
-          .setSMSNumber(smsNumber: "1" + appModel.currentUser['phone']);
-      OneSignal.shared.sendTag("username", appModel.currentUser['username']);
+      // OneSignal.shared
+          // .setSMSNumber(smsNumber: "1" + appModel.currentUser['phone']);
+      // OneSignal.shared.sendTag("username", appModel.currentUser['username']);
 
       Map<String, dynamic> updateUserOSPIDResp = await updateUserOSPID();
 

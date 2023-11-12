@@ -15,6 +15,7 @@ import 'Buttons/circle_outline_icon.dart';
 import 'Buttons/custom_button.dart';
 import 'Cards/tsn_pickup_card.dart';
 import 'Loading/loading_icon.dart';
+import 'agreement_form_widget.dart';
 import 'custom_footer.dart';
 import 'logo_text.dart';
 
@@ -34,6 +35,26 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
     });
   }
 
+  void _showAgreementDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AgreementFormWidget(
+          title: 'Agreement Title',
+          bodyText: 'Your agreement text goes here...',
+          onAccept: () {
+            print("Accepted");
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          onReject: () {
+            print("Rejected");
+            Navigator.of(context).pop(); // Close the dialog
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -46,6 +67,23 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
         child: Column(children: [
           RatingWidget(rating: 5),
           CustomFooter(),
+          Center(
+        child: ElevatedButton(
+          onPressed: () => _showAgreementDialog(context),
+          child: Text("Show Agreement"),
+        ),
+      ),
+          // AgreementFormWidget(
+          //   title: "Terms and Conditions",
+          //   bodyText: "This is the body text",
+          //   onAccept: () {
+          //     print("Accepted");
+          //   },
+          //   onReject: () {
+          //     print("Rejected");
+          //   },
+
+          // ),
           // RatingDialogue(),
           
           SidewaysPillWidget(

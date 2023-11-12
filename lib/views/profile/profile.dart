@@ -118,6 +118,7 @@ class _ProfileState extends State<Profile> {
         return SplashScreen();
       case ViewStatus.completed:
         return Scaffold(
+          // extendBody: true,
           appBar: Headers(
             playerStepperButton: ButtonModel(
               prefixIconData: Icons.play_circle_fill_rounded,
@@ -138,15 +139,7 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
 
-                  ObjectProfileMainImage(objectImageInput: objectImageInput),
-                  
-                  Center( // Wrap the FollowContainer with a Center widget
-  child: Container( // Then, wrap it with a Container to specify width
-    width: MediaQuery.of(context).size.width * (2/5), // Set width to 3/5 of screen width
-    child: FollowContainer(userObject: widget.user),
-  ),
-),
-
+                  ObjectProfileMainImage(objectImageInput: objectImageInput),                  
                   const SizedBox(height: 10.0),
                   Text(
                     "@" + user['username'] ?? '',
@@ -275,9 +268,21 @@ class _ProfileState extends State<Profile> {
                   //     mainEvent: null, team: null, imageFor: Constants.USER),
 
                  
-                 Container(
+                 
+                ],
+              )
+            ],
+          ),
+          bottomNavigationBar: 
+          
+           Container(
                 margin: EdgeInsets.all(25),
                 child: 
+                Column(
+                   mainAxisSize: MainAxisSize.min, // Important to align at bottom
+      mainAxisAlignment: MainAxisAlignment.end, // Aligns children at the bottom
+                  children: [
+          isMine ?         
             BasicElevatedButton(
     backgroundColor: AppColors.tsnRed,
     text: "Sign Out",
@@ -285,11 +290,12 @@ class _ProfileState extends State<Profile> {
     onPressed: () async {
       BaseCommand().signOut();
     },
-  ))
-                ],
-              )
-            ],
-          ),
+  ) : 
+   
+                FollowContainer(userObject: widget.user),
+
+                ],))
+         
         );
     }
   }

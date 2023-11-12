@@ -45,95 +45,58 @@ class _SelectIconButton extends State<SelectIconButton> {
     final double cardHeight = MediaQuery.of(context).size.height * .1;
     final double cardImageWidth = cardWidth * .2;
     final double cardImageHeight = cardHeight * .2;
-    
 
     return GestureDetector(
-      onTap : () async {
-            print("onTap EventType");
-        widget.onTapEvent?.call();
-        await HomePageCommand().eventTypeTapped(widget.eventObject['key']);
-        await HomePageCommand().setCards();
-
-      },
-      child: Container(
-        width: cardWidth,
-        height: cardHeight,
-        padding: const EdgeInsets.all(15.0),
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            
-            Image(
-              width: cardImageWidth,
-              height: cardImageHeight,
-              image: widget.svgImage,
-              color: widget.eventObject['enabled'] ? 
-                AppColors.tsnLightGreen : 
-                AppColors.tsnGrey,
-            ),
-            
-            Text(widget.eventObject['name'],
-                textAlign: TextAlign.center,
-                style:  TextStyle(
-                  color: AppColors.tsnDarkGrey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: FontSizes.xxs(context),
-                )),            
-          ],
-        ),
-      ),
-    );
-
-    // return Listener(
-    //     child: GestureDetector(
-    //   onTap: () async {
-    //     print("onTap EventType");
-    //     widget.onTapEvent?.call();
-    //     await HomePageCommand().eventTypeTapped(widget.eventObject['key']);
-    //     await HomePageCommand().setCards();
-    //   },
-    //   child: AnimatedContainer(
-    //       duration: const Duration(milliseconds: 150),
-    //       padding: EdgeInsets.all(12.5),
-    //       decoration: BoxDecoration(
-    //         borderRadius: BorderRadius.circular(10.0 * 1),
-    //         gradient: LinearGradient(
-    //             begin: Alignment.topLeft,
-    //             end: Alignment.bottomRight,
-    //             colors: [
-    //               widget.eventObject['enabled'] ? selectedColor : color,
-    //               widget.eventObject['enabled'] ? selectedColor : color,
-    //               widget.eventObject['enabled'] ? selectedColor : color,
-    //               widget.eventObject['enabled'] ? selectedColor : color,
-    //             ],
-    //             stops: const [
-    //               0.0,
-    //               .3,
-    //               .6,
-    //               1.0,
-    //             ]),
-    //         boxShadow: _isPressed
-    //             ? null
-    //             : [
-    //                 BoxShadow(
-    //                   blurRadius: 10.0,
-    //                   offset: -Offset(10.0 / 2, 10.0 / 2),
-    //                   color: Colors.white,
-    //                 ),
-    //                 BoxShadow(
-    //                   blurRadius: widget.bevel,
-    //                   offset: Offset(10.0 / 2, 10.0 / 2),
-    //                   color: Colors.black,
-    //                 )
-    //               ],
-    //       ),
-    //       child: Container(
-    //           child: InnerNeumorphicCardFb1(
-    //               text: widget.eventObject['name'],
-    //               svgImage: widget.eventObject['image'],
-    //               subtitle: widget.eventObject['description'],
-    //               onPressed: () {}))),
-    // ));
+        onTap: () async {
+          print("onTap EventType");
+          widget.onTapEvent?.call();
+          await HomePageCommand().eventTypeTapped(widget.eventObject['key']);
+          await HomePageCommand().setCards();
+        },
+        child: Container(
+          width: cardWidth,
+          height: cardHeight,
+          padding: const EdgeInsets.all(15.0),
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image(
+                width: cardImageWidth,
+                height: cardImageHeight,
+                image: widget.svgImage,
+                color: widget.eventObject['enabled']
+                    ? AppColors.tsnLightGreen
+                    : AppColors.tsnGrey,
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.eventObject['name'],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.tsnDarkGrey,
+                      fontWeight: FontWeight.bold,
+                      fontSize: FontSizes.xxs(context),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 0), // Adjust space between text and dot
+                    width: 10, // Size of the red dot
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: AppColors.tsnRed, // Color of the dot
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
   }
 }
 

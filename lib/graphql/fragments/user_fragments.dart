@@ -20,6 +20,7 @@ class UserFragments {
               mainImageKey
               isProfilePrivate
               updatedAt
+              hasAcceptedTermsAndConditions
               followers{
                 data{
                   follower{
