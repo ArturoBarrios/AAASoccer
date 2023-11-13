@@ -136,6 +136,7 @@ class HomePageModel extends ChangeNotifier {
       "image": SVGWidgets().pickup(),
       "showExplore": false,
       "showMyActivity": true,
+      "new": true,
     },
     Constants.PICKUP: {
       "key": Constants.PICKUP,

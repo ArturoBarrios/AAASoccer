@@ -4,23 +4,27 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:soccermadeeasy/views/home.dart';
 import '../commands/home_page_command.dart';
+import '../constants.dart';
 import '../models/pageModels/home_page_model.dart';
 import '../styles/colors.dart';
 import '../styles/font_sizes.dart';
 
 class SelectIconButton extends StatefulWidget {
-  const SelectIconButton(
+   SelectIconButton(
       {Key? key,
       required this.eventObject,
       required this.svgImage,
-      required this.index,
-      this.onTapEvent})
+      required this.index,      
+      this.onTapEvent,
+      this.showNew
+      })
       : super(key: key);
   final dynamic eventObject;
   final Svg svgImage;
   final double bevel = 10.0;
   final int index;
   final VoidCallback? onTapEvent;
+   bool? showNew;
 
   @override
   State<SelectIconButton> createState() => _SelectIconButton();
@@ -46,19 +50,25 @@ class _SelectIconButton extends State<SelectIconButton> {
     final double cardImageWidth = cardWidth * .2;
     final double cardImageHeight = cardHeight * .2;
 
+    print("showNew: " + widget.showNew.toString());
     return GestureDetector(
         onTap: () async {
           print("onTap EventType");
           widget.onTapEvent?.call();
           await HomePageCommand().eventTypeTapped(widget.eventObject['key']);
           await HomePageCommand().setCards();
+          if(widget.eventObject['key'] == Constants.REQUESTSRECEIVED){
+            print("niceeeeeeeeeeeeee");
+            widget.showNew = false;
+          }
         },
         child: Container(
           width: cardWidth,
           height: cardHeight,
           padding: const EdgeInsets.all(15.0),
           color: Colors.transparent,
-          child: Column(
+          child: 
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -82,6 +92,7 @@ class _SelectIconButton extends State<SelectIconButton> {
                       fontSize: FontSizes.xxs(context),
                     ),
                   ),
+                  (widget.showNew != null && widget.showNew! )? 
                   Container(
                     margin: EdgeInsets.only(
                         left: 0), // Adjust space between text and dot
@@ -91,7 +102,8 @@ class _SelectIconButton extends State<SelectIconButton> {
                       color: AppColors.tsnRed, // Color of the dot
                       shape: BoxShape.circle,
                     ),
-                  ),
+                  ) : Container(),
+                  
                 ],
               ),
             ],

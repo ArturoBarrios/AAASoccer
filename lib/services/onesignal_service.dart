@@ -1,8 +1,13 @@
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import '../commands/base_command.dart';
+
 class OneSignalService {
   Future<void> configureOneSignal() async {
     print("configureOneSignal");
+    OneSignal.initialize("aeb22176-60a9-4077-b161-69381a79fa94");
+    OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+    OneSignal.Notifications.requestPermission(true);
     //Remove this method to stop OneSignal Debugging
     // OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
@@ -14,10 +19,27 @@ class OneSignalService {
     // });
   }
 
+  Future<void> login(String externalId) async{
+    OneSignal.login(externalId);
+    if(OneSignal.User != null){
+      print("OneSignal.User: "+OneSignal.User.toString());
+    }
+    else{
+      BaseCommand().updateUserOSPID();
+    }
+
+  }
+
+  
+
   Future<void> sendPN(Map<String, dynamic> pNInput) async {
     print("sendPNN");
     // var deviceState = await OneSignal.shared.getDeviceState();
     print("OSPIDs: " + pNInput.toString());
+
+    
+    // https://documentation.onesignal.com/docs/mobile-sdk
+    
 
     // if (deviceState == null || deviceState.userId == null) {
     //   print("if (deviceState == null || deviceState.userId == null)");

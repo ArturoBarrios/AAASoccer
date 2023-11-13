@@ -462,6 +462,9 @@ class _Home extends State<Home> {
     super.initState();
     // updateUpdatedCards(true);
     loadInitialData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showAgreementDialogues(context);
+    });
   }
 
   Future<void> onReload() async {
@@ -478,6 +481,11 @@ class _Home extends State<Home> {
       return false;
     }
   }
+
+  showAgreementDialogues(BuildContext context){
+    BaseCommand().showAgreementDialog(context);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -588,7 +596,6 @@ class _Home extends State<Home> {
             ),
             body:
 
-                // !selectedPages[Constants.LOCATIONSPAGE]['enabled'] ?
 
                 RefreshIndicator(
               onRefresh: onReload,
@@ -596,6 +603,8 @@ class _Home extends State<Home> {
                 children: <Widget>[
                   Column(
                     children: [
+                      
+                      
                       Padding(
                           padding: EdgeInsets.all(10.0),
                           child: Row(
@@ -631,6 +640,8 @@ class _Home extends State<Home> {
                                 eventObject: enabledSelections2[key],
                                 svgImage: enabledSelections2[key]['image'],
                                 index: index,
+                                showNew: key == Constants.REQUESTSRECEIVED ? 
+                                  enabledSelections2[key]['new'] : false,
                                 onTapEvent: () => isFilteringEnabled
                                     ? clearFiltering(isPop: false)
                                     : null,
