@@ -167,6 +167,8 @@ class _PickupViewState extends State<PickupView> {
     JoinCondition eventPaymentJoin = context.watch<EventPageModel>().eventPaymentJoin;
     JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
     JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
+    int numberOfParticipants = context.watch<EventPageModel>().numberOfParticipants;
+    int capacity = context.watch<EventPageModel>().capacity;
 
 return _isLoading 
           ? 
@@ -301,9 +303,9 @@ return _isLoading
                       //     players: players,
                       //     isMine: isMine,
                       //     updatechatsList: updateChatsList),
-                      ChatsListWidget(
-                        chats: chats,
-                      ),
+                      // ChatsListWidget(
+                      //   chats: chats,
+                      // ),
                       // Player price widget
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -333,10 +335,10 @@ return _isLoading
                         ],
                       ),
                       const SizedBox(height: 20),
-                      // PaymentListWidget(
-                      //   paidUsers: widget.getPaidUsers(userParticipants, payments),
-                      //   paymentType: PaymentType.user,
-                      // ),
+                      PaymentListWidget(
+                        paidUsers: widget.getPaidUsers(userParticipants, payments),
+                        paymentType: PaymentType.user,
+                      ),
                       // const SizedBox(height: 60),
                       // ImagesListWidget(
                       //     mainEvent: mainEvent,
@@ -359,10 +361,17 @@ return _isLoading
           child:  //join widget
                       GetJoinEventWidget(
                           mainEvent: mainEvent,
-                          roles: roles,
-                          isMine: isMine,
-                          price: price,
-                          amountRemaining: amountRemaining),
+                                            roles: roles,
+                                            isMine: isMine,
+                                            price: price,
+                                            amountRemaining: amountRemaining,                                        
+                                            eventRequestJoin: eventRequestJoin,
+                                            eventPaymentJoin: eventPaymentJoin,
+                                            teamRequestJoin: teamRequestJoin,
+                                            teamPaymentJoin: teamPaymentJoin     ,
+                                            capacity: capacity,
+                    numberOfPlayers: numberOfParticipants,    
+                          ),
           ),
     );
   }

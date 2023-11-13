@@ -160,7 +160,9 @@ class TSNTournamentCard extends StatelessWidget {
                                             eventRequestJoin: eventRequestJoin,
                                             eventPaymentJoin: eventPaymentJoin,
                                             teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin                                                                                    
+                                            teamPaymentJoin: teamPaymentJoin        ,
+                                            capacity: 10,
+                    numberOfPlayers: 5,                                                                            
                                         )
                                     ),
                                     // Expanded(

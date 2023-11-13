@@ -189,7 +189,11 @@ class _TrainingViewState extends State<TrainingView> {
                     roles: roles,
                     isMine: isMine,
                     price: price,
-                    amountRemaining: amountRemaining),
+                    amountRemaining: amountRemaining,
+                    capacity: 10,
+                    numberOfPlayers: 5,
+                    
+                    ),
                 //Requests widget
                 RequestsList(
                     objectDetails: {"requests": mainEvent['requests']['data']}),

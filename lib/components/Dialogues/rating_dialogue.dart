@@ -59,7 +59,7 @@ class _RatingDialogueState extends State<RatingDialogue> {
 
     print("eventRatingInput: "+ eventRatingInput.toString());
 
-    // RatingCommand().createRatingForEvent(eventRatingInput);
+    RatingCommand().createRatingForEvent(eventRatingInput);
   }
 
    @override

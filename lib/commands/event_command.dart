@@ -1249,8 +1249,7 @@ class EventCommand extends BaseCommand {
       // eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
       isMyEventResp['userParticipants'] =
           isMyEventResp['mainEvent']['userParticipants']['data'];
-      isMyEventResp['roles'] = getEventRoles(
-          appModel.currentUser, isMyEventResp['userParticipants']);
+      isMyEventResp['roles'] = getEventRoles(appModel.currentUser, isMyEventResp['userParticipants']);
       print("isMyEventResp['roles']: " + isMyEventResp['roles'].toString());
       isMyEventResp['isMine'] = isMyEventResp['roles'].contains("ORGANIZER");
       isMyEventResp['isMember'] = isMyEventResp['roles'].contains("PLAYER");

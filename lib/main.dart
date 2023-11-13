@@ -20,7 +20,9 @@ import 'package:soccermadeeasy/utils.dart';
 import 'package:soccermadeeasy/widgets/intl_phone_number_filed.dart';
 import 'commands/base_command.dart';
 import 'commands/player_command.dart';
+import 'components/headers.dart';
 import 'components/logo_text.dart';
+import 'components/models/button_model.dart';
 import 'models/pageModels/app_model.dart';
 import 'models/pageModels/chat_page_model.dart';
 import 'models/pageModels/event_page_model.dart';
@@ -367,15 +369,24 @@ class _MyAppState extends State<MyApp> {
                 case AuthenticatorStep.signIn:
                   return Scaffold(
                     backgroundColor: AppColors.tsnWhite,
-                    appBar: AppBar(
-                      backgroundColor: AppColors.tsnBlack,
-                      elevation: 0,
-                      title: LogoTextWidget(
-                                width: 200.0,
-                                height: 30.0, //Replace with your actual image provider
-                                backgroundColor: Colors.transparent,
-                              ),
-                    ),
+                    appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
+                      return const OnboardingView();
+                    },
+                  ));
+                },
+              ),
+              filterButton: ButtonModel(
+                prefixIconData: false
+                    ? Icons.filter_alt_off
+                    : Icons.filter_alt,
+                onTap: () => {}
+              ),
+            ).getMainHeader(context),
                     body: Padding(
                       padding: const EdgeInsets.all(20),
                       child: 

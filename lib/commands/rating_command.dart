@@ -88,8 +88,7 @@ class RatingCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      dynamic result = jsonDecode(response.body)['data']['updateEventReputation'];
-      print("getGamesNearLocation length: " + result.length.toString());
+      dynamic result = jsonDecode(response.body)['data']['createEventRating'];      
 
       createRatingForEventResp["success"] = true;
       createRatingForEventResp["message"] = "Rating for Event Created";

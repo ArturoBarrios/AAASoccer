@@ -176,7 +176,9 @@ class TSNPickupCard extends StatelessWidget {
                                             eventRequestJoin: eventRequestJoin,
                                             eventPaymentJoin: eventPaymentJoin,
                                             teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin                                                                                    
+                                            teamPaymentJoin: teamPaymentJoin     ,
+                                            capacity: capacity,
+                    numberOfPlayers: numberOfParticipants,                                                                               
                                         )
                                     ),
                                     // Expanded(

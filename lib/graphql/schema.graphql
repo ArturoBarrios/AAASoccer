@@ -267,6 +267,7 @@ type User  {
   ratings: [Rating] @relation
   eventRatings: [EventRating] @relation
   hasAcceptedTermsAndConditions: Boolean @default(value: false)
+  hasAcceptedPrivacyPolicy: Boolean @default(value: false)
 }
 
 type Player   {

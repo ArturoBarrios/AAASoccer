@@ -146,20 +146,20 @@ class TSNTrainingCard extends StatelessWidget {
                                     SizedBox(width: 6),
                                     //join widget
                                     Expanded(
-                                      flex: 11,
-                                      child:
-                                        GetJoinEventWidget(
-                                            mainEvent: mainEvent,
-                                            roles: roles,
-                                            isMine: isMine,
-                                            price: price,
-                                            amountRemaining: amountRemaining,                                        
-                                            eventRequestJoin: eventRequestJoin,
-                                            eventPaymentJoin: eventPaymentJoin,
-                                            teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin                                                                                    
-                                        )
-                                    ),
+                                        flex: 11,
+                                        child: GetJoinEventWidget(
+                                          mainEvent: mainEvent,
+                                          roles: roles,
+                                          isMine: isMine,
+                                          price: price,
+                                          amountRemaining: amountRemaining,
+                                          eventRequestJoin: eventRequestJoin,
+                                          eventPaymentJoin: eventPaymentJoin,
+                                          teamRequestJoin: teamRequestJoin,
+                                          teamPaymentJoin: teamPaymentJoin,
+                                          capacity: 10,
+                                          numberOfPlayers: 5,
+                                        )),
                                   ],
                                 ),
                               ],

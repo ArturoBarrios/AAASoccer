@@ -22,8 +22,23 @@ class RatingFragments{
    String fullEventRating(){
      String ratingObjectString = r'''      
         	_id
-          ratings
-          ratingCategories                           
+          eventRating
+          hostRating
+          fieldLocationRating
+          eventFeedback
+          hostFeedback
+          fieldLocationFeedback
+          fieldLocation{
+            _id            
+          }    
+          event{
+            _id
+          }
+          user{
+            _id
+          }
+
+              
     ''';
 
     return ratingObjectString;

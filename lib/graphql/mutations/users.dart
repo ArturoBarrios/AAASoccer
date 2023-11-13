@@ -140,6 +140,38 @@ class UserMutations {
     return updateUserString;
   }
 
+  String updateUserTermsAgreement(Map<String, dynamic> userInput) {
+    String updateUserString = """      
+      mutation {
+        updateUser(id: ${userInput['userId']},
+  				data: {            
+            hasAcceptedTermsAndConditions: ${userInput['hasAcceptedTermsAndConditions']}                                                                                
+          }                      
+        ){
+          ${UserFragments().fullUser()}                                  			
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+  
+  String updatePrivatePolicy(Map<String, dynamic> userInput) {
+    String updateUserString = """      
+      mutation {
+        updateUser(id: ${userInput['userId']},
+  				data: {            
+            hasAcceptedPrivacyPolicy: ${userInput['hasAcceptedPrivacyPolicy']}                                                                                
+          }                      
+        ){
+          ${UserFragments().fullUser()}                                  			
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
   String followUser(dynamic followUserInput) {
     String addFriendString = """      
       mutation {

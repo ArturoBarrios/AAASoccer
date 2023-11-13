@@ -29,6 +29,8 @@ class GetJoinEventWidget extends StatefulWidget with EventMixin {
     this.eventPaymentJoin,
     this.teamRequestJoin,
     this.teamPaymentJoin,
+    required this.capacity,
+    required this.numberOfPlayers
   }) : super(key: key);
 
   final dynamic mainEvent;
@@ -40,6 +42,8 @@ class GetJoinEventWidget extends StatefulWidget with EventMixin {
   final bool isMine;
   final dynamic price;
   final String amountRemaining;
+  final int capacity;
+  final int numberOfPlayers;
 
   @override
   State<GetJoinEventWidget> createState() => _GetJoinEventWidgetState();
@@ -212,6 +216,8 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
     print("rolesss: " + widget.roles.toString());
     List<dynamic> existingRoles = widget.roles;
+    print("aaaaa");
+    
     //expired
    // Assuming widget.mainEvent['endTime'] is a String representing milliseconds since Epoch
 if (widget.mainEvent['endTime'] != null &&
@@ -228,8 +234,23 @@ if (widget.mainEvent['endTime'] != null &&
 
 }
 
+    //capacity(Join waitlist feature)
+    else if(widget.numberOfPlayers>=widget.capacity){
+      return 
+          BasicElevatedButton(                                
+                backgroundColor:
+                    AppColors.tsnGreen,
+                text: "Join Waitlist",
+                fontSize: FontSizes.xxs(context),
+                onPressed: () async{
+                  // purchaseEvent(context, event);
+                },
+              );
+
+    }
     //if not already a player
-    else if (!widget.roles.contains("PLAYER")) {      
+    else if (!widget.roles.contains("PLAYER")) {   
+      
       if (widget.isMine) {
         return 
         Container(
@@ -256,6 +277,7 @@ if (widget.mainEvent['endTime'] != null &&
             !widget.eventRequestJoin!.required.value) {
           //price exists(join with paying or not paying)
           if (widget.price != null) {
+           
             return Container(
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -275,6 +297,7 @@ if (widget.mainEvent['endTime'] != null &&
                     },
                     child: Text("Join, Pay Now"),
                   ),
+                  
                   Container(
                       child: GestureDetector(
                     onTap: () async {

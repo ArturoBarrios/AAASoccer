@@ -44,9 +44,8 @@ String createEventRating(
                                   
         }) {
           ${RatingFragments().fullEventRating()}
-          }                                  
-        }
-      }
+        }                                  
+    }
       """;
 
     return createEventRating;
