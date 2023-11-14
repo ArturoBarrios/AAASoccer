@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Dialogues/congrats_dialogue.dart';
 import 'package:soccermadeeasy/components/Dialogues/rating_dialogue.dart';
+import 'package:soccermadeeasy/components/amenities_selection_widget.dart';
 import 'package:soccermadeeasy/components/logo.dart';
 import 'package:soccermadeeasy/components/rating_widget.dart';
 import 'package:soccermadeeasy/components/sideways_pill_widget.dart';
@@ -8,6 +9,7 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 
 import '../commands/base_command.dart';
 import '../commands/subscriptions_command.dart';
+import '../models/enums/AmenityType.dart';
 import '../styles/colors.dart';
 import '../styles/font_sizes.dart';
 import 'Buttons/basic_elevated_button.dart';
@@ -55,6 +57,13 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
     );
   }
 
+  void test(){
+
+  }
+
+  List<AmenityType> availableAmenities = [AmenityType.BATHROOMS, AmenityType.BUS, AmenityType.TURF, AmenityType.BIKESTATION, AmenityType.PINNIES];
+  List<AmenityType> selectedAmenities = [];
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -67,6 +76,19 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
         child: Column(children: [
           RatingWidget(rating: 5),
           CustomFooter(),
+          ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 300, // You can adjust this height
+      ),
+      child: AmenitiesSelectionWidget(
+        amenities: availableAmenities,
+        onSelectionChanged: (newSelection) {
+          setState(() {
+            selectedAmenities = newSelection;
+          });
+        },
+      ),
+    ),
           Center(
         child: ElevatedButton(
           onPressed: () => _showAgreementDialog(context),

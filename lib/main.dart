@@ -501,15 +501,24 @@ class _MyAppState extends State<MyApp> {
 
                 case AuthenticatorStep.signUp:
                   return Scaffold(
-                    appBar: AppBar(
-                      backgroundColor: AppColors.tsnBlack,
-                      elevation: 0,
-                      title: LogoTextWidget(
-                                width: 200.0,
-                                height: 30.0, //Replace with your actual image provider
-                                backgroundColor: Colors.transparent,
-                              ),
-                    ),
+                    appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
+                      return const OnboardingView();
+                    },
+                  ));
+                },
+              ),
+              filterButton: ButtonModel(
+                prefixIconData: false
+                    ? Icons.filter_alt_off
+                    : Icons.filter_alt,
+                onTap: () => {}
+              ),
+            ).getMainHeader(context),
                     backgroundColor: AppColors.tsnWhite,
                     body: SingleChildScrollView(
                       padding: const EdgeInsets.all(24),

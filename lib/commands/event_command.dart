@@ -17,6 +17,7 @@ import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
 import '../components/join_condition.dart';
 import '../graphql/queries/events.dart';
+import '../models/enums/AmenityType.dart';
 import '../views/social_media_cards_view/social_media_cards_view.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -1173,7 +1174,8 @@ class EventCommand extends BaseCommand {
       "fieldRating": 4,
       "numberOfFieldRatings": 0,
       "numberOfParticipants": 0,
-      "capacity": 0
+      "capacity": 0,
+      "amenities": []
     };
     print("events length: " + events.length.toString());
 
@@ -1223,12 +1225,18 @@ class EventCommand extends BaseCommand {
       isMyEventResp['mainEvent'] = event;
       isMyEventResp['allEvents'] = events;
 
+      String amenitiesString = event['amenities'] == null ? "{}" : event['amenities'];
+      List<AmenityType> amenitiesList = BaseCommand().parseAmenities(amenitiesString);
+      isMyEventResp['amenities'] = amenitiesList;
+      
+
       // eventPageModel.mainEvent = event;
       // eventPageModel.allEvents = events;
       // print("eventPageModel.mainEvent['joinConditions']: " + eventPageModel.mainEvent['joinConditions'].toString());
       //join conditions
       isMyEventResp['mainEvent']['joinConditions']['data']
           .forEach((joinCondition) {
+            print("joinConditionn: " + joinCondition.toString());
         if (joinCondition['forEvent'] != null) {
           isMyEventResp['eventRequestJoin'] = new JoinCondition(
               label: "Join With Request",
@@ -1277,6 +1285,7 @@ class EventCommand extends BaseCommand {
       isMyEventResp['numberOfParticipants'] = isMyEventResp['players'].length;
 
       isMyEventResp['price'] = isMyEventResp['mainEvent']['price'];
+      print("isMyEventResp['price']: " + isMyEventResp['price'].toString());
 
       isMyEventResp['payments'] =
           isMyEventResp['mainEvent']['payments']['data'];
@@ -1336,6 +1345,9 @@ class EventCommand extends BaseCommand {
         eventPageModel.capacity = isMyEventResp['capacity'];
         eventPageModel.numberOfParticipants =
             isMyEventResp['numberOfParticipants'];
+        eventPageModel.formattedEventTime =
+            isMyEventResp['formattedEventTime'];
+        eventPageModel.amenities = isMyEventResp['amenities'];
       }
 
       print("successfully ran details function");

@@ -19,6 +19,7 @@ class PlayerMutations {
                   longitude: ${locationInput['longitude']}
                 }
               }
+              isSuperUser: false
             }
           } 
           }) {

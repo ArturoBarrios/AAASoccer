@@ -2,7 +2,9 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/views/game/view.dart';
+import '../../commands/base_command.dart';
 import '../../components/Validator.dart';
+import '../../components/amenities_selection_widget.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
@@ -16,6 +18,7 @@ import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/models/button_model.dart';
 import '../../components/models/custom_stepper_model.dart';
+import '../../models/enums/AmenityType.dart';
 import '../../models/enums/EventType.dart';
 import '../../strings.dart';
 
@@ -36,6 +39,9 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final imageController = TextEditingController();
+
+  List<AmenityType> availableAmenities = [AmenityType.BATHROOMS, AmenityType.BUS, AmenityType.TURF, AmenityType.BIKESTATION, AmenityType.PINNIES];
+  List<AmenityType> selectedAmenities = [];
 
   final Map<String, dynamic> locationInput = {
     "name": "",
@@ -84,24 +90,29 @@ class _GameCreateState extends State<GameCreate> {
           1000);
   bool startTimeSet = false;
 
+
+
   Future<void> createPickupGame() async {
     print("createGame");
     try {
+      String parsedSelectedAmenities = BaseCommand().formatAmenitiesForGraphQL(selectedAmenities);
       print("priceee: ${priceController.text}");
+      double priceDouble = double.parse(priceController.text.toString());
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
         "capacity": capacityController.text.toString(),
         'isMainEvent': true,
-        'price': double.parse(priceController.text.toString()),
+        'price': priceDouble,
         'startTime': startTimestamp,
         'endTime': endTimestamp,
-        'withRequest': createEventRequestWidget.withRequest.value,
-        'withPayment': createEventPaymentWidget.withPayment.value,
-        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
-        'withTeamRequest': createTeamRequestWidget.withRequest.value,
+        'withRequest': false,//createEventRequestWidget.withRequest.value,
+        'withPayment': priceDouble==0 ? false : true, //createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': false,
+        'withTeamRequest': false,
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
+        'amenities': parsedSelectedAmenities.toString(),
       };
       dynamic pickupData = {
         "pickup": true,
@@ -268,6 +279,23 @@ class _GameCreateState extends State<GameCreate> {
           createEventPaymentWidget,
           createTeamRequestWidget,
           createTeamPaymentWidget,
+        ],
+      ),
+      CustomStepperModel(
+        widgets: [
+          ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 300, // You can adjust this height
+      ),
+      child: AmenitiesSelectionWidget(
+        amenities: availableAmenities,
+        onSelectionChanged: (newSelection) {
+          setState(() {
+            selectedAmenities = newSelection;
+          });
+        },
+      ),
+    ),
         ],
       ),
     ];

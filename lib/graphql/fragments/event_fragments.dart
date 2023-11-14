@@ -59,6 +59,7 @@ class EventFragments {
       endTime  
       capacity
       createdAt    
+      amenities
       eventRatings{
         data{
           _id
@@ -178,6 +179,7 @@ class EventFragments {
           user{
             _id
             name
+            username
           }
           event{
             _id

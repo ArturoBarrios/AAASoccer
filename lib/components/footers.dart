@@ -37,6 +37,9 @@ class Footers extends StatefulWidget {
         context.select<AppModel, Map<dynamic, dynamic>>(
             (value) => value.selectedPages);
 
+
+    bool isSuperUser = context.watch<AppModel>().isSuperUser;
+
     int selectIndex = 0;
     Map<String, Widget Function(BuildContext)> pages = {
       "Pickup Game": (context) => const GameCreate(),
@@ -130,7 +133,8 @@ class Footers extends StatefulWidget {
           }).toList(),
         ),
       ),
-    ),
+    ),    
+    if(isSuperUser!=null && isSuperUser)
     Positioned(
       left: 0,
       right: 0,

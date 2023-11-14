@@ -74,8 +74,8 @@ class _ProfileState extends State<Profile> {
   Future<void> loadInitialData() async {
     await UserCommand().getUserDetails(widget.user, true);
     await ProfilePageCommand().setEvents();
-    await ProfilePageCommand().setTeams();
-    await ProfilePageCommand().setTeamCards();
+    // await ProfilePageCommand().setTeams();
+    // await ProfilePageCommand().setTeamCards();
     await ProfilePageCommand().setEventCards();
     changeViewStatus(ViewStatus.completed);
   }
@@ -109,6 +109,8 @@ class _ProfileState extends State<Profile> {
 
     bool teamCardsLoading = context.watch<ProfilePageModel>().teamCardsLoading;
     bool eventCardsLoading = context.watch<ProfilePageModel>().eventCardsLoading;
+
+    print("profile user: "+ user.toString());
 
     print("profile details: ");
     print("eventUserParticipants: "+ eventUserParticipants.toString());
@@ -236,20 +238,20 @@ class _ProfileState extends State<Profile> {
                       ],
                     ),
                   ),        
-                   teamCardsLoading 
-              ? LoadingScreen(
-                  currentDotColor: Colors.white,
-                  defaultDotColor: Colors.black,
-                  numDots: 10,
-                )
-              :                            
-                  TeamsListWidget(
-                    user: user,
-                    mainEvent: null,
-                    teams: teams,
-                    teamUserParticipants: teamUserParticipants,
-                    teamCards: teamCards,
-                  ),
+              //      teamCardsLoading 
+              // ? LoadingScreen(
+              //     currentDotColor: Colors.white,
+              //     defaultDotColor: Colors.black,
+              //     numDots: 10,
+              //   )
+              // :                            
+              //     TeamsListWidget(
+              //       user: user,
+              //       mainEvent: null,
+              //       teams: teams,
+              //       teamUserParticipants: teamUserParticipants,
+              //       teamCards: teamCards,
+              //     ),
                    eventCardsLoading 
               ? LoadingScreen(
                   currentDotColor: Colors.white,

@@ -18,8 +18,8 @@ class LogoTextWidget extends StatefulWidget {
     
   }) : super(key: key);
 
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final Color backgroundColor;
   late bool hasAnimation;
   final Color? textColor;
@@ -63,8 +63,8 @@ class _LogoTextWidgetState extends State<LogoTextWidget> with SingleTickerProvid
           turns: _animation,
           child:
           Image(
-            width: widget.height, // Using height to keep the image square
-            height: widget.height,
+            width: 30,//widget.height, // Using height to keep the image square
+            height: 30,//widget.height,
             image: logo,
             color: AppColors.tsnLightGreen,
           )),

@@ -61,7 +61,8 @@ class UserCommand extends BaseCommand {
           await UserCommand().findUserById(user);
       print("findMyUserByIdResp: $findMyUserByIdResp");
       if (findMyUserByIdResp['success']) {
-        // profilePageModel.user = findMyUserByIdResp['data'];
+        profilePageModel.user = findMyUserByIdResp['data'];
+        user = findMyUserByIdResp['data'];
         String? key = user['mainImageKey'];
         print("key: $key");
         if (key != null) {

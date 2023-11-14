@@ -90,7 +90,8 @@ dependencies:
   # Mask input filed formatter
   mask_text_input_formatter: ^2.5.0
 
-  webview_flutter: ^4.2.2
+  webview_flutter: ^4.2.2  
+  google_sign_in: '^4.5.1'
 
 dependency_overrides:
   rxdart: ^0.27.1

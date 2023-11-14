@@ -26,14 +26,18 @@ class Headers extends StatefulWidget {
   AppBar getMainHeader(BuildContext context) {
     AppBar appBar = AppBar(      
       elevation: 5,
-      centerTitle: true,
-      title: LogoTextWidget(
+      // centerTitle: true,
+      title: //Text("hiiiiii"),
+      Row(
+          mainAxisSize: MainAxisSize.min,
+          children:[
+      LogoTextWidget(
         width: 200.0,
         height: 30.0, //Replace with your actual image provider
         backgroundColor: Colors.transparent,      
         fontSize: FontSizes.xs(context),
           
-      ),
+    )] ),
       backgroundColor: AppColors.tsnBlack,
       // actions: [
       //   Padding(

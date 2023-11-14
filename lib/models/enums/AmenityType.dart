@@ -1,0 +1,9 @@
+enum AmenityType {
+  BATHROOMS,
+  WATERFOUNDATIN,
+  BIKESTATION,
+  TRAIN,
+  BUS,
+  TURF,
+  PINNIES,
+}

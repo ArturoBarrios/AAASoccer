@@ -9,14 +9,14 @@ import 'pop_menu_button.dart';
 class PaymentListWidget extends StatelessWidget {
   const PaymentListWidget({
     Key? key,
-    this.paidUsers,
+    this.payments,
     this.categorizedPaidUsers,
     this.paymentType,
     this.onTapPayment,
     this.onTapPaymentOption,
   }) : super(key: key);
 
-  final List<dynamic>? paidUsers;
+  final List<dynamic>? payments;
   final PaymentType? paymentType;
   final Map<String, List<dynamic>>? categorizedPaidUsers;
   final Function(int?)? onTapPayment;
@@ -24,6 +24,7 @@ class PaymentListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("payments: "+ payments.toString());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -71,13 +72,13 @@ class PaymentListWidget extends StatelessWidget {
               );
             },
           ),
-        if (paidUsers != null)
+        if (payments != null)
           Column(
-            children: paidUsers
-                    ?.mapIndexed((final index, final user) => ListTile(
+            children: payments
+                    ?.mapIndexed((final index, final payment) => ListTile(
                           contentPadding: EdgeInsets.zero,
                           minLeadingWidth: 0,
-                          title: Text(user['user']['username']),
+                          title: Text(payment['user']['username']),
                           leading: const Icon(Icons.credit_card),
                           trailing: PopMenuButton(
                             optionList: const [

@@ -7,6 +7,7 @@ import '../../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../../constants.dart';
 import '../appModels/Price.dart';
+import '../enums/AmenityType.dart';
 
 class EventPageModel extends ChangeNotifier {  
 
@@ -264,6 +265,13 @@ class EventPageModel extends ChangeNotifier {
   int get capacity => _capacity;
   set capacity(int capacity) {
     _capacity = capacity;
+    notifyListeners();
+  }  
+  
+  List<AmenityType> _amenities = [];
+  List<AmenityType> get amenities => _amenities;
+  set amenities(List<AmenityType> amenities) {
+    _amenities = amenities;
     notifyListeners();
   }  
 

@@ -136,15 +136,21 @@ mixin EventMixin {
     List userParticipants,
     List payments,
   ) {
-    Set<String> paymentIds =
-        payments.map((payment) => payment['user']['_id'].toString()).toSet();
+    // Set<String> paymentIds =
+    //     payments.map((payment) => payment['user']['_id'].toString()).toSet();
 
-    final paidUsers = userParticipants
-        .where((participant) =>
-            paymentIds.contains(participant['user']?['_id'].toString()))
-        .toList();
+    // final paidUsers = userParticipants
+    //     .where((participant) =>
+    //         paymentIds.contains(participant['user']?['_id'].toString()))
+    //     .toList();
 
-    return paidUsers;
+List<Map<String, dynamic>> paymentInfo = 
+    payments.map((payment) => {
+        'payment': payment, // Replace 'id' with the actual key for payment ID        
+    }).toList();
+
+
+    return payments;
   }
 
   

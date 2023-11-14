@@ -205,6 +205,13 @@ class AppModel extends ChangeNotifier {
  
  
 
+  bool _isSuperUser = false;
+  bool get isSuperUser => _isSuperUser;
+  set isSuperUser(bool isSuperUser) {
+    _isSuperUser = isSuperUser;
+    notifyListeners();
+  }
+
   bool _onboarded = false;
   bool get onboarded => _onboarded;
   set onboarded(bool onboarded) {

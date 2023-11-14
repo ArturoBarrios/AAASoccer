@@ -17,6 +17,7 @@ import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/images_mixin.dart';
 import '../../components/Mixins/payment_mixin.dart';
 import '../../components/Mixins/event_mixin.dart';
+import '../../components/amenities_selection_widget.dart';
 import '../../components/chats_list_widget.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
@@ -40,9 +41,12 @@ import '../../components/rsvp_widget.dart';
 import '../../components/send_players_request_widget.dart';
 import '../../components/send_teams_request_widget.dart';
 import '../../components/teams_list_widget.dart';
+import '../../models/enums/AmenityType.dart';
 import '../../models/enums/RsvpStatus.dart';
 import '../../models/pageModels/chat_page_model.dart';
 import '../../models/pageModels/event_page_model.dart';
+import '../../styles/colors.dart';
+import '../../styles/font_sizes.dart';
 import '../profile/profile.dart';
 import '../../components/payment_screen.dart';
 import '../../commands/location_command.dart';
@@ -82,8 +86,8 @@ class _PickupViewState extends State<PickupView> {
   CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
 
   bool _isLoading = true;
-  late LatLng _center = LatLng(45.521563, -122.677433);  
- 
+  late LatLng _center = LatLng(45.521563, -122.677433);
+
   String imageUrl = "";
 
   LocationSearchBar locationSearchBar = new LocationSearchBar();
@@ -94,20 +98,18 @@ class _PickupViewState extends State<PickupView> {
 
   void goBack() {
     Navigator.pop(context);
-  }  
+  }
 
   Future<void> loadInitialData() async {
-    print("loadInitialData() in GameView");    
+    print("loadInitialData() in GameView");
     await EventCommand().getUserEventDetails([widget.game], true);
     widget.setupPlayerList();
     //wait for 3 seconds
     await Future.delayed(const Duration(seconds: 2));
-        
 
     setState(() {
       _isLoading = false;
     });
-
   }
 
   @override
@@ -118,8 +120,7 @@ class _PickupViewState extends State<PickupView> {
     print("game: " + widget.game.toString());
     loadInitialData();
     // _isLoading = false;
-  }  
-
+  }
 
   dynamic updateGeneralChatList(
       List<dynamic> generalChatList, String? chatId, dynamic updatedUsers) {
@@ -132,14 +133,13 @@ class _PickupViewState extends State<PickupView> {
     return generalChatList;
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     print("build()");
+    double paddingValue = 16;
 
     dynamic mainEvent =
-        context.select<EventPageModel, dynamic>((value) => value.mainEvent);    
+        context.select<EventPageModel, dynamic>((value) => value.mainEvent);
     dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
     List<dynamic> roles =
         context.select<EventPageModel, List<dynamic>>((value) => value.roles);
@@ -163,54 +163,115 @@ class _PickupViewState extends State<PickupView> {
     List payments = context.watch<EventPageModel>().payments;
     List fieldLocations = context.watch<EventPageModel>().fieldLocations;
     dynamic price = context.watch<EventPageModel>().price;
-    JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
-    JoinCondition eventPaymentJoin = context.watch<EventPageModel>().eventPaymentJoin;
-    JoinCondition teamRequestJoin = context.watch<EventPageModel>().teamRequestJoin;
-    JoinCondition teamPaymentJoin = context.watch<EventPageModel>().teamPaymentJoin;
-    int numberOfParticipants = context.watch<EventPageModel>().numberOfParticipants;
+    JoinCondition eventRequestJoin =
+        context.watch<EventPageModel>().eventRequestJoin;
+    JoinCondition eventPaymentJoin =
+        context.watch<EventPageModel>().eventPaymentJoin;
+    JoinCondition teamRequestJoin =
+        context.watch<EventPageModel>().teamRequestJoin;
+    JoinCondition teamPaymentJoin =
+        context.watch<EventPageModel>().teamPaymentJoin;
+    int numberOfParticipants =
+        context.watch<EventPageModel>().numberOfParticipants;
     int capacity = context.watch<EventPageModel>().capacity;
+    String formattedEventTime = context
+        .select<EventPageModel, String>((value) => value.formattedEventTime);
+    List<AmenityType> amenities = context.watch<EventPageModel>().amenities;
 
-return _isLoading 
-          ? 
-           SplashScreen() 
-          : 
-     Scaffold(
-      extendBody: true,
-      appBar:  Headers(
-            playerStepperButton: ButtonModel(
-              prefixIconData: Icons.play_circle_fill_rounded,
-              onTap: () {
-                
-              },
-            ),
-          ).getMainHeader(context),
+    return _isLoading
+        ? SplashScreen()
+        : Scaffold(
+            extendBody: true,
+            appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {},
+              ),
+            ).getMainHeader(context),
 
-      // PreferredSize(
-      //   preferredSize: const Size.fromHeight(
-      //       200.0), // You can adjust the height value as per your requirement.
-      //   child: ObjectProfileMainImage(objectImageInput: objectImageInput),
-      // ),
-      body: 
-      
-          SingleChildScrollView(
+            // PreferredSize(
+            //   preferredSize: const Size.fromHeight(
+            //       200.0), // You can adjust the height value as per your requirement.
+            //   child: ObjectProfileMainImage(objectImageInput: objectImageInput),
+            // ),
+            body: SingleChildScrollView(
               child: Center(
                 child: Expanded(
                   child: Column(
                     children: [
                       //name
                       Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Align(
-    alignment: Alignment.centerLeft,
-    child: Text(
-      mainEvent['name'],
-      style: const TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ),
-),
+                        padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
+                            paddingValue, paddingValue/2),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            mainEvent['name'],
+                            style:  TextStyle(
+                              fontSize: FontSizes.lg(context),
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.tsnBlack
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                            paddingValue, paddingValue/2),
+                          child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(formattedEventTime,
+                                  style: TextStyle(
+                                    color: AppColors.tsnBlack,
+                                    fontSize: FontSizes.xxs(context),
+                                  )))),
+                       if(isMine)
+                       Padding(
+                        padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
+                            paddingValue, paddingValue/2),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child:
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PriceWidget(
+                              price: price,
+                              teamPrice: false,
+                              eventPrice: true,
+                              amountPaid: amountPaid,
+                              amountRemaining: amountRemaining,
+                              isMine: isMine,
+                              isMember: isMember)
+                        ],
+                         )) ),
+
+                          if(isMine)
+                          Padding(
+                        padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
+                            paddingValue, paddingValue/2),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child:
+                      PaymentListWidget(
+                        payments:
+                            payments,
+                        paymentType: PaymentType.user,
+                      ))),
+    //                   ConstrainedBox(
+    //   constraints: BoxConstraints(
+    //     maxHeight: 300, // You can adjust this height
+    //   ),
+    //   child: AmenitiesSelectionWidget(
+    //     amenities: availableAmenities,
+    //     onSelectionChanged: (newSelection) {
+    //       setState(() {
+    //         selectedAmenities = newSelection;
+    //       });
+    //     },
+    //   ),
+    // ),
+    
                       Container(
                         margin: const EdgeInsets.all(10.0),
                         color: Colors.amber[600],
@@ -219,15 +280,24 @@ return _isLoading
                                 .1), //10% padding
                         height: 200.0,
                         child: MyMapPage(
-                            latitude: fieldLocations.length>0 ? 
-                              fieldLocations[0]['location']['latitude']
+                          latitude: fieldLocations.length > 0
+                              ? fieldLocations[0]['location']['latitude']
                               : 0.0,
-                            longitude: fieldLocations.length>0 ? 
-                              fieldLocations[0]['location']['longitude']
+                          longitude: fieldLocations.length > 0
+                              ? fieldLocations[0]['location']['longitude']
                               : 0.0,
-                          ),
-
+                        ),
                       ),
+                       Padding(
+                          padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                            paddingValue, paddingValue/2),
+                          child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(fieldLocations[0]['location']['address'],
+                                  style: TextStyle(
+                                    color: AppColors.tsnGreen,
+                                    fontSize: FontSizes.xxs(context),
+                                  )))),
                       // eventRequestJoin,
                       // eventPaymentJoin,
                       // teamRequestJoin,
@@ -247,14 +317,14 @@ return _isLoading
                       //     color: Colors.red,
                       //   ),
                       //   onPressed: () async {
-                      //     await EventCommand().onTapSocialMediaApp(context); 
+                      //     await EventCommand().onTapSocialMediaApp(context);
                       //   },
                       // ),
                       //date
-                      EventDateWidget(
-                          canEdit: isMine,
-                          startTime: mainEvent['startTime'],
-                          endTime: mainEvent['endTime']),                                                                 
+                      // EventDateWidget(
+                      //     canEdit: isMine,
+                      //     startTime: mainEvent['startTime'],
+                      //     endTime: mainEvent['endTime']),
                       //Requests widget
                       // RequestsList(objectDetails: {
                       //   "requests": mainEvent['requests']['data']
@@ -284,18 +354,19 @@ return _isLoading
                       // TeamsListWidget(
                       //     user: null, mainEvent: mainEvent, teams: teams),
                       //player request widget
-                      SendPlayersRequestWidget(
-                          mainEvent: mainEvent,
-                          team: null,
-                          players: players,
-                          isMine: isMine),
+                      //maybe add this????
+                      // SendPlayersRequestWidget(
+                      //     mainEvent: mainEvent,
+                      //     team: null,
+                      //     players: players,
+                      //     isMine: isMine),
                       //team request widget
-                      SendTeamsRequestWidget(
-                        mainEvent: mainEvent,
-                        isMine: isMine,
-                        teams: teams,
-                        addTeamCallback: EventCommand().addTeamCallback,
-                      ),
+                      // SendTeamsRequestWidget(
+                      //   mainEvent: mainEvent,
+                      //   isMine: isMine,
+                      //   teams: teams,
+                      //   addTeamCallback: EventCommand().addTeamCallback,
+                      // ),
                       //chat widget
                       // GetChatWidget(
                       //     mainEvent: mainEvent,
@@ -307,38 +378,23 @@ return _isLoading
                       //   chats: chats,
                       // ),
                       // Player price widget
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PriceWidget(
-                              price: price,
-                              teamPrice: false,
-                              eventPrice: true,
-                              amountPaid: amountPaid,
-                              amountRemaining: amountRemaining,
-                              isMine: isMine,
-                              isMember: isMember)
-                        ],
-                      ),
+                     
                       //Team price widget
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PriceWidget(
-                              price: price,
-                              teamPrice: true,
-                              eventPrice: false,
-                              amountPaid: teamAmountPaid,
-                              amountRemaining: teamAmountRemaining,
-                              isMine: isMine,
-                              isMember: isMember)
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      PaymentListWidget(
-                        paidUsers: widget.getPaidUsers(userParticipants, payments),
-                        paymentType: PaymentType.user,
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     PriceWidget(
+                      //         price: price,
+                      //         teamPrice: true,
+                      //         eventPrice: false,
+                      //         amountPaid: teamAmountPaid,
+                      //         amountRemaining: teamAmountRemaining,
+                      //         isMine: isMine,
+                      //         isMember: isMember)
+                      //   ],
+                      // ),
+                     
+                     
                       // const SizedBox(height: 60),
                       // ImagesListWidget(
                       //     mainEvent: mainEvent,
@@ -350,29 +406,24 @@ return _isLoading
                 ),
               ),
             ),
-            bottomNavigationBar: 
-        
-        Padding(
-          padding: const EdgeInsets.only(
-              top:26.0,
-              bottom: 16.0,
-              left: 16.0,
-              right: 16.0), 
-          child:  //join widget
-                      GetJoinEventWidget(
-                          mainEvent: mainEvent,
-                                            roles: roles,
-                                            isMine: isMine,
-                                            price: price,
-                                            amountRemaining: amountRemaining,                                        
-                                            eventRequestJoin: eventRequestJoin,
-                                            eventPaymentJoin: eventPaymentJoin,
-                                            teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin     ,
-                                            capacity: capacity,
-                    numberOfPlayers: numberOfParticipants,    
-                          ),
-          ),
-    );
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.only(
+                  top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
+              child: //join widget
+                  GetJoinEventWidget(
+                mainEvent: mainEvent,
+                roles: roles,
+                isMine: isMine,
+                price: price,
+                amountRemaining: amountRemaining,
+                eventRequestJoin: eventRequestJoin,
+                eventPaymentJoin: eventPaymentJoin,
+                teamRequestJoin: teamRequestJoin,
+                teamPaymentJoin: teamPaymentJoin,
+                capacity: capacity,
+                numberOfPlayers: numberOfParticipants,
+              ),
+            ),
+          );
   }
 }

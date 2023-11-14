@@ -264,10 +264,10 @@ LocationSearchBar locationSearchBar = new LocationSearchBar();
                   ],
                 ),
                 const SizedBox(height: 20),
-                PaymentListWidget(
-                  paidUsers: widget.getPaidUsers(userParticipants, payments),
-                  paymentType: PaymentType.user,
-                ),
+                // PaymentListWidget(
+                //   paidUsers: widget.getPaidUsers(userParticipants, payments),
+                //   paymentType: PaymentType.user,
+                // ),
                 const SizedBox(height: 60),
                 ImagesListWidget(
                     mainEvent: mainEvent,

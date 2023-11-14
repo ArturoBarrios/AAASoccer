@@ -22,6 +22,7 @@ import '../constants.dart';
 import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
+import '../models/enums/AmenityType.dart';
 import '../models/pageModels/event_page_model.dart';
 import '../models/pageModels/group_page_model.dart';
 import '../models/pageModels/profile_page_model.dart';
@@ -89,6 +90,33 @@ class BaseCommand {
     appModel.onTapBottomNav(context, key, item);
   }
 
+List<AmenityType> parseAmenities(String amenitiesString) {
+  // Remove the curly braces and trim the string
+  var trimmedString = amenitiesString.replaceAll(RegExp(r'[{}]'), '').trim();
+
+  // Check if the string is empty after removing braces
+  if (trimmedString.isEmpty) {
+    return [];
+  }
+
+  // Split the string into a list of strings
+  var amenitiesList = trimmedString.split(',').map((e) => e.trim());
+
+  // Map the strings to their corresponding enum values
+  return amenitiesList.map((amenity) {
+    switch (amenity.toUpperCase()) {
+      case 'BUS':
+        return AmenityType.BUS;
+      case 'PINNIES':
+        return AmenityType.PINNIES;
+      // Add cases for other enum values
+      default:
+        throw FormatException('Unknown amenity type: $amenity');
+    }
+  }).toList();
+}
+
+
   void showAgreementDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -107,6 +135,14 @@ class BaseCommand {
         );
       },
     );
+  }
+
+  String formatAmenitiesForGraphQL(List<AmenityType> amenities) {
+    // Convert each enum value to a string and format it
+    var amenityStrings =
+        amenities.map((amenity) => amenity.toString().split('.').last);
+    // Join the strings with commas and enclose them in curly braces
+    return '{${amenityStrings.join(', ')}}';
   }
 
   String formatEventTime(String startTime, String endTime) {
@@ -463,7 +499,6 @@ class BaseCommand {
       "data": null
     };
 
-    
     // var deviceState = await OneSignal.getDeviceState();
 
     //return if no deviceState is found
@@ -471,18 +506,18 @@ class BaseCommand {
     //   print("no deviceState found");
     //   return updateUserOSPIDResponse;
     // } else {
-      //coming out to null
-      print("deviceState found for userID: " + appModel.currentUser['_id']);
-      // var playerId = deviceState.userId!;
-      Map<String, dynamic> userInput = {
-        '_id': appModel.currentUser['_id'],
-        // "OSPID": playerId
-      };
-      await UserCommand().updateUser(userInput);
+    //coming out to null
+    print("deviceState found for userID: " + appModel.currentUser['_id']);
+    // var playerId = deviceState.userId!;
+    Map<String, dynamic> userInput = {
+      '_id': appModel.currentUser['_id'],
+      // "OSPID": playerId
+    };
+    await UserCommand().updateUser(userInput);
 
-      updateUserOSPIDResponse["success"] = true;
+    updateUserOSPIDResponse["success"] = true;
 
-      return updateUserOSPIDResponse;
+    return updateUserOSPIDResponse;
     // }
   }
 
@@ -523,6 +558,7 @@ class BaseCommand {
             user = createPlayerResp['data'];
           }
           appModel.currentUser = user;
+          appModel.isSuperUser = user['isSuperUser'];
           print("app model user: ");
           print(appModel.currentUser);
           print("user['chats']['data']: ${user['chats']['data']}");
@@ -623,12 +659,12 @@ class BaseCommand {
     appModel.userConditionsMet = true;
   }
 
-  void updateIsRatingDialogueShowing(bool newVal){
+  void updateIsRatingDialogueShowing(bool newVal) {
     appModel.isRatingDialogueShowing = newVal;
   }
-  
+
   void setOnboarded(bool onboarded) {
-    if(onboarded == null){
+    if (onboarded == null) {
       onboarded = false;
     }
     appModel.onboarded = onboarded;
@@ -669,7 +705,7 @@ class BaseCommand {
     return false;
   }
 
-   Future<Widget> getRequestCard(
+  Future<Widget> getRequestCard(
       String selectedKey, dynamic requestObject) async {
     print("getRequestCard()");
     print("selectedKey: " + selectedKey);
@@ -696,8 +732,8 @@ class BaseCommand {
         requestObject['type'].toString() ==
             Constants.TRYOUTREQUEST.toString()) {
       Widget card = TSNEventRequestCard(
-          eventRequestCardDetails: requestObject,                    
-          backgroundColor: AppColors.tsnAlmostBlack,
+        eventRequestCardDetails: requestObject,
+        backgroundColor: AppColors.tsnAlmostBlack,
       );
       // Widget card = EventRequestCard(
       //     eventRequestObject: requestObject,
@@ -722,7 +758,7 @@ class BaseCommand {
     }
   }
 
-   Future<Widget> getCard(
+  Future<Widget> getCard(
       dynamic selectedKey, dynamic selectedObject, Svg svgImage) async {
     print("getCard()");
     print("selectedKey: " + selectedKey.toString());
@@ -740,33 +776,30 @@ class BaseCommand {
       print("after getEventDetails");
       card = TSNPickupCard(
         pickupCardDetails: getEventDetailsResp,
-        backgroundColor: AppColors.tsnAlmostBlack, 
-        svgImage: svgImage,         
-      );      
-    } 
-    else if (selectedKey == Constants.REQUESTSSENT ||
-        selectedKey == Constants.REQUESTSRECEIVED) {      
-      card =
-          await RequestsCommand().getRequestCard("EVENTREQUEST", selectedObject);
-      
-    } 
-    else if (selectedKey == Constants.TRAINING) {
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );
+    } else if (selectedKey == Constants.REQUESTSSENT ||
+        selectedKey == Constants.REQUESTSRECEIVED) {
+      card = await RequestsCommand()
+          .getRequestCard("EVENTREQUEST", selectedObject);
+    } else if (selectedKey == Constants.TRAINING) {
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject], false);
       card = TSNTrainingCard(
         trainingCardDetails: getEventDetailsResp,
-        backgroundColor: AppColors.tsnAlmostBlack, 
-        svgImage: svgImage,    
-      );     
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );
     } else if (selectedKey == Constants.TRYOUT) {
       print("selected tryout");
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject], false);
       card = TSNTryoutCard(
         tryoutCardDetails: getEventDetailsResp,
-        backgroundColor: AppColors.tsnAlmostBlack, 
-        svgImage: svgImage,    
-      );   
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );
     } else if (selectedKey == Constants.TOURNAMENT) {
       print("selectedObject: " + selectedObject.toString());
       dynamic getEventDetailsResp =
@@ -774,9 +807,9 @@ class BaseCommand {
 
       card = TSNTournamentCard(
         tournamentCardDetails: getEventDetailsResp,
-        backgroundColor: AppColors.tsnAlmostBlack, 
-        svgImage: svgImage,    
-      );      
+        backgroundColor: AppColors.tsnAlmostBlack,
+        svgImage: svgImage,
+      );
     } else if (selectedKey == Constants.LEAGUE) {
       dynamic getEventDetailsResp =
           await EventCommand().getUserEventDetails([selectedObject], false);
@@ -785,55 +818,55 @@ class BaseCommand {
           svgImage: svgImage,
           userEventDetails: getEventDetailsResp);
     } else if (selectedKey == Constants.PLAYER) {
-
       dynamic playerDetails =
           await UserCommand().getUserDetails(selectedObject, false);
       card = TSNPlayerCard(
         playerCardDetails: playerDetails,
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
-      );      
+      );
     } else if (selectedKey == Constants.TEAM) {
-      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(selectedObject, false);
+      dynamic userTeamDetails =
+          await TeamCommand().getUserTeamDetails(selectedObject, false);
       card = TSNTeamCard(
         teamCardDetails: userTeamDetails,
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
-      );      
-    }
-    else if (selectedKey == Constants.GROUP) {
-      dynamic userGroupDetails = await GroupCommand().getUserGroupDetails(selectedObject, false);
+      );
+    } else if (selectedKey == Constants.GROUP) {
+      dynamic userGroupDetails =
+          await GroupCommand().getUserGroupDetails(selectedObject, false);
       card = TSNGroupCard(
         groupCardDetails: userGroupDetails,
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
-      );      
-    }
-     else if (selectedKey == Constants.MYTEAMS) {
+      );
+    } else if (selectedKey == Constants.MYTEAMS) {
       print("selectedKey == MYTEAMS");
       print("selectedObject: " + selectedObject.toString());
       dynamic team = selectedObject['team'];
-      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team, true);
+      dynamic userTeamDetails =
+          await TeamCommand().getUserTeamDetails(team, true);
       print("teammmmmm: " + team.toString());
       print("userTeamDetails: " + userTeamDetails.toString());
       card = TSNTeamCard(
         teamCardDetails: userTeamDetails,
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
-      );      
-    }
-     else if (selectedKey == Constants.MYGROUPS) {
+      );
+    } else if (selectedKey == Constants.MYGROUPS) {
       print("selectedKey == MYGROUPS");
       print("selectedObject: " + selectedObject.toString());
       dynamic group = selectedObject['group'];
-      dynamic userGroupDetails = await GroupCommand().getUserGroupDetails(group, true);
+      dynamic userGroupDetails =
+          await GroupCommand().getUserGroupDetails(group, true);
       print("grouppup: " + group.toString());
       print("userGroupDetails: " + userGroupDetails.toString());
       card = TSNGroupCard(
         groupCardDetails: userGroupDetails,
         backgroundColor: AppColors.tsnAlmostBlack,
         svgImage: svgImage,
-      );      
+      );
     }
     //My Events
     else if (selectedKey == Constants.MYEVENTS) {
@@ -844,41 +877,40 @@ class BaseCommand {
       } else if (selectedObject['event']['type'].toString() == "GAME") {
         print("TYPE GAME");
 
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']], false);
-        print("getEventDetailsResp: " + getEventDetailsResp.toString());        
+        dynamic getEventDetailsResp = await EventCommand()
+            .getUserEventDetails([selectedObject['event']], false);
+        print("getEventDetailsResp: " + getEventDetailsResp.toString());
         card = TSNPickupCard(
-        pickupCardDetails: getEventDetailsResp,
-        backgroundColor: AppColors.tsnAlmostBlack, 
-        svgImage: svgImage,         
-      );     
-      } 
-      else if (selectedObject['event']['type'].toString() == "TRAINING") {
+          pickupCardDetails: getEventDetailsResp,
+          backgroundColor: AppColors.tsnAlmostBlack,
+          svgImage: svgImage,
+        );
+      } else if (selectedObject['event']['type'].toString() == "TRAINING") {
         print("selectedObject['event']['trainings']: " +
             selectedObject['event']['trainings'].toString());
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']], false);
+        dynamic getEventDetailsResp = await EventCommand()
+            .getUserEventDetails([selectedObject['event']], false);
         card = TrainingCard(
             trainingObject: selectedObject['event'],
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
       } else if (selectedObject['event']['type'].toString() == "TRYOUT") {
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']], false);
+        dynamic getEventDetailsResp = await EventCommand()
+            .getUserEventDetails([selectedObject['event']], false);
         card = TryoutCard(
             tryoutObject: selectedObject['event'],
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
       } else if (selectedObject['event']['type'].toString() == "TOURNAMENT") {
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']], false);
+        dynamic getEventDetailsResp = await EventCommand()
+            .getUserEventDetails([selectedObject['event']], false);
         card = TournamentCard(
             tournamentObject: selectedObject['event'],
             svgImage: svgImage,
             userEventDetails: getEventDetailsResp);
       } else if (selectedObject['event']['type'].toString() == "LEAGUE") {
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']], false);
+        dynamic getEventDetailsResp = await EventCommand()
+            .getUserEventDetails([selectedObject['event']], false);
         card = LeagueCard(
             leagueObject: selectedObject['event'],
             svgImage: svgImage,

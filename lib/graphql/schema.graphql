@@ -14,6 +14,7 @@ type Query {
   # queries
   allFieldLocations: [FieldLocation!]
   allGames(pickup: Boolean): [Game!]
+  allEvents(type: EventType): [Event!]
   allTrainings: [Training!]
   allTryouts: [Tryout!]
   allLeagues: [League!]
@@ -32,12 +33,16 @@ type Query {
 }
 
 
-enum AmenitieType {
- BATHROOMS
- WATERFOUNDATIN
- BIKESTATION
- TRAIN
- BUS
+enum AmenityType {
+  BATHROOMS
+  WATERFOUNDATIN
+  BIKESTATION
+  TRAIN
+  BUS
+  TURF
+  PINNIES
+  
+
 }
 
 enum RoleType {
@@ -221,6 +226,7 @@ type FollowRelation {
 }
 
 type User  {
+  isSuperUser: Boolean @default(value: false)
   appPreference: AppPreference
   stripeCustomers: [StripeCustomer] @relation
   payments: [Payment] @relation
@@ -337,6 +343,7 @@ type Event   {
   name: String
   joinConditions: [JoinConditions] @relation
   isMainEvent: Boolean
+  amenities: String
   userParticipants: [EventUserParticipant] @relation  
   price: Price @relation(name: "event_price")
   requests: [Request] @relation
@@ -809,7 +816,7 @@ type Prize {
 }
 
 type Amenity {  
-  type: AmenitieType    
+  type: AmenityType    
   fieldLocations: [FieldLocation] @Relation
 }
 

@@ -190,7 +190,7 @@ class _PlayerListState extends State<PlayerList> {
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey,
+          color: Colors.transparent,
         ),
         borderRadius: BorderRadius.circular(5.0),
       ),
@@ -207,6 +207,7 @@ class _PlayerListState extends State<PlayerList> {
               _selectedUserType,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
+                color: AppColors.tsnBlack,
                 fontSize: 18,
               ),
             ),
