@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/models/enums/payment_type.dart';
 
+import '../commands/payment_commands.dart';
 import 'pop_menu_button.dart';
 
 class PaymentListWidget extends StatelessWidget {
@@ -21,6 +22,10 @@ class PaymentListWidget extends StatelessWidget {
   final Map<String, List<dynamic>>? categorizedPaidUsers;
   final Function(int?)? onTapPayment;
   final Function(Map<int, String>?)? onTapPaymentOption;
+
+  Future<void> refund(dynamic payment) async{
+   await PaymentCommand().createRefund();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +91,16 @@ class PaymentListWidget extends StatelessWidget {
                               'View payer',
                               'Remind for payment'
                             ],
-                            onTapOption: (final String? option) =>
-                                onTapPaymentOption?.call(
-                              {index: option ?? ''},
-                            ),
+                            onTapOption: (final String? option) {
+                              
+                              if(option=="Refund"){
+                                refund(payment);
+                              }
+
+                            }
+                            //     onTapPaymentOption?.call(
+                            //   {index: option ?? ''},
+                            // ),
                           ),
                           onTap: () => onTapPayment?.call(index),
                         ))

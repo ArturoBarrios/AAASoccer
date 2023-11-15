@@ -23,6 +23,7 @@ import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
 import '../models/enums/AmenityType.dart';
+import '../models/pageModels/event_cards_model.dart';
 import '../models/pageModels/event_page_model.dart';
 import '../models/pageModels/group_page_model.dart';
 import '../models/pageModels/profile_page_model.dart';
@@ -81,6 +82,7 @@ class BaseCommand {
   RequestsModel requestsModel = _mainContext.read();
   RequestsPageModel requestsPageModel = _mainContext.read();
   ChatPageModel chatPageModel = _mainContext.read();
+  EventsPageModel eventsPageModel = _mainContext.read();
   // Services
   GeoLocationServices geoLocationServices = _mainContext.read();
 
@@ -330,6 +332,7 @@ List<AmenityType> parseAmenities(String amenitiesString) {
     requestsModel = _mainContext.read();
     requestsPageModel = _mainContext.read();
     chatPageModel = _mainContext.read();
+    eventsPageModel = _mainContext.read();
 
     // homePageModel.nukeData();
 
@@ -772,7 +775,7 @@ List<AmenityType> parseAmenities(String amenitiesString) {
       print("before getEventDetails");
       //first approach
       dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject], false);
+          await EventCommand().getUserEventDetails([selectedObject], true);
       print("after getEventDetails");
       card = TSNPickupCard(
         pickupCardDetails: getEventDetailsResp,
@@ -878,7 +881,7 @@ List<AmenityType> parseAmenities(String amenitiesString) {
         print("TYPE GAME");
 
         dynamic getEventDetailsResp = await EventCommand()
-            .getUserEventDetails([selectedObject['event']], false);
+            .getUserEventDetails([selectedObject['event']], true);
         print("getEventDetailsResp: " + getEventDetailsResp.toString());
         card = TSNPickupCard(
           pickupCardDetails: getEventDetailsResp,

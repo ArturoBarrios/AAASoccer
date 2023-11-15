@@ -480,6 +480,7 @@ type Payment   {
   user: User
   isPlayerPayment: Boolean
   isTeamPayment: Boolean
+  refunded: Boolean
 }
 
 # orgs can have many suborgs

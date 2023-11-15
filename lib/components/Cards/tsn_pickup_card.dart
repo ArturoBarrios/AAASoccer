@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
+import '../../models/pageModels/event_page_model.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
@@ -32,6 +34,13 @@ class TSNPickupCard extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
+///testing shittt
+    
+    EventPageModel eventModel = pickupCardDetails['eventPageModelInstance'] as EventPageModel;
+    
+bool isMineTest = context.select<EventPageModel, bool>((value) => eventModel.isMine);
+
 
     //event model data
     dynamic mainEvent = pickupCardDetails['mainEvent'];

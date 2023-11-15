@@ -1175,9 +1175,12 @@ class EventCommand extends BaseCommand {
       "numberOfFieldRatings": 0,
       "numberOfParticipants": 0,
       "capacity": 0,
-      "amenities": []
+      "amenities": [],
+      "eventPageModelInstance": null
     };
     print("events length: " + events.length.toString());
+
+
 
     try {
       //get event
@@ -1317,37 +1320,48 @@ class EventCommand extends BaseCommand {
               .toStringAsFixed(2);
 
       if (addToEventPageModel) {
-        eventPageModel.mainEvent = isMyEventResp['mainEvent'];
-        eventPageModel.objectImageInput =
-            await loadEventMainImage(event, eventPageModel.isMine);
-        eventPageModel.roles = isMyEventResp['roles'];
-        eventPageModel.isMine = isMyEventResp['isMine'];
-        eventPageModel.isMember = isMyEventResp['isMember'];
-        eventPageModel.amountRemaining = isMyEventResp['amountRemaining'];
-        eventPageModel.amountPaid = isMyEventResp['amountPaid'];
-        eventPageModel.teamAmountRemaining =
+            EventPageModel eventPageModelInstance = EventPageModel();
+            isMyEventResp['eventPageModelInstance'] = eventPageModelInstance;
+
+
+        eventPageModelInstance.mainEvent = isMyEventResp['mainEvent'];
+        eventPageModelInstance.isMine = isMyEventResp['isMine'];
+        eventPageModelInstance.objectImageInput =
+            await loadEventMainImage(event, eventPageModelInstance.isMine);
+        eventPageModelInstance.roles = isMyEventResp['roles'];
+        eventPageModelInstance.isMember = isMyEventResp['isMember'];
+        eventPageModelInstance.amountRemaining = isMyEventResp['amountRemaining'];
+        eventPageModelInstance.amountPaid = isMyEventResp['amountPaid'];
+        eventPageModelInstance.teamAmountRemaining =
             isMyEventResp['teamAmountRemaining'];
-        eventPageModel.teamAmountPaid = isMyEventResp['teamAmountPaid'];
-        eventPageModel.userParticipants = isMyEventResp['userParticipants'];
-        eventPageModel.teams = isMyEventResp['teams'];
-        eventPageModel.players = isMyEventResp['players'];
-        eventPageModel.chats = isMyEventResp['chats'];
-        eventPageModel.payments = isMyEventResp['payments'];
-        eventPageModel.fieldLocations = isMyEventResp['fieldLocations'];
-        eventPageModel.price = isMyEventResp['price'];
-        eventPageModel.eventRequestJoin = isMyEventResp['eventRequestJoin'];
-        eventPageModel.eventPaymentJoin = isMyEventResp['eventPaymentJoin'];
-        eventPageModel.teamRequestJoin = isMyEventResp['teamRequestJoin'];
-        eventPageModel.teamPaymentJoin = isMyEventResp['teamPaymentJoin'];
-        eventPageModel.tournament = isMyEventResp['tournament'];
-        eventPageModel.groupStage = isMyEventResp['groupStage'];
-        eventPageModel.tournamentStage = isMyEventResp['tournamentStage'];
-        eventPageModel.capacity = isMyEventResp['capacity'];
-        eventPageModel.numberOfParticipants =
+        eventPageModelInstance.teamAmountPaid = isMyEventResp['teamAmountPaid'];
+        eventPageModelInstance.userParticipants = isMyEventResp['userParticipants'];
+        eventPageModelInstance.teams = isMyEventResp['teams'];
+        eventPageModelInstance.players = isMyEventResp['players'];
+        eventPageModelInstance.chats = isMyEventResp['chats'];
+        eventPageModelInstance.payments = isMyEventResp['payments'];
+        eventPageModelInstance.fieldLocations = isMyEventResp['fieldLocations'];
+        eventPageModelInstance.price = isMyEventResp['price'];
+        eventPageModelInstance.eventRequestJoin = isMyEventResp['eventRequestJoin'];
+        eventPageModelInstance.eventPaymentJoin = isMyEventResp['eventPaymentJoin'];
+        eventPageModelInstance.teamRequestJoin = isMyEventResp['teamRequestJoin'];
+        eventPageModelInstance.teamPaymentJoin = isMyEventResp['teamPaymentJoin'];
+        eventPageModelInstance.tournament = isMyEventResp['tournament'];
+        eventPageModelInstance.groupStage = isMyEventResp['groupStage'];
+        eventPageModelInstance.tournamentStage = isMyEventResp['tournamentStage'];
+        eventPageModelInstance.capacity = isMyEventResp['capacity'];
+        eventPageModelInstance.numberOfParticipants =
             isMyEventResp['numberOfParticipants'];
-        eventPageModel.formattedEventTime =
+        eventPageModelInstance.formattedEventTime =
             isMyEventResp['formattedEventTime'];
-        eventPageModel.amenities = isMyEventResp['amenities'];
+        eventPageModelInstance.amenities = isMyEventResp['amenities'];
+        
+        
+        eventsPageModel.eventsPageModel.add(eventPageModelInstance);
+        
+
+
+
       }
 
       print("successfully ran details function");

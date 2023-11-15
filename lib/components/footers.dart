@@ -38,7 +38,11 @@ class Footers extends StatefulWidget {
             (value) => value.selectedPages);
 
 
-    bool isSuperUser = context.watch<AppModel>().isSuperUser;
+    // bool isSuperUser = context.watch<AppModel>().isSuperUser;
+    bool isSuperUser =
+        context.select<AppModel, bool>(
+            (value) => value.isSuperUser);
+    
 
     int selectIndex = 0;
     Map<String, Widget Function(BuildContext)> pages = {

@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:soccermadeeasy/extensions/parse_roles.dart';
 import '../../commands/base_command.dart';
@@ -17,5 +16,6 @@ class EventsPageModel extends ChangeNotifier {
     _eventsPageModel = eventsPageModel;
     notifyListeners();
   }
+
 
 }

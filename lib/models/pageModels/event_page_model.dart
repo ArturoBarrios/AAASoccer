@@ -10,7 +10,6 @@ import '../appModels/Price.dart';
 import '../enums/AmenityType.dart';
 
 class EventPageModel extends ChangeNotifier {  
-
   
   String _startTime = "";
   String get startTime => _startTime;

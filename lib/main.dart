@@ -25,6 +25,7 @@ import 'components/logo_text.dart';
 import 'components/models/button_model.dart';
 import 'models/pageModels/app_model.dart';
 import 'models/pageModels/chat_page_model.dart';
+import 'models/pageModels/event_cards_model.dart';
 import 'models/pageModels/event_page_model.dart';
 import 'models/pageModels/group_page_model.dart';
 import 'models/pageModels/profile_page_model.dart';
@@ -346,6 +347,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (c) => ChatPageModel()),
         ChangeNotifierProvider(create: (c) => HomePageModel()),
         ChangeNotifierProvider(create: (c) => PaymentModel()),
+        ChangeNotifierProvider(create: (c) => EventsPageModel()),
         Provider(create: (c) => FaunaDBServices()),
         Provider(create: (c) => GeoLocationServices()),
       ],
