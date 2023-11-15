@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/models/enums/payment_type.dart';
 
 import '../commands/payment_commands.dart';
 import 'pop_menu_button.dart';
@@ -11,14 +10,12 @@ class PaymentListWidget extends StatelessWidget {
   const PaymentListWidget({
     Key? key,
     this.payments,
-    this.categorizedPaidUsers,
-    this.paymentType,
+    this.categorizedPaidUsers,    
     this.onTapPayment,
     this.onTapPaymentOption,
   }) : super(key: key);
 
-  final List<dynamic>? payments;
-  final PaymentType? paymentType;
+  final List<dynamic>? payments;  
   final Map<String, List<dynamic>>? categorizedPaidUsers;
   final Function(int?)? onTapPayment;
   final Function(Map<int, String>?)? onTapPaymentOption;

@@ -63,12 +63,12 @@ class _SendMyEventsTeamRequestWidgetState
   void goToMyEvent(dynamic event) {
     print("goToEvent");
     print("event: " + event.toString());
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PickupView(game: event),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => PickupView(game: event),
+    //   ),
+    // );
   }
 
   Container sendMyEventsTeamRequestWidget(

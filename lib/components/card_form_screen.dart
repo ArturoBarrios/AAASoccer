@@ -97,6 +97,8 @@ class _CardFormScreenState extends State<CardFormScreen> {
     print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
     if (createPaymentIntentResp['success'] ||
         widget.paymentDetails['price']['amount'] == '0') {
+      print("createpaymentrespintentt: "+ createPaymentIntentResp['data']['intent'].toString());
+      paymentInput['charge'] = createPaymentIntentResp['data']['intent']['latest_charge'];
       print(
           "if(createPaymentIntentResp['success'] || widget.priceObject['amount'] == '0')");
       print("now addEvent");
@@ -108,6 +110,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
         if (addEventResp['data'] != null) {
           paymentInput['eventId'] =
               widget.paymentDetails['objectToPurchase']['_id'];
+          // paymentInput['charge']
           await PaymentCommand().createUserObjectPayment(paymentInput);
         }
 
@@ -541,8 +544,8 @@ class _CardFormScreenState extends State<CardFormScreen> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  // createPaymentIntent();
-                                  await PaymentCommand().createRefund();
+                                  createPaymentIntent();
+                                  // await PaymentCommand().createRefund();
                                 },
                                 child: const Text('Pay'),
                               ),

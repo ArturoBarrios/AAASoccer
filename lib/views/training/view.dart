@@ -29,7 +29,6 @@ import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
 import '../../models/pageModels/event_page_model.dart';
-import 'package:soccermadeeasy/models/enums/payment_type.dart';
 
 class TrainingView extends StatefulWidget with EventMixin, ImagesMixin {
   TrainingView({Key? key, required this.event}) : super(key: key);
@@ -270,8 +269,7 @@ class _TrainingViewState extends State<TrainingView> {
                 ),
                 const SizedBox(height: 20),
                 // PaymentListWidget(
-                //   paidUsers: widget.getPaidUsers(userParticipants, payments),
-                //   paymentType: PaymentType.user,
+                //   paidUsers: widget.getPaidUsers(userParticipants, payments),                
                 // ),
                 const SizedBox(height: 60),
                 ImagesListWidget(

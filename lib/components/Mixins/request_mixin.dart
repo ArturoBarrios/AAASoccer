@@ -22,12 +22,12 @@ mixin RequestMixin {
     //what event view should you go to?
     //for training, tryout, league, tournament
     if (event['type'] == Constants.PICKUP) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PickupView(game: event),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => PickupView(game: event),
+      //   ),
+      // );
     } else if (event['type'] == Constants.TRYOUT) {
       Navigator.push(
         context,

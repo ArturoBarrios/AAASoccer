@@ -50,15 +50,15 @@ class _EventsListWidgetState extends State<EventsListWidget> {
 
   void goToEvent(BuildContext context, dynamic event) {
     print("goToEvent");
-    dynamic eventToNavigateTo = event;
-    //what event view should you go to?
-    //for training, tryout, league, tournament
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PickupView(game: event),
-      ),
-    );
+    // dynamic eventToNavigateTo = event;
+    // //what event view should you go to?
+    // //for training, tryout, league, tournament
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => PickupView(game: event),
+    //   ),
+    // );
   }
 
   void loadInitialData() {

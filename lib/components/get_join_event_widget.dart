@@ -114,18 +114,18 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         updatedRoles.add(element);
       }
     });
-    //remove event from user and user from event
+    EventCommand().removeUserFromEventPageModel(event, userObject);
+    // right now, organizer can't leave event, 
+    // remove event from user and user from event
     if (updatedRoles.length == 0) {
       dynamic removeUserFromEventResp =
           await EventCommand().removeUserFromEvent(event, userObject);
       if (removeUserFromEventResp['success']) {
         print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
         dynamic eventToRemove = removeUserFromEventResp['data'];
+        
         EventCommand().updateViewModelsWithEvent(eventToRemove, false);
-        // setState(() {
-        //   event['userParticipants']['data'].removeWhere((element) => element['user']['_id']==userObject['_id']);
-        //   widget.userObjectDetails['roles'] = [];
-        // });
+
       }
     } else {}
   }

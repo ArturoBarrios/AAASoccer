@@ -51,6 +51,7 @@ class UserMutations {
           event: {
             connect: "${createUserEventPaymentInput['eventId']}"            
           }
+          charge: "${createUserEventPaymentInput['charge']}"
           isPlayerPayment: true
           isTeamPayment: false
         """

@@ -133,14 +133,14 @@ class _GameCreateState extends State<GameCreate> {
           Navigator.pop(
             context,
           );
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PickupView(
-                game: createdGame['event'],
-              ),
-            ),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => PickupView(
+          //       game: createdGame['event'],
+          //     ),
+          //   ),
+          // );
         }
       }
     } on ApiException catch (_) {}

@@ -264,6 +264,7 @@ class EventPageModel extends ChangeNotifier {
   int get capacity => _capacity;
   set capacity(int capacity) {
     _capacity = capacity;
+    print("capacitty changed to : " + capacity.toString());
     notifyListeners();
   }  
   

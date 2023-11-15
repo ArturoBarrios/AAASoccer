@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
 import '../../models/pageModels/event_page_model.dart';
 import '../../models/pageModels/event_page_model.dart';
+import '../../models/pageModels/event_pages_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
 import '../../svg_widgets.dart';
@@ -15,7 +16,7 @@ import '../get_join_event_widget.dart';
 import '../join_condition.dart';
 import '../rating_widget.dart';
 
-class TSNPickupCard extends StatelessWidget {
+class TSNPickupCard extends StatefulWidget {
   final dynamic pickupCardDetails;
   final Color backgroundColor;
   final Svg? svgImage;
@@ -23,12 +24,37 @@ class TSNPickupCard extends StatelessWidget {
   final double? height;
 
   TSNPickupCard({
+    Key? key,
     required this.pickupCardDetails,
     required this.backgroundColor,
     this.svgImage,
     this.width,
     this.height,
   });
+
+    @override
+  _TSNPickupCardState createState() => _TSNPickupCardState();
+
+}
+
+
+class _TSNPickupCardState extends State<TSNPickupCard> {
+  bool isLoading = true;
+  EventPageModel eventModel = EventPageModel();
+  
+  loadInitialData(){
+    eventModel = widget.pickupCardDetails['eventPageModelInstance'] as EventPageModel;
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+  
+  @override
+  initState() {
+    super.initState();
+    loadInitialData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,44 +63,48 @@ class TSNPickupCard extends StatelessWidget {
 
 ///testing shittt
     
-    EventPageModel eventModel = pickupCardDetails['eventPageModelInstance'] as EventPageModel;
     
-bool isMineTest = context.select<EventPageModel, bool>((value) => eventModel.isMine);
+    // int capacity = context.watch<EventsPageModel>().eventsPageModel.first.capacity;
+
+    int capacity = context.select<EventPageModel, int>((value) => eventModel.capacity);
 
 
     //event model data
-    dynamic mainEvent = pickupCardDetails['mainEvent'];
+    dynamic mainEvent = widget.pickupCardDetails['mainEvent'];
 
-    List<dynamic> roles = pickupCardDetails['roles'];
-    bool isMine = pickupCardDetails['isMine'];
-    String formattedEventTime = pickupCardDetails['formattedEventTime'];
-    bool isMember = pickupCardDetails['isMember'];
-    String amountRemaining = pickupCardDetails['amountRemaining'];
-    String amountPaid = pickupCardDetails['amountPaid'];
-    String teamAmountRemaining = pickupCardDetails['teamAmountRemaining'];
-    String teamAmountPaid = pickupCardDetails['teamAmountPaid'];
-    String location = pickupCardDetails['location'];
-    List organizers = pickupCardDetails['organizers'];
-    List fieldLocations = pickupCardDetails['fieldLocations'];
-    dynamic price = pickupCardDetails['price'];
-    JoinCondition eventRequestJoin = pickupCardDetails['eventRequestJoin'];
-    JoinCondition eventPaymentJoin = pickupCardDetails['eventPaymentJoin'];
-    JoinCondition teamRequestJoin = pickupCardDetails['teamRequestJoin'];
-    JoinCondition teamPaymentJoin = pickupCardDetails['teamPaymentJoin'];
-    int eventRating = pickupCardDetails['eventRating'];
-    int numberOfRatings = pickupCardDetails['numberOfRatings'];
-    int capacity = pickupCardDetails['capacity'];
-    int numberOfParticipants = pickupCardDetails['numberOfParticipants'];
+    List<dynamic> roles = widget.pickupCardDetails['roles'];
+    bool isMine = widget.pickupCardDetails['isMine'];
+    String formattedEventTime = widget.pickupCardDetails['formattedEventTime'];
+    bool isMember = widget.pickupCardDetails['isMember'];
+    String amountRemaining = widget.pickupCardDetails['amountRemaining'];
+    String amountPaid = widget.pickupCardDetails['amountPaid'];
+    String teamAmountRemaining = widget.pickupCardDetails['teamAmountRemaining'];
+    String teamAmountPaid = widget.pickupCardDetails['teamAmountPaid'];
+    String location = widget.pickupCardDetails['location'];
+    List organizers = widget.pickupCardDetails['organizers'];
+    List fieldLocations = widget.pickupCardDetails['fieldLocations'];
+    dynamic price = widget.pickupCardDetails['price'];
+    JoinCondition eventRequestJoin = widget.pickupCardDetails['eventRequestJoin'];
+    JoinCondition eventPaymentJoin = widget.pickupCardDetails['eventPaymentJoin'];
+    JoinCondition teamRequestJoin = widget.pickupCardDetails['teamRequestJoin'];
+    JoinCondition teamPaymentJoin = widget.pickupCardDetails['teamPaymentJoin'];
+    int eventRating = widget.pickupCardDetails['eventRating'];
+    int numberOfRatings = widget.pickupCardDetails['numberOfRatings'];
+    // int capacity = pickupCardDetails['capacity'];
+    int numberOfParticipants = widget.pickupCardDetails['numberOfParticipants'];
 
     print("fieldLocations: " + fieldLocations.toString());
 
-    return GestureDetector(
+    return 
+    isLoading ? Text("loading....") :
+
+    GestureDetector(
         onTap: () {
           // Handle tap on the entire card here
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PickupView(game: mainEvent)),
+                builder: (context) => PickupView(game: mainEvent, eventPageModelInstance: eventModel, )),
           );
           print("Card Clicked");
         },
@@ -82,9 +112,9 @@ bool isMineTest = context.select<EventPageModel, bool>((value) => eventModel.isM
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
-          color: backgroundColor,
+          color: widget.backgroundColor,
           child: Container(
-            width: width,
+            width: widget.width,
             height: screenHeight * .2,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),
@@ -159,6 +189,7 @@ bool isMineTest = context.select<EventPageModel, bool>((value) => eventModel.isM
                                 ),
                                 Row(
                                   children: [
+                                    // Text("test capacity: "+ capacity.toString()),
                                     Expanded(
                                         flex: 9,
                                         child: BasicElevatedButton(
@@ -186,7 +217,7 @@ bool isMineTest = context.select<EventPageModel, bool>((value) => eventModel.isM
                                             eventPaymentJoin: eventPaymentJoin,
                                             teamRequestJoin: teamRequestJoin,
                                             teamPaymentJoin: teamPaymentJoin     ,
-                                            capacity: capacity,
+                                            capacity: eventModel.capacity,
                     numberOfPlayers: numberOfParticipants,                                                                               
                                         )
                                     ),

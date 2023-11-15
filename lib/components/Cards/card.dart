@@ -54,16 +54,16 @@ class _Card extends State<Card> {
     return Listener(
         child: GestureDetector(
       onTap: () {
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return PickupView(game: widget.eventObject);
-          },
-          animationType: DialogTransitionType.slideFromBottom,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 1),
-        );
+        // showAnimatedDialog(
+        //   context: context,
+        //   barrierDismissible: true,
+        //   builder: (BuildContext context) {
+        //     return PickupView(game: widget.eventObject);
+        //   },
+        //   animationType: DialogTransitionType.slideFromBottom,
+        //   curve: Curves.fastOutSlowIn,
+        //   duration: Duration(seconds: 1),
+        // );
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),

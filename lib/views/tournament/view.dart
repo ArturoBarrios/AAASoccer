@@ -32,7 +32,6 @@ import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
-import '../../models/enums/payment_type.dart';
 import '../../models/pageModels/event_page_model.dart';
 
 class TournamentView extends StatefulWidget
@@ -281,8 +280,7 @@ class _TournamentViewState extends State<TournamentView> {
                       const SizedBox(height: 20),
                       // PaymentListWidget(
                       //   paidUsers:
-                      //       widget.getPaidUsers(userParticipants, payments),
-                      //   paymentType: PaymentType.user,
+                      //       widget.getPaidUsers(userParticipants, payments),                      
                       // ),
                       const SizedBox(height: 60),
                       ImagesListWidget(

@@ -153,6 +153,7 @@ class PaymentCommand extends BaseCommand {
       if (paymentIntentResults['success'] &&
           paymentIntentResults['customer'] != null) {
         print("attach payment method to customer");
+        createPaymentIntentResp['data'] = {"intent": paymentIntentResults['intent']};
         Map<String, dynamic> attachPaymentMethodToCustomerResp =
             await _callStripeAttachPaymentMethod(
                 paymentMethodId: paymentMethodId,

@@ -18,7 +18,6 @@ import '../../components/payment_list_widget.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/send_players_request_widget.dart';
 import '../../constants.dart';
-import '../../models/enums/payment_type.dart';
 import '../../models/enums/view_status.dart';
 import '../../models/pageModels/app_model.dart';
 import '../../models/pageModels/group_page_model.dart';

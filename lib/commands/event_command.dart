@@ -54,6 +54,7 @@ class EventCommand extends BaseCommand {
     await 'Hey there, check out this event'.share(imageKey: mainImageKey);
   }
 
+
   Future<void> onTapSocialMediaApp(BuildContext context) async {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -1565,6 +1566,21 @@ class EventCommand extends BaseCommand {
     return setupEventsResp;
   }
 
+  void removeUserFromEventPageModel(dynamic event, dynamic user) {
+    //update eventPageModel in eventPagesModel
+    for (int i = 0; i < eventsPageModel.eventsPageModel.length; i++) {
+      if (eventsPageModel.eventsPageModel[i].mainEvent['_id'] ==
+          event['_id']) {
+        print("found eventttt to update");
+        eventsPageModel.eventsPageModel[i].capacity -= 1;
+        // eventsPageModel.eventsPageModel[i].mainEvent = event;
+        // eventsPageModel.eventsPageModel[i].objectImageInput =
+        //     await loadEventMainImage(event, eventsPageModel.eventsPageModel[i].isMine);
+      }
+    }
+
+  }
+
   Future<Map<String, dynamic>> updateViewModelsWithEvent(
       Map<String, dynamic> event, bool add) async {
     print("updateViewModelsWithEvent()");
@@ -1575,7 +1591,7 @@ class EventCommand extends BaseCommand {
       "message": "Default Error",
       "data": []
     };
-
+    
     if (event['type'] == "GAME") {
       if (add) {
         appModel.myEvents.insert(0, {"event": event});

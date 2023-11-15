@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 
 import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
-import 'package:soccermadeeasy/models/enums/payment_type.dart';
 import '../../commands/base_command.dart';
 import '../../commands/chat_command.dart';
 import '../../commands/event_command.dart';
@@ -63,9 +62,10 @@ import '../social_media_cards_view/social_media_cards_view.dart';
 import '../splash_screen.dart';
 
 class PickupView extends StatefulWidget with EventMixin, ImagesMixin {
-  PickupView({Key? key, required this.game}) : super(key: key);
+  PickupView({Key? key, required this.game, required this.eventPageModelInstance}) : super(key: key);
 
   final dynamic game;
+  EventPageModel eventPageModelInstance;
 
   @override
   _PickupViewState createState() => _PickupViewState();
@@ -84,6 +84,7 @@ class _PickupViewState extends State<PickupView> {
   CreateEventPayment createEventPaymentWidget = CreateEventPayment();
   CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
   CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
+  EventPageModel eventModel = EventPageModel();
 
   bool _isLoading = true;
   late LatLng _center = LatLng(45.521563, -122.677433);
@@ -105,7 +106,8 @@ class _PickupViewState extends State<PickupView> {
     await EventCommand().getUserEventDetails([widget.game], true);
     widget.setupPlayerList();
     //wait for 3 seconds
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
+    eventModel = widget.eventPageModelInstance;
 
     setState(() {
       _isLoading = false;
@@ -138,45 +140,76 @@ class _PickupViewState extends State<PickupView> {
     print("build()");
     double paddingValue = 16;
 
+    
+    int capacity = context.select<EventPageModel, int>((value) => eventModel.capacity);
+
+
+
+
+
+
     dynamic mainEvent =
-        context.select<EventPageModel, dynamic>((value) => value.mainEvent);
-    dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
+        context.select<EventPageModel, dynamic>((value) => eventModel.mainEvent);
+    // dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
     List<dynamic> roles =
-        context.select<EventPageModel, List<dynamic>>((value) => value.roles);
-    bool isMine = context.select<EventPageModel, bool>((value) => value.isMine);
+        context.select<EventPageModel, List<dynamic>>((value) => eventModel.roles);
+    bool isMine = context.select<EventPageModel, bool>((value) => eventModel.isMine);
     bool isMember =
-        context.select<EventPageModel, bool>((value) => value.isMember);
+        context.select<EventPageModel, bool>((value) => eventModel.isMember);
     String amountRemaining = context
-        .select<EventPageModel, String>((value) => value.amountRemaining);
+        .select<EventPageModel, String>((value) => eventModel.amountRemaining);
     String amountPaid =
-        context.select<EventPageModel, String>((value) => value.amountPaid);
+        context.select<EventPageModel, String>((value) => eventModel.amountPaid);
     String teamAmountRemaining = context
-        .select<EventPageModel, String>((value) => value.amountRemaining);
+        .select<EventPageModel, String>((value) => eventModel.amountRemaining);
     String teamAmountPaid =
-        context.select<EventPageModel, String>((value) => value.teamAmountPaid);
+        context.select<EventPageModel, String>((value) => eventModel.teamAmountPaid);
     List userParticipants =
-        context.select<EventPageModel, List>((value) => value.userParticipants);
-    List teams = context.select<EventPageModel, List>((value) => value.teams);
+        context.select<EventPageModel, List>((value) => eventModel.userParticipants);
+    List teams = context.select<EventPageModel, List>((value) => eventModel.teams);
     List players =
-        context.select<EventPageModel, List>((value) => value.players);
-    List chats = context.watch<EventPageModel>().chats;
-    List payments = context.watch<EventPageModel>().payments;
-    List fieldLocations = context.watch<EventPageModel>().fieldLocations;
-    dynamic price = context.watch<EventPageModel>().price;
+        context.select<EventPageModel, List>((value) => eventModel.players);
+    List chats = context
+        .select<EventPageModel, List>((value) => eventModel.chats);
+    // List chats = context.watch<EventPageModel>().chats;
+    // List payments = context.watch<EventPageModel>().payments;
+    // List fieldLocations = context.watch<EventPageModel>().fieldLocations;
+    List payments =
+        context.select<EventPageModel, List>((value) => eventModel.payments);
+    List fieldLocations =
+        context.select<EventPageModel, List>((value) => eventModel.fieldLocations);
+    dynamic price =
+        context.select<EventPageModel, dynamic>((value) => eventModel.price);
     JoinCondition eventRequestJoin =
-        context.watch<EventPageModel>().eventRequestJoin;
+        context.select<EventPageModel, JoinCondition>((value) => eventModel.eventRequestJoin);
     JoinCondition eventPaymentJoin =
-        context.watch<EventPageModel>().eventPaymentJoin;
+        context.select<EventPageModel, JoinCondition>((value) => eventModel.eventPaymentJoin);
     JoinCondition teamRequestJoin =
-        context.watch<EventPageModel>().teamRequestJoin;
+        context.select<EventPageModel, JoinCondition>((value) => eventModel.teamRequestJoin);
     JoinCondition teamPaymentJoin =
-        context.watch<EventPageModel>().teamPaymentJoin;
+        context.select<EventPageModel, JoinCondition>((value) => eventModel.teamPaymentJoin);
     int numberOfParticipants =
-        context.watch<EventPageModel>().numberOfParticipants;
-    int capacity = context.watch<EventPageModel>().capacity;
-    String formattedEventTime = context
-        .select<EventPageModel, String>((value) => value.formattedEventTime);
-    List<AmenityType> amenities = context.watch<EventPageModel>().amenities;
+        context.select<EventPageModel, int>((value) => eventModel.numberOfParticipants);
+    String formattedEventTime =
+        context.select<EventPageModel, String>((value) => eventModel.formattedEventTime);
+     List<AmenityType> amenities =
+        context.select<EventPageModel,  List<AmenityType>>((value) => eventModel.amenities);
+    
+    // dynamic price = context.watch<EventPageModel>().price;
+    // JoinCondition eventRequestJoin =
+    //     context.watch<EventPageModel>().eventRequestJoin;
+    // JoinCondition eventPaymentJoin =
+    //     context.watch<EventPageModel>().eventPaymentJoin;
+    // JoinCondition teamRequestJoin =
+    //     context.watch<EventPageModel>().teamRequestJoin;
+    // JoinCondition teamPaymentJoin =
+    //     context.watch<EventPageModel>().teamPaymentJoin;
+    // int numberOfParticipants =
+    //     context.watch<EventPageModel>().numberOfParticipants;
+    // int capacity = context.watch<EventPageModel>().capacity;
+    // String formattedEventTime = context
+    //     .select<EventPageModel, String>((value) => value.formattedEventTime);
+    // List<AmenityType> amenities = context.watch<EventPageModel>().amenities;
 
     return _isLoading
         ? SplashScreen()
@@ -256,7 +289,7 @@ class _PickupViewState extends State<PickupView> {
                       PaymentListWidget(
                         payments:
                             payments,
-                        paymentType: PaymentType.user,
+                        
                       ))),
     //                   ConstrainedBox(
     //   constraints: BoxConstraints(

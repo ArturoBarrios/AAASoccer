@@ -33,6 +33,13 @@ type Query {
 }
 
 
+enum PaymentType {
+  STRIPE
+  PAYPAL
+  GOOGLE
+  APPLE  
+}
+
 enum AmenityType {
   BATHROOMS
   WATERFOUNDATIN
@@ -41,8 +48,6 @@ enum AmenityType {
   BUS
   TURF
   PINNIES
-  
-
 }
 
 enum RoleType {
@@ -481,6 +486,8 @@ type Payment   {
   isPlayerPayment: Boolean
   isTeamPayment: Boolean
   refunded: Boolean
+  charge: String
+  paymentType: PaymentType
 }
 
 # orgs can have many suborgs
