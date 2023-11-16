@@ -440,24 +440,24 @@ class _PickupViewState extends State<PickupView> {
                 ),
               ),
             ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.only(
-                  top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
-              child: //join widget
-                  GetJoinEventWidget(
-                mainEvent: mainEvent,
-                roles: roles,
-                isMine: isMine,
-                price: price,
-                amountRemaining: amountRemaining,
-                eventRequestJoin: eventRequestJoin,
-                eventPaymentJoin: eventPaymentJoin,
-                teamRequestJoin: teamRequestJoin,
-                teamPaymentJoin: teamPaymentJoin,
-                capacity: capacity,
-                numberOfPlayers: numberOfParticipants,
-              ),
-            ),
+            // bottomNavigationBar: Padding(
+            //   padding: const EdgeInsets.only(
+            //       top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
+            //   child: //join widget
+            //       GetJoinEventWidget(
+            //     mainEvent: mainEvent,
+            //     roles: roles,
+            //     isMine: isMine,
+            //     price: price,
+            //     amountRemaining: amountRemaining,
+            //     eventRequestJoin: eventRequestJoin,
+            //     eventPaymentJoin: eventPaymentJoin,
+            //     teamRequestJoin: teamRequestJoin,
+            //     teamPaymentJoin: teamPaymentJoin,
+            //     capacity: capacity,
+            //     numberOfPlayers: numberOfParticipants,
+            //   ),
+            // ),
           );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/strings.dart';
 
 import '../commands/base_command.dart';
 import '../commands/event_command.dart';
@@ -14,6 +15,7 @@ import '../views/game/view.dart';
 import 'Buttons/basic_elevated_button.dart';
 import 'Dialogues/alert_dialogue.dart';
 import 'Dialogues/animated_dialogu.dart';
+import 'Dialogues/bug_feedback_dialogue.dart';
 import 'Mixins/event_mixin.dart';
 import 'card_form_screen.dart';
 import 'join_condition.dart';
@@ -31,7 +33,9 @@ class GetJoinEventWidget extends StatefulWidget with EventMixin {
     this.teamRequestJoin,
     this.teamPaymentJoin,
     required this.capacity,
-    required this.numberOfPlayers
+    required this.numberOfPlayers,
+    required this.fieldRating,
+    required this.hostRating,
   }) : super(key: key);
 
   final dynamic mainEvent;
@@ -45,6 +49,8 @@ class GetJoinEventWidget extends StatefulWidget with EventMixin {
   final String amountRemaining;
   int capacity;
   final int numberOfPlayers;
+  final int fieldRating;
+  final int hostRating;
 
   @override
   State<GetJoinEventWidget> createState() => _GetJoinEventWidgetState();
@@ -85,26 +91,59 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     // BaseCommand().popToHome(context);
   }
 
-  void purchaseEvent(
-      BuildContext context, dynamic event) async {
+  void purchaseCheck(BuildContext context, dynamic event){
+    print("purchaseCheck");
+    print("widget.fieldRating: " + widget.fieldRating.toString());
+    print("widget.hostRating: " + widget.hostRating.toString());
+    if (widget.fieldRating == -1||widget.hostRating == -1) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialogueWidget(
+            title: 'Confirmation',
+            body: (widget.fieldRating == -1
+                    ? StringConstants.NOFIELDRATINGWARNING + "\n\n"
+                    : "") +
+                (widget.hostRating == -1
+                    ? StringConstants.NOHOSTRATINGWARNING + "\n\n"
+                    : ""),
+            onConfirmCallback: () async {
+              // Logic for confirmation action
+             purchaseEvent(context, event);
+            },
+            onCancelCallback: () {
+              // Logic for cancel action
+            },
+          );
+        },
+      );
+    }
+    else{
+      purchaseEvent(context, event);
+
+    }
+
+  }
+
+  void purchaseEvent(BuildContext context, dynamic event) async {
     print("purchaseEvent");
-    List<dynamic> roles = ["PLAYER"];
-    String rolesString = BaseCommand().stringifyRoles(roles);
-    dynamic subscriptionDetails = {
-      "price": widget.price,
-      "objectToPurchase": widget.mainEvent,
-      "objectType": Constants.EVENT,
-      "roles": rolesString,
-      "forRole": Constants.PLAYER,
-    };
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CardFormScreen(
-                paymentDetails: subscriptionDetails,
-                callbackFunction: goToEvent,
-              )),
-    );
+     List<dynamic> roles = ["PLAYER"];
+              String rolesString = BaseCommand().stringifyRoles(roles);
+              dynamic subscriptionDetails = {
+                "price": widget.price,
+                "objectToPurchase": widget.mainEvent,
+                "objectType": Constants.EVENT,
+                "roles": rolesString,
+                "forRole": Constants.PLAYER,
+              };
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CardFormScreen(
+                          paymentDetails: subscriptionDetails,
+                          callbackFunction: goToEvent,
+                        )),
+              );
   }
 
   Future<void> removeUserFromEvent(dynamic event, dynamic userObject,
@@ -116,10 +155,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
       }
     });
     setState(() {
-    EventCommand().removeUserFromEventPageModel(event, userObject);
-      
+      EventCommand().removeUserFromEventPageModel(event, userObject);
     });
-    // right now, organizer can't leave event, 
+    // right now, organizer can't leave event,
     // remove event from user and user from event
     // if (updatedRoles.length == 0) {
     //   dynamic removeUserFromEventResp =
@@ -127,7 +165,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     //   if (removeUserFromEventResp['success']) {
     //     print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
     //     dynamic eventToRemove = removeUserFromEventResp['data'];
-        
+
     //     EventCommand().updateViewModelsWithEvent(eventToRemove, false);
 
     //   }
@@ -221,45 +259,38 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     print("rolesss: " + widget.roles.toString());
     List<dynamic> existingRoles = widget.roles;
     print("aaaaa");
-    
+
     //expired
-   // Assuming widget.mainEvent['endTime'] is a String representing milliseconds since Epoch
-if (widget.mainEvent['endTime'] != null &&
-    DateTime.fromMillisecondsSinceEpoch(int.parse(widget.mainEvent['endTime'])).isBefore(DateTime.now().subtract(Duration(hours: 1)))) {
-  return BasicElevatedButton(
-    backgroundColor: AppColors.tsnGreyerWhite,
-    text: "Expired",
-    fontSize: FontSizes.xxs(context),
-    onPressed: () async {
-      
-    },
-  );
-
-
-}
+    // Assuming widget.mainEvent['endTime'] is a String representing milliseconds since Epoch
+    if (widget.mainEvent['endTime'] != null &&
+        DateTime.fromMillisecondsSinceEpoch(
+                int.parse(widget.mainEvent['endTime']))
+            .isBefore(DateTime.now().subtract(Duration(hours: 1)))) {
+      return BasicElevatedButton(
+        backgroundColor: AppColors.tsnGreyerWhite,
+        text: "Expired",
+        fontSize: FontSizes.xxs(context),
+        onPressed: () async {},
+      );
+    }
 
     //capacity(Join waitlist feature)
-    else if(widget.numberOfPlayers>=widget.capacity){
-      return 
-          BasicElevatedButton(                                
-                backgroundColor:
-                    AppColors.tsnGreen,
-                text: "Join Waitlist",
-                fontSize: FontSizes.xxs(context),
-                onPressed: () async{
-                  // purchaseEvent(context, event);
-                },
-              );
-
+    else if (widget.numberOfPlayers >= widget.capacity) {
+      return BasicElevatedButton(
+        backgroundColor: AppColors.tsnGreen,
+        text: "Join Waitlist",
+        fontSize: FontSizes.xxs(context),
+        onPressed: () async {
+          // purchaseEvent(context, event);
+        },
+      );
     }
     //if not already a player
-    else if (!widget.roles.contains("PLAYER")) {   
-      
+    else if (!widget.roles.contains("PLAYER")) {
       if (widget.isMine) {
-        return 
-        Container(
-          child: GestureDetector(
-          onTap: () async {            
+        return Container(
+            child: GestureDetector(
+          onTap: () async {
             dynamic chooseRoleDialog =
                 await widget.chooseRolesDialogue(context);
             if (chooseRoleDialog != null) {
@@ -281,7 +312,6 @@ if (widget.mainEvent['endTime'] != null &&
             !widget.eventRequestJoin!.required.value) {
           //price exists(join with paying or not paying)
           if (widget.price != null) {
-           
             return Container(
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -296,12 +326,12 @@ if (widget.mainEvent['endTime'] != null &&
                             "chooseRoleDialog: " + chooseRoleDialog.toString());
                         List<dynamic> roles = chooseRoleDialog['rolesArray'];
                         print("roles: " + roles.toString());
-                        purchaseEvent(context, event);
+                        // purchaseEvent(context, event);
+                        purchaseCheck(context, event);
                       }
                     },
                     child: Text("Join, Pay Now"),
                   ),
-                  
                   Container(
                       child: GestureDetector(
                     onTap: () async {
@@ -354,32 +384,15 @@ if (widget.mainEvent['endTime'] != null &&
             !widget.eventRequestJoin!.required.value) {
           //if amount is 0
 
-          return 
-          BasicElevatedButton(                                
-                backgroundColor:
-                    AppColors.tsnGreen,
-                text: "Pay to Join Event",
-                fontSize: FontSizes.xxs(context),
-                onPressed: () async{
-                  purchaseEvent(context, event);
-                },
-              );
-          // Container(
-          //     child: GestureDetector(
-          //   onTap: () async {
-          //     print("withPayment && !withRequest");
-              // dynamic chooseRoleDialog =
-              //     await widget.chooseRolesDialogue(context);
-              // if (chooseRoleDialog != null) {
-              //   print("chooseRoleDialog: " + chooseRoleDialog.toString());
-              //   List<dynamic> roles = chooseRoleDialog['rolesArray'];                
-              //   print("roles: " + roles.toString());
-                // purchaseEvent(context, event);
-              // }
-            // },
-            // child: Text("Pay to Join Event"),
-          // )
-          // );
+          return BasicElevatedButton(
+            backgroundColor: AppColors.tsnGreen,
+            text: "Pay to Join Event",
+            fontSize: FontSizes.xxs(context),
+            onPressed: () async {
+              // purchaseEvent(context, event);
+              purchaseCheck(context, event);
+            },
+          );
         }
         //withPayment && withRequest
         //find request element, else send request
@@ -442,9 +455,8 @@ if (widget.mainEvent['endTime'] != null &&
         }
       }
     } else {
-      return 
-
-      BasicElevatedButton(                                
+    return 
+    BasicElevatedButton(                                
                 backgroundColor:
                     AppColors.tsnRed,
                 text: "Leave",
@@ -455,7 +467,7 @@ if (widget.mainEvent['endTime'] != null &&
   builder: (BuildContext context) {
     return AlertDialogueWidget(
       title: 'Confirmation',
-      body: "Are you sure you want to leave? There are no refunds if you leave within 24 hours of the event.",
+      body: StringConstants.LEAVEWARNING,
       onConfirmCallback: () async {
         // Logic for confirmation action
         await removeUserFromEvent(event, userObject, ["PLAYER"], existingRoles);
@@ -469,22 +481,9 @@ if (widget.mainEvent['endTime'] != null &&
                         
                 },
               );
-      // Container(
-      //     child: GestureDetector(
-      //   onTap: () async {          
-      //     dynamic chooseRoleDialog = await widget.chooseRolesDialogue(context);
-      //     if (chooseRoleDialog != null) {
-      //       print("chooseRoleDialog: " + chooseRoleDialog.toString());
-      //       List<String> roles = List.from(chooseRoleDialog['rolesArray']);
-      //       // BaseCommand().stringifyRoles(roles);
-      //       print("roles: " + roles.toString());
-      //       await removeUserFromEvent(event, userObject, roles, existingRoles);
-      //     }
-      //   },
-      //   child: Text("Leave"),
-      // ));
     }
   }
+  
 
   void loadInitialData() {
     userObject = UserCommand().getAppModelUser();

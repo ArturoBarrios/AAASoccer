@@ -183,16 +183,16 @@ class _TrainingViewState extends State<TrainingView> {
                               : 0.0,)
                 ),
                 //join widget
-                GetJoinEventWidget(
-                    mainEvent: mainEvent,
-                    roles: roles,
-                    isMine: isMine,
-                    price: price,
-                    amountRemaining: amountRemaining,
-                    capacity: 10,
-                    numberOfPlayers: 5,
+                // GetJoinEventWidget(
+                //     mainEvent: mainEvent,
+                //     roles: roles,
+                //     isMine: isMine,
+                //     price: price,
+                //     amountRemaining: amountRemaining,
+                //     capacity: 10,
+                //     numberOfPlayers: 5,
                     
-                    ),
+                //     ),
                 //Requests widget
                 RequestsList(
                     objectDetails: {"requests": mainEvent['requests']['data']}),

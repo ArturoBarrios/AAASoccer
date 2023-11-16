@@ -232,9 +232,11 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                             eventRequestJoin: eventRequestJoin,
                                             eventPaymentJoin: eventPaymentJoin,
                                             teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin     ,
+                                            teamPaymentJoin: teamPaymentJoin,
                                             capacity: event.capacity,
-                    numberOfPlayers: numberOfParticipants,                                                                               
+                                            numberOfPlayers: numberOfParticipants,                                                                               
+                                            fieldRating: event.fieldRating,                                                                               
+                                            hostRating: event.hostRating,                                                                               
                                         )
                                     ),
                                     // Expanded(

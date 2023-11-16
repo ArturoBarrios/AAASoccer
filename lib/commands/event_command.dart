@@ -1419,6 +1419,8 @@ class EventCommand extends BaseCommand {
         EventPage eventPageInstance = EventPage();
         eventPageInstance.mainEvent = event;
         eventPageInstance.capacity = isMyEventResp['capacity'];
+        eventPageInstance.fieldRating = isMyEventResp['fieldRating'];
+        eventPageInstance.hostRating = isMyEventResp['hostRating'];
         //testing eventPage        
         eventsPageModel.addEventPage(eventPageInstance);
         isMyEventResp['eventPageInstance'] = eventPageInstance;

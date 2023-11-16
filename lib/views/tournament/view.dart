@@ -194,15 +194,15 @@ class _TournamentViewState extends State<TournamentView> {
                           ),
                       ),
                       //join widget
-                      GetJoinEventWidget(
-                          mainEvent: mainEvent,
-                          roles: roles,
-                          isMine: isMine,
-                          price: price,
-                          amountRemaining: amountRemaining,
-                          capacity: 10,
-                          numberOfPlayers: 5,
-                          ),
+                      // GetJoinEventWidget(
+                      //     mainEvent: mainEvent,
+                      //     roles: roles,
+                      //     isMine: isMine,
+                      //     price: price,
+                      //     amountRemaining: amountRemaining,
+                      //     capacity: 10,
+                      //     numberOfPlayers: 5,
+                      //     ),
                       //Requests widget
                       RequestsList(objectDetails: {
                         "requests": mainEvent['requests']['data']

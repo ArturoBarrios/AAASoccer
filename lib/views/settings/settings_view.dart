@@ -88,20 +88,19 @@ class SettingsView extends StatelessWidget {
                               text: 'Report a bug',
                               prefixIconData: Icons.warning_amber_rounded,
                               onTap: () {
-
                                 showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return BugFeedbackWidget(
-      onSubmitCallback: () {
-        // Logic for submit action
-      },
-      onCancelCallback: () {
-        // Logic for cancel action
-      },
-    );
-  },
-);
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return BugFeedbackWidget(
+                                      onSubmitCallback: () {
+                                        // Logic for submit action
+                                      },
+                                      onCancelCallback: () {
+                                        // Logic for cancel action
+                                      },
+                                    );
+                                  },
+                                );
                               },
                             ),
                             ButtonModel(

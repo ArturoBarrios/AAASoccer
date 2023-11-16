@@ -10,18 +10,35 @@ import '../appModels/Price.dart';
 import '../enums/AmenityType.dart';
 
 class EventPage extends ChangeNotifier {
-  int _capacity = 0;
   dynamic mainEvent = null;
+  int _capacity = 0;
+  int _fieldRating = 0;  
+  int _hostRating = 0;  
 
   int get capacity => _capacity;
-
   set capacity(int newCapacity) {
     if (_capacity != newCapacity) {
       _capacity = newCapacity;
       notifyListeners();
     }
   }
+  
+  int get fieldRating => _fieldRating;
+  set fieldRating(int newFieldRating) {
+    if (_fieldRating != newFieldRating) {
+      _fieldRating = newFieldRating;
+      notifyListeners();
+    }
+  }
+  
+  int get hostRating => _hostRating;
+  set hostRating(int newHostRating) {
+    if (_hostRating != newHostRating) {
+      _hostRating = newHostRating;
+      notifyListeners();
+    }
+  }
 
-  // ... other properties and methods ...
+  
 }
 
