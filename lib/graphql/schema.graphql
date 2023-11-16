@@ -204,32 +204,6 @@ type AppPreference {
   user: User
 }
 
-type Request {
-  type: RequestType
-  sender: User @relation(name: "requests_sent")
-  receivers: [User] @relation(name: "request_receivers")
-  acceptedBy: User @relation(name: "request_acceptedBy")
-  status: RequestStatus
-  requestAttempts: Int
-  fromOrganizer: Boolean
-  event: Event
-  team: Team
-  group: Group
-  forRole: String
-  sentAt: Int
-  acceptedAt: Int
-}
-
-type StripeCustomer {
-  customerId: String
-  user: User
-}
-
-type FollowRelation {
-  follower: User @relation(name: "user_follower")
-  following: User @relation(name: "user_following")
-}
-
 type User  {
   isSuperUser: Boolean @default(value: false)
   appPreference: AppPreference
@@ -280,6 +254,32 @@ type User  {
   hasAcceptedTermsAndConditions: Boolean @default(value: false)
   hasAcceptedPrivacyPolicy: Boolean @default(value: false)
 }
+type Request {
+  type: RequestType
+  sender: User @relation(name: "requests_sent")
+  receivers: [User] @relation(name: "request_receivers")
+  acceptedBy: User @relation(name: "request_acceptedBy")
+  status: RequestStatus
+  requestAttempts: Int
+  fromOrganizer: Boolean
+  event: Event
+  team: Team
+  group: Group
+  forRole: String
+  sentAt: Int
+  acceptedAt: Int
+}
+
+type StripeCustomer {
+  customerId: String
+  user: User
+}
+
+type FollowRelation {
+  follower: User @relation(name: "user_follower")
+  following: User @relation(name: "user_following")
+}
+
 
 type Player   {
   wagers: [Wager] @relation  
