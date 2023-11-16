@@ -312,13 +312,13 @@ class PaymentCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> createRefund() async {
+  Future<Map<String, dynamic>> createRefund(String charge) async {
     log('create refund kadir');
     try {
       final response = await http.post(
           Uri.parse(
               'https://us-central1-soccer-app-a9060.cloudfunctions.net/StripeCreateRefund'),
-          body: {'charge': 'ch_3Nf2ZyDUXwYENeT43OU1UB5C'});
+          body: {'charge': charge});
 
       print("Response Status Code: ${response.statusCode}");
 

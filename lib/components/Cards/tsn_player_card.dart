@@ -146,13 +146,10 @@ class TSNPlayerCard extends StatelessWidget {
                                   children: [
                                     Expanded(
                                         flex: 9,
-                                        child: BasicElevatedButton(
-                                          
-                                          // height: screenHeight * 0.05,  // 10% of screen height
-                                          // width: screenWidth * 0.35,
+                                        child: BasicElevatedButton(                                        
                                           backgroundColor:
                                               AppColors.tsnDarkGrey,
-                                          text: "5 Followers",
+                                          text: followers.length.toString()+" Followers",
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),

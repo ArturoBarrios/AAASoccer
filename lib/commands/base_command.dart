@@ -23,7 +23,7 @@ import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
 import '../models/enums/AmenityType.dart';
-import '../models/pageModels/event_pages_model.dart';
+import '../models/pageModels/events_page_model.dart';
 import '../models/pageModels/event_page_model.dart';
 import '../models/pageModels/group_page_model.dart';
 import '../models/pageModels/profile_page_model.dart';

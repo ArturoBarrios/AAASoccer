@@ -22,6 +22,17 @@ class UserFragments {
       isProfilePrivate
       updatedAt
       hasAcceptedTermsAndConditions
+      eventRatings{
+        data{
+          _id
+          eventRating
+          hostRating
+          fieldLocationRating          
+          user{
+            _id
+          }
+        }
+      }
       followers{
         data{
           follower{

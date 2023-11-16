@@ -7,6 +7,15 @@ class LocationFragments{
           ${LocationFull()}    
 
          }
+         eventRatings{
+        data{
+          _id          
+          fieldLocationRating          
+          user{
+            _id
+          }
+        }
+      }
 
     """;
 

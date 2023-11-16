@@ -25,7 +25,7 @@ import 'components/logo_text.dart';
 import 'components/models/button_model.dart';
 import 'models/pageModels/app_model.dart';
 import 'models/pageModels/chat_page_model.dart';
-import 'models/pageModels/event_pages_model.dart';
+import 'models/pageModels/events_page_model.dart';
 import 'models/pageModels/event_page_model.dart';
 import 'models/pageModels/group_page_model.dart';
 import 'models/pageModels/profile_page_model.dart';

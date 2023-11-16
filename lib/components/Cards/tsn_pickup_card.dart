@@ -3,9 +3,10 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
+import '../../models/pageModels/event_page.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../../models/pageModels/event_page_model.dart';
-import '../../models/pageModels/event_pages_model.dart';
+import '../../models/pageModels/events_page_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
 import '../../svg_widgets.dart';
@@ -40,10 +41,10 @@ class TSNPickupCard extends StatefulWidget {
 
 class _TSNPickupCardState extends State<TSNPickupCard> {
   bool isLoading = true;
-  EventPageModel eventModel = EventPageModel();
+  EventPage? eventPageInstance;
   
   loadInitialData(){
-    eventModel = widget.pickupCardDetails['eventPageModelInstance'] as EventPageModel;
+    eventPageInstance = widget.pickupCardDetails['eventPageInstance'];
 
     setState(() {
       isLoading = false;
@@ -60,15 +61,24 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-
+    // int otherCapacity = context.watch<EventsPageModel>().capacity;
+    // context.watch<EventsPageModel>().eventsPages[0];
+    // int otherCapacity = context.select<EventsPageModel, int>((value) => value.eventsPages[0].capacity);
+//     int otherCapacity = context.select<EventsPageModel, int>(
+//   (value) => value.eventsPages[0].capacity  // Example for the first event
+// );
+    //  int otherCapacity = context.watch<EventsPageModel>().getPage(0).capacity;
+    
 ///testing shittt
     
     
-    // int capacity = context.watch<EventsPageModel>().eventsPageModel.first.capacity;
+    // int otherCapacity = context.watch<EventsPageModel>().eventsPageModel.first.capacity;
+    // print("capacity: "+ capacity.toString());
 
-    int capacity = context.select<EventPageModel, int>((value) => eventModel.capacity);
+    // int otherCapacity = context.select<EventsPageModel, int>((value) => eventModel!.capacity);
 
 
+// int otherCapacity = context.select<EventPageModel, int>((value) => value.capacity);
     //event model data
     dynamic mainEvent = widget.pickupCardDetails['mainEvent'];
 
@@ -89,14 +99,20 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
     JoinCondition teamRequestJoin = widget.pickupCardDetails['teamRequestJoin'];
     JoinCondition teamPaymentJoin = widget.pickupCardDetails['teamPaymentJoin'];
     int eventRating = widget.pickupCardDetails['eventRating'];
+    int hostRating = widget.pickupCardDetails['hostRating'];
+    int fieldRating = widget.pickupCardDetails['fieldRating'];
     int numberOfRatings = widget.pickupCardDetails['numberOfRatings'];
     // int capacity = pickupCardDetails['capacity'];
     int numberOfParticipants = widget.pickupCardDetails['numberOfParticipants'];
 
     print("fieldLocations: " + fieldLocations.toString());
-
-    return 
-    isLoading ? Text("loading....") :
+    // print("capacityyyy: "+ capacity.toString());
+    return ChangeNotifierProvider<EventPage>.value(
+      value: eventPageInstance!,
+      child: Consumer<EventPage>(
+        builder: (context, event, child) {
+          return 
+          isLoading ? Text("loading....") :
 
     GestureDetector(
         onTap: () {
@@ -104,7 +120,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PickupView(game: mainEvent, eventPageModelInstance: eventModel, )),
+                builder: (context) => PickupView(game: mainEvent, eventPageInstance: eventPageInstance!, )),
           );
           print("Card Clicked");
         },
@@ -162,7 +178,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                 ),
                                 Row(
                                   children: [
-                                    RatingWidget(rating: eventRating),
+                                    RatingWidget(rating: fieldRating),
                                     // Icon(Icons.location_on,
                                     //     color: AppColors.tsnGreen),
                                     // Text(fieldLocations[0]['name'].toString(),
@@ -199,7 +215,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                           backgroundColor:
                                               AppColors.tsnDarkGrey,
                                           text: numberOfParticipants.toString()
-                                            +"/"+capacity.toString(),
+                                            +"/"+event.capacity.toString(),
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),
@@ -217,7 +233,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                             eventPaymentJoin: eventPaymentJoin,
                                             teamRequestJoin: teamRequestJoin,
                                             teamPaymentJoin: teamPaymentJoin     ,
-                                            capacity: eventModel.capacity,
+                                            capacity: event.capacity,
                     numberOfPlayers: numberOfParticipants,                                                                               
                                         )
                                     ),
@@ -294,7 +310,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                               children: [
                                 Row(
                                   children: [
-                                    RatingWidget(rating: eventRating),                                    
+                                    RatingWidget(rating: hostRating),                                    
                                     // Text("BR 1a"),
                                     // Text("BR 1b"),
                                   ],
@@ -332,6 +348,12 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
               ],
             ),
           ),
-        ));
+     ),
+    );
+          // Your widget that needs to update with changes in EventPage
+
+        },
+      ),
+     );
   }
 }

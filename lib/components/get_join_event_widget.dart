@@ -12,6 +12,7 @@ import '../styles/font_sizes.dart';
 import '../views/chats/create.dart';
 import '../views/game/view.dart';
 import 'Buttons/basic_elevated_button.dart';
+import 'Dialogues/alert_dialogue.dart';
 import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/event_mixin.dart';
 import 'card_form_screen.dart';
@@ -42,7 +43,7 @@ class GetJoinEventWidget extends StatefulWidget with EventMixin {
   final bool isMine;
   final dynamic price;
   final String amountRemaining;
-  final int capacity;
+  int capacity;
   final int numberOfPlayers;
 
   @override
@@ -114,20 +115,23 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         updatedRoles.add(element);
       }
     });
+    setState(() {
     EventCommand().removeUserFromEventPageModel(event, userObject);
+      
+    });
     // right now, organizer can't leave event, 
     // remove event from user and user from event
-    if (updatedRoles.length == 0) {
-      dynamic removeUserFromEventResp =
-          await EventCommand().removeUserFromEvent(event, userObject);
-      if (removeUserFromEventResp['success']) {
-        print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
-        dynamic eventToRemove = removeUserFromEventResp['data'];
+    // if (updatedRoles.length == 0) {
+    //   dynamic removeUserFromEventResp =
+    //       await EventCommand().removeUserFromEvent(event, userObject);
+    //   if (removeUserFromEventResp['success']) {
+    //     print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
+    //     dynamic eventToRemove = removeUserFromEventResp['data'];
         
-        EventCommand().updateViewModelsWithEvent(eventToRemove, false);
+    //     EventCommand().updateViewModelsWithEvent(eventToRemove, false);
 
-      }
-    } else {}
+    //   }
+    // } else {}
   }
 
   Future<void> addUserToEvent(dynamic event, userObject,
@@ -223,11 +227,11 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 if (widget.mainEvent['endTime'] != null &&
     DateTime.fromMillisecondsSinceEpoch(int.parse(widget.mainEvent['endTime'])).isBefore(DateTime.now().subtract(Duration(hours: 1)))) {
   return BasicElevatedButton(
-    backgroundColor: AppColors.tsnRed,
-    text: "Leave",
+    backgroundColor: AppColors.tsnGreyerWhite,
+    text: "Expired",
     fontSize: FontSizes.xxs(context),
     onPressed: () async {
-      await removeUserFromEvent(event, userObject, ["PLAYER"], existingRoles);
+      
     },
   );
 
@@ -446,7 +450,23 @@ if (widget.mainEvent['endTime'] != null &&
                 text: "Leave",
                 fontSize: FontSizes.xxs(context),
                 onPressed: () async{
-                        await removeUserFromEvent(event, userObject, ["PLAYER"], existingRoles);
+                  showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return AlertDialogueWidget(
+      title: 'Confirmation',
+      body: "Are you sure you want to leave? There are no refunds if you leave within 24 hours of the event.",
+      onConfirmCallback: () async {
+        // Logic for confirmation action
+        await removeUserFromEvent(event, userObject, ["PLAYER"], existingRoles);
+      },
+      onCancelCallback: () {
+        // Logic for cancel action
+      },
+    );
+  },
+);
+                        
                 },
               );
       // Container(

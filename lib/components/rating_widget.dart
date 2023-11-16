@@ -4,18 +4,23 @@ import '../styles/colors.dart'; // Make sure this import points to your colors f
 class RatingWidget extends StatelessWidget {
   final int rating;
   final int maxRating = 5;
-  final int totalRatings; // New field for the total number of ratings
+  final int totalRatings;
 
   RatingWidget({
     Key? key,
     required this.rating,
     this.totalRatings = 12, // Default total ratings is 5
   }) : super(key: key) {
-    assert(rating >= 0 && rating <= maxRating, 'Rating must be between 0 and maxRating');
+    assert(rating >= -1 && rating <= maxRating, 'Rating must be between -1 and maxRating');
   }
 
   @override
   Widget build(BuildContext context) {
+    // Check if the rating is -1 to display "No Ratings"
+    if (rating == -1) {
+      return Text('!!!!No Ratings!!!!', style: TextStyle(color: AppColors.tsnRed));
+    }
+
     return InkWell(
       onTap: () {
         print('Star row pressed with rating: $rating');
@@ -45,8 +50,8 @@ void main() {
           title: Text('Rating Widget Example'),
         ),
         body: Center(
-          // Example usage of the RatingWidget with 3 out of 5 stars and total ratings of 123
-          child: RatingWidget(rating: 3, totalRatings: 123),
+          // Example usage of the RatingWidget with -1 (No Ratings)
+          child: RatingWidget(rating: -1, totalRatings: 0),
         ),
       ),
     ),

@@ -63,8 +63,8 @@ class _LogoTextWidgetState extends State<LogoTextWidget> with SingleTickerProvid
           turns: _animation,
           child:
           Image(
-            width: 30,//widget.height, // Using height to keep the image square
-            height: 30,//widget.height,
+            width: widget.height, // Using height to keep the image square
+            height: widget.height,
             image: logo,
             color: AppColors.tsnLightGreen,
           )),

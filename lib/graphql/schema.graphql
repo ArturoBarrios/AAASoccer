@@ -937,7 +937,10 @@ type Access {
 }
 
 type AppFeedback {
-  feedbackType: String
-  
+  feedback: String
+}
 
+type BugFeedback {
+  feedback: String
+  severity: Int
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/models/button_model.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
+import '../../components/Dialogues/bug_feedback_dialogue.dart';
 import '../../components/custom_tile_list.dart';
 import '../../components/custom_tile_list_with_title.dart';
 import '../../components/models/tile_list_model.dart';
@@ -86,7 +87,22 @@ class SettingsView extends StatelessWidget {
                             ButtonModel(
                               text: 'Report a bug',
                               prefixIconData: Icons.warning_amber_rounded,
-                              onTap: () {},
+                              onTap: () {
+
+                                showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return BugFeedbackWidget(
+      onSubmitCallback: () {
+        // Logic for submit action
+      },
+      onCancelCallback: () {
+        // Logic for cancel action
+      },
+    );
+  },
+);
+                              },
                             ),
                             ButtonModel(
                               text: 'Send feedback',

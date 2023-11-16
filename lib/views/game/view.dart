@@ -43,6 +43,7 @@ import '../../components/teams_list_widget.dart';
 import '../../models/enums/AmenityType.dart';
 import '../../models/enums/RsvpStatus.dart';
 import '../../models/pageModels/chat_page_model.dart';
+import '../../models/pageModels/event_page.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
@@ -62,10 +63,10 @@ import '../social_media_cards_view/social_media_cards_view.dart';
 import '../splash_screen.dart';
 
 class PickupView extends StatefulWidget with EventMixin, ImagesMixin {
-  PickupView({Key? key, required this.game, required this.eventPageModelInstance}) : super(key: key);
+  PickupView({Key? key, required this.game, required this.eventPageInstance}) : super(key: key);
 
   final dynamic game;
-  EventPageModel eventPageModelInstance;
+  EventPage eventPageInstance;
 
   @override
   _PickupViewState createState() => _PickupViewState();
@@ -107,7 +108,7 @@ class _PickupViewState extends State<PickupView> {
     widget.setupPlayerList();
     //wait for 3 seconds
     // await Future.delayed(const Duration(seconds: 2));
-    eventModel = widget.eventPageModelInstance;
+    // eventPageInstance = widget.eventPageInstance;
 
     setState(() {
       _isLoading = false;

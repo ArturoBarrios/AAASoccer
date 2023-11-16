@@ -18,6 +18,7 @@ import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 import '../components/join_condition.dart';
 import '../graphql/queries/events.dart';
 import '../models/enums/AmenityType.dart';
+import '../models/pageModels/event_page.dart';
 import '../views/social_media_cards_view/social_media_cards_view.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -1145,6 +1146,60 @@ class EventCommand extends BaseCommand {
     return tempRoles;
   }
 
+  //rating = -1 denotes no rating
+  int calculateEventRating(dynamic event){
+    int rating = 0;
+    int numberOfRatings = 0;
+    if(event['eventRatings'] != null){
+      for(int i = 0; i < event['eventRatings']['data'].length; i++){
+        rating += event['eventRatings']['data'][i]['eventRating'] as int;
+        numberOfRatings++;
+      }
+    }
+    if(numberOfRatings > 0){
+      rating = rating/numberOfRatings as int;
+    }
+    else {rating = -1;}
+    
+    return rating;
+
+  }
+  
+  //rating = -1 denotes no rating
+  int calculateHostRating(dynamic user){
+    int rating = 0;
+    int numberOfRatings = 0;
+    if(user['eventRatings'] != null){
+      for(int i = 0; i < user['eventRatings']['data'].length; i++){
+        rating += user['eventRatings']['data'][i]['hostRating'] as int;
+        numberOfRatings++;
+      }
+    }
+    if(numberOfRatings > 0){
+      rating = rating/numberOfRatings as int;
+    }
+    else {rating = -1;}
+    
+    return rating;
+  }
+  
+  int calculateFieldRating(dynamic field){
+    int rating = 0;
+    int numberOfRatings = 0;
+    if(field['eventRatings'] != null){
+      for(int i = 0; i < field['eventRatings']['data'].length; i++){
+        rating += field['eventRatings']['data'][i]['fieldLocationRating'] as int;
+        numberOfRatings++;
+      }
+    }
+    if(numberOfRatings > 0){
+      rating = rating/numberOfRatings as int;
+    }
+    else {rating = -1;}
+    
+    return rating;
+  }
+
   Future<Map<String, dynamic>> getUserEventDetails(
       List<dynamic> events, bool addToEventPageModel) async {
     print("getUserEventDetails()");
@@ -1171,8 +1226,9 @@ class EventCommand extends BaseCommand {
       "userParticipants": [],
       "fieldLocations": [],
       "eventRating": 4,
-      "numberOfRatings": 0,
+      "hostRating": 4,
       "fieldRating": 4,
+      "numberOfRatings": 0,      
       "numberOfFieldRatings": 0,
       "numberOfParticipants": 0,
       "capacity": 0,
@@ -1225,9 +1281,13 @@ class EventCommand extends BaseCommand {
       //     isMyEventResp['league'] = league;
       //   }
       // }
+      
 
       isMyEventResp['mainEvent'] = event;
       isMyEventResp['allEvents'] = events;
+      
+      isMyEventResp['hostRating'] = calculateHostRating(event);
+      isMyEventResp['fieldRating'] = calculateFieldRating(event);
 
       String amenitiesString = event['amenities'] == null ? "{}" : event['amenities'];
       List<AmenityType> amenitiesList = BaseCommand().parseAmenities(amenitiesString);
@@ -1320,50 +1380,53 @@ class EventCommand extends BaseCommand {
                   tempTeamAmountPaid)
               .toStringAsFixed(2);
 
-      if (addToEventPageModel) {
-            EventPageModel eventPageModelInstance = EventPageModel();
-            isMyEventResp['eventPageModelInstance'] = eventPageModelInstance;
+      // if (addToEventPageModel) {
+            
 
 
-        eventPageModelInstance.mainEvent = isMyEventResp['mainEvent'];
-        eventPageModelInstance.isMine = isMyEventResp['isMine'];
-        eventPageModelInstance.objectImageInput =
-            await loadEventMainImage(event, eventPageModelInstance.isMine);
-        eventPageModelInstance.roles = isMyEventResp['roles'];
-        eventPageModelInstance.isMember = isMyEventResp['isMember'];
-        eventPageModelInstance.amountRemaining = isMyEventResp['amountRemaining'];
-        eventPageModelInstance.amountPaid = isMyEventResp['amountPaid'];
-        eventPageModelInstance.teamAmountRemaining =
+        eventPageModel.mainEvent = isMyEventResp['mainEvent'];
+        eventPageModel.isMine = isMyEventResp['isMine'];
+        eventPageModel.objectImageInput =
+            await loadEventMainImage(event, eventPageModel.isMine);
+        eventPageModel.roles = isMyEventResp['roles'];
+        eventPageModel.isMember = isMyEventResp['isMember'];
+        eventPageModel.amountRemaining = isMyEventResp['amountRemaining'];
+        eventPageModel.amountPaid = isMyEventResp['amountPaid'];
+        eventPageModel.teamAmountRemaining =
             isMyEventResp['teamAmountRemaining'];
-        eventPageModelInstance.teamAmountPaid = isMyEventResp['teamAmountPaid'];
-        eventPageModelInstance.userParticipants = isMyEventResp['userParticipants'];
-        eventPageModelInstance.teams = isMyEventResp['teams'];
-        eventPageModelInstance.players = isMyEventResp['players'];
-        eventPageModelInstance.chats = isMyEventResp['chats'];
-        eventPageModelInstance.payments = isMyEventResp['payments'];
-        eventPageModelInstance.fieldLocations = isMyEventResp['fieldLocations'];
-        eventPageModelInstance.price = isMyEventResp['price'];
-        eventPageModelInstance.eventRequestJoin = isMyEventResp['eventRequestJoin'];
-        eventPageModelInstance.eventPaymentJoin = isMyEventResp['eventPaymentJoin'];
-        eventPageModelInstance.teamRequestJoin = isMyEventResp['teamRequestJoin'];
-        eventPageModelInstance.teamPaymentJoin = isMyEventResp['teamPaymentJoin'];
-        eventPageModelInstance.tournament = isMyEventResp['tournament'];
-        eventPageModelInstance.groupStage = isMyEventResp['groupStage'];
-        eventPageModelInstance.tournamentStage = isMyEventResp['tournamentStage'];
-        eventPageModelInstance.capacity = isMyEventResp['capacity'];
-        eventPageModelInstance.numberOfParticipants =
+        eventPageModel.teamAmountPaid = isMyEventResp['teamAmountPaid'];
+        eventPageModel.userParticipants = isMyEventResp['userParticipants'];
+        eventPageModel.teams = isMyEventResp['teams'];
+        eventPageModel.players = isMyEventResp['players'];
+        eventPageModel.chats = isMyEventResp['chats'];
+        eventPageModel.payments = isMyEventResp['payments'];
+        eventPageModel.fieldLocations = isMyEventResp['fieldLocations'];
+        eventPageModel.price = isMyEventResp['price'];
+        eventPageModel.eventRequestJoin = isMyEventResp['eventRequestJoin'];
+        eventPageModel.eventPaymentJoin = isMyEventResp['eventPaymentJoin'];
+        eventPageModel.teamRequestJoin = isMyEventResp['teamRequestJoin'];
+        eventPageModel.teamPaymentJoin = isMyEventResp['teamPaymentJoin'];
+        eventPageModel.tournament = isMyEventResp['tournament'];
+        eventPageModel.groupStage = isMyEventResp['groupStage'];
+        eventPageModel.tournamentStage = isMyEventResp['tournamentStage'];
+        eventPageModel.capacity = isMyEventResp['capacity'];
+        eventPageModel.numberOfParticipants =
             isMyEventResp['numberOfParticipants'];
-        eventPageModelInstance.formattedEventTime =
+        eventPageModel.formattedEventTime =
             isMyEventResp['formattedEventTime'];
-        eventPageModelInstance.amenities = isMyEventResp['amenities'];
-        
-        
-        eventsPageModel.eventsPageModel.add(eventPageModelInstance);
+        eventPageModel.amenities = isMyEventResp['amenities'];
+        //event page instance testing
+        EventPage eventPageInstance = EventPage();
+        eventPageInstance.mainEvent = event;
+        eventPageInstance.capacity = isMyEventResp['capacity'];
+        //testing eventPage        
+        eventsPageModel.addEventPage(eventPageInstance);
+        isMyEventResp['eventPageInstance'] = eventPageInstance;
         
 
 
 
-      }
+      // }
 
       print("successfully ran details function");
       isMyEventResp["success"] = true;
@@ -1568,11 +1631,16 @@ class EventCommand extends BaseCommand {
 
   void removeUserFromEventPageModel(dynamic event, dynamic user) {
     //update eventPageModel in eventPagesModel
-    for (int i = 0; i < eventsPageModel.eventsPageModel.length; i++) {
-      if (eventsPageModel.eventsPageModel[i].mainEvent['_id'] ==
+    print("eventPageModel.capacity before: "+ eventPageModel.capacity.toString());
+    // eventPageModel.capacity += 1;
+    print("lengthhhh: "+ eventsPageModel.eventsPages.length.toString());
+    // eventsPageModel.capacity +=1;
+    for (int i = 0; i < eventsPageModel.eventsPages.length; i++) {
+      if (eventsPageModel.eventsPages[i].mainEvent['_id'] ==
           event['_id']) {
         print("found eventttt to update");
-        eventsPageModel.eventsPageModel[i].capacity -= 1;
+        eventsPageModel.eventsPages[i].capacity += 1;
+        print("eventsPageModel.eventsPages[i].capacity" + eventsPageModel.eventsPages[i].capacity.toString());
         // eventsPageModel.eventsPageModel[i].mainEvent = event;
         // eventsPageModel.eventsPageModel[i].objectImageInput =
         //     await loadEventMainImage(event, eventsPageModel.eventsPageModel[i].isMine);
