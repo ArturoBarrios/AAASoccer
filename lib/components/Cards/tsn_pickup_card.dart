@@ -61,58 +61,14 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    // int otherCapacity = context.watch<EventsPageModel>().capacity;
-    // context.watch<EventsPageModel>().eventsPages[0];
-    // int otherCapacity = context.select<EventsPageModel, int>((value) => value.eventsPages[0].capacity);
-//     int otherCapacity = context.select<EventsPageModel, int>(
-//   (value) => value.eventsPages[0].capacity  // Example for the first event
-// );
-    //  int otherCapacity = context.watch<EventsPageModel>().getPage(0).capacity;
-    
-///testing shittt
-    
-    
-    // int otherCapacity = context.watch<EventsPageModel>().eventsPageModel.first.capacity;
-    // print("capacity: "+ capacity.toString());
 
-    // int otherCapacity = context.select<EventsPageModel, int>((value) => eventModel!.capacity);
-
-
-// int otherCapacity = context.select<EventPageModel, int>((value) => value.capacity);
-    //event model data
-    dynamic mainEvent = widget.pickupCardDetails['mainEvent'];
-
-    List<dynamic> roles = widget.pickupCardDetails['roles'];
-    bool isMine = widget.pickupCardDetails['isMine'];
-    String formattedEventTime = widget.pickupCardDetails['formattedEventTime'];
-    bool isMember = widget.pickupCardDetails['isMember'];
-    String amountRemaining = widget.pickupCardDetails['amountRemaining'];
-    String amountPaid = widget.pickupCardDetails['amountPaid'];
-    String teamAmountRemaining = widget.pickupCardDetails['teamAmountRemaining'];
-    String teamAmountPaid = widget.pickupCardDetails['teamAmountPaid'];
-    String location = widget.pickupCardDetails['location'];
-    List organizers = widget.pickupCardDetails['organizers'];
-    List fieldLocations = widget.pickupCardDetails['fieldLocations'];
-    dynamic price = widget.pickupCardDetails['price'];
-    JoinCondition eventRequestJoin = widget.pickupCardDetails['eventRequestJoin'];
-    JoinCondition eventPaymentJoin = widget.pickupCardDetails['eventPaymentJoin'];
-    JoinCondition teamRequestJoin = widget.pickupCardDetails['teamRequestJoin'];
-    JoinCondition teamPaymentJoin = widget.pickupCardDetails['teamPaymentJoin'];
-    int eventRating = widget.pickupCardDetails['eventRating'];
-    int hostRating = widget.pickupCardDetails['hostRating'];
-    int fieldRating = widget.pickupCardDetails['fieldRating'];
-    int numberOfRatings = widget.pickupCardDetails['numberOfRatings'];
-    // int capacity = pickupCardDetails['capacity'];
-    int numberOfParticipants = widget.pickupCardDetails['numberOfParticipants'];
-
-    print("fieldLocations: " + fieldLocations.toString());
-    // print("capacityyyy: "+ capacity.toString());
     return ChangeNotifierProvider<EventPage>.value(
       value: eventPageInstance!,
       child: Consumer<EventPage>(
         builder: (context, event, child) {
           return 
-          isLoading ? Text("loading....") :
+          isLoading ? Text("loading....") 
+          :
 
     GestureDetector(
         onTap: () {
@@ -120,7 +76,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PickupView(game: mainEvent, eventPageInstance: eventPageInstance!, )),
+                builder: (context) => PickupView(game: event.mainEvent, eventPageInstance: eventPageInstance!, )),
           );
           print("Card Clicked");
         },
@@ -155,7 +111,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                               children: [
                                 Row(
                                   children: [
-                                    Text(formattedEventTime,
+                                    Text(event.formattedEventTime,
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.xxs(context),
@@ -168,7 +124,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                   children: [
                                     Icon(Icons.location_on,
                                         color: AppColors.tsnGreen),
-                                    Text(location.toString(),
+                                    Text(event.location.toString(),
                                         style: TextStyle(
                                           color: AppColors.tsnGrey,
                                           fontSize: FontSizes.xxs(context),
@@ -178,7 +134,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                 ),
                                 Row(
                                   children: [
-                                    RatingWidget(rating: fieldRating),
+                                    RatingWidget(rating: event.fieldRating),
                                     // Icon(Icons.location_on,
                                     //     color: AppColors.tsnGreen),
                                     // Text(fieldLocations[0]['name'].toString(),
@@ -214,7 +170,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                           // width: screenWidth * 0.35,
                                           backgroundColor:
                                               AppColors.tsnDarkGrey,
-                                          text: numberOfParticipants.toString()
+                                          text: event.numberOfParticipants.toString()
                                             +"/"+event.capacity.toString(),
                                           fontSize: FontSizes.xxs(context),
                                         )),
@@ -224,17 +180,17 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                       flex: 11,
                                       child:
                                         GetJoinEventWidget(
-                                            mainEvent: mainEvent,
-                                            roles: roles,
-                                            isMine: isMine,
-                                            price: price,
-                                            amountRemaining: amountRemaining,                                        
-                                            eventRequestJoin: eventRequestJoin,
-                                            eventPaymentJoin: eventPaymentJoin,
-                                            teamRequestJoin: teamRequestJoin,
-                                            teamPaymentJoin: teamPaymentJoin,
+                                            mainEvent: event.mainEvent,
+                                            roles: event.roles,
+                                            isMine: event.isMine,
+                                            price: event.price,
+                                            amountRemaining: event.amountRemaining,                                        
+                                            eventRequestJoin: event.eventRequestJoin,
+                                            eventPaymentJoin: event.eventPaymentJoin,
+                                            teamRequestJoin: event.teamRequestJoin,
+                                            teamPaymentJoin: event.teamPaymentJoin,
                                             capacity: event.capacity,
-                                            numberOfPlayers: numberOfParticipants,                                                                               
+                                            numberOfPlayers: event.numberOfParticipants,                                                                               
                                             fieldRating: event.fieldRating,                                                                               
                                             hostRating: event.hostRating,                                                                               
                                         )
@@ -275,7 +231,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                               children: [
                                 Row(
                                   children: [
-                                    Text(mainEvent['name'],
+                                    Text(event.mainEvent['name'],
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.m(context),
@@ -312,7 +268,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                               children: [
                                 Row(
                                   children: [
-                                    RatingWidget(rating: hostRating),                                    
+                                    RatingWidget(rating: event.hostRating),                                    
                                     // Text("BR 1a"),
                                     // Text("BR 1b"),
                                   ],
@@ -329,7 +285,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                     SizedBox(width: 6),
                                     Text(
                                         "Host: " +
-                                            organizers[0]['user']['name']
+                                            event.organizers[0]['user']['name']
                                                 .toString(),
                                         style: TextStyle(
                                           color: AppColors.tsnGrey,

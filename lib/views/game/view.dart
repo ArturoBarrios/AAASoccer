@@ -80,12 +80,13 @@ class _PickupViewState extends State<PickupView> {
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
+  
 
   CreateEventRequest createEventRequestWidget = CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = CreateEventPayment();
   CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
   CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
-  EventPageModel eventModel = EventPageModel();
+  
 
   bool _isLoading = true;
   late LatLng _center = LatLng(45.521563, -122.677433);
@@ -104,7 +105,8 @@ class _PickupViewState extends State<PickupView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in GameView");
-    await EventCommand().getUserEventDetails([widget.game], true);
+    
+    // await EventCommand().getUserEventDetails([widget.game], true);
     widget.setupPlayerList();
     //wait for 3 seconds
     // await Future.delayed(const Duration(seconds: 2));
@@ -141,78 +143,12 @@ class _PickupViewState extends State<PickupView> {
     print("build()");
     double paddingValue = 16;
 
-    
-    int capacity = context.select<EventPageModel, int>((value) => eventModel.capacity);
 
-
-
-
-
-
-    dynamic mainEvent =
-        context.select<EventPageModel, dynamic>((value) => eventModel.mainEvent);
-    // dynamic objectImageInput = context.watch<EventPageModel>().objectImageInput;
-    List<dynamic> roles =
-        context.select<EventPageModel, List<dynamic>>((value) => eventModel.roles);
-    bool isMine = context.select<EventPageModel, bool>((value) => eventModel.isMine);
-    bool isMember =
-        context.select<EventPageModel, bool>((value) => eventModel.isMember);
-    String amountRemaining = context
-        .select<EventPageModel, String>((value) => eventModel.amountRemaining);
-    String amountPaid =
-        context.select<EventPageModel, String>((value) => eventModel.amountPaid);
-    String teamAmountRemaining = context
-        .select<EventPageModel, String>((value) => eventModel.amountRemaining);
-    String teamAmountPaid =
-        context.select<EventPageModel, String>((value) => eventModel.teamAmountPaid);
-    List userParticipants =
-        context.select<EventPageModel, List>((value) => eventModel.userParticipants);
-    List teams = context.select<EventPageModel, List>((value) => eventModel.teams);
-    List players =
-        context.select<EventPageModel, List>((value) => eventModel.players);
-    List chats = context
-        .select<EventPageModel, List>((value) => eventModel.chats);
-    // List chats = context.watch<EventPageModel>().chats;
-    // List payments = context.watch<EventPageModel>().payments;
-    // List fieldLocations = context.watch<EventPageModel>().fieldLocations;
-    List payments =
-        context.select<EventPageModel, List>((value) => eventModel.payments);
-    List fieldLocations =
-        context.select<EventPageModel, List>((value) => eventModel.fieldLocations);
-    dynamic price =
-        context.select<EventPageModel, dynamic>((value) => eventModel.price);
-    JoinCondition eventRequestJoin =
-        context.select<EventPageModel, JoinCondition>((value) => eventModel.eventRequestJoin);
-    JoinCondition eventPaymentJoin =
-        context.select<EventPageModel, JoinCondition>((value) => eventModel.eventPaymentJoin);
-    JoinCondition teamRequestJoin =
-        context.select<EventPageModel, JoinCondition>((value) => eventModel.teamRequestJoin);
-    JoinCondition teamPaymentJoin =
-        context.select<EventPageModel, JoinCondition>((value) => eventModel.teamPaymentJoin);
-    int numberOfParticipants =
-        context.select<EventPageModel, int>((value) => eventModel.numberOfParticipants);
-    String formattedEventTime =
-        context.select<EventPageModel, String>((value) => eventModel.formattedEventTime);
-     List<AmenityType> amenities =
-        context.select<EventPageModel,  List<AmenityType>>((value) => eventModel.amenities);
-    
-    // dynamic price = context.watch<EventPageModel>().price;
-    // JoinCondition eventRequestJoin =
-    //     context.watch<EventPageModel>().eventRequestJoin;
-    // JoinCondition eventPaymentJoin =
-    //     context.watch<EventPageModel>().eventPaymentJoin;
-    // JoinCondition teamRequestJoin =
-    //     context.watch<EventPageModel>().teamRequestJoin;
-    // JoinCondition teamPaymentJoin =
-    //     context.watch<EventPageModel>().teamPaymentJoin;
-    // int numberOfParticipants =
-    //     context.watch<EventPageModel>().numberOfParticipants;
-    // int capacity = context.watch<EventPageModel>().capacity;
-    // String formattedEventTime = context
-    //     .select<EventPageModel, String>((value) => value.formattedEventTime);
-    // List<AmenityType> amenities = context.watch<EventPageModel>().amenities;
-
-    return _isLoading
+    return ChangeNotifierProvider<EventPage>.value(
+      value: widget.eventPageInstance!,
+      child: Consumer<EventPage>(
+        builder: (context, event, child) {
+          return  _isLoading
         ? SplashScreen()
         : Scaffold(
             extendBody: true,
@@ -240,7 +176,7 @@ class _PickupViewState extends State<PickupView> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            mainEvent['name'],
+                           widget.eventPageInstance.mainEvent['name'],
                             style:  TextStyle(
                               fontSize: FontSizes.lg(context),
                               fontWeight: FontWeight.bold,
@@ -254,12 +190,12 @@ class _PickupViewState extends State<PickupView> {
                             paddingValue, paddingValue/2),
                           child: Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(formattedEventTime,
+                              child: Text(widget.eventPageInstance.formattedEventTime,
                                   style: TextStyle(
                                     color: AppColors.tsnBlack,
                                     fontSize: FontSizes.xxs(context),
                                   )))),
-                       if(isMine)
+                       if(widget.eventPageInstance.isMine)
                        Padding(
                         padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
                             paddingValue, paddingValue/2),
@@ -270,17 +206,17 @@ class _PickupViewState extends State<PickupView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           PriceWidget(
-                              price: price,
+                              price: widget.eventPageInstance.price,
                               teamPrice: false,
                               eventPrice: true,
-                              amountPaid: amountPaid,
-                              amountRemaining: amountRemaining,
-                              isMine: isMine,
-                              isMember: isMember)
+                              amountPaid: widget.eventPageInstance.amountPaid,
+                              amountRemaining: widget.eventPageInstance.amountRemaining,
+                              isMine: widget.eventPageInstance.isMine,
+                              isMember: widget.eventPageInstance.isMember)
                         ],
                          )) ),
 
-                          if(isMine)
+                          if(widget.eventPageInstance.isMine)
                           Padding(
                         padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
                             paddingValue, paddingValue/2),
@@ -289,7 +225,7 @@ class _PickupViewState extends State<PickupView> {
                           child:
                       PaymentListWidget(
                         payments:
-                            payments,
+                            widget.eventPageInstance.payments,
                         
                       ))),
     //                   ConstrainedBox(
@@ -314,11 +250,11 @@ class _PickupViewState extends State<PickupView> {
                                 .1), //10% padding
                         height: 200.0,
                         child: MyMapPage(
-                          latitude: fieldLocations.length > 0
-                              ? fieldLocations[0]['location']['latitude']
+                          latitude: widget.eventPageInstance.fieldLocations.length > 0
+                              ? widget.eventPageInstance.fieldLocations[0]['location']['latitude']
                               : 0.0,
-                          longitude: fieldLocations.length > 0
-                              ? fieldLocations[0]['location']['longitude']
+                          longitude: widget.eventPageInstance.fieldLocations.length > 0
+                              ? widget.eventPageInstance.fieldLocations[0]['location']['longitude']
                               : 0.0,
                         ),
                       ),
@@ -327,7 +263,7 @@ class _PickupViewState extends State<PickupView> {
                             paddingValue, paddingValue/2),
                           child: Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(fieldLocations[0]['location']['address'],
+                              child: Text(widget.eventPageInstance.fieldLocations[0]['location']['address'],
                                   style: TextStyle(
                                     color: AppColors.tsnGreen,
                                     fontSize: FontSizes.xxs(context),
@@ -374,14 +310,14 @@ class _PickupViewState extends State<PickupView> {
                       //         ['name']),
                       //player list
                       PlayerList(
-                        event: mainEvent,
+                        event: widget.eventPageInstance.mainEvent,
                         team: null,
                         userParticipants: widget.modifiedParticipantList(
-                            userParticipants, payments, price['amount']),
+                            widget.eventPageInstance.userParticipants, widget.eventPageInstance.payments, widget.eventPageInstance.price['amount']),
                         inviteUserToChat: (final userId) async =>
                             widget.onTapShowChatBottomSheet(
                                 context: context,
-                                chatList: chats,
+                                chatList: widget.eventPageInstance.chats,
                                 userId: userId),
                       ),
                       //team list
@@ -458,6 +394,9 @@ class _PickupViewState extends State<PickupView> {
             //     numberOfPlayers: numberOfParticipants,
             //   ),
             // ),
+        );
+        },
+        ),
           );
   }
 }
