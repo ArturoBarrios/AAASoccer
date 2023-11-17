@@ -5,61 +5,24 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 
-import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
-import '../../commands/base_command.dart';
-import '../../commands/chat_command.dart';
-import '../../commands/event_command.dart';
-import '../../commands/images_command.dart';
-import '../../commands/requests_command.dart';
-import '../../commands/user_command.dart';
-import '../../components/Loading/loading_screen.dart';
 import '../../components/Mixins/images_mixin.dart';
-import '../../components/Mixins/payment_mixin.dart';
-import '../../components/Mixins/event_mixin.dart';
-import '../../components/amenities_selection_widget.dart';
-import '../../components/chats_list_widget.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
 import '../../components/create_team_request.dart';
-import '../../components/event_date_widget.dart';
-import '../../components/get_chat_widget.dart';
 import '../../components/get_join_event_widget.dart';
-import '../../components/image_header.dart';
-import '../../components/images_list_widget.dart';
-import '../../components/join_condition.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/models/button_model.dart';
 import '../../components/my_map_page.dart';
-import '../../components/object_profile_main_image.dart';
 import '../../components/payment_list_widget.dart';
 import '../../components/players_list_widget.dart';
 import '../../components/price_widget.dart';
-import '../../components/requests_list.dart';
-import '../../components/rsvp_widget.dart';
-import '../../components/send_players_request_widget.dart';
-import '../../components/send_teams_request_widget.dart';
-import '../../components/teams_list_widget.dart';
-import '../../models/enums/AmenityType.dart';
-import '../../models/enums/RsvpStatus.dart';
-import '../../models/pageModels/chat_page_model.dart';
 import '../../models/pageModels/event_page.dart';
-import '../../models/pageModels/event_page_model.dart';
 import '../../styles/colors.dart';
 import '../../styles/font_sizes.dart';
-import '../profile/profile.dart';
-import '../../components/payment_screen.dart';
-import '../../commands/location_command.dart';
-import '../../components/card_form_screen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../components/headers.dart';
 import 'dart:async';
-import 'package:url_launcher/url_launcher.dart';
-
-import '../../components/update_view_form.dart';
-import '../../constants.dart';
-import '../../models/pageModels/app_model.dart';
-import '../social_media_cards_view/social_media_cards_view.dart';
 import '../splash_screen.dart';
 
 class PickupView extends StatefulWidget with EventMixin, ImagesMixin {
@@ -176,7 +139,7 @@ class _PickupViewState extends State<PickupView> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                           widget.eventPageInstance.mainEvent['name'],
+                           event.mainEvent['name'],
                             style:  TextStyle(
                               fontSize: FontSizes.lg(context),
                               fontWeight: FontWeight.bold,
@@ -190,12 +153,12 @@ class _PickupViewState extends State<PickupView> {
                             paddingValue, paddingValue/2),
                           child: Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(widget.eventPageInstance.formattedEventTime,
+                              child: Text(event.formattedEventTime,
                                   style: TextStyle(
                                     color: AppColors.tsnBlack,
                                     fontSize: FontSizes.xxs(context),
                                   )))),
-                       if(widget.eventPageInstance.isMine)
+                       if(event.isMine)
                        Padding(
                         padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
                             paddingValue, paddingValue/2),
@@ -206,17 +169,17 @@ class _PickupViewState extends State<PickupView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           PriceWidget(
-                              price: widget.eventPageInstance.price,
+                              price: event.price,
                               teamPrice: false,
                               eventPrice: true,
-                              amountPaid: widget.eventPageInstance.amountPaid,
-                              amountRemaining: widget.eventPageInstance.amountRemaining,
-                              isMine: widget.eventPageInstance.isMine,
-                              isMember: widget.eventPageInstance.isMember)
+                              amountPaid: event.amountPaid,
+                              amountRemaining: event.amountRemaining,
+                              isMine: event.isMine,
+                              isMember: event.isMember)
                         ],
                          )) ),
 
-                          if(widget.eventPageInstance.isMine)
+                          if(event.isMine)
                           Padding(
                         padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
                             paddingValue, paddingValue/2),
@@ -225,7 +188,7 @@ class _PickupViewState extends State<PickupView> {
                           child:
                       PaymentListWidget(
                         payments:
-                            widget.eventPageInstance.payments,
+                            event.payments,
                         
                       ))),
     //                   ConstrainedBox(
@@ -250,11 +213,11 @@ class _PickupViewState extends State<PickupView> {
                                 .1), //10% padding
                         height: 200.0,
                         child: MyMapPage(
-                          latitude: widget.eventPageInstance.fieldLocations.length > 0
-                              ? widget.eventPageInstance.fieldLocations[0]['location']['latitude']
+                          latitude: event.fieldLocations.length > 0
+                              ? event.fieldLocations[0]['location']['latitude']
                               : 0.0,
-                          longitude: widget.eventPageInstance.fieldLocations.length > 0
-                              ? widget.eventPageInstance.fieldLocations[0]['location']['longitude']
+                          longitude: event.fieldLocations.length > 0
+                              ? event.fieldLocations[0]['location']['longitude']
                               : 0.0,
                         ),
                       ),
@@ -263,7 +226,7 @@ class _PickupViewState extends State<PickupView> {
                             paddingValue, paddingValue/2),
                           child: Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(widget.eventPageInstance.fieldLocations[0]['location']['address'],
+                              child: Text(event.fieldLocations[0]['location']['address'],
                                   style: TextStyle(
                                     color: AppColors.tsnGreen,
                                     fontSize: FontSizes.xxs(context),
@@ -310,14 +273,14 @@ class _PickupViewState extends State<PickupView> {
                       //         ['name']),
                       //player list
                       PlayerList(
-                        event: widget.eventPageInstance.mainEvent,
+                        event: event.mainEvent,
                         team: null,
                         userParticipants: widget.modifiedParticipantList(
-                            widget.eventPageInstance.userParticipants, widget.eventPageInstance.payments, widget.eventPageInstance.price['amount']),
+                            event.userParticipants, event.payments, event.price['amount']),
                         inviteUserToChat: (final userId) async =>
                             widget.onTapShowChatBottomSheet(
                                 context: context,
-                                chatList: widget.eventPageInstance.chats,
+                                chatList: event.chats,
                                 userId: userId),
                       ),
                       //team list
@@ -376,24 +339,26 @@ class _PickupViewState extends State<PickupView> {
                 ),
               ),
             ),
-            // bottomNavigationBar: Padding(
-            //   padding: const EdgeInsets.only(
-            //       top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
-            //   child: //join widget
-            //       GetJoinEventWidget(
-            //     mainEvent: mainEvent,
-            //     roles: roles,
-            //     isMine: isMine,
-            //     price: price,
-            //     amountRemaining: amountRemaining,
-            //     eventRequestJoin: eventRequestJoin,
-            //     eventPaymentJoin: eventPaymentJoin,
-            //     teamRequestJoin: teamRequestJoin,
-            //     teamPaymentJoin: teamPaymentJoin,
-            //     capacity: capacity,
-            //     numberOfPlayers: numberOfParticipants,
-            //   ),
-            // ),
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.only(
+                  top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
+              child: //join widget
+                  GetJoinEventWidget(
+                mainEvent: event.mainEvent,
+                roles: event.roles,
+                isMine: event.isMine,
+                price: event.price,
+                amountRemaining: event.amountRemaining,
+                eventRequestJoin: event.eventRequestJoin,
+                eventPaymentJoin: event.eventPaymentJoin,
+                teamRequestJoin: event.teamRequestJoin,
+                teamPaymentJoin: event.teamPaymentJoin,
+                capacity: event.capacity,
+                numberOfPlayers: event.numberOfParticipants,
+                fieldRating: event.fieldRating,                                                                               
+                hostRating: event.hostRating,     
+              ),
+            ),
         );
         },
         ),

@@ -149,27 +149,30 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
   Future<void> removeUserFromEvent(dynamic event, dynamic userObject,
       List<String> rolesToRemove, List<dynamic> existingRoles) async {
     List<dynamic> updatedRoles = [];
-    existingRoles.forEach((element) {
-      if (!rolesToRemove.contains(element)) {
-        updatedRoles.add(element);
-      }
-    });
-    setState(() {
-      EventCommand().removeUserFromEventPageModel(event, userObject);
-    });
+    // existingRoles.forEach((element) {
+    //   if (!rolesToRemove.contains(element)) {
+    //     updatedRoles.add(element);
+    //   }
+    // });
+    
     // right now, organizer can't leave event,
     // remove event from user and user from event
-    // if (updatedRoles.length == 0) {
-    //   dynamic removeUserFromEventResp =
-    //       await EventCommand().removeUserFromEvent(event, userObject);
-    //   if (removeUserFromEventResp['success']) {
-    //     print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
-    //     dynamic eventToRemove = removeUserFromEventResp['data'];
+    if (updatedRoles.isEmpty) {
+      dynamic removeUserFromEventResp =
+          await EventCommand().removeUserFromEvent(event, userObject);
+      if (removeUserFromEventResp['success']) {
+        print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
+        dynamic eventToRemove = removeUserFromEventResp['data'];
 
-    //     EventCommand().updateViewModelsWithEvent(eventToRemove, false);
+        EventCommand().updateViewModelsWithEvent(eventToRemove, false);
+        setState(() {
+          EventCommand().removeUserFromEventPageModel(event, userObject);
+        });
 
-    //   }
-    // } else {}
+      }
+    } else {
+
+    }
   }
 
   Future<void> addUserToEvent(dynamic event, userObject,

@@ -237,12 +237,14 @@ class EventCommand extends BaseCommand {
 
       print("response body: ");
       print(jsonDecode(response.body));
+      
+      if(response.statusCode == 200){
+        removeUserFromEventResponse["success"] = true;
+        removeUserFromEventResponse["message"] = "User removed from event";
+        removeUserFromEventResponse["data"] =
+            jsonDecode(response.body)['data']['deleteEventUserParticipant'];
 
-      // addEventToMyEvents(jsonDecode(response.body)['data']['deleteEventUserParticipant']);
-      removeUserFromEventResponse["success"] = true;
-      removeUserFromEventResponse["message"] = "User removed from event";
-      removeUserFromEventResponse["data"] =
-          jsonDecode(response.body)['data']['deleteEventUserParticipant'];
+      }
 
       return removeUserFromEventResponse;
     } on ApiException catch (e) {
@@ -1674,7 +1676,8 @@ class EventCommand extends BaseCommand {
       if (eventsPageModel.eventsPages[i].mainEvent['_id'] ==
           event['_id']) {
         print("found eventttt to update");
-        eventsPageModel.eventsPages[i].capacity += 1;
+        eventsPageModel.eventsPages[i].numberOfParticipants -= 1;
+        eventsPageModel.eventsPages[i].isMine = false;
         print("eventsPageModel.eventsPages[i].capacity" + eventsPageModel.eventsPages[i].capacity.toString());
         // eventsPageModel.eventsPageModel[i].mainEvent = event;
         // eventsPageModel.eventsPageModel[i].objectImageInput =
