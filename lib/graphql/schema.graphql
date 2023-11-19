@@ -720,8 +720,6 @@ type FieldLocation  {
   parkingOptions: [ParkingOption]
   field: Field
   eventRatings: [EventRating] @relation
-
-
 }
 
 type ParkingOption {

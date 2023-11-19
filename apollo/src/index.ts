@@ -1,24 +1,60 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import  EventsAPI  from './events-api.js';
+import mongoose from 'mongoose';
+
+const MongoDB = "mongodb+srv://arturobarrios357:Ruforufo357@tsndev.xuzcz.mongodb.net/?retryWrites=true&w=majority"
+import resolvers from './resolvers.js';
+
+
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = `#graphql
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+  interface MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
 
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
+type CreateGameMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  game: Game
+}
+
+type Mutation {
+  createGame(input: GameInput): CreateGameMutationResponse
+}
+
+
+
+
+  input GameInput {
+    pickup: Boolean
   }
 
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
-  type Query {
-    books: [Book]
-  }
+
+  type Query {    
+    allFieldLocations: [FieldLocation!]
+    allGames(pickup: Boolean): [Game!]
+    allEvents(type: EventType): [Event!]
+    allTrainings: [Training!]
+    allTryouts: [Tryout!]
+    allLeagues: [League!]
+    allTournaments: [Tournament!]
+    allUsers: [User!]
+    allPlayers: [Player!]
+    allRequests: [Request!]
+    allTeams: [Team!]
+    allGroups: [Group!]
+    getUserByEmail(email: String): User
+    getUserByPhone(phone: String): User
+    getUserByUsername(username: String): User    
+    allSubscriptionTypes: [SubscriptionType!]
+    }
 
   # enums
   enum PaymentType {
@@ -930,61 +966,79 @@ type BugFeedback {
   severity: Int
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 `;
 
-const books = [
-    {
-      title: 'The Awakening',
-      author: 'Kate Chopin',
-    },
-    {
-      title: 'City of Glass',
-      author: 'Paul Auster',
-    },
-  ];
+
 
   // Resolvers define how to fetch the types defined in your schema.
 // This resolver retrieves books from the "books" array above.
-const resolvers = {
-    Query: {
-      books: () => books,
-    },
-  };
 
+
+  interface ContextValue {
+    dataSources: {
+      eventsAPI: EventsAPI;
+    };
+  }
+
+  
+  
+  
   // The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
-const server = new ApolloServer({
+  // definition and your set of resolvers.
+  const server = new ApolloServer({
     typeDefs,
     resolvers,
+    
   });
+  
+  mongoose.connect(MongoDB)
+  .then( () => {
+    console.log('Connected to MongoDB');
+    return startStandaloneServer(server, {
+      context: async () => {
+         const { cache } = server;      
+        return {
+          // We create new instances of our data sources with each request,
+          // passing in our server's cache.
+          dataSources: {
+            eventsAPI: new EventsAPI({ cache }),
+            
+          },
+        };
+      },
+      listen: { port: 4000 },
+    });
+    
+    
+  }).then((res) => {
+    console.log(`Server running at ${res.url}`);  
+  })
+  
+  
+  // const { url } = await startStandaloneServer(server, {
+  //   context: async () => {
+  //      const { cache } = server;      
+  //     return {
+  //       // We create new instances of our data sources with each request,
+  //       // passing in our server's cache.
+  //       dataSources: {
+  //         eventsAPI: new EventsAPI({ cache }),
+          
+  //       },
+  //     };
+  //   },
+  //   listen: { port: 4000 },
+  // });
+
+  
+  
   
   // Passing an ApolloServer instance to the `startStandaloneServer` function:
   //  1. creates an Express app
   //  2. installs your ApolloServer instance as middleware
   //  3. prepares your app to handle incoming requests
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
-  });
+  // const { url } = await startStandaloneServer(server, {
+  //   listen: { port: 4000 },
+  // });
   
-  console.log(`🚀  Server ready at: ${url}`);
+  

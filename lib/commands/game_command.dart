@@ -133,9 +133,10 @@ class GameCommand extends BaseCommand {
       eventInput['price'] = eventInput['price'] * 100;
       print("eventtttttttttt input: " + eventInput.toString());
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
+        // Uri.parse('https://graphql.fauna.com/graphql'),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()+"/games"),
         headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          // 'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -147,7 +148,9 @@ class GameCommand extends BaseCommand {
       print(jsonDecode(response.body));
 
       Map<String, dynamic> createdGame =
-          jsonDecode(response.body)['data']['createGame'];      
+          jsonDecode(response.body);      
+      // Map<String, dynamic> createdGame =
+      //     jsonDecode(response.body)['data']['createGame'];      
 
       createGameResponse["success"] = true;
       createGameResponse["message"] = "Game Created";
