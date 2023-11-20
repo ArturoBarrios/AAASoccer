@@ -1,6 +1,5 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import  EventsAPI  from './events-api.js';
 import mongoose from 'mongoose';
 
 const MongoDB = "mongodb+srv://arturobarrios357:Ruforufo357@tsndev.xuzcz.mongodb.net/?retryWrites=true&w=majority"
@@ -34,12 +33,21 @@ type Mutation {
 
   input GameInput {
     pickup: Boolean
+    eventInput: EventInput
+      
+    
+
   }
+
+  input EventInput {        
+    name: String    
+}
 
 
   type Query {    
     allFieldLocations: [FieldLocation!]
     allGames(pickup: Boolean): [Game!]
+    getGames: [Game!]
     allEvents(type: EventType): [Event!]
     allTrainings: [Training!]
     allTryouts: [Tryout!]
@@ -974,11 +982,11 @@ type BugFeedback {
 // This resolver retrieves books from the "books" array above.
 
 
-  interface ContextValue {
-    dataSources: {
-      eventsAPI: EventsAPI;
-    };
-  }
+  // interface ContextValue {
+  //   dataSources: {
+  //     eventsAPI: EventsAPI;
+  //   };
+  // }
 
   
   
@@ -991,7 +999,9 @@ type BugFeedback {
     
   });
   
-  mongoose.connect(MongoDB)
+  mongoose.connect(MongoDB, {
+    
+  })
   .then( () => {
     console.log('Connected to MongoDB');
     return startStandaloneServer(server, {
@@ -1001,7 +1011,7 @@ type BugFeedback {
           // We create new instances of our data sources with each request,
           // passing in our server's cache.
           dataSources: {
-            eventsAPI: new EventsAPI({ cache }),
+            // eventsAPI: new EventsAPI({ cache }),
             
           },
         };

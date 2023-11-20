@@ -134,7 +134,7 @@ class GameCommand extends BaseCommand {
       print("eventtttttttttt input: " + eventInput.toString());
       http.Response response = await http.post(
         // Uri.parse('https://graphql.fauna.com/graphql'),
-        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()+"/games"),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()+""),
         headers: <String, String>{
           // 'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
