@@ -19,20 +19,37 @@ class UserQueries {
     return updateUserString;
   }
 
-  String getUserByEmail(Map<String, dynamic> userInput) {
-    String getUser = """
-      query getUser {
-          getUserByEmail(email: "${userInput['email']}") {      
-              ${UserFragments().fullUser()}           
+  // String getUserByEmail(Map<String, dynamic> userInput) {
+  //   String getUser = """
+  //     query getUser {
+  //         getUserByEmail(email: "${userInput['email']}") {      
+  //             ${UserFragments().fullUser()}           
                                                
               
             
-          }
+  //         }
+  //       }
+  //   """;
+
+  //   return getUser;
+  // }
+String getUserByEmail(Map<String, dynamic> userInput) {
+    String getUser = """
+      query FindUserByEmail {
+      findUserByEmail(email: "${userInput['email']}") {
+        user{
+          username
         }
+        code
+        message
+        success
+
+      }
+    }
     """;
 
-    return getUser;
-  }
+  return getUser;
+}
 
   String findUserByID(Map<String, dynamic> userInput, String userFragment) {
     String getUser = """

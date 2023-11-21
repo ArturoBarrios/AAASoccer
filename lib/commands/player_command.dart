@@ -79,7 +79,7 @@ class PlayerCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
         headers: <String, String>{
           'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
@@ -93,14 +93,24 @@ class PlayerCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      Map<String, dynamic> player =
-          jsonDecode(response.body)['data']['createPlayer'];
-      Map<String, dynamic> user = player['user'];
-      AppModel().currentUser = user;
+      if(response.statusCode == 200){
 
-      createPlayerResponse["success"] = true;
-      createPlayerResponse["message"] = "Player for Team Created";
-      createPlayerResponse["data"] = player;
+        Map<String, dynamic> player =
+            jsonDecode(response.body)['data']['createPlayer'];
+        Map<String, dynamic> user = player['user'];
+        AppModel().currentUser = user;
+
+        createPlayerResponse["success"] = true;
+        createPlayerResponse["message"] = "Player for Team Created";
+        createPlayerResponse["data"] = player;
+
+      }
+      else{
+        createPlayerResponse["success"] = false;
+        createPlayerResponse["message"] = "Player for Team Created";
+        createPlayerResponse["data"] = null;
+      }
+
     } on ApiException catch (e) {
       print('Mutation failed: $e');
     }

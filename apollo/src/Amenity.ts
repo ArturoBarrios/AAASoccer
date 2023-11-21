@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import { AmenityType } from './enums';
+import { AmenityType } from './enums.js';
 
 const Schema = mongoose.Schema;
 
 
 const amenitySchema = new mongoose.Schema({
-    type: AmenityType,    
+    type: Object.values(AmenityType),    
     fieldLocations: [{ type: Schema.Types.ObjectId, ref: 'FieldLocation' }],
 });
 

@@ -208,6 +208,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> signUp(AuthenticatorState state) async {
     try {
+      print("signUp");
       Map<String, dynamic> userInput = {
         "email": emailController.text.trim(),
         "username": usernameController.text.trim(),
@@ -218,9 +219,9 @@ class _MyAppState extends State<MyApp> {
         "status": "SignedUp"
       };
       //check unique attributes
-      bool uniquenessUserAttributesCheckResponse =
-          await BaseCommand().uniquenessUserAttributesCheck(userInput);
-      if (uniquenessUserAttributesCheckResponse) {
+      // bool uniquenessUserAttributesCheckResponse =
+      //     await BaseCommand().uniquenessUserAttributesCheck(userInput);
+      // if (uniquenessUserAttributesCheckResponse) {
         SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
           emailController,
           passwordController,
@@ -264,9 +265,10 @@ class _MyAppState extends State<MyApp> {
         print("AppModel().currentUser: ${AppModel().currentUser}");
 
         await startLoadToHomeTransition();
-      } else {
-        print("createUserAttributesCheck failed");
-      }
+      // } 
+      // else {
+      //   print("createUserAttributesCheck failed");
+      // }
     } on AuthException catch (e) {
       print("signUpError");
       print(e);

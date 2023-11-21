@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { FieldPlayerOccupancySize, SurfaceType } from './enums';
+import { FieldPlayerOccupancySize, SurfaceType } from './enums.js';
 
 const Schema = mongoose.Schema;
 
@@ -8,8 +8,8 @@ const fieldLocationSchema = new mongoose.Schema({
     isMainField: Boolean,
     location: { type: Schema.Types.ObjectId, ref: 'Location' },    
     events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
-    fieldSize: FieldPlayerOccupancySize,  
-    surface: SurfaceType,
+    fieldSize: Object.values(FieldPlayerOccupancySize),  
+    surface: Object.values(SurfaceType),
     private: Boolean,
     amenities: [{ type: Schema.Types.ObjectId, ref: 'Amenity' }],
     socialMediaApps: [{ type: Schema.Types.ObjectId, ref: 'SocialMediaApp' }],                    

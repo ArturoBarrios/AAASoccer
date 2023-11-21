@@ -566,7 +566,7 @@ class UserCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
         headers: <String, String>{
           'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
           'Content-Type': 'application/json'
@@ -579,18 +579,22 @@ class UserCommand extends BaseCommand {
       print("response: ");
 
       print(jsonDecode(response.body));
-      if ((jsonDecode(response.body) as Map<String, dynamic>)
-              .containsKey('errors') &&
-          (jsonDecode(response.body) as Map<String, dynamic>)['errors'] !=
-              null) {
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
         getUserResp["success"] = false;
         getUserResp["message"] = "no user found";
       } else {
-        final result = jsonDecode(response.body)['data']['getUserByEmail'];
-        // if (result != null) {
-        getUserResp["success"] = true;
-        getUserResp["message"] = "user found";
-        getUserResp["data"] = result;
+        
+        final result = jsonDecode(response.body)['data']['findUserByEmail']['user'];
+        getUserResp["data"] = null;
+        if (result != null) {
+          getUserResp["success"] = true;
+          getUserResp["message"] = "user found";
+        }
+        else{
+          getUserResp["success"] = false;
+          getUserResp["message"] = "no user found";
+        }
       }
 
       // }

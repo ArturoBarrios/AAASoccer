@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
-import { RequestType, RequestStatus } from './enums';
+import { RequestType, RequestStatus } from './enums.js';
 
 const Schema = mongoose.Schema;
 
 
 const requestSchema = new mongoose.Schema({
-    type: RequestType, 
+    type: Object.values(RequestType), 
     sender: { type: Schema.Types.ObjectId, ref: 'User' },
     receivers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     acceptedBy: { type: Schema.Types.ObjectId, ref: 'User' },
-    status: RequestStatus,
-    requestAttempts: Int32Array,
+    status: Object.values(RequestStatus),
+    requestAttempts: BigInt,
     fromOrganizer: Boolean,
     event: { type: Schema.Types.ObjectId, ref: 'Event' },
     team: { type: Schema.Types.ObjectId, ref: 'Team' },    

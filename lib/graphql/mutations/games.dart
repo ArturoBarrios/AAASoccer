@@ -60,17 +60,31 @@ class GameMutations {
 
     return updateGame;
   }
+// chats: {
+//                 create: [
+//                   {
+//                     name: "General",
+//                     isPrivate: false,
+//                     users: {
+//                       connect: [
+//                         "${userInput['_id']}"
+//                       ]
+//                     }
 
+
+//                   }
+//                 ]
+//               }  
   String createGame(Map<String, dynamic> gameInput,
       Map<String, dynamic> eventInput, Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
     var teamAmount = eventInput.containsKey('teamPrice') ? eventInput['teamPrice'] : "0.00";
     String createGame = """
       mutation {
-        createGame(data: {
+        createGame(input: {
           pickup: ${gameInput['pickup']}, 
           event: {
-            create: 
-            {
+            
+            
               name: "${eventInput['name']}",
               type: GAME,
               archived: false,
@@ -80,68 +94,37 @@ class GameMutations {
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
               capacity: ${eventInput['capacity']},
-              chats: {
-                create: [
-                  {
-                    name: "General",
-                    isPrivate: false,
-                    users: {
-                      connect: [
-                        "${userInput['_id']}"
-                      ]
-                    }
-
-
-                  }
-                ]
-              }               
+                           
               price: {
-                create: {
-                  amount: "${eventInput['price']}",
-                  teamAmount: "$teamAmount",                  
+                
+                  amount: "${eventInput['price']}",              
                 }
-              },
+              
               joinConditions: {
-                create: [
+                
                   {
                     withRequest: ${eventInput['withRequest']},
                     withPayment: ${eventInput['withPayment']},
                     forEvent: true
-                  },   
-                  {
-                    withRequest: ${eventInput['withTeamRequest']},
-                    withPayment: ${eventInput['withTeamPayment']},
-                    forTeam: true
-                  }               
-                ]                
+                  }   
+                  
+                
               },
               userParticipants: {
-                create:
-                  {
-                    user: {
-                      connect:                   
-                          "${userInput['_id']}"    
-                      }                                         
-                      roles: "${eventInput['roles']}"
-                                       
-                  }                                     
+                create:                  
+                  userId: "${userInput['_id']}"                                                              
+                  roles: "${eventInput['roles']}"                                                                                              
               },                    
-              fieldLocations: {
-                create: [
-                  {
+              fieldLocations: {                            
                     isMainField: true,
-                    location: {
-                      create: {
+                    location: {                     
                         name: "${locationInput['name']}",
                         address: "${locationInput['address']}",
                         latitude: ${locationInput['latitude']},
-                        longitude: ${locationInput['longitude']}
-                      }
-                    }
-                  }
-                ]
+                        longitude: ${locationInput['longitude']}                     
+                    }                            
               }
-            }
+            
           } 
           }) {
              _id

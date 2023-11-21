@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {EventType} from './enums'; 
+import {EventType} from './enums.js'; 
 
 const Schema = mongoose.Schema;
 
@@ -15,7 +15,7 @@ const eventSchema = new mongoose.Schema({
     requests: [{ type: Schema.Types.ObjectId, ref: 'Request' }],
     images: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
     fieldLocations: [{ type: Schema.Types.ObjectId, ref: 'FieldLocation' }],
-    type: EventType,
+    type: Object.values(EventType),
     payments: [{ type: Schema.Types.ObjectId, ref: 'Payment' }],
     chats: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
     users: [{ type: Schema.Types.ObjectId, ref: 'User' }],

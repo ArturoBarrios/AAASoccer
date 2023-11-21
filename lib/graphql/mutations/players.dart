@@ -3,38 +3,30 @@ class PlayerMutations {
       Map<String, dynamic> playerInput, Map<String, dynamic> locationInput) {
     String createPlayer = """
       mutation {
-        createPlayer(data: {                    
-          user: {
-            create: 
-            {
-              name: "${userInput['name']}",
-              phone: "${userInput['phone']}",
-              email: "${userInput['email']}",
-              username: "${userInput['username']}",
-              birthdate: "${userInput['birthdate']}"
-              location: {
-                create: 
-                {                  
-                  latitude: ${locationInput['latitude']}
-                  longitude: ${locationInput['longitude']}
-                }
-              }
-              isSuperUser: false
+        createPlayer(input: {                    
+          user: {                        
+            name: "${userInput['name']}",
+            phone: "${userInput['phone']}",
+            email: "${userInput['email']}",
+            username: "${userInput['username']}",
+            birthdate: "${userInput['birthdate']}"
+            location: {              
+              latitude: ${locationInput['latitude']}
+              longitude: ${locationInput['longitude']}              
             }
-          } 
+          }          
           }) {
-            _id
-            user{
-              _id
-              name,
-              email,
-              phone
-              location{
-                _id
-                latitude
-                longitude
-              } 
-            }     
+            player{
+              user{                
+                name
+                email
+                phone
+                location{                  
+                  latitude
+                  longitude
+                } 
+              }     
+            }
           }   
         }
         """;

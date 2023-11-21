@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 
 const socialMediaAppSchema = new mongoose.Schema({
-    type: SocialMediaType,
+    type: Object.values(SocialMediaType),
     url: String,
     user: { type: Schema.Types.ObjectId, ref: 'User' },    
     event: { type: Schema.Types.ObjectId, ref: 'Event' },    

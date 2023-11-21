@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { GenderType, UserAccountStatus } from './enums';
+import { GenderType, UserAccountStatus } from './enums.js';
 const Schema = mongoose.Schema;
 
 
@@ -14,14 +14,14 @@ const userSchema = new mongoose.Schema({
     bio: String,
     username: String,
     birthdate: String,
-    age: Int32Array,    
-    gender: GenderType,
+    age: BigInt,    
+    gender: Object.values(GenderType),
     followers: [{ type: Schema.Types.ObjectId, ref: 'FollowRelation' }],
     following: [{ type: Schema.Types.ObjectId, ref: 'FollowRelation' }],
     location: { type: Schema.Types.ObjectId, ref: 'Location' },
     player: { type: Schema.Types.ObjectId, ref: 'Player' },    
-    status: UserAccountStatus,
-    createdAt: Int32Array,
+    status: Object.values(UserAccountStatus),
+    createdAt: String,
     updatedAt: String,
     images: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
     events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],

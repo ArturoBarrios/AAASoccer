@@ -12,10 +12,24 @@ import resolvers from './resolvers.js';
 // your data.
 const typeDefs = `#graphql
   interface MutationResponse {
-  code: String!
-  success: Boolean!
-  message: String!
-}
+    code: String!
+    success: Boolean!
+    message: String!
+  }
+
+  interface QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+  }
+
+  type UserResponse implements QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    user: User
+  }
+
 
 type CreateGameMutationResponse implements MutationResponse {
   code: String!
@@ -24,45 +38,102 @@ type CreateGameMutationResponse implements MutationResponse {
   game: Game
 }
 
+type CreatePlayerMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  player: Player
+}
+
 type Mutation {
   createGame(input: GameInput): CreateGameMutationResponse
+  createPlayer(input: PlayerInput): CreatePlayerMutationResponse
 }
 
-
-
-
-  input GameInput {
-    pickup: Boolean
-    eventInput: EventInput
-      
-    
-
+type Query {    
+  allFieldLocations: [FieldLocation!]
+  allGames(pickup: Boolean): [Game!]
+  getGames: [Game!]
+  allEvents(type: EventType): [Event!]
+  allTrainings: [Training!]
+  allTryouts: [Tryout!]
+  allLeagues: [League!]
+  allTournaments: [Tournament!]
+  allUsers: [User!]
+  allPlayers: [Player!]
+  allRequests: [Request!]
+  allTeams: [Team!]
+  allGroups: [Group!]
+  findUserByEmail(email: String): UserResponse
+  getUserByPhone(phone: String): User
+  getUserByUsername(username: String): User    
+  allSubscriptionTypes: [SubscriptionType!]
   }
 
-  input EventInput {        
-    name: String    
+
+input PlayerInput {  
+  user: UserInput
 }
 
+input UserInput {  
+  name: String
+  phone: String
+  email: String
+  username: String
+  birthdate: String
+  location: LocationInput  
+}
 
-  type Query {    
-    allFieldLocations: [FieldLocation!]
-    allGames(pickup: Boolean): [Game!]
-    getGames: [Game!]
-    allEvents(type: EventType): [Event!]
-    allTrainings: [Training!]
-    allTryouts: [Tryout!]
-    allLeagues: [League!]
-    allTournaments: [Tournament!]
-    allUsers: [User!]
-    allPlayers: [Player!]
-    allRequests: [Request!]
-    allTeams: [Team!]
-    allGroups: [Group!]
-    getUserByEmail(email: String): User
-    getUserByPhone(phone: String): User
-    getUserByUsername(username: String): User    
-    allSubscriptionTypes: [SubscriptionType!]
-    }
+input GameInput {
+  pickup: Boolean
+  event: EventInput      
+}
+
+input EventInput {        
+  name: String    
+  type: EventType
+  archived: Boolean
+  amenities: String
+  isMainEvent: Boolean
+  startTime: String
+  endTime: String
+  createdAt: String
+  capacity: Int
+  price: PriceInput
+  joinConditions: JoinConditionsInput
+  userParticipants: [EventUserParticipantInput]
+  fieldLocations: [FieldLocationInput]
+
+
+}
+
+input PriceInput {     
+  amount: String
+}   
+
+input JoinConditionsInput {     
+  withRequest: Boolean
+  withPayment: Boolean
+}   
+
+input EventUserParticipantInput {     
+  userId: ID
+  roles: String
+}
+
+input FieldLocationInput {     
+  isMainField: Boolean
+  location: LocationInput
+}   
+
+input LocationInput {     
+  name: String
+  address: String
+  latitude: Float
+  longitude: Float
+  
+}   
+
 
   # enums
   enum PaymentType {

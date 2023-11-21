@@ -1,4 +1,7 @@
 import mongoose from 'mongoose';
+
+
+
 const Schema = mongoose.Schema;
 
 
@@ -7,7 +10,7 @@ const joinConditionsSchema = new mongoose.Schema({
     withPayment: Boolean,
     forTeam: Boolean,
     forEvent: Boolean,
-    event: Event,
+    event: { type: Schema.Types.ObjectId, ref: 'Event' },
 });
 
 const JoinConditions = mongoose.model('JoinConditions', joinConditionsSchema);

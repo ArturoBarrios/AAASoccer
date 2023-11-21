@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {PaymentType} from './enums';
+import {PaymentType} from './enums.js';
 
 const Schema = mongoose.Schema;
 
@@ -13,7 +13,7 @@ const paymentSchema = new mongoose.Schema({
     isTeamPayment: Boolean,
     refunded: Boolean,
     charge: String,
-    paymentType: PaymentType
+    paymentType: Object.values(PaymentType)
 });
 
 const Payment = mongoose.model('Payment', paymentSchema);
