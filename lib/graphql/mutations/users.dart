@@ -4,19 +4,33 @@ import '../fragments/user_fragments.dart';
 import '../fragments/event_fragments.dart';
 
 class UserMutations {
-  String partialUserUpdate(Map<String, dynamic> userInput) {
+  String updateUserOnboarding(Map<String, dynamic> userInput) {
     String updateUserString = """
-      mutation {
-        partialUpdateUser(
-          id: ${userInput['user']['_id']}, 
-          data: ${userInput['user']['dataToUpdate']}
-        )
-        {
-          ${UserFragments().fullUser()}
-        }  
-      }
+       mutation {
+        updateUserOnboarding(
+          _id: "${userInput['_id']}",
+          onboarded: ${userInput['onboarded']}                    
+                   
+          ) {
+             code
+                success
+                message            
+              user{    
+                ${UserFragments().fullUser()}
+              }                 
+          }   
+        }
     """;
 
+      // mutation {
+      //   partialUpdateUser(
+      //     id: ${userInput['user']['_id']}, 
+      //     data: ${userInput['user']['dataToUpdate']}
+      //   )
+      //   {
+      //     ${UserFragments().fullUser()}
+      //   }  
+      // }
     return updateUserString;
   }
 

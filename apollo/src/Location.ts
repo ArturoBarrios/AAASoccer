@@ -8,9 +8,11 @@ const locationSchema = new mongoose.Schema({
     name: String,
     secondaryName: String,
     address: String,
-    // latitude: Number!,
-    // longitude: Number!, 
-    locationType: Object.values(LocationType) 
+    latitude: Number!,
+    longitude: Number!, 
+    locationType: Object.values(LocationType),
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
+
 });
 
 const Location = mongoose.model('Location', locationSchema);

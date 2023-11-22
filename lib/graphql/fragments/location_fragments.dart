@@ -8,13 +8,13 @@ class LocationFragments{
 
          }
          eventRatings{
-        data{
+        
           _id          
           fieldLocationRating          
           user{
             _id
           }
-        }
+        
       }
 
     """;

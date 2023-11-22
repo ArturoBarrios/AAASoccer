@@ -89,14 +89,35 @@ const resolvers = {
                 game: res
             };
         },
+        updateUserOnboarding: async (parent, args, context, info) => {
+            console.log("updateUserOnboarding");           
+
+            //update
+            const user = await User.findById(args._id);
+            user.onboarded = args.onboarded;         
+            await user.save();  
+            
+            // await user.populate('user');
+            await user.populate('location');
+
+
+            console.log("updatedUser: ", user);
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                user: user
+            };
+        },
         createPlayer: async (parent, args, context, info) => {
             console.log("createPlayer args: ", args.input.user);
 
             const location = new Location({
                 name: args.input.user.location.name,
                 address: args.input.user.location.address,
-                // latitude: args.input.user.location.latitude,
-                // longitude: args.input.user.location.longitude,
+                latitude: args.input.user.location.latitude,
+                longitude: args.input.user.location.longitude,
             });
             await location.save();
             console.log("location: ", location._id);
@@ -142,6 +163,8 @@ const resolvers = {
         allGames: async (parent, args, context, info) => {
             const games = await Game.find();
 
+            
+
             console.log("games: ", games);
 
             return {
@@ -152,8 +175,18 @@ const resolvers = {
             };
         },
         findUserByEmail: async (parent, args, context, info) => {
-            const user = await User.findOne({ email: args.email });
-
+            const user = await User.findOne({ email: args.email });            
+            console.log("user: ", user);
+            
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully retrieved",
+                user: user
+            };
+        },
+        findUserById: async (parent, args, context, info) => {
+            const user = await User.findById(args._id);            
             console.log("user: ", user);
             
             return {

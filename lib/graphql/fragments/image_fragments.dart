@@ -5,11 +5,7 @@ class ImageFragments{
           _id  
           url
           key
-          isMainImage
-          chat{
-            _id
-            name
-          }
+          isMainImage          
           user{
             _id
             name
@@ -19,15 +15,7 @@ class ImageFragments{
           event{
             _id
             name
-          }     
-          team{
-            _id
-            name
-          }     
-          organization{
-            _id
-            name
-          }                                     
+          }                         
     ''';
 
     return fullImageReturn;

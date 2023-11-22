@@ -48,6 +48,7 @@ type CreatePlayerMutationResponse implements MutationResponse {
 type Mutation {
   createGame(input: GameInput): CreateGameMutationResponse
   createPlayer(input: PlayerInput): CreatePlayerMutationResponse
+  updateUserOnboarding(_id: String, onboarded: Boolean): UserResponse
 }
 
 type Query {    
@@ -65,6 +66,7 @@ type Query {
   allTeams: [Team!]
   allGroups: [Group!]
   findUserByEmail(email: String): UserResponse
+  findUserById(_id: String): UserResponse
   getUserByPhone(phone: String): User
   getUserByUsername(username: String): User    
   allSubscriptionTypes: [SubscriptionType!]
@@ -307,6 +309,7 @@ type AppPreference {
 }
 
 type User  {
+  _id: ID
   isSuperUser: Boolean 
   appPreference: AppPreference
   stripeCustomers: [StripeCustomer]
@@ -356,7 +359,9 @@ type User  {
   hasAcceptedTermsAndConditions: Boolean 
   hasAcceptedPrivacyPolicy: Boolean 
 }
+
 type Request {
+  _id: ID
   type: RequestType
   sender: User 
   receivers: [User]
@@ -373,17 +378,20 @@ type Request {
 }
 
 type StripeCustomer {
+  _id: ID
   customerId: String
   user: User
 }
 
 type FollowRelation {
+  _id: ID
   follower: User 
   following: User
 }
 
 
 type Player   {
+  _id: ID
   wagers: [Wager]
   competitiveLevel: String
   hasRating: String
@@ -395,6 +403,7 @@ type Player   {
 }
 
 type PlayerReputation {  
+  _id: ID
   ratings: [Rating] 
   player: Player
 }
@@ -402,6 +411,7 @@ type PlayerReputation {
 
 
 type EventUserParticipant {
+  _id: ID
   event: Event
   user: User
   roles: String
@@ -410,6 +420,7 @@ type EventUserParticipant {
 }
 
 type TeamUserParticipant {
+  _id: ID
   team: Team
   user: User
   roles: String
@@ -417,6 +428,7 @@ type TeamUserParticipant {
 }
 
 type GroupUserParticipant {
+  _id: ID
   group: Group
   user: User
   roles: String
@@ -424,6 +436,7 @@ type GroupUserParticipant {
 }
 
 type Game {
+  _id: ID
   hometeam: Team
   awayteam: Team
   teamA: String
@@ -437,6 +450,7 @@ type Game {
 }
 
 type JoinConditions {
+  _id: ID
   withRequest: Boolean
   withPayment: Boolean
   forTeam: Boolean
@@ -447,6 +461,7 @@ type JoinConditions {
 }
 
 type Event   {
+  _id: ID
   name: String
   joinConditions: [JoinConditions]
   isMainEvent: Boolean
@@ -487,7 +502,7 @@ type Event   {
 }
 
 type Rsvp {
-  id: ID!
+  _id: ID
   user: User! 
   event: Event!
   status: RsvpStatus
@@ -496,6 +511,7 @@ type Rsvp {
 
 
 type Group   {
+  _id: ID
   name: String  
   description: String
   events: [Event] 
@@ -520,6 +536,7 @@ type Group   {
 }
 
 type Team   {
+  _id: ID
   name: String
   color: String
   events: [Event]
@@ -547,31 +564,37 @@ type Team   {
 }
 
 type TeamReputation {
+  _id: ID
   ratings: [Rating] 
   team: Team
 }
 
 type GroupReputation {
+  _id: ID
   ratings: [Rating] 
   group: Group
 }
 
 type Coach   {
+  _id: ID
   user: User  
   coachReputation: CoachReputation
 }
 
 type CoachReputation {
+  _id: ID
   ratings: [Rating] 
   coach: Coach
 }
 
 type Referee   {
+  _id: ID
   user: User
   refereeReputation: [RefereeReputation]
 }
 
 type RefereeReputation {
+  _id: ID
   ratings: [Rating] 
   referee: Referee
 }
@@ -579,6 +602,7 @@ type RefereeReputation {
 # a payment is attached to event
 # use payment object to create payment screen details for event
 type Payment   {
+  _id: ID
   amount: String
   event: Event
   team: Team
@@ -595,6 +619,7 @@ type Payment   {
 # orgs can have many suborgs
 # allow org to behave as Sponsor
 type Organization   {
+  _id: ID
   name: String
   images: [Image] 
   events: [Event] 
@@ -614,6 +639,7 @@ type Organization   {
 }
 
 type OrganizationReputation {
+  _id: ID
   ratings: [Rating] 
   organization: Organization
 }
@@ -621,7 +647,7 @@ type OrganizationReputation {
 
 # sponsor is an org
 type Sponsor {
-  id: ID!
+  _id: ID  
   name: String
   images: [Image] 
   description: String
@@ -634,6 +660,7 @@ type Sponsor {
 }
 
 type Wager   {
+  _id: ID
   name: String
   amount: String
   players: [Player]  
@@ -642,10 +669,12 @@ type Wager   {
 }
 
 type Tryout   {  
+  _id: ID
   event: Event  
 }
 
 type League   {
+  _id: ID
   tournaments: [Tournament]  
   events: [Event] 
   numberOfTeams: Int  
@@ -654,6 +683,7 @@ type League   {
 }
 
 type Season {
+  _id: ID
   leagues: [League]
   tournaments: [Tournament] 
   startDate: String
@@ -661,6 +691,7 @@ type Season {
 }
 
 type TeamOrder {
+  _id: ID
   team: Team
   points: Int
   group: TournamentGroup
@@ -669,17 +700,19 @@ type TeamOrder {
 }
 
 type TeamGroup {
+  _id: ID
   numberOfPoints: Int
-
 }
 
 type TournamentGroup {
+  _id: ID
   groupNumber: Int
   groupStage: GroupStage
   teamOrders: [TeamOrder] 
 }
 
 type GroupStage {
+  _id: ID
   groups: [TournamentGroup]
   numberOfTeams: Int
   numberOfRoundsPerTeam: Int
@@ -689,12 +722,14 @@ type GroupStage {
 }
 
 type EventOrder {
+  _id: ID
   event: Event
   order: Int
   tournamentStage: TournamentStage
 }
 
 type TournamentStage {
+  _id: ID
   numberOfTeams: Int
   numberOfRoundsPerTeam: Int
   tournament: Tournament
@@ -703,6 +738,7 @@ type TournamentStage {
 }
 
 type Tournament   {
+  _id: ID
   groupPlay: Boolean  
   events: [Event] 
   numberOfTeams: Int
@@ -714,10 +750,12 @@ type Tournament   {
 }
 
 type Training   {
+  _id: ID
   event: Event  
 }
 
 type Image   {
+  _id: ID
   isMainImage: Boolean
   public: Boolean
   url: String
@@ -734,14 +772,17 @@ type Image   {
 }
 
 type GifContent   {
+  _id: ID
   gifUrl: String
 }
 
 type TextContent   {
+  _id: ID
   content: String
 }
 
 type Message {
+  _id: ID
   chatObject: Chat #belongs to chat
   textObject: TextContent
   gifObject: GifContent
@@ -752,6 +793,7 @@ type Message {
 }
 
 type Chat  {
+  _id: ID
   name: String
   messages: [Message] 
   users: [User] 
@@ -769,6 +811,7 @@ type Chat  {
 
 
 type Location   {
+  _id: ID
   name: String
   secondaryName: String
   address: String  
@@ -778,33 +821,39 @@ type Location   {
 }
 
 type UserLocation   {
+  _id: ID
   user: User
   location: Location
 }
 
 type GroupLocation   {  
+  _id: ID
   location: Location
   group: Group    
 }
 
 type TeamLocation   {
+  _id: ID
   isMainField: Boolean 
   location: Location
   team: Team    
 }
 
 type OrganizationLocation{
+  _id: ID
   location: Location
   organization: Organization
 }
 
 type StoreLocation{
+  _id: ID
   location: Location
   store: Store
 }
      
 
 type FieldLocation  {  
+  _id: ID
   isMainField: Boolean 
   location: Location
   facility: Facility
@@ -825,6 +874,7 @@ type FieldLocation  {
 }
 
 type ParkingOption {
+  _id: ID
   fieldLocation: FieldLocation
   parkingTypes: [ParkingType]
   info: String
@@ -835,12 +885,14 @@ type ParkingOption {
 
 
 type FieldLocationReputation {
+  _id: ID
   ratings: [Rating]
   fieldLocation: FieldLocation
   verified: Boolean
 }
 
 type Rating   {
+  _id: ID
   rating: Int
   feedback: String
   user: User
@@ -856,6 +908,7 @@ type Rating   {
 }
 
 type EventRating   {
+  _id: ID
   event: Event
   user: User
   fieldLocation: FieldLocation
@@ -868,12 +921,14 @@ type EventRating   {
 }
 
 type RatingCategory {
+  _id: ID
   rating: [Rating] 
   ratingCategoryType: RatingCategoryType  
 }
 
 
 type Price   {
+  _id: ID
   amount: String
   event: Event 
   team: Team
@@ -885,6 +940,7 @@ type Price   {
 }
 
 type SocialMediaApp   {
+  _id: ID
   type: SocialMediaType
   url: String
   user: User
@@ -895,6 +951,7 @@ type SocialMediaApp   {
 }
 
 type Item {
+  _id: ID
   name: String
   description: String #size 5
   price: String
@@ -902,6 +959,7 @@ type Item {
 }
 
 type Region {
+  _id: ID
   name: String
   location: Location
   Leagues: [League] 
@@ -911,12 +969,14 @@ type Region {
 }
 
 type RegionUserParticipant {
+  _id: ID
   region: Region
   user: User
   roles: String
 }
 
 type Prize {
+  _id: ID
   amount: String
   type: PrizeType  
   description: String
@@ -924,11 +984,13 @@ type Prize {
 }
 
 type Amenity {  
+  _id: ID
   type: AmenityType    
   fieldLocations: [FieldLocation]
 }
 
 type Organizer {
+  _id: ID
   organizerReputation: OrganizerReputation
   slots: [Slot]
   schedules: [Schedule]
@@ -937,6 +999,7 @@ type Organizer {
 
 
 type OrganizerReputation {
+  _id: ID
   ratings: [Rating]
   canOrganizeGame: Boolean
   canOrganizeLeague: Boolean
@@ -954,6 +1017,7 @@ type OrganizerReputation {
 }
 
 type SubscriptionType {
+  _id: ID
   name: String
   description: String
   price: Price
@@ -962,6 +1026,7 @@ type SubscriptionType {
 }
 
 type AppSubscription  {
+  _id: ID
   subscriptionType: SubscriptionType
   user: User
   startDate: String
@@ -970,6 +1035,7 @@ type AppSubscription  {
 }
 
 type Schedule {
+  _id: ID
   slots: [Slot]
   organizers: [Organizer]
   fieldLocation: [FieldLocation] #maybe only FieldLocation or locations????
@@ -977,6 +1043,7 @@ type Schedule {
 
 
 type Slot {
+  _id: ID
   startTime: String
   endTime: String
   events: [Event]
@@ -986,27 +1053,32 @@ type Slot {
 }
 
 type Field {
+  _id: ID
   name: String
   fieldLocation: FieldLocation
   slots: [Slot] 
 }
 
 type Facility {
+  _id: ID
   organizations: [Organization]
   url: String
 }
 
 type Advertisement {
+  _id: ID
   store: Store
   
 }
 
 type Discount {
+  _id: ID
   percentage: Int, 
   amount: String
 }
 
 type Coupon {
+  _id: ID
   code: String
   discount: Discount
   event: [Event]
@@ -1019,6 +1091,7 @@ type Coupon {
 }
 
 type Store{
+  _id: ID
   name: String
   address: String
   storeLocation: StoreLocation
@@ -1026,41 +1099,30 @@ type Store{
 }
 
 type parentStore {
+  _id: ID
   name: String
   address: String
   stores: [Store] 
 }
 
 type Access {
+  _id: ID
   accessType: String
   coupon: Coupon
 }
 
 type AppFeedback {
+  _id: ID
   feedback: String
 }
 
 type BugFeedback {
+  _id: ID
   feedback: String
   severity: Int
 }
 
-`;
-
-
-
-  // Resolvers define how to fetch the types defined in your schema.
-// This resolver retrieves books from the "books" array above.
-
-
-  // interface ContextValue {
-  //   dataSources: {
-  //     eventsAPI: EventsAPI;
-  //   };
-  // }
-
-  
-  
+`;  
   
   // The ApolloServer constructor requires two parameters: your schema
   // definition and your set of resolvers.

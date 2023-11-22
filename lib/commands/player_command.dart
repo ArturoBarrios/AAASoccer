@@ -95,10 +95,11 @@ class PlayerCommand extends BaseCommand {
 
       if(response.statusCode == 200){
 
-        Map<String, dynamic> player =
+        Map<String, dynamic> resp =
             jsonDecode(response.body)['data']['createPlayer'];
+        Map<String, dynamic> player = resp['player'];
         Map<String, dynamic> user = player['user'];
-        AppModel().currentUser = user;
+        appModel.currentUser = user;
 
         createPlayerResponse["success"] = true;
         createPlayerResponse["message"] = "Player for Team Created";

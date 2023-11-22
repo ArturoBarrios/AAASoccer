@@ -25,7 +25,7 @@ class IntroductionPage extends StatelessWidget {
           """,
         },
       };
-      await UserCommand().partialUpdateUser(partialUserInput);
+      await UserCommand().updateUserOnboarding(partialUserInput);
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(

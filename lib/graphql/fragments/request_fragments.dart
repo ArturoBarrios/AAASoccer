@@ -6,12 +6,10 @@ class RequestFragments {
             requestAttempts   
             type     
             forRole    
-            receivers{
-              data{
-                _id
-                email
-                username
-              }
+            receivers{              
+              _id
+              email
+              username              
             }
             sender{                            
               _id
@@ -20,23 +18,17 @@ class RequestFragments {
               phone          
             }   
             acceptedBy{              
-                _id
-                email
-                name              
+              _id
+              email
+              name              
             }                                  
             event{              
-                _id
-                name  
-                games{
-                  data{
-                    _id                   
-                  }
-                }            
-              }
-            team{
               _id
-              name
-            }                				                          
+              name  
+              games{                  
+                _id                                     
+              }            
+            }                                  
     ''';
 
     return fullRequestReturn;

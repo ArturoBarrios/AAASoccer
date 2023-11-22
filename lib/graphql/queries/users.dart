@@ -38,7 +38,7 @@ String getUserByEmail(Map<String, dynamic> userInput) {
       query FindUserByEmail {
       findUserByEmail(email: "${userInput['email']}") {
         user{
-          username
+          ${UserFragments().fullUser()}
         }
         code
         message
@@ -53,12 +53,25 @@ String getUserByEmail(Map<String, dynamic> userInput) {
 
   String findUserByID(Map<String, dynamic> userInput, String userFragment) {
     String getUser = """
-      query getUser {
-            findUserByID(id: "${userInput['_id']}") {      
-             ${userFragment}                                                                                    
-          }
+      query FindUserById {
+      findUserById(_id: "${userInput['_id']}") {
+        user{
+          ${userFragment}
         }
+        code
+        message
+        success
+
+      }
+    }
+
+
     """;
+      // query getUser {
+      //       findUserByID(id: "${userInput['_id']}") {      
+      //        ${userFragment}                                                                                    
+      //     }
+      //   }
 
     return getUser;
   }

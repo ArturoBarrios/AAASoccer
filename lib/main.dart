@@ -261,8 +261,8 @@ class _MyAppState extends State<MyApp> {
         print("createPlayerResp: ");
         print(createPlayerResp);
 
-        AppModel().currentUser = createPlayerResp['data'];
-        print("AppModel().currentUser: ${AppModel().currentUser}");
+        // appModel.currentUser = createPlayerResp['user'];
+        // print("AppModel().currentUser: ${AppModel().currentUser}");
 
         await startLoadToHomeTransition();
       // } 

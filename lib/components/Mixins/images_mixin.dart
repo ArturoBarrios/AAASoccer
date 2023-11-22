@@ -170,7 +170,7 @@ mixin ImagesMixin {
             },
           };
 
-          await UserCommand().partialUpdateUser(partialUserInput);
+          // await UserCommand().partialUpdateUser(partialUserInput);
         }
       }
     }

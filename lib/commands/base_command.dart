@@ -534,52 +534,61 @@ List<AmenityType> parseAmenities(String amenitiesString) {
 
     try {
       if (!appModel.isGuest) {
-        Map<String, dynamic> getUserResp =
-            await UserCommand().getUserByEmail(getUserInput);
-        print("getUserResp: ");
-        print(getUserResp);
-        if (getUserResp["success"]) {
-          dynamic user = getUserResp["data"];
+        if(appModel.currentUser.isEmpty ){
+          Map<String, dynamic> getUserResp =
+              await UserCommand().getUserByEmail(getUserInput);
+          print("getUserResp: ");
+          print(getUserResp);
+          if (getUserResp["success"]) {
+            dynamic user = getUserResp["data"];
 
-          if (user == null) {
-            Map<String, dynamic> userInput = {
-              "name": "no name",
-              "email": email,
-              "username": "username",
-              "phone": "2672136006",
-              "birthdate": "07/26/1997",
-              "gender": "male",
-              "address": "random address",
-              "status": "SignedUp"
-            };
-            Map<String, dynamic> locationInput = {
-              "latitude": 0,
-              "longitude": 0
-            };
-            Map<String, dynamic> createPlayerResp = await PlayerCommand()
-                .createPlayer(userInput, {}, locationInput, false);
-            user = createPlayerResp['data'];
+            if (user == null) {
+              Map<String, dynamic> userInput = {
+                "name": "no name",
+                "email": email,
+                "username": "username",
+                "phone": "2672136006",
+                "birthdate": "07/26/1997",
+                "gender": "male",
+                "address": "random address",
+                "status": "SignedUp"
+              };
+              Map<String, dynamic> locationInput = {
+                "latitude": 0,
+                "longitude": 0
+              };
+              Map<String, dynamic> createPlayerResp = await PlayerCommand()
+                  .createPlayer(userInput, {}, locationInput, false);
+              user = createPlayerResp['data'];
+            }
+            appModel.currentUser = user;
+            print("app model user: ");
+            print(appModel.currentUser);
+            // print("user['chats']['data']: ${user['chats']['data']}");
+            // chatPageModel.generalChatList = user['chats']['data'];
+            //setup onesignal
+            
+            print("testing some shit out!");
+            //not being used so commented out
+            // await loadUserImagesFromAWS();
+            print(
+                "get friends and myEvents from currentUser object: ${appModel.currentUser}");
+
+            // await ImagesCommand().setUserProfileImage();
+            setupUserResp['success'] = true;
+            setupUserResp['data'] = user;
+          } else {
+            print("something went wrong in fetching user");
+            signOut();
           }
-          appModel.currentUser = user;
-          appModel.isSuperUser = user['isSuperUser'];
-          print("app model user: ");
-          print(appModel.currentUser);
-          print("user['chats']['data']: ${user['chats']['data']}");
-          chatPageModel.generalChatList = user['chats']['data'];
-          //setup onesignal
-          await OneSignalService().login(appModel.currentUser['_id']);
-          print("testing some shit out!");
-          //not being used so commented out
-          // await loadUserImagesFromAWS();
-          print(
-              "get friends and myEvents from currentUser object: ${appModel.currentUser}");
 
-          // await ImagesCommand().setUserProfileImage();
+        }
+        //appModel.currentUser is not empty: 
+        else{
           setupUserResp['success'] = true;
-          setupUserResp['data'] = user;
-        } else {
-          print("something went wrong in fetching user");
-          signOut();
+            setupUserResp['data'] = appModel.currentUser;
+          appModel.isSuperUser = appModel.currentUser['isSuperUser'];
+          await OneSignalService().login(appModel.currentUser['_id']);
         }
       } else {
         print("is guest");

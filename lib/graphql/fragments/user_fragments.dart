@@ -14,27 +14,33 @@ class UserFragments {
       phone
       email              
       username
-      birthdate              
-      gender
+      birthdate                    
       OSPID
       onboarded
       mainImageKey
       isProfilePrivate
       updatedAt
       hasAcceptedTermsAndConditions
-      eventRatings{
-        data{
+      eventRatings{        
+        _id
+        eventRating
+        hostRating
+        fieldLocationRating          
+        user{
           _id
-          eventRating
-          hostRating
-          fieldLocationRating          
-          user{
-            _id
-          }
         }
-      }
-      followers{
-        data{
+      }      
+      followers{        
+        follower{
+          _id
+          name
+        }
+        following{
+          _id
+          name
+        }
+      }      
+      following{        
           follower{
             _id
             name
@@ -43,25 +49,9 @@ class UserFragments {
             _id
             name
           }
-
-        }
-      }
-      following{
-        data{
-          follower{
-            _id
-            name
-          }
-          following{
-            _id
-            name
-          }
-        }
-      }              
-      images{
-        data{
-          ${ImageFragments().fullImage()}
-        }
+        }           
+      images{        
+          ${ImageFragments().fullImage()}        
       }
       location{
         _id
@@ -69,7 +59,7 @@ class UserFragments {
         longitude
       }
       eventUserParticipants{
-        data{
+        
           _id
           user{
             _id
@@ -78,48 +68,24 @@ class UserFragments {
             ${EventFragments().fullEvent()}  
           }
           roles
-        }
-      }
-      teamUserParticipants{
-        data{
-          _id
-          team{
-            ${TeamFragments().fullTeam()}  
-          }
-          roles
-        }
       }
       
-      requestsReceived{
-        data{
-          ${RequestFragments().fullRequest()}              
-        }
-      }
-      requestsSent{
-        data{
-          ${RequestFragments().fullRequest()}   
-        }
-      }
-      stripeCustomers{
-        data{
-          _id
-          customerId
-        }
-      }
-      
-      
-      sentMessages{
-        data{
-          _id
-        }
-        
-      }      
-      chats{
-        data{
-          ${ChatFragments().chatObject()}               
 
-        }
+      
+      requestsReceived{        
+          ${RequestFragments().fullRequest()}                      
       }
+      requestsSent{        
+          ${RequestFragments().fullRequest()}           
+      }
+      stripeCustomers{        
+          _id
+          customerId        
+      }
+      
+      
+          
+      
               
               
     """;

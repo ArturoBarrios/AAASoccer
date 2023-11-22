@@ -60,8 +60,7 @@ class EventFragments {
       capacity
       createdAt    
       amenities
-      eventRatings{
-        data{
+      eventRatings{        
           _id
           eventRating
           hostRating
@@ -70,36 +69,22 @@ class EventFragments {
             _id
           }
         }
-      }
       
-      requests{
-        data{
-          ${RequestFragments().fullRequest()}
-        }
+      
+      requests{      
+          ${RequestFragments().fullRequest()}        
       }
-      images{
-        data{
-          ${ImageFragments().fullImage()}              
-        }
+      images{        
+          ${ImageFragments().fullImage()}                      
+      }      
+      SocialMediaApps{       
+          ${fullSocialMediaApps()}       
       }
-      chats{
-        data{
-          ${ChatFragments().chatObject()}
-        }
-      }
-      SocialMediaApps{
-        data{
-          ${fullSocialMediaApps()}
-        }
-      }
-      joinConditions{
-        data{
-          _id
-          withRequest
-          withPayment
-          forTeam
-          forEvent
-        }
+      joinConditions{        
+        _id
+        withRequest
+        withPayment        
+        forEvent        
       }
       price{                    
         _id
@@ -110,82 +95,43 @@ class EventFragments {
           name                      
         }
       }
-      games{
-        data{
-          _id
-          pickup
-        }
+      games{      
+        _id
+        pickup        
+      }                        
+      fieldLocations{      
+        ${LocationFragments().FieldLocationFull()}              
       }
-      trainings{
-        data{
+      userParticipants{             
+        _id
+        event{                        
           _id
+          name
         }
+        user{
+          _id
+          name
+          email
+          username
+          userType          
+        }          
+        roles
+        isAttending                                                              
       }
-      tryouts{
-        data{
+      payments{        
+        _id
+        amount   
+        isPlayerPayment
+        isTeamPayment       
+        user{
           _id
+          name
+          username
         }
-      }
-      tournaments{
-        data{
+        event{
           _id
-        }
-      } 
-      leagues{
-        data{
-          _id
-        }
-      }
-      teams{
-          data{
-            ${TeamFragments().fullTeam()}
-          }
-        }
-      fieldLocations{
-        data{
-          ${LocationFragments().FieldLocationFull()}        
-        }
-      }
-      userParticipants{     
-        data{
-          _id
-          event{                        
-            _id
-            name
-          }
-          user{
-            _id
-            name
-            email
-            username
-            userType
-            teams{
-              data{
-                _id
-              }
-
-            }
-          }          
-          roles
-          isAttending
-        }                                                              
-      }
-      payments{
-        data{
-          _id
-          amount   
-          isPlayerPayment
-          isTeamPayment       
-          user{
-            _id
-            name
-            username
-          }
-          event{
-            _id
-            name
-          }
-        }                                                              
+          name
+        }                                                                    
       }
     """;
 

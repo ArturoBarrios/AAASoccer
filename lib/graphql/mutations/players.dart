@@ -1,3 +1,5 @@
+import '../fragments/user_fragments.dart';
+
 class PlayerMutations {
   String createPlayer(Map<String, dynamic> userInput,
       Map<String, dynamic> playerInput, Map<String, dynamic> locationInput) {
@@ -16,15 +18,12 @@ class PlayerMutations {
             }
           }          
           }) {
+             code
+                success
+                message
             player{
-              user{                
-                name
-                email
-                phone
-                location{                  
-                  latitude
-                  longitude
-                } 
+              user{    
+                ${UserFragments().fullUser()}
               }     
             }
           }   

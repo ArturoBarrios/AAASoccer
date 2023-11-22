@@ -63,18 +63,12 @@ class _OnboardingViewState extends State<OnboardingView> {
       dynamic userObjectResp = await UserCommand().findMyUserById();
       dynamic userObject = userObjectResp['data'];
       print("userObject: $userObject");
-      Map<String, dynamic> partialUserInput = {
-        'user': {
-          '_id': userObject['_id'],
-          'dataToUpdate': """
-          {
-            onboarded: true
-          }
-          """,
-        },
+      Map<String, dynamic> partialUserInput = {        
+        '_id': userObject['_id'],                    
+        'onboarded': true                            
       };
       BaseCommand().initialUserConditionsMet();
-      await UserCommand().partialUpdateUser(partialUserInput);
+      await UserCommand().updateUserOnboarding(partialUserInput);
       BaseCommand().setOnboarded(true);
       
 

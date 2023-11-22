@@ -290,7 +290,7 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
-  Future<Map<String, dynamic>> partialUpdateUser(
+  Future<Map<String, dynamic>> updateUserOnboarding(
       dynamic processedUserInput) async {
     print("partialUpdateUser");
     print("processedUserInput: " + processedUserInput.toString());
@@ -302,26 +302,62 @@ class UserCommand extends BaseCommand {
     };
 
     try {
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().partialUserUpdate(processedUserInput),
+          'query': UserMutations().updateUserOnboarding(processedUserInput),
         }),
       );
 
-      print("response body: ");
+      print("response from updateUserOnboarding.....: ");
+
       print(jsonDecode(response.body));
-      partialUpdateUserResponse["success"] = true;
-      partialUpdateUserResponse["message"] = "User Updated";
-      partialUpdateUserResponse["data"] =
-          jsonDecode(response.body)['data']['partialUpdateUser'];
-      //todo update appModel.currentUser
-      appModel.currentUser = partialUpdateUserResponse["data"];
-      print("appModel.currentUser: " + appModel.currentUser.toString());
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
+        partialUpdateUserResponse["success"] = false;
+        partialUpdateUserResponse["message"] = "no user found";
+      } else {
+        
+        final result = jsonDecode(response.body)['data']['updateUserOnboarding'];
+        partialUpdateUserResponse["data"] = null;
+        if (result['code'] != 200) {
+          partialUpdateUserResponse["success"] = true;
+          partialUpdateUserResponse["message"] = "user found";
+          partialUpdateUserResponse["data"] = result['user'];
+        }
+        else{
+          partialUpdateUserResponse["success"] = false;
+          partialUpdateUserResponse["message"] = "no user found";
+        }
+      }
+
+
+
+
+
+      // http.Response response = await http.post(
+      //   Uri.parse('https://graphql.fauna.com/graphql'),
+      //   headers: <String, String>{
+      //     'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: jsonEncode(<String, String>{
+      //     'query': UserMutations().partialUserUpdate(processedUserInput),
+      //   }),
+      // );
+
+      // print("response body: ");
+      // print(jsonDecode(response.body));
+      // partialUpdateUserResponse["success"] = true;
+      // partialUpdateUserResponse["message"] = "User Updated";
+      // partialUpdateUserResponse["data"] =
+      //     jsonDecode(response.body)['data']['partialUpdateUser'];
+      // //todo update appModel.currentUser
+      // appModel.currentUser = partialUpdateUserResponse["data"];
+      // print("appModel.currentUser: " + appModel.currentUser.toString());
 
       return partialUpdateUserResponse;
     } on ApiException catch (e) {
@@ -567,8 +603,7 @@ class UserCommand extends BaseCommand {
     try {
       http.Response response = await http.post(
         Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -585,11 +620,12 @@ class UserCommand extends BaseCommand {
         getUserResp["message"] = "no user found";
       } else {
         
-        final result = jsonDecode(response.body)['data']['findUserByEmail']['user'];
+        final result = jsonDecode(response.body)['data']['findUserByEmail'];
         getUserResp["data"] = null;
-        if (result != null) {
+        if (result['code'] != 200) {
           getUserResp["success"] = true;
           getUserResp["message"] = "user found";
+          getUserResp["data"] = result['user'];
         }
         else{
           getUserResp["success"] = false;
@@ -613,12 +649,27 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
-      // print("appModel.currentUser: " + appModel.currentUser.toString());
+      // http.Response response = await http.post(
+      //   Uri.parse('https://graphql.fauna.com/graphql'),
+      //   headers: <String, String>{
+      //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: jsonEncode(<String, String>{
+      //     'query': UserQueries().findUserByID(appModel.currentUser, UserFragments().fullUser()),
+      //   }),
+      // );
 
+      // print("response: ");
+      // print(jsonDecode(response.body));
+      // final result = jsonDecode(response.body)['data']['findUserByID'];
+      // getUserResp["success"] = true;
+      // getUserResp["message"] = "user found";
+      // getUserResp["data"] = result;
+      print("before send request: "+appModel.currentUser.toString());
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -627,14 +678,26 @@ class UserCommand extends BaseCommand {
       );
 
       print("response: ");
+
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['findUserByID'];
-      // appModel.currentUser = result;
-      // if (result != null) {
-      getUserResp["success"] = true;
-      getUserResp["message"] = "user found";
-      getUserResp["data"] = result;
-      // }
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
+        getUserResp["success"] = false;
+        getUserResp["message"] = "no user found";
+      } else {
+        
+        final result = jsonDecode(response.body)['data']['findUserById'];
+        getUserResp["data"] = null;
+        if (result['code'] != 200) {
+          getUserResp["success"] = true;
+          getUserResp["message"] = "user found";
+          getUserResp["data"] = result['user'];
+        }
+        else{
+          getUserResp["success"] = false;
+          getUserResp["message"] = "no user found";
+        }
+      }
     } catch (e) {
       print('Query failed: $e');
     }
