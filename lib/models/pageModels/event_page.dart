@@ -278,9 +278,9 @@ class EventPage extends ChangeNotifier {
     notifyListeners();
   }
   
-  List<AmenityType> _amenities = [];
-  List<AmenityType> get amenities => _amenities;
-  set amenities(List<AmenityType> amenities) {
+  List<String> _amenities = [];
+  List<String> get amenities => _amenities;
+  set amenities(List<String> amenities) {
     _amenities = amenities;
     notifyListeners();
   }  

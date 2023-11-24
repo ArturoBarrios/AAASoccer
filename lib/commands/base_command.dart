@@ -92,10 +92,10 @@ class BaseCommand {
     appModel.onTapBottomNav(context, key, item);
   }
 
-List<AmenityType> parseAmenities(String amenitiesString) {
+List<String> parseAmenities(String amenitiesString) {
   // Remove the curly braces and trim the string
   var trimmedString = amenitiesString.replaceAll(RegExp(r'[{}]'), '').trim();
-
+  print("trimmedString: $trimmedString");
   // Check if the string is empty after removing braces
   if (trimmedString.isEmpty) {
     return [];
@@ -105,17 +105,18 @@ List<AmenityType> parseAmenities(String amenitiesString) {
   var amenitiesList = trimmedString.split(',').map((e) => e.trim());
 
   // Map the strings to their corresponding enum values
-  return amenitiesList.map((amenity) {
-    switch (amenity.toUpperCase()) {
-      case 'BUS':
-        return AmenityType.BUS;
-      case 'PINNIES':
-        return AmenityType.PINNIES;
-      // Add cases for other enum values
-      default:
-        throw FormatException('Unknown amenity type: $amenity');
-    }
-  }).toList();
+  // return amenitiesList.map((amenity) {
+  //   switch (amenity.toUpperCase()) {
+  //     case 'BUS':
+  //       return AmenityType.BUS;
+  //     case 'PINNIES':
+  //       return AmenityType.PINNIES;
+  //     // Add cases for other enum values
+  //     default:
+  //       throw FormatException('Unknown amenity type: $amenity');
+  //   }
+  // }).toList();
+  return amenitiesList.toList();
 }
 
 

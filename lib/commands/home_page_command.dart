@@ -143,8 +143,11 @@ class HomePageCommand extends BaseCommand {
       print("getEventsOfAllTypesNearLocationResppp: " +
           getEventsOfAllTypesNearLocationResp.toString());
       if (getEventsOfAllTypesNearLocationResp['success']) {
+        print("niceeeeeeeest");
         newSelectedObjects = getEventsOfAllTypesNearLocationResp['data'];
         homePageModel.selectedObjects = newSelectedObjects;
+        print("homePageModel.selectedObjects: " +
+            homePageModel.selectedObjects.toString());
       }
     }
 

@@ -1185,9 +1185,10 @@ class EventCommand extends BaseCommand {
   int calculateHostRating(dynamic user){
     int rating = 0;
     int numberOfRatings = 0;
+    print("user['eventRatings']: " + user['eventRatings'].toString());
     if(user['eventRatings'] != null){
-      for(int i = 0; i < user['eventRatings']['data'].length; i++){
-        rating += user['eventRatings']['data'][i]['hostRating'] as int;
+      for(int i = 0; i < user['eventRatings'].length; i++){
+        rating += user['eventRatings'][i]['hostRating'] as int;
         numberOfRatings++;
       }
     }
@@ -1203,8 +1204,8 @@ class EventCommand extends BaseCommand {
     int rating = 0;
     int numberOfRatings = 0;
     if(field['eventRatings'] != null){
-      for(int i = 0; i < field['eventRatings']['data'].length; i++){
-        rating += field['eventRatings']['data'][i]['fieldLocationRating'] as int;
+      for(int i = 0; i < field['eventRatings'].length; i++){
+        rating += field['eventRatings'][i]['fieldLocationRating'] as int;
         numberOfRatings++;
       }
     }
@@ -1262,9 +1263,10 @@ class EventCommand extends BaseCommand {
       print("getEventGame(): " + event.toString());
       print("event['fieldLocations']: " + event['fieldLocations'].toString());
       if (event['fieldLocations'].length > 0) {
+        print("event['fieldLocations'][0]['location']['latitude']: "+ event['fieldLocations'][0]['location']['latitude'].toString());
         List<Placemark> placemarks = await placemarkFromCoordinates(
-          event['fieldLocations']['location']['latitude'],
-          event['fieldLocations']['location']['longitude'],
+          event['fieldLocations'][0]['location']['latitude'] as double,
+          event['fieldLocations'][0]['location']['longitude'] as double,
         );
         print("placemarkssss: " + placemarks[0].toString());
         print("placemarkssss: " + placemarks[0].locality.toString());
@@ -1307,15 +1309,15 @@ class EventCommand extends BaseCommand {
       isMyEventResp['fieldRating'] = calculateFieldRating(event);
 
       String amenitiesString = event['amenities'] == null ? "{}" : event['amenities'];
-      List<AmenityType> amenitiesList = BaseCommand().parseAmenities(amenitiesString);
+      List<String> amenitiesList = BaseCommand().parseAmenities(amenitiesString);
       isMyEventResp['amenities'] = amenitiesList;
       
-
+      
       // eventPageModel.mainEvent = event;
       // eventPageModel.allEvents = events;
       // print("eventPageModel.mainEvent['joinConditions']: " + eventPageModel.mainEvent['joinConditions'].toString());
       //join conditions
-      isMyEventResp['mainEvent']['joinConditions']['data']
+      isMyEventResp['mainEvent']['joinConditions']
           .forEach((joinCondition) {
             print("joinConditionn: " + joinCondition.toString());
         if (joinCondition['forEvent'] != null) {
@@ -1335,9 +1337,11 @@ class EventCommand extends BaseCommand {
         }
       });
 
+      
+
       // eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
       isMyEventResp['userParticipants'] =
-          isMyEventResp['mainEvent']['userParticipants']['data'];
+          isMyEventResp['mainEvent']['userParticipants'];
       isMyEventResp['roles'] = getEventRoles(appModel.currentUser, isMyEventResp['userParticipants']);
       print("isMyEventResp['roles']: " + isMyEventResp['roles'].toString());
       isMyEventResp['isMine'] = isMyEventResp['roles'].contains("ORGANIZER");
@@ -1349,8 +1353,10 @@ class EventCommand extends BaseCommand {
       isMyEventResp['formattedEventTime'] = BaseCommand().formatEventTime(
           isMyEventResp['startTime'], isMyEventResp['endTime']);
 
+
       isMyEventResp['fieldLocations'] =
-          isMyEventResp['mainEvent']['fieldLocations']['data'];
+          isMyEventResp['mainEvent']['fieldLocations'];
+        print("isMyEventResp['userParticipants']: "+ isMyEventResp['userParticipants'].toString());
       for (int i = 0; i < isMyEventResp['userParticipants'].length; i++) {
         dynamic participant = isMyEventResp['userParticipants'][i];
         List<String> roles = participant['roles'].toString().parseRoles();
@@ -1367,9 +1373,8 @@ class EventCommand extends BaseCommand {
 
       isMyEventResp['price'] = isMyEventResp['mainEvent']['price'];
       print("isMyEventResp['price']: " + isMyEventResp['price'].toString());
-
       isMyEventResp['payments'] =
-          isMyEventResp['mainEvent']['payments']['data'];
+          isMyEventResp['mainEvent']['payments'];
 
       double tempAmountPaid = 0.00;
       double tempTeamAmountPaid = 0.00;
@@ -1433,7 +1438,7 @@ class EventCommand extends BaseCommand {
         // eventPageModel.formattedEventTime =
         //     isMyEventResp['formattedEventTime'];
         // eventPageModel.amenities = isMyEventResp['amenities'];
-
+        
         //event page instance testing
         EventPage eventPageInstance = EventPage();
         eventPageInstance.mainEvent = event;
@@ -1594,42 +1599,42 @@ class EventCommand extends BaseCommand {
           "startTime": afterTimestamp,
           "eventFragment": EventFragments().userEventParticipants()
         };
-        Map<String, dynamic> getAllUserEventParticipantsResp =
-            await getAllUserEventParticipants(allUserEventParticipantsInput);
-        print("getAllUserEventParticipantss: " +
-            getAllUserEventParticipantsResp.toString());
-        if (getAllUserEventParticipantsResp['success']) {
-          print("successss!!!!");
-          List<dynamic> allMyEvents = getAllUserEventParticipantsResp['data'];
-          print("allMyEvents: " + allMyEvents.toString());
-          List myEvents = allMyEvents;
-          print("myEvents.length before: " + myEvents.length.toString());
-          //filter out archived events
-          appModel.myArchivedEvents = myEvents
-              .where((event) => BaseCommand()
-                  .dateTimeFromMilliseconds(
-                      event['event']['endTime'].toString())
-                  .isBefore(DateTime.now()))
-              .toList();
+        // Map<String, dynamic> getAllUserEventParticipantsResp =
+        //     await getAllUserEventParticipants(allUserEventParticipantsInput);
+        // print("getAllUserEventParticipantss: " +
+        //     getAllUserEventParticipantsResp.toString());
+        // if (getAllUserEventParticipantsResp['success']) {
+          // print("successss!!!!");
+          // List<dynamic> allMyEvents = getAllUserEventParticipantsResp['data'];
+          // print("allMyEvents: " + allMyEvents.toString());
+          // List myEvents = allMyEvents;
+          // print("myEvents.length before: " + myEvents.length.toString());
+          // //filter out archived events
+          // appModel.myArchivedEvents = myEvents
+          //     .where((event) => BaseCommand()
+          //         .dateTimeFromMilliseconds(
+          //             event['event']['endTime'].toString())
+          //         .isBefore(DateTime.now()))
+          //     .toList();
 
-          appModel.myArchivedEvents.forEach((element) {
-            print("archived eventttt: " + element.toString());
-          });
-          //sort by createdAt
-          myEvents.sort((a, b) {
-            int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
-            int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
-            print("aCreatedAt: " + aCreatedAt.toString());
-            print("bCreatedAt: " + bCreatedAt.toString());
-            return bCreatedAt.compareTo(aCreatedAt);
-          });
-          appModel.myEvents = myEvents;
-          for (var event in myEvents) {
-            var createdAt = event["event"]["createdAt"];
-            print("createdAtt: $createdAt");
-          }
-          print("myEvents after sort: " + myEvents.length.toString());
-        }
+          // appModel.myArchivedEvents.forEach((element) {
+          //   print("archived eventttt: " + element.toString());
+          // });
+          // //sort by createdAt
+          // myEvents.sort((a, b) {
+          //   int aCreatedAt = int.tryParse(a["event"]["createdAt"]) ?? 0;
+          //   int bCreatedAt = int.tryParse(b["event"]["createdAt"]) ?? 0;
+          //   print("aCreatedAt: " + aCreatedAt.toString());
+          //   print("bCreatedAt: " + bCreatedAt.toString());
+          //   return bCreatedAt.compareTo(aCreatedAt);
+          // });
+          // appModel.myEvents = myEvents;
+          // for (var event in myEvents) {
+          //   var createdAt = event["event"]["createdAt"];
+          //   print("createdAtt: $createdAt");
+          // }
+          // print("myEvents after sort: " + myEvents.length.toString());
+        // }
       }
     }
     //get other type of events

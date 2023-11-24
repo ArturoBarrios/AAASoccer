@@ -32,8 +32,8 @@ const resolvers = {
             console.log("joinConditions: ", joinConditions._id);
 
             const eventUserParticipants = new EventUserParticipant({
-                userId: user._id,
-                roles: args.input.event.userParticipants.roles,
+                user: user._id,
+                roles: args.input.event.userParticipants[0].roles,
             });
             await eventUserParticipants.save();
             console.log("eventUserParticipants: ", eventUserParticipants._id);
@@ -181,15 +181,48 @@ const resolvers = {
             const events = await Event.find({
                 type: args.type,
                 startTime: { $gte: args.startTime}
-            });
+            }).populate([
+                {
+                    path: 'fieldLocations',
+                    populate: {
+                        path: 'location'
+                    },                                
+                },
+                {
+                    path: 'joinConditions'
+                },
+                {
+                    path: 'userParticipants',
+                    populate: {
+                        path: 'user'
+                    }
+                },
+                {
+                    path: 'price'
+                }
+            ]
+            
+            
+            );
 
+            
+            
             
 
             console.log("events: ", events);
-
-            // events.forEach(async (event) => {
-            //     await event.populate('fieldLocations.location');
-            // });
+            
+            events.forEach(event => {
+                event.userParticipants.forEach(userParticipant => {
+                    console.log("userParticipant: ", userParticipant);
+                    // Now, fieldLocation.location should be populated, and you can access its details
+                    // console.log("User details:", userParticipant['user']);
+                });
+                // event.fieldLocations.forEach(fieldLocation => {
+                //     console.log("fieldLocation:", fieldLocation);
+                //     // Now, fieldLocation.location should be populated, and you can access its details
+                //     console.log("Location details:", fieldLocation['location']);
+                // });
+            });
 
             
 

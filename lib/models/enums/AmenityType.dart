@@ -6,4 +6,5 @@ enum AmenityType {
   BUS,
   TURF,
   PINNIES,
+  PARKING
 }

@@ -59,6 +59,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
 
   @override
   Widget build(BuildContext context) {
+    print("in build tsn pickup card");
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 

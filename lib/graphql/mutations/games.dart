@@ -82,11 +82,9 @@ class GameMutations {
       mutation {
         createGame(input: {
           pickup: ${gameInput['pickup']}, 
-          event: {
-            
-            
+          event: {                        
               name: "${eventInput['name']}",
-              type: "GAME",
+              type: GAME,
               archived: false,
               amenities: "${eventInput['amenities']}",
               isMainEvent: ${eventInput['isMainEvent']},
@@ -100,18 +98,16 @@ class GameMutations {
                   amount: "${eventInput['price']}",              
                 }
               
-              joinConditions: {
+              joinConditions: 
                 
                   {
                     withRequest: ${eventInput['withRequest']},
-                    withPayment: ${eventInput['withPayment']},
-                    forEvent: true
+                    withPayment: ${eventInput['withPayment']},                    
                   }   
                   
                 
-              },
-              userParticipants: {
-                create:                  
+              
+              userParticipants: {                              
                   userId: "${userInput['_id']}"                                                              
                   roles: "${eventInput['roles']}"                                                                                              
               },                    
@@ -127,15 +123,22 @@ class GameMutations {
             
           } 
           }) {
-             _id
-              pickup
-              event{
-                   ${EventFragments().fullEvent()}
+            code
+            success
+            message
+            game{
+            pickup
+            event {
+              ${EventFragments().fullEvent()}
             }
+          }
+             
             
           }   
         }
         """;
+
+        print("createGame --> $createGame");
 
     return createGame;
   }

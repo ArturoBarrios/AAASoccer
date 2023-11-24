@@ -342,13 +342,13 @@ class _Home extends State<Home> {
       "startTime": xHoursAgoTimestamp,
       "eventFragment": EventFragments().userEventParticipants()
     };
-    Map<String, dynamic> getAllUserEventParticipantsResp = await EventCommand()
-        .getAllUserEventParticipants(allUserEventParticipantsInput);    
-    if (getAllUserEventParticipantsResp['success']) {
-      List<dynamic> allMyEvents = getAllUserEventParticipantsResp['data'];
-      EventCommand().setMyEvents(allMyEvents);
-      await RatingCommand().showRating(context);
-    }
+    // Map<String, dynamic> getAllUserEventParticipantsResp = await EventCommand()
+    //     .getAllUserEventParticipants(allUserEventParticipantsInput);    
+    // if (getAllUserEventParticipantsResp['success']) {
+    //   List<dynamic> allMyEvents = getAllUserEventParticipantsResp['data'];
+    //   EventCommand().setMyEvents(allMyEvents);
+    //   await RatingCommand().showRating(context);
+    // }
   }
 
   void changeFilterResult(final FilterResultModel? filterResult) {
