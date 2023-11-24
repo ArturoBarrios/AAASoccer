@@ -961,11 +961,13 @@ class EventCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> getEventsOfTypeNearLocation(EventType eventType,
-      String eventFragment, String startDateTimestamp) async {
+  Future<Map<String, dynamic>> getEventsOfTypeNearLocation(
+      dynamic getEventsOfTypeNearLocation,
+      String eventFragment) async {
     print("getEventsOfTypeNearLocation()");
-    print("eventType: " + eventType.toString());
-    print("startDateTimestamp: " + startDateTimestamp.toString());
+    print("eventFragment: " + eventFragment.toString());
+    print("eventType: " + getEventsOfTypeNearLocation['type'].toString());
+    print("startDateTimestamp: " + getEventsOfTypeNearLocation['startTime'].toString());
     Map<String, dynamic> getGamesNearLocationResp = {
       "success": false,
       "message": "Default Error",
@@ -973,29 +975,41 @@ class EventCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': EventQueries()
-              .allEventsOfType(startDateTimestamp, eventType, eventFragment),
+          'query': EventQueries().allEventsInAreaOfType(
+            getEventsOfTypeNearLocation,
+            eventFragment,
+          )
         }),
       );
 
-      print("getEventsOfTypeNearLocation response body: ");
-      print(jsonDecode(response.body));
+      print("response: ");
 
-      if (response.statusCode == 200) {
-        dynamic allEvents =
-            jsonDecode(response.body)['data']['allEventsOfType'];
-        print("allEventsOfType length: " + allEvents.length.toString());
-        getGamesNearLocationResp["success"] = true;
-        getGamesNearLocationResp["message"] = "events Retrieved";
-        getGamesNearLocationResp["data"] = allEvents;
-        return getGamesNearLocationResp;
+      print(jsonDecode(response.body));
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
+        getGamesNearLocationResp["success"] = false;
+        getGamesNearLocationResp["message"] = "no user found";
+      } else {
+        
+        final result = jsonDecode(response.body)['data']['allEventsInAreaOfType'];
+        getGamesNearLocationResp["data"] = null;
+        if (result['code'] != 200) {
+          getGamesNearLocationResp["success"] = true;
+          getGamesNearLocationResp["message"] = "user found";
+          getGamesNearLocationResp["data"] = result['events'];
+        }
+        else{
+          getGamesNearLocationResp["success"] = false;
+          getGamesNearLocationResp["message"] = "no user found";
+        }
       }
+    
+    
     } on Exception catch (e) {
       print('Mutation failed: $e');
     }
@@ -1246,10 +1260,11 @@ class EventCommand extends BaseCommand {
       dynamic event = events[0];
 
       print("getEventGame(): " + event.toString());
-      if (event['fieldLocations']['data'].length > 0) {
+      print("event['fieldLocations']: " + event['fieldLocations'].toString());
+      if (event['fieldLocations'].length > 0) {
         List<Placemark> placemarks = await placemarkFromCoordinates(
-          event['fieldLocations']['data'][0]['location']['latitude'],
-          event['fieldLocations']['data'][0]['location']['longitude'],
+          event['fieldLocations']['location']['latitude'],
+          event['fieldLocations']['location']['longitude'],
         );
         print("placemarkssss: " + placemarks[0].toString());
         print("placemarkssss: " + placemarks[0].locality.toString());
@@ -1327,8 +1342,8 @@ class EventCommand extends BaseCommand {
       print("isMyEventResp['roles']: " + isMyEventResp['roles'].toString());
       isMyEventResp['isMine'] = isMyEventResp['roles'].contains("ORGANIZER");
       isMyEventResp['isMember'] = isMyEventResp['roles'].contains("PLAYER");
-      isMyEventResp['chats'] = isMyEventResp['mainEvent']['chats']['data'];
-      isMyEventResp['teams'] = isMyEventResp['mainEvent']['teams']['data'];
+      // isMyEventResp['chats'] = isMyEventResp['mainEvent']['chats']['data'];
+      // isMyEventResp['teams'] = isMyEventResp['mainEvent']['teams']['data'];
       isMyEventResp['startTime'] = isMyEventResp['mainEvent']['startTime'];
       isMyEventResp['endTime'] = isMyEventResp['mainEvent']['endTime'];
       isMyEventResp['formattedEventTime'] = BaseCommand().formatEventTime(
@@ -1365,22 +1380,23 @@ class EventCommand extends BaseCommand {
           if (isMyEventResp['payments'][i]['isPlayerPayment']) {
             tempAmountPaid +=
                 double.parse(isMyEventResp['payments'][i]['amount']);
-          } else if (isMyEventResp['payments'][i]['isTeamPayment']) {
-            tempTeamAmountPaid +=
-                double.parse(isMyEventResp['payments'][i]['amount']);
-          }
+          } 
+          // else if (isMyEventResp['payments'][i]['isTeamPayment']) {
+          //   tempTeamAmountPaid +=
+          //       double.parse(isMyEventResp['payments'][i]['amount']);
+          // }
         }
       }
       isMyEventResp['amountPaid'] = (tempAmountPaid).toStringAsFixed(2);
-      isMyEventResp['teamAmountPaid'] = (tempTeamAmountPaid).toStringAsFixed(2);
+      // isMyEventResp['teamAmountPaid'] = (tempTeamAmountPaid).toStringAsFixed(2);
       isMyEventResp['amountRemaining'] =
           (double.parse(isMyEventResp['mainEvent']['price']['amount']) -
                   tempAmountPaid)
               .toStringAsFixed(2);
-      isMyEventResp['teamAmountRemaining'] =
-          (double.parse(isMyEventResp['mainEvent']['price']['teamAmount']) -
-                  tempTeamAmountPaid)
-              .toStringAsFixed(2);
+      // isMyEventResp['teamAmountRemaining'] =
+      //     (double.parse(isMyEventResp['mainEvent']['price']['teamAmount']) -
+      //             tempTeamAmountPaid)
+      //         .toStringAsFixed(2);
 
       // if (addToEventPageModel) {
             
@@ -1429,21 +1445,21 @@ class EventCommand extends BaseCommand {
         eventPageInstance.isMember = isMyEventResp['isMember'];
         eventPageInstance.amountRemaining = isMyEventResp['amountRemaining'];
         eventPageInstance.amountPaid = isMyEventResp['amountPaid'];
-        eventPageInstance.teamAmountRemaining =
-            isMyEventResp['teamAmountRemaining'];
-        eventPageInstance.teamAmountPaid = isMyEventResp['teamAmountPaid'];
+        // eventPageInstance.teamAmountRemaining =
+        //     isMyEventResp['teamAmountRemaining'];
+        // eventPageInstance.teamAmountPaid = isMyEventResp['teamAmountPaid'];
         eventPageInstance.userParticipants = isMyEventResp['userParticipants'];
-        eventPageInstance.teams = isMyEventResp['teams'];
+        // eventPageInstance.teams = isMyEventResp['teams'];
         eventPageInstance.players = isMyEventResp['players'];
         eventPageInstance.organizers = isMyEventResp['organizers'];
-        eventPageInstance.chats = isMyEventResp['chats'];
+        // eventPageInstance.chats = isMyEventResp['chats'];
         eventPageInstance.payments = isMyEventResp['payments'];
         eventPageInstance.fieldLocations = isMyEventResp['fieldLocations'];
         eventPageInstance.price = isMyEventResp['price'];
         eventPageInstance.eventRequestJoin = isMyEventResp['eventRequestJoin'];
         eventPageInstance.eventPaymentJoin = isMyEventResp['eventPaymentJoin'];
-        eventPageInstance.teamRequestJoin = isMyEventResp['teamRequestJoin'];
-        eventPageInstance.teamPaymentJoin = isMyEventResp['teamPaymentJoin'];
+        // eventPageInstance.teamRequestJoin = isMyEventResp['teamRequestJoin'];
+        // eventPageInstance.teamPaymentJoin = isMyEventResp['teamPaymentJoin'];
         eventPageInstance.tournament = isMyEventResp['tournament'];
         eventPageInstance.groupStage = isMyEventResp['groupStage'];
         eventPageInstance.tournamentStage = isMyEventResp['tournamentStage'];
@@ -1618,9 +1634,20 @@ class EventCommand extends BaseCommand {
     }
     //get other type of events
     else {
+      dynamic getEventsOfAllTypesNearLocationInput = {
+        "type": EventType.GAME,
+        "latitude": appModel.currentUser['location']['latitude'],
+        "longitude": appModel.currentUser['location']['longitude'],
+        "radius": 100,
+        "startTime": afterTimestamp,
+      };
       Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
           await EventCommand().getEventsOfTypeNearLocation(
-              EventType.GAME, EventFragments().fullEvent(), afterTimestamp);
+            getEventsOfAllTypesNearLocationInput,
+            EventFragments().fullEvent()
+              // EventType.GAME, EventFragments().fullEvent(), afterTimestamp
+
+      );
 
       print("getEventsNearLocationResp: " +
           getEventsOfAllTypesNearLocationResp.toString());

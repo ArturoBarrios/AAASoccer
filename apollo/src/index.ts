@@ -29,6 +29,13 @@ const typeDefs = `#graphql
     message: String!
     user: User
   }
+  
+  type EventsMutationResponse implements QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    events: [Event]
+  }
 
 
 type CreateGameMutationResponse implements MutationResponse {
@@ -70,6 +77,7 @@ type Query {
   getUserByPhone(phone: String): User
   getUserByUsername(username: String): User    
   allSubscriptionTypes: [SubscriptionType!]
+  allEventsInAreaOfType(type: EventType, latitude: Float, longitude: Float, radius: Int, startTime: String): EventsMutationResponse
   }
 
 

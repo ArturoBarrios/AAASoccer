@@ -15,6 +15,33 @@ class EventQueries {
 
     return getEvents;
   }
+  
+  String allEventsInAreaOfType(
+      dynamic getEventsOfTypeNearLocation,
+      String eventFragment) {
+    String enumValue = getEventsOfTypeNearLocation['type'].toString().split('.').last;
+    String getEvents = """
+    query AllEventsOfType {
+      allEventsInAreaOfType(
+        type: GAME,
+        latitude: ${getEventsOfTypeNearLocation['latitude']}
+        longitude: ${getEventsOfTypeNearLocation['longitude']}
+        radius: 100
+        startTime: "122656565"
+        ) {    
+          code
+          success
+          message     
+          events{
+            ${eventFragment}
+
+          }         
+      }
+    }
+  """;
+
+    return getEvents;
+  }
 
   String allEventsOfAllTypes(String startTime, String eventFragment) {
     String getEvents = """

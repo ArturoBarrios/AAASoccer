@@ -86,7 +86,7 @@ class GameMutations {
             
             
               name: "${eventInput['name']}",
-              type: GAME,
+              type: "GAME",
               archived: false,
               amenities: "${eventInput['amenities']}",
               isMainEvent: ${eventInput['isMainEvent']},

@@ -10,8 +10,13 @@ import User from "./User.js";
 
 const resolvers = {
     Mutation: {
-        createGame: async (parent, args, context, info) => {
-            // console.log("createGame args: ", args.input.event);        
+        createGame: async (parent, args, context, info) => {        
+            console.log("createGame: ");
+            
+            console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
+            //get user
+            const user  = await User.findById(args.input.event.userParticipants[0].userId);
+            console.log("user retrieved from userId: "+ user.toString());
 
             const createdPrice = new Price({
                 amount: args.input.event.price.amount,
@@ -27,23 +32,27 @@ const resolvers = {
             console.log("joinConditions: ", joinConditions._id);
 
             const eventUserParticipants = new EventUserParticipant({
-                userId: args.input.event.eventUserParticipants.userId,
-                roles: args.input.event.eventUserParticipants.roles,
+                userId: user._id,
+                roles: args.input.event.userParticipants.roles,
             });
             await eventUserParticipants.save();
             console.log("eventUserParticipants: ", eventUserParticipants._id);
 
+            await user.eventUserParticipants.push(eventUserParticipants._id);
+            await user.save();
+            
+            console.log("args.input.event.fieldLocations.location: ", args.input.event.fieldLocations[0].location);
             const location = new Location({
-                name: args.input.event.fieldLocations.location.name,
-                address: args.input.event.fieldLocations.location.address,
-                latitude: args.input.event.fieldLocations.location.latitude,
-                longitude: args.input.event.fieldLocations.location.longitude,
+                name: args.input.event.fieldLocations[0].location.name,
+                address: args.input.event.fieldLocations[0].location.address,
+                latitude: args.input.event.fieldLocations[0].location.latitude,
+                longitude: args.input.event.fieldLocations[0].location.longitude,
             });
             await location.save();
             console.log("location: ", location._id);
 
             const fieldLocations = new FieldLocation({
-                isMainField: args.input.event.fieldLocations.isMainField,
+                isMainField: args.input.event.fieldLocations[0].isMainField,
                 location: location._id,
             });
             await fieldLocations.save();
@@ -63,7 +72,7 @@ const resolvers = {
                 capacity: args.input.event.capacity,
                 price: createdPrice._id,
                 joinConditions: joinConditions._id,
-                eventUserParticipants: eventUserParticipants._id,
+                userParticipants: [eventUserParticipants._id],
                 fieldLocations: fieldLocations._id,
             });
             await createdEvent.save();
@@ -160,6 +169,38 @@ const resolvers = {
         },
     },
     Query: {
+        allEventsInAreaOfType : async (parent, args, context, info) => {
+            // const events = await Event.find({ type: args.type });
+            console.log("allEventsInAreaOfType");
+            console.log("type: ", args.type);
+            console.log("latitude: ", args.latitude);
+            console.log("longitude: ", args.longitude);
+            console.log("radius: ", args.radius);
+            console.log("startTime: ", args.startTime);
+
+            const events = await Event.find({
+                type: args.type,
+                startTime: { $gte: args.startTime}
+            });
+
+            
+
+            console.log("events: ", events);
+
+            // events.forEach(async (event) => {
+            //     await event.populate('fieldLocations.location');
+            // });
+
+            
+
+
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully updated",
+                events: events
+            };
+        },
         allGames: async (parent, args, context, info) => {
             const games = await Game.find();
 
@@ -176,6 +217,7 @@ const resolvers = {
         },
         findUserByEmail: async (parent, args, context, info) => {
             const user = await User.findOne({ email: args.email });            
+            await user.populate('location');
             console.log("user: ", user);
             
             return {
@@ -187,6 +229,7 @@ const resolvers = {
         },
         findUserById: async (parent, args, context, info) => {
             const user = await User.findById(args._id);            
+            await user.populate('location');
             console.log("user: ", user);
             
             return {

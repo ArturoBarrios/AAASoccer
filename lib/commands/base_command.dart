@@ -585,11 +585,12 @@ List<AmenityType> parseAmenities(String amenitiesString) {
         }
         //appModel.currentUser is not empty: 
         else{
+          print("niceeeeeeeeerrr");
           setupUserResp['success'] = true;
             setupUserResp['data'] = appModel.currentUser;
-          appModel.isSuperUser = appModel.currentUser['isSuperUser'];
           await OneSignalService().login(appModel.currentUser['_id']);
         }
+          appModel.isSuperUser = appModel.currentUser['isSuperUser'];
       } else {
         print("is guest");
       }
@@ -618,22 +619,20 @@ List<AmenityType> parseAmenities(String amenitiesString) {
       // if (!appModel.isGuest) {
       //   await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
       // } else {
-      await HomePageCommand().eventTypeTapped(Constants.PICKUP);
-      // }
-
-      print("setup Events done");
-
-      //setup players
-      //todo
-
-      //,teams, players near me data.
-      //get location and update user location
       Position userPosition = await GeoLocationCommand().determinePosition();
       LocationCommand().setCurrentPosition(userPosition);
       print("userPosition: $userPosition");
       appModel.currentUser['currentPosition'] = userPosition;
       await GeoLocationCommand()
           .setUserAddress(userPosition.latitude, userPosition.longitude);
+      await HomePageCommand().eventTypeTapped(Constants.PICKUP);
+      // }
+
+      print("setup Events done");
+      
+
+      //,teams, players near me data.
+      //get location and update user location
       print(
           "check appModel after setting userPosition: ${appModel.currentUser['currentPosition']}");
       //assume you have the latest events

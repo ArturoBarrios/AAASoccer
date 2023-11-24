@@ -180,6 +180,15 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  int _eventRadius = 100;
+  int get eventRadius => _eventRadius;
+  set eventRadius(int eventRadius) {
+    _eventRadius = eventRadius;
+    notifyListeners();
+  }
+
+
+
   Position _currentPosition = const Position(
     longitude: 0,
     latitude: 0,

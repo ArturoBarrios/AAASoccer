@@ -10,12 +10,16 @@ const eventSchema = new mongoose.Schema({
     joinConditions: [{ type: Schema.Types.ObjectId, ref: 'JoinConditions' }],
     isMainEvent: Boolean,
     amenities: String,
-    userParticipation: [{ type: Schema.Types.ObjectId, ref: 'EventUserParticipant' }],
+    userParticipants: [{ type: Schema.Types.ObjectId, ref: 'EventUserParticipant' }],
     price: { type: Schema.Types.ObjectId, ref: 'Price' },
     requests: [{ type: Schema.Types.ObjectId, ref: 'Request' }],
     images: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
     fieldLocations: [{ type: Schema.Types.ObjectId, ref: 'FieldLocation' }],
-    type: Object.values(EventType),
+    type: {
+        type: String,
+        enum: ['TRYOUT', 'GAME', 'LEAGUE', 'TOURNAMENT', 'TRAINING'],
+        required: true
+    },
     payments: [{ type: Schema.Types.ObjectId, ref: 'Payment' }],
     chats: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
     users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
