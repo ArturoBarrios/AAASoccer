@@ -103,10 +103,20 @@ class _CardFormScreenState extends State<CardFormScreen> {
       print("now addEvent");
       if (widget.paymentDetails['objectType'] == Constants.EVENT) {
         dynamic addEventResp = await EventCommand().addUserToEvent(
+          //objectToPurchase is mainEvent
             widget.paymentDetails['objectToPurchase'],
             currentUser,
             widget.paymentDetails['roles']);
-        if (addEventResp['data'] != null) {
+        if (addEventResp['success']) {
+          dynamic eventToAdd = addEventResp['data'];
+          //add user to event in page models
+          EventCommand().updateViewModelsWithEvent(eventToAdd, true);
+          EventCommand().addUserToEventPageModel(eventToAdd, currentUser);
+          setState(() {
+            
+          });
+
+
           paymentInput['eventId'] =
               widget.paymentDetails['objectToPurchase']['_id'];
           print("paymentInput: " + paymentInput.toString());
@@ -187,8 +197,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 //   context,
                 //   MaterialPageRoute(builder: (context) => Home()),
                 // );
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.pop(context);                
               },
               child: const Text('Go Home')),
         ],

@@ -9,6 +9,7 @@ import Player from "./Player.js";
 import User from "./User.js";
 import StripeCustomer from "./StripeCustomer.js";
 import Payment from "./Payment.js";
+import { print } from "graphql";
 
 const resolvers = {
     Mutation: {
@@ -108,14 +109,18 @@ const resolvers = {
 
             //update
             const user = await User.findById(args.userId);
-            const userParticipant = new EventUserParticipant({
+            const userEventParticipant = new EventUserParticipant({
                 user: user._id,
                 roles: args.roles,
             });
-            await userParticipant.save();
             const event = await Event.findById(args.eventId);
-            await event.userParticipants.push(userParticipant._id);
+            userEventParticipant.event = event._id;
+            await userEventParticipant.save();            
+            await event.userParticipants.push(userEventParticipant._id);
             await event.save();
+
+            await user.eventUserParticipants.push(userEventParticipant._id);
+            await user.save();
 
             event.populate([
                 {
@@ -165,6 +170,24 @@ const resolvers = {
                 success: true,
                 message: "User email was successfully updated",
                 user: user
+            };
+        },
+        deleteEventUserParticipant: async (parent, args, context, info) => {
+            console.log("deleteEventUserParticipant");
+
+            //delete
+            const eventUserParticipant = await EventUserParticipant.findById(args._id);                        
+            await eventUserParticipant.deleteOne();
+
+
+
+
+            
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",                
             };
         },
         createStripeCustomer: async (parent, args, context, info) => {

@@ -80,12 +80,19 @@ type AllUserEventParticipantResponse implements MutationResponse {
   eventUserParticipants: [EventUserParticipant]
 }
 
+type EventUserParticipantMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!  
+}
+
 type Mutation {
   createGame(input: GameInput): CreateGameMutationResponse
   createPlayer(input: PlayerInput): CreatePlayerMutationResponse
   createStripeCustomer(customerId: String, userId: String): StripeCustomerMutationResponse
   updateUserOnboarding(_id: String, onboarded: Boolean): UserResponse
   addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
+  deleteEventUserParticipant(_id: String): EventUserParticipantMutationResponse
   createPayment(input: PaymentInput): PaymentMutationResponse
 
 }

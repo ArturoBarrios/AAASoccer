@@ -98,10 +98,12 @@ class EventMutations {
     String deleteEventUserParticipantString = """      
       mutation {
         deleteEventUserParticipant(
-          id: ${event['eventUserParticipantId']}
+          _id: "${event['eventUserParticipantId']}"
         )
         {
-          _id
+          code
+          success
+          message
               
     				  
           }

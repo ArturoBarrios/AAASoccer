@@ -219,15 +219,14 @@ class EventCommand extends BaseCommand {
     };
     try {
       //get userParticipant where user is the user
-      dynamic userParticipant = eventInput['userParticipants']['data']
+      dynamic userParticipant = eventInput['userParticipants']
           .firstWhere((element) => element['user']['_id'] == userInput['_id']);
       print("userParticipant: $userParticipant");
       eventInput['eventUserParticipantId'] = userParticipant['_id'];
 
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()+""),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -239,12 +238,17 @@ class EventCommand extends BaseCommand {
       print(jsonDecode(response.body));
       
       if(response.statusCode == 200){
-        removeUserFromEventResponse["success"] = true;
-        removeUserFromEventResponse["message"] = "User removed from event";
-        removeUserFromEventResponse["data"] =
-            jsonDecode(response.body)['data']['deleteEventUserParticipant'];
-
+        dynamic result = jsonDecode(response.body)['data']['deleteEventUserParticipant'];
+        if(result['success']){
+          removeUserFromEventResponse["success"] = true;
+          removeUserFromEventResponse["message"] = "User removed from event";
+          // removeUserFromEventResponse["data"] = result['event'];             
+        }
       }
+        
+
+
+      
 
       return removeUserFromEventResponse;
     } on ApiException catch (e) {
@@ -293,9 +297,12 @@ class EventCommand extends BaseCommand {
           final result = jsonDecode(response.body)['data']['addUserToEvent'];
           if(result['success']){
             dynamic eventToAdd = result['event'];
-            appModel.myEvents.add(eventToAdd);
+            // appModel.myEvents.add(eventToAdd);
             // addUserToEventResponse['data'] = result['event'];              
             // await addEventToMyEvents(result['event']);
+            addUserToEventResponse['success'] = true;
+            addUserToEventResponse['message'] = "user added to event";
+            addUserToEventResponse['data'] = eventToAdd;
 
           }
           else{
@@ -1733,10 +1740,23 @@ class EventCommand extends BaseCommand {
         print("found eventttt to update");
         eventsPageModel.eventsPages[i].numberOfParticipants -= 1;
         eventsPageModel.eventsPages[i].isMine = false;
-        print("eventsPageModel.eventsPages[i].capacity" + eventsPageModel.eventsPages[i].capacity.toString());
-        // eventsPageModel.eventsPageModel[i].mainEvent = event;
-        // eventsPageModel.eventsPageModel[i].objectImageInput =
-        //     await loadEventMainImage(event, eventsPageModel.eventsPageModel[i].isMine);
+        print("eventsPageModel.eventsPages[i].capacity" + eventsPageModel.eventsPages[i].capacity.toString());        
+      }
+    }
+
+  }
+
+  void addUserToEventPageModel(dynamic event, dynamic user) {
+    //update eventPageModel in eventPagesModel        
+    print("lengthhhh: "+ eventsPageModel.eventsPages.length.toString());
+    // eventsPageModel.capacity +=1;
+    for (int i = 0; i < eventsPageModel.eventsPages.length; i++) {
+      if (eventsPageModel.eventsPages[i].mainEvent['_id'] ==
+          event['_id']) {
+        print("found eventttt to update");
+        eventsPageModel.eventsPages[i].numberOfParticipants += 1;
+        eventsPageModel.eventsPages[i].isMine = true;
+        print("eventsPageModel.eventsPages[i].capacity" + eventsPageModel.eventsPages[i].capacity.toString());        
       }
     }
 

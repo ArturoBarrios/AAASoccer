@@ -87,7 +87,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
   void goToEvent() {
     print("goToEvent");
-    Navigator.pop(context);
+    // Navigator.pop(context);
     // BaseCommand().popToHome(context);
   }
 
@@ -150,7 +150,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
       List<String> rolesToRemove, List<dynamic> existingRoles) async {
     List<dynamic> updatedRoles = [];
     // existingRoles.forEach((element) {
-    //   if (!rolesToRemove.contains(element)) {
+    //   if (!rolesToRemove.contains(element)) { 
     //     updatedRoles.add(element);
     //   }
     // });
@@ -162,12 +162,12 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
           await EventCommand().removeUserFromEvent(event, userObject);
       if (removeUserFromEventResp['success']) {
         print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
-        dynamic eventToRemove = removeUserFromEventResp['data'];
+        // dynamic eventToRemove = removeUserFromEventResp['data'];
 
-        EventCommand().updateViewModelsWithEvent(eventToRemove, false);
-        setState(() {
+        EventCommand().updateViewModelsWithEvent(event, false);
+        // setState(() {
           EventCommand().removeUserFromEventPageModel(event, userObject);
-        });
+        // });
 
       }
     } else {
