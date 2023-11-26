@@ -36,12 +36,12 @@ class PaymentCommand extends BaseCommand {
       "message": "Default Error",
       "data": null
     };
-    if (appModel.currentUser['stripeCustomers']['data'].length == 0) {
+    if (appModel.currentUser['stripeCustomers'].length == 0) {
       return getCustomerPaymentMethodsResultResp;
     }
     try {
       Map<String, String> queryParams = {
-        'customerId': appModel.currentUser['stripeCustomers']['data'][0]
+        'customerId': appModel.currentUser['stripeCustomers'][0]
                 ['customerId']
             .toString(),
       };
@@ -55,7 +55,7 @@ class PaymentCommand extends BaseCommand {
         print(
             "listPaymentMethodsResp['paymentMethods']: ${listPaymentMethodsResp['paymentMethods']}");
         dynamic listPaymentMethods =
-            listPaymentMethodsResp['paymentMethods']['data'];
+            listPaymentMethodsResp['paymentMethods'];
         if (listPaymentMethods.length > 0) {
           getCustomerPaymentMethodsResultResp['success'] = true;
           getCustomerPaymentMethodsResultResp['message'] = "Success";
@@ -79,7 +79,7 @@ class PaymentCommand extends BaseCommand {
   Future<Map<String, dynamic>> getCustomerDetails() async {
     print("getCustomerDetailssss");
     print(
-        "appModel.currentUser['stripeCustomers']['data'][0]['customerId']: ${appModel.currentUser['stripeCustomers']['data'][0]['customerId']}");
+        "appModel.currentUser['stripeCustomers'][0]['customerId']: ${appModel.currentUser['stripeCustomers'][0]['customerId']}");
     Map<String, dynamic> getCustomersResp = {
       "success": false,
       "message": "Default Error",
@@ -88,7 +88,7 @@ class PaymentCommand extends BaseCommand {
 
     try {
       Map<String, String> queryParams = {
-        'customerId': appModel.currentUser['stripeCustomers']['data'][0]
+        'customerId': appModel.currentUser['stripeCustomers'][0]
                 ['customerId']
             .toString(),
       };
@@ -249,9 +249,9 @@ class PaymentCommand extends BaseCommand {
   bool doesCustomerExist(String customerId) {
     print("checkIfCustomerExists");
     print(
-        "stripeCustomers length: ${appModel.currentUser['stripeCustomers']['data'].length}");
+        "stripeCustomers length: ${appModel.currentUser['stripeCustomers'].length}");
     bool customerExists = false;
-    dynamic customers = appModel.currentUser['stripeCustomers']['data'];
+    dynamic customers = appModel.currentUser['stripeCustomers'];
     for (var i = 0; i < customers.length && !customerExists; i++) {
       if (customers[i]['customerId'] == customerId) {
         customerExists = true;

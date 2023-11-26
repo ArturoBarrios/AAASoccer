@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/models/button_model.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
+import '../../commands/base_command.dart';
+import '../../components/Buttons/basic_elevated_button.dart';
 import '../../components/Dialogues/bug_feedback_dialogue.dart';
 import '../../components/custom_tile_list.dart';
 import '../../components/custom_tile_list_with_title.dart';
+import '../../components/headers.dart';
 import '../../components/models/tile_list_model.dart';
+import '../../styles/font_sizes.dart';
 import '../home.dart';
 
 class SettingsView extends StatelessWidget {
@@ -21,44 +25,31 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Stack(
-          children: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () => onTapHome(context),
-                  icon: const Icon(
-                    Icons.home,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        actions: [],
-      ),
+      appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {},
+              ),
+            ).getMainHeader(context),
       body: Stack(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                color: Colors.blue,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  children: const [
-                    SizedBox(width: 20),
-                    Text(
-                      'Settings',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
+              // Container(
+              //   color: Colors.blue,
+              //   padding: const EdgeInsets.symmetric(vertical: 20),
+              //   child: Row(
+              //     children: const [
+              //       SizedBox(width: 20),
+              //       Text(
+              //         'Settings',
+              //         style:
+              //             TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -117,24 +108,35 @@ class SettingsView extends StatelessWidget {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: CustomTileList(
-                tileList: [
-                  ButtonModel(
-                    text: 'Delete',
-                    prefixIconData: Icons.delete,
-                    backgroundColor: AppColors.redColorShade200,
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
-          )
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20),
+          //   child: Align(
+          //     alignment: Alignment.bottomCenter,
+          //     child: CustomTileList(
+          //       tileList: [
+          //         ButtonModel(
+          //           text: 'Delete',
+          //           prefixIconData: Icons.delete,
+          //           backgroundColor: AppColors.redColorShade200,
+          //           onTap: () {},
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // )
         ],
       ),
+      bottomNavigationBar: Padding(
+              padding: const EdgeInsets.only(
+                  top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
+              child:BasicElevatedButton(
+    backgroundColor: AppColors.tsnRed,
+    text: "Sign Out",
+    fontSize: FontSizes.s(context),
+    onPressed: () async {
+      BaseCommand().delete(context);
+    },
+  ))
     );
   }
 }

@@ -55,6 +55,7 @@ class ProfilePageCommand extends BaseCommand {
   }
   
   Future<void> setEvents() async{
+    print("setEvents: " + profilePageModel.eventUserParticipants.toString());
     profilePageModel.events = profilePageModel.eventUserParticipants
           .where((participantMap) =>
               participantMap.containsKey('event') &&

@@ -35,7 +35,6 @@ import 'models/events_model.dart';
 import 'models/componentModels/payment_model.dart';
 import 'models/requests_model.dart';
 import 'models/pageModels/requests_page_model.dart';
-import 'services/fauna_db_services.dart';
 import 'services/geolocation_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home.dart';
@@ -54,21 +53,19 @@ void main() async {
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
 
-  dynamic createFaunaClientResp = await FaunaDBServices().createFaunaClient();
-  ValueNotifier<GraphQLClient> client = createFaunaClientResp['client'];
+    
   await NetworkServices().enableLocationService();
   await OneSignalService().configureOneSignal();
   await StripeServices().configureStripeService();
   print("===============================================");  
   
 
-  runApp(MyApp(client: client));
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  final ValueNotifier<GraphQLClient> client;
+class MyApp extends StatefulWidget {  
 
-  const MyApp({Key? key, required this.client}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -78,6 +75,7 @@ class _MyAppState extends State<MyApp> {
   // final amplifyAuthService = AmplifyAuthService();
   final formKey = GlobalKey<FormState>();
   final navigatorKey = GlobalKey<NavigatorState>();
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -210,6 +208,7 @@ class _MyAppState extends State<MyApp> {
     try {
       print("signUp");
       Map<String, dynamic> userInput = {
+        "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "username": usernameController.text.trim(),
         "phone": phoneNumber!.phoneNumber,
@@ -335,6 +334,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext _) {
+    print("build main.dart");
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (c) => AppModel()),
@@ -349,8 +349,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (c) => ChatPageModel()),
         ChangeNotifierProvider(create: (c) => HomePageModel()),
         ChangeNotifierProvider(create: (c) => PaymentModel()),
-        ChangeNotifierProvider(create: (c) => EventsPageModel()),
-        Provider(create: (c) => FaunaDBServices()),
+        ChangeNotifierProvider(create: (c) => EventsPageModel()),        
         Provider(create: (c) => GeoLocationServices()),
       ],
       child: Builder(
@@ -407,7 +406,7 @@ class _MyAppState extends State<MyApp> {
                               //     fontWeight: FontWeight.bold,
                               //   ),
                               // ),
-                              // const SizedBox(height: 50),
+                              // const SizedBox(height: 50),                              
                               TextField(
                                 controller: emailController,
                                 style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
@@ -556,6 +555,22 @@ class _MyAppState extends State<MyApp> {
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 20),
+                            TextField(
+                                controller: nameController,
+                                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                                keyboardType: TextInputType.name,
+                                decoration: InputDecoration(
+                                  hintText: 'Name',
+                                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
+                                  filled: true,
+                                  fillColor: AppColors.fieldFillDark,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
                             const SizedBox(height: 20),
                             TextFormField(
                               style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
@@ -766,7 +781,7 @@ class _MyAppState extends State<MyApp> {
               navigatorKey: navigatorKey,
               builder: Authenticator.builder(),
               home: userConditionsMet && onboarded
-                  ? AppScaffold(client: widget.client) :
+                  ? AppScaffold() :
                      (userConditionsMet && !onboarded) ?        
                       OnboardingView() : SplashScreen(),
               routes: {
@@ -785,9 +800,9 @@ class _MyAppState extends State<MyApp> {
 }
 
 class AppScaffold extends StatefulWidget {
-  const AppScaffold({Key? key, required this.client}) : super(key: key);
+  const AppScaffold({Key? key}) : super(key: key);
 
-  final dynamic client;
+  
 
   @override
   State<AppScaffold> createState() => _AppScaffoldState();

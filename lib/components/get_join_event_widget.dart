@@ -255,13 +255,14 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
   Widget getJoinEventWidget(BuildContext context) {
     print("getJoinEventWidget()");
+    print("mainEventttttt: " + widget.mainEvent.toString());
+    print("testtttttt: "+ widget.eventPaymentJoin!.toString());
     // dynamic eventJoinCondition =
     //     getEventJoinConditions(event['joinConditions']['data']);
     // print("eventJoinCondition: " + eventJoinCondition.toString());
 
     print("rolesss: " + widget.roles.toString());
-    List<dynamic> existingRoles = widget.roles;
-    print("aaaaa");
+    List<dynamic> existingRoles = widget.roles;    
 
     //expired
     // Assuming widget.mainEvent['endTime'] is a String representing milliseconds since Epoch

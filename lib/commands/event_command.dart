@@ -194,7 +194,7 @@ class EventCommand extends BaseCommand {
     print("checkIfUpdateRole");
     dynamic checkIfUpdateRoleResp = {"updateRole": false, "eventRequestId": ""};
     print("event: $event");
-    userObject['eventUserParticipants']['data']
+    userObject['eventUserParticipants']
         .forEach((eventUserParticipantElement) {
       if (eventUserParticipantElement['event']['_id'] == event['_id']) {
         //update role
@@ -265,10 +265,10 @@ class EventCommand extends BaseCommand {
       dynamic userObject = UserCommand().getAppModelUser();
       dynamic updateRoleResp =
           EventCommand().checkIfUpdateRole(eventInput, userObject);
-      if (updateRoleResp['updateRole']) {
-        await updateUserRolesInEvent(eventInput, userInput, roles,
-            updateRoleResp['eventUserParticipant']);
-      } else {
+      // if (updateRoleResp['updateRole']) {
+      //   await updateUserRolesInEvent(eventInput, userInput, roles,
+      //       updateRoleResp['eventUserParticipant']);
+      // } else {
         print("will add user to event with input: " +
             eventInput.toString() +
             "\n" +
@@ -276,9 +276,8 @@ class EventCommand extends BaseCommand {
             "\n" +
             roles.toString());
         http.Response response = await http.post(
-          Uri.parse('https://graphql.fauna.com/graphql'),
-          headers: <String, String>{
-            'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+          headers: <String, String>{            
             'Content-Type': 'application/json'
           },
           body: jsonEncode(<String, String>{
@@ -289,12 +288,23 @@ class EventCommand extends BaseCommand {
 
         print("response body: ");
         print(jsonDecode(response.body));
-        addUserToEventResponse['data'] =
-            jsonDecode(response.body)['data']['updateEvent'];
 
-        await addEventToMyEvents(
-            jsonDecode(response.body)['data']['updateEvent']);
-      }
+        if(response.statusCode == 200){
+          final result = jsonDecode(response.body)['data']['addUserToEvent'];
+          if(result['success']){
+            dynamic eventToAdd = result['event'];
+            appModel.myEvents.add(eventToAdd);
+            // addUserToEventResponse['data'] = result['event'];              
+            // await addEventToMyEvents(result['event']);
+
+          }
+          else{
+            addUserToEventResponse['success'] = false;
+            addUserToEventResponse['message'] = "failed to add user to event";
+          }
+
+        }
+      
 
       return addUserToEventResponse;
     } on ApiException catch (e) {
@@ -932,9 +942,8 @@ class EventCommand extends BaseCommand {
         allUserEventParticipantsInput.toString());
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()+""),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -946,12 +955,25 @@ class EventCommand extends BaseCommand {
       print("getUserEventParticipants response body: " +
           jsonDecode(response.body).toString());
       if (response.statusCode == 200) {
-        dynamic allEvents = jsonDecode(response.body)['data']
-            ['allCurrentUserEventParticipants'];
-        print("allEventsOfType length: " + allEvents.length.toString());
-        getUserEventParticipantsResponse["success"] = true;
-        getUserEventParticipantsResponse["message"] = "events Retrieved";
-        getUserEventParticipantsResponse["data"] = allEvents;
+        dynamic result = jsonDecode(response.body)['data']['allUserEventParticipants'];
+        if(result['success']){
+          dynamic allEvents = result['eventUserParticipants'];
+          print("allEventsOfType length: " + allEvents.length.toString());
+          getUserEventParticipantsResponse["success"] = true;
+          getUserEventParticipantsResponse["message"] = "events Retrieved";
+          getUserEventParticipantsResponse["data"] = allEvents;
+
+        }
+        else{
+          getUserEventParticipantsResponse["success"] = false;
+          getUserEventParticipantsResponse["message"] = "something went wrong";
+        
+        }
+
+      }
+      else{
+        getUserEventParticipantsResponse["success"] = false;
+        getUserEventParticipantsResponse["message"] = "something went wrong";
       }
 
       return getUserEventParticipantsResponse;
@@ -1320,21 +1342,22 @@ class EventCommand extends BaseCommand {
       isMyEventResp['mainEvent']['joinConditions']
           .forEach((joinCondition) {
             print("joinConditionn: " + joinCondition.toString());
-        if (joinCondition['forEvent'] != null) {
+        // if (joinCondition['forEvent'] != null) {
           isMyEventResp['eventRequestJoin'] = new JoinCondition(
               label: "Join With Request",
               required: joinCondition['withRequest']);
           isMyEventResp['eventPaymentJoin'] = new JoinCondition(
               label: "Join With Payment",
               required: joinCondition['withPayment']);
-        } else {
-          isMyEventResp['teamRequestJoin'] = new JoinCondition(
-              label: "Team Join With Request",
-              required: joinCondition['withRequest']);
-          isMyEventResp['teamPaymentJoin'] = new JoinCondition(
-              label: "Team Join With Payment",
-              required: joinCondition['withPayment']);
-        }
+        // } 
+        // else {
+        //   isMyEventResp['teamRequestJoin'] = new JoinCondition(
+        //       label: "Team Join With Request",
+        //       required: joinCondition['withRequest']);
+        //   isMyEventResp['teamPaymentJoin'] = new JoinCondition(
+        //       label: "Team Join With Payment",
+        //       required: joinCondition['withPayment']);
+        // }
       });
 
       
@@ -1886,7 +1909,7 @@ class EventCommand extends BaseCommand {
     } else {
       // await EventCommand().removeTournament(tournament);
     }
-    UserCommand().findMyUserById();
+    
     if (homePageModel.selectedKey.toString() ==
         Constants.TOURNAMENT.toString()) {
       homePageModel.selectedObjects = List.from(eventsModel.tournaments);
@@ -1912,7 +1935,7 @@ class EventCommand extends BaseCommand {
       // await EventCommand().removeLeague(league);
     }
 
-    UserCommand().findMyUserById();
+    // UserCommand().findMyUserById();
     if (homePageModel.selectedKey.toString() == Constants.LEAGUE.toString()) {
       homePageModel.selectedObjects = List.from(eventsModel.leagues);
     }

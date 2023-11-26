@@ -212,7 +212,7 @@ class SideNavs extends StatefulWidget {
     text: "Sign Out",
     fontSize: FontSizes.s(context),
     onPressed: () async {
-      BaseCommand().signOut();
+      BaseCommand().signOut(context);
     },
   ))
             // Container(
@@ -240,7 +240,7 @@ class SideNavs extends StatefulWidget {
     text: "Sign Up",
     fontSize: FontSizes.s(context),
     onPressed: () async {
-      BaseCommand().signOut();
+      BaseCommand().signOut(context);
     },
   ))
             // Container(

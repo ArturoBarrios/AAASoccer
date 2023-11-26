@@ -7,16 +7,18 @@ import FieldLocation from "./FieldLocation.js";
 import Location from "./Location.js";
 import Player from "./Player.js";
 import User from "./User.js";
+import StripeCustomer from "./StripeCustomer.js";
+import Payment from "./Payment.js";
 
 const resolvers = {
     Mutation: {
-        createGame: async (parent, args, context, info) => {        
+        createGame: async (parent, args, context, info) => {
             console.log("createGame: ");
-            
+
             console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
             //get user
-            const user  = await User.findById(args.input.event.userParticipants[0].userId);
-            console.log("user retrieved from userId: "+ user.toString());
+            const user = await User.findById(args.input.event.userParticipants[0].userId);
+            console.log("user retrieved from userId: " + user.toString());
 
             const createdPrice = new Price({
                 amount: args.input.event.price.amount,
@@ -40,7 +42,7 @@ const resolvers = {
 
             await user.eventUserParticipants.push(eventUserParticipants._id);
             await user.save();
-            
+
             console.log("args.input.event.fieldLocations.location: ", args.input.event.fieldLocations[0].location);
             const location = new Location({
                 name: args.input.event.fieldLocations[0].location.name,
@@ -77,6 +79,9 @@ const resolvers = {
             });
             await createdEvent.save();
 
+            eventUserParticipants.event = createdEvent._id;
+            await eventUserParticipants.save();
+
             console.log("createdEvent: ", createdEvent._id);
 
 
@@ -98,14 +103,57 @@ const resolvers = {
                 game: res
             };
         },
+        addUserToEvent: async (parent, args, context, info) => {
+            console.log("addUserToEvent");
+
+            //update
+            const user = await User.findById(args.userId);
+            const userParticipant = new EventUserParticipant({
+                user: user._id,
+                roles: args.roles,
+            });
+            await userParticipant.save();
+            const event = await Event.findById(args.eventId);
+            await event.userParticipants.push(userParticipant._id);
+            await event.save();
+
+            event.populate([
+                {
+                    path: 'fieldLocations',
+                    populate: {
+                        path: 'location'
+                    },
+                },
+                {
+                    path: 'joinConditions'
+                },
+                {
+                    path: 'userParticipants',
+                    populate: {
+                        path: 'user'
+                    }
+                },
+                {
+                    path: 'price'
+                }
+            ]);
+            
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                event: event
+            };
+        },
         updateUserOnboarding: async (parent, args, context, info) => {
-            console.log("updateUserOnboarding");           
+            console.log("updateUserOnboarding");
 
             //update
             const user = await User.findById(args._id);
-            user.onboarded = args.onboarded;         
-            await user.save();  
-            
+            user.onboarded = args.onboarded;
+            await user.save();
+
             // await user.populate('user');
             await user.populate('location');
 
@@ -118,6 +166,48 @@ const resolvers = {
                 message: "User email was successfully updated",
                 user: user
             };
+        },
+        createStripeCustomer: async (parent, args, context, info) => {
+            console.log("createStripeCustomer");            
+            
+            const user = await User.findById(args.userId);
+
+            const stripeCustomer = new StripeCustomer({
+                customerId: args.customerId,
+                user: user._id,            
+            });
+            await stripeCustomer.save();
+
+            stripeCustomer.populate('user');
+            
+            
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                stripeCustomer: stripeCustomer
+            }
+            
+        },
+
+        createPayment: async (parent, args, context, info) => {
+            console.log("createPayment");
+
+            const user = await User.findById(args.input.userId);
+            const event = await User.findById(args.input.eventId);
+
+            const payment = new Payment({
+                amount: args.input.amount,
+                charge: args.input.charge,                
+                paidAt: args.input.paidAt,
+                user: user._id,
+                event: event._id,
+                isPlayerPayment: true,
+                isTeamPayment: false,                                
+            });
+            await payment.save();
+
+            console.log("createdPayment: ", payment);
         },
         createPlayer: async (parent, args, context, info) => {
             console.log("createPlayer args: ", args.input.user);
@@ -141,7 +231,7 @@ const resolvers = {
 
             });
             await createdUser.save();
-            console.log("createdUser: ", createdUser._id);            
+            console.log("createdUser: ", createdUser._id);
 
 
             const createdPlayer = new Player({
@@ -169,7 +259,68 @@ const resolvers = {
         },
     },
     Query: {
-        allEventsInAreaOfType : async (parent, args, context, info) => {
+
+        allUserEventParticipants: async (parent, args, context, info) => {
+            // const events = await Event.find({ type: args.type });
+            console.log("allUserEventParticipants");                        
+            console.log("startTime: ", args.startTime);
+            console.log("_id: ", args._id);
+
+            const user = await User.findById(args._id)
+            .populate([
+                {
+                    path: 'eventUserParticipants',
+                    populate: 
+                    [
+                        {
+                            path: 'user'
+                        },
+                        {
+                            path: 'event',
+                            populate: [
+                                {
+                                    path: 'fieldLocations',
+                                    populate: {
+                                        path: 'location'
+                                    },
+                                },
+                                {
+                                    path: 'joinConditions'
+                                },
+                                {
+                                    path: 'userParticipants',
+                                    populate: {
+                                        path: 'user'
+                                    }
+                                },
+                                {
+                                    path: 'price'
+                                }
+                            ]
+                            
+                        }
+
+
+                    ]
+                },
+            ]
+            );
+
+
+            console.log("events: ", user.eventUserParticipants);
+
+
+
+
+
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully updated",
+                eventUserParticipants: user.eventUserParticipants
+            };
+        },
+        allEventsInAreaOfType: async (parent, args, context, info) => {
             // const events = await Event.find({ type: args.type });
             console.log("allEventsInAreaOfType");
             console.log("type: ", args.type);
@@ -180,13 +331,13 @@ const resolvers = {
 
             const events = await Event.find({
                 type: args.type,
-                startTime: { $gte: args.startTime}
+                startTime: { $gte: args.startTime }
             }).populate([
                 {
                     path: 'fieldLocations',
                     populate: {
                         path: 'location'
-                    },                                
+                    },
                 },
                 {
                     path: 'joinConditions'
@@ -200,31 +351,13 @@ const resolvers = {
                 {
                     path: 'price'
                 }
-            ]
-            
-            
-            );
+            ]);
 
-            
-            
-            
 
             console.log("events: ", events);
-            
-            events.forEach(event => {
-                event.userParticipants.forEach(userParticipant => {
-                    console.log("userParticipant: ", userParticipant);
-                    // Now, fieldLocation.location should be populated, and you can access its details
-                    // console.log("User details:", userParticipant['user']);
-                });
-                // event.fieldLocations.forEach(fieldLocation => {
-                //     console.log("fieldLocation:", fieldLocation);
-                //     // Now, fieldLocation.location should be populated, and you can access its details
-                //     console.log("Location details:", fieldLocation['location']);
-                // });
-            });
 
-            
+
+
 
 
             return {
@@ -237,7 +370,7 @@ const resolvers = {
         allGames: async (parent, args, context, info) => {
             const games = await Game.find();
 
-            
+
 
             console.log("games: ", games);
 
@@ -249,10 +382,48 @@ const resolvers = {
             };
         },
         findUserByEmail: async (parent, args, context, info) => {
-            const user = await User.findOne({ email: args.email });            
-            await user.populate('location');
+            console.log("findUserByEmail: ");
+            const user = await User.findOne({ email: args.email })
+                .populate([
+                    {
+                        path: 'location'
+                    },
+                    {
+                        path: 'eventUserParticipants',
+                        populate: [
+                            {
+                                path: 'user'
+                            },
+                            {
+                                path: 'event',
+                                populate: [
+                                    {
+                                        path: 'fieldLocations',
+                                        populate: {
+                                            path: 'location'
+                                        },
+                                    },
+                                    {
+                                        path: 'joinConditions'
+                                    },
+                                    {
+                                        path: 'userParticipants',
+                                        populate: {
+                                            path: 'user'
+                                        }
+                                    },
+                                    {
+                                        path: 'price'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ])
+                ;
+            // await user.populate('location');
             console.log("user: ", user);
-            
+
             return {
                 code: 200,
                 success: true,
@@ -261,10 +432,48 @@ const resolvers = {
             };
         },
         findUserById: async (parent, args, context, info) => {
-            const user = await User.findById(args._id);            
-            await user.populate('location');
+            const user = await User.findById(args._id)
+            .populate([
+                {
+                    path: 'eventUserParticipants',
+                    populate: 
+                    [
+                        {
+                            path: 'user'
+                        },
+                        {
+                            path: 'event',
+                            populate: [
+                                {
+                                    path: 'fieldLocations',
+                                    populate: {
+                                        path: 'location'
+                                    },
+                                },
+                                {
+                                    path: 'joinConditions'
+                                },
+                                {
+                                    path: 'userParticipants',
+                                    populate: {
+                                        path: 'user'
+                                    }
+                                },
+                                {
+                                    path: 'price'
+                                }
+                            ]
+                            
+                        }
+
+
+                    ]
+                },
+            ]
+            );
+
             console.log("user: ", user);
-            
+
             return {
                 code: 200,
                 success: true,

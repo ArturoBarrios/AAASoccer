@@ -247,7 +247,7 @@ class HomePageCommand extends BaseCommand {
       print("appModel.currentUser: " + appModel.currentUser.toString());
       String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(24);
       dynamic allUserEventParticipantsInput = {
-        "user": appModel.currentUser['_id'],
+        "_id": appModel.currentUser['_id'],
         "startTime": xHoursAgoTimestamp,
         "eventFragment": EventFragments().userEventParticipants()
       };

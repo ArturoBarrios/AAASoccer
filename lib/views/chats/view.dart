@@ -46,7 +46,8 @@ class _ChatsViewState extends State<ChatsView> {
   Future<void> loadInitialData() async {
     print("first load");
     //get user chats
-    dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
+    dynamic currentUser = UserCommand().getAppModelUser();
+    // dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
     Map<String, dynamic> setupChatModelsResp =
         await ChatCommand().setupChatModels();
     print("setupChatModelsResp: " + setupChatModelsResp.toString());

@@ -34,11 +34,12 @@ class UserCommand extends BaseCommand {
     };
 
     try{
+      
        //get current user
     String imageUrl = "";
 
-
     if (appModel.currentUser['_id'] == user['_id']) {
+      print("is mineeeee");
       user = appModel.currentUser;
       getUserDetailsResp['isMine'] = true;
       imageUrl = UserCommand().getProfileImage();      
@@ -83,9 +84,9 @@ class UserCommand extends BaseCommand {
     };
 
     getUserDetailsResp['eventUserParticipants'] =
-      user['eventUserParticipants']['data'];
-    getUserDetailsResp['teamUserParticipants'] =
-        user['teamUserParticipants']['data'];
+      user['eventUserParticipants'];
+    // getUserDetailsResp['teamUserParticipants'] =
+    //     user['teamUserParticipants']['data'];
     getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
 
     if(addToProfilePageModel){
@@ -96,6 +97,7 @@ class UserCommand extends BaseCommand {
       profilePageModel.eventUserParticipants = getUserDetailsResp['eventUserParticipants'];
       profilePageModel.teamUserParticipants = getUserDetailsResp['teamUserParticipants'];
       profilePageModel.isProfilePrivate = getUserDetailsResp['isProfilePrivate'];
+    print("aaaaaa");
 
     }
       return getUserDetailsResp;
@@ -258,9 +260,8 @@ class UserCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -272,12 +273,29 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      Map<String, dynamic> user =
-          jsonDecode(response.body)['data']['createStripeCustomer'];
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['createStripeCustomer'];
+        if(result['success']){
+          Map<String, dynamic> user =
+              result['stripeCustomer']['user'];
 
-      updateUserResponse["success"] = true;
-      updateUserResponse["message"] = "User Updated";
-      updateUserResponse["data"] = user;
+          updateUserResponse["success"] = true;
+          updateUserResponse["message"] = "User Updated";
+          updateUserResponse["data"] = user;
+
+        }
+        else{
+          updateUserResponse["success"] = false;
+          updateUserResponse["message"] = "Something Went Wrong";
+          updateUserResponse["data"] = null;
+        }
+      }
+      else{
+        updateUserResponse["success"] = false;
+          updateUserResponse["message"] = "Something Went Wrong";
+          updateUserResponse["data"] = null;
+      }
+
 
       return updateUserResponse;
     } on ApiException catch (e) {
@@ -323,7 +341,7 @@ http.Response response = await http.post(
         
         final result = jsonDecode(response.body)['data']['updateUserOnboarding'];
         partialUpdateUserResponse["data"] = null;
-        if (result['code'] != 200) {
+        if (result['success']) {
           partialUpdateUserResponse["success"] = true;
           partialUpdateUserResponse["message"] = "user found";
           partialUpdateUserResponse["data"] = result['user'];
@@ -463,7 +481,7 @@ http.Response response = await http.post(
     print("isUserFollowingUser");
     print("userObject: " + userObject.toString());
     dynamic currentUser = appModel.currentUser;
-    List<dynamic> followings = currentUser['following']['data'];
+    List<dynamic> followings = currentUser['following'];
     return followings
         .any((relation) => relation['following']['_id'] == userObject['_id']);
   }
@@ -471,7 +489,7 @@ http.Response response = await http.post(
   bool isCurrentUserFollowedByUser(dynamic userObject) {
     print("isUserFollowedByUser");
     dynamic currentUser = appModel.currentUser;
-    List<dynamic> followings = currentUser['followers']['data'];
+    List<dynamic> followings = currentUser['followers'];
     return followings
         .any((relation) => relation['follower']['_id'] == userObject['_id']);
   }
@@ -641,7 +659,7 @@ http.Response response = await http.post(
     return getUserResp;
   }
 
-  Future<Map<String, dynamic>> findMyUserById() async {
+  Future<Map<String, dynamic>> findUserById(dynamic user) async {
     print("findMyUserById()");
     Map<String, dynamic> getUserResp = {
       "success": false,
@@ -666,14 +684,14 @@ http.Response response = await http.post(
       // getUserResp["success"] = true;
       // getUserResp["message"] = "user found";
       // getUserResp["data"] = result;
-      print("before send request: "+appModel.currentUser.toString());
+      print("before send request: "+user.toString());
       http.Response response = await http.post(
         Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
         headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserQueries().findUserByID(appModel.currentUser, UserFragments().fullUser()),
+          'query': UserQueries().findUserByID(user, UserFragments().fullUser()),
         }),
       );
 
@@ -704,42 +722,42 @@ http.Response response = await http.post(
     return getUserResp;
   }
 
-  Future<Map<String, dynamic>> findUserById(
-      Map<String, dynamic> userInput) async {
-    print("getUser");
-    Map<String, dynamic> getUserResp = {
-      "success": false,
-      "message": "no user found",
-      "data": null
-    };
-    try {
-      print("userInput: ");
-      print(userInput);
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': UserQueries().findUserByID(userInput, UserFragments().fullUser()),
-        }),
-      );
+  // Future<Map<String, dynamic>> findUserById(
+  //     Map<String, dynamic> userInput) async {
+  //   print("getUser");
+  //   Map<String, dynamic> getUserResp = {
+  //     "success": false,
+  //     "message": "no user found",
+  //     "data": null
+  //   };
+  //   try {
+  //     print("userInput: ");
+  //     print(userInput);
+  //     http.Response response = await http.post(
+  //       Uri.parse('https://graphql.fauna.com/graphql'),
+  //       headers: <String, String>{
+  //         'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: jsonEncode(<String, String>{
+  //         'query': UserQueries().findUserByID(userInput, UserFragments().fullUser()),
+  //       }),
+  //     );
 
-      print("response: ");
-      print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['findUserByID'];
-      // appModel.currentUser = result;
-      // if (result != null) {
-      getUserResp["success"] = true;
-      getUserResp["message"] = "user found";
-      getUserResp["data"] = result;
-      // }
-    } catch (e) {
-      print('Query failed: $e');
-    }
-    return getUserResp;
-  }
+  //     print("response: ");
+  //     print(jsonDecode(response.body));
+  //     final result = jsonDecode(response.body)['data']['findUserByID'];
+  //     // appModel.currentUser = result;
+  //     // if (result != null) {
+  //     getUserResp["success"] = true;
+  //     getUserResp["message"] = "user found";
+  //     getUserResp["data"] = result;
+  //     // }
+  //   } catch (e) {
+  //     print('Query failed: $e');
+  //   }
+  //   return getUserResp;
+  // }
 
   Future<Map<String, dynamic>> findUserPlayerById(
       Map<String, dynamic> userInput) async {

@@ -54,14 +54,25 @@ class EventQueries {
     return getEvents;
   }
 
+//userEventParticipants fragment in EventFreatments
   String allUserEventParticipants(dynamic allUserEventParticipantsInput) {
     String getUserEvents = """
-      query GetEventUserParticipants {
-        allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {                              
-              ${allUserEventParticipantsInput['eventFragment']}            
+      query AllUserEventParticipants {
+        allUserEventParticipants(startTime:"${allUserEventParticipantsInput['startTime']}", _id: "${allUserEventParticipantsInput['_id']}" ) {          
+          code
+          success
+          message
+          eventUserParticipants {
+            ${allUserEventParticipantsInput['eventFragment']}
+          }
         }
       }
     """;
+      // query GetEventUserParticipants {
+      //   allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {                              
+      //         ${allUserEventParticipantsInput['eventFragment']}            
+      //   }
+      // }
     return getUserEvents;
   }
 

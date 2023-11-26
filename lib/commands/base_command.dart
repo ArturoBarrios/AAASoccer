@@ -16,6 +16,7 @@ import '../components/Cards/tsn_team_card.dart';
 import '../components/Cards/tsn_tournament_card.dart';
 import '../components/Cards/tsn_training_card.dart';
 import '../components/Cards/tsn_tryout_card.dart';
+import '../components/Dialogues/alert_dialogue.dart';
 import '../components/Dialogues/animated_dialogu.dart';
 import '../components/agreement_form_widget.dart';
 import '../constants.dart';
@@ -31,6 +32,7 @@ import '../models/pageModels/team_page_model.dart';
 import '../models/pageModels/app_model.dart';
 import 'package:flutter/material.dart';
 import '../services/onesignal_service.dart';
+import '../strings.dart';
 import '../styles/colors.dart';
 import '/models/user_model.dart';
 import '../models/pageModels/home_page_model.dart';
@@ -454,8 +456,33 @@ List<String> parseAmenities(String amenitiesString) {
     appModel.isGuest = isGuest;
   }
 
-  Future<void> signOut() async {
+  Future<void> delete(context) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialogueWidget(
+            title: 'Confirmation',
+            body: StringConstants.DELETEWARNING + "\n\n"
+                ,
+            onConfirmCallback: () async {
+              // Logic for confirmation action
+             BaseCommand().nukeData();
+            await AmplifyAuthService().signOut();
+            },
+            onCancelCallback: () {
+              // Logic for cancel action
+            },
+          );
+        },
+      );
+    
+
+    
+  }
+
+  Future<void> signOut(context) async {
     BaseCommand().nukeData();
+    // Navigator.of(context).pop();
     await AmplifyAuthService().signOut();
   }
 
@@ -580,7 +607,7 @@ List<String> parseAmenities(String amenitiesString) {
             setupUserResp['data'] = user;
           } else {
             print("something went wrong in fetching user");
-            signOut();
+            // signOut(context);
           }
 
         }

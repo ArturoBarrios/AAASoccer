@@ -216,7 +216,7 @@ class GroupCommand extends BaseCommand {
         
       }
     }
-    print("aaaaaa");
+    
 
     
 print("userGroupDetails['group']['joinConditions']: "+ userGroupDetails['group']['joinConditions'].toString());
@@ -226,21 +226,18 @@ print("userGroupDetails['group']['joinConditions']: "+ userGroupDetails['group']
           userGroupDetails['groupRequestJoin'] = new JoinCondition(label: "Join With Request", required: joinCondition['withRequest']); 
           userGroupDetails['groupPaymentJoin'] = new JoinCondition(label: "Join With Payment", required: joinCondition['withPayment']);                     
         
-      });
-    print("aaaaaa22222");
+      });    
       
 
     //get price and payment info
-    List payments = group['payments']['data'];
-    print("aaaaaa33333");
+    List payments = group['payments']['data'];    
     userGroupDetails['payments'] = payments;
     
     userGroupDetails['amountPaid'] = "0.00";
     
     userGroupDetails['amountRemaining'] = "0.00";
     
-    userGroupDetails['price'] = group['price'];
-    print("aaaaaa44444");
+    userGroupDetails['price'] = group['price'];    
     
     if (group['price'] != null) {
       print("payments: $payments");
@@ -258,8 +255,7 @@ print("userGroupDetails['group']['joinConditions']: "+ userGroupDetails['group']
           (double.parse(group['price']['amount']) - amountPaid)
               .toStringAsFixed(2);      
     }
-
-    print("aaaaaa55555");
+    
     print(
         "getUserGroupDetails() finished with userGroupDetails: $userGroupDetails");
 

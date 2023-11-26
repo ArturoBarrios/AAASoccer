@@ -99,8 +99,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
         widget.paymentDetails['price']['amount'] == '0') {
       print("createpaymentrespintentt: "+ createPaymentIntentResp['data']['intent'].toString());
       paymentInput['charge'] = createPaymentIntentResp['data']['intent']['latest_charge'];
-      print(
-          "if(createPaymentIntentResp['success'] || widget.priceObject['amount'] == '0')");
+      
       print("now addEvent");
       if (widget.paymentDetails['objectType'] == Constants.EVENT) {
         dynamic addEventResp = await EventCommand().addUserToEvent(
@@ -110,7 +109,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
         if (addEventResp['data'] != null) {
           paymentInput['eventId'] =
               widget.paymentDetails['objectToPurchase']['_id'];
-          // paymentInput['charge']
+          print("paymentInput: " + paymentInput.toString());
           await PaymentCommand().createUserObjectPayment(paymentInput);
         }
 

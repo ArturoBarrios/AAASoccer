@@ -37,6 +37,13 @@ const typeDefs = `#graphql
     events: [Event]
   }
 
+  type EventMutationResponse implements QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    event: Event
+  }
+
 
 type CreateGameMutationResponse implements MutationResponse {
   code: String!
@@ -52,10 +59,35 @@ type CreatePlayerMutationResponse implements MutationResponse {
   player: Player
 }
 
+type StripeCustomerMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  stripeCustomer: StripeCustomer
+}
+
+type PaymentMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  payment: Payment
+}
+
+type AllUserEventParticipantResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  eventUserParticipants: [EventUserParticipant]
+}
+
 type Mutation {
   createGame(input: GameInput): CreateGameMutationResponse
   createPlayer(input: PlayerInput): CreatePlayerMutationResponse
+  createStripeCustomer(customerId: String, userId: String): StripeCustomerMutationResponse
   updateUserOnboarding(_id: String, onboarded: Boolean): UserResponse
+  addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
+  createPayment(input: PaymentInput): PaymentMutationResponse
+
 }
 
 type Query {    
@@ -77,9 +109,18 @@ type Query {
   getUserByPhone(phone: String): User
   getUserByUsername(username: String): User    
   allSubscriptionTypes: [SubscriptionType!]
-  allEventsInAreaOfType(type: EventType, latitude: Float, longitude: Float, radius: Int, startTime: String): EventsMutationResponse
+  allEventsInAreaOfType(type: EventType, latitude: Float, longitude: Float, radius: Int, startTime: String): EventsMutationResponse,
+  allUserEventParticipants(_id: String, startTime: String): AllUserEventParticipantResponse!
   }
 
+
+input PaymentInput {  
+  eventId: String
+  userId: String
+  charge: String
+  amount: String
+  paidAt: String
+}
 
 input PlayerInput {  
   user: UserInput

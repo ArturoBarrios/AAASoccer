@@ -165,7 +165,7 @@ class _PlayerListState extends State<PlayerList> {
   }
 
   Future<dynamic> fetchUserDetails(dynamic user) async{
-    print("fetchUserDetails");
+    print("fetchUserDetails for user: " + user.toString());
     dynamic playerDetails =
           await UserCommand().getUserDetails(user, false);
     return playerDetails;

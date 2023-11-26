@@ -38,18 +38,22 @@ class UserMutations {
       Map<String, dynamic> userInput, Map<String, dynamic> customerInput) {
     String updateUserString = """      
       mutation {
-        createStripeCustomer(data: {
+        createStripeCustomer(
           customerId: "${customerInput['customerId']}", 
-          user: {
-            connect: "${userInput['_id']}"            
-          } 
-          }) {
-            _id
-            customerId
-    				user{
+          userId: "${userInput['_id']}"          
+          ) {
+            success 
+            code
+            message
+            stripeCustomer{
               _id
-              name
-              email
+              customerId
+              user{
+                _id
+                name
+                email
+              }
+
             }
             
           }   
@@ -60,46 +64,50 @@ class UserMutations {
   }
 
   String createUserEventPayment(dynamic createUserEventPaymentInput) {
-    String paymentType = createUserEventPaymentInput['paymentType'] == 'player'
-        ? """
-          event: {
-            connect: "${createUserEventPaymentInput['eventId']}"            
-          }
-          charge: "${createUserEventPaymentInput['charge']}"
-          isPlayerPayment: true
-          isTeamPayment: false
-        """
-        : """
-          team: {
-            connect: "${createUserEventPaymentInput['teamId']}"            
-          }
-          isPlayerPayment: false
-          isTeamPayment: true
-        """;
+    // String paymentType = createUserEventPaymentInput['paymentType'] == 'player'
+    //     ? """
+    //       event: {
+    //         connect: "${createUserEventPaymentInput['eventId']}"            
+    //       }
+    //       charge: "${createUserEventPaymentInput['charge']}"
+    //       isPlayerPayment: true
+    //       isTeamPayment: false
+    //     """
+    //     : """
+    //       team: {
+    //         connect: "${createUserEventPaymentInput['teamId']}"            
+    //       }
+    //       isPlayerPayment: false
+    //       isTeamPayment: true
+    //     """;
 
     String createUserEventPaymentString = """      
       mutation {
-        createPayment(data: {
-          amount: "${createUserEventPaymentInput['amount']}",
-          user: {
-            connect: "${createUserEventPaymentInput['userId']}"            
-          } 
+        createPayment(input: {
+          eventId: "${createUserEventPaymentInput['eventId']}"
+          userId: "${createUserEventPaymentInput['userId']}" 
+          charge: "${createUserEventPaymentInput['charge']}"
+          amount: "${createUserEventPaymentInput['amount']}"
           paidAt: "${createUserEventPaymentInput['paidAt']}"
-          $paymentType
+          
           }) {
-            _id
-            amount
-            event{
+            code
+            success 
+            message
+            payment{
               _id
-              name
-            }
-            paidAt
-            user{
-              _id
-              name
-              username
-            }
-            
+              amount
+              event{
+                _id
+                name
+              }
+              paidAt
+              user{
+                _id
+                name
+                username
+              }
+            }            
           }   
         }
         """;

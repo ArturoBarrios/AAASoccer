@@ -60,8 +60,9 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   void updateUserOnboarding() async {
       print("updateUserOnboarding");
-      dynamic userObjectResp = await UserCommand().findMyUserById();
-      dynamic userObject = userObjectResp['data'];
+      dynamic currentUser = UserCommand().getAppModelUser();
+      // dynamic userObjectResp = await UserCommand().findMyUserById();
+      dynamic userObject = currentUser;//userObjectResp['data'];
       print("userObject: $userObject");
       Map<String, dynamic> partialUserInput = {        
         '_id': userObject['_id'],                    

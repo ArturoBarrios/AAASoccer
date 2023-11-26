@@ -34,7 +34,7 @@ class ChatCommand extends BaseCommand {
   Future<void> setChatMessages(dynamic chat) async {
     print("setChatMessages");
     //get updated chat first?????
-    dynamic findMyUser = await UserCommand().findMyUserById();
+    dynamic findMyUser = await UserCommand().findUserById(appModel.currentUser);
     dynamic user = findMyUser['data'];
     int index = getIndexOfChat(chat['_id']);
     for (int i = 0; i < appModel.currentUser['chats']['data'].length; i++) {

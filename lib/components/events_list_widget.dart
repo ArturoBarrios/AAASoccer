@@ -106,7 +106,7 @@ class _EventsListWidgetState extends State<EventsListWidget> {
 
                         (widget.eventCards!.isEmpty
               ? Center(
-                  child: Text('No Teams'),
+                  child: Text('No Events'),
                 )
               : SizedBox(
                   height: screenHeight *

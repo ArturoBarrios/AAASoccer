@@ -290,7 +290,7 @@ class _ProfileState extends State<Profile> {
     text: "Sign Out",
     fontSize: FontSizes.s(context),
     onPressed: () async {
-      BaseCommand().signOut();
+      BaseCommand().signOut(context);
     },
   ) : 
    

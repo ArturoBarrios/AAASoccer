@@ -11,9 +11,11 @@ class IntroductionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void updateUserOnboarding() async {
+      //getCurrentUser
+      dynamic currentUser = UserCommand().getAppModelUser();
       print("updateUserOnboarding");
-      dynamic userObjectResp = await UserCommand().findMyUserById();
-      dynamic userObject = userObjectResp['data'];
+      // dynamic userObjectResp = await UserCommand().findUserById(currentUser);
+      dynamic userObject = currentUser;//userObjectResp['data'];
       print("userObject: $userObject");
       Map<String, dynamic> partialUserInput = {
         'user': {
