@@ -144,19 +144,19 @@ class TSNPlayerCard extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    Expanded(
-                                        flex: 9,
-                                        child: BasicElevatedButton(                                        
-                                          backgroundColor:
-                                              AppColors.tsnDarkGrey,
-                                          text: followers.length.toString()+" Followers",
-                                          fontSize: FontSizes.xxs(context),
-                                        )),
+                                    // Expanded(
+                                    //     flex: 9,
+                                    //     child: BasicElevatedButton(                                        
+                                    //       backgroundColor:
+                                    //           AppColors.tsnDarkGrey,
+                                    //       text: followers.length.toString()+" Followers",
+                                    //       fontSize: FontSizes.xxs(context),
+                                    //     )),
                                     SizedBox(width: 6),
                                         
-                                    Expanded(
-                                        flex: 9,
-                                        child: FollowContainer(userObject: user)),
+                                    // Expanded(
+                                    //     flex: 9,
+                                    //     child: FollowContainer(userObject: user)),
                                     //join widget
                                     
                                     // Expanded(

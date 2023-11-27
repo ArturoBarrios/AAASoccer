@@ -132,7 +132,7 @@ class _ProfileState extends State<Profile> {
                 ));
               },
             ),
-          ).getMainHeader(context),
+          ).getSettingsHeader(context),
           body: ListView(
             physics: const ScrollPhysics(),
             children: <Widget>[
@@ -180,62 +180,64 @@ class _ProfileState extends State<Profile> {
                   Padding(
                     padding: const EdgeInsets.all(30.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              followers.toString(),
-                              style: const TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 5.0),
-                            const Text(
-                              'Followers',
-                              style: TextStyle(
-                                  fontFamily: 'Montserrat', color: Colors.grey),
-                            )
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              following.toString(),
-                              style: const TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 5.0),
-                            const Text(
-                              'Following',
-                              style: TextStyle(
-                                  fontFamily: 'Montserrat', color: Colors.grey),
-                            )
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const <Widget>[
-                            Text(
-                              '310',
-                              style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 5.0),
-                            Text(
-                              'Games',
-                              style: TextStyle(
-                                  fontFamily: 'Montserrat', color: Colors.grey),
-                            )
-                          ],
-                        ),
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      
+                      
+                      // <Widget>[
+                        // Column(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: <Widget>[
+                        //     Text(
+                        //       followers.toString(),
+                        //       style: const TextStyle(
+                        //           fontFamily: 'Montserrat',
+                        //           fontWeight: FontWeight.bold),
+                        //     ),
+                        //     const SizedBox(height: 5.0),
+                        //     const Text(
+                        //       'Followers',
+                        //       style: TextStyle(
+                        //           fontFamily: 'Montserrat', color: Colors.grey),
+                        //     )
+                        //   ],
+                        // ),
+                        // Column(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: <Widget>[
+                        //     Text(
+                        //       following.toString(),
+                        //       style: const TextStyle(
+                        //           fontFamily: 'Montserrat',
+                        //           fontWeight: FontWeight.bold),
+                        //     ),
+                        //     const SizedBox(height: 5.0),
+                        //     const Text(
+                        //       'Following',
+                        //       style: TextStyle(
+                        //           fontFamily: 'Montserrat', color: Colors.grey),
+                        //     )
+                        //   ],
+                        // ),
+                        // Column(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: const <Widget>[
+                        //     Text(
+                        //       '310',
+                        //       style: TextStyle(
+                        //           fontFamily: 'Montserrat',
+                        //           fontWeight: FontWeight.bold),
+                        //     ),
+                        //     SizedBox(height: 5.0),
+                        //     Text(
+                        //       'Games',
+                        //       style: TextStyle(
+                        //           fontFamily: 'Montserrat', color: Colors.grey),
+                        //     )
+                        //   ],
+                        // ),
                         
-                      ],
+                      // ],
                     ),
                   ),        
               //      teamCardsLoading 

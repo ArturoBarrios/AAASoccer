@@ -226,9 +226,8 @@ class PaymentCommand extends BaseCommand {
 
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -238,6 +237,15 @@ class PaymentCommand extends BaseCommand {
       );
 
       print("createUserEventPayment response: ${response.body}");
+
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['createPayment'];
+        if(result['success']){
+          createUserObjectPaymentResp['success'] = true;
+          createUserObjectPaymentResp['message'] = "Payment Created";
+          createUserObjectPaymentResp['data'] = result['payment'];
+        }
+      }
 
       return createUserObjectPaymentResp;
     } catch (e) {

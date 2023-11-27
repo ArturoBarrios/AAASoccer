@@ -3,6 +3,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/models/pageModels/event_page_model.dart';
 
+import '../../commands/base_command.dart';
 import '../../models/pageModels/event_page.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../../models/pageModels/event_page_model.dart';
@@ -121,6 +122,9 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                   ],
                                 ),
                                 SizedBox(height: 6),
+                                GestureDetector(
+                                onTap: () => BaseCommand().launchLocationInBrowser(event.fieldLocations[0]['location']['latitude'], event.fieldLocations[0]['location']['longitude']),
+                                child:
                                 Row(
                                   children: [
                                     Icon(Icons.location_on,
@@ -132,7 +136,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                         )),
                                     // Text("TL 2b"),
                                   ],
-                                ),
+                                )),
                                 Row(
                                   children: [
                                     RatingWidget(rating: event.fieldRating),
@@ -161,18 +165,16 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                   ],
                                 ),
                                 Row(
-                                  children: [
-                                    // Text("test capacity: "+ capacity.toString()),
+                                  children: [                                    
                                     Expanded(
                                         flex: 9,
                                         child: BasicElevatedButton(
-                                          icon: Icons.person,
-                                          // height: screenHeight * 0.05,  // 10% of screen height
-                                          // width: screenWidth * 0.35,
+                                          icon: Icons.person,                                          
                                           backgroundColor:
                                               AppColors.tsnDarkGrey,
                                           text: event.numberOfParticipants.toString()
                                             +"/"+event.capacity.toString(),
+                                          
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     SizedBox(width: 6),
@@ -285,7 +287,8 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                     ),
                                     SizedBox(width: 6),
                                     Text(
-                                        "Host: " +
+                                        "Host: "
+                                         +
                                             event.organizers[0]['user']['name']
                                                 .toString(),
                                         style: TextStyle(

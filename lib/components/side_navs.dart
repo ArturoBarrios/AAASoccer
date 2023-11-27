@@ -21,6 +21,8 @@ import 'Buttons/basic_elevated_button.dart';
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);
 
+  
+
   @override
   State<SideNavs> createState() => _SideNavs();
 
@@ -28,7 +30,7 @@ class SideNavs extends StatefulWidget {
     UserCommand().getAppModelUser();
   }
 
-  ListView getMainSideNav(BuildContext context, dynamic userObject) {
+  ListView getMainSideNav(BuildContext context, dynamic userObject, bool isSuperUser) {
     print("userObject: " + userObject.toString());
     bool isGuest = BaseCommand().isGuest();
     String profileImageUrl =
@@ -110,7 +112,8 @@ class SideNavs extends StatefulWidget {
         //   },
         // ),
         //playground
-        if (dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
+        // if (dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
           ListTile(
             leading: Icon(
               Icons.message_outlined,
@@ -124,6 +127,7 @@ class SideNavs extends StatefulWidget {
               ));
             },
           ),
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
         ListTile(
           leading: Icon(
             Icons.edit_notifications_sharp,
@@ -137,6 +141,7 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
         ListTile(
           leading: Icon(
             Icons.image_sharp,
@@ -163,6 +168,7 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
         ListTile(
           leading: Icon(
             Icons.settings,
@@ -189,6 +195,7 @@ class SideNavs extends StatefulWidget {
         //     ));
         //   },
         // ),
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
         ListTile(
           leading: Icon(
             Icons.history,
@@ -202,19 +209,20 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        !isGuest
-            ? 
-            Container(
-                margin: EdgeInsets.fromLTRB(5,5,5,5),
-                child: 
-            BasicElevatedButton(
-    backgroundColor: AppColors.tsnRed,
-    text: "Sign Out",
-    fontSize: FontSizes.s(context),
-    onPressed: () async {
-      BaseCommand().signOut(context);
-    },
-  ))
+    //     !isGuest && isSuperUser
+    //         ? 
+    //         Container(
+    //             margin: EdgeInsets.fromLTRB(5,5,5,5),
+    //             child: 
+    //         BasicElevatedButton(
+    // backgroundColor: AppColors.tsnRed,
+    // text: "Sign Out",
+    // fontSize: FontSizes.s(context),
+    // onPressed: () async {
+    //   BaseCommand().signOut(context);
+    // },
+  // )
+  // )
             // Container(
             //     margin: EdgeInsets.all(25),
             //     color: AppColors.tsnRed,
@@ -231,18 +239,18 @@ class SideNavs extends StatefulWidget {
             //       child: const Text('Sign Out'),
             //     ),
             //   )
-            : 
-            Container(
-                margin: EdgeInsets.all(25),
-                child: 
-            BasicElevatedButton(
-    backgroundColor: AppColors.tsnGreen,
-    text: "Sign Up",
-    fontSize: FontSizes.s(context),
-    onPressed: () async {
-      BaseCommand().signOut(context);
-    },
-  ))
+  //           : 
+  //           Container(
+  //               margin: EdgeInsets.all(25),
+  //               child: 
+  //           BasicElevatedButton(
+  //   backgroundColor: AppColors.tsnGreen,
+  //   text: "Sign Up",
+  //   fontSize: FontSizes.s(context),
+  //   onPressed: () async {
+  //     BaseCommand().signOut(context);
+  //   },
+  // ))
             // Container(
             //   color: AppColors.tsnGreen,
             //     margin: EdgeInsets.all(25),

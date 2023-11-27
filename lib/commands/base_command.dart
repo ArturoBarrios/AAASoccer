@@ -64,6 +64,7 @@ import 'home_page_command.dart';
 import 'location_command.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 late BuildContext _mainContext;
 // The commands will use this to access the Provided models and services.
@@ -92,7 +93,19 @@ class BaseCommand {
 
   onTapBottomNav(context, key, item) {
     appModel.onTapBottomNav(context, key, item);
+  }    
+
+   Future<void> launchLocationInBrowser(double latitude, double longitude  ) async {
+    final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+      print("url: $url");
+      if (!await launchUrl(
+        Uri.parse(url.toString()),
+        mode: LaunchMode.inAppWebView,
+      )) {
+        throw Exception('Could not launch $url');
+      }
   }
+  
 
 List<String> parseAmenities(String amenitiesString) {
   // Remove the curly braces and trim the string

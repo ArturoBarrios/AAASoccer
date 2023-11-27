@@ -110,17 +110,18 @@ class _CardFormScreenState extends State<CardFormScreen> {
         if (addEventResp['success']) {
           dynamic eventToAdd = addEventResp['data'];
           //add user to event in page models
-          EventCommand().updateViewModelsWithEvent(eventToAdd, true);
-          EventCommand().addUserToEventPageModel(eventToAdd, currentUser);
-          setState(() {
-            
-          });
-
-
           paymentInput['eventId'] =
-              widget.paymentDetails['objectToPurchase']['_id'];
+              eventToAdd['_id'];
           print("paymentInput: " + paymentInput.toString());
-          await PaymentCommand().createUserObjectPayment(paymentInput);
+          Map<String, dynamic> createUserObjectPaymentResp = await PaymentCommand().createUserObjectPayment(paymentInput);          
+          //payment went through
+          if(createUserObjectPaymentResp['success']){
+            EventCommand().updateViewModelsWithEvent(eventToAdd, true);
+            EventCommand().addUserToEventPageModel(eventToAdd, currentUser);
+           
+          }
+
+
         }
 
         print("addEventResp: " + addEventResp.toString());

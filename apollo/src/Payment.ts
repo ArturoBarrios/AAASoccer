@@ -13,7 +13,7 @@ const paymentSchema = new mongoose.Schema({
     isTeamPayment: Boolean,
     refunded: Boolean,
     charge: String,
-    paymentType: Object.values(PaymentType)
+    // paymentType: Object.values(PaymentType)
 });
 
 const Payment = mongoose.model('Payment', paymentSchema);

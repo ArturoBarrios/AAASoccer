@@ -111,5 +111,7 @@ class StringConstants {
   static const String LEAVEWARNING = "ARE YOU SURE YOU WANT TO LEAVE THIS EVENT? THERE ARE NO REFUNDS IF YOU LEAVE THIS EVENT 24 HOURS BEFORE THE EVENT STARTS.";
   static const String DELETEWARNING = "ARE YOU SURE YOU WANT TO DELETE YOUR USER? THERE'S NO GOING BACK.";
 
+  //default event description
+  static const String DEFAULTEVENTDESCRIPTION = "3 teams of 5";
 
 }

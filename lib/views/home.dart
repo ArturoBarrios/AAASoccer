@@ -509,6 +509,10 @@ class _Home extends State<Home> {
 
     // }
 
+        bool isSuperUser =
+        context.select<AppModel, bool>(
+            (value) => value.isSuperUser);
+
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
 
@@ -592,7 +596,7 @@ class _Home extends State<Home> {
             drawer: SizedBox(
               width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
               child: Drawer(
-                  child: const SideNavs().getMainSideNav(context, userObject)),
+                  child: const SideNavs().getMainSideNav(context, userObject, isSuperUser )),
             ),
             body:
 

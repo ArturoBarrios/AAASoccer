@@ -10,6 +10,7 @@ import '../../components/custom_tile_list_with_title.dart';
 import '../../components/headers.dart';
 import '../../components/models/tile_list_model.dart';
 import '../../styles/font_sizes.dart';
+import '../account_details_update.dart';
 import '../home.dart';
 
 class SettingsView extends StatelessWidget {
@@ -61,46 +62,55 @@ class SettingsView extends StatelessWidget {
                           title: 'GENERAL',
                           buttonList: [
                             ButtonModel(
-                              text: 'Account',
+                              text: 'Update Account Details',
                               prefixIconData: Icons.person,
-                              onTap: () {},
-                            ),
-                            ButtonModel(
-                              text: 'Notifications',
-                              prefixIconData: Icons.notifications,
-                              onTap: () {},
-                            ),
-                          ],
-                        ),
-                        TileListModel(
-                          title: 'FEEDBACK',
-                          buttonList: [
-                            ButtonModel(
-                              text: 'Report a bug',
-                              prefixIconData: Icons.warning_amber_rounded,
                               onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return BugFeedbackWidget(
-                                      onSubmitCallback: () {
-                                        // Logic for submit action
-                                      },
-                                      onCancelCallback: () {
-                                        // Logic for cancel action
-                                      },
-                                    );
-                                  },
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                         AccountDetailsUpdate(),
+                                  ),
                                 );
+                              
                               },
                             ),
-                            ButtonModel(
-                              text: 'Send feedback',
-                              prefixIconData: Icons.send,
-                              onTap: () {},
-                            ),
+                            // ButtonModel(
+                            //   text: 'Notifications',
+                            //   prefixIconData: Icons.notifications,
+                            //   onTap: () {},
+                            // ),
                           ],
                         ),
+                        // TileListModel(
+                        //   title: 'FEEDBACK',
+                        //   buttonList: [
+                        //     ButtonModel(
+                        //       text: 'Report a bug',
+                        //       prefixIconData: Icons.warning_amber_rounded,
+                        //       onTap: () {
+                        //         showDialog(
+                        //           context: context,
+                        //           builder: (BuildContext context) {
+                        //             return BugFeedbackWidget(
+                        //               onSubmitCallback: () {
+                        //                 // Logic for submit action
+                        //               },
+                        //               onCancelCallback: () {
+                        //                 // Logic for cancel action
+                        //               },
+                        //             );
+                        //           },
+                        //         );
+                        //       },
+                        //     ),
+                        //     ButtonModel(
+                        //       text: 'Send feedback',
+                        //       prefixIconData: Icons.send,
+                        //       onTap: () {},
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ],
@@ -131,7 +141,7 @@ class SettingsView extends StatelessWidget {
                   top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
               child:BasicElevatedButton(
     backgroundColor: AppColors.tsnRed,
-    text: "Sign Out",
+    text: "Delete Account",
     fontSize: FontSizes.s(context),
     onPressed: () async {
       BaseCommand().delete(context);

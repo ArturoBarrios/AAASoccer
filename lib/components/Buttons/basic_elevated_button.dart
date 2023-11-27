@@ -75,7 +75,7 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
                   ),
           ),
         if ((widget.icon != null || widget.customIcon != null) && widget.text != null)
-          SizedBox(width: 8),
+          SizedBox(width: 4),
         if (widget.text != null)
           Expanded(
             flex: 16,

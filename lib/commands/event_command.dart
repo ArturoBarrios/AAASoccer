@@ -1369,7 +1369,7 @@ class EventCommand extends BaseCommand {
 
       
 
-      // eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);
+      // eventPageModel.objectImageInput = await loadEventMainImage(event, eventPageModel.isMine);      
       isMyEventResp['userParticipants'] =
           isMyEventResp['mainEvent']['userParticipants'];
       isMyEventResp['roles'] = getEventRoles(appModel.currentUser, isMyEventResp['userParticipants']);
@@ -1489,7 +1489,7 @@ class EventCommand extends BaseCommand {
         eventPageInstance.organizers = isMyEventResp['organizers'];
         // eventPageInstance.chats = isMyEventResp['chats'];
         eventPageInstance.payments = isMyEventResp['payments'];
-        eventPageInstance.fieldLocations = isMyEventResp['fieldLocations'];
+        eventPageInstance.fieldLocations = isMyEventResp['fieldLocations'];        
         eventPageInstance.price = isMyEventResp['price'];
         eventPageInstance.eventRequestJoin = isMyEventResp['eventRequestJoin'];
         eventPageInstance.eventPaymentJoin = isMyEventResp['eventPaymentJoin'];
@@ -1506,6 +1506,7 @@ class EventCommand extends BaseCommand {
 
         eventPageInstance.fieldRating = isMyEventResp['fieldRating'];
         eventPageInstance.hostRating = isMyEventResp['hostRating'];
+        eventPageInstance.location = isMyEventResp['location'];
         
         //testing eventPage        
         eventsPageModel.addEventPage(eventPageInstance);

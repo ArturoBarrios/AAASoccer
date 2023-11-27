@@ -126,9 +126,9 @@ class RatingCommand extends BaseCommand {
         bool userRatingFound = false;
         int j = 0;
         //check if rating already exists
-        while (j < event['eventRatings']['data'].length &&
+        while (j < event['eventRatings'].length &&
             !userRatingFound) {
-          if (event['eventRatings']['data'][j]['user']['_id'] ==
+          if (event['eventRatings'][j]['user']['_id'] ==
               appModel.currentUser['_id']) {
             userRatingFound = true;
           }

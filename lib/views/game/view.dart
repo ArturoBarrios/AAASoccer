@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 
@@ -179,7 +180,7 @@ class _PickupViewState extends State<PickupView> {
                         ],
                          )) ),
 
-                          if(event.isMine)
+                          if(event.isMine && dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
                           Padding(
                         padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
                             paddingValue, paddingValue/2),

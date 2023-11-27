@@ -554,7 +554,8 @@ type Event   {
   coupons: [Coupon]
   eventRatings: [EventRating]
   slot: Slot
-  group: Group
+  group: Group,
+  description: String
 }
 
 type Rsvp {

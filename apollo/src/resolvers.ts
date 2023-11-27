@@ -138,6 +138,7 @@ const resolvers = {
                         path: 'user'
                     }
                 },
+               
                 {
                     path: 'price'
                 }
@@ -215,10 +216,16 @@ const resolvers = {
 
         createPayment: async (parent, args, context, info) => {
             console.log("createPayment");
+            console.log("args.input.userId: ", args.input.userId);
+            console.log("args.input.eventId: ", args.input.eventId);
+            console.log("args.input.amount: ", args.input.amount);
+            console.log("args.input.charge: ", args.input.charge);
+            console.log("args.input.paidAt: ", args.input.paidAt);
 
             const user = await User.findById(args.input.userId);
-            const event = await User.findById(args.input.eventId);
+            const event = await Event.findById(args.input.eventId);
 
+            console.log("eventtt: ", event);
             const payment = new Payment({
                 amount: args.input.amount,
                 charge: args.input.charge,                
@@ -228,9 +235,23 @@ const resolvers = {
                 isPlayerPayment: true,
                 isTeamPayment: false,                                
             });
+
+            console.log("payment created");
             await payment.save();
+            console.log("payment saved");
+
+            event.payments.push(payment._id);
+            console.log("payment pushed to event");
+            await event.save();
 
             console.log("createdPayment: ", payment);
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                payment: payment
+            };
         },
         createPlayer: async (parent, args, context, info) => {
             console.log("createPlayer args: ", args.input.user);
@@ -318,7 +339,14 @@ const resolvers = {
                                 },
                                 {
                                     path: 'price'
-                                }
+                                }, 
+                                {
+                                    path: 'payments',
+                                    populate: {
+                                        path: 'user'
+                                    }
+                                },
+                               
                             ]
                             
                         }
@@ -373,6 +401,12 @@ const resolvers = {
                 },
                 {
                     path: 'price'
+                },
+                {
+                    path: 'payments',
+                    populate: {
+                        path: 'user'
+                    }
                 }
             ]);
 
@@ -437,7 +471,14 @@ const resolvers = {
                                     },
                                     {
                                         path: 'price'
-                                    }
+                                    },
+                                    {
+                                        path: 'payments',
+                                        populate: {
+                                            path: 'user'
+                                        }
+                                    },
+                                    
                                 ]
                             }
                         ]
@@ -484,7 +525,14 @@ const resolvers = {
                                 },
                                 {
                                     path: 'price'
-                                }
+                                },
+                                {
+                                    path: 'payments',
+                                    populate: {
+                                        path: 'user'
+                                    }
+                                },
+                               
                             ]
                             
                         }

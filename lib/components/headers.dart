@@ -3,6 +3,7 @@ import 'package:soccermadeeasy/components/playground_widget.dart';
 import '../styles/colors.dart';
 import '../styles/font_sizes.dart';
 import '../views/home.dart';
+import '../views/settings/settings_view.dart';
 import 'logo.dart';
 import 'logo_text.dart';
 import 'models/button_model.dart';
@@ -44,6 +45,42 @@ class Headers extends StatefulWidget {
       //     padding: EdgeInsets.only(right: 12.0),
       //   child: Icon(Icons.calendar_month))
       // ],
+    );
+    return appBar;
+  }
+  
+  AppBar getSettingsHeader(BuildContext context) {
+    AppBar appBar = AppBar(      
+      elevation: 5,
+      // centerTitle: true,
+      title: //Text("hiiiiii"),
+      Row(
+          mainAxisSize: MainAxisSize.min,
+          children:[
+      LogoTextWidget(
+        width: 200.0,
+        height: 30.0, //Replace with your actual image provider
+        backgroundColor: Colors.transparent,      
+        fontSize: FontSizes.xs(context),
+          
+    )] ),
+      backgroundColor: AppColors.tsnBlack,
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: 12.0),
+        child: 
+        GestureDetector(
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return SettingsView();
+              },
+            ));
+    },
+    child:
+        Icon(Icons.settings))
+        )
+      ],
     );
     return appBar;
   }
