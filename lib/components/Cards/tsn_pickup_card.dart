@@ -131,7 +131,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                         color: AppColors.tsnGreen),
                                     Text(event.location.toString(),
                                         style: TextStyle(
-                                          color: AppColors.tsnGrey,
+                                          color: AppColors.tsnGreen,
                                           fontSize: FontSizes.xxs(context),
                                         )),
                                     // Text("TL 2b"),
@@ -139,17 +139,10 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                 )),
                                 Row(
                                   children: [
-                                    RatingWidget(rating: event.fieldRating),
-                                    // Icon(Icons.location_on,
-                                    //     color: AppColors.tsnGreen),
-                                    // Text(fieldLocations[0]['name'].toString(),
-                                    //     style: TextStyle(
-                                    //       color: AppColors.tsnGrey,
-                                    //       fontSize: FontSizes.xxs(context),
-                                    //     )),
-                                    // Text("TL 2b"),
+                                    RatingWidget(rating: event.fieldRating),                                    
                                   ],
                                 ),
+                               
                               ],
                             ),
                           ),
@@ -244,24 +237,35 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                   ],
                                 ),
                                 SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Image(
-                                      width: 20,
-                                      height: 20,
-                                      image: SVGWidgets().pickup(),
-                                      color: AppColors.tsnGreen,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text("Pickup",
+                                 Row(
+                                  children: [                                    
+                                     Icon(Icons.grass,
+                                        color: AppColors.tsnGreen),
+                                    Text("turf",
                                         style: TextStyle(
-                                          color: AppColors.tsnWhite,
+                                          color: AppColors.tsnGrey,
                                           fontSize: FontSizes.xxs(context),
-                                        ))
-                                    // Text("BL 2a"),
-                                    // Text("BL 2b"),
+                                        )),
                                   ],
                                 ),
+                                // Row(
+                                //   children: [
+                                //     Image(
+                                //       width: 20,
+                                //       height: 20,
+                                //       image: SVGWidgets().pickup(),
+                                //       color: AppColors.tsnGreen,
+                                //     ),
+                                //     SizedBox(width: 6),
+                                //     Text("Pickup",
+                                //         style: TextStyle(
+                                //           color: AppColors.tsnWhite,
+                                //           fontSize: FontSizes.xxs(context),
+                                //         ))
+                                //     // Text("BL 2a"),
+                                //     // Text("BL 2b"),
+                                //   ],
+                                // ),
                               ],
                             ),
                           ),

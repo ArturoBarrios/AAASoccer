@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 
+import '../../commands/base_command.dart';
 import '../../components/Mixins/images_mixin.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
@@ -222,6 +223,9 @@ class _PickupViewState extends State<PickupView> {
                               : 0.0,
                         ),
                       ),
+                      GestureDetector(
+                                onTap: () => BaseCommand().launchLocationInBrowser(event.fieldLocations[0]['location']['latitude'], event.fieldLocations[0]['location']['longitude']),
+                                child:
                        Padding(
                           padding: EdgeInsets.fromLTRB(paddingValue, 0,
                             paddingValue, paddingValue/2),
@@ -231,7 +235,7 @@ class _PickupViewState extends State<PickupView> {
                                   style: TextStyle(
                                     color: AppColors.tsnGreen,
                                     fontSize: FontSizes.xxs(context),
-                                  )))),
+                                  ))))),
                       // eventRequestJoin,
                       // eventPaymentJoin,
                       // teamRequestJoin,

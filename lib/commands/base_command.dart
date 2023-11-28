@@ -20,6 +20,7 @@ import '../components/Dialogues/alert_dialogue.dart';
 import '../components/Dialogues/animated_dialogu.dart';
 import '../components/agreement_form_widget.dart';
 import '../constants.dart';
+import '../graphql/fragments/event_fragments.dart';
 import '../graphql/fragments/team_fragments.dart';
 import '../graphql/mutations/users.dart';
 import '../graphql/queries/users.dart';
@@ -666,6 +667,8 @@ List<String> parseAmenities(String amenitiesString) {
       appModel.currentUser['currentPosition'] = userPosition;
       await GeoLocationCommand()
           .setUserAddress(userPosition.latitude, userPosition.longitude);
+      print("appModel.currentUser: " + appModel.currentUser.toString());
+      await EventCommand().setArchivedEvents({"userId": appModel.currentUser['_id'], "startTime": DateTime.now().millisecondsSinceEpoch.toString()},  EventFragments().fullEvent());
       await HomePageCommand().eventTypeTapped(Constants.PICKUP);
       // }
 

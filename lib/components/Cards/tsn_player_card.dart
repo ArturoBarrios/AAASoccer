@@ -238,20 +238,20 @@ class TSNPlayerCard extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    Image(
-                                      // width: 20,
-                                      // height: 60,
-                                      image: SVGWidgets().rightRocket(),
-                                      color: AppColors.tsnGrey,
-                                    ),
-                                    SizedBox(width: 2),
-                                    Image(
-                                      width: 20,
-                                      height: 20,
-                                      image: SVGWidgets().host(),
-                                      color: AppColors.tsnLightGreen,
-                                    ),
-                                    SizedBox(width: 6),
+                                    // Image(
+                                    //   // width: 20,
+                                    //   // height: 60,
+                                    //   image: SVGWidgets().rightRocket(),
+                                    //   color: AppColors.tsnGrey,
+                                    // ),
+                                    // SizedBox(width: 2),
+                                    // Image(
+                                    //   width: 20,
+                                    //   height: 20,
+                                    //   image: SVGWidgets().host(),
+                                    //   color: AppColors.tsnLightGreen,
+                                    // ),
+                                    // SizedBox(width: 6),
                                     // Text(
                                     //     "Host: " +
                                     //         organizers[0]['user']['name']

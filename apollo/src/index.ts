@@ -36,6 +36,13 @@ const typeDefs = `#graphql
     message: String!
     events: [Event]
   }
+  
+  type EventsResponse implements QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    archivedEvents: [Event]
+  }
 
   type EventMutationResponse implements QueryResponse {
     code: String!
@@ -118,6 +125,7 @@ type Query {
   allSubscriptionTypes: [SubscriptionType!]
   allEventsInAreaOfType(type: EventType, latitude: Float, longitude: Float, radius: Int, startTime: String): EventsMutationResponse,
   allUserEventParticipants(_id: String, startTime: String): AllUserEventParticipantResponse!
+  getArchivedEvents(userId: String, startTime: String) : EventsResponse
   }
 
 

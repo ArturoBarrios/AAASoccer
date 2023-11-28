@@ -271,8 +271,9 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                 int.parse(widget.mainEvent['endTime']))
             .isBefore(DateTime.now().subtract(Duration(hours: 1)))) {
       return BasicElevatedButton(
-        backgroundColor: AppColors.tsnGreyerWhite,
+        backgroundColor: AppColors.tsnDarkGrey,
         text: "Expired",
+        textColor: AppColors.tsnBlack,
         fontSize: FontSizes.xxs(context),
         onPressed: () async {},
       );

@@ -16,6 +16,40 @@ class EventQueries {
     return getEvents;
   }
   
+  String getArchivedEvents(
+      dynamic getArchivedEventsInput,
+      String eventFragment) {           
+    String getEvents = """
+      query GetArchivedEvents {
+        getArchivedEvents(                
+          startTime: "${getArchivedEventsInput['startTime']}"
+          userId: "${getArchivedEventsInput['userId']}"
+          ) {    
+            code
+            success
+            message     
+            archivedEvents{
+              name        	
+      _id  
+      type                        
+      isMainEvent
+      mainImageKey
+      archived
+      deleted  
+      startTime
+      endTime  
+      capacity
+      createdAt    
+      amenities
+
+            }         
+        }
+      }
+  """;
+
+    return getEvents;
+  }
+
   String allEventsInAreaOfType(
       dynamic getEventsOfTypeNearLocation,
       String eventFragment) {
@@ -42,6 +76,7 @@ class EventQueries {
 
     return getEvents;
   }
+
 
   String allEventsOfAllTypes(String startTime, String eventFragment) {
     String getEvents = """

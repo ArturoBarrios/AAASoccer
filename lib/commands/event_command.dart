@@ -990,6 +990,66 @@ class EventCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> setArchivedEvents(
+      dynamic getArchivedEventsInput,
+      String eventFragment) async {
+    print("getArchivedEvents()");
+    print("eventFragment: " + eventFragment.toString());    
+    print("startDateTimestamp: " + getArchivedEventsInput['startTime'].toString());
+    print("startDateTimestamp: " + getArchivedEventsInput['userId'].toString());
+    Map<String, dynamic> getGamesNearLocationResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventQueries().getArchivedEvents(
+            getArchivedEventsInput,
+            eventFragment,
+          )
+        }),
+      );
+
+      print("response: ");
+
+      print(jsonDecode(response.body));
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode == 200) {        
+        getGamesNearLocationResp["success"] = false;
+        getGamesNearLocationResp["message"] = "something went wrong";
+      } else {
+        
+        final result = jsonDecode(response.body)['data']['getArchivedEvents'];
+        getGamesNearLocationResp["data"] = null;
+        if (result['code'] == 200) {
+          getGamesNearLocationResp["success"] = true;
+          getGamesNearLocationResp["message"] = "archived Events retrieved";
+          getGamesNearLocationResp["data"] = result['archivedEvents'];
+
+          appModel.myArchivedEvents = result['archivedEvents'];
+          print("appModel.myArchivedEvents: " + appModel.myArchivedEvents.toString());
+        }
+        else{
+          getGamesNearLocationResp["success"] = false;
+          getGamesNearLocationResp["message"] = "something went wrong";
+        }
+      }
+    
+    
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+    }
+
+    return getGamesNearLocationResp;
+  }
+
+
   Future<Map<String, dynamic>> getEventsOfTypeNearLocation(
       dynamic getEventsOfTypeNearLocation,
       String eventFragment) async {
@@ -1020,14 +1080,14 @@ class EventCommand extends BaseCommand {
 
       print(jsonDecode(response.body));
       print("response.statusCode: " + response.statusCode.toString());
-      if (response.statusCode != 200) {        
+      if (response.statusCode == 200) {        
         getGamesNearLocationResp["success"] = false;
         getGamesNearLocationResp["message"] = "no user found";
       } else {
         
         final result = jsonDecode(response.body)['data']['allEventsInAreaOfType'];
         getGamesNearLocationResp["data"] = null;
-        if (result['code'] != 200) {
+        if (result['code'] == 200) {
           getGamesNearLocationResp["success"] = true;
           getGamesNearLocationResp["message"] = "user found";
           getGamesNearLocationResp["data"] = result['events'];
@@ -1690,6 +1750,7 @@ class EventCommand extends BaseCommand {
 
       //events retrieved successfully
       List<dynamic> events = getEventsOfAllTypesNearLocationResp['data'];
+
       events.sort((a, b) {
         int aCreatedAt = int.tryParse(a["createdAt"]) ?? 0;
         int bCreatedAt = int.tryParse(b["createdAt"]) ?? 0;
@@ -1698,7 +1759,9 @@ class EventCommand extends BaseCommand {
         return bCreatedAt.compareTo(aCreatedAt);
       });
       print("events: " + events.toString());
-      eventsModel.games = events;
+      setMyEvents(events);
+
+      // eventsModel.games = events;
       // print("length of events: " + events.length.toString());
       //iterate through events
       // for (int i = 0; i < events.length; i++) {

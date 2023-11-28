@@ -115,7 +115,7 @@ const resolvers = {
             });
             const event = await Event.findById(args.eventId);
             userEventParticipant.event = event._id;
-            await userEventParticipant.save();            
+            await userEventParticipant.save();
             await event.userParticipants.push(userEventParticipant._id);
             await event.save();
 
@@ -138,12 +138,12 @@ const resolvers = {
                         path: 'user'
                     }
                 },
-               
+
                 {
                     path: 'price'
                 }
             ]);
-            
+
 
             return {
                 code: "200",
@@ -177,41 +177,41 @@ const resolvers = {
             console.log("deleteEventUserParticipant");
 
             //delete
-            const eventUserParticipant = await EventUserParticipant.findById(args._id);                        
+            const eventUserParticipant = await EventUserParticipant.findById(args._id);
             await eventUserParticipant.deleteOne();
 
 
 
 
-            
+
 
             return {
                 code: "200",
                 success: true,
-                message: "User email was successfully updated",                
+                message: "User email was successfully updated",
             };
         },
         createStripeCustomer: async (parent, args, context, info) => {
-            console.log("createStripeCustomer");            
-            
+            console.log("createStripeCustomer");
+
             const user = await User.findById(args.userId);
 
             const stripeCustomer = new StripeCustomer({
                 customerId: args.customerId,
-                user: user._id,            
+                user: user._id,
             });
             await stripeCustomer.save();
 
             stripeCustomer.populate('user');
-            
-            
+
+
             return {
                 code: "200",
                 success: true,
                 message: "User email was successfully updated",
                 stripeCustomer: stripeCustomer
             }
-            
+
         },
 
         createPayment: async (parent, args, context, info) => {
@@ -228,12 +228,12 @@ const resolvers = {
             console.log("eventtt: ", event);
             const payment = new Payment({
                 amount: args.input.amount,
-                charge: args.input.charge,                
+                charge: args.input.charge,
                 paidAt: args.input.paidAt,
                 user: user._id,
                 event: event._id,
                 isPlayerPayment: true,
-                isTeamPayment: false,                                
+                isTeamPayment: false,
             });
 
             console.log("payment created");
@@ -306,59 +306,68 @@ const resolvers = {
 
         allUserEventParticipants: async (parent, args, context, info) => {
             // const events = await Event.find({ type: args.type });
-            console.log("allUserEventParticipants");                        
+            console.log("allUserEventParticipants");
             console.log("startTime: ", args.startTime);
             console.log("_id: ", args._id);
 
             const user = await User.findById(args._id)
-            .populate([
-                {
-                    path: 'eventUserParticipants',
-                    populate: 
-                    [
-                        {
-                            path: 'user'
-                        },
-                        {
-                            path: 'event',
-                            populate: [
+                .populate([
+                    {
+                        path: 'eventUserParticipants',
+                        populate:
+                            [
                                 {
-                                    path: 'fieldLocations',
-                                    populate: {
-                                        path: 'location'
-                                    },
+                                    path: 'user'
                                 },
                                 {
-                                    path: 'joinConditions'
-                                },
-                                {
-                                    path: 'userParticipants',
-                                    populate: {
-                                        path: 'user'
-                                    }
-                                },
-                                {
-                                    path: 'price'
-                                }, 
-                                {
-                                    path: 'payments',
-                                    populate: {
-                                        path: 'user'
-                                    }
-                                },
-                               
+                                    path: 'event',
+                                    populate: [
+                                        {
+                                            path: 'fieldLocations',
+                                            populate: {
+                                                path: 'location'
+                                            },
+                                        },
+                                        {
+                                            path: 'joinConditions'
+                                        },
+                                        {
+                                            path: 'userParticipants',
+                                            populate: {
+                                                path: 'user'
+                                            }
+                                        },
+                                        {
+                                            path: 'price'
+                                        },
+                                        {
+                                            path: 'payments',
+                                            populate: {
+                                                path: 'user'
+                                            }
+                                        },
+
+                                    ]
+
+                                }
+
+
                             ]
-                            
-                        }
+                    },
+                ]
+                );
 
 
-                    ]
-                },
-            ]
-            );
 
+            const cutoffTime = parseInt(args.startTime);
+            console.log("cutoffTime: ", cutoffTime);
+            user.eventUserParticipants = user.eventUserParticipants.filter(eventUserParticipant => {
+                const event = eventUserParticipant['event'];
+                const eventStartTime = parseInt(event['startTime']);
+                console.log("eventStartTime: ", eventStartTime);
 
-            console.log("events: ", user.eventUserParticipants);
+                return cutoffTime <= eventStartTime;
+            });
 
 
 
@@ -414,16 +423,80 @@ const resolvers = {
             console.log("events: ", events);
 
 
+            const cutoffTime = parseInt(args.startTime);
+            console.log("cutoffTime: ", cutoffTime);
+            const filteredEvents = events.filter(eventUserParticipant => {
+                const event = eventUserParticipant['event'];
+                const eventStartTime = parseInt(event['startTime']);
+                console.log("eventStartTime: ", eventStartTime);
 
+                return cutoffTime <= eventStartTime;
+            });
 
 
             return {
                 code: 200,
                 success: true,
                 message: "User email was successfully updated",
-                events: events
+                events: filteredEvents
             };
         },
+       
+        getArchivedEvents: async (parent, args, context, info) => {            
+            console.log("getArchivedEvents");
+            console.log("userId: ", args.userId);           
+            console.log("startTime: ", args.startTime);
+
+            const user = await User.findById(args.userId)
+                .populate([
+                    {
+                        path: 'eventUserParticipants',
+                        populate:
+                            [
+                                {
+                                    path: 'user'
+                                },
+                                {
+                                    path: 'event'
+                                }
+                                
+
+
+                            ]
+                    },
+                ]
+                );
+
+
+            const cutoffTime = parseInt(args.startTime);
+            // console.log("cutoffTime: ", cutoffTime);
+            // console.log("user: ", user);
+            const userEvents = user.eventUserParticipants;
+            // console.log("userEvents: ", userEvents);
+            
+            const archivedEvents = userEvents
+    .filter(eventUserParticipant => {
+        const event = eventUserParticipant['event'];
+        const eventStartTime = parseInt(event['startTime']);
+        console.log("eventStartTime: ", eventStartTime);
+
+        return cutoffTime > eventStartTime;
+    })
+    .map(eventUserParticipant => eventUserParticipant['event']);         
+
+
+            console.log("archivedEvents: ", archivedEvents);
+
+
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully updated",
+                archivedEvents: archivedEvents
+            };
+        },
+
+
         allGames: async (parent, args, context, info) => {
             const games = await Game.find();
 
@@ -478,7 +551,7 @@ const resolvers = {
                                             path: 'user'
                                         }
                                     },
-                                    
+
                                 ]
                             }
                         ]
@@ -497,51 +570,54 @@ const resolvers = {
         },
         findUserById: async (parent, args, context, info) => {
             const user = await User.findById(args._id)
-            .populate([
-                {
-                    path: 'eventUserParticipants',
-                    populate: 
-                    [
-                        {
-                            path: 'user'
-                        },
-                        {
-                            path: 'event',
-                            populate: [
+                .populate([
+                    {
+                        path: 'eventUserParticipants',
+                        populate:
+                            [
                                 {
-                                    path: 'fieldLocations',
-                                    populate: {
-                                        path: 'location'
-                                    },
+                                    path: 'user'
                                 },
                                 {
-                                    path: 'joinConditions'
-                                },
-                                {
-                                    path: 'userParticipants',
-                                    populate: {
-                                        path: 'user'
-                                    }
-                                },
-                                {
-                                    path: 'price'
-                                },
-                                {
-                                    path: 'payments',
-                                    populate: {
-                                        path: 'user'
-                                    }
-                                },
-                               
+                                    path: 'event',
+                                    populate: [
+                                        {
+                                            path: 'fieldLocations',
+                                            populate: {
+                                                path: 'location'
+                                            },
+                                        },
+                                        {
+                                            path: 'joinConditions'
+                                        },
+                                        {
+                                            path: 'userParticipants',
+                                            populate: [
+                                                {
+                                                    path: 'user'
+                                                }
+                                        ], 
+
+                                        },
+                                        {
+                                            path: 'price'
+                                        },
+                                        {
+                                            path: 'payments',
+                                            populate: {
+                                                path: 'user'
+                                            }
+                                        },
+
+                                    ]
+
+                                }
+
+
                             ]
-                            
-                        }
-
-
-                    ]
-                },
-            ]
-            );
+                    },
+                ]
+                );
 
             console.log("user: ", user);
 
