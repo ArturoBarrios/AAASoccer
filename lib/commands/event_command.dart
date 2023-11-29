@@ -993,8 +993,7 @@ class EventCommand extends BaseCommand {
   Future<Map<String, dynamic>> setArchivedEvents(
       dynamic getArchivedEventsInput,
       String eventFragment) async {
-    print("getArchivedEvents()");
-    print("eventFragment: " + eventFragment.toString());    
+    print("getArchivedEvents()");    
     print("startDateTimestamp: " + getArchivedEventsInput['startTime'].toString());
     print("startDateTimestamp: " + getArchivedEventsInput['userId'].toString());
     Map<String, dynamic> getGamesNearLocationResp = {
@@ -1021,13 +1020,9 @@ class EventCommand extends BaseCommand {
       print(jsonDecode(response.body));
       print("response.statusCode: " + response.statusCode.toString());
       if (response.statusCode == 200) {        
-        getGamesNearLocationResp["success"] = false;
-        getGamesNearLocationResp["message"] = "something went wrong";
-      } else {
-        
         final result = jsonDecode(response.body)['data']['getArchivedEvents'];
         getGamesNearLocationResp["data"] = null;
-        if (result['code'] == 200) {
+        if (result['success']) {
           getGamesNearLocationResp["success"] = true;
           getGamesNearLocationResp["message"] = "archived Events retrieved";
           getGamesNearLocationResp["data"] = result['archivedEvents'];
@@ -1035,10 +1030,10 @@ class EventCommand extends BaseCommand {
           appModel.myArchivedEvents = result['archivedEvents'];
           print("appModel.myArchivedEvents: " + appModel.myArchivedEvents.toString());
         }
-        else{
-          getGamesNearLocationResp["success"] = false;
-          getGamesNearLocationResp["message"] = "something went wrong";
-        }
+      } else {
+        
+        getGamesNearLocationResp["success"] = false;
+        getGamesNearLocationResp["message"] = "something went wrong";                
       }
     
     
@@ -1081,22 +1076,20 @@ class EventCommand extends BaseCommand {
       print(jsonDecode(response.body));
       print("response.statusCode: " + response.statusCode.toString());
       if (response.statusCode == 200) {        
-        getGamesNearLocationResp["success"] = false;
-        getGamesNearLocationResp["message"] = "no user found";
-      } else {
-        
         final result = jsonDecode(response.body)['data']['allEventsInAreaOfType'];
+        print("resulttttt");
         getGamesNearLocationResp["data"] = null;
-        if (result['code'] == 200) {
+        if (result['success']) {
           getGamesNearLocationResp["success"] = true;
           getGamesNearLocationResp["message"] = "user found";
           getGamesNearLocationResp["data"] = result['events'];
         }
-        else{
-          getGamesNearLocationResp["success"] = false;
-          getGamesNearLocationResp["message"] = "no user found";
-        }
       }
+       else {
+        getGamesNearLocationResp["success"] = false;
+        getGamesNearLocationResp["message"] = "no user found";
+        } 
+       
     
     
     } on Exception catch (e) {

@@ -116,13 +116,14 @@ class RatingCommand extends BaseCommand {
     };
     try {
       
-      
+        print("appModel.myArchivedEvents: "+appModel.myArchivedEvents.toString());
+
 
       for (int i = 0; i < appModel.myArchivedEvents.length; i++) {
-        dynamic event = appModel.myArchivedEvents[i]['event'];
+        dynamic event = appModel.myArchivedEvents[i];
         print("eventUserParticipant id: " + appModel.myArchivedEvents[i]['_id'].toString());
         print("eventttttttt: "+event.toString());
-        print("eventttttttt endtime: "+event['endTime'].toString());
+        print("eventttttttt startTime: "+event['startTime'].toString());
         bool userRatingFound = false;
         int j = 0;
         //check if rating already exists
@@ -137,26 +138,33 @@ class RatingCommand extends BaseCommand {
           //&& event has happened in past [2-24 hours]
           if (!userRatingFound) {
             print("user rating not found");
-            if (appModel.myArchivedEvents[i]['roles']
+            for (int k = 0; k < event['userParticipants'].length; k++) {
+              dynamic userParticipant = event['userParticipants'][k];
+            print("check rolessss: "+ userParticipant.toString());
+            if (userParticipant['roles']
                 .toString()
                 .parseRoles()
                 .contains('PLAYER')) {
-              String millisecondsEndtime =
-                  appModel.myArchivedEvents[i]['event']['endTime'].toString();
-              DateTime endDateTime =
-                  BaseCommand().dateTimeFromMilliseconds(millisecondsEndtime);
-              if (endDateTime
+              String millisecondsStarrttime =
+                  event['startTime'].toString();
+              DateTime startDateTime =
+                  BaseCommand().dateTimeFromMilliseconds(millisecondsStarrttime);
+              print("startDateTime: " + startDateTime.toString());
+                        print("niceeeeee11111");
+              if (startDateTime
                       .isBefore(DateTime.now().subtract(Duration(hours: 2))) &&
-                  endDateTime
-                      .isAfter(DateTime.now().subtract(Duration(hours: 24)))) {
-                        print("fieldLocations test: "+ event['fieldLocations'].toString());
+                  startDateTime
+                      .isAfter(DateTime.now().subtract(Duration(hours: 72)))) {
+                        print("niceeeeee");
+                        // print("fieldLocations test: "+ event['fieldLocations'].toString());
                 showRatingForEventResp['data']['showRating'] = true;
                 showRatingForEventResp['data']['eventId'] = event['_id'];
                 showRatingForEventResp['data']['userId'] = appModel.currentUser['_id'];
-                showRatingForEventResp['data']['fieldLocationId'] = event['fieldLocations']['data'][0]['_id'];
+                showRatingForEventResp['data']['fieldLocationId'] = event['fieldLocations'][0]['_id'];
               }
-            }
+              }
           }
+        }
         
       }
 

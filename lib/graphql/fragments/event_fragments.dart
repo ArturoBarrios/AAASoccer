@@ -104,6 +104,7 @@ class EventFragments {
       }
       userParticipants{             
         _id
+        roles                                                                    
         event{                        
           _id
           name
@@ -115,8 +116,6 @@ class EventFragments {
           username
           userType          
         }          
-        roles
-        isAttending                                                              
       }
       payments{        
         _id
@@ -182,8 +181,7 @@ class EventFragments {
 
             }
           }          
-          roles
-          isAttending
+          roles          
         }                                                              
       }      
     """;

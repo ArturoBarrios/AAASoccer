@@ -8,7 +8,7 @@ const eventUserParticipantSchema = new mongoose.Schema({
     event: { type: Schema.Types.ObjectId, ref: 'Event' },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     roles: String,    
-    isAttending: Object.values(EventUserParticipantAttendingOptions)
+    // isAttending: Object.values(EventUserParticipantAttendingOptions)
 });
 
 const EventUserParticipant = mongoose.model('EventUserParticipant', eventUserParticipantSchema);

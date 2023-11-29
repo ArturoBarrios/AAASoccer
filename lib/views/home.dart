@@ -347,7 +347,7 @@ class _Home extends State<Home> {
     // if (getAllUserEventParticipantsResp['success']) {
     //   List<dynamic> allMyEvents = getAllUserEventParticipantsResp['data'];
     //   EventCommand().setMyEvents(allMyEvents);
-    //   await RatingCommand().showRating(context);
+      await RatingCommand().showRating(context);
     // }
   }
 

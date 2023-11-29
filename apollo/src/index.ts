@@ -480,7 +480,7 @@ type EventUserParticipant {
   user: User
   roles: String
   organization: Organization
-  isAttending: EventUserParticipantAttendingOptions
+  # isAttending: EventUserParticipantAttendingOptions
 }
 
 type TeamUserParticipant {

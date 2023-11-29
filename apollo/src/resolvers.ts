@@ -391,7 +391,7 @@ const resolvers = {
 
             const events = await Event.find({
                 type: args.type,
-                startTime: { $gte: args.startTime }
+                // startTime: { $gte: args.startTime }
             }).populate([
                 {
                     path: 'fieldLocations',
@@ -420,19 +420,19 @@ const resolvers = {
             ]);
 
 
+            
             console.log("events: ", events);
-
-
+            
             const cutoffTime = parseInt(args.startTime);
             console.log("cutoffTime: ", cutoffTime);
-            const filteredEvents = events.filter(eventUserParticipant => {
-                const event = eventUserParticipant['event'];
+            const filteredEvents = events.filter(event => {                
                 const eventStartTime = parseInt(event['startTime']);
                 console.log("eventStartTime: ", eventStartTime);
-
+                
                 return cutoffTime <= eventStartTime;
             });
-
+            
+            console.log("filteredEvents: ", filteredEvents);
 
             return {
                 code: 200,
@@ -457,7 +457,34 @@ const resolvers = {
                                     path: 'user'
                                 },
                                 {
-                                    path: 'event'
+                                    path: 'event',
+                                    populate: [
+                                        {
+                                            path: 'fieldLocations',
+                                            populate: {
+                                                path: 'location'
+                                            },
+                                        },
+                                        {
+                                            path: 'joinConditions'
+                                        },
+                                        {
+                                            path: 'userParticipants',
+                                            populate: {
+                                                path: 'user'
+                                            }
+                                        },
+                                        {
+                                            path: 'price'
+                                        },
+                                        {
+                                            path: 'payments',
+                                            populate: {
+                                                path: 'user'
+                                            }
+                                        },
+
+                                    ]
                                 }
                                 
 
@@ -475,7 +502,7 @@ const resolvers = {
             // console.log("userEvents: ", userEvents);
             
             const archivedEvents = userEvents
-    .filter(eventUserParticipant => {
+    .filter(eventUserParticipant =>  {
         const event = eventUserParticipant['event'];
         const eventStartTime = parseInt(event['startTime']);
         console.log("eventStartTime: ", eventStartTime);

@@ -124,8 +124,7 @@ class HomePageCommand extends BaseCommand {
     //get events
     if (BaseCommand().isEventType(newSelectedKey)) {
       String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(
-          1); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
-        print("before inputttt");
+          1); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];        
         print("currentUser: "+ appModel.currentUser.toString());
           dynamic getEventsOfAllTypesNearLocationInput = {
         "type": "GAME",
@@ -133,8 +132,7 @@ class HomePageCommand extends BaseCommand {
         "longitude": appModel.currentPosition.longitude,
         "radius": appModel.eventRadius,
         "startTime": xHoursAgoTimestamp,
-      };
-      print("after inputttt");
+      };      
       print("getEventsOfAllTypesNearLocationInput: " +
           getEventsOfAllTypesNearLocationInput.toString());
       Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
@@ -142,8 +140,7 @@ class HomePageCommand extends BaseCommand {
               getEventsOfAllTypesNearLocationInput, EventFragments().fullEvent() );
       print("getEventsOfAllTypesNearLocationResppp: " +
           getEventsOfAllTypesNearLocationResp.toString());
-      if (getEventsOfAllTypesNearLocationResp['success']) {
-        print("niceeeeeeeest");
+      if (getEventsOfAllTypesNearLocationResp['success']) {        
         newSelectedObjects = getEventsOfAllTypesNearLocationResp['data'];
         homePageModel.selectedObjects = newSelectedObjects;
         print("homePageModel.selectedObjects: " +

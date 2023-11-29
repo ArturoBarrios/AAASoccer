@@ -15,10 +15,9 @@ class EventQueries {
 
     return getEvents;
   }
-  
+
   String getArchivedEvents(
-      dynamic getArchivedEventsInput,
-      String eventFragment) {           
+      dynamic getArchivedEventsInput, String eventFragment) {
     String getEvents = """
       query GetArchivedEvents {
         getArchivedEvents(                
@@ -29,18 +28,7 @@ class EventQueries {
             success
             message     
             archivedEvents{
-              name        	
-      _id  
-      type                        
-      isMainEvent
-      mainImageKey
-      archived
-      deleted  
-      startTime
-      endTime  
-      capacity
-      createdAt    
-      amenities
+              ${eventFragment}
 
             }         
         }
@@ -51,9 +39,9 @@ class EventQueries {
   }
 
   String allEventsInAreaOfType(
-      dynamic getEventsOfTypeNearLocation,
-      String eventFragment) {
-    String enumValue = getEventsOfTypeNearLocation['type'].toString().split('.').last;
+      dynamic getEventsOfTypeNearLocation, String eventFragment) {
+    String enumValue =
+        getEventsOfTypeNearLocation['type'].toString().split('.').last;
     String getEvents = """
     query AllEventsOfType {
       allEventsInAreaOfType(
@@ -61,7 +49,7 @@ class EventQueries {
         latitude: ${getEventsOfTypeNearLocation['latitude']}
         longitude: ${getEventsOfTypeNearLocation['longitude']}
         radius: 100
-        startTime: "122656565"
+        startTime: "${getEventsOfTypeNearLocation['startTime']}"
         ) {    
           code
           success
@@ -76,7 +64,6 @@ class EventQueries {
 
     return getEvents;
   }
-
 
   String allEventsOfAllTypes(String startTime, String eventFragment) {
     String getEvents = """
@@ -103,11 +90,11 @@ class EventQueries {
         }
       }
     """;
-      // query GetEventUserParticipants {
-      //   allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {                              
-      //         ${allUserEventParticipantsInput['eventFragment']}            
-      //   }
-      // }
+    // query GetEventUserParticipants {
+    //   allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {
+    //         ${allUserEventParticipantsInput['eventFragment']}
+    //   }
+    // }
     return getUserEvents;
   }
 

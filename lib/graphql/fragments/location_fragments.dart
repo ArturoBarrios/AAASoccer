@@ -29,8 +29,7 @@ class LocationFragments{
          name
          address
          latitude
-         longitude
-         locationType
+         longitude         
     ''';
 
     return locationFullReturn;
