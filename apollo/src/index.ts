@@ -59,6 +59,13 @@ type CreateGameMutationResponse implements MutationResponse {
   game: Game
 }
 
+type CreateEventRatingResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  eventRating: EventRating
+}
+
 type CreatePlayerMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
@@ -95,12 +102,14 @@ type EventUserParticipantMutationResponse implements MutationResponse {
 
 type Mutation {
   createGame(input: GameInput): CreateGameMutationResponse
+  createEventRating(input: EventRatingInput): CreateEventRatingResponse
   createPlayer(input: PlayerInput): CreatePlayerMutationResponse
   createStripeCustomer(customerId: String, userId: String): StripeCustomerMutationResponse
   updateUserOnboarding(_id: String, onboarded: Boolean): UserResponse
   addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
   deleteEventUserParticipant(_id: String): EventUserParticipantMutationResponse
   createPayment(input: PaymentInput): PaymentMutationResponse
+
 
 }
 
@@ -139,6 +148,15 @@ input PaymentInput {
 
 input PlayerInput {  
   user: UserInput
+}
+
+input EventRatingInput {  
+  eventRating: Int
+  hostRating: Int
+  fieldLocationRating: Int
+  eventId: String
+  userId: String
+  fieldLocationId: String
 }
 
 input UserInput {  

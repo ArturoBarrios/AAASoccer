@@ -144,11 +144,12 @@ class GameCommand extends BaseCommand {
       );
       print("response body: ");
       print(jsonDecode(response.body));
+    
 
       Map<String, dynamic> createdGame =
           jsonDecode(response.body);      
-      // Map<String, dynamic> createdGame =
-      //     jsonDecode(response.body)['data']['createGame'];      
+      
+
 
       createGameResponse["success"] = true;
       createGameResponse["message"] = "Game Created";

@@ -75,9 +75,8 @@ class RatingCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()+""),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -88,11 +87,19 @@ class RatingCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      dynamic result = jsonDecode(response.body)['data']['createEventRating'];      
+      if (response.statusCode == 200) {     
+        final result = jsonDecode(response.body)['data']['createEventRating'];      
+        if(result['success']){
+          final eventWithUpdatedRating = result['event'];
+          print("eventWithUpdatedRating: "+eventWithUpdatedRating.toString());
+          createRatingForEventResp["success"] = true;
+          createRatingForEventResp["message"] = "Rating for Event Created";
+          createRatingForEventResp["data"] = eventWithUpdatedRating;
 
-      createRatingForEventResp["success"] = true;
-      createRatingForEventResp["message"] = "Rating for Event Created";
-      createRatingForEventResp["data"] = result;
+        }
+
+      }
+
 
       return createRatingForEventResp;
     } catch (e) {

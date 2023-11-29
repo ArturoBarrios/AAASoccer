@@ -28,22 +28,21 @@ String createEventRating(
   ) {   
     String createEventRating = """
    mutation {
-      createEventRating(data: {      
-        eventRating: ${eventRatingInput['eventRating']},
-        hostRating: ${eventRatingInput['hostRating']},
-        fieldLocationRating: ${eventRatingInput['fieldLocationRating']},
-        event: {
-            connect: "${eventRatingInput['eventId']}"
-          },
-        user: {
-            connect: "${eventRatingInput['userId']}"
-        }
-        fieldLocation: {
-            connect: "${eventRatingInput['fieldLocationId']}"
-        }
-                                  
+      createEventRating(input: {      
+        eventRating: ${eventRatingInput['eventRating']}
+        hostRating: ${eventRatingInput['hostRating']}
+        fieldLocationRating: ${eventRatingInput['fieldLocationRating']}
+        eventId: "${eventRatingInput['eventId']}"          
+        userId: "${eventRatingInput['userId']}"        
+        fieldLocationId: "${eventRatingInput['fieldLocationId']}"                                          
         }) {
-          ${RatingFragments().fullEventRating()}
+          code
+          success
+          message
+          eventRating{
+            _id
+
+          }
         }                                  
     }
       """;

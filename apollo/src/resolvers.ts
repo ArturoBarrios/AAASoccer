@@ -10,9 +10,44 @@ import User from "./User.js";
 import StripeCustomer from "./StripeCustomer.js";
 import Payment from "./Payment.js";
 import { print } from "graphql";
+import EventRating from "./EventRating.js";
 
 const resolvers = {
     Mutation: {
+        createEventRating: async (parent, args, context, info) => {
+            console.log("createEventRating");
+            
+            var event = await Event.findById(args.input.eventId);
+            // console.log("event: ", event);
+            // var fieldLocation 
+            
+            const eventRating = new EventRating({
+                event: args.input.eventId,
+                user: args.input.userId,
+                fieldLocation: args.input.fieldLocationId,
+                eventRating: args.input.eventRating,
+                hostRating: args.input.hostRating,
+                fieldLocationRating: args.input.fieldLocationRating,                
+            });
+            
+            await eventRating.save();
+            console.log("eventRating: ", eventRating);
+
+            event.eventRatings.push(eventRating._id);
+
+            await event.save();
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                eventRating: eventRating
+            
+            };
+
+
+        },
+
         createGame: async (parent, args, context, info) => {
             console.log("createGame: ");
 
@@ -483,6 +518,12 @@ const resolvers = {
                                                 path: 'user'
                                             }
                                         },
+                                        {
+                                            path: 'eventRatings',
+                                            populate: {
+                                                path: 'user'
+                                            }
+                                        }
 
                                     ]
                                 }
