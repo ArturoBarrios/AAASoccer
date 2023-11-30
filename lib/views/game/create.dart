@@ -125,14 +125,14 @@ class _GameCreateState extends State<GameCreate> {
 
       print(createPickupGameResp['data']);
       if (createPickupGameResp['success']) {
-        Map<String, dynamic> createdGame = createPickupGameResp['data'];
+        Map<String, dynamic> createdEvent = createPickupGameResp['data'];
         await EventCommand()
-            .updateViewModelsWithEvent(createdGame['event'], true);
+            .updateViewModelsWithEvent(createdEvent, true);
 
-        if (context.mounted) {
-          Navigator.pop(
-            context,
-          );
+        
+          // Navigator.pop(
+          //   context,
+          // );
           // Navigator.push(
           //   context,
           //   MaterialPageRoute(
@@ -141,7 +141,7 @@ class _GameCreateState extends State<GameCreate> {
           //     ),
           //   ),
           // );
-        }
+        
       }
     } on ApiException catch (_) {}
   }

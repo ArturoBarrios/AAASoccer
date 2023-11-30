@@ -222,6 +222,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
+                            flex: 15,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -269,43 +270,45 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                               ],
                             ),
                           ),
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(
-                                  children: [
-                                    RatingWidget(rating: event.hostRating),                                    
-                                    // Text("BR 1a"),
-                                    // Text("BR 1b"),
-                                  ],
-                                ),
-                                Row(
-                                  children: [                                   
-                                    SizedBox(width: 2),
-                                    Image(
-                                      width: 20,
-                                      height: 20,
-                                      image: SVGWidgets().host(),
-                                      color: AppColors.tsnLightGreen,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text(
-                                        "Host: "
-                                         +
-                                            event.organizers[0]['user']['name']
-                                                .toString(),
-                                        style: TextStyle(
-                                          color: AppColors.tsnGrey,
-                                          fontSize: FontSizes.xxs(context),
-                                        ))
-                                    // Text("BR 2a"),
-                                    // Text("BR 2b"),
-                                  ],
-                                ),
-                              ],
+                            Flexible(
+                              flex: 10,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  
+                                  Row(
+                                    children: [                                   
+                                      SizedBox(width: 2),
+                                      Image(
+                                        width: 20,
+                                        height: 20,
+                                        image: SVGWidgets().host(),
+                                        color: AppColors.tsnLightGreen,
+                                      ),
+                                      SizedBox(width: 6),
+                                      Text(
+                                          "Host: "
+                                          +
+                                              event.organizers[0]['user']['name']
+                                                  .toString(),
+                                          style: TextStyle(
+                                            color: AppColors.tsnGrey,
+                                            fontSize: FontSizes.xxs(context),
+                                          ))
+                                      // Text("BR 2a"),
+                                      // Text("BR 2b"),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      RatingWidget(rating: event.hostRating),                                    
+                                      // Text("BR 1a"),
+                                      // Text("BR 1b"),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ],

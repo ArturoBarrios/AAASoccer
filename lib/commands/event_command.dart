@@ -1074,9 +1074,17 @@ class EventCommand extends BaseCommand {
       print("response: ");
 
       print(jsonDecode(response.body));
+      
       print("response.statusCode: " + response.statusCode.toString());
       if (response.statusCode == 200) {        
         final result = jsonDecode(response.body)['data']['allEventsInAreaOfType'];
+        dynamic events = result['events'];
+        //iterate over events
+        for(int i = 0; i < events.length; i++){
+          //get main event
+          dynamic eventRatings = events[i];
+         print("eventRatingsssssss: "+ eventRatings.toString());
+        }
         print("resulttttt");
         getGamesNearLocationResp["data"] = null;
         if (result['success']) {
@@ -1387,8 +1395,7 @@ class EventCommand extends BaseCommand {
       isMyEventResp['mainEvent'] = event;
       isMyEventResp['allEvents'] = events;
       
-      isMyEventResp['hostRating'] = calculateHostRating(event);
-      isMyEventResp['fieldRating'] = calculateFieldRating(event);
+      
 
       String amenitiesString = event['amenities'] == null ? "{}" : event['amenities'];
       List<String> amenitiesList = BaseCommand().parseAmenities(amenitiesString);
@@ -1450,6 +1457,9 @@ class EventCommand extends BaseCommand {
           isMyEventResp['players'].add(participant);
         }
       }
+
+      isMyEventResp['hostRating'] = calculateHostRating(isMyEventResp['organizers'][0]);
+      isMyEventResp['fieldRating'] = calculateFieldRating(event);
 
       isMyEventResp['capacity'] = event['capacity'];
       isMyEventResp['numberOfParticipants'] = isMyEventResp['players'].length;
@@ -1560,6 +1570,7 @@ class EventCommand extends BaseCommand {
         eventPageInstance.fieldRating = isMyEventResp['fieldRating'];
         eventPageInstance.hostRating = isMyEventResp['hostRating'];
         eventPageInstance.location = isMyEventResp['location'];
+        print("checkkkkk: "+ eventPageInstance.location.toString());
         
         //testing eventPage        
         eventsPageModel.addEventPage(eventPageInstance);

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 const discountSchema = new mongoose.Schema({
-    percentage: BigInt, 
+    percentage: Number, 
     amount: String    
 });
 

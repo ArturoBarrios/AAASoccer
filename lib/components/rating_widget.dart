@@ -17,10 +17,10 @@ class RatingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Check if the rating is -1 to display "No Ratings"
-    if (rating == -1) {
-      // return Text('!!!!No Ratings!!!!', style: TextStyle(color: AppColors.tsnGreen));
-      return Text('', style: TextStyle(color: AppColors.tsnGreen));
-    }
+    // if (rating == -1) {
+    //   // return Text('!!!!No Ratings!!!!', style: TextStyle(color: AppColors.tsnGreen));
+    //   return Text('', style: TextStyle(color: AppColors.tsnGreen));
+    // }
 
     return InkWell(
       onTap: () {

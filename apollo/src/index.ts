@@ -106,9 +106,11 @@ type Mutation {
   createPlayer(input: PlayerInput): CreatePlayerMutationResponse
   createStripeCustomer(customerId: String, userId: String): StripeCustomerMutationResponse
   updateUserOnboarding(_id: String, onboarded: Boolean): UserResponse
+  updateUsertermsAndPrivacy(userId: String, hasAcceptedTermsAndConditions: Boolean, hasAcceptedPrivacyPolicy: Boolean): UserResponse
   addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
   deleteEventUserParticipant(_id: String): EventUserParticipantMutationResponse
   createPayment(input: PaymentInput): PaymentMutationResponse
+  updateUser(input: UserInput): UserResponse
 
 
 }
@@ -166,6 +168,13 @@ input UserInput {
   username: String
   birthdate: String
   location: LocationInput  
+  preferredFoot: String
+  preferredPosition: String
+  competitiveLevel: String
+  interestedIn: String
+  hasAcceptedTermsAndConditions: Boolean 
+  hasAcceptedPrivacyPolicy: Boolean 
+
 }
 
 input GameInput {
@@ -438,8 +447,14 @@ type User  {
   groups: [Group] 
   ratings: [Rating]
   eventRatings: [EventRating]
+  # law crap 
   hasAcceptedTermsAndConditions: Boolean 
   hasAcceptedPrivacyPolicy: Boolean 
+  #onboarding
+  preferredFoot: String
+  preferredPosition: String
+  competitiveLevel: String
+  interestedIn: String
 }
 
 type Request {

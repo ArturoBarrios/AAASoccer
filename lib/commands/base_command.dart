@@ -680,8 +680,8 @@ List<String> parseAmenities(String amenitiesString) {
       print(
           "check appModel after setting userPosition: ${appModel.currentUser['currentPosition']}");
       //assume you have the latest events
-      Map<String, dynamic> findEventsNearPointResp =
-          await EventCommand().findEventsNearPoint(eventsModel.events, 50);
+      // Map<String, dynamic> findEventsNearPointResp =
+      //     await EventCommand().findEventsNearPoint(eventsModel.events, 50);
       BaseCommand().startReloadTimer();
 
       resp["success"] = true;

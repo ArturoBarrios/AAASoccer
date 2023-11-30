@@ -52,92 +52,139 @@ const resolvers = {
             console.log("createGame: ");
 
             console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
-            //get user
-            const user = await User.findById(args.input.event.userParticipants[0].userId);
-            console.log("user retrieved from userId: " + user.toString());
+            //server validation
+            if(args.input.event.fieldLocations[0].location.latitude != 0  
+               && args.input.event.fieldLocations[0].location.longitude != 0) {
+                   //get user
+                   const user = await User.findById(args.input.event.userParticipants[0].userId);
+                   console.log("user retrieved from userId: " + user.toString());
+       
+                   const createdPrice = new Price({
+                       amount: args.input.event.price.amount,
+                   });
+                   await createdPrice.save();
+                   console.log("createdPrice: ", createdPrice._id);
+       
+                   const joinConditions = new JoinConditions({
+                       withRequest: args.input.event.joinConditions.withRequest,
+                       withPayment: args.input.event.joinConditions.withPayment,
+                   });
+                   await joinConditions.save();
+                   console.log("joinConditions: ", joinConditions._id);
+       
+                   const eventUserParticipants = new EventUserParticipant({
+                       user: user._id,
+                       roles: args.input.event.userParticipants[0].roles,
+                   });
+                   await eventUserParticipants.save();
+                   console.log("eventUserParticipants: ", eventUserParticipants._id);
+       
+                   await user.eventUserParticipants.push(eventUserParticipants._id);
+                   await user.save();
+       
+                   console.log("args.input.event.fieldLocations.location: ", args.input.event.fieldLocations[0].location);
+                   const location = new Location({
+                       name: args.input.event.fieldLocations[0].location.name,
+                       address: args.input.event.fieldLocations[0].location.address,
+                       latitude: args.input.event.fieldLocations[0].location.latitude,
+                       longitude: args.input.event.fieldLocations[0].location.longitude,
+                   });
+                   await location.save();
+                   console.log("location: ", location._id);
+       
+                   const fieldLocations = new FieldLocation({
+                       isMainField: args.input.event.fieldLocations[0].isMainField,
+                       location: location._id,
+                   });
+                   await fieldLocations.save();
+                   console.log("fieldLocations: ", fieldLocations._id);
+       
+       
+       
+                   const createdEvent = new Event({
+                       name: args.input.event.name,
+                       type: args.input.event.type,
+                       archived: args.input.event.archived,
+                       amenities: args.input.event.amenities,
+                       isMainEvent: args.input.event.isMainEvent,
+                       startTime: args.input.event.startTime,
+                       endTime: args.input.event.endTime,
+                       createdAt: args.input.event.createdAt,
+                       capacity: args.input.event.capacity,
+                       price: createdPrice._id,
+                       joinConditions: joinConditions._id,
+                       userParticipants: [eventUserParticipants._id],
+                       fieldLocations: fieldLocations._id,
+                   });
+                   await createdEvent.save();
+       
+       
+                   eventUserParticipants.event = createdEvent._id;
+                   await eventUserParticipants.save();
+       
+                   console.log("createdEvent: ", createdEvent._id);
+       
+       
+                   const createdGame = new Game({
+                       pickup: args.input.pickup,
+                       event: createdEvent._id,
+                   });
+       
+                   const res = await createdGame.save();
+                   res.populate([
+                       {
+                           path: 'event',
+                           populate: [
+                               {
+                                   path: 'fieldLocations',
+                                   populate: {
+                                       path: 'location'
+                                   },
+                               },
+                               {
+                                   path: 'joinConditions'
+                               },
+                               {
+                                   path: 'userParticipants',
+                                   populate: {
+                                       path: 'user'
+                                   }
+                               },
+                               {
+                                   path: 'price'
+                               },
+                               {
+                                   path: 'payments',
+                                   populate: {
+                                       path: 'user'
+                                   }
+                               },
+                           ]
+                       }
+                   ]);
+                   
+                   await res.populate('event');
+       
+       
+                   console.log("createdGame res: ", res);
+       
+                   return {
+                       code: "200",
+                       success: true,
+                       message: "User email was successfully updated",
+                       game: res
+                   };
 
-            const createdPrice = new Price({
-                amount: args.input.event.price.amount,
-            });
-            await createdPrice.save();
-            console.log("createdPrice: ", createdPrice._id);
-
-            const joinConditions = new JoinConditions({
-                withRequest: args.input.event.joinConditions.withRequest,
-                withPayment: args.input.event.joinConditions.withPayment,
-            });
-            await joinConditions.save();
-            console.log("joinConditions: ", joinConditions._id);
-
-            const eventUserParticipants = new EventUserParticipant({
-                user: user._id,
-                roles: args.input.event.userParticipants[0].roles,
-            });
-            await eventUserParticipants.save();
-            console.log("eventUserParticipants: ", eventUserParticipants._id);
-
-            await user.eventUserParticipants.push(eventUserParticipants._id);
-            await user.save();
-
-            console.log("args.input.event.fieldLocations.location: ", args.input.event.fieldLocations[0].location);
-            const location = new Location({
-                name: args.input.event.fieldLocations[0].location.name,
-                address: args.input.event.fieldLocations[0].location.address,
-                latitude: args.input.event.fieldLocations[0].location.latitude,
-                longitude: args.input.event.fieldLocations[0].location.longitude,
-            });
-            await location.save();
-            console.log("location: ", location._id);
-
-            const fieldLocations = new FieldLocation({
-                isMainField: args.input.event.fieldLocations[0].isMainField,
-                location: location._id,
-            });
-            await fieldLocations.save();
-            console.log("fieldLocations: ", fieldLocations._id);
-
-
-
-            const createdEvent = new Event({
-                name: args.input.event.name,
-                type: args.input.event.type,
-                archived: args.input.event.archived,
-                amenities: args.input.event.amenities,
-                isMainEvent: args.input.event.isMainEvent,
-                startTime: args.input.event.startTime,
-                endTime: args.input.event.endTime,
-                createdAt: args.input.event.createdAt,
-                capacity: args.input.event.capacity,
-                price: createdPrice._id,
-                joinConditions: joinConditions._id,
-                userParticipants: [eventUserParticipants._id],
-                fieldLocations: fieldLocations._id,
-            });
-            await createdEvent.save();
-
-            eventUserParticipants.event = createdEvent._id;
-            await eventUserParticipants.save();
-
-            console.log("createdEvent: ", createdEvent._id);
-
-
-            const createdGame = new Game({
-                pickup: args.input.pickup,
-                event: createdEvent._id,
-            });
-
-            const res = await createdGame.save();
-            await res.populate('event');
-
-
-            console.log("createdGame res: ", res);
-
-            return {
-                code: "200",
-                success: true,
-                message: "User email was successfully updated",
-                game: res
-            };
+               }
+               else{
+                return {
+                    code: "500",
+                    success: false,
+                    message: "error creating game",
+                    game: null
+                
+                };
+               }
         },
         addUserToEvent: async (parent, args, context, info) => {
             console.log("addUserToEvent");
@@ -197,6 +244,25 @@ const resolvers = {
 
             // await user.populate('user');
             await user.populate('location');
+
+
+            console.log("updatedUser: ", user);
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                user: user
+            };
+        },
+        updateUsertermsAndPrivacy: async (parent, args, context, info) => {
+            console.log("updateUsertermsAndPrivacy");
+
+            //update
+            const user = await User.findById(args._id);
+            user.hasAcceptedTermsAndConditions = args.hasAcceptedTermsAndConditions;
+            user.hasAcceptedPrivacyPolicy = args.hasAcceptedPrivacyPolicy;
+            await user.save();            
 
 
             console.log("updatedUser: ", user);
@@ -381,6 +447,12 @@ const resolvers = {
                                                 path: 'user'
                                             }
                                         },
+                                        {
+                                            path: 'eventRatings',
+                                            populate: {
+                                                path: 'user'
+                                            }
+                                        }
 
                                     ]
 
@@ -391,8 +463,7 @@ const resolvers = {
                     },
                 ]
                 );
-
-
+            
 
             const cutoffTime = parseInt(args.startTime);
             console.log("cutoffTime: ", cutoffTime);
@@ -449,9 +520,16 @@ const resolvers = {
                 {
                     path: 'payments',
                     populate: {
-                        path: 'user'
+                        path: 'user',                        
                     }
-                }
+                },
+                // {
+                //     path: 'eventRatings',
+                //     populate: {
+                //         path: 'user'
+                //     }
+                // }
+
             ]);
 
 

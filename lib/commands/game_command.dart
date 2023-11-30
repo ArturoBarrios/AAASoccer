@@ -144,16 +144,22 @@ class GameCommand extends BaseCommand {
       );
       print("response body: ");
       print(jsonDecode(response.body));
-    
 
-      Map<String, dynamic> createdGame =
-          jsonDecode(response.body);      
-      
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['createGame'];
+        if(result['success']){
+          Map<String, dynamic> createdEvent = result['game']['event'];
+          
+          
+          createGameResponse["success"] = true;
+          createGameResponse["message"] = "Game Created";
+          createGameResponse["data"] = createdEvent;
+
+        }
+
+      }
 
 
-      createGameResponse["success"] = true;
-      createGameResponse["message"] = "Game Created";
-      createGameResponse["data"] = createdGame;
 
       // }
       return createGameResponse;

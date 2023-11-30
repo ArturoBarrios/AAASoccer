@@ -8,7 +8,7 @@ const couponSchema = new mongoose.Schema({
     event: [{ type: Schema.Types.ObjectId, ref: 'Event' }],    
     users: [{ type: Schema.Types.ObjectId, ref: 'User' }],        
     accessCoupon: Boolean,
-    capacity: BigInt,
+    capacity: Number,
 });
 
 const Coupon = mongoose.model('Coupon', couponSchema);

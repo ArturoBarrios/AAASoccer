@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/views/splash_screen.dart';
 
 import '../commands/user_command.dart';
@@ -8,6 +9,7 @@ import '../components/custom_textfield.dart';
 import '../components/headers.dart';
 import '../components/models/button_model.dart';
 import '../strings.dart';
+import '../styles/colors.dart';
 
 class AccountDetailsUpdate extends StatefulWidget {
   @override
@@ -121,18 +123,24 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
                 controller: capacityController,
                 // Add your validator logic here
               ),
-              ElevatedButton(
+              
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+                padding: const EdgeInsets.only(
+                    top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
+                child:BasicElevatedButton(
+        
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     // Handle form submission logic here
                   }
                 },
-                child: Text('Update Details'),
-              ),
-            ],
-          ),
-        ),
-      ),
+                backgroundColor: AppColors.tsnGreen,
+                text: "Update Details"
+              )),
     );
   }
 }

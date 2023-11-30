@@ -10,7 +10,7 @@ const requestSchema = new mongoose.Schema({
     receivers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     acceptedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     status: Object.values(RequestStatus),
-    requestAttempts: BigInt,
+    requestAttempts: Number,
     fromOrganizer: Boolean,
     event: { type: Schema.Types.ObjectId, ref: 'Event' },
     team: { type: Schema.Types.ObjectId, ref: 'Team' },    
