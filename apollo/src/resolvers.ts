@@ -11,6 +11,9 @@ import StripeCustomer from "./StripeCustomer.js";
 import Payment from "./Payment.js";
 import { print } from "graphql";
 import EventRating from "./EventRating.js";
+import { calculateRating } from './EventFunctions.js';
+
+
 
 const resolvers = {
     Mutation: {
@@ -255,13 +258,39 @@ const resolvers = {
                 user: user
             };
         },
-        updateUsertermsAndPrivacy: async (parent, args, context, info) => {
-            console.log("updateUsertermsAndPrivacy");
+        updateUserAccount: async (parent, args, context, info) => {
+            console.log("updateUser");
 
             //update
+            // const user = await User.findById(args._id);
+            // user.onboarded = args.onboarded;
+            // await user.save();
+
+            // // await user.populate('user');
+            // await user.populate('location');
+
+
+            // console.log("updatedUser: ", user);
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                // user: user
+            };
+        },
+        updateUsertermsAndPrivacy: async (parent, args, context, info) => {
+            console.log("updateUsertermsAndPrivacy");
+            console.log("args.hasAcceptedTermsAndConditions: ", args.hasAcceptedTermsAndConditions);
+            console.log("args.hasAcceptedPrivacyPolicy: ", args.hasAcceptedPrivacyPolicy);
+            //update
             const user = await User.findById(args._id);
-            user.hasAcceptedTermsAndConditions = args.hasAcceptedTermsAndConditions;
-            user.hasAcceptedPrivacyPolicy = args.hasAcceptedPrivacyPolicy;
+            // if(args.hasAcceptedTermsAndConditions != "null"){
+            //     user.hasAcceptedTermsAndConditions = args.hasAcceptedTermsAndConditions;
+            // }
+            // else if(args.hasAcceptedPrivacyPolicy != "null"){
+            //     user.hasAcceptedPrivacyPolicy = args.hasAcceptedPrivacyPolicy;
+            // }
             await user.save();            
 
 
@@ -405,6 +434,8 @@ const resolvers = {
     },
     Query: {
 
+        
+
         allUserEventParticipants: async (parent, args, context, info) => {
             // const events = await Event.find({ type: args.type });
             console.log("allUserEventParticipants");
@@ -467,14 +498,23 @@ const resolvers = {
 
             const cutoffTime = parseInt(args.startTime);
             console.log("cutoffTime: ", cutoffTime);
-            user.eventUserParticipants = user.eventUserParticipants.filter(eventUserParticipant => {
+            user.eventUserParticipants = user.eventUserParticipants.reduce((filteredEvents, eventUserParticipant) => {
                 const event = eventUserParticipant['event'];
                 const eventStartTime = parseInt(event['startTime']);
                 console.log("eventStartTime: ", eventStartTime);
+            
+                // Filter events based on the cutoffTime condition
+                if (cutoffTime <= eventStartTime) {
+                    // Calculate the rating for the event
+                    const rating = calculateRating(event); // Replace with your rating calculation function
+                    event['rating'] = rating; // Store the rating in the event object
+                    filteredEvents.push(eventUserParticipant);
+                }
+            
+                return filteredEvents;
+            }, []);
 
-                return cutoffTime <= eventStartTime;
-            });
-
+            console.log("user.eventUserParticipants: ", user.eventUserParticipants);
 
 
 
@@ -486,6 +526,9 @@ const resolvers = {
                 eventUserParticipants: user.eventUserParticipants
             };
         },
+
+        
+
         allEventsInAreaOfType: async (parent, args, context, info) => {
             // const events = await Event.find({ type: args.type });
             console.log("allEventsInAreaOfType");
@@ -495,7 +538,7 @@ const resolvers = {
             console.log("radius: ", args.radius);
             console.log("startTime: ", args.startTime);
 
-            const events = await Event.find({
+            var events = await Event.find({
                 type: args.type,
                 // startTime: { $gte: args.startTime }
             }).populate([
@@ -523,12 +566,6 @@ const resolvers = {
                         path: 'user',                        
                     }
                 },
-                // {
-                //     path: 'eventRatings',
-                //     populate: {
-                //         path: 'user'
-                //     }
-                // }
 
             ]);
 
@@ -538,20 +575,29 @@ const resolvers = {
             
             const cutoffTime = parseInt(args.startTime);
             console.log("cutoffTime: ", cutoffTime);
-            const filteredEvents = events.filter(event => {                
+            var resEvents = [];
+            for (var event of events) {
                 const eventStartTime = parseInt(event['startTime']);
                 console.log("eventStartTime: ", eventStartTime);
-                
-                return cutoffTime <= eventStartTime;
-            });
             
-            console.log("filteredEvents: ", filteredEvents);
+                if (cutoffTime <= eventStartTime) {
+                    // Calculate the rating for the event
+                    const rating = await calculateRating(event); // Replace with your rating calculation function
+                    console.log("ratingggg: ", rating);
+                    event['rating'] = rating; // Store the rating in the event object
+                    console.log("event['rating']: ", event['rating']);
+                    resEvents.push(event);
+                }
+            }
+            
+            
+            console.log("resEvents: ", resEvents);
 
             return {
                 code: 200,
                 success: true,
                 message: "User email was successfully updated",
-                events: filteredEvents
+                events: resEvents
             };
         },
        

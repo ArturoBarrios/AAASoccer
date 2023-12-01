@@ -110,7 +110,7 @@ type Mutation {
   addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
   deleteEventUserParticipant(_id: String): EventUserParticipantMutationResponse
   createPayment(input: PaymentInput): PaymentMutationResponse
-  updateUser(input: UserInput): UserResponse
+  updateUserAccount(input: UserInput): UserResponse
 
 
 }
@@ -440,7 +440,7 @@ type User  {
   messagesDirectedForMe: [Message]
   onboarded: Boolean 
   mainImageKey: String
-  isProfilePrivate: Boolean 
+  isProfilePrivate: \Boolean 
   socialMediaApps: [SocialMediaApp]
   appSubscriptions: [AppSubscription]
   coupons: [Coupon] 
@@ -594,9 +594,13 @@ type Event   {
   prizes: [Prize] 
   coupons: [Coupon]
   eventRatings: [EventRating]
+  eventRating: Int #server side calculated
+  hostRating: Int #server side calculated
+  fieldLocationRating: Int #server side calculated
   slot: Slot
   group: Group,
   description: String
+
 }
 
 type Rsvp {

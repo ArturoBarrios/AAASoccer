@@ -21,6 +21,7 @@ class UserFragments {
       isProfilePrivate
       updatedAt
       hasAcceptedTermsAndConditions
+      hasAcceptedPrivacyPolicy
       eventRatings{        
         _id
         eventRating

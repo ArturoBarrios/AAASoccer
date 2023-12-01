@@ -21,16 +21,27 @@ class UserMutations {
           }   
         }
     """;
-
-      // mutation {
-      //   partialUpdateUser(
-      //     id: ${userInput['user']['_id']}, 
-      //     data: ${userInput['user']['dataToUpdate']}
-      //   )
-      //   {
-      //     ${UserFragments().fullUser()}
-      //   }  
-      // }
+    return updateUserString;
+  }
+ 
+  String updateUsertermsAndPrivacy(Map<String, dynamic> userInput) {
+    String updateUserString = """
+       mutation {
+        updateUsertermsAndPrivacy(
+          userId: "${userInput['userId']}"
+          hasAcceptedPrivacyPolicy: ${userInput['hasAcceptedPrivacyPolicy']}
+          hasAcceptedTermsAndConditions: ${userInput['hasAcceptedPrivacyPolicy']}                     
+                   
+          ) {
+             code
+                success
+                message            
+              user{    
+                ${UserFragments().fullUser()}
+              }                 
+          }   
+        }
+    """;
     return updateUserString;
   }
 
@@ -131,6 +142,7 @@ class UserMutations {
     return updateUserString;
   }
 
+
   String updateUserProfileImage(Map<String, dynamic> userInput) {
     String updateUserString = """      
       mutation {
@@ -163,37 +175,7 @@ class UserMutations {
     return updateUserString;
   }
 
-  String updateUserTermsAgreement(Map<String, dynamic> userInput) {
-    String updateUserString = """      
-      mutation {
-        updateUser(id: ${userInput['userId']},
-  				data: {            
-            hasAcceptedTermsAndConditions: ${userInput['hasAcceptedTermsAndConditions']}                                                                                
-          }                      
-        ){
-          ${UserFragments().fullUser()}                                  			
-  }
-}
-        """;
 
-    return updateUserString;
-  }
-  
-  String updatePrivatePolicy(Map<String, dynamic> userInput) {
-    String updateUserString = """      
-      mutation {
-        updateUser(id: ${userInput['userId']},
-  				data: {            
-            hasAcceptedPrivacyPolicy: ${userInput['hasAcceptedPrivacyPolicy']}                                                                                
-          }                      
-        ){
-          ${UserFragments().fullUser()}                                  			
-  }
-}
-        """;
-
-    return updateUserString;
-  }
 
   String followUser(dynamic followUserInput) {
     String addFriendString = """      

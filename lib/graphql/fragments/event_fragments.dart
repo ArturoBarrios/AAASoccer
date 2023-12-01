@@ -60,6 +60,9 @@ class EventFragments {
       capacity
       createdAt    
       amenities
+      eventRating
+      hostRating
+      fieldLocationRating
       eventRatings{        
           _id
           eventRating

@@ -308,6 +308,56 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
+  Future<Map<String, dynamic>> updateUsertermsAndPrivacy(
+      dynamic userInput) async {
+    print("updateAgreement");
+    print("userInput: " + userInput.toString());
+
+    Map<String, dynamic> partialUpdateUserResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().updateUsertermsAndPrivacy(userInput),
+        }),
+      );
+
+      print("response from updateUserOnboarding.....: ");
+
+      print(jsonDecode(response.body));
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
+        partialUpdateUserResponse["success"] = false;
+        partialUpdateUserResponse["message"] = "no user found";
+      } else {
+        
+        final result = jsonDecode(response.body)['data']['updateUsertermsAndPrivacy'];
+        partialUpdateUserResponse["data"] = null;
+        if (result['success']) {
+          partialUpdateUserResponse["success"] = true;
+          partialUpdateUserResponse["message"] = "user found";
+          partialUpdateUserResponse["data"] = result['user'];
+        }
+        else{
+          partialUpdateUserResponse["success"] = false;
+          partialUpdateUserResponse["message"] = "no user found";
+        }
+      }
+      return partialUpdateUserResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return partialUpdateUserResponse;
+    }
+  }
+
   Future<Map<String, dynamic>> updateUserOnboarding(
       dynamic processedUserInput) async {
     print("partialUpdateUser");
@@ -320,7 +370,7 @@ class UserCommand extends BaseCommand {
     };
 
     try {
-http.Response response = await http.post(
+      http.Response response = await http.post(
         Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
         headers: <String, String>{          
           'Content-Type': 'application/json'
@@ -351,32 +401,6 @@ http.Response response = await http.post(
           partialUpdateUserResponse["message"] = "no user found";
         }
       }
-
-
-
-
-
-      // http.Response response = await http.post(
-      //   Uri.parse('https://graphql.fauna.com/graphql'),
-      //   headers: <String, String>{
-      //     'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: jsonEncode(<String, String>{
-      //     'query': UserMutations().partialUserUpdate(processedUserInput),
-      //   }),
-      // );
-
-      // print("response body: ");
-      // print(jsonDecode(response.body));
-      // partialUpdateUserResponse["success"] = true;
-      // partialUpdateUserResponse["message"] = "User Updated";
-      // partialUpdateUserResponse["data"] =
-      //     jsonDecode(response.body)['data']['partialUpdateUser'];
-      // //todo update appModel.currentUser
-      // appModel.currentUser = partialUpdateUserResponse["data"];
-      // print("appModel.currentUser: " + appModel.currentUser.toString());
-
       return partialUpdateUserResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');

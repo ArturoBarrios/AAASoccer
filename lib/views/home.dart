@@ -459,11 +459,18 @@ class _Home extends State<Home> {
   @override
   void initState() {
     print("initState() in home");
-    super.initState();
-    // updateUpdatedCards(true);
+    super.initState();    
     loadInitialData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showAgreementDialogues(context);
+      
+      
+        
+          // showAgreementDialogues(context);
+
+        
+
+      
+
     });
   }
 
@@ -482,8 +489,20 @@ class _Home extends State<Home> {
     }
   }
 
-  showAgreementDialogues(BuildContext context){
-    BaseCommand().showAgreementDialog(context);
+  showAgreementDialogues(BuildContext context)async{    
+    print("nicerrrrrr");
+    // if(!currentUser['hasAcceptedTermsAndConditions']){      
+        await BaseCommand().showAgreementDialog(context);
+        // if(agreementToShow == "TermsAndConditions"){
+
+        // }
+        // else if(agreementToShow == "PrivacyPolicy"){
+
+        // }
+    // }
+    // else if(!currentUser['hasAcceptedPrivacyPolicy']){
+
+    // }
   }
 
 
