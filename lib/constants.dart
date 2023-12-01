@@ -1,3 +1,4 @@
+import 'models/enums/AmenityType.dart';
 import 'models/enums/EventType.dart';
 
 class Constants {
@@ -86,6 +87,9 @@ class Constants {
   static const String LOCATIONSPAGE = "LOCATIONSPAGE";
   static const String CHATSPAGE = "CHATSPAGE";
   static const String SCHEDULEPAGE = "SCHEDULEPAGE";
+
+  static  List<String> availableAmenities = [AmenityType.PINNIES.toString()];
+  static  List<String> fieldSelectionDetails = [AmenityType.BATHROOMS.toString(), AmenityType.BUS.toString(), AmenityType.TRAIN.toString(), AmenityType.BIKESTATION.toString(), "TURF", "GRASS", "INDOOR", "OUTDOOR", "SMALL", "LARGE", "CLEATS ALLOWED"];
 
   
 

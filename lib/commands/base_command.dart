@@ -213,6 +213,14 @@ List<String> parseAmenities(String amenitiesString) {
     // Join the strings with commas and enclose them in curly braces
     return '{${amenityStrings.join(', ')}}';
   }
+  
+  String formatStringForGraphQL(List<String> selectionList) {
+    // Convert each enum value to a string and format it
+    var amenityStrings = 
+        selectionList.map((selected) => selected.toString().split('.').last);
+    // Join the strings with commas and enclose them in curly braces
+    return '{${amenityStrings.join(', ')}}';
+  }
 
   String formatEventTime(String startTime, String endTime) {
     int startTimeInt = int.parse(startTime);

@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 
-import '../models/enums/AmenityType.dart';
 import '../styles/colors.dart';
 
-class AmenitiesSelectionWidget extends StatefulWidget {
-  final List<AmenityType> amenities;
-  final Function(List<AmenityType>) onSelectionChanged;
+class ImageSelectionWidget extends StatefulWidget {
+  final List<String> selectionList;
+  final bool viewMode;
+  final Function(List<String>) onSelectionChanged;
 
-  const AmenitiesSelectionWidget({
+  const ImageSelectionWidget({
     Key? key,
-    required this.amenities,
+    required this.viewMode,
+    required this.selectionList,
     required this.onSelectionChanged,
   }) : super(key: key);
 
   @override
-  _AmenitiesSelectionWidgetState createState() => _AmenitiesSelectionWidgetState();
+  _ImageSelectionWidgetState createState() => _ImageSelectionWidgetState();
 }
 
-class _AmenitiesSelectionWidgetState extends State<AmenitiesSelectionWidget> {
-  List<AmenityType> selectedAmenities = [];
+class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
+  List<String> selectedAmenities = [];
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +30,11 @@ class _AmenitiesSelectionWidgetState extends State<AmenitiesSelectionWidget> {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemCount: widget.amenities.length,
+      itemCount: widget.selectionList.length,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
       itemBuilder: (context, index) {
-        var amenity = widget.amenities[index];
+        var amenity = widget.selectionList[index];
         bool isSelected = selectedAmenities.contains(amenity);
         return GestureDetector(
           onTap: () {

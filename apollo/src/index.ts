@@ -440,7 +440,7 @@ type User  {
   messagesDirectedForMe: [Message]
   onboarded: Boolean 
   mainImageKey: String
-  isProfilePrivate: \Boolean 
+  isProfilePrivate: Boolean 
   socialMediaApps: [SocialMediaApp]
   appSubscriptions: [AppSubscription]
   coupons: [Coupon] 
@@ -971,6 +971,7 @@ type FieldLocation  {
   parkingOptions: [ParkingOption]
   field: Field
   eventRatings: [EventRating] 
+  fieldDetails: String
 
 
 }

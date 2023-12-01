@@ -135,6 +135,7 @@ class EventFragments {
           name
         }                                                                    
       }
+      
     """;
 
     return fullEventReturn;

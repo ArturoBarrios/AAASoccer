@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/components/Dialogues/congrats_dialogue.dart';
 import 'package:soccermadeeasy/components/Dialogues/rating_dialogue.dart';
-import 'package:soccermadeeasy/components/amenities_selection_widget.dart';
+import 'package:soccermadeeasy/components/image_selection_widget.dart';
 import 'package:soccermadeeasy/components/logo.dart';
 import 'package:soccermadeeasy/components/rating_widget.dart';
 import 'package:soccermadeeasy/components/sideways_pill_widget.dart';
@@ -9,6 +9,7 @@ import 'package:soccermadeeasy/svg_widgets.dart';
 
 import '../commands/base_command.dart';
 import '../commands/subscriptions_command.dart';
+import '../constants.dart';
 import '../models/enums/AmenityType.dart';
 import '../styles/colors.dart';
 import '../styles/font_sizes.dart';
@@ -61,8 +62,8 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
 
   }
 
-  List<AmenityType> availableAmenities = [AmenityType.BATHROOMS, AmenityType.BUS, AmenityType.TURF, AmenityType.BIKESTATION, AmenityType.PINNIES];
-  List<AmenityType> selectedAmenities = [];
+  
+  List<String> selectedAmenities = [];
 
   @override
   Widget build(BuildContext context) {
@@ -80,13 +81,13 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       constraints: BoxConstraints(
         maxHeight: 300, // You can adjust this height
       ),
-      child: AmenitiesSelectionWidget(
-        amenities: availableAmenities,
+      child: ImageSelectionWidget(
+        selectionList: Constants.availableAmenities,
         onSelectionChanged: (newSelection) {
           setState(() {
             selectedAmenities = newSelection;
           });
-        },
+        }, viewMode: true,
       ),
     ),
           Center(

@@ -8,6 +8,7 @@ import 'package:soccermadeeasy/components/Mixins/event_mixin.dart';
 
 import '../../commands/base_command.dart';
 import '../../components/Mixins/images_mixin.dart';
+import '../../components/image_selection_widget.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
@@ -198,6 +199,7 @@ class _PickupViewState extends State<PickupView> {
     //     maxHeight: 300, // You can adjust this height
     //   ),
     //   child: AmenitiesSelectionWidget(
+    //     viewMode: true,
     //     amenities: availableAmenities,
     //     onSelectionChanged: (newSelection) {
     //       setState(() {

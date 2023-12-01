@@ -4,7 +4,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/views/game/view.dart';
 import '../../commands/base_command.dart';
 import '../../components/Validator.dart';
-import '../../components/amenities_selection_widget.dart';
+import '../../components/image_selection_widget.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
@@ -18,6 +18,7 @@ import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/models/button_model.dart';
 import '../../components/models/custom_stepper_model.dart';
+import '../../constants.dart';
 import '../../models/enums/AmenityType.dart';
 import '../../models/enums/EventType.dart';
 import '../../strings.dart';
@@ -39,9 +40,9 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final imageController = TextEditingController();
-
-  List<AmenityType> availableAmenities = [AmenityType.BATHROOMS, AmenityType.BUS, AmenityType.TURF, AmenityType.BIKESTATION, AmenityType.PINNIES];
-  List<AmenityType> selectedAmenities = [];
+  
+  List<String> selectedAmenities = [];
+  List<String> selectedFieldDetails = [];
 
   final Map<String, dynamic> locationInput = {
     "name": "",
@@ -95,7 +96,8 @@ class _GameCreateState extends State<GameCreate> {
   Future<void> createPickupGame() async {
     print("createGame");
     try {
-      String parsedSelectedAmenities = BaseCommand().formatAmenitiesForGraphQL(selectedAmenities);
+      String parsedSelectedAmenities = BaseCommand().formatStringForGraphQL(selectedAmenities);
+      String parsedSelectedFieldDetails = BaseCommand().formatStringForGraphQL(selectedFieldDetails);
       print("priceee: ${priceController.text}");
       double priceDouble = double.parse(priceController.text.toString());
       Map<String, dynamic> eventInput = {
@@ -287,8 +289,27 @@ class _GameCreateState extends State<GameCreate> {
       constraints: BoxConstraints(
         maxHeight: 300, // You can adjust this height
       ),
-      child: AmenitiesSelectionWidget(
-        amenities: availableAmenities,
+      child: ImageSelectionWidget(
+        viewMode: false,
+        selectionList: Constants.availableAmenities,
+        onSelectionChanged: (newSelection) {
+          setState(() {
+            selectedAmenities = newSelection;
+          });
+        },
+      ),
+    ),
+        ],
+      ),
+      CustomStepperModel(
+        widgets: [
+          ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 300, // You can adjust this height
+      ),
+      child: ImageSelectionWidget(
+        viewMode: false,
+        selectionList: Constants.fieldSelectionDetails,
         onSelectionChanged: (newSelection) {
           setState(() {
             selectedAmenities = newSelection;
