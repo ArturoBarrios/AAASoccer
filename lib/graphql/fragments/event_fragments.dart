@@ -59,10 +59,7 @@ class EventFragments {
       endTime  
       capacity
       createdAt    
-      amenities
-      eventRating
-      hostRating
-      fieldLocationRating
+      hostAmenities      
       eventRatings{        
           _id
           eventRating

@@ -133,7 +133,7 @@ class GameCommand extends BaseCommand {
       eventInput['price'] = eventInput['price'] * 100;
       print("eventtttttttttt input: " + eventInput.toString());
       http.Response response = await http.post(        
-        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()+""),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
         headers: <String, String>{          
           'Content-Type': 'application/json'
         },

@@ -82,7 +82,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
         maxHeight: 300, // You can adjust this height
       ),
       child: ImageSelectionWidget(
-        selectionList: Constants.availableAmenities,
+        selectionList: Constants.hostAmenities,
         onSelectionChanged: (newSelection) {
           setState(() {
             selectedAmenities = newSelection;

@@ -278,10 +278,19 @@ class EventPage extends ChangeNotifier {
     notifyListeners();
   }
   
-  List<String> _amenities = [];
-  List<String> get amenities => _amenities;
-  set amenities(List<String> amenities) {
-    _amenities = amenities;
+  //everything to do with field
+  List<String> _fieldAmenities = [];
+  List<String> get fieldAmenities => _fieldAmenities;
+  set fieldAmenities(List<String> fieldAmenities) {
+    _fieldAmenities = fieldAmenities;
+    notifyListeners();
+  }  
+  
+  //things like pips, cones, water, food, etc
+  List<String> _hostAmenities = [];
+  List<String> get hostAmenities => _hostAmenities;
+  set hostAmenities(List<String> hostAmenities) {
+    _hostAmenities = hostAmenities;
     notifyListeners();
   }  
   

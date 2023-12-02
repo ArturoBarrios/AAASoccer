@@ -19,6 +19,7 @@ class UserFragments {
       onboarded
       mainImageKey
       isProfilePrivate
+      hostRating
       updatedAt
       hasAcceptedTermsAndConditions
       hasAcceptedPrivacyPolicy

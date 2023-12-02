@@ -32,6 +32,7 @@ class RatingWidget extends StatelessWidget {
           ...List.generate(maxRating, (index) {
             return Icon(
               index < rating ? Icons.star : Icons.star_border,
+              size:12,
               color: index < rating ? AppColors.tsnGreen : AppColors.tsnGrey,
             );
           }),
@@ -43,18 +44,4 @@ class RatingWidget extends StatelessWidget {
   }
 }
 
-void main() {
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Rating Widget Example'),
-        ),
-        body: Center(
-          // Example usage of the RatingWidget with -1 (No Ratings)
-          child: RatingWidget(rating: -1, totalRatings: 0),
-        ),
-      ),
-    ),
-  );
-}
+

@@ -23,7 +23,9 @@ class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
+    // if(widget.viewMode && selectionList)
+    return 
+    GridView.builder(
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: MediaQuery.of(context).size.width / 3, // Assuming 3 items per row at max
         childAspectRatio: 1.0,

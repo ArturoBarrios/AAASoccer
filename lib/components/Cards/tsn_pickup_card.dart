@@ -301,6 +301,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                   ),
                                   Row(
                                     children: [
+                                      
                                       RatingWidget(rating: event.hostRating),                                    
                                       // Text("BR 1a"),
                                       // Text("BR 1b"),

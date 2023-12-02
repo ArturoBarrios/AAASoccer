@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
     eventRatings: [{ type: Schema.Types.ObjectId, ref: 'EventRating' }],
     hasAcceptedTermsAndConditions: Boolean,
     hasAcceptedPrivacyPolicy: Boolean,
+    hostRating: Number,
 });
 
 const User = mongoose.model('User', userSchema);

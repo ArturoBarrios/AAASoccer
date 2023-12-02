@@ -2,13 +2,14 @@ class LocationFragments{
 
   String FieldLocationFull(){
      String fieldLocationFullReturn = """                  
-         _id         
+         _id      
+         fieldAmenities   
+         fieldLocationRating
          location{
           ${LocationFull()}    
 
          }
-         eventRatings{
-        
+         eventRatings{        
           _id          
           fieldLocationRating          
           user{

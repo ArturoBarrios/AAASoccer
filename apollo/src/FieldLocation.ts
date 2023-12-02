@@ -14,6 +14,7 @@ const fieldLocationSchema = new mongoose.Schema({
     amenities: [{ type: Schema.Types.ObjectId, ref: 'Amenity' }],
     socialMediaApps: [{ type: Schema.Types.ObjectId, ref: 'SocialMediaApp' }],                    
     eventRatings: [{ type: Schema.Types.ObjectId, ref: 'EventRating' }],
+    fieldLocationRating: Number,
 });
 
 const FieldLocation = mongoose.model('FieldLocation', fieldLocationSchema);

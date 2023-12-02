@@ -204,7 +204,7 @@ class _PlayerListState extends State<PlayerList> {
               });
             },
             child: Text(
-              _selectedUserType,
+              _selectedUserType + " (" + widget.userParticipants.length.toString() + ")",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: AppColors.tsnBlack,

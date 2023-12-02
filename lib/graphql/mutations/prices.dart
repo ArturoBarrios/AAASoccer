@@ -2,18 +2,21 @@ import '../fragments/price_fragments.dart';
 
 class PriceMutations {
   String updatePrice(
-      Map<String, dynamic> priceInput) {
-    var teamAmount = priceInput.containsKey('teamAmount') ? priceInput['teamAmount'] : "0";
+      Map<String, dynamic> priceInput) {    
     String updatePrice = """
       mutation {
         updatePrice(
-          id: ${priceInput['_id']},
+          pricesId: ${priceInput['_id']},
   				data: {                       
-            amount: "${priceInput['amount']}",  
-            teamAmount: "$teamAmount",       
+            amount: "${priceInput['amount']}",                   
           }                      
         ){
-          ${PriceFragments().fullPrice()}                 				                    				  
+          code
+          success
+          message
+          price{
+            ${PriceFragments().fullPrice()}                 				                    				  
+          }
           }
         }
         """;

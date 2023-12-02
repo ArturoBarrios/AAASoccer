@@ -11,7 +11,7 @@ import StripeCustomer from "./StripeCustomer.js";
 import Payment from "./Payment.js";
 import { print } from "graphql";
 import EventRating from "./EventRating.js";
-import { calculateRating } from './EventFunctions.js';
+// import { calculateRating } from './EventFunctions.js';
 
 
 
@@ -48,6 +48,25 @@ const resolvers = {
             
             };
 
+
+        },
+
+        updatePrice: async (parent, args, context, info) => {
+            console.log("updatePrice");
+
+            //update
+            const price = await Price.findById(args.pricesId);
+            price.amount = args.amount;
+            await price.save();
+
+            console.log("updatedPrice: ", price);
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                price: price
+            };
 
         },
 
@@ -97,7 +116,9 @@ const resolvers = {
        
                    const fieldLocations = new FieldLocation({
                        isMainField: args.input.event.fieldLocations[0].isMainField,
+                       fieldAmenities: args.input.event.fieldLocations[0].fieldAmenities,
                        location: location._id,
+                       fieldLocationRating: -1,
                    });
                    await fieldLocations.save();
                    console.log("fieldLocations: ", fieldLocations._id);
@@ -108,7 +129,7 @@ const resolvers = {
                        name: args.input.event.name,
                        type: args.input.event.type,
                        archived: args.input.event.archived,
-                       amenities: args.input.event.amenities,
+                       hostAmenities: args.input.event.hostAmenities,
                        isMainEvent: args.input.event.isMainEvent,
                        startTime: args.input.event.startTime,
                        endTime: args.input.event.endTime,
@@ -402,6 +423,7 @@ const resolvers = {
                 email: args.input.user.email,
                 birthdate: args.input.user.birthdate,
                 location: location._id,
+                hostRating: -1,
 
             });
             await createdUser.save();
@@ -506,8 +528,8 @@ const resolvers = {
                 // Filter events based on the cutoffTime condition
                 if (cutoffTime <= eventStartTime) {
                     // Calculate the rating for the event
-                    const rating = calculateRating(event); // Replace with your rating calculation function
-                    event['rating'] = rating; // Store the rating in the event object
+                    // const rating = calculateRating(event); // Replace with your rating calculation function
+                    // event['rating'] = rating; // Store the rating in the event object
                     filteredEvents.push(eventUserParticipant);
                 }
             
@@ -582,10 +604,10 @@ const resolvers = {
             
                 if (cutoffTime <= eventStartTime) {
                     // Calculate the rating for the event
-                    const rating = await calculateRating(event); // Replace with your rating calculation function
-                    console.log("ratingggg: ", rating);
-                    event['rating'] = rating; // Store the rating in the event object
-                    console.log("event['rating']: ", event['rating']);
+                    // const rating = await calculateRating(event); // Replace with your rating calculation function
+                    // console.log("ratingggg: ", rating);
+                    // event['rating'] = rating; // Store the rating in the event object
+                    // console.log("event['rating']: ", event['rating']);
                     resEvents.push(event);
                 }
             }

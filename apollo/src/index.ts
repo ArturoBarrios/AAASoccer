@@ -30,6 +30,13 @@ const typeDefs = `#graphql
     user: User
   }
   
+  type PriceResponse implements QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    price: Price
+  }
+  
   type EventsMutationResponse implements QueryResponse {
     code: String!
     success: Boolean!
@@ -111,6 +118,7 @@ type Mutation {
   deleteEventUserParticipant(_id: String): EventUserParticipantMutationResponse
   createPayment(input: PaymentInput): PaymentMutationResponse
   updateUserAccount(input: UserInput): UserResponse
+  updatePrice(priceId: String, amount: String): PriceResponse
 
 
 }
@@ -217,6 +225,7 @@ input EventUserParticipantInput {
 input FieldLocationInput {     
   isMainField: Boolean
   location: LocationInput
+  fieldAmenities: String
 }   
 
 input LocationInput {     
@@ -455,6 +464,7 @@ type User  {
   preferredPosition: String
   competitiveLevel: String
   interestedIn: String
+  hostRating: Int
 }
 
 type Request {
@@ -562,7 +572,7 @@ type Event   {
   name: String
   joinConditions: [JoinConditions]
   isMainEvent: Boolean
-  amenities: String
+  hostAmenities: String
   userParticipants: [EventUserParticipant]
   price: Price 
   requests: [Request]
@@ -594,9 +604,6 @@ type Event   {
   prizes: [Prize] 
   coupons: [Coupon]
   eventRatings: [EventRating]
-  eventRating: Int #server side calculated
-  hostRating: Int #server side calculated
-  fieldLocationRating: Int #server side calculated
   slot: Slot
   group: Group,
   description: String
@@ -972,6 +979,8 @@ type FieldLocation  {
   field: Field
   eventRatings: [EventRating] 
   fieldDetails: String
+  fieldAmenities: String
+  fieldLocationRating: Int
 
 
 }

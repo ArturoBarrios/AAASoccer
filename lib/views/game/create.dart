@@ -41,8 +41,8 @@ class _GameCreateState extends State<GameCreate> {
   final priceController = TextEditingController();
   final imageController = TextEditingController();
   
-  List<String> selectedAmenities = [];
-  List<String> selectedFieldDetails = [];
+  List<String> selectedHostAmenities = [];
+  List<String> selectedFieldAmenities = [];
 
   final Map<String, dynamic> locationInput = {
     "name": "",
@@ -96,8 +96,8 @@ class _GameCreateState extends State<GameCreate> {
   Future<void> createPickupGame() async {
     print("createGame");
     try {
-      String parsedSelectedAmenities = BaseCommand().formatStringForGraphQL(selectedAmenities);
-      String parsedSelectedFieldDetails = BaseCommand().formatStringForGraphQL(selectedFieldDetails);
+      String parsedSelectedHostAmenities = BaseCommand().formatStringForGraphQL(selectedHostAmenities);
+      String parsedSelectedFieldAmenities = BaseCommand().formatStringForGraphQL(selectedFieldAmenities);
       print("priceee: ${priceController.text}");
       double priceDouble = double.parse(priceController.text.toString());
       Map<String, dynamic> eventInput = {
@@ -114,7 +114,7 @@ class _GameCreateState extends State<GameCreate> {
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
-        'amenities': parsedSelectedAmenities.toString(),
+        'hostAmenities': parsedSelectedHostAmenities.toString(),
       };
       dynamic pickupData = {
         "pickup": true,
@@ -291,10 +291,10 @@ class _GameCreateState extends State<GameCreate> {
       ),
       child: ImageSelectionWidget(
         viewMode: false,
-        selectionList: Constants.availableAmenities,
+        selectionList: Constants.hostAmenities,
         onSelectionChanged: (newSelection) {
           setState(() {
-            selectedAmenities = newSelection;
+            selectedHostAmenities = newSelection;
           });
         },
       ),
@@ -309,10 +309,10 @@ class _GameCreateState extends State<GameCreate> {
       ),
       child: ImageSelectionWidget(
         viewMode: false,
-        selectionList: Constants.fieldSelectionDetails,
+        selectionList: Constants.fieldAmenities,
         onSelectionChanged: (newSelection) {
           setState(() {
-            selectedAmenities = newSelection;
+            selectedFieldAmenities = newSelection;
           });
         },
       ),

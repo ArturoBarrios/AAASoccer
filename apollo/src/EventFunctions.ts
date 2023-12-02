@@ -1,5 +1,14 @@
-export const calculateRating = async (event) => {
-    console.log("calculateRating");
-    // Replace with your rating calculation logic
-    return 3; // Placeholder value, replace with the actual rating
-};
+// export const calculateHostRating = async (event) => {
+//     console.log("calculateHostRating");
+//     console.log(event);
+    
+
+//     return 3; 
+// };
+// export const calculateFieldRating = async (event) => {
+//     console.log("calculateFieldRating");
+//     console.log(event);
+    
+
+//     return 3; 
+// };

@@ -14,6 +14,7 @@ import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
 import '../../components/create_team_request.dart';
 import '../../components/get_join_event_widget.dart';
+import '../../components/list_notes_widget.dart';
 import '../../components/location_search_bar.dart';
 import '../../components/models/button_model.dart';
 import '../../components/my_map_page.dart';
@@ -156,6 +157,26 @@ class _PickupViewState extends State<PickupView> {
                             paddingValue, paddingValue/2),
                           child: Align(
                               alignment: Alignment.centerLeft,
+                              child: Text("Host: " + event.organizers[0]['username'].toString(),
+                                  style: TextStyle(
+                                    color: AppColors.tsnGreen,
+                                    fontSize: FontSizes.m(context),
+                                  )))),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                            paddingValue, paddingValue/2),
+                          child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Game Capacity: " + event.capacity.toString(),
+                                  style: TextStyle(
+                                    color: AppColors.tsnGreen,
+                                    fontSize: FontSizes.m(context),
+                                  )))),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                            paddingValue, paddingValue/2),
+                          child: Align(
+                              alignment: Alignment.centerLeft,
                               child: Text(event.formattedEventTime,
                                   style: TextStyle(
                                     color: AppColors.tsnBlack,
@@ -290,6 +311,22 @@ class _PickupViewState extends State<PickupView> {
                                 chatList: event.chats,
                                 userId: userId),
                       ),
+                       Padding(
+                        padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
+                            paddingValue, paddingValue/2),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ListNotes(
+  title: 'Things to Note',
+  notes: ['Note 1', 'Note 2', 'Note 3'],
+
+
+
+                      ),
+                        ),
+                      ),
+
+                       
                       //team list
                       // TeamsListWidget(
                       //     user: null, mainEvent: mainEvent, teams: teams),

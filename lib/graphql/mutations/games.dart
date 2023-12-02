@@ -86,7 +86,7 @@ class GameMutations {
               name: "${eventInput['name']}",
               type: GAME,
               archived: false,
-              amenities: "${eventInput['amenities']}",
+              hostAmenities: "${eventInput['hostAmenities']}",
               isMainEvent: ${eventInput['isMainEvent']},
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
@@ -113,6 +113,7 @@ class GameMutations {
               },                    
               fieldLocations: {                            
                     isMainField: true,
+                    fieldAmenities: "${eventInput['fieldAmenities']}",
                     location: {                     
                         name: "${locationInput['name']}",
                         address: "${locationInput['address']}",

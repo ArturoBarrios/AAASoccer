@@ -1272,40 +1272,40 @@ class EventCommand extends BaseCommand {
   }
   
   //rating = -1 denotes no rating
-  int calculateHostRating(dynamic user){
-    int rating = 0;
-    int numberOfRatings = 0;
-    print("user['eventRatings']: " + user['eventRatings'].toString());
-    if(user['eventRatings'] != null){
-      for(int i = 0; i < user['eventRatings'].length; i++){
-        rating += user['eventRatings'][i]['hostRating'] as int;
-        numberOfRatings++;
-      }
-    }
-    if(numberOfRatings > 0){
-      rating = rating/numberOfRatings as int;
-    }
-    else {rating = -1;}
+  // int calculateHostRating(dynamic user){
+  //   int rating = 0;
+  //   int numberOfRatings = 0;
+  //   print("user['eventRatings']: " + user['eventRatings'].toString());
+  //   if(user['eventRatings'] != null){
+  //     for(int i = 0; i < user['eventRatings'].length; i++){
+  //       rating += user['eventRatings'][i]['hostRating'] as int;
+  //       numberOfRatings++;
+  //     }
+  //   }
+  //   if(numberOfRatings > 0){
+  //     rating = rating/numberOfRatings as int;
+  //   }
+  //   else {rating = -1;}
     
-    return rating;
-  }
+  //   return rating;
+  // }
   
-  int calculateFieldRating(dynamic field){
-    int rating = 0;
-    int numberOfRatings = 0;
-    if(field['eventRatings'] != null){
-      for(int i = 0; i < field['eventRatings'].length; i++){
-        rating += field['eventRatings'][i]['fieldLocationRating'] as int;
-        numberOfRatings++;
-      }
-    }
-    if(numberOfRatings > 0){
-      rating = rating/numberOfRatings as int;
-    }
-    else {rating = -1;}
+  // int calculateFieldRating(dynamic field){
+  //   int rating = 0;
+  //   int numberOfRatings = 0;
+  //   if(field['eventRatings'] != null){
+  //     for(int i = 0; i < field['eventRatings'].length; i++){
+  //       rating += field['eventRatings'][i]['fieldLocationRating'] as int;
+  //       numberOfRatings++;
+  //     }
+  //   }
+  //   if(numberOfRatings > 0){
+  //     rating = rating/numberOfRatings as int;
+  //   }
+  //   else {rating = -1;}
     
-    return rating;
-  }
+  //   return rating;
+  // }
 
   Future<Map<String, dynamic>> getUserEventDetails(
       List<dynamic> events, bool addToEventPageModel) async {
@@ -1397,9 +1397,13 @@ class EventCommand extends BaseCommand {
       
       
 
-      String amenitiesString = event['amenities'] == null ? "{}" : event['amenities'];
-      List<String> amenitiesList = BaseCommand().parseAmenities(amenitiesString);
-      isMyEventResp['amenities'] = amenitiesList;
+      String hostAmenitiesString = event['hostAmenities'] == null ? "{}" : event['hostAmenities'];
+      List<String> hostAmenitiesList = BaseCommand().parseAmenities(hostAmenitiesString);
+      isMyEventResp['hostAmenities'] = hostAmenitiesList;
+      
+      String fieldAmenitiesString = event['fieldAmenities'] == null ? "{}" : event['fieldAmenities'];
+      List<String> fieldAmenitiesList = BaseCommand().parseAmenities(fieldAmenitiesString);
+      isMyEventResp['fieldAmenities'] = fieldAmenitiesList; 
       
       
       // eventPageModel.mainEvent = event;
@@ -1458,8 +1462,9 @@ class EventCommand extends BaseCommand {
         }
       }
 
-      isMyEventResp['hostRating'] = calculateHostRating(isMyEventResp['organizers'][0]);
-      isMyEventResp['fieldRating'] = calculateFieldRating(event);
+      
+      isMyEventResp['hostRating'] = isMyEventResp['organizers'][0]['hostRating'] != null ? isMyEventResp['organizers'][0]['hostRating'] : -1;
+      isMyEventResp['fieldRating'] = isMyEventResp['fieldLocations'][0]['fieldLocationRating'] != null ? isMyEventResp['fieldLocations'][0]['fieldLocationRating'] : -1;
 
       isMyEventResp['capacity'] = event['capacity'];
       isMyEventResp['numberOfParticipants'] = isMyEventResp['players'].length;
@@ -1565,7 +1570,8 @@ class EventCommand extends BaseCommand {
             isMyEventResp['numberOfParticipants'];
         eventPageInstance.formattedEventTime =
             isMyEventResp['formattedEventTime'];
-        eventPageInstance.amenities = isMyEventResp['amenities'];
+        eventPageInstance.hostAmenities = isMyEventResp['hostAmenities'];
+        eventPageInstance.fieldAmenities = isMyEventResp['fieldAmenities'];
 
         eventPageInstance.fieldRating = isMyEventResp['fieldRating'];
         eventPageInstance.hostRating = isMyEventResp['hostRating'];

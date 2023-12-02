@@ -10,4 +10,5 @@ enum AmenityType {
   BALL,
   WATER,
   FOOD
+  
 }

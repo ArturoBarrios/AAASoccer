@@ -413,9 +413,8 @@ class PaymentCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -424,9 +423,15 @@ class PaymentCommand extends BaseCommand {
       );
       print("response body: ");
       print(jsonDecode(response.body));
-      Map<String, dynamic> updatedPrice =
-          jsonDecode(response.body)['data']['updatePrice'];
-      updatePriceResp['data'] = updatedPrice;
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['updatePrice'];
+        if(result['success']){
+          updatePriceResp['success'] = true;
+          updatePriceResp['message'] = "Price Successfully Updated";                    
+          updatePriceResp['data'] = result['price'];
+
+        }
+      }
       return updatePriceResp;
     } on Exception catch (e) {
       print('Mutation failed: $e');
