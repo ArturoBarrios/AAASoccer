@@ -84,7 +84,7 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
                 controller: usernameController,
               ),
               CustomTextFormField(
-            label: StringConstants.startDateTimeLabel,
+            label: "Birthdate",
             hintText: StringConstants.startDateTimeHint,
             keyboardType: TextInputType.datetime,
             controller: birthdateController,
@@ -109,20 +109,14 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
             },
           ),
               CustomTextFormField(
-                label: 'Age',
+                label: 'Gender',
                 hintText: 'Enter Age',
                 keyboardType: TextInputType.numberWithOptions(
                     signed: true, decimal: false),
                 controller: ageController,
                 // Add your validator logic here
               ),
-              CustomTextFormField(
-                label: 'Capacity',
-                hintText: 'Enter capacity',
-                keyboardType: TextInputType.number,
-                controller: capacityController,
-                // Add your validator logic here
-              ),
+              
               
             ],
           ),

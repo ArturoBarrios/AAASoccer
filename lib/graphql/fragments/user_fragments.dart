@@ -18,6 +18,7 @@ class UserFragments {
       OSPID
       onboarded
       mainImageKey
+      gender
       isProfilePrivate
       hostRating
       updatedAt

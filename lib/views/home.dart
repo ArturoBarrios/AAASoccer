@@ -510,23 +510,6 @@ class _Home extends State<Home> {
   Widget build(BuildContext context) {
     print("buildDDDDDD");
 
-    bool isRatingDialogueShowing = context
-        .select<AppModel, bool>((value) => value.isRatingDialogueShowing);
-
-    // if(!isRatingDialogueShowing){
-    //   WidgetsBinding.instance.addPostFrameCallback((_) async{
-    //     dynamic allUserEventParticipantsInput = {
-    //     "userId": appModel.currentUser['_id'],
-    //     "startTime": xHoursAgoTimestamp,
-    //     "eventFragment": EventFragments().userEventParticipants()
-    //   };
-    //   await EventCommand()
-    //           .getAllUserEventParticipants(allUserEventParticipantsInput);
-    //     RatingCommand().showRating(context);
-
-    //   });
-
-    // }
 
         bool isSuperUser =
         context.select<AppModel, bool>(

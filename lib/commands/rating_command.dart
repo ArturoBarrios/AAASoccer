@@ -140,7 +140,8 @@ class RatingCommand extends BaseCommand {
               appModel.currentUser['_id']) {
             userRatingFound = true;
           }
-            }
+          j++;
+        }
           //check if user participation is PLAYER
           //&& event has happened in past [2-24 hours]
           if (!userRatingFound) {
@@ -156,13 +157,11 @@ class RatingCommand extends BaseCommand {
                   event['startTime'].toString();
               DateTime startDateTime =
                   BaseCommand().dateTimeFromMilliseconds(millisecondsStarrttime);
-              print("startDateTime: " + startDateTime.toString());
-                        print("niceeeeee11111");
+              print("startDateTime: " + startDateTime.toString());                        
               if (startDateTime
                       .isBefore(DateTime.now().subtract(Duration(hours: 2))) &&
                   startDateTime
-                      .isAfter(DateTime.now().subtract(Duration(hours: 72)))) {
-                        print("niceeeeee");
+                      .isAfter(DateTime.now().subtract(Duration(hours: 72)))) {                        
                         // print("fieldLocations test: "+ event['fieldLocations'].toString());
                 showRatingForEventResp['data']['showRating'] = true;
                 showRatingForEventResp['data']['eventId'] = event['_id'];

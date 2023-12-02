@@ -140,6 +140,7 @@ class _OnboardingViewState extends State<OnboardingView> {
           ))),
         ],
       ),
+      
       CustomStepperModel(
         widgets: [
           emojiList[getSkillLevelIndex(currentRateValue)],

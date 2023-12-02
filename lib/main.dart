@@ -397,16 +397,12 @@ class _MyAppState extends State<MyApp> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                             
-                              // const Text(
-                              //   "Welcome Back",
-                              //   style: TextStyle(
-                              //     color: Colors.black,
-                              //     fontSize: 32,
-                              //     fontWeight: FontWeight.bold,
-                              //   ),
-                              // ),
-                              // const SizedBox(height: 50),                              
+                              Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:                             
                               TextField(
                                 controller: emailController,
                                 style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
@@ -421,8 +417,14 @@ class _MyAppState extends State<MyApp> {
                                     borderSide: BorderSide.none,
                                   ),
                                 ),
-                              ),
+                              )))]),
                               const SizedBox(height: 20),
+                              Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
                               IntlPhoneNumberFiled(
                                 controller: phoneController,
                                 initialValue: phoneNumber?.phoneNumber,
@@ -430,8 +432,14 @@ class _MyAppState extends State<MyApp> {
                                   phoneNumber = ph;
                                 },
                                 labelText: "Phone",
-                              ),
+                              )))]),
                               const SizedBox(height: 20),
+                              Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
                               TextField(
                                 controller: passwordController,
                                 keyboardType: TextInputType.visiblePassword,
@@ -447,8 +455,9 @@ class _MyAppState extends State<MyApp> {
                                     borderSide: BorderSide.none,
                                   ),
                                 ),
-                              ),
+                              )))]),
                               const SizedBox(height: 50),
+
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   primary: AppColors.submitFillButton, // background color
@@ -462,6 +471,7 @@ class _MyAppState extends State<MyApp> {
                                 onPressed: () async {
                                   await signIn(state);
                                 },
+                                
                                 child: const Text(
                                   'Sign In',
                                   style: TextStyle(
@@ -483,18 +493,18 @@ class _MyAppState extends State<MyApp> {
                                   ),
                                 ],
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                    onPressed: () => continueAsGuest(state),
-                                    child: const Text(
-                                      'Continue as Guest',
-                                      style: TextStyle(color: AppColors.linkColor),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   children: [
+                              //     TextButton(
+                              //       onPressed: () => continueAsGuest(state),
+                              //       child: const Text(
+                              //         'Continue as Guest',
+                              //         style: TextStyle(color: AppColors.linkColor),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                             ],
                           ),
                         ),
@@ -531,6 +541,12 @@ class _MyAppState extends State<MyApp> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
                             TextFormField(
                               style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                               controller: emailController,
@@ -544,6 +560,7 @@ class _MyAppState extends State<MyApp> {
                                 }
                                 return null;
                               },
+                              
                               decoration: InputDecoration(
                                 hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
                                 hintText: 'Email',
@@ -555,26 +572,71 @@ class _MyAppState extends State<MyApp> {
                                 ),
                               ),
                             ),
+        ))]),
                             const SizedBox(height: 20),
-                            TextField(
-                                controller: nameController,
-                                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                                keyboardType: TextInputType.name,
-                                decoration: InputDecoration(
-                                  hintText: 'Name',
-                                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
-                                  filled: true,
-                                  fillColor: AppColors.fieldFillDark,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                              ),
+      Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: TextField(
+                controller: nameController,
+                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                  hintText: 'Name',
+                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
+                  filled: true,
+                  fillColor: AppColors.fieldFillDark,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          ],
+      ),
+      const SizedBox(height: 20),
+      Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: TextFormField(
+                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                controller: usernameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "This field is required";
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                  hintText: 'Username',
+                  filled: true,
+                  fillColor: AppColors.fieldFillDark,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+          )]),
+        
                             const SizedBox(height: 20),
+                            Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
                             TextFormField(
                               style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                              controller: usernameController,
+                              controller: genderController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return "This field is required";
@@ -583,7 +645,7 @@ class _MyAppState extends State<MyApp> {
                               },
                               decoration: InputDecoration(
                                 hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
-                                hintText: 'Username',
+                                hintText: 'Gender',
                                 filled: true,
                                 fillColor: AppColors.fieldFillDark,
                                 border: OutlineInputBorder(
@@ -592,39 +654,11 @@ class _MyAppState extends State<MyApp> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
-                            IntlPhoneNumberFiled(
-                              controller: phoneController,
-                              initialValue: phoneNumber?.phoneNumber,
-                              onInputChanged: (ph) {
-                                phoneNumber = ph;
-                              },
-                              labelText: "Phone",
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                              controller: passwordController,
-                              keyboardType: TextInputType.visiblePassword,
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "This field is required";
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'Password',
-                                filled: true,
-                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
-                                fillColor: AppColors.fieldFillDark,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
+            )),
+            Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
                             TextFormField(
                               style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                               controller: birthdateController,
@@ -647,27 +681,59 @@ class _MyAppState extends State<MyApp> {
                                   borderSide: BorderSide.none,
                                 ),
                               ),
-                            ),
-                            // const SizedBox(height: 20),
-                            // TextFormField(
-                            //   controller: genderController,
-                            //   validator: (value) {
-                            //     if (value == null || value.isEmpty) {
-                            //       return "This field is required";
-                            //     }
-                            //     return null;
-                            //   },
-                            //   decoration: InputDecoration(
-                            //     hintText: 'Gender',
-                            //     filled: true,
-                            //     fillColor: Colors.grey[200],
-                            //     border: OutlineInputBorder(
-                            //       borderRadius: BorderRadius.circular(25),
-                            //       borderSide: BorderSide.none,
-                            //     ),
-                            //   ),
-                            // ),
+                            ))),
+
+            ]),
+                            
+                            const SizedBox(height: 20),
+                            Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
+                            IntlPhoneNumberFiled(
+                              controller: phoneController,
+                              initialValue: phoneNumber?.phoneNumber,
+                              onInputChanged: (ph) {
+                                phoneNumber = ph;
+                              },
+                              labelText: "Phone",
+                              ),
+            ))]),
+                            const SizedBox(height: 20),
+                            Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
+                            TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: passwordController,
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                filled: true,
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            )))]),
+                            
+
                             const SizedBox(height: 50),
+
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: AppColors.submitFillButton, // background color
@@ -707,18 +773,18 @@ class _MyAppState extends State<MyApp> {
                                 ),
                               ],
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TextButton(
-                                  onPressed: () => continueAsGuest(state),
-                                  child: const Text(
-                                    'Continue as Guest',
-                                    style: TextStyle(color: AppColors.linkColor),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     TextButton(
+                            //       onPressed: () => continueAsGuest(state),
+                            //       child: const Text(
+                            //         'Continue as Guest',
+                            //         style: TextStyle(color: AppColors.linkColor),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),
