@@ -28,8 +28,9 @@ class PlayerPositionCircle extends StatelessWidget {
         onTap: onTap,
         child: CircleAvatar(
           backgroundColor:
-              isSelected ? AppColors.orangeColorShade500 : AppColors.whiteColor,
-          child: Text(positionName ?? ''),
+              isSelected ? AppColors.tsnDarkGrey : AppColors.whiteColor,
+          child: Text(positionName ?? '', 
+            style: TextStyle(color: AppColors.tsnGreen)),
         ),
       ),
     );

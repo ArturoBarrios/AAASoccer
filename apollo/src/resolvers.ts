@@ -17,6 +17,11 @@ import EventRating from "./EventRating.js";
 
 const resolvers = {
     Mutation: {
+        deleteUser: async (parent, args, context, info) => {
+            var user = await User.findById(args._id);
+            
+
+        },
         createEventRating: async (parent, args, context, info) => {
             console.log("createEventRating");
             

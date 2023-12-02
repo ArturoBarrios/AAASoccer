@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../styles/colors.dart';
 import 'player_position_circle.dart';
 
 class FootballField extends StatelessWidget {
@@ -114,7 +115,7 @@ class FieldPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.green
+      ..color = AppColors.tsnGreen
       ..style = PaintingStyle.fill;
 
     final linePaint = Paint()

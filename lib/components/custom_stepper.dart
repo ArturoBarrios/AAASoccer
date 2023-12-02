@@ -34,13 +34,27 @@ class CustomStepper extends StatelessWidget {
     if (1 < stepperLegth) {
       for (int i = 0; i < stepperLegth; i++) {
         circularSteps.add(
-          Container(
+          Expanded(
+              child: Container(
+                height: 10,
+                color: (i < (activeStep ?? 0) || i == activeStep)
+                
+                    ? AppColors.tsnGreen
+                    : AppColors.tsnAlmostBlack,
+              ),
+            ),
+          
+        );
+
+        if (i < stepperLegth - 1) {
+          circularSteps.add(
+            Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: (i < (activeStep ?? 0) || i == activeStep)
-                  ? AppColors.orangeColorShade500
-                  : AppColors.grayColor,
+              color: (i < (activeStep ?? 0))
+                  ? AppColors.tsnGreen
+                  : AppColors.tsnAlmostBlack,
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -48,18 +62,6 @@ class CustomStepper extends StatelessWidget {
                   style: const TextStyle(color: AppColors.whiteColor)),
             ),
           ),
-        );
-
-        if (i < stepperLegth - 1) {
-          circularSteps.add(
-            Expanded(
-              child: Container(
-                height: 10,
-                color: (i < (activeStep ?? 0))
-                    ? AppColors.orangeColorShade500
-                    : AppColors.grayColor,
-              ),
-            ),
           );
         }
       }
@@ -111,12 +113,14 @@ class CustomStepper extends StatelessWidget {
                 const SizedBox(height: 80)
             ],
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: confirmButton == null || cancelButton == null
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.spaceBetween,
+          // Align(
+          //   alignment: Alignment.bottom,
+            // child: 
+            Column(
+              // mainAxisAlignment: 
+              // confirmButton == null || cancelButton == null
+              //     ? MainAxisAlignment.center
+              //     : MainAxisAlignment.spaceBetween,
               children: [
                 if (cancelButton != null)
                   Container(
@@ -160,7 +164,7 @@ class CustomStepper extends StatelessWidget {
                   ),
               ],
             ),
-          )
+          // )
         ],
       ),
     );

@@ -4,6 +4,21 @@ import '../fragments/user_fragments.dart';
 import '../fragments/event_fragments.dart';
 
 class UserMutations {
+  String deleteUser(Map<String, dynamic> userInput) {
+    String updateUserString = """
+       mutation {
+        deleteUser(
+          userId: "${userInput['_id']}",                             
+          ) {
+             code
+              success
+              message                                       
+          }   
+        }
+    """;
+    return updateUserString;
+  }
+
   String updateUserOnboarding(Map<String, dynamic> userInput) {
     String updateUserString = """
        mutation {

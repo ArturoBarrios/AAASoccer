@@ -538,8 +538,13 @@ List<String> parseAmenities(String amenitiesString) {
                 ,
             onConfirmCallback: () async {
               // Logic for confirmation action
-             BaseCommand().nukeData();
-            await AmplifyAuthService().signOut();
+            Map<String,dynamic> deleteUserResp = await UserCommand().deleteUser(appModel.currentUser['_id']);         
+            if(deleteUserResp['success']){
+              await AmplifyAuthService.deleteUser();
+              BaseCommand().nukeData();
+              await AmplifyAuthService().signOut();
+
+            }
             },
             onCancelCallback: () {
               // Logic for cancel action

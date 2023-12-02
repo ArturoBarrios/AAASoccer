@@ -112,15 +112,14 @@ type Mutation {
   createEventRating(input: EventRatingInput): CreateEventRatingResponse
   createPlayer(input: PlayerInput): CreatePlayerMutationResponse
   createStripeCustomer(customerId: String, userId: String): StripeCustomerMutationResponse
+  createPayment(input: PaymentInput): PaymentMutationResponse
+  addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
   updateUserOnboarding(_id: String, onboarded: Boolean): UserResponse
   updateUsertermsAndPrivacy(userId: String, hasAcceptedTermsAndConditions: Boolean, hasAcceptedPrivacyPolicy: Boolean): UserResponse
-  addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
-  deleteEventUserParticipant(_id: String): EventUserParticipantMutationResponse
-  createPayment(input: PaymentInput): PaymentMutationResponse
   updateUserAccount(input: UserInput): UserResponse
   updatePrice(priceId: String, amount: String): PriceResponse
-
-
+  deleteEventUserParticipant(_id: String): EventUserParticipantMutationResponse
+  deleteUser(userId: String): UserResponse
 }
 
 type Query {    

@@ -248,6 +248,57 @@ class UserCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> deleteUser(
+      Map<String, dynamic> userInput) async {
+    print("createUserCustomer");
+    print("userInput: " + userInput.toString());
+    Map<String, dynamic> updateUserResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations()
+              .deleteUser(userInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['deleteUser'];
+        if(result['success']){          
+          updateUserResponse["success"] = true;
+          updateUserResponse["message"] = "Successfully Deleted User";          
+
+        }
+        else{
+          updateUserResponse["success"] = false;
+          updateUserResponse["message"] = "Something Went Wrong";
+          updateUserResponse["data"] = null;
+        }
+      }
+      else{
+        updateUserResponse["success"] = false;
+          updateUserResponse["message"] = "Something Went Wrong";
+          updateUserResponse["data"] = null;
+      }
+
+
+      return updateUserResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return updateUserResponse;
+    }
+  }
+
   Future<Map<String, dynamic>> createUserCustomer(
       Map<String, dynamic> userInput,
       Map<String, dynamic> stripeCustomerInput) async {
@@ -691,23 +742,6 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
-      // http.Response response = await http.post(
-      //   Uri.parse('https://graphql.fauna.com/graphql'),
-      //   headers: <String, String>{
-      //     'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: jsonEncode(<String, String>{
-      //     'query': UserQueries().findUserByID(appModel.currentUser, UserFragments().fullUser()),
-      //   }),
-      // );
-
-      // print("response: ");
-      // print(jsonDecode(response.body));
-      // final result = jsonDecode(response.body)['data']['findUserByID'];
-      // getUserResp["success"] = true;
-      // getUserResp["message"] = "user found";
-      // getUserResp["data"] = result;
       print("before send request: "+user.toString());
       http.Response response = await http.post(
         Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
@@ -746,42 +780,6 @@ class UserCommand extends BaseCommand {
     return getUserResp;
   }
 
-  // Future<Map<String, dynamic>> findUserById(
-  //     Map<String, dynamic> userInput) async {
-  //   print("getUser");
-  //   Map<String, dynamic> getUserResp = {
-  //     "success": false,
-  //     "message": "no user found",
-  //     "data": null
-  //   };
-  //   try {
-  //     print("userInput: ");
-  //     print(userInput);
-  //     http.Response response = await http.post(
-  //       Uri.parse('https://graphql.fauna.com/graphql'),
-  //       headers: <String, String>{
-  //         'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: jsonEncode(<String, String>{
-  //         'query': UserQueries().findUserByID(userInput, UserFragments().fullUser()),
-  //       }),
-  //     );
-
-  //     print("response: ");
-  //     print(jsonDecode(response.body));
-  //     final result = jsonDecode(response.body)['data']['findUserByID'];
-  //     // appModel.currentUser = result;
-  //     // if (result != null) {
-  //     getUserResp["success"] = true;
-  //     getUserResp["message"] = "user found";
-  //     getUserResp["data"] = result;
-  //     // }
-  //   } catch (e) {
-  //     print('Query failed: $e');
-  //   }
-  //   return getUserResp;
-  // }
 
   Future<Map<String, dynamic>> findUserPlayerById(
       Map<String, dynamic> userInput) async {
