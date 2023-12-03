@@ -11,7 +11,7 @@ import StripeCustomer from "./StripeCustomer.js";
 import Payment from "./Payment.js";
 import { print } from "graphql";
 import EventRating from "./EventRating.js";
-// import { calculateRating } from './EventFunctions.js';
+import { getDistanceFromLatLonInKm } from './EventFunctions.js';
 
 
 
@@ -358,6 +358,9 @@ const resolvers = {
             });
             await stripeCustomer.save();
 
+            await user.stripeCustomers.push(stripeCustomer._id);
+            await user.save();
+
             stripeCustomer.populate('user');
 
 
@@ -460,9 +463,6 @@ const resolvers = {
         },
     },
     Query: {
-
-        
-
         allUserEventParticipants: async (parent, args, context, info) => {
             // const events = await Event.find({ type: args.type });
             console.log("allUserEventParticipants");
@@ -560,11 +560,8 @@ const resolvers = {
             // const events = await Event.find({ type: args.type });
             console.log("allEventsInAreaOfType");
             console.log("type: ", args.type);
-            console.log("latitude: ", args.latitude);
-            console.log("longitude: ", args.longitude);
-            console.log("radius: ", args.radius);
             console.log("startTime: ", args.startTime);
-
+            
             var events = await Event.find({
                 type: args.type,
                 // startTime: { $gte: args.startTime }
@@ -593,12 +590,17 @@ const resolvers = {
                         path: 'user',                        
                     }
                 },
-
+                
             ]);
-
-
             
-            console.log("events: ", events);
+            const userLatitude = args.latitude;
+            const userLongitude = args.longitude;
+            const radius = args.radius;
+            
+                        
+            console.log("userLatitude: ", userLatitude);
+            console.log("userLongitude: ", userLongitude);
+            console.log("radius: ", radius);
             
             const cutoffTime = parseInt(args.startTime);
             console.log("cutoffTime: ", cutoffTime);
@@ -608,12 +610,15 @@ const resolvers = {
                 console.log("eventStartTime: ", eventStartTime);
             
                 if (cutoffTime <= eventStartTime) {
-                    // Calculate the rating for the event
-                    // const rating = await calculateRating(event); // Replace with your rating calculation function
-                    // console.log("ratingggg: ", rating);
-                    // event['rating'] = rating; // Store the rating in the event object
-                    // console.log("event['rating']: ", event['rating']);
-                    resEvents.push(event);
+                    const eventLatitude = event['fieldLocations'][0]['location']['latitude'];
+                    const eventLongitude = event['fieldLocations'][0]['location']['longitude'];
+                    console.log("eventLatitude: ", eventLatitude);
+                    console.log("eventLongitude: ", eventLongitude);
+                    const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, eventLatitude, eventLongitude);
+                    console.log("distance: ", distance);
+                    if (distance <= radius) {
+                        resEvents.push(event);
+                    }                    
                 }
             }
             
@@ -736,6 +741,10 @@ const resolvers = {
                 .populate([
                     {
                         path: 'location'
+                 },
+                    {
+                        path: 'stripeCustomers',
+                        
                     },
                     {
                         path: 'eventUserParticipants',
@@ -769,8 +778,7 @@ const resolvers = {
                                         populate: {
                                             path: 'user'
                                         }
-                                    },
-
+                                    },                                    
                                 ]
                             }
                         ]

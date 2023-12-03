@@ -59,7 +59,7 @@ class PaymentCommand extends BaseCommand {
         if (listPaymentMethods.length > 0) {
           getCustomerPaymentMethodsResultResp['success'] = true;
           getCustomerPaymentMethodsResultResp['message'] = "Success";
-          getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods;
+          getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods['data'];
         }
       } else {
         getCustomerPaymentMethodsResultResp['success'] = true;

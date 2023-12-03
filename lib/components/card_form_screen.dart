@@ -22,6 +22,8 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 
 import 'Buttons/apple_google_pay_button.dart';
+import 'headers.dart';
+import 'models/button_model.dart';
 import 'paypal_payment_view.dart';
 
 class CardFormScreen extends StatefulWidget {
@@ -46,13 +48,13 @@ class _CardFormScreenState extends State<CardFormScreen> {
   final FlipCardController flipCardController = FlipCardController();
 
   List waysToPay = [
-    "Pay With Existing Card",
     "Pay With New Card",
-    "PayPal",
-    "Apple Card",
-    Platform.isAndroid ? "Google Pay" : "Apple Pay",
+    "Pay With Existing Card",
+    // "PayPal",
+    // "Apple Card",
+    // Platform.isAndroid ? "Google Pay" : "Apple Pay",
   ];
-  String? _selectedPayment = "Pay With Existing Card";
+  String? _selectedPayment = "Pay With New Card";
 
   Future<void> createPaymentIntent() async {
     setState(() {});
@@ -221,6 +223,13 @@ class _CardFormScreenState extends State<CardFormScreen> {
       int numberOfPaymentMethods = getCustomerPaymentMethodsResp['data'].length;
       print("numberOfPaymentMethods: " + numberOfPaymentMethods.toString());
       if (numberOfPaymentMethods > 0) {
+        dynamic currentUser = UserCommand().getAppModelUser();
+        dynamic currentUserStripeCustomers = currentUser['stripeCustomers'];
+        print("currentUserStripeCustomers: " +
+            currentUserStripeCustomers.toString());
+
+        
+        print("testingggg: "+ getCustomerPaymentMethodsResp['data'].toString());
         _selectedPayment = getCustomerPaymentMethodsResp['data'][0]['id'];
         _selectedPayment = "Pay With Existing Card";
       } else {
@@ -335,7 +344,12 @@ class _CardFormScreenState extends State<CardFormScreen> {
 
     Widget child;
     return Scaffold(
-        appBar: AppBar(),
+        appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {},
+              ),
+            ).getMainHeader(context),
         body: !isLoading
             ? Center(
                 child: Column(children: [
@@ -375,7 +389,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
                     ),
                   ),
                 ),
-                _selectedPayment == waysToPay[0]
+                _selectedPayment == waysToPay[1]
                     ? Column(
                         children: [
                           Container(
@@ -562,17 +576,17 @@ class _CardFormScreenState extends State<CardFormScreen> {
                           )
                         ],
                       )
-                    : waysToPay[2] == _selectedPayment
-                        ? ElevatedButton(
-                            onPressed: () => createOrderWithPaypal(
-                                repository: paypalRepository),
-                            child: const Text('Pay with paypal'),
-                          )
-                        : waysToPay[4] == _selectedPayment
-                            ? AppleGooglePaymentButton(
-                                item: widget.paymentDetails,
-                                paymentResult: (final result) {},
-                              )
+                    // : waysToPay[2] == _selectedPayment
+                    //     ? ElevatedButton(
+                    //         onPressed: () => createOrderWithPaypal(
+                    //             repository: paypalRepository),
+                    //         child: const Text('Pay with paypal'),
+                    //       )
+                    //     : waysToPay[4] == _selectedPayment
+                    //         ? AppleGooglePaymentButton(
+                    //             item: widget.paymentDetails,
+                    //             paymentResult: (final result) {},
+                    //           )
                             : paymentWidgetToShow(status)
                 // GestureDetector(
                 //   onTap: () {

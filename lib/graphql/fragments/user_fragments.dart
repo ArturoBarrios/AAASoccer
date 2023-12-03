@@ -24,6 +24,10 @@ class UserFragments {
       updatedAt
       hasAcceptedTermsAndConditions
       hasAcceptedPrivacyPolicy
+      stripeCustomers{        
+          _id
+          customerId        
+      }
       eventRatings{        
         _id
         eventRating
@@ -81,10 +85,7 @@ class UserFragments {
       requestsSent{        
           ${RequestFragments().fullRequest()}           
       }
-      stripeCustomers{        
-          _id
-          customerId        
-      }
+      
       
       
           
