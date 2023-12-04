@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     username: String,
     birthdate: String,
     age: Number,    
-    gender: Object.values(GenderType),
+    gender: String,
     followers: [{ type: Schema.Types.ObjectId, ref: 'FollowRelation' }],
     following: [{ type: Schema.Types.ObjectId, ref: 'FollowRelation' }],
     location: { type: Schema.Types.ObjectId, ref: 'Location' },

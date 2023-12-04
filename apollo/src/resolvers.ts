@@ -128,7 +128,7 @@ const resolvers = {
                    await fieldLocations.save();
                    console.log("fieldLocations: ", fieldLocations._id);
        
-       
+                   console.log("hostAmenities: ", args.input.event.hostAmenities);
        
                    const createdEvent = new Event({
                        name: args.input.event.name,
@@ -431,6 +431,7 @@ const resolvers = {
                 email: args.input.user.email,
                 birthdate: args.input.user.birthdate,
                 location: location._id,
+                gender: args.input.user.gender,
                 hostRating: -1,
 
             });
@@ -463,8 +464,7 @@ const resolvers = {
         },
     },
     Query: {
-        allUserEventParticipants: async (parent, args, context, info) => {
-            // const events = await Event.find({ type: args.type });
+        allUserEventParticipants: async (parent, args, context, info) => {            
             console.log("allUserEventParticipants");
             console.log("startTime: ", args.startTime);
             console.log("_id: ", args._id);
@@ -531,15 +531,19 @@ const resolvers = {
                 console.log("eventStartTime: ", eventStartTime);
             
                 // Filter events based on the cutoffTime condition
-                if (cutoffTime <= eventStartTime) {
-                    // Calculate the rating for the event
-                    // const rating = calculateRating(event); // Replace with your rating calculation function
-                    // event['rating'] = rating; // Store the rating in the event object
+                if (cutoffTime <= eventStartTime) {                    
                     filteredEvents.push(eventUserParticipant);
                 }
             
                 return filteredEvents;
-            }, []);
+            }, []).sort((a, b) => {
+                // Assuming 'startTime' is a string of milliseconds since the epoch
+                const startTimeA = parseInt(a.event['startTime']);
+                const startTimeB = parseInt(b.event['startTime']);
+                return startTimeA - startTimeB; // Sorting in ascending order
+            });
+            
+
 
             console.log("user.eventUserParticipants: ", user.eventUserParticipants);
 
@@ -591,7 +595,7 @@ const resolvers = {
                     }
                 },
                 
-            ]);
+            ]).sort({ startTime: 1 });
             
             const userLatitude = args.latitude;
             const userLongitude = args.longitude;

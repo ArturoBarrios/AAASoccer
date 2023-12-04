@@ -10,11 +10,11 @@ const fieldLocationSchema = new mongoose.Schema({
     events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
     fieldSize: Object.values(FieldPlayerOccupancySize),  
     surface: Object.values(SurfaceType),
-    private: Boolean,
-    amenities: [{ type: Schema.Types.ObjectId, ref: 'Amenity' }],
+    private: Boolean,    
     socialMediaApps: [{ type: Schema.Types.ObjectId, ref: 'SocialMediaApp' }],                    
     eventRatings: [{ type: Schema.Types.ObjectId, ref: 'EventRating' }],
     fieldLocationRating: Number,
+    fieldAmenities: String,
 });
 
 const FieldLocation = mongoose.model('FieldLocation', fieldLocationSchema);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
 import 'package:soccermadeeasy/commands/paypal_payment/models/response/orders/paypal_create_order_response.dart';
+import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
@@ -21,6 +22,7 @@ import 'dart:async';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 
+import '../styles/colors.dart';
 import 'Buttons/apple_google_pay_button.dart';
 import 'headers.dart';
 import 'models/button_model.dart';
@@ -558,22 +560,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
                                       ),
                                     ))),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                top: 16.0,
-                                left: 16.0,
-                                right: 16.0), // Define your own padding
-                            child: Container(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  createPaymentIntent();
-                                  // await PaymentCommand().createRefund();
-                                },
-                                child: const Text('Pay'),
-                              ),
-                            ),
-                          )
+                          
                         ],
                       )
                     // : waysToPay[2] == _selectedPayment
@@ -597,6 +584,24 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 // ),
                 // if (showCardForm)
               ]))
-            : Center(child: CircularProgressIndicator()));
+            : Center(child: CircularProgressIndicator()),
+              bottomNavigationBar: Padding(
+                            padding: EdgeInsets.only(
+                                bottom: 16.0,
+                                top: 16.0,
+                                left: 16.0,
+                                right: 16.0), 
+                            child: Container(
+                              width: double.infinity,
+                              child: BasicElevatedButton(
+                                onPressed: () async {
+                                  createPaymentIntent();                                  
+                                },
+                                backgroundColor: AppColors.tsnGreen,
+                                text: 'Pay',
+                              ),
+                            ),
+                          ),
+            );
   }
 }

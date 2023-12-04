@@ -115,6 +115,7 @@ class _GameCreateState extends State<GameCreate> {
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
         'hostAmenities': parsedSelectedHostAmenities.toString(),
+        'fieldAmenities': parsedSelectedFieldAmenities.toString(),
       };
       dynamic pickupData = {
         "pickup": true,
@@ -299,10 +300,6 @@ class _GameCreateState extends State<GameCreate> {
         },
       ),
     ),
-        ],
-      ),
-      CustomStepperModel(
-        widgets: [
           ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: 300, // You can adjust this height
@@ -318,7 +315,7 @@ class _GameCreateState extends State<GameCreate> {
       ),
     ),
         ],
-      ),
+      ),      
     ];
 
     Future<void> onCancelTap() async {
@@ -336,8 +333,12 @@ class _GameCreateState extends State<GameCreate> {
     }
 
     return Scaffold(
-      appBar: const Headers()
-          .getBackHeader(context, StringConstants.headingCreateGame),
+      appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {},
+              ),
+            ).getMainHeader(context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: CustomStepper(

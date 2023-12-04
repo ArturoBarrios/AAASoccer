@@ -7,11 +7,12 @@ class PlayerMutations {
       mutation {
         createPlayer(input: {                    
           user: {                        
-            name: "${userInput['name']}",
-            phone: "${userInput['phone']}",
-            email: "${userInput['email']}",
-            username: "${userInput['username']}",
+            name: "${userInput['name']}"
+            phone: "${userInput['phone']}"
+            email: "${userInput['email']}"
+            username: "${userInput['username']}"
             birthdate: "${userInput['birthdate']}"
+            gender: "${userInput['gender']}"            
             location: {              
               latitude: ${locationInput['latitude']}
               longitude: ${locationInput['longitude']}              

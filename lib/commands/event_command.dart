@@ -1397,14 +1397,17 @@ class EventCommand extends BaseCommand {
       
       
 
-      String hostAmenitiesString = event['hostAmenities'] == null ? "{}" : event['hostAmenities'];
+      String hostAmenitiesString = event['hostAmenities'] == null ? "" : event['hostAmenities'];
+      print("hostAmenitiesString: " + hostAmenitiesString.toString());
       List<String> hostAmenitiesList = BaseCommand().parseAmenities(hostAmenitiesString);
       isMyEventResp['hostAmenities'] = hostAmenitiesList;
       
-      String fieldAmenitiesString = event['fieldAmenities'] == null ? "{}" : event['fieldAmenities'];
+      String fieldAmenitiesString = event['fieldLocations'][0]['fieldAmenities'] == null ? "" : event['fieldLocations'][0]['fieldAmenities'];
+      print("fieldAmenitiesString: " + fieldAmenitiesString.toString());
       List<String> fieldAmenitiesList = BaseCommand().parseAmenities(fieldAmenitiesString);
       isMyEventResp['fieldAmenities'] = fieldAmenitiesList; 
       
+
       
       // eventPageModel.mainEvent = event;
       // eventPageModel.allEvents = events;

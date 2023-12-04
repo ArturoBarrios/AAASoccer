@@ -173,6 +173,7 @@ input UserInput {
   phone: String
   email: String
   username: String
+  gender: String
   birthdate: String
   location: LocationInput  
   preferredFoot: String
@@ -203,6 +204,8 @@ input EventInput {
   joinConditions: JoinConditionsInput
   userParticipants: [EventUserParticipantInput]
   fieldLocations: [FieldLocationInput]
+  hostAmenities: String
+
 
 
 }
@@ -423,7 +426,7 @@ type User  {
   birthdate: String
   age: Int
   teams: [Team] 
-  gender: GenderType
+  gender: String
   followers: [FollowRelation]
   following: [FollowRelation]
   location: Location
@@ -570,8 +573,7 @@ type Event   {
   _id: ID
   name: String
   joinConditions: [JoinConditions]
-  isMainEvent: Boolean
-  hostAmenities: String
+  isMainEvent: Boolean  
   userParticipants: [EventUserParticipant]
   price: Price 
   requests: [Request]
@@ -604,8 +606,9 @@ type Event   {
   coupons: [Coupon]
   eventRatings: [EventRating]
   slot: Slot
-  group: Group,
+  group: Group
   description: String
+  hostAmenities: String
 
 }
 
@@ -968,8 +971,7 @@ type FieldLocation  {
   events: [Event] 
   fieldSize: FieldPlayerOccupancySize  
   surface: SurfaceType
-  private: Boolean
-  amenities: [Amenity]
+  private: Boolean  
   socialMediaApps: [SocialMediaApp]
   organization: Organization
   fieldLocationReputation: FieldLocationReputation

@@ -172,6 +172,13 @@ class _PickupViewState extends State<PickupView> {
                                     color: AppColors.tsnGreen,
                                     fontSize: FontSizes.m(context),
                                   )))),
+                     Padding(
+              padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                            paddingValue, paddingValue/2),
+              child:
+                       Row(
+        children: [
+          Icon(Icons.av_timer),
                       Padding(
                           padding: EdgeInsets.fromLTRB(paddingValue, 0,
                             paddingValue, paddingValue/2),
@@ -181,7 +188,9 @@ class _PickupViewState extends State<PickupView> {
                                   style: TextStyle(
                                     color: AppColors.tsnBlack,
                                     fontSize: FontSizes.xxs(context),
-                                  )))),
+                                  ))))
+                                  
+                                  ])),
                        if(event.isMine)
                        Padding(
                         padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
@@ -229,6 +238,27 @@ class _PickupViewState extends State<PickupView> {
     //     },
     //   ),
     // ),
+    Padding(
+              padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                            paddingValue, paddingValue/2),
+              child:
+                       Row(
+        children: [
+          Icon(Icons.location_on),
+             Expanded(
+            child: 
+                      GestureDetector(
+                                onTap: () => BaseCommand().launchLocationInBrowser(event.fieldLocations[0]['location']['latitude'], event.fieldLocations[0]['location']['longitude']),
+                                child:
+                       
+                        Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(event.fieldLocations[0]['location']['address'],
+                                  style: TextStyle(
+                                    color: AppColors.tsnGreen,
+                                    fontSize: FontSizes.xxs(context),
+                                  )))))
+                                  ])),
     
                       Container(
                         margin: const EdgeInsets.all(10.0),
@@ -246,19 +276,6 @@ class _PickupViewState extends State<PickupView> {
                               : 0.0,
                         ),
                       ),
-                      GestureDetector(
-                                onTap: () => BaseCommand().launchLocationInBrowser(event.fieldLocations[0]['location']['latitude'], event.fieldLocations[0]['location']['longitude']),
-                                child:
-                       Padding(
-                          padding: EdgeInsets.fromLTRB(paddingValue, 0,
-                            paddingValue, paddingValue/2),
-                          child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(event.fieldLocations[0]['location']['address'],
-                                  style: TextStyle(
-                                    color: AppColors.tsnGreen,
-                                    fontSize: FontSizes.xxs(context),
-                                  ))))),
                       // eventRequestJoin,
                       // eventPaymentJoin,
                       // teamRequestJoin,

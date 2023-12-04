@@ -2,6 +2,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:soccermadeeasy/data/services/twilio/twilio_service.dart';
@@ -12,6 +13,7 @@ import 'package:soccermadeeasy/services/onesignal_service.dart';
 import 'package:soccermadeeasy/services/stripe_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:soccermadeeasy/strings.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 import 'package:soccermadeeasy/views/onboarding/onboarding_view.dart';
 import 'package:soccermadeeasy/views/splash_screen.dart';
@@ -20,9 +22,12 @@ import 'package:soccermadeeasy/utils.dart';
 import 'package:soccermadeeasy/widgets/intl_phone_number_filed.dart';
 import 'commands/base_command.dart';
 import 'commands/player_command.dart';
+import 'components/Validator.dart';
+import 'components/custom_textfield.dart';
 import 'components/headers.dart';
 import 'components/logo_text.dart';
 import 'components/models/button_model.dart';
+import 'models/enums/GenderType.dart';
 import 'models/pageModels/app_model.dart';
 import 'models/pageModels/chat_page_model.dart';
 import 'models/pageModels/events_page_model.dart';
@@ -91,13 +96,16 @@ class _MyAppState extends State<MyApp> {
     },
     type: MaskAutoCompletionType.lazy,
   );
-  final genderController = TextEditingController();
+  final genderController = TextEditingController();  
+  List<String> get genderOptions => GenderType.values.map((e) => e.name).toList();
+  String? selectedGender;
   final addressController = TextEditingController();
   final confirmSignInValueController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    print("genderOptions: $genderOptions");
 
     print("initState");
     configureApp();
@@ -332,6 +340,8 @@ class _MyAppState extends State<MyApp> {
     print(result);
   }
 
+  
+
   @override
   Widget build(BuildContext _) {
     print("build main.dart");
@@ -399,6 +409,7 @@ class _MyAppState extends State<MyApp> {
                             children: [
                               Row(
         children: [
+          
              Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -631,57 +642,120 @@ class _MyAppState extends State<MyApp> {
                             Row(
         children: [
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child:
-                            TextFormField(
-                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                              controller: genderController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "This field is required";
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
-                                hintText: 'Gender',
-                                filled: true,
-                                fillColor: AppColors.fieldFillDark,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-            )),
+  child: Padding(
+    padding: const EdgeInsets.only(right: 8.0),
+    child: DropdownButtonHideUnderline(
+      child: InputDecorator(
+        decoration: InputDecoration(
+          hintText: 'Gender',
+          hintStyle: TextStyle(color: AppColors.tsnGrey),
+          filled: true,
+          fillColor: AppColors.tsnAlmostBlack,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        child: DropdownButtonFormField<String>(
+          value: selectedGender,
+          style: TextStyle(color: AppColors.tsnAlmostBlack),
+          decoration: InputDecoration.collapsed(hintText: ''),
+          items: [
+            DropdownMenuItem(
+              value: null,
+              child: Text(
+                'Gender',
+                style: TextStyle(color: AppColors.tsnGrey),
+              ),
+            ),
+            ...genderOptions.map((String gender) {
+              return DropdownMenuItem(
+                value: gender,
+                child: Text(
+                  gender,
+                  style: TextStyle(color: AppColors.tsnWhite),
+                ),
+              );
+            }).toList(),
+          ],
+          onChanged: (String? newValue) {
+            setState(() {
+              selectedGender = newValue;
+            });
+            genderController.text = newValue ?? '';
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "This field is required";
+            }
+            return null;
+          },
+          dropdownColor: AppColors.fieldFillDark,
+        ),
+      ),
+    ),
+  ),
+),
+
+
             Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child:
-                            TextFormField(
-                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                              controller: birthdateController,
-                              keyboardType: TextInputType.datetime,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "This field is required";
-                                }
-                                return null;
-                              },
-                              inputFormatters: [birthdateFormatter],
-                              decoration: InputDecoration(
-                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
-                                hintText: 'Birthdate',
-                                // helperText: "mm-dd-yyyy",
-                                filled: true,
-                                fillColor: AppColors.fieldFillDark,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ))),
+              CustomTextFormField(
+            label: StringConstants.endDateTimeLabel,
+            hintText: StringConstants.endDateTimeHint,
+            controller: birthdateController,
+            keyboardType: TextInputType.datetime,
+            isSuffixIcon: true,
+            validator: (value) => Validators.validateRequired(
+                value!, StringConstants.endDateTimeErrorValue),
+            suffixIcon: IconButton(
+                onPressed: () {
+                  DatePicker.showDateTimePicker(context,
+                      showTitleActions: true,
+                      onChanged: (date) {}, onConfirm: (date) {
+                    // setEndTime(date);
+                  }, currentTime: null
+                  // !startTimeSet ? rightNow : startTime
+                  );
+                },
+                icon: const Icon(Icons.calendar_today_outlined)),
+            onPressed: () {
+              DatePicker.showDateTimePicker(context,
+                  showTitleActions: true,
+                  onChanged: (date) {}, onConfirm: (date) {
+                // setEndTime(date);
+              }, currentTime: null
+              // !startTimeSet ? rightNow : startTime
+              );
+            },
+          ),
+                            // TextFormField(
+                            //   style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                            //   controller: birthdateController,
+                            //   keyboardType: TextInputType.datetime,
+                            //   validator: (value) {
+                            //     if (value == null || value.isEmpty) {
+                            //       return "This field is required";
+                            //     }
+                            //     return null;
+                            //   },
+                            //   inputFormatters: [birthdateFormatter],
+                            //   decoration: InputDecoration(
+                            //     hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                            //     hintText: 'Birthdate',
+                            //     // helperText: "mm-dd-yyyy",
+                            //     filled: true,
+                            //     fillColor: AppColors.fieldFillDark,
+                            //     border: OutlineInputBorder(
+                            //       borderRadius: BorderRadius.circular(25),
+                            //       borderSide: BorderSide.none,
+                            //     ),
+                            //   ),
+                            // )
+                            )),
 
             ]),
                             
