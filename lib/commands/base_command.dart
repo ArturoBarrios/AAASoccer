@@ -158,6 +158,7 @@ List<String> parseAmenities(String amenitiesString) {
             print("Rejected");
             Navigator.of(context).pop(); // Close the dialog
           },
+          viewMode: false,
         );
       },
     );

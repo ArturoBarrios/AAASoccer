@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/styles/colors.dart';
 import '../../commands/base_command.dart';
 import '../../components/Buttons/basic_elevated_button.dart';
 import '../../components/Dialogues/bug_feedback_dialogue.dart';
+import '../../components/agreement_form_widget.dart';
 import '../../components/custom_tile_list.dart';
 import '../../components/custom_tile_list_with_title.dart';
 import '../../components/headers.dart';
@@ -64,7 +65,7 @@ class SettingsView extends StatelessWidget {
                             ButtonModel(
                               text: 'Update Account Details',
                               prefixIconData: Icons.person,
-                              onTap: () {
+                                                            onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -72,8 +73,8 @@ class SettingsView extends StatelessWidget {
                                          AccountDetailsUpdate(),
                                   ),
                                 );
-                              
-                              },
+                                                            }
+
                             ),                            
                           ],
                         ),
@@ -83,13 +84,28 @@ class SettingsView extends StatelessWidget {
                             ButtonModel(
                               text: 'Terms of Service',
                               prefixIconData: Icons.document_scanner,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                         AccountDetailsUpdate(),
-                                  ),
+                              onTap: () async {
+                                  await showDialog(
+      context: context,
+      builder: (BuildContext context)  {
+        return AgreementFormWidget(
+          title: "Terms of Service",
+          bodyText: 'Your agreement text goes here...',
+          onAccept: () async{
+            print("Accepted");
+            
+            Navigator.of(context).pop(); // Close the dialog
+
+          },
+          onReject: () {
+            print("Rejected");
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          viewMode: true,
+        );
+      },
+    
+    
                                 );
                               
                               },
@@ -97,13 +113,28 @@ class SettingsView extends StatelessWidget {
                             ButtonModel(
                               text: 'Privacy Policy',
                               prefixIconData: Icons.private_connectivity_rounded,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                         AccountDetailsUpdate(),
-                                  ),
+                              onTap: () async {
+                                  await showDialog(
+      context: context,
+      builder: (BuildContext context)  {
+        return AgreementFormWidget(
+          title: "Privacy Policy",
+          bodyText: 'Your agreement text goes here...',
+          onAccept: () async{
+            print("Accepted");
+            
+            Navigator.of(context).pop(); // Close the dialog
+
+          },
+          onReject: () {
+            print("Rejected");
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          viewMode: true,
+        );
+      },
+    
+    
                                 );
                               
                               },

@@ -77,7 +77,7 @@ class Footers extends StatefulWidget {
   alignment: Alignment.topCenter,
   children: [
     Padding(
-      padding: const EdgeInsets.only(top: 28.0), // Add padding for the top part of the FAB
+      padding: const EdgeInsets.only(top: 20.0), // Add padding for the top part of the FAB
       child: Container(
         width: double.infinity, // Taking full width
         height: 50,
@@ -137,40 +137,42 @@ class Footers extends StatefulWidget {
         ),
       ),
     ),    
-    if(isSuperUser!=null && isSuperUser)
-    Positioned(
-      left: 0,
-      right: 0,
-      bottom: 50 / 2, // Position the FAB so that it is half above the top of the nav bar
-      child: FloatingActionButton(
-        onPressed: () async {
-          // Your floating button logic here
-                print("Add New Chat Pressed");
-                List<dynamic> primaryList = createPages.keys.toList();
-                List<dynamic> secondaryList = [];
-                Map<int, dynamic> result = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AnimatedDialog(
-                      details: {"title": "IDK"},
-                      items: primaryList,
-                      singleSelect: false,
-                      secondaryItems: secondaryList,
-                      goToFunctions: [],
-                    );
-                  },
+   if (isSuperUser != null && isSuperUser)
+  Positioned(
+    bottom: 50 / 2, // Position the FAB so that it is half above the top of the nav bar
+    child: Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: 56, // Width of the FAB
+        height: 56, // Height of the FAB
+        child: FloatingActionButton(
+          onPressed: () async {
+            // Your floating button logic here
+            print("Add New Chat Pressed");
+            List<dynamic> primaryList = createPages.keys.toList();
+            List<dynamic> secondaryList = [];
+            Map<int, dynamic> result = await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AnimatedDialog(
+                  details: {"title": "IDK"},
+                  items: primaryList,
+                  singleSelect: false,
+                  secondaryItems: secondaryList,
+                  goToFunctions: [],
                 );
-                if (result.isNotEmpty) {
-                  print("result: " + result.toString());
-                  // goToPage(result.keys.first, primaryList);
-                  BaseCommand()
-                      .goToCreatePage(context, result.keys.first, primaryList);
-                }
-        },
-        child: Icon(Icons.add),
-        backgroundColor: AppColors.tsnGreen, // Assuming you want a blue FAB
-      ),
-    ),
+              },
+            );
+            if (result.isNotEmpty) {
+              print("result: " + result.toString());
+              BaseCommand().goToCreatePage(context, result.keys.first, primaryList);
+            }
+          },
+          child: Icon(Icons.add),
+        backgroundColor: AppColors.tsnGreen
+         
+        ),
+        )))
   ],
 );
 

@@ -96,7 +96,7 @@ class AppModel extends ChangeNotifier {
       "enabled": true,
       "name": StringConstants.HOMEPAGETITLE,
       "description": "",
-      'icon': Icons.blur_circular_sharp,
+      'icon': Icons.explore,
       'selectAction': (BuildContext context) async {
         print("in selectAction");
         await HomePageCommand().eventTypeTapped(Constants.PICKUP);
@@ -108,7 +108,7 @@ class AppModel extends ChangeNotifier {
       "enabled": false,
       "name": "My Activity",
       "description": "",
-      'icon': Icons.wheelchair_pickup,
+      'icon': Icons.sports_soccer_sharp,
       'selectAction': (BuildContext context) async{
         print("in selectAction");
         await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);

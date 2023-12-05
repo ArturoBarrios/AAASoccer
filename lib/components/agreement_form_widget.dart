@@ -5,6 +5,7 @@ class AgreementFormWidget extends StatelessWidget {
   final String bodyText;
   final VoidCallback onAccept;
   final VoidCallback onReject;
+  final bool viewMode;
 
   const AgreementFormWidget({
     Key? key,
@@ -12,6 +13,7 @@ class AgreementFormWidget extends StatelessWidget {
     required this.bodyText,
     required this.onAccept,
     required this.onReject,
+    required this.viewMode,
   }) : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class AgreementFormWidget extends StatelessWidget {
                 child: Text(bodyText),
               ),
             ),
+            if(!viewMode)
             ButtonBar(
               alignment: MainAxisAlignment.spaceAround,
               children: <Widget>[

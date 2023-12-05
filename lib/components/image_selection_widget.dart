@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../styles/colors.dart';
 
 class ImageSelectionWidget extends StatefulWidget {
@@ -23,9 +22,7 @@ class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // if(widget.viewMode && selectionList)
-    return 
-    GridView.builder(
+    return GridView.builder(
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: MediaQuery.of(context).size.width / 3, // Assuming 3 items per row at max
         childAspectRatio: 1.0,
@@ -39,7 +36,7 @@ class _ImageSelectionWidgetState extends State<ImageSelectionWidget> {
         var amenity = widget.selectionList[index];
         bool isSelected = selectedAmenities.contains(amenity);
         return GestureDetector(
-          onTap: () {
+          onTap: widget.viewMode ? null : () {
             setState(() {
               if (isSelected) {
                 selectedAmenities.remove(amenity);

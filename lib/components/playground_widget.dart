@@ -43,6 +43,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       context: context,
       builder: (BuildContext context) {
         return AgreementFormWidget(
+          viewMode: false,
           title: 'Agreement Title',
           bodyText: 'Your agreement text goes here...',
           onAccept: () {
