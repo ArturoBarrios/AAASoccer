@@ -2,12 +2,21 @@ class LocationFragments{
 
   String FieldLocationFull(){
      String fieldLocationFullReturn = """                  
-         _id
-         url
+         _id      
+         fieldAmenities   
+         fieldLocationRating
          location{
           ${LocationFull()}    
 
          }
+         eventRatings{        
+          _id          
+          fieldLocationRating          
+          user{
+            _id
+          }
+        
+      }
 
     """;
 
@@ -21,8 +30,7 @@ class LocationFragments{
          name
          address
          latitude
-         longitude
-         locationType
+         longitude         
     ''';
 
     return locationFullReturn;

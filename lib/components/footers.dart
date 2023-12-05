@@ -3,6 +3,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/views/event/create.dart';
 import 'package:soccermadeeasy/views/request/view.dart';
+import '../commands/base_command.dart';
 import '../models/pageModels/app_model.dart';
 import '../styles/asset_constants.dart';
 import '../styles/colors.dart';
@@ -28,8 +29,19 @@ class Footers extends StatefulWidget {
   State<Footers> createState() => _Footers();
 
   Widget getMainBottomNav(BuildContext context) {
-    Map<dynamic,dynamic>selectedPages = 
-      context.select<AppModel, Map<dynamic, dynamic>>((value) => value.selectedPages);
+    Map<String, Widget Function(BuildContext)> createPages =
+        context.select<AppModel, Map<String, Widget Function(BuildContext)>>(
+            (value) => value.createPages);
+
+    Map<dynamic, dynamic> selectedPages =
+        context.select<AppModel, Map<dynamic, dynamic>>(
+            (value) => value.selectedPages);
+
+    
+    bool isSuperUser =
+        context.select<AppModel, bool>(
+            (value) => value.isSuperUser);
+    
 
     int selectIndex = 0;
     Map<String, Widget Function(BuildContext)> pages = {
@@ -40,7 +52,7 @@ class Footers extends StatefulWidget {
       "Training": (context) => const TrainingCreate(),
       "Tryout": (context) => const TryoutCreate(),
       "Location": (context) => const LocationCreate(),
-    };    
+    };
 
     void goToPage(
       int indexResult,
@@ -60,69 +72,109 @@ class Footers extends StatefulWidget {
       }
     }
 
-  return Container(
-  width: 300,
-  height: 50,
-  margin: const EdgeInsets.all(4.0),
-  decoration: BoxDecoration(
-    color: AppColors.tsnBlack,
-    borderRadius: BorderRadius.circular(32), // Increased the roundness
-  ),
-  child: Row(
-  children: selectedPages.entries.map<Widget>((MapEntry<dynamic, dynamic> entry) {
-    // Now you have both the key and the value for each entry in selectedPages
-    dynamic key = entry.key;
-    Map<dynamic, dynamic> item = entry.value;
-    print("item: " + item.toString());
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => {
-          print("onTap"),
-          item['selectAction'](context),
-        }, // Assuming onTap is a function
-        child: Container(
-          margin: const EdgeInsets.all(2.0),
-          padding: const EdgeInsets.all(4.0),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: item['enabled'] ? AppColors.tsnLightGreen : Colors.transparent,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(32), // Increased the roundness
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                item['icon'],
-                size: 18,
-                color: AppColors.tsnGreyerWhite
+   return Stack(
+  clipBehavior: Clip.none, // Allow overflowing of the FAB
+  alignment: Alignment.topCenter,
+  children: [
+    Padding(
+      padding: const EdgeInsets.only(top: 20.0), // Add padding for the top part of the FAB
+      child: Container(
+        width: double.infinity, // Taking full width
+        height: 50,
+        margin: const EdgeInsets.all(4.0),
+        decoration: BoxDecoration(
+          color: AppColors.tsnBlack,
+          borderRadius: BorderRadius.circular(32),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: selectedPages.entries
+              .map<Widget>((MapEntry<dynamic, dynamic> entry) {
+            dynamic key = entry.key;
+            Map<dynamic, dynamic> item = entry.value;
+            return GestureDetector(
+              onTap: () {
+                BaseCommand().onTapBottomNav(context, key, item);
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 2.0),
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: item['enabled']
+                        ? AppColors.tsnLightGreen
+                        : Colors.transparent,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      item['icon'],
+                      size: 18,
+                      color: item['enabled']
+                          ? AppColors.tsnLightGreen
+                          : AppColors.tsnGreyerWhite,
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      item['name'],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: item['enabled']
+                            ? AppColors.tsnLightGreen
+                            : AppColors.tsnGreyerWhite,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 2),
-              Text(
-                item['name'],
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.tsnGreyerWhite
-                )
-              ),
-            ],
-          ),
+            );
+          }).toList(),
         ),
       ),
-    );
-  }).toList(),
-
-
-  ),
+    ),    
+   if (isSuperUser != null && isSuperUser)
+  Positioned(
+    bottom: 50 / 2, // Position the FAB so that it is half above the top of the nav bar
+    child: Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: 56, // Width of the FAB
+        height: 56, // Height of the FAB
+        child: FloatingActionButton(
+          onPressed: () async {
+            // Your floating button logic here
+            print("Add New Chat Pressed");
+            List<dynamic> primaryList = createPages.keys.toList();
+            List<dynamic> secondaryList = [];
+            Map<int, dynamic> result = await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AnimatedDialog(
+                  details: {"title": "IDK"},
+                  items: primaryList,
+                  singleSelect: false,
+                  secondaryItems: secondaryList,
+                  goToFunctions: [],
+                );
+              },
+            );
+            if (result.isNotEmpty) {
+              print("result: " + result.toString());
+              BaseCommand().goToCreatePage(context, result.keys.first, primaryList);
+            }
+          },
+          child: Icon(Icons.add),
+        backgroundColor: AppColors.tsnGreen
+         
+        ),
+        )))
+  ],
 );
-
-
-
-
-
-
 
   }
 

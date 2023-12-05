@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 
+import '../graphql/fragments/location_fragments.dart';
+import '../graphql/queries/locations.dart';
 import '../models/appModels/Location.dart';
 import '../models/enums/LocationType.dart';
 import 'base_command.dart';
@@ -33,7 +35,10 @@ class LocationCommand extends BaseCommand {
       if(locationType == LocationType.FACILITY){
         locations = appModel.facilityLocations;
         if(locations.length == 0){
-          locations = await getLocationsByType(LocationType.FACILITY);
+          Map<String,dynamic> getFieldLocationsResp = await getFieldLocations();
+          if(getFieldLocationsResp["success"]){
+            locations = getFieldLocationsResp["data"];
+          }
         }  
       } 
       
@@ -56,14 +61,37 @@ class LocationCommand extends BaseCommand {
     return getLocationsNearMeResp;
   }
 
-  Future<List<Location>> getLocationsByType(LocationType locationType) async{
+  Future<Map<String,dynamic>> getFieldLocations() async{
     List<Location> locations = [];
+    Map<String, dynamic> getFieldLocationsResp = {"success": false, "message": "Default", "data": null};
+
+    print("getFieldLocations()");
     try{
+       http.Response response = await http.post(
+        Uri.parse('https://graphql.fauna.com/graphql'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': LocationQueries().getFieldLocations(LocationFragments().FieldLocationFull()),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      Map<String, dynamic> getFieldLocations =
+          jsonDecode(response.body)['data']['getFieldLocations'];
+      print("createdPayment: " + getFieldLocations.toString());
+      getFieldLocationsResp["success"] = true;
+      getFieldLocationsResp["message"] = "Field Locations Retrieved";
+      getFieldLocationsResp["data"] = getFieldLocations;
+
+      return getFieldLocationsResp;
       
-      return locations;
+      
     } on ApiException catch(e){
       print('Query failed: $e');
-      return locations;
+      return getFieldLocationsResp;
     }
   }
 

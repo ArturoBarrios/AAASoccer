@@ -64,7 +64,8 @@ class _ChatViewState extends State<ChatView> {
 
   Future<void> loadInitialData() async {
     print("first load for chat data");
-    dynamic findMyUserByIdResp = await UserCommand().findMyUserById();
+    dynamic currentUser = UserCommand().getAppModelUser();
+    dynamic findMyUserByIdResp = await UserCommand().findUserById(currentUser);
     print("findMyUserByIdResp: $findMyUserByIdResp");
     dynamic newUser = findMyUserByIdResp['data'];
 

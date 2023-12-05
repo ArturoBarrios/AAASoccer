@@ -32,7 +32,6 @@ import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
 import '../../components/events_calendar.dart';
-import '../../models/enums/payment_type.dart';
 import '../../models/pageModels/event_page_model.dart';
 
 class TournamentView extends StatefulWidget
@@ -68,6 +67,7 @@ class _TournamentViewState extends State<TournamentView> {
 
   Future<void> loadInitialData() async {
     print("loadInitialData() in TournamentView");
+    await EventCommand().getUserEventDetails([widget.tournament], true);
     widget.setupTeamList();
     widget.setupMyTeams();    
 
@@ -111,6 +111,7 @@ class _TournamentViewState extends State<TournamentView> {
         context.select<EventPageModel, List>((value) => value.players);
     List chats = context.watch<EventPageModel>().chats;
     List payments = context.watch<EventPageModel>().payments;
+    List fieldLocations = context.watch<EventPageModel>().fieldLocations;
     dynamic price = context.watch<EventPageModel>().price;
     dynamic groupStage = context.watch<EventPageModel>().groupStage;
     dynamic tournamentStage = context.watch<EventPageModel>().tournamentStage;
@@ -183,27 +184,33 @@ class _TournamentViewState extends State<TournamentView> {
                             (MediaQuery.of(context).size.width *
                                 .1), //10% padding
                         height: 200.0,
-                        child: MyMapPage(
-                            latitude: mainEvent['location']['data'][0]
-                                ['latitude'],
-                            longitude: mainEvent['location']['data'][0]
-                                ['longitude']),
+                        child:  MyMapPage(
+                            latitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['latitude']
+                              : 0.0,
+                            longitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['longitude']
+                              : 0.0,
+                          ),
                       ),
                       //join widget
-                      GetJoinEventWidget(
-                          mainEvent: mainEvent,
-                          roles: roles,
-                          isMine: isMine,
-                          price: price,
-                          amountRemaining: amountRemaining),
+                      // GetJoinEventWidget(
+                      //     mainEvent: mainEvent,
+                      //     roles: roles,
+                      //     isMine: isMine,
+                      //     price: price,
+                      //     amountRemaining: amountRemaining,
+                      //     capacity: 10,
+                      //     numberOfPlayers: 5,
+                      //     ),
                       //Requests widget
                       RequestsList(objectDetails: {
                         "requests": mainEvent['requests']['data']
                       }),                     
                       //location search bar
-                      locationSearchBar = LocationSearchBar(
-                          initialValue: mainEvent['location']['data'][0]
-                              ['name']),
+                      // locationSearchBar = LocationSearchBar(
+                      //     initialValue: mainEvent['location']['data'][0]
+                      //         ['name']),
                       //player list
                       PlayerList(
                         event: mainEvent,
@@ -271,11 +278,10 @@ class _TournamentViewState extends State<TournamentView> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      PaymentListWidget(
-                        paidUsers:
-                            widget.getPaidUsers(userParticipants, payments),
-                        paymentType: PaymentType.user,
-                      ),
+                      // PaymentListWidget(
+                      //   paidUsers:
+                      //       widget.getPaidUsers(userParticipants, payments),                      
+                      // ),
                       const SizedBox(height: 60),
                       ImagesListWidget(
                           mainEvent: mainEvent,

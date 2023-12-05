@@ -47,5 +47,17 @@ class SVGWidgets {
 
     return svgImage;
   }
+  Svg host() {
+    Svg svgImage = Svg('lib/assets/tsn-icons/host.svg');
+
+    return svgImage;
+  }  
+  Svg rightRocket() {
+    Svg svgImage = Svg('lib/assets/tsn-icons/right-rocket.svg');
+
+    return svgImage;
+  }
+  
+  
  
 }

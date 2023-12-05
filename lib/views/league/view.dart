@@ -29,7 +29,6 @@ import '../../components/send_teams_request_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
-import '../../models/enums/payment_type.dart';
 import '../../models/pageModels/app_model.dart';
 import '../../models/pageModels/event_page_model.dart';
 import '../tournament/view.dart';
@@ -218,12 +217,14 @@ class _LeagueViewState extends State<LeagueView> {
                                 ['longitude']),
                       ),
                       //join widget
-                      GetJoinEventWidget(
-                          mainEvent: mainEvent,
-                          roles: roles,
-                          isMine: isMine,
-                          price: price,
-                          amountRemaining: amountRemaining),
+                      // GetJoinEventWidget(
+                      //     mainEvent: mainEvent,
+                      //     roles: roles,
+                      //     isMine: isMine,
+                      //     price: price,
+                      //     amountRemaining: amountRemaining,
+                      //     capacity: 10,
+                      //     numberOfPlayers: 5,),
                       //Requests widget
                       RequestsList(objectDetails: {
                         "requests": mainEvent['requests']['data']
@@ -299,11 +300,10 @@ class _LeagueViewState extends State<LeagueView> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      PaymentListWidget(
-                        paidUsers:
-                            widget.getPaidUsers(userParticipants, payments),
-                        paymentType: PaymentType.user,
-                      ),
+                      // PaymentListWidget(
+                      //   paidUsers:
+                      //       widget.getPaidUsers(userParticipants, payments),                      
+                      // ),
                       const SizedBox(height: 60),
                       ImagesListWidget(
                           mainEvent: mainEvent,

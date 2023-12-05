@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../commands/home_page_command.dart';
 import '../../constants.dart';
 import '../../strings.dart';
 import '../../svg_widgets.dart';
 import '../../views/game/create.dart';
+import '../../views/group/create/create.dart';
 import '../../views/home.dart';
 import '../../views/league/create.dart';
 import '../../views/location/create.dart';
@@ -19,91 +23,109 @@ import '../appModels/Location.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class AppModel extends ChangeNotifier {
+  late Timer _timer; // Declare the Timer
+  double _appTimeSinceLastLoad = 0;
+
+  double get appTimeSinceLastLoad => _appTimeSinceLastLoad;
+  // Setter remains the same if you still need to set this value manually
+  set appTimeSinceLastLoad(double appTimeSinceLastLoad) {
+    _appTimeSinceLastLoad = appTimeSinceLastLoad;
+    // print("_appTimeSinceLastLoad: $_appTimeSinceLastLoad");
+    if(_appTimeSinceLastLoad == 300){
+      print("in appTimeSinceLastLoad == 300");
+      this.shouldReloadEvents = true;
+
+    }
+    notifyListeners();
+  }
+
+  // Function to start the timer
+ void startTimer() {
+  print("startTimer!!");
+  _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    appTimeSinceLastLoad = _appTimeSinceLastLoad + 1.0; // Using the setter to update _appTimeSinceLastLoad
+  });
+}
+
+  // Function to stop the timer
+  void stopTimer() {
+    _timer.cancel();
+  }
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  bool _shouldReloadEvents = false;
+  bool get shouldReloadEvents => _shouldReloadEvents;
+  set shouldReloadEvents(bool shouldReloadEvents) {
+    _shouldReloadEvents = shouldReloadEvents;
+    notifyListeners();
+  }
+
   void nukeModelData() {}
 
-    Map<String, Widget Function(BuildContext)> createPages = {
-      "Pickup Game": (context) => const GameCreate(),
-      "Team": (context) => const TeamCreate(),
-      "Tournament": (context) => const TournamentCreate(),
-      "League": (context) => const LeagueCreate(),
-      "Training": (context) => const TrainingCreate(),
-      "Tryout": (context) => const TryoutCreate(),
-      "Location": (context) => const LocationCreate(),
-    };
+  onTapBottomNav(context, key, item){
+    selectedPages.forEach((otherKey, otherItem) {
+            if (otherKey == key) {
+              otherItem['enabled'] = true;
+            } else {
+              otherItem['enabled'] = false;
+            }
+          });
+          item['selectAction'](context);
+          item['enabled'] = true;
+      print("selectedPages on Tap: $selectedPages");
+  }
 
-    Map<dynamic, dynamic> _selectedPages = {
-      Constants.HOMEPAGE: {
-        "key": Constants.HOMEPAGE,
-        "enabled": true,
-        "name": StringConstants.HOMEPAGETITLE,
-        "description": "",      
-        'icon': Icons.home,   
-        'selectAction': (BuildContext context) {
-          print("in selectAction");
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return const Home();
-              },
-            ),
-          );
-        },     
+  Map<String, Widget Function(BuildContext)> createPages = {
+    "Pickup Game": (context) => const GameCreate(),
+    "Group": (context) => const GroupCreate(),
+    // "Team": (context) => const TeamCreate(),
+    // "Tournament": (context) => const TournamentCreate(),
+    // "League": (context) => const LeagueCreate(),
+    // "Training": (context) => const TrainingCreate(),
+    // "Tryout": (context) => const TryoutCreate(),
+    "Location": (context) => const LocationCreate(),
+  };
+
+  Map<dynamic, dynamic> _selectedPages = {
+    Constants.HOMEPAGE: {
+      "key": Constants.HOMEPAGE,
+      "enabled": true,
+      "name": StringConstants.HOMEPAGETITLE,
+      "description": "",
+      'icon': Icons.explore,
+      'selectAction': (BuildContext context) async {
+        print("in selectAction");
+        await HomePageCommand().eventTypeTapped(Constants.PICKUP);
+        await HomePageCommand().setCards();
       },
-      Constants.LOCATIONSPAGE: {
-        "key": Constants.LOCATIONSPAGE,
-        "enabled": false,
-        "name": StringConstants.LOCATIONSPAGETITLE,
-        "description": "",
-        'icon': Icons.location_on,
-        'selectAction': (BuildContext context) {
-          print("in selectAction");
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return const LocationsMap();
-              },
-            ),
-          );
-        }, 
+    },
+    Constants.MYEVENTS: {
+      "key": Constants.MYEVENTS,
+      "enabled": false,
+      "name": "My Activity",
+      "description": "",
+      'icon': Icons.sports_soccer_sharp,
+      'selectAction': (BuildContext context) async{
+        print("in selectAction");
+        await HomePageCommand().eventTypeTapped(Constants.MYEVENTS);
+        await HomePageCommand().setCards();
       },
-      Constants.CHATSPAGE: {
-        "key": Constants.CHATSPAGE,
-        "enabled": false,
-        "name": StringConstants.CHATSPAGETITLE,
-        "description": "",
-        'icon': Icons.chat,
-        'selectAction': (BuildContext context) {
-          print("in selectAction");
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return const Home();
-              },
-            ),
-          );
-        }, 
-      },
-      Constants.SCHEDULEPAGE: {
-        "key": Constants.SCHEDULEPAGE,
-        "enabled": false,
-        "name": StringConstants.SCHEDULEPAGETITLE,
-        "description": "",
-        "icon": Icons.calendar_month_outlined,
-        'selectAction': (BuildContext context) {
-          print("in selectAction");
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return const Home();
-              },
-            ),
-          );
-        }, 
-      },
+    },
+   
+    // Constants.LOCATIONSPAGE: {
+    //   "key": Constants.LOCATIONSPAGE,
+    //   "enabled": false,
+    //   "name": StringConstants.LOCATIONSPAGETITLE,
+    //   "description": "",
+    //   'icon': Icons.location_on,
+    //   'selectAction': (BuildContext context) {
+    //   },
+    // },
+    
   };
   Map<dynamic, dynamic> get selectedPages => _selectedPages;
   set selectedPages(Map<dynamic, dynamic> selectedPages) {
@@ -114,9 +136,9 @@ class AppModel extends ChangeNotifier {
   List<Svg> locationSvgs = [
     SVGWidgets().getSoccerBallSVGImage(),
     SVGWidgets().deleteSVGImage(),
-    SVGWidgets().friendsSVGImage(),    
+    SVGWidgets().friendsSVGImage(),
   ];
-  
+
   List<Svg> priceSvgs = [
     SVGWidgets().getSoccerBallSVGImage(),
     SVGWidgets().deleteSVGImage(),
@@ -143,7 +165,7 @@ class AppModel extends ChangeNotifier {
     _onesignalUserDetailsSetup = onesignalUserDetailsSetup;
     notifyListeners();
   }
-  
+
   int _distanceFilter = 200;
   int get distanceFilter => _distanceFilter;
   set distanceFilter(int distanceFilter) {
@@ -157,6 +179,15 @@ class AppModel extends ChangeNotifier {
     _currentUser = currentUser;
     notifyListeners();
   }
+
+  int _eventRadius = 100;
+  int get eventRadius => _eventRadius;
+  set eventRadius(int eventRadius) {
+    _eventRadius = eventRadius;
+    notifyListeners();
+  }
+
+
 
   Position _currentPosition = const Position(
     longitude: 0,
@@ -180,7 +211,23 @@ class AppModel extends ChangeNotifier {
     _userConditionsMet = userConditionsMet;
     notifyListeners();
   }
-  
+ 
+ 
+
+  bool _isSuperUser = false;
+  bool get isSuperUser => _isSuperUser;
+  set isSuperUser(bool isSuperUser) {
+    _isSuperUser = isSuperUser;
+    notifyListeners();
+  }
+
+  bool _onboarded = false;
+  bool get onboarded => _onboarded;
+  set onboarded(bool onboarded) {
+    _onboarded = onboarded;
+    notifyListeners();
+  }
+
   bool _initialConditionsMet = false;
   bool get initialConditionsMet => _initialConditionsMet;
   set initialConditionsMet(bool initialConditionsMet) {
@@ -199,6 +246,13 @@ class AppModel extends ChangeNotifier {
   bool get isGuest => _isGuest;
   set isGuest(bool isGuest) {
     _isGuest = isGuest;
+    notifyListeners();
+  }
+  
+  bool _isRatingDialogueShowing = false;
+  bool get isRatingDialogueShowing => _isRatingDialogueShowing;
+  set isRatingDialogueShowing(bool isRatingDialogueShowing) {
+    _isRatingDialogueShowing = isRatingDialogueShowing;
     notifyListeners();
   }
 
@@ -230,10 +284,24 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List _groups = [];
+  List get groups => _groups;
+  set groups(List groups) {
+    _groups = groups;
+    notifyListeners();
+  }
+
   List _myTeams = [];
   List get myTeams => _myTeams;
   set myTeams(List myTeams) {
     _myTeams = myTeams;
+    notifyListeners();
+  }
+
+  List _myGroups = [];
+  List get myGroups => _myGroups;
+  set myGroups(List myGroups) {
+    _myGroups = myGroups;
     notifyListeners();
   }
 
@@ -243,7 +311,7 @@ class AppModel extends ChangeNotifier {
     _friends = friends;
     notifyListeners();
   }
-  
+
   List<Location> _facilityLocations = [];
   List<Location> get facilityLocations => _facilityLocations;
   set facilityLocations(List<Location> facilityLocations) {

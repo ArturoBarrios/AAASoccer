@@ -13,7 +13,7 @@ class TeamViewController extends BaseCommand with EventMixin {
     await Future.delayed(const Duration(seconds: 2));
     print("widget.teamObject ${teamObject['events']['data']}");
     dynamic userTeamDetailsResp =
-        await TeamCommand().getUserTeamDetails(teamObject);
+        await TeamCommand().getUserTeamDetails(teamObject, false);
     setupPlayerList();
 
     userTeamDetails = userTeamDetailsResp;

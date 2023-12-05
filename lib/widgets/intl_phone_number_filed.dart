@@ -3,6 +3,8 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 // ignore: implementation_imports
 import 'package:intl_phone_number_input/src/utils/phone_number/phone_number_util.dart';
 
+import '../styles/colors.dart';
+
 class IntlPhoneNumberFiled extends StatefulWidget {
   const IntlPhoneNumberFiled({
     Key? key,
@@ -111,7 +113,7 @@ class _IntlPhoneNumberFiledState extends State<IntlPhoneNumberFiled> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: AppColors.tsnAlmostBlack,
             borderRadius: BorderRadius.circular(25),
           ),
           padding: EdgeInsets.symmetric(
@@ -146,19 +148,24 @@ class _IntlPhoneNumberFiledState extends State<IntlPhoneNumberFiled> {
                 return _validate(value ?? '');
               },
               textStyle: const TextStyle(
-                color: Colors.black,
+                color: AppColors.fieldTextInsideDarkFill,
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
               ),
               selectorTextStyle: const TextStyle(
-                color: Colors.black,
+                color: AppColors.fieldTextInsideDarkFill,
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
               ),
               textAlignVertical: TextAlignVertical.top,
               inputDecoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: widget.labelText,
+                hintStyle: const TextStyle(
+                  color: AppColors.fieldLabelTextInsideDarkFill,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+                hintText: widget.labelText,                
                 errorStyle: const TextStyle(
                   height: 0.1,
                   fontSize: 0,

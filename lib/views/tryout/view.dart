@@ -25,13 +25,12 @@ import '../../components/send_teams_request_widget.dart';
 import '../../components/teams_list_widget.dart';
 import '../../components/update_view_form.dart';
 import '../../constants.dart';
-import '../../models/enums/payment_type.dart';
 import '../../models/pageModels/event_page_model.dart';
 
 class TryoutView extends StatefulWidget with EventMixin, ImagesMixin {
-  TryoutView({Key? key, required this.tryout}) : super(key: key);
+  TryoutView({Key? key, required this.event}) : super(key: key);
 
-  final dynamic tryout;
+  final dynamic event;
 
   @override
   _TryoutViewState createState() => _TryoutViewState();
@@ -58,7 +57,7 @@ LocationSearchBar locationSearchBar = new LocationSearchBar();
   dynamic priceObject;
 
   void loadEventPayment() {
-    priceObject = widget.tryout['price'];
+    priceObject = widget.event['price'];
   }
 
   List<int>? selectedRequestTypeIndexes;
@@ -67,6 +66,7 @@ LocationSearchBar locationSearchBar = new LocationSearchBar();
 
   Future<void> loadInitialData() async {
     print("loadInitialData");
+    await EventCommand().getUserEventDetails([widget.event], true);
     
     widget.setupPlayerList();        
     
@@ -83,7 +83,7 @@ LocationSearchBar locationSearchBar = new LocationSearchBar();
   void initState() {
     super.initState();
     print("initState");
-    print("training: " + widget.tryout.toString());
+    print("training: " + widget.event.toString());
     loadInitialData();
   }
 
@@ -112,6 +112,7 @@ LocationSearchBar locationSearchBar = new LocationSearchBar();
     List teams = context.select<EventPageModel, List>((value) => value.teams);
     List players =
         context.select<EventPageModel, List>((value) => value.players);
+    List fieldLocations = context.watch<EventPageModel>().fieldLocations;
     List chats = context.watch<EventPageModel>().chats;
     List payments = context.watch<EventPageModel>().payments;
     JoinCondition eventRequestJoin = context.watch<EventPageModel>().eventRequestJoin;
@@ -170,16 +171,23 @@ LocationSearchBar locationSearchBar = new LocationSearchBar();
                       (MediaQuery.of(context).size.width * .1), //10% padding
                   height: 200.0,
                   child: MyMapPage(
-                      latitude: mainEvent['location']['data'][0]['latitude'],
-                      longitude: mainEvent['location']['data'][0]['longitude']),
+                       latitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['latitude']
+                              : 0.0,
+                            longitude: fieldLocations.length>0 ? 
+                              fieldLocations[0]['location']['longitude']
+                              : 0.0,)
                 ),
                 //join widget
-                GetJoinEventWidget(
-                    mainEvent: mainEvent,
-                    roles: roles,
-                    isMine: isMine,
-                    price: price,
-                    amountRemaining: amountRemaining),
+                // GetJoinEventWidget(
+                //     mainEvent: mainEvent,
+                //     roles: roles,
+                //     isMine: isMine,
+                //     price: price,
+                //     amountRemaining: amountRemaining,
+                //     capacity: 10,
+                //     numberOfPlayers: 5,
+                //     ),
                 //Requests widget
                 RequestsList(
                     objectDetails: {"requests": mainEvent['requests']['data']}),
@@ -189,8 +197,8 @@ LocationSearchBar locationSearchBar = new LocationSearchBar();
                   userParticipants: userParticipants,
                 ),
                 //location search bar
-                locationSearchBar = LocationSearchBar(
-                    initialValue: mainEvent['location']['data'][0]['name']),
+                // locationSearchBar = LocationSearchBar(
+                //     initialValue: mainEvent['location']['data'][0]['name']),
                 //player list
                 PlayerList(
                   event: mainEvent,
@@ -255,10 +263,9 @@ LocationSearchBar locationSearchBar = new LocationSearchBar();
                   ],
                 ),
                 const SizedBox(height: 20),
-                PaymentListWidget(
-                  paidUsers: widget.getPaidUsers(userParticipants, payments),
-                  paymentType: PaymentType.user,
-                ),
+                // PaymentListWidget(
+                //   paidUsers: widget.getPaidUsers(userParticipants, payments),                
+                // ),
                 const SizedBox(height: 60),
                 ImagesListWidget(
                     mainEvent: mainEvent,

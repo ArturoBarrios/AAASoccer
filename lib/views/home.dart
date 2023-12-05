@@ -5,12 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/extensions/filter_extension.dart';
 import 'package:soccermadeeasy/extensions/show_bottom_sheet.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
+import 'package:soccermadeeasy/views/splash_screen.dart';
 
 import '../commands/base_command.dart';
+import '../commands/rating_command.dart';
 import '../components/Buttons/basic_elevated_button.dart';
 import '../components/Dialogues/animated_dialogu.dart';
+import '../components/Dialogues/rating_dialogue.dart';
 import '../components/Loading/loading_screen.dart';
 import '../components/models/button_model.dart';
+import '../graphql/fragments/event_fragments.dart';
 import '../models/componentModels/filter_result_model.dart';
 
 //import widgets
@@ -41,6 +45,7 @@ import '../models/events_model.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../components/search_field.dart';
 import '../styles/colors.dart';
+import 'location/map.dart';
 import 'onboarding/onboarding_view.dart';
 
 class Home extends StatefulWidget {
@@ -303,7 +308,25 @@ class _Home extends State<Home> {
     HomePageCommand().updateUpdatedCards(value);
   }
 
+  Future<void> loadPlayerDetails() async {
+    print("loadPlayerDetails");
+    // await TwilioServices().configureTwilio();
+
+    ///////////////////////// add back in when shortcode is ready
+    // print("resppp: " + resp.toString());
+    // if (resp['success']) {
+    await BaseCommand().setupInitialAppModels();
+    BaseCommand().initialConditionsMet();
+
+    print("initialConditionsMett");
+    // } else {
+    //   print("try again....");
+
+    // }
+  }
+
   Future<void> loadInitialData() async {
+    await loadPlayerDetails();
     print("loadInitialData");
     _selectEventController = ScrollController()..addListener(_loadMore);
     userObject = UserCommand().getAppModelUser();
@@ -311,6 +334,21 @@ class _Home extends State<Home> {
     // await HomePageCommand().eventTypeTapped(HomePageModel().selectedKey);
     await HomePageCommand().setCards();
     updateUpdatedCards(false);
+
+    String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(24);
+    //check if rating dialogue should display
+    dynamic allUserEventParticipantsInput = {
+      "userId": userObject['_id'],
+      "startTime": xHoursAgoTimestamp,
+      "eventFragment": EventFragments().userEventParticipants()
+    };
+    // Map<String, dynamic> getAllUserEventParticipantsResp = await EventCommand()
+    //     .getAllUserEventParticipants(allUserEventParticipantsInput);    
+    // if (getAllUserEventParticipantsResp['success']) {
+    //   List<dynamic> allMyEvents = getAllUserEventParticipantsResp['data'];
+    //   EventCommand().setMyEvents(allMyEvents);
+      await RatingCommand().showRating(context);
+    // }
   }
 
   void changeFilterResult(final FilterResultModel? filterResult) {
@@ -363,6 +401,41 @@ class _Home extends State<Home> {
     setState(() {});
   }
 
+  bool hideShowSelectionItems(Map<dynamic, dynamic> items) {
+    bool value = items.values.any((item) =>
+        (!item['showExplore'] || !item['showMyActivity']) && item['enabled']);
+    print("hasVisibleItems: " + value.toString());
+    return !value;
+  }
+
+  bool showExplore(Map<dynamic, dynamic> enabledSelections) {
+    // Iterate through each key-value pair in the map
+    for (var entry in enabledSelections.entries) {
+      // Check if 'showExplore' is true and 'enabled' is also true
+      if (entry.value["showExplore"] == true &&
+          entry.value["enabled"] == true) {
+        // If any entry meets the conditions, return true
+        return true;
+      }
+    }
+    // If no entries meet the conditions, return false
+    return false;
+  }
+
+  bool showMyActivity(Map<dynamic, dynamic> enabledSelections) {
+    // Iterate through each key-value pair in the map
+    for (var entry in enabledSelections.entries) {
+      // Check if 'showExplore' is true and 'enabled' is also true
+      if (entry.value["showMyActivity"] == true &&
+          entry.value["enabled"] == true) {
+        // If any entry meets the conditions, return true
+        return true;
+      }
+    }
+    // If no entries meet the conditions, return false
+    return false;
+  }
+
   Future<void> showBottomSheet(
           BuildContext context, String key, List<dynamic> objects) async =>
       context.showFilterBottomSheet(
@@ -386,25 +459,72 @@ class _Home extends State<Home> {
   @override
   void initState() {
     print("initState() in home");
-    super.initState();
-    // updateUpdatedCards(true);
+    super.initState();    
     loadInitialData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      
+      
+        
+          // showAgreementDialogues(context);
+
+        
+
+      
+
+    });
   }
 
   Future<void> onReload() async {
+    print("onReload()");
+    BaseCommand().stopReloadTimer();
     await HomePageCommand().setCards();
+    BaseCommand().resetReloadTimer();
   }
+
+  bool isLocationPageSelected() {
+    if (AppModel().selectedPages[Constants.LOCATIONSPAGE]['enabled']) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  showAgreementDialogues(BuildContext context)async{    
+    print("nicerrrrrr");
+    // if(!currentUser['hasAcceptedTermsAndConditions']){      
+        await BaseCommand().showAgreementDialog(context);
+        // if(agreementToShow == "TermsAndConditions"){
+
+        // }
+        // else if(agreementToShow == "PrivacyPolicy"){
+
+        // }
+    // }
+    // else if(!currentUser['hasAcceptedPrivacyPolicy']){
+
+    // }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     print("buildDDDDDD");
+
+
+        bool isSuperUser =
+        context.select<AppModel, bool>(
+            (value) => value.isSuperUser);
+
+    bool initialConditionsMet =
+        context.select<AppModel, bool>((value) => value.initialConditionsMet);
+
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
 
     selectedKey =
         context.select<HomePageModel, dynamic>((value) => value.selectedKey);
 
-    List selectedObjects = context.watch<HomePageModel>().selectedObjects;
+    // List selectedObjects = context.watch<HomePageModel>().selectedObjects;
     userObjectSelections = context
         .select<HomePageModel, List>((value) => value.userObjectSelections);
 
@@ -422,16 +542,24 @@ class _Home extends State<Home> {
     bool cardsLoading =
         context.select<HomePageModel, bool>((value) => value.cardsLoading);
 
-    List<dynamic> games = context.watch<EventsModel>().games;
+    // List<dynamic> games = context.watch<EventsModel>().games;
 
     context.select<AppModel, List<dynamic>>((value) => value.friends);
 
     context.select<AppModel, List<dynamic>>((value) => value.myEvents);
 
     context.select<AppModel, List<dynamic>>((value) => value.teams);
-    
-    Map<String, Widget Function(BuildContext)> createPages = context.select<AppModel, Map<String,Widget Function(BuildContext)>>((value) => value.createPages);
-    
+
+    Map<String, Widget Function(BuildContext)> createPages =
+        context.select<AppModel, Map<String, Widget Function(BuildContext)>>(
+            (value) => value.createPages);
+
+    Map<dynamic, dynamic> selectedPages =
+        context.select<AppModel, Map<dynamic, dynamic>>(
+            (value) => value.selectedPages);
+    // Map<dynamic,dynamic>selectedPages =
+    //   context.watch<AppModel>().selectedPages;
+
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -444,229 +572,222 @@ class _Home extends State<Home> {
       loadInitialData();
     }
 
-    return Scaffold(
-      appBar: Headers(
-        playerStepperButton: ButtonModel(
-          prefixIconData: Icons.play_circle_fill_rounded,
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return const OnboardingView();
-              },
-            ));
-          },
-        ),
-        filterButton: ButtonModel(
-          prefixIconData:
-              isFilteringEnabled ? Icons.filter_alt_off : Icons.filter_alt,
-          onTap: () =>
-              showBottomSheet(context, selectedKey.toString(), selectedObjects),
-        ),
-      ).getMainHeader(context),
-      drawer: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
-        child:
-            Drawer(child: const SideNavs().getMainSideNav(context, userObject)),
-      ),
-      body: 
-      RefreshIndicator(
-        onRefresh: onReload,
-        child:  Stack(
-            children: <Widget>[
-              Column(
-                children: [
-                  Padding(
+    return initialConditionsMet == false
+        ? SplashScreen()
+        : Scaffold(
+            extendBody: true,
+            appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
+                      return const OnboardingView();
+                    },
+                  ));
+                },
+              ),
+              filterButton: ButtonModel(
+                prefixIconData: isFilteringEnabled
+                    ? Icons.filter_alt_off
+                    : Icons.filter_alt,
+                onTap: () => showBottomSheet(
+                    context, selectedKey.toString(), selectedObjects),
+              ),
+            ).getMainHeader(context),
+            drawer: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
+              child: Drawer(
+                  child: const SideNavs().getMainSideNav(context, userObject, isSuperUser )),
+            ),
+            body:
+
+
+                RefreshIndicator(
+              onRefresh: onReload,
+              child: Stack(
+                children: <Widget>[
+                  Column(
+                    children: [
+                      
+                      
+                      Padding(
                           padding: EdgeInsets.all(10.0),
                           child: Row(
-                            children: [
-                                Expanded( child:
-                              SearchField(label: StringConstants.searchLabel)
-                                ),
-                              SizedBox(width: 10), // Add some spacing between the search field and the button
-                              BasicElevatedButton(
-                                icon: SVGWidgets().getSoccerBallSVGImage(),
-                                height: screenHeight * 0.05,  // 10% of screen height
-                                width: screenWidth * 0.25,
-                                backgroundColor: AppColors.tsnGreen, text: "Create",
-                                onPressed: () async {
-                                    print("Add New Chat Pressed");
-                                    List<dynamic> primaryList = createPages.keys.toList();
-                                    List<dynamic> secondaryList = [];
-                                    Map<int, dynamic> result = await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AnimatedDialog(
-                                          details: {"title": "IDK"},
-                                          items: primaryList,
-                                          singleSelect: false,
-                                          secondaryItems: secondaryList,
-                                          goToFunctions: [],
-                                        );
-                                      },
-                                    );
-                                    if (result.isNotEmpty) {
-                                      print("result: " + result.toString());
-                                      // goToPage(result.keys.first, primaryList);
-                                      BaseCommand().goToCreatePage(
-                                        context, 
-                                        result.keys.first, 
-                                        primaryList
-                                      );
-                                    }
-                                                }
-                              ),
-                            ],
-                          )
-                  ),
-                  SizedBox(
-                    height:
-                        80, // Define the height you want for your card section
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      controller: _selectEventTypeController,
-                      itemCount: enabledSelections2.length,
-                      itemBuilder: (_, index) {
-                        dynamic key = enabledSelections2.keys.elementAt(index);
-                        return SelectIconButton(
-                            eventObject: enabledSelections2[key],
-                            svgImage: enabledSelections2[key]['image'],
-                            index: index,
-                            onTapEvent: () => isFilteringEnabled
-                                ? clearFiltering(isPop: false)
-                                : null,
-                          
-                        );
-                      },
-                    ),
-                  ),
-                  //logic/button for sending team/event requests to
-                  // multiple players
-                  userObjectSelections.isNotEmpty
-                      ? GestureDetector(
-                          onTap: () async {
-                            int? index = await showAnimatedDialog<int>(
-                              context: context,
-                              barrierDismissible: true,
-                              builder: (BuildContext context) {
-                                return ClassicListDialogWidget<dynamic>(
-                                    selectedIndex: selectIndex,
-                                    titleText: 'Title',
-                                    listType: ListType.singleSelect,
-                                    positiveText: "Next",
-                                    activeColor: Colors.green,
-                                    dataList: teamEventList);
-                              },
-                              animationType: DialogTransitionType.size,
-                              curve: Curves.linear,
-                            );
-                            print("index: " + index.toString());
-                            setupEventTeamToChoose(index!);
-                            if (eventTeamChosen != "") {
-                              List<int>? indexes = await showAnimatedDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return ClassicListDialogWidget<dynamic>(
-                                      selectedIndexes: selectedEventTeamIndexes,
-                                      titleText: 'Choose Players',
-                                      positiveText: "Next",
-                                      listType: ListType.multiSelect,
-                                      activeColor: Colors.green,
-                                      dataList: choices);
-                                },
-                                animationType: DialogTransitionType.size,
-                                curve: Curves.linear,
-                              );
-                              selectedEventTeamIndexes =
-                                  indexes ?? selectedEventTeamIndexes;
-                              print(
-                                  'selectedIndex:${selectedEventTeamIndexes?.toString()}');
-                              eventTeamsSelected(selectedEventTeamIndexes);
-                            }
-                            if (selectedEventTeamIndexes!.isNotEmpty) {
-                              List<int>? requestIndexes =
-                                  await showAnimatedDialog<dynamic>(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return ClassicListDialogWidget<dynamic>(
-                                      selectedIndexes:
-                                          selectedRequestTypeIndexes,
-                                      titleText: 'Choose User Type',
-                                      positiveText: "Send Request",
-                                      listType: ListType.multiSelect,
-                                      onNegativeClick: () {
-                                        print("onNegativeClick");
-                                        selectedEventTeamIndexes = [];
-                                        //pop
-                                        Navigator.pop(context);
-                                      },
-                                      activeColor: Colors.green,
-                                      dataList: requestUserTypes);
-                                },
-                                animationType: DialogTransitionType.size,
-                                curve: Curves.linear,
-                              );
+                            children: [],
+                          )),
 
-                              selectedRequestTypeIndexes =
-                                  requestIndexes ?? selectedRequestTypeIndexes;
-                              print(
-                                  'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
-                              await requestTypesSelected(
-                                  selectedRequestTypeIndexes);
-                              await sendPlayerRequests();
+                      SizedBox(
+                        height:
+                            80, // Define the height you want for your card section
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          controller: _selectEventTypeController,
+                          itemCount: enabledSelections2.length,
+                          itemBuilder: (_, index) {
+                            dynamic key =
+                                enabledSelections2.keys.elementAt(index);
+                            print("enabledSelections2[key]['showExplore']: " +
+                                enabledSelections2[key]['showExplore']
+                                    .toString());
+                            if (showExplore(enabledSelections2) &&
+                                enabledSelections2[key]['showExplore']) {
+                              return SelectIconButton(
+                                eventObject: enabledSelections2[key],
+                                svgImage: enabledSelections2[key]['image'],
+                                index: index,
+                                onTapEvent: () => isFilteringEnabled
+                                    ? clearFiltering(isPop: false)
+                                    : null,
+                              );
+                            } else if (showMyActivity(enabledSelections2) &&
+                                enabledSelections2[key]['showMyActivity']) {
+                              return SelectIconButton(
+                                eventObject: enabledSelections2[key],
+                                svgImage: enabledSelections2[key]['image'],
+                                index: index,
+                                showNew: key == Constants.REQUESTSRECEIVED ? 
+                                  enabledSelections2[key]['new'] : false,
+                                onTapEvent: () => isFilteringEnabled
+                                    ? clearFiltering(isPop: false)
+                                    : null,
+                              );
+                            } else {
+                              return Container();
                             }
                           },
-                          child: Container(
-                            width: 200,
-                            height: 50,
-                            color: Colors.blue,
-                            child: const Center(
-                              child: Text("Send Event/Team Request"),
-                            ),
-                          ),
-                        )
-                      : Container(),
-                  !cardsLoading
-                      ?                      
-                      //list view
-                      Expanded(child: 
-                        ListView.builder(
-                            controller: _selectEventController,
-                            itemCount: cards.length,
-                            shrinkWrap: true,
-                            physics: AlwaysScrollableScrollPhysics(),
-                            itemBuilder: (_, index) => Card(
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 10,
-                              ),
-                              child: cards[index],
-                            ),
-                          )                     
-                      )
-                      : const SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: LoadingScreen(
-                              currentDotColor: Colors.white,
-                              defaultDotColor: Colors.black,
-                              numDots: 10,
-                            ),
-                          ),
+                        ),
                       ),
+                      //logic/button for sending team/event requests to
+                      // multiple players
+                      userObjectSelections.isNotEmpty
+                          ? GestureDetector(
+                              onTap: () async {
+                                int? index = await showAnimatedDialog<int>(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return ClassicListDialogWidget<dynamic>(
+                                        selectedIndex: selectIndex,
+                                        titleText: 'Title',
+                                        listType: ListType.singleSelect,
+                                        positiveText: "Next",
+                                        activeColor: Colors.green,
+                                        dataList: teamEventList);
+                                  },
+                                  animationType: DialogTransitionType.size,
+                                  curve: Curves.linear,
+                                );
+                                print("index: " + index.toString());
+                                setupEventTeamToChoose(index!);
+                                if (eventTeamChosen != "") {
+                                  List<int>? indexes = await showAnimatedDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (BuildContext context) {
+                                      return ClassicListDialogWidget<dynamic>(
+                                          selectedIndexes:
+                                              selectedEventTeamIndexes,
+                                          titleText: 'Choose Players',
+                                          positiveText: "Next",
+                                          listType: ListType.multiSelect,
+                                          activeColor: Colors.green,
+                                          dataList: choices);
+                                    },
+                                    animationType: DialogTransitionType.size,
+                                    curve: Curves.linear,
+                                  );
+                                  selectedEventTeamIndexes =
+                                      indexes ?? selectedEventTeamIndexes;
+                                  print(
+                                      'selectedIndex:${selectedEventTeamIndexes?.toString()}');
+                                  eventTeamsSelected(selectedEventTeamIndexes);
+                                }
+                                if (selectedEventTeamIndexes!.isNotEmpty) {
+                                  List<int>? requestIndexes =
+                                      await showAnimatedDialog<dynamic>(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (BuildContext context) {
+                                      return ClassicListDialogWidget<dynamic>(
+                                          selectedIndexes:
+                                              selectedRequestTypeIndexes,
+                                          titleText: 'Choose User Type',
+                                          positiveText: "Send Request",
+                                          listType: ListType.multiSelect,
+                                          onNegativeClick: () {
+                                            print("onNegativeClick");
+                                            selectedEventTeamIndexes = [];
+                                            //pop
+                                            Navigator.pop(context);
+                                          },
+                                          activeColor: Colors.green,
+                                          dataList: requestUserTypes);
+                                    },
+                                    animationType: DialogTransitionType.size,
+                                    curve: Curves.linear,
+                                  );
+
+                                  selectedRequestTypeIndexes = requestIndexes ??
+                                      selectedRequestTypeIndexes;
+                                  print(
+                                      'selectedIndex:${selectedRequestTypeIndexes?.toString()}');
+                                  await requestTypesSelected(
+                                      selectedRequestTypeIndexes);
+                                  await sendPlayerRequests();
+                                }
+                              },
+                              child: Container(
+                                width: 200,
+                                height: 50,
+                                color: Colors.blue,
+                                child: const Center(
+                                  child: Text("Send Event/Team Request"),
+                                ),
+                              ),
+                            )
+                          : Container(),
+
+                      !cardsLoading
+                          ?
+                          //list view
+                          Expanded(
+                              child: ListView.builder(
+                              controller: _selectEventController,
+                              itemCount: cards.length,
+                              shrinkWrap: true,
+                              physics: AlwaysScrollableScrollPhysics(),
+                              itemBuilder: (_, index) => Card(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 10,
+                                ),
+                                child: cards[index],
+                              ),
+                            ))
+                          : const SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: LoadingScreen(
+                                  currentDotColor: Colors.white,
+                                  defaultDotColor: Colors.black,
+                                  numDots: 10,
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
                 ],
-              )
-            ],
-          ),
-        
-      ),
-      bottomNavigationBar: 
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0), // Padding from the bottom of the screen
-          child:const Footers().getMainBottomNav(context)),
-    );
+              ),
+            ),
+            // :  LocationsMap(),
+
+            bottomNavigationBar: Padding(
+                padding: const EdgeInsets.only(
+                    top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
+                child: const Footers().getMainBottomNav(context)),
+          );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../../components/join_condition.dart';
+
 class TeamPageModel extends ChangeNotifier {
   dynamic _team = null;
   dynamic get team => _team;
@@ -9,9 +11,9 @@ class TeamPageModel extends ChangeNotifier {
   }
 
   /////////////////
-  dynamic _payments = null;
-  dynamic get payments => _payments;
-  set payments(dynamic payments) {
+  List _payments = [];
+  List get payments => _payments;
+  set payments(List payments) {
     _payments = payments;
     notifyListeners();
   }
@@ -95,4 +97,26 @@ class TeamPageModel extends ChangeNotifier {
     _userParticipants = userParticipants;
     notifyListeners();
   }
+  
+  List _teamLocations = [];
+  List get teamLocations => _teamLocations;
+  set teamLocations(List teamLocations) {
+    _teamLocations = teamLocations;
+    notifyListeners();
+  }
+
+  JoinCondition _teamRequestJoin =  JoinCondition(label: "");
+  JoinCondition get teamRequestJoin => _teamRequestJoin;
+  set teamRequestJoin(JoinCondition teamRequestJoin) {
+    _teamRequestJoin = teamRequestJoin;
+    notifyListeners();
+  }
+  JoinCondition _teamPaymentJoin =  JoinCondition(label: "");
+  JoinCondition get teamPaymentJoin => _teamPaymentJoin;
+  set teamPaymentJoin(JoinCondition teamPaymentJoin) {
+    _teamPaymentJoin = teamPaymentJoin;
+    notifyListeners();
+  }
+
+
 }

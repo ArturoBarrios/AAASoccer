@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:soccermadeeasy/commands/home_page_command.dart';
+import 'package:soccermadeeasy/graphql/fragments/user_fragments.dart';
 import '../constants.dart';
 import '../graphql/mutations/requests.dart';
 import 'base_command.dart';
@@ -12,10 +13,99 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../commands/notifications_command.dart';
 import '../models/enums/payment_status_type.dart';
+import 'images_command.dart';
 
 class UserCommand extends BaseCommand {
   updateOrganizer() {
     //iterate through events and find
+  }
+
+  Future<Map<String,dynamic>> getUserDetails(dynamic user, bool addToProfilePageModel) async {
+    print("loadInitialData Profile: " + user.toString());
+    Map<String,dynamic> getUserDetailsResp = {
+      "success": false,
+      "user": user,
+      "objectImageInput": {},
+      "followers": [],
+      "following": [],
+      "eventUserParticipants": [],
+      "teamUserParticipants": [],
+      "isMine": false,
+    };
+
+    try{
+      
+       //get current user
+    String imageUrl = "";
+
+    if (appModel.currentUser['_id'] == user['_id']) {
+      print("is mineeeee");
+      user = appModel.currentUser;
+      getUserDetailsResp['isMine'] = true;
+      imageUrl = UserCommand().getProfileImage();      
+      // profilePageModel.user = UserCommand().getAppModelUser();
+
+      if (imageUrl == '') {
+        String? key = user['mainImageKey'];
+        if (key != null) {
+          Map<String, dynamic> getUserProfileImageResp =
+              await ImagesCommand().getImage(key);
+          print("getUserProfileImageResp: $getUserProfileImageResp");
+          if (getUserProfileImageResp['success']) {
+            imageUrl = getUserProfileImageResp['data']['signedUrl'];
+            userModel.profileImageUrl = imageUrl;
+          }
+        }
+      }
+    } else {
+      Map<String, dynamic> findMyUserByIdResp =
+          await UserCommand().findUserById(user);
+      print("findMyUserByIdResp: $findMyUserByIdResp");
+      if (findMyUserByIdResp['success']) {
+        profilePageModel.user = findMyUserByIdResp['data'];
+        user = findMyUserByIdResp['data'];
+        String? key = user['mainImageKey'];
+        print("key: $key");
+        if (key != null) {
+          Map<String, dynamic> getUserProfileImageResp =
+              await ImagesCommand().getImage(key);
+          print("getUserProfileImageResp: $getUserProfileImageResp");
+          if (getUserProfileImageResp['success']) {
+            imageUrl = getUserProfileImageResp['data']['signedUrl'];
+          }
+        }
+      }
+    }
+    print("loadInitialData Profile imageUrl: $imageUrl");
+
+    getUserDetailsResp['objectImageInput'] = {
+      "imageUrl": imageUrl,
+      "containerType": Constants.PROFILEIMAGECIRCLE
+    };
+
+    getUserDetailsResp['eventUserParticipants'] =
+      user['eventUserParticipants'];
+    // getUserDetailsResp['teamUserParticipants'] =
+    //     user['teamUserParticipants']['data'];
+    getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
+
+    if(addToProfilePageModel){
+      
+      profilePageModel.isMine = getUserDetailsResp['isMine'];
+      profilePageModel.user = user;
+      profilePageModel.objectImageInput = getUserDetailsResp['objectImageInput'];
+      profilePageModel.eventUserParticipants = getUserDetailsResp['eventUserParticipants'];
+      profilePageModel.teamUserParticipants = getUserDetailsResp['teamUserParticipants'];
+      profilePageModel.isProfilePrivate = getUserDetailsResp['isProfilePrivate'];
+    print("aaaaaa");
+
+    }
+      return getUserDetailsResp;
+    } catch(e) {
+
+      return getUserDetailsResp;
+    }
+   
   }
 
   String getProfileImage() {
@@ -158,6 +248,57 @@ class UserCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> deleteUser(
+      Map<String, dynamic> userInput) async {
+    print("createUserCustomer");
+    print("userInput: " + userInput.toString());
+    Map<String, dynamic> updateUserResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations()
+              .deleteUser(userInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['deleteUser'];
+        if(result['success']){          
+          updateUserResponse["success"] = true;
+          updateUserResponse["message"] = "Successfully Deleted User";          
+
+        }
+        else{
+          updateUserResponse["success"] = false;
+          updateUserResponse["message"] = "Something Went Wrong";
+          updateUserResponse["data"] = null;
+        }
+      }
+      else{
+        updateUserResponse["success"] = false;
+          updateUserResponse["message"] = "Something Went Wrong";
+          updateUserResponse["data"] = null;
+      }
+
+
+      return updateUserResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return updateUserResponse;
+    }
+  }
+
   Future<Map<String, dynamic>> createUserCustomer(
       Map<String, dynamic> userInput,
       Map<String, dynamic> stripeCustomerInput) async {
@@ -170,9 +311,8 @@ class UserCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -184,12 +324,29 @@ class UserCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
 
-      Map<String, dynamic> user =
-          jsonDecode(response.body)['data']['createStripeCustomer'];
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['createStripeCustomer'];
+        if(result['success']){
+          Map<String, dynamic> user =
+              result['stripeCustomer']['user'];
 
-      updateUserResponse["success"] = true;
-      updateUserResponse["message"] = "User Updated";
-      updateUserResponse["data"] = user;
+          updateUserResponse["success"] = true;
+          updateUserResponse["message"] = "User Updated";
+          updateUserResponse["data"] = user;
+
+        }
+        else{
+          updateUserResponse["success"] = false;
+          updateUserResponse["message"] = "Something Went Wrong";
+          updateUserResponse["data"] = null;
+        }
+      }
+      else{
+        updateUserResponse["success"] = false;
+          updateUserResponse["message"] = "Something Went Wrong";
+          updateUserResponse["data"] = null;
+      }
+
 
       return updateUserResponse;
     } on ApiException catch (e) {
@@ -202,7 +359,57 @@ class UserCommand extends BaseCommand {
     // userModel.userID = userId;
   }
 
-  Future<Map<String, dynamic>> partialUpdateUser(
+  Future<Map<String, dynamic>> updateUsertermsAndPrivacy(
+      dynamic userInput) async {
+    print("updateAgreement");
+    print("userInput: " + userInput.toString());
+
+    Map<String, dynamic> partialUpdateUserResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().updateUsertermsAndPrivacy(userInput),
+        }),
+      );
+
+      print("response from updateUserOnboarding.....: ");
+
+      print(jsonDecode(response.body));
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
+        partialUpdateUserResponse["success"] = false;
+        partialUpdateUserResponse["message"] = "no user found";
+      } else {
+        
+        final result = jsonDecode(response.body)['data']['updateUsertermsAndPrivacy'];
+        partialUpdateUserResponse["data"] = null;
+        if (result['success']) {
+          partialUpdateUserResponse["success"] = true;
+          partialUpdateUserResponse["message"] = "user found";
+          partialUpdateUserResponse["data"] = result['user'];
+        }
+        else{
+          partialUpdateUserResponse["success"] = false;
+          partialUpdateUserResponse["message"] = "no user found";
+        }
+      }
+      return partialUpdateUserResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return partialUpdateUserResponse;
+    }
+  }
+
+  Future<Map<String, dynamic>> updateUserOnboarding(
       dynamic processedUserInput) async {
     print("partialUpdateUser");
     print("processedUserInput: " + processedUserInput.toString());
@@ -215,26 +422,36 @@ class UserCommand extends BaseCommand {
 
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserMutations().partialUserUpdate(processedUserInput),
+          'query': UserMutations().updateUserOnboarding(processedUserInput),
         }),
       );
 
-      print("response body: ");
-      print(jsonDecode(response.body));
-      partialUpdateUserResponse["success"] = true;
-      partialUpdateUserResponse["message"] = "User Updated";
-      partialUpdateUserResponse["data"] =
-          jsonDecode(response.body)['data']['partialUpdateUser'];
-      //todo update appModel.currentUser
-      appModel.currentUser = partialUpdateUserResponse["data"];
-      print("appModel.currentUser: " + appModel.currentUser.toString());
+      print("response from updateUserOnboarding.....: ");
 
+      print(jsonDecode(response.body));
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
+        partialUpdateUserResponse["success"] = false;
+        partialUpdateUserResponse["message"] = "no user found";
+      } else {
+        
+        final result = jsonDecode(response.body)['data']['updateUserOnboarding'];
+        partialUpdateUserResponse["data"] = null;
+        if (result['success']) {
+          partialUpdateUserResponse["success"] = true;
+          partialUpdateUserResponse["message"] = "user found";
+          partialUpdateUserResponse["data"] = result['user'];
+        }
+        else{
+          partialUpdateUserResponse["success"] = false;
+          partialUpdateUserResponse["message"] = "no user found";
+        }
+      }
       return partialUpdateUserResponse;
     } on ApiException catch (e) {
       print('Mutation failed: $e');
@@ -339,7 +556,7 @@ class UserCommand extends BaseCommand {
     print("isUserFollowingUser");
     print("userObject: " + userObject.toString());
     dynamic currentUser = appModel.currentUser;
-    List<dynamic> followings = currentUser['following']['data'];
+    List<dynamic> followings = currentUser['following'];
     return followings
         .any((relation) => relation['following']['_id'] == userObject['_id']);
   }
@@ -347,7 +564,7 @@ class UserCommand extends BaseCommand {
   bool isCurrentUserFollowedByUser(dynamic userObject) {
     print("isUserFollowedByUser");
     dynamic currentUser = appModel.currentUser;
-    List<dynamic> followings = currentUser['followers']['data'];
+    List<dynamic> followings = currentUser['followers'];
     return followings
         .any((relation) => relation['follower']['_id'] == userObject['_id']);
   }
@@ -384,21 +601,6 @@ class UserCommand extends BaseCommand {
     }
 
     return addTeamResponse;
-  }
-
-  dynamic getUserDetails(dynamic user) {
-    print("getUserPlayerDetails");
-    print("user: " + user.toString());
-    dynamic getUserPlayerDetailsResp = {
-      "isFriend": false,
-      "followers": user['followers']['data'].length,
-      "following": user['following']['data'].length,
-    };
-
-    dynamic currentUser = appModel.currentUser;
-    print("user: " + user.toString());
-
-    return getUserPlayerDetailsResp;
   }
 
   Future<Map<String, dynamic>> followUser(dynamic followUserInput) async {
@@ -493,9 +695,8 @@ class UserCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -506,18 +707,23 @@ class UserCommand extends BaseCommand {
       print("response: ");
 
       print(jsonDecode(response.body));
-      if ((jsonDecode(response.body) as Map<String, dynamic>)
-              .containsKey('errors') &&
-          (jsonDecode(response.body) as Map<String, dynamic>)['errors'] !=
-              null) {
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
         getUserResp["success"] = false;
         getUserResp["message"] = "no user found";
       } else {
-        final result = jsonDecode(response.body)['data']['getUserByEmail'];
-        // if (result != null) {
-        getUserResp["success"] = true;
-        getUserResp["message"] = "user found";
-        getUserResp["data"] = result;
+        
+        final result = jsonDecode(response.body)['data']['findUserByEmail'];
+        getUserResp["data"] = null;
+        if (result['code'] != 200) {
+          getUserResp["success"] = true;
+          getUserResp["message"] = "user found";
+          getUserResp["data"] = result['user'];
+        }
+        else{
+          getUserResp["success"] = false;
+          getUserResp["message"] = "no user found";
+        }
       }
 
       // }
@@ -528,7 +734,7 @@ class UserCommand extends BaseCommand {
     return getUserResp;
   }
 
-  Future<Map<String, dynamic>> findMyUserById() async {
+  Future<Map<String, dynamic>> findUserById(dynamic user) async {
     print("findMyUserById()");
     Map<String, dynamic> getUserResp = {
       "success": false,
@@ -536,70 +742,44 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
-      // print("appModel.currentUser: " + appModel.currentUser.toString());
-
+      print("before send request: "+user.toString());
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': UserQueries().findUserByID(appModel.currentUser),
+          'query': UserQueries().findUserByID(user, UserFragments().fullUser()),
         }),
       );
 
       print("response: ");
+
       print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['findUserByID'];
-      // appModel.currentUser = result;
-      // if (result != null) {
-      getUserResp["success"] = true;
-      getUserResp["message"] = "user found";
-      getUserResp["data"] = result;
-      // }
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode != 200) {        
+        getUserResp["success"] = false;
+        getUserResp["message"] = "no user found";
+      } else {
+        
+        final result = jsonDecode(response.body)['data']['findUserById'];
+        getUserResp["data"] = null;
+        if (result['code'] != 200) {
+          getUserResp["success"] = true;
+          getUserResp["message"] = "user found";
+          getUserResp["data"] = result['user'];
+        }
+        else{
+          getUserResp["success"] = false;
+          getUserResp["message"] = "no user found";
+        }
+      }
     } catch (e) {
       print('Query failed: $e');
     }
     return getUserResp;
   }
 
-  Future<Map<String, dynamic>> findUserById(
-      Map<String, dynamic> userInput) async {
-    print("getUser");
-    Map<String, dynamic> getUserResp = {
-      "success": false,
-      "message": "no user found",
-      "data": null
-    };
-    try {
-      print("userInput: ");
-      print(userInput);
-      http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String>{
-          'query': UserQueries().findUserByID(userInput),
-        }),
-      );
-
-      print("response: ");
-      print(jsonDecode(response.body));
-      final result = jsonDecode(response.body)['data']['findUserByID'];
-      // appModel.currentUser = result;
-      // if (result != null) {
-      getUserResp["success"] = true;
-      getUserResp["message"] = "user found";
-      getUserResp["data"] = result;
-      // }
-    } catch (e) {
-      print('Query failed: $e');
-    }
-    return getUserResp;
-  }
 
   Future<Map<String, dynamic>> findUserPlayerById(
       Map<String, dynamic> userInput) async {
@@ -668,33 +848,5 @@ class UserCommand extends BaseCommand {
     return resp;
   }
 
-  Future<Map<String, dynamic>> configureOneSignalUserDetails() async {
-    print("configureOneSignalUserDetails");
-    Map<String, dynamic> configureOneSignalUserDetailsResp = {
-      "success": false,
-      "message": "Default Error"
-    };
-
-    try {
-      // Add the following line to add Auth plugin to your app.
-      // Pass in email provided by customer
-      OneSignal.shared.setEmail(email: appModel.currentUser['email']);
-      print("phone number to set: " + appModel.currentUser['phone']);
-      // Pass in phone number provided by customer
-      OneSignal.shared
-          .setSMSNumber(smsNumber: "1" + appModel.currentUser['phone']);
-      OneSignal.shared.sendTag("username", appModel.currentUser['username']);
-
-      Map<String, dynamic> updateUserOSPIDResp = await updateUserOSPID();
-
-      configureOneSignalUserDetailsResp["success"] = true;
-      configureOneSignalUserDetailsResp["message"] = "Twilio Configured";
-
-      appModel.onesignalUserDetailsSetup = true;
-    } on Exception catch (e) {
-      print('An error occurred in configureOneSignalUserDetailsResp() : $e');
-    }
-
-    return configureOneSignalUserDetailsResp;
-  }
+  
 }

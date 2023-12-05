@@ -205,6 +205,11 @@ class _TournamentCreateState extends State<TournamentCreate> {
               decoration:
                   const InputDecoration.collapsed(hintText: 'Knockout Rounds'),
             ),            
+            TextField(
+              controller: capacityController,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Capacity'),
+            ),            
             GestureDetector(
               onTap: () {
                 createTournament();

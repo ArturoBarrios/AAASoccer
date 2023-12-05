@@ -22,24 +22,24 @@ mixin RequestMixin {
     //what event view should you go to?
     //for training, tryout, league, tournament
     if (event['type'] == Constants.PICKUP) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PickupView(game: event),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => PickupView(game: event),
+      //   ),
+      // );
     } else if (event['type'] == Constants.TRYOUT) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TryoutView(tryout: event),
+          builder: (context) => TryoutView(event: event),
         ),
       );
     } else if (event['type'] == Constants.TRAINING) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TrainingView(training: event),
+          builder: (context) => TrainingView(event: event),
         ),
       );
     } else if (event['type'] == Constants.TOURNAMENT) {
@@ -80,7 +80,8 @@ mixin RequestMixin {
       context,
       MaterialPageRoute(
           builder: (context) => Profile(
-                profileDetails: profileDetails,
+                user: user
+                
               )),
     );
   }

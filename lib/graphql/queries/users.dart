@@ -19,29 +19,59 @@ class UserQueries {
     return updateUserString;
   }
 
-  String getUserByEmail(Map<String, dynamic> userInput) {
-    String getUser = """
-      query getUser {
-          getUserByEmail(email: "${userInput['email']}") {      
-              ${UserFragments().fullUser()}           
+  // String getUserByEmail(Map<String, dynamic> userInput) {
+  //   String getUser = """
+  //     query getUser {
+  //         getUserByEmail(email: "${userInput['email']}") {      
+  //             ${UserFragments().fullUser()}           
                                                
               
             
-          }
-        }
-    """;
+  //         }
+  //       }
+  //   """;
 
-    return getUser;
-  }
-
-  String findUserByID(Map<String, dynamic> userInput) {
+  //   return getUser;
+  // }
+String getUserByEmail(Map<String, dynamic> userInput) {
     String getUser = """
-      query getUser {
-            findUserByID(id: "${userInput['_id']}") {      
-             ${UserFragments().fullUser()}                                                                                    
-          }
+      query FindUserByEmail {
+      findUserByEmail(email: "${userInput['email']}") {
+        user{
+          ${UserFragments().fullUser()}
         }
+        code
+        message
+        success
+
+      }
+    }
     """;
+
+  return getUser;
+}
+
+  String findUserByID(Map<String, dynamic> userInput, String userFragment) {
+    String getUser = """
+      query FindUserById {
+      findUserById(_id: "${userInput['_id']}") {
+        user{
+          ${userFragment}
+        }
+        code
+        message
+        success
+
+      }
+    }
+
+
+    """;
+      // query getUser {
+      //       findUserByID(id: "${userInput['_id']}") {      
+      //        ${userFragment}                                                                                    
+      //     }
+      //   }
 
     return getUser;
   }

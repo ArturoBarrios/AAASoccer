@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/views/request/view.dart';
 import '../commands/base_command.dart';
 import '../commands/user_command.dart';
 import '../styles/colors.dart';
+import '../styles/font_sizes.dart';
 import '../views/profile/profile.dart';
 import '../views/chats/view.dart';
 import '../views/home.dart';
@@ -13,10 +14,14 @@ import '../models/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../views/settings/settings_view.dart';
 import '../views/subscriptions_list.dart';
+import 'Buttons/basic_elevated_button.dart';
 
 class SideNavs extends StatefulWidget {
   const SideNavs({Key? key}) : super(key: key);
+
+  
 
   @override
   State<SideNavs> createState() => _SideNavs();
@@ -25,7 +30,7 @@ class SideNavs extends StatefulWidget {
     UserCommand().getAppModelUser();
   }
 
-  ListView getMainSideNav(BuildContext context, dynamic userObject) {
+  ListView getMainSideNav(BuildContext context, dynamic userObject, bool isSuperUser) {
     print("userObject: " + userObject.toString());
     bool isGuest = BaseCommand().isGuest();
     String profileImageUrl =
@@ -37,7 +42,7 @@ class SideNavs extends StatefulWidget {
         GestureDetector(
           onTap: () async {
             dynamic userDetails =
-                await UserCommand().getUserDetails(userObject);
+                await UserCommand().getUserDetails(userObject, true);
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {
                 dynamic profileDetails = {
@@ -45,8 +50,8 @@ class SideNavs extends StatefulWidget {
                   "user": userObject,
                   "userDetails": userDetails
                 };
-                return Profile(
-                  profileDetails: profileDetails,
+                return Profile(    
+                  user: userObject,              
                 );
               },
             ));
@@ -107,7 +112,8 @@ class SideNavs extends StatefulWidget {
         //   },
         // ),
         //playground
-        if (dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
+        // if (dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
           ListTile(
             leading: Icon(
               Icons.message_outlined,
@@ -121,6 +127,7 @@ class SideNavs extends StatefulWidget {
               ));
             },
           ),
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
         ListTile(
           leading: Icon(
             Icons.edit_notifications_sharp,
@@ -134,6 +141,7 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
         ListTile(
           leading: Icon(
             Icons.image_sharp,
@@ -147,19 +155,33 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        // ListTile(
-        //   leading: Icon(
-        //     Icons.attach_money_outlined,
-        //   ),
-        //   title: const Text('Subscriptions'),
-        //   onTap: () {
-        //     Navigator.push(context, MaterialPageRoute<void>(
-        //       builder: (BuildContext context) {
-        //         return SubscriptionsList();
-        //       },
-        //     ));
-        //   },
-        // ),
+        ListTile(
+          leading: Icon(
+            Icons.settings,
+          ),
+          title: const Text('Settings'),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return SettingsView();
+              },
+            ));
+          },
+        ),
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
+        ListTile(
+          leading: Icon(
+            Icons.settings,
+          ),
+          title: const Text('Subscriptions'),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return SubscriptionsList();
+              },
+            ));
+          },
+        ),
         // ListTile(
         //   leading: Icon(
         //     Icons.history,
@@ -173,6 +195,7 @@ class SideNavs extends StatefulWidget {
         //     ));
         //   },
         // ),
+        if(dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
         ListTile(
           leading: Icon(
             Icons.history,
@@ -186,33 +209,63 @@ class SideNavs extends StatefulWidget {
             ));
           },
         ),
-        !isGuest
-            ? Container(
-                margin: EdgeInsets.all(25),
-                child: ElevatedButton(
-                  onPressed: () {
-                    BaseCommand().signOut();
-                  },
-                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                  style: ElevatedButton.styleFrom(
-                      elevation: 12.0,
-                      textStyle: const TextStyle(color: Colors.white)),
-                  child: const Text('Sign Out'),
-                ),
-              )
-            : Container(
-                margin: EdgeInsets.all(25),
-                child: ElevatedButton(
-                  onPressed: () {
-                    BaseCommand().signOut();
-                  },
-                  // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                  style: ElevatedButton.styleFrom(
-                      elevation: 12.0,
-                      textStyle: const TextStyle(color: Colors.white)),
-                  child: const Text('Go to Sign Up'),
-                ),
-              )
+    //     !isGuest && isSuperUser
+    //         ? 
+    //         Container(
+    //             margin: EdgeInsets.fromLTRB(5,5,5,5),
+    //             child: 
+    //         BasicElevatedButton(
+    // backgroundColor: AppColors.tsnRed,
+    // text: "Sign Out",
+    // fontSize: FontSizes.s(context),
+    // onPressed: () async {
+    //   BaseCommand().signOut(context);
+    // },
+  // )
+  // )
+            // Container(
+            //     margin: EdgeInsets.all(25),
+            //     color: AppColors.tsnRed,
+            //     child: ElevatedButton(
+                  
+            //       onPressed: () {
+            //         BaseCommand().signOut();
+            //       },
+            //       // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: AppColors.tsnRed,
+                      
+            //           textStyle: const TextStyle(color: AppColors.tsnRed)),
+            //       child: const Text('Sign Out'),
+            //     ),
+            //   )
+  //           : 
+  //           Container(
+  //               margin: EdgeInsets.all(25),
+  //               child: 
+  //           BasicElevatedButton(
+  //   backgroundColor: AppColors.tsnGreen,
+  //   text: "Sign Up",
+  //   fontSize: FontSizes.s(context),
+  //   onPressed: () async {
+  //     BaseCommand().signOut(context);
+  //   },
+  // ))
+            // Container(
+            //   color: AppColors.tsnGreen,
+            //     margin: EdgeInsets.all(25),
+            //     child: ElevatedButton(
+            //       onPressed: () {
+            //         BaseCommand().signOut();
+            //       },
+            //       // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: AppColors.tsnGreen,
+                      
+            //           textStyle: const TextStyle(color: AppColors.tsnRed)),
+            //       child: const Text('Go to Sign Up'),
+            //     ),
+            //   )
       ],
     );
 

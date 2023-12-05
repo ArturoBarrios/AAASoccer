@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class JoinCondition extends StatefulWidget {
-  ValueNotifier<bool> withRequest;
+  ValueNotifier<bool> required;
+  final String label;
 
-  JoinCondition({bool withRequest = false, required String label })
-      : withRequest = ValueNotifier(withRequest);
+  JoinCondition({bool required = false, required String this.label })
+      : required = ValueNotifier(required);
 
   @override
   _JoinCondition createState() => _JoinCondition();
@@ -12,7 +13,7 @@ class JoinCondition extends StatefulWidget {
 
 class _JoinCondition extends State<JoinCondition> {
   bool showUpdateButton = false;
-  bool withRequestOriginal = false;
+  bool requiredOriginal = false;
 
   void updateEventRequest() {
     print("updateEventRequest");
@@ -24,11 +25,11 @@ class _JoinCondition extends State<JoinCondition> {
   void onChanged(bool newValue) {
     print("updateEventRequest");
     setState(() {
-      widget.withRequest.value = newValue;
-      print("withRequestOriginal: " + withRequestOriginal.toString());
+      widget.required.value = newValue;
+      print("requiredOriginal: " + requiredOriginal.toString());
       print("newValue: " + newValue.toString());
-      print("withRequestOriginal != newValue: " + (withRequestOriginal != newValue).toString());
-      if(withRequestOriginal.toString() != newValue.toString()){
+      print("requiredOriginal != newValue: " + (requiredOriginal != newValue).toString());
+      if(requiredOriginal.toString() != newValue.toString()){
         showUpdateButton = true;
       }   
       else{
@@ -40,21 +41,21 @@ class _JoinCondition extends State<JoinCondition> {
 
   @override 
   initState(){
-    withRequestOriginal = widget.withRequest.value;
+    requiredOriginal = widget.required.value;
   }
 
   @override
   Widget build(BuildContext context) {    
 
     return ValueListenableBuilder(
-      valueListenable: widget.withRequest,
+      valueListenable: widget.required,
       builder: (context, bool value, _) {
         return Container(
           child: Column(children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("Join With Request?"),
+                Text(widget.label),
                 Checkbox(                  
                   value: value,
                   onChanged: (bool? newValue) {

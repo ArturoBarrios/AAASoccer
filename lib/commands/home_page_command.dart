@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/commands/player_command.dart';
+import 'package:soccermadeeasy/commands/requests_command.dart';
 import 'package:soccermadeeasy/commands/team_command.dart';
 import 'package:soccermadeeasy/commands/tournament_command.dart';
 import 'package:soccermadeeasy/commands/user_command.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
+import '../components/Cards/tsn_player_card.dart';
+import '../components/Cards/tsn_team_card.dart';
+import '../components/Cards/tsn_tournament_card.dart';
+import '../components/Cards/tsn_training_card.dart';
+import '../components/Cards/tsn_tryout_card.dart';
+import '../graphql/fragments/group_fragments.dart';
+import '../graphql/fragments/user_fragments.dart';
 import '../models/enums/EventType.dart';
 import '../graphql/fragments/event_fragments.dart';
 import '../graphql/fragments/team_fragments.dart';
 import 'base_command.dart';
+import 'group_command.dart';
 import 'league_command.dart';
 import 'refresh_posts_command.dart';
 import 'event_command.dart';
@@ -43,144 +52,7 @@ class HomePageCommand extends BaseCommand {
     homePageModel.isDialogueViewOpened = false;
   }
 
-  Future<Widget> getCard(
-      dynamic selectedKey, dynamic selectedObject, Svg svgImage) async {
-    print("getCard()");
-    print("selectedKey: " + selectedKey.toString());
-    print("selectedObject: " + selectedObject.toString());
-
-    Widget card = Text(
-        "null"); //PickupCard2(gameObject: selectedObject, svgImage: svgImage, isMyEvent: isMyEvent);
-
-    if (selectedKey == Constants.PICKUP) {
-      print("selected pickup: " + selectedObject.toString());
-      print("before getEventDetails");
-      //first approach
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject]);
-      print("after getEventDetails");
-      card = TSNPickupCard(
-        topLeft: [Text("07/26/1997")], 
-        topRight: [Text("07/26/1997")], 
-        bottomLeft: [Text("07/26/1997")], 
-        bottomRight: [Text("07/26/1997")], 
-        backgroundColor: AppColors.tsnAlmostBlack, 
-        svgImage: svgImage, 
-        
-      );
-      // card = PickupCard2(
-      //     gameObject: selectedObject,
-      //     svgImage: svgImage,
-      //     userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.TRAINING) {
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject]);
-      card = TrainingCard(
-          trainingObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.TRYOUT) {
-      print("selected tryout");
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject]);
-      card = TryoutCard(
-          tryoutObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.TOURNAMENT) {
-      print("selectedObject: " + selectedObject.toString());
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject]);
-
-      card = TournamentCard(
-          tournamentObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.LEAGUE) {
-      dynamic getEventDetailsResp =
-          await EventCommand().getUserEventDetails([selectedObject]);
-      card = LeagueCard(
-          leagueObject: selectedObject,
-          svgImage: svgImage,
-          userEventDetails: getEventDetailsResp);
-    } else if (selectedKey == Constants.PLAYER) {
-      dynamic playerDetails =
-          await UserCommand().getUserDetails(selectedObject);
-      card = PlayerCard(
-          playerObject: selectedObject,
-          playerDetails: playerDetails,
-          svgImage: svgImage);
-    } else if (selectedKey == Constants.TEAM) {
-      dynamic userTeamDetails =
-          await TeamCommand().getUserTeamDetails(selectedObject);
-      card = TeamCard(
-          teamObject: selectedObject,
-          svgImage: svgImage,
-          userTeamDetails: userTeamDetails);
-    } else if (selectedKey == Constants.MYTEAMS) {
-      print("selectedKey == MYTEAMS");
-      print("selectedObject: " + selectedObject.toString());
-      dynamic team = selectedObject['team'];
-      dynamic userTeamDetails = await TeamCommand().getUserTeamDetails(team);
-      print("teammmmmm: " + team.toString());
-      print("userTeamDetails: " + userTeamDetails.toString());
-      card = TeamCard(
-          teamObject: team,
-          svgImage: svgImage,
-          userTeamDetails: userTeamDetails);
-    }
-    //My Events
-    else if (selectedKey == Constants.MYEVENTS) {
-      dynamic event = null;
-
-      print("MYEVENTS");
-      print(selectedObject['event']);
-      if (selectedObject['event'] == null) {
-      } else if (selectedObject['event']['type'].toString() == "GAME") {
-        print("TYPE GAME");
-
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']]);
-        print("getEventDetailsResp: " + getEventDetailsResp.toString());        
-        card = PickupCard2(
-            gameObject: selectedObject['event'],
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
-      } else if (selectedObject['event']['type'].toString() == "TRAINING") {
-        print("selectedObject['event']['trainings']: " +
-            selectedObject['event']['trainings'].toString());
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']]);
-        card = TrainingCard(
-            trainingObject: selectedObject['event'],
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
-      } else if (selectedObject['event']['type'].toString() == "TRYOUT") {
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']]);
-        card = TryoutCard(
-            tryoutObject: selectedObject['event'],
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
-      } else if (selectedObject['event']['type'].toString() == "TOURNAMENT") {
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']]);
-        card = TournamentCard(
-            tournamentObject: selectedObject['event'],
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
-      } else if (selectedObject['event']['type'].toString() == "LEAGUE") {
-        dynamic getEventDetailsResp =
-            await EventCommand().getUserEventDetails([selectedObject['event']]);
-        card = LeagueCard(
-            leagueObject: selectedObject['event'],
-            svgImage: svgImage,
-            userEventDetails: getEventDetailsResp);
-      }
-    }
-
-    return card;
-  }
+ 
 
   void updateUpdatedCards(bool value) {
     print("updateUpdatedCards");
@@ -200,7 +72,7 @@ class HomePageCommand extends BaseCommand {
         : homePageModel.filteredObjects;
     for (int i = 0; i < objectList.length; i++) {
       Widget card =
-          await getCard(homePageModel.selectedKey, objectList[i], svgImage);
+          await BaseCommand().getCard(homePageModel.selectedKey, objectList[i], svgImage);
       homePageModel.cards.add(card);
     }
     homePageModel.cardsLoading = false;
@@ -252,15 +124,27 @@ class HomePageCommand extends BaseCommand {
     //get events
     if (BaseCommand().isEventType(newSelectedKey)) {
       String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(
-          1); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
+          1); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];        
+        print("currentUser: "+ appModel.currentUser.toString());
+          dynamic getEventsOfAllTypesNearLocationInput = {
+        "type": "GAME",
+        "latitude": appModel.currentPosition.latitude,
+        "longitude": appModel.currentPosition.longitude,
+        "radius": appModel.eventRadius,
+        "startTime": xHoursAgoTimestamp,
+      };      
+      print("getEventsOfAllTypesNearLocationInput: " +
+          getEventsOfAllTypesNearLocationInput.toString());
       Map<String, dynamic> getEventsOfAllTypesNearLocationResp =
           await EventCommand().getEventsOfTypeNearLocation(
-              newSelectedKey, EventFragments().fullEvent(), xHoursAgoTimestamp);
-      print("getEventsOfAllTypesNearLocationResp: " +
+              getEventsOfAllTypesNearLocationInput, EventFragments().fullEvent() );
+      print("getEventsOfAllTypesNearLocationResppp: " +
           getEventsOfAllTypesNearLocationResp.toString());
-      if (getEventsOfAllTypesNearLocationResp['success']) {
+      if (getEventsOfAllTypesNearLocationResp['success']) {        
         newSelectedObjects = getEventsOfAllTypesNearLocationResp['data'];
         homePageModel.selectedObjects = newSelectedObjects;
+        print("homePageModel.selectedObjects: " +
+            homePageModel.selectedObjects.toString());
       }
     }
 
@@ -270,7 +154,17 @@ class HomePageCommand extends BaseCommand {
       if (eventsModel.games.isEmpty) {
         eventsModel.games = newSelectedObjects;
       }
-    } else if (newSelectedKey == Constants.TEAM) {
+    } 
+    else if (newSelectedKey == Constants.REQUESTSRECEIVED) {
+      print("check REQUESTS: ");
+      if(requestsPageModel.selectedObjects.length==0){
+        await RequestsCommand().updatedSelectedRequests("RECEIVED");
+
+      }
+      homePageModel.selectedObjects = requestsPageModel.selectedObjects;
+      
+    } 
+    else if (newSelectedKey == Constants.TEAM) {
       String oneYearAgoTimestamp = BaseCommand().xHoursAgoString(
           8760); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
       print("oneYearAgoTimestamppppp: " + oneYearAgoTimestamp);
@@ -282,7 +176,21 @@ class HomePageCommand extends BaseCommand {
         homePageModel.selectedObjects = newSelectedObjects;
         appModel.teams = newSelectedObjects;
       }
-    } else if (newSelectedKey == Constants.PLAYER) {
+    } 
+    else if (newSelectedKey == Constants.GROUP) {
+      String oneYearAgoTimestamp = BaseCommand().xHoursAgoString(
+          8760); //homePageModel.enabledSelections2[newSelectedKey]['currentTimestamp'];
+      print("oneYearAgoTimestamppppp: " + oneYearAgoTimestamp);
+      Map<String, dynamic> getAllGroupsResp = await GroupCommand()
+          .getAllGroups();
+      print("getAllGroupsRespRespppp: " + getAllGroupsResp.toString());
+      if (getAllGroupsResp['success']) {
+        newSelectedObjects = getAllGroupsResp['data'];
+        homePageModel.selectedObjects = newSelectedObjects;
+        appModel.groups = newSelectedObjects;
+      }
+    }
+    else if (newSelectedKey == Constants.PLAYER) {
       print("check players: ");
       Map<String, dynamic> getPlayersNearLocationResp =
           await PlayerCommand().getPlayersNearLocation();
@@ -334,9 +242,9 @@ class HomePageCommand extends BaseCommand {
     } else if (newSelectedKey == Constants.MYEVENTS) {
       print("check my events: ");
       print("appModel.currentUser: " + appModel.currentUser.toString());
-      String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(1);
+      String xHoursAgoTimestamp = BaseCommand().xHoursAgoString(24);
       dynamic allUserEventParticipantsInput = {
-        "userId": appModel.currentUser['_id'],
+        "_id": appModel.currentUser['_id'],
         "startTime": xHoursAgoTimestamp,
         "eventFragment": EventFragments().userEventParticipants()
       };
@@ -350,7 +258,8 @@ class HomePageCommand extends BaseCommand {
         homePageModel.selectedObjects = newSelectedObjects;
         appModel.myEvents = newSelectedObjects;
       }
-    } else if (newSelectedKey == Constants.MYTEAMS) {
+    } 
+    else if (newSelectedKey == Constants.MYTEAMS) {
       print("check my teams: ");
       print(appModel.myTeams);
       Map<String, dynamic> getAllTeamUserParticipantsResp = await TeamCommand()
@@ -362,6 +271,20 @@ class HomePageCommand extends BaseCommand {
         newSelectedObjects = getAllTeamUserParticipantsResp['data'];
         homePageModel.selectedObjects = newSelectedObjects;
         appModel.myTeams = newSelectedObjects;
+      }
+    }
+    else if (newSelectedKey == Constants.MYGROUPS) {
+      print("check my groups: ");
+      print(appModel.myGroups);
+      Map<String, dynamic> getAllGroupUserParticipantsResp = await GroupCommand()
+          .getAllGroupUserParticipants(
+              appModel.currentUser['_id'], UserFragments().userGroupParticipants());
+      print("getAllGroupUserParticipantsResp: " +
+          getAllGroupUserParticipantsResp.toString());
+      if (getAllGroupUserParticipantsResp['success']) {
+        newSelectedObjects = getAllGroupUserParticipantsResp['data'];
+        homePageModel.selectedObjects = newSelectedObjects;
+        appModel.myGroups = newSelectedObjects;
       }
     }
   }

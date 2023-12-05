@@ -16,6 +16,55 @@ class EventQueries {
     return getEvents;
   }
 
+  String getArchivedEvents(
+      dynamic getArchivedEventsInput, String eventFragment) {
+    String getEvents = """
+      query GetArchivedEvents {
+        getArchivedEvents(                
+          startTime: "${getArchivedEventsInput['startTime']}"
+          userId: "${getArchivedEventsInput['userId']}"
+          ) {    
+            code
+            success
+            message     
+            archivedEvents{
+              ${eventFragment}
+
+            }         
+        }
+      }
+  """;
+
+    return getEvents;
+  }
+
+  String allEventsInAreaOfType(
+      dynamic getEventsOfTypeNearLocation, String eventFragment) {
+    String enumValue =
+        getEventsOfTypeNearLocation['type'].toString().split('.').last;
+    String getEvents = """
+    query AllEventsOfType {
+      allEventsInAreaOfType(
+        type: GAME,
+        latitude: ${getEventsOfTypeNearLocation['latitude']}
+        longitude: ${getEventsOfTypeNearLocation['longitude']}
+        radius: 100
+        startTime: "${getEventsOfTypeNearLocation['startTime']}"
+        ) {    
+          code
+          success
+          message     
+          events{
+            ${eventFragment}
+
+          }         
+      }
+    }
+  """;
+
+    return getEvents;
+  }
+
   String allEventsOfAllTypes(String startTime, String eventFragment) {
     String getEvents = """
       query GetEvents {
@@ -27,14 +76,25 @@ class EventQueries {
     return getEvents;
   }
 
+//userEventParticipants fragment in EventFreatments
   String allUserEventParticipants(dynamic allUserEventParticipantsInput) {
     String getUserEvents = """
-      query GetEventUserParticipants {
-        allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {                              
-              ${allUserEventParticipantsInput['eventFragment']}            
+      query AllUserEventParticipants {
+        allUserEventParticipants(startTime:"${allUserEventParticipantsInput['startTime']}", _id: "${allUserEventParticipantsInput['_id']}" ) {          
+          code
+          success
+          message
+          eventUserParticipants {
+            ${allUserEventParticipantsInput['eventFragment']}
+          }
         }
       }
     """;
+    // query GetEventUserParticipants {
+    //   allCurrentUserEventParticipants(startTime: "${allUserEventParticipantsInput['startTime']}", userId:"${allUserEventParticipantsInput['userId']}") {
+    //         ${allUserEventParticipantsInput['eventFragment']}
+    //   }
+    // }
     return getUserEvents;
   }
 

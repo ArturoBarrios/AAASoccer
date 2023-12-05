@@ -58,35 +58,33 @@ class EventFragments {
       startTime
       endTime  
       capacity
-      createdAt
-      requests{
-        data{
-          ${RequestFragments().fullRequest()}
-        }
-      }
-      images{
-        data{
-          ${ImageFragments().fullImage()}              
-        }
-      }
-      chats{
-        data{
-          ${ChatFragments().chatObject()}
-        }
-      }
-      SocialMediaApps{
-        data{
-          ${fullSocialMediaApps()}
-        }
-      }
-      joinConditions{
-        data{
+      createdAt    
+      hostAmenities      
+      eventRatings{        
           _id
-          withRequest
-          withPayment
-          forTeam
-          forEvent
+          eventRating
+          hostRating
+          fieldLocationRating          
+          user{
+            _id
+          }
         }
+      
+      
+      requests{      
+          ${RequestFragments().fullRequest()}        
+      }
+      images{        
+          ${ImageFragments().fullImage()}                      
+      }      
+      SocialMediaApps{       
+          ${fullSocialMediaApps()}       
+      }
+      joinConditions{        
+        _id
+        withRequest
+        withPayment        
+        forEvent        
       }
       price{                    
         _id
@@ -97,82 +95,44 @@ class EventFragments {
           name                      
         }
       }
-      games{
-        data{
-          _id
-          pickup
-        }
+      games{      
+        _id
+        pickup        
+      }                        
+      fieldLocations{      
+        ${LocationFragments().FieldLocationFull()}              
       }
-      trainings{
-        data{
+      userParticipants{             
+        _id
+        roles                                                                    
+        event{                        
           _id
+          name
         }
-      }
-      tryouts{
-        data{
+        user{
           _id
-        }
+          name
+          email
+          username
+          userType          
+        }          
       }
-      tournaments{
-        data{
+      payments{        
+        _id
+        amount   
+        isPlayerPayment
+        isTeamPayment       
+        user{
           _id
+          name
+          username
         }
-      } 
-      leagues{
-        data{
+        event{
           _id
-        }
+          name
+        }                                                                    
       }
-      teams{
-          data{
-            ${TeamFragments().fullTeam()}
-          }
-        }
-      fieldLocations{
-        data{
-          ${LocationFragments().FieldLocationFull()}        
-        }
-      }
-      userParticipants{     
-        data{
-          _id
-          event{                        
-            _id
-            name
-          }
-          user{
-            _id
-            name
-            email
-            username
-            userType
-            teams{
-              data{
-                _id
-              }
-
-            }
-          }          
-          roles
-          isAttending
-        }                                                              
-      }
-      payments{
-        data{
-          _id
-          amount   
-          isPlayerPayment
-          isTeamPayment       
-          user{
-            _id
-            name
-          }
-          event{
-            _id
-            name
-          }
-        }                                                              
-      }
+      
     """;
 
     return fullEventReturn;
@@ -222,8 +182,7 @@ class EventFragments {
 
             }
           }          
-          roles
-          isAttending
+          roles          
         }                                                              
       }      
     """;

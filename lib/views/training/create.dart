@@ -94,7 +94,7 @@ class _TrainingCreateState extends State<TrainingCreate> {
             context,
             MaterialPageRoute(
               builder: (context) => TrainingView(
-                training: createdTraining['event'],
+                event: createdTraining['event'],
               ),
             ),
           );

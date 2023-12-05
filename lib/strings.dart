@@ -1,15 +1,20 @@
 class StringConstants {
-  static const String PICKUPGAMESTITLE = "Pickup Games";
+  static const String PICKUPGAMESTITLE = "Pickup";
   static const String TOURNAMENTSTITLE = "Tournaments";
   static const String TRAININGSTITLE = "Training Sessions";
   static const String LEAGUESTITLE = "Leagues";
   static const String TEAMSTITLE = "Teams";
+  static const String GROUPSTITLE = "Groups";
   static const String TRYOUTSTITLE = "Tryouts";
   static const String PLAYERSTITLE = "Players";
   static const String FRIENDSTITLE = "Friends";
-  static const String MYEVENTSTITLE = "Upcoming Events";
-  static const String MYTEAMSTITLE = "My Teams";
+  static const String MYEVENTSTITLE = "Events";
+  static const String MYTEAMSTITLE = "Teams";
+  static const String MYGROUPSTITLE = "Groups";
   static const String LOCATIONSTITLE = "Locations";
+  static const String REQUESTSSENTTITLE = "Sent";
+  static const String REQUESTSRECEIVEDTITLE = "Received";
+  
 
   // game create Strings + Tournment screen strings
 
@@ -95,11 +100,18 @@ class StringConstants {
   static const String searchLabel = 'Search';
 
   //pages
-  static const String HOMEPAGETITLE = "Home";
+  static const String HOMEPAGETITLE = "Explore";
   static const String LOCATIONSPAGETITLE = "Locations";
   static const String CHATSPAGETITLE = "Chats";
   static const String SCHEDULEPAGETITLE = "Schedule";
 
+  //warnings
+  static const String NOFIELDRATINGWARNING = "ARE YOU SURE YOU WANT TO JOIN THIS EVENT WHICH HAS NO FIELD RATING? THIS COULD LEAD TO A POOR EXPERIENCE.";
+  static const String NOHOSTRATINGWARNING = "ARE YOU SURE YOU WANT TO JOIN THIS EVENT WHICH HAS NO HOST RATING? THIS COULD LEAD TO A POOR EXPERIENCE.";
+  static const String LEAVEWARNING = "ARE YOU SURE YOU WANT TO LEAVE THIS EVENT? THERE ARE NO REFUNDS IF YOU LEAVE THIS EVENT 24 HOURS BEFORE THE EVENT STARTS.";
+  static const String DELETEWARNING = "ARE YOU SURE YOU WANT TO DELETE YOUR USER? THERE'S NO GOING BACK.";
 
+  //default event description
+  static const String DEFAULTEVENTDESCRIPTION = "3 teams of 5";
 
 }

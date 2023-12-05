@@ -11,12 +11,30 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';
 
 class AmplifyAuthService {
+  static Future<Map<String, dynamic>> deleteUser() async {
+    print("deleteUser");
+    Map<String, dynamic> deleteUserResponse = {
+      "success": 0,
+      "message": "Something went wrong with deleting User",
+      "data": null      
+    };
+    try {
+      await Amplify.Auth.deleteUser;            
+      deleteUserResponse["success"] = 1;
+      deleteUserResponse["message"] = "Amplify User Deleted";
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return deleteUserResponse;
+  }
+
   static Future<Map<String, dynamic>> fetchUserAuthSession() async {
     print("fetchUserAuthSession");
     Map<String, dynamic> fetchUserAuthResponse = {
       "success": 0,
       "message": "Something went wrong with fetching User",
-      "data": null
+      "data": null      
     };
     try {
       AuthSession authSessionRes = await Amplify.Auth.fetchAuthSession();

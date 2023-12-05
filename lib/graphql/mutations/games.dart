@@ -60,91 +60,86 @@ class GameMutations {
 
     return updateGame;
   }
+// chats: {
+//                 create: [
+//                   {
+//                     name: "General",
+//                     isPrivate: false,
+//                     users: {
+//                       connect: [
+//                         "${userInput['_id']}"
+//                       ]
+//                     }
 
+
+//                   }
+//                 ]
+//               }  
   String createGame(Map<String, dynamic> gameInput,
       Map<String, dynamic> eventInput, Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
     var teamAmount = eventInput.containsKey('teamPrice') ? eventInput['teamPrice'] : "0.00";
     String createGame = """
       mutation {
-        createGame(data: {
+        createGame(input: {
           pickup: ${gameInput['pickup']}, 
-          event: {
-            create: 
-            {
+          event: {                        
               name: "${eventInput['name']}",
               type: GAME,
               archived: false,
+              hostAmenities: "${eventInput['hostAmenities']}",
               isMainEvent: ${eventInput['isMainEvent']},
               startTime: "${eventInput['startTime']}",
               endTime: "${eventInput['endTime']}",
               createdAt: "${eventInput['createdAt']}",
               capacity: ${eventInput['capacity']},
-              chats: {
-                create: [
-                  {
-                    name: "General",
-                    isPrivate: false,
-                    users: {
-                      connect: [
-                        "${userInput['_id']}"
-                      ]
-                    }
-
-
-                  }
-                ]
-              }               
+                           
               price: {
-                create: {
-                  amount: "${eventInput['price']}",
-                  teamAmount: "$teamAmount",                  
+                
+                  amount: "${eventInput['price']}",              
                 }
-              },
-              joinConditions: {
-                create: [
+              
+              joinConditions: 
+                
                   {
                     withRequest: ${eventInput['withRequest']},
-                    withPayment: ${eventInput['withPayment']},
-                    forEvent: true
-                  },   
-                  {
-                    withRequest: ${eventInput['withTeamRequest']},
-                    withPayment: ${eventInput['withTeamPayment']},
-                    forTeam: true
-                  }               
-                ]                
-              },
-              userParticipants: {
-                create:
-                  {
-                    user: {
-                      connect:                   
-                          "${userInput['_id']}"    
-                      }                                         
-                      roles: "${eventInput['roles']}"
-                                       
-                  }                                     
+                    withPayment: ${eventInput['withPayment']},                    
+                  }   
+                  
+                
+              
+              userParticipants: {                              
+                  userId: "${userInput['_id']}"                                                              
+                  roles: "${eventInput['roles']}"                                                                                              
               },                    
-              location: {
-                create: 
-                {
-                  name: "${locationInput['name']}",
-                  latitude: ${locationInput['latitude']},
-                  longitude: ${locationInput['longitude']},
-                }
+              fieldLocations: {                            
+                    isMainField: true,
+                    fieldAmenities: "${eventInput['fieldAmenities']}",
+                    location: {                     
+                        name: "${locationInput['name']}",
+                        address: "${locationInput['address']}",
+                        latitude: ${locationInput['latitude']},
+                        longitude: ${locationInput['longitude']}                     
+                    }                            
               }
-            }
+            
           } 
           }) {
-             _id
-              pickup
-              event{
-                   ${EventFragments().fullEvent()}
+            code
+            success
+            message
+            game{
+            pickup
+            event {
+              ${EventFragments().fullEvent()}
             }
+          }
+             
             
           }   
         }
         """;
+
+        print("createGame --> $createGame");
 
     return createGame;
   }

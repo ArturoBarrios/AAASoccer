@@ -94,7 +94,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    TryoutView(tryout: createdTryout['event'])),
+                    TryoutView(event: createdTryout['event'])),
           );
         }
       }

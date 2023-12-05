@@ -142,7 +142,9 @@ class _SendPlayersRequestWidgetState extends State<SendPlayersRequestWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Profile(profileDetails: profileDetails),
+        builder: (context) => Profile(
+          user: player['user']
+        ),
       ),
     );
   }

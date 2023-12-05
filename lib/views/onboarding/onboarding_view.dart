@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/styles/font_sizes.dart';
 import 'package:soccermadeeasy/views/home.dart';
 import 'package:soccermadeeasy/views/onboarding/rich_text_selectable_chip_list.dart';
 
+import '../../commands/base_command.dart';
 import '../../commands/user_command.dart';
 import '../../components/custom_stepper.dart';
+import '../../components/headers.dart';
 import '../../components/models/button_model.dart';
 import '../../components/models/custom_stepper_model.dart';
 import '../../strings.dart';
+import '../../styles/colors.dart';
 import 'football_field.dart';
 import 'player_rate_slider.dart';
 import 'preffered_foot.dart';
@@ -59,20 +63,18 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   void updateUserOnboarding() async {
       print("updateUserOnboarding");
-      dynamic userObjectResp = await UserCommand().findMyUserById();
-      dynamic userObject = userObjectResp['data'];
+      dynamic currentUser = UserCommand().getAppModelUser();
+      // dynamic userObjectResp = await UserCommand().findMyUserById();
+      dynamic userObject = currentUser;//userObjectResp['data'];
       print("userObject: $userObject");
-      Map<String, dynamic> partialUserInput = {
-        'user': {
-          '_id': userObject['_id'],
-          'dataToUpdate': """
-          {
-            onboarded: true
-          }
-          """,
-        },
+      Map<String, dynamic> partialUserInput = {        
+        '_id': userObject['_id'],                    
+        'onboarded': true                            
       };
-      await UserCommand().partialUpdateUser(partialUserInput);
+      BaseCommand().initialUserConditionsMet();
+      await UserCommand().updateUserOnboarding(partialUserInput);
+      BaseCommand().setOnboarded(true);
+      
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -115,21 +117,30 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
+    double paddingValue = 0;
     final stepperList = [
       CustomStepperModel(
         widgets: [
+          Padding(
+                        padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
+                            paddingValue, paddingValue/2),
+                        child:
+                        ClipRRect(
+    borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+    child:
           SizedBox(
             width: MediaQuery.of(context).size.width, // full screen width
             height:
-                MediaQuery.of(context).size.height * 0.6, // half screen height
+                MediaQuery.of(context).size.height * 0.4, // half screen height
             child: FootballField(
               onTapPosition: (final selectedPosition) =>
                   changeSelectedPosition(selectedPosition),
               selectedPosition: selectedFieldPosition,
             ),
-          ),
+          ))),
         ],
       ),
+      
       CustomStepperModel(
         widgets: [
           emojiList[getSkillLevelIndex(currentRateValue)],
@@ -236,41 +247,50 @@ class _OnboardingViewState extends State<OnboardingView> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                activeStep = stepperListLength - 1;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Center(child: Text('SKIP')),
-            ),
-          )
-        ],
-      ),
-      body: CustomStepper(
-        title: getTitle(),
-        stepperModel: stepperList,
-        activeStep: activeStep,
-        cancelButton: ButtonModel(
-          text: (activeStep == (stepperListLength - 1))
-              ? StringConstants.backBtn
-              : StringConstants.cancelBtn,
-          onTap: onCancelTap,
+  appBar: Headers(
+    playerStepperButton: ButtonModel(
+      prefixIconData: Icons.play_circle_fill_rounded,
+      onTap: () {},
+    ),
+  ).getMainHeader(context),
+  body: Container(
+    color: AppColors.tsnBlack, // Outer Container with black background
+    child: Center( // Center the inner content
+      child: Container(
+        padding: EdgeInsets.all(20), // You can adjust the padding for spacing
+        width: MediaQuery.of(context).size.width * 0.95, // 80% of screen width
+        height: MediaQuery.of(context).size.height * 0.8, // 60% of screen height
+        decoration: BoxDecoration(
+          color: AppColors.tsnDarkGrey, // Inner Container with white background
+          borderRadius: BorderRadius.circular(12), // Optional rounded corners
         ),
-        confirmButton: ButtonModel(
-          backgroundColor:
-              (activeStep == (stepperListLength - 1)) ? Colors.red : null,
-          text: (activeStep == (stepperListLength - 1))
-              ? 'Save'
-              : StringConstants.nextBtn,
-          onTap: onConfirmTap,
+        child: CustomStepper(
+          title: getTitle(),
+          titleTextStyle: TextStyle(
+            color: AppColors.tsnWhite,     
+            fontSize: FontSizes.xl(context)       
+          ),
+          stepperModel: stepperList,
+          activeStep: activeStep,
+          cancelButton: ButtonModel(
+            text: (activeStep == (stepperListLength - 1))
+                ? StringConstants.backBtn
+                : StringConstants.cancelBtn,
+            onTap: onCancelTap,
+          ),
+          confirmButton: ButtonModel(
+            backgroundColor:
+                (activeStep == (stepperListLength - 1)) ? Colors.red : null,
+            text: (activeStep == (stepperListLength - 1))
+                ? 'Save'
+                : StringConstants.nextBtn,
+            onTap: onConfirmTap,
+          ),
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 
   String getTitle() => activeStep == 0
@@ -280,7 +300,7 @@ class _OnboardingViewState extends State<OnboardingView> {
           : activeStep == 2
               ? 'Preffered foot'
               : activeStep == 3
-                  ? 'What are you most interested in?'
+                  ? 'Which Best Describes You?'
                   : '';
 
   int getSkillLevelIndex(double value) {

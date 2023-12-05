@@ -5,13 +5,18 @@ import '../../styles/colors.dart';
 class BasicElevatedButton extends StatefulWidget {
   final double? height;
   final double? width;
-  final Svg? icon;
+  final Svg? customIcon;
+  final IconData? icon; 
   final String? text;
   final Color? backgroundColor;
-  final Function? onPressed;
+  final Color? iconColor;
+  final Color? textColor;
+  final Function? onPressed;  
+  final double? fontSize;
+  
 
 
-  const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.icon, this.text, this.onPressed }) : super(key: key);
+  const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.customIcon, this.icon, this.iconColor, this.text, this.onPressed, this.fontSize, this.textColor }) : super(key: key);
 
   @override
   State<BasicElevatedButton> createState() => _BasicElevatedButton();
@@ -26,8 +31,8 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
     // Calculating sizes based on given height and width
     double iconSize = widget.height!=null ?
        widget.height! * 0.5 : 20;
-    double fontSize = widget.width!=null ? 
-      widget.width! * 0.1 : 20;
+    // double fontSize = widget.width!=null ? 
+    //   widget.width! * 0.1 : 20;
 
     final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       primary: widget.backgroundColor==null ? 
@@ -49,35 +54,49 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
       print("test");
     },
     child: Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment:
-          widget.icon == null && widget.text != null // replace widget.text with your actual text variable
-              ? MainAxisAlignment.center
-              : widget.icon != null && widget.text == null // replace widget.text with your actual text variable
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,  // Aligned to the start
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (widget.icon != null)
-          Icon(
-            Icons.add,
-            color: Colors.white,
-            size: iconSize,
-          ), // your icon here
-        if (widget.icon != null && widget.text != null) // replace widget.text with your actual text variable
-          SizedBox(width: 8), // Add spacing only if icon and text exist
-        if (widget.text != null) // replace widget.text with your actual text variable
+        if (widget.icon != null || widget.customIcon != null)
+          Container(
+            decoration: BoxDecoration(
+              // border: Border.all(color: Colors.red),
+            ),
+            child: widget.icon != null
+                ? Icon(
+                    widget.icon,
+                    color: widget.iconColor,
+                    size: iconSize,
+                  )
+                : Image(
+                    width: iconSize,
+                    height: iconSize,
+                    image: widget.customIcon!,
+                    color: widget.iconColor,
+                  ),
+          ),
+        if ((widget.icon != null || widget.customIcon != null) && widget.text != null)
+          SizedBox(width: 4),
+        if (widget.text != null)
           Expanded(
-            child: Text(
-              widget.text!, // replace 'Enabled' with your actual text variable
-              textAlign: widget.icon == null ? TextAlign.center : TextAlign.left,
-              style: TextStyle(fontSize: fontSize),
+            flex: 16,
+            child: Container(
+              decoration: BoxDecoration(
+                // border: Border.all(color: Colors.red),
+              ),
+              child: Text(
+                widget.text!,
+                textAlign: (widget.icon == null && widget.customIcon == null)
+                    ? TextAlign.center
+                    : TextAlign.start,  // Changed to start
+                style: TextStyle(fontSize: widget.fontSize, color: widget.textColor==null ? Colors.white : Colors.black),
+              ),
             ),
           ),
       ],
     ),
   ),
 );
-
 
   }
 }

@@ -41,7 +41,7 @@ class _LocationsMapState extends State<LocationsMap> {
 
   Future<void> loadLocations() async {
     Map<String, dynamic> getLocationsNearMeResp =
-        await LocationCommand().getLocationsNearMe(LocationType.FACILITY);
+        await LocationCommand().getLocationsNearMe(LocationType.FIELDLOCATION);
     if (getLocationsNearMeResp["success"]) {
       locations = getLocationsNearMeResp["data"];
       locations.forEach((location) {
@@ -83,7 +83,7 @@ class _LocationsMapState extends State<LocationsMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const Headers().getBackHeader(context, "Locations"),
+      // appBar: const Headers().getBackHeader(context, "Locations"),
       body: _isLoading
           ? Container(
               height: double.infinity,

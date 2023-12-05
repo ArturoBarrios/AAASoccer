@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../commands/payment_commands.dart';
+import '../styles/colors.dart';
 
 class PriceWidget extends StatefulWidget {
   final dynamic price;
@@ -19,6 +20,7 @@ class PriceWidget extends StatefulWidget {
 
 class _PriceWidgetState extends State<PriceWidget> {
   final priceController = TextEditingController();
+  bool isLoading = false;
 
 
   @override
@@ -34,17 +36,17 @@ class _PriceWidgetState extends State<PriceWidget> {
     print("loadPriceDetails()");
     if(widget.eventPrice){
       print("if(widget.eventPrice)");
-      priceController.text = (double.parse(widget.price['amount'])).toStringAsFixed(2);
+      priceController.text = (double.parse(widget.price['amount'])/100).toStringAsFixed(2);
     }
     else{
       print("else");
-      priceController.text = (double.parse(widget.price['teamAmount'])).toStringAsFixed(2);
+      priceController.text = (double.parse(widget.price['teamAmount'])/100).toStringAsFixed(2);
     }
   }
 
   Future<void> updatePrice() async{
     print("updatePrice()");
-    String newAmount = priceController.text.toString();
+    double newAmount = double.parse(priceController.text.toString());
     print("newAmount: " + newAmount.toString());
     dynamic priceObject = null;
     if(widget.eventPrice){
@@ -55,14 +57,14 @@ class _PriceWidgetState extends State<PriceWidget> {
     }
     dynamic priceInput = {
       "_id": priceObject['_id'],
-      "amount": widget.eventPrice ? newAmount : priceObject['amount'],
-      "teamAmount": widget.teamPrice ? newAmount : priceObject['teamAmount'],
+      "amount": widget.eventPrice ? newAmount*100 : priceObject['amount'],
+      "teamAmount": widget.teamPrice ? newAmount*100 : priceObject['teamAmount'],
     };
     dynamic updatePriceResp = await PaymentCommand().updatePrice(priceInput);
     dynamic updatedPrice = updatePriceResp['data'];
     setState(() {
       if(widget.eventPrice){
-        widget.price['amount'] = (double.parse(updatedPrice['amount'])/2).toString();
+        widget.price['amount'] = (double.parse(updatedPrice['amount'])).toStringAsFixed(2);
       }
       else{
         widget.price['teamAmount'] = updatedPrice['teamAmount'];
@@ -150,6 +152,9 @@ class _PriceWidgetState extends State<PriceWidget> {
             ),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: AppColors.tsnGreen, // background              
+            ),
             onPressed: () {
               // Add button onPressed logic here
               updatePrice();

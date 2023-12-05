@@ -119,12 +119,12 @@ class _PickupCard2 extends State<PickupCard2> {
     return Listener(
         child: GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PickupView(game: widget.gameObject)
-          ),
-        );        
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => PickupView(game: widget.gameObject)
+        //   ),
+        // );        
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),

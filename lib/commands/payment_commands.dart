@@ -36,12 +36,12 @@ class PaymentCommand extends BaseCommand {
       "message": "Default Error",
       "data": null
     };
-    if (appModel.currentUser['stripeCustomers']['data'].length == 0) {
+    if (appModel.currentUser['stripeCustomers'].length == 0) {
       return getCustomerPaymentMethodsResultResp;
     }
     try {
       Map<String, String> queryParams = {
-        'customerId': appModel.currentUser['stripeCustomers']['data'][0]
+        'customerId': appModel.currentUser['stripeCustomers'][0]
                 ['customerId']
             .toString(),
       };
@@ -55,11 +55,11 @@ class PaymentCommand extends BaseCommand {
         print(
             "listPaymentMethodsResp['paymentMethods']: ${listPaymentMethodsResp['paymentMethods']}");
         dynamic listPaymentMethods =
-            listPaymentMethodsResp['paymentMethods']['data'];
+            listPaymentMethodsResp['paymentMethods'];
         if (listPaymentMethods.length > 0) {
           getCustomerPaymentMethodsResultResp['success'] = true;
           getCustomerPaymentMethodsResultResp['message'] = "Success";
-          getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods;
+          getCustomerPaymentMethodsResultResp['data'] = listPaymentMethods['data'];
         }
       } else {
         getCustomerPaymentMethodsResultResp['success'] = true;
@@ -79,7 +79,7 @@ class PaymentCommand extends BaseCommand {
   Future<Map<String, dynamic>> getCustomerDetails() async {
     print("getCustomerDetailssss");
     print(
-        "appModel.currentUser['stripeCustomers']['data'][0]['customerId']: ${appModel.currentUser['stripeCustomers']['data'][0]['customerId']}");
+        "appModel.currentUser['stripeCustomers'][0]['customerId']: ${appModel.currentUser['stripeCustomers'][0]['customerId']}");
     Map<String, dynamic> getCustomersResp = {
       "success": false,
       "message": "Default Error",
@@ -88,7 +88,7 @@ class PaymentCommand extends BaseCommand {
 
     try {
       Map<String, String> queryParams = {
-        'customerId': appModel.currentUser['stripeCustomers']['data'][0]
+        'customerId': appModel.currentUser['stripeCustomers'][0]
                 ['customerId']
             .toString(),
       };
@@ -153,6 +153,7 @@ class PaymentCommand extends BaseCommand {
       if (paymentIntentResults['success'] &&
           paymentIntentResults['customer'] != null) {
         print("attach payment method to customer");
+        createPaymentIntentResp['data'] = {"intent": paymentIntentResults['intent']};
         Map<String, dynamic> attachPaymentMethodToCustomerResp =
             await _callStripeAttachPaymentMethod(
                 paymentMethodId: paymentMethodId,
@@ -225,9 +226,8 @@ class PaymentCommand extends BaseCommand {
 
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -237,6 +237,15 @@ class PaymentCommand extends BaseCommand {
       );
 
       print("createUserEventPayment response: ${response.body}");
+
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['createPayment'];
+        if(result['success']){
+          createUserObjectPaymentResp['success'] = true;
+          createUserObjectPaymentResp['message'] = "Payment Created";
+          createUserObjectPaymentResp['data'] = result['payment'];
+        }
+      }
 
       return createUserObjectPaymentResp;
     } catch (e) {
@@ -248,9 +257,9 @@ class PaymentCommand extends BaseCommand {
   bool doesCustomerExist(String customerId) {
     print("checkIfCustomerExists");
     print(
-        "stripeCustomers length: ${appModel.currentUser['stripeCustomers']['data'].length}");
+        "stripeCustomers length: ${appModel.currentUser['stripeCustomers'].length}");
     bool customerExists = false;
-    dynamic customers = appModel.currentUser['stripeCustomers']['data'];
+    dynamic customers = appModel.currentUser['stripeCustomers'];
     for (var i = 0; i < customers.length && !customerExists; i++) {
       if (customers[i]['customerId'] == customerId) {
         customerExists = true;
@@ -311,13 +320,13 @@ class PaymentCommand extends BaseCommand {
     }
   }
 
-  Future<Map<String, dynamic>> createRefund() async {
+  Future<Map<String, dynamic>> createRefund(String charge) async {
     log('create refund kadir');
     try {
       final response = await http.post(
           Uri.parse(
               'https://us-central1-soccer-app-a9060.cloudfunctions.net/StripeCreateRefund'),
-          body: {'charge': 'ch_3Nf2ZyDUXwYENeT43OU1UB5C'});
+          body: {'charge': charge});
 
       print("Response Status Code: ${response.statusCode}");
 
@@ -404,9 +413,8 @@ class PaymentCommand extends BaseCommand {
     };
     try {
       http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
@@ -415,9 +423,15 @@ class PaymentCommand extends BaseCommand {
       );
       print("response body: ");
       print(jsonDecode(response.body));
-      Map<String, dynamic> updatedPrice =
-          jsonDecode(response.body)['data']['updatePrice'];
-      updatePriceResp['data'] = updatedPrice;
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['updatePrice'];
+        if(result['success']){
+          updatePriceResp['success'] = true;
+          updatePriceResp['message'] = "Price Successfully Updated";                    
+          updatePriceResp['data'] = result['price'];
+
+        }
+      }
       return updatePriceResp;
     } on Exception catch (e) {
       print('Mutation failed: $e');

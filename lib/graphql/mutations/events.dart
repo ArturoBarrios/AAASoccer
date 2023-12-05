@@ -74,26 +74,19 @@ class EventMutations {
       Map<String, dynamic> userInput, String roles) {
     String addPlayerToEvent = """      
       mutation {
-        updateEvent(
-          id: ${eventInput['_id']},
-  				data: {                       
-            userParticipants:{
-              create:
-              {
-                user: {
-                  connect:
-                  "${userInput['_id']}"
-                }
-                roles: "$roles"
-              }
-            }                                                        
-          }                      
+        addUserToEvent(
+          eventId: "${eventInput['_id']}"
+          userId: "${userInput['_id']}"
+          roles: "$roles"  				                     
         ){
-          ${EventFragments().fullEvent()}
-              
-    				  
-          }
+          code 
+          success
+          message
+          event{
+            ${EventFragments().fullEvent()}
+          }                  				  
         }
+      }
         """;
 
     return addPlayerToEvent;
@@ -105,10 +98,12 @@ class EventMutations {
     String deleteEventUserParticipantString = """      
       mutation {
         deleteEventUserParticipant(
-          id: ${event['eventUserParticipantId']}
+          _id: "${event['eventUserParticipantId']}"
         )
         {
-          _id
+          code
+          success
+          message
               
     				  
           }

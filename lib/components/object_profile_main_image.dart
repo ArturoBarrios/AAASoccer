@@ -5,13 +5,14 @@ import 'package:soccermadeeasy/constants.dart';
 import '../commands/images_command.dart';
 import '../commands/user_command.dart';
 import '../models/user_model.dart';
+import '../styles/colors.dart';
 import 'Dialogues/animated_dialogu.dart';
 import 'Mixins/images_mixin.dart';
 import 'app_images_gallery.dart';
 
 class ObjectProfileMainImage extends StatefulWidget with ImagesMixin {
   final dynamic objectImageInput;
-  dynamic primaryColor = const Color(0xff4338CA);
+  dynamic primaryColor = AppColors.tsnGreen;//const Color(0xff4338CA);
 
   ObjectProfileMainImage({Key? key, required this.objectImageInput})
       : super(key: key);
@@ -120,16 +121,16 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
             children: <Widget>[
               Container(
                   child: Container(
-                height: 190.0,
-                width: 190.0,
+                height: 170.0,
+                width: 170.0,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(102.5),
                     color: widget.primaryColor.withOpacity(0.05)),
               )),
               Container(
                   child: Container(
-                height: 170.0,
-                width: 170.0,
+                height: 150.0,
+                width: 150.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(102.5),
                   gradient: RadialGradient(stops: const [
@@ -143,24 +144,24 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
               )),
               Container(
                   child: Container(
-                height: 150.0,
-                width: 150.0,
+                height: 130.0,
+                width: 130.0,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(102.5),
                     color: widget.primaryColor.withOpacity(0.4)),
               )),
               Container(
                 child: Container(
-                    height: 132.0,
-                    width: 132.0,
+                    height: 112.0,
+                    width: 112.0,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(102.5),
                         color: widget.primaryColor.withOpacity(0.5))),
               ),
               Container(
                 child: Container(
-                  height: 125.0,
-                  width: 125.0,
+                  height: 100.0,
+                  width: 100.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(62.5),
                     image: DecorationImage(

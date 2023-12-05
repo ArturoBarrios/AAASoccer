@@ -1,15 +1,37 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:soccermadeeasy/extensions/parse_roles.dart';
+import '../../commands/base_command.dart';
 import '../../components/join_condition.dart';
 import '../../strings.dart';
 import 'package:soccermadeeasy/svg_widgets.dart';
 import '../../constants.dart';
 import '../appModels/Price.dart';
+import '../enums/AmenityType.dart';
 
 class EventPageModel extends ChangeNotifier {  
-
   
+  String _startTime = "";
+  String get startTime => _startTime;
+  set startTime(String startTime) {
+    _startTime = startTime;        
+    notifyListeners();
+  }
+  
+  String _formattedEventTime = "";
+  String get formattedEventTime => _formattedEventTime;
+  set formattedEventTime(String formattedEventTime) {
+    _formattedEventTime = formattedEventTime;        
+    notifyListeners();
+  }
+  
+  String _endTime = "";
+  String get endTime => _endTime;
+  set endTime(String endTime) {
+    _endTime = endTime;        
+    notifyListeners();
+  }
+
   dynamic _objectImageInput = null;
   dynamic get objectImageInput => _objectImageInput;
   set objectImageInput(dynamic objectImageInput) {
@@ -27,8 +49,7 @@ class EventPageModel extends ChangeNotifier {
   dynamic _mainEvent = null;
   dynamic get mainEvent => _mainEvent;
   set mainEvent(dynamic mainEvent) {
-    _mainEvent = mainEvent;
-    _updateFieldsBasedOnMainEvent();
+    _mainEvent = mainEvent;   
     notifyListeners();
   }
 
@@ -50,6 +71,13 @@ class EventPageModel extends ChangeNotifier {
   bool get isMember => _isMember;
   set isMember(bool isMember) {
     _isMember = isMember;
+    notifyListeners();
+  }
+
+  String _location = "";
+  String get location => _location;
+  set location(String location) {
+    _location = location;
     notifyListeners();
   }
 
@@ -143,18 +171,18 @@ class EventPageModel extends ChangeNotifier {
     _tournamentStage = tournamentStage;
     notifyListeners();
   }
+  
+  dynamic _tournament = {};
+  dynamic get tournament => _tournament;
+  set tournament(dynamic tournament) {
+    _tournament = tournament;
+    notifyListeners();
+  }
 
   List _userParticipants = [];
   List get userParticipants => _userParticipants;
   set userParticipants(List userParticipants) {
     _userParticipants = userParticipants;
-    notifyListeners();
-  }
-
-  String _currentUserId = "";
-  String get currentUserId => _currentUserId;
-  set currentUserId(String currentUserId) {
-    _currentUserId = currentUserId;
     notifyListeners();
   }
 
@@ -197,78 +225,69 @@ class EventPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
-  void _updateFieldsBasedOnMainEvent() {
-    if (_mainEvent != null) {
-      userParticipants = _mainEvent['userParticipants']['data'];
-      roles = _getEventRoles();
-      isMine = roles.contains("ORGANIZER");
-      isMember = roles.contains("PLAYER");
-      chats = _mainEvent['chats']['data'];
-      teams = _mainEvent['teams']['data'];
-      fieldLocations = _mainEvent['fieldLocations']['data'];
-      _getParticipants();
-      payments = _mainEvent['payments']['data'];
-      _getAmountPaid();
-      price = _mainEvent['price'];
-      
-    }
+  int _eventRating = 0;
+  int get eventRating => _eventRating;
+  set eventRating(int eventRating) {
+    _eventRating = eventRating;
+    notifyListeners();
   }
-
-  List<dynamic> _getEventRoles() {
-    List<dynamic> tempRoles = [];
-
-    for (int i = 0; i < userParticipants.length; i++) {
-      if (userParticipants[i]['user']['_id'] == currentUserId) {
-        tempRoles = userParticipants[i]['roles'].toString().parseRoles();
-      }
-    }
-
-    return tempRoles;
+  int _hostRating = 0;
+  int get hostRating => _hostRating;
+  set hostRating(int hostRating) {
+    _hostRating = hostRating;
+    notifyListeners();
   }
-
-  void _getParticipants() {
-    List<dynamic> tempOrganizers = [];
-    List<dynamic> tempPlayers = [];
-
-    for (int i = 0; i < userParticipants.length; i++) {
-      dynamic participant = userParticipants[i];
-      List<String> roles = participant['roles'].toString().parseRoles();
-      if (roles.contains("ORGANIZER")) {
-        tempOrganizers.add(userParticipants);
-      }
-      if (roles.contains("PLAYER")) {
-        tempPlayers.add(userParticipants);
-      }
-    }
-
-    organizers = tempOrganizers;
-    players = tempPlayers;
+  int _fieldRating = 0;
+  int get fieldRating => _fieldRating;
+  set fieldRating(int fieldRating) {
+    _fieldRating = fieldRating;
+    notifyListeners();
   }
-
-  void _getAmountPaid() {
-    if (price == null) return;
-
-    double tempAmountPaid = 0.00;
-    double tempTeamAmountPaid = 0.00;
-
-    for (int i = 0; i < payments.length; i++) {
-      if (payments[i]['user']['_id'] == currentUserId) {
-        if (payments[i]['isPlayerPayment']) {
-          tempAmountPaid += double.parse(payments[i]['amount']);
-        } else if (payments[i]['isTeamPayment']) {
-          tempTeamAmountPaid += double.parse(payments[i]['amount']);
-        }
-      }
-    }
-    amountPaid = (tempAmountPaid).toStringAsFixed(2);
-    teamAmountPaid = (tempTeamAmountPaid).toStringAsFixed(2);
-    amountRemaining =
-        (double.parse(mainEvent['price']['amount']) - tempAmountPaid)
-            .toStringAsFixed(2);
-    teamAmountRemaining =
-        (double.parse(mainEvent['price']['teamAmount']) - tempTeamAmountPaid)
-            .toStringAsFixed(2);
+  
+  int _fieldLocationRating = 0;
+  int get fieldLocationRating => _fieldLocationRating;
+  set fieldLocationRating(int fieldLocationRating) {
+    _fieldLocationRating = fieldLocationRating;
+    notifyListeners();
   }
+  
+  int _numberOfFieldLocationRatings = 0;
+  int get numberOfFieldLocationRatings => _numberOfFieldLocationRatings;
+  set numberOfFieldLocationRatings(int numberOfFieldLocationRatings) {
+    _numberOfFieldLocationRatings = numberOfFieldLocationRatings;
+    notifyListeners();
+  }
+  
+  int _numberOfRatings = 0;
+  int get numberOfRatings => _numberOfRatings;
+  set numberOfRatings(int numberOfRatings) {
+    _numberOfRatings = numberOfRatings;
+    notifyListeners();
+  }
+  
+  int _numberOfParticipants = 0;
+  int get numberOfParticipants => _numberOfParticipants;
+  set numberOfParticipants(int numberOfParticipants) {
+    _numberOfParticipants = numberOfParticipants;
+    notifyListeners();
+  }
+  
+  int _capacity = 0;
+  int get capacity => _capacity;
+  set capacity(int capacity) {
+    _capacity = capacity;
+    print("capacitty changed to : " + capacity.toString());
+    notifyListeners();
+  }  
+  
+  List<AmenityType> _amenities = [];
+  List<AmenityType> get amenities => _amenities;
+  set amenities(List<AmenityType> amenities) {
+    _amenities = amenities;
+    notifyListeners();
+  }  
+
+
+
+
 }

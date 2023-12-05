@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../styles/colors.dart';
 import 'package:collection/collection.dart';
 
+import '../styles/font_sizes.dart';
+import 'Buttons/basic_elevated_button.dart';
 import 'models/button_model.dart';
 import 'models/custom_stepper_model.dart';
 
@@ -34,30 +36,30 @@ class CustomStepper extends StatelessWidget {
     if (1 < stepperLegth) {
       for (int i = 0; i < stepperLegth; i++) {
         circularSteps.add(
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
+          Expanded(
+            child: Container(
+              height: 10,
               color: (i < (activeStep ?? 0) || i == activeStep)
-                  ? AppColors.orangeColorShade500
-                  : AppColors.grayColor,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text((i + 1).toString(),
-                  style: const TextStyle(color: AppColors.whiteColor)),
+                  ? AppColors.tsnGreen
+                  : AppColors.tsnAlmostBlack,
             ),
           ),
         );
 
         if (i < stepperLegth - 1) {
           circularSteps.add(
-            Expanded(
-              child: Container(
-                height: 10,
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
                 color: (i < (activeStep ?? 0))
-                    ? AppColors.orangeColorShade500
-                    : AppColors.grayColor,
+                    ? AppColors.tsnGreen
+                    : AppColors.tsnAlmostBlack,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text((i + 1).toString(),
+                    style: const TextStyle(color: AppColors.whiteColor)),
               ),
             ),
           );
@@ -70,6 +72,7 @@ class CustomStepper extends StatelessWidget {
       child: Stack(
         children: [
           Column(
+            mainAxisSize: MainAxisSize.min, // Change to min
             children: [
               const SizedBox(height: 10),
               if (title != null)
@@ -107,60 +110,64 @@ class CustomStepper extends StatelessWidget {
                   ),
                 ),
               ),
-              if (cancelButton != null || confirmButton != null)
-                const SizedBox(height: 80)
             ],
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: confirmButton == null || cancelButton == null
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.spaceBetween,
-              children: [
-                if (cancelButton != null)
-                  Container(
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    child: FloatingActionButton.extended(
-                      isExtended: true,
-                      label: Text(
-                        cancelButton?.text ?? '',
-                        style: cancelButton?.textStyle ??
-                            const TextStyle(
-                                color: AppColors.whiteColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400),
-                      ),
-                      backgroundColor: cancelButton?.backgroundColor ??
-                          AppColors.orangeColorShade500,
-                      onPressed: cancelButton?.onTap,
-                    ),
-                  ),
-                if (confirmButton != null)
-                  Container(
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    child: FloatingActionButton.extended(
-                      isExtended: true,
-                      label: Text(
-                        confirmButton?.text ?? '',
-                        style: confirmButton?.textStyle ??
-                            const TextStyle(
-                                color: AppColors.whiteColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400),
-                      ),
-                      backgroundColor: confirmButton?.backgroundColor ??
-                          AppColors.orangeColorShade500,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+
+                    // FloatingActionButton.extended(
+                    //   isExtended: true,
+                    //   label: Text(
+                    //     cancelButton?.text ?? '',
+                    //     style: cancelButton?.textStyle ??
+                    //         const TextStyle(
+                    //             color: AppColors.whiteColor,
+                    //             fontSize: 18,
+                    //             fontWeight: FontWeight.w400),
+                    //   ),
+                    //   backgroundColor: cancelButton?.backgroundColor ??
+                    //       AppColors.orangeColorShade500,
+                    //   onPressed: cancelButton?.onTap,
+                    // ),
+                  if (cancelButton != null && confirmButton != null)
+                  if (confirmButton != null)
+                    BasicElevatedButton(
+                      backgroundColor: AppColors.tsnGreen,
+                      text: confirmButton?.text ?? '',
+                      fontSize: FontSizes.m(context),
                       onPressed: confirmButton?.onTap,
                     ),
-                  ),
-              ],
+                    SizedBox(height: 10), // Space between buttons
+                  if (cancelButton != null)
+                    BasicElevatedButton(
+                        backgroundColor: AppColors.tsnRed,
+                        text: cancelButton?.text ?? '',
+                        fontSize: FontSizes.m(context),
+                        onPressed: cancelButton?.onTap,
+                    ),
+                  // FloatingActionButton.extended(
+                  //   isExtended: true,
+                  //   label: Text(
+                  //     confirmButton?.text ?? '',
+                  //     style: confirmButton?.textStyle ??
+                  //         const TextStyle(
+                  //             color: AppColors.whiteColor,
+                  //             fontSize: 18,
+                  //             fontWeight: FontWeight.w400),
+                  //   ),
+                  //   backgroundColor: confirmButton?.backgroundColor ??
+                  //       AppColors.orangeColorShade500,
+                  //   onPressed: confirmButton?.onTap,
+                  // ),
+                ],
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

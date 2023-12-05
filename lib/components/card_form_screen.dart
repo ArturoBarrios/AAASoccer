@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
 import 'package:soccermadeeasy/commands/paypal_payment/models/response/orders/paypal_create_order_response.dart';
+import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
@@ -21,7 +22,10 @@ import 'dart:async';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 
+import '../styles/colors.dart';
 import 'Buttons/apple_google_pay_button.dart';
+import 'headers.dart';
+import 'models/button_model.dart';
 import 'paypal_payment_view.dart';
 
 class CardFormScreen extends StatefulWidget {
@@ -46,13 +50,13 @@ class _CardFormScreenState extends State<CardFormScreen> {
   final FlipCardController flipCardController = FlipCardController();
 
   List waysToPay = [
-    "Pay With Existing Card",
     "Pay With New Card",
-    "PayPal",
-    "Apple Card",
-    Platform.isAndroid ? "Google Pay" : "Apple Pay",
+    "Pay With Existing Card",
+    // "PayPal",
+    // "Apple Card",
+    // Platform.isAndroid ? "Google Pay" : "Apple Pay",
   ];
-  String? _selectedPayment = "Pay With Existing Card";
+  String? _selectedPayment = "Pay With New Card";
 
   Future<void> createPaymentIntent() async {
     setState(() {});
@@ -97,18 +101,31 @@ class _CardFormScreenState extends State<CardFormScreen> {
     print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
     if (createPaymentIntentResp['success'] ||
         widget.paymentDetails['price']['amount'] == '0') {
-      print(
-          "if(createPaymentIntentResp['success'] || widget.priceObject['amount'] == '0')");
+      print("createpaymentrespintentt: "+ createPaymentIntentResp['data']['intent'].toString());
+      paymentInput['charge'] = createPaymentIntentResp['data']['intent']['latest_charge'];
+      
       print("now addEvent");
       if (widget.paymentDetails['objectType'] == Constants.EVENT) {
         dynamic addEventResp = await EventCommand().addUserToEvent(
+          //objectToPurchase is mainEvent
             widget.paymentDetails['objectToPurchase'],
             currentUser,
             widget.paymentDetails['roles']);
-        if (addEventResp['data'] != null) {
+        if (addEventResp['success']) {
+          dynamic eventToAdd = addEventResp['data'];
+          //add user to event in page models
           paymentInput['eventId'] =
-              widget.paymentDetails['objectToPurchase']['_id'];
-          await PaymentCommand().createUserObjectPayment(paymentInput);
+              eventToAdd['_id'];
+          print("paymentInput: " + paymentInput.toString());
+          Map<String, dynamic> createUserObjectPaymentResp = await PaymentCommand().createUserObjectPayment(paymentInput);          
+          //payment went through
+          if(createUserObjectPaymentResp['success']){
+            EventCommand().updateViewModelsWithEvent(eventToAdd, true);
+            EventCommand().addUserToEventPageModel(eventToAdd, currentUser);
+           
+          }
+
+
         }
 
         print("addEventResp: " + addEventResp.toString());
@@ -185,8 +202,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 //   context,
                 //   MaterialPageRoute(builder: (context) => Home()),
                 // );
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.pop(context);                
               },
               child: const Text('Go Home')),
         ],
@@ -209,6 +225,13 @@ class _CardFormScreenState extends State<CardFormScreen> {
       int numberOfPaymentMethods = getCustomerPaymentMethodsResp['data'].length;
       print("numberOfPaymentMethods: " + numberOfPaymentMethods.toString());
       if (numberOfPaymentMethods > 0) {
+        dynamic currentUser = UserCommand().getAppModelUser();
+        dynamic currentUserStripeCustomers = currentUser['stripeCustomers'];
+        print("currentUserStripeCustomers: " +
+            currentUserStripeCustomers.toString());
+
+        
+        print("testingggg: "+ getCustomerPaymentMethodsResp['data'].toString());
         _selectedPayment = getCustomerPaymentMethodsResp['data'][0]['id'];
         _selectedPayment = "Pay With Existing Card";
       } else {
@@ -323,7 +346,12 @@ class _CardFormScreenState extends State<CardFormScreen> {
 
     Widget child;
     return Scaffold(
-        appBar: AppBar(),
+        appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {},
+              ),
+            ).getMainHeader(context),
         body: !isLoading
             ? Center(
                 child: Column(children: [
@@ -363,7 +391,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
                     ),
                   ),
                 ),
-                _selectedPayment == waysToPay[0]
+                _selectedPayment == waysToPay[1]
                     ? Column(
                         children: [
                           Container(
@@ -532,35 +560,20 @@ class _CardFormScreenState extends State<CardFormScreen> {
                                       ),
                                     ))),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                top: 16.0,
-                                left: 16.0,
-                                right: 16.0), // Define your own padding
-                            child: Container(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  // createPaymentIntent();
-                                  await PaymentCommand().createRefund();
-                                },
-                                child: const Text('Pay'),
-                              ),
-                            ),
-                          )
+                          
                         ],
                       )
-                    : waysToPay[2] == _selectedPayment
-                        ? ElevatedButton(
-                            onPressed: () => createOrderWithPaypal(
-                                repository: paypalRepository),
-                            child: const Text('Pay with paypal'),
-                          )
-                        : waysToPay[4] == _selectedPayment
-                            ? AppleGooglePaymentButton(
-                                item: widget.paymentDetails,
-                                paymentResult: (final result) {},
-                              )
+                    // : waysToPay[2] == _selectedPayment
+                    //     ? ElevatedButton(
+                    //         onPressed: () => createOrderWithPaypal(
+                    //             repository: paypalRepository),
+                    //         child: const Text('Pay with paypal'),
+                    //       )
+                    //     : waysToPay[4] == _selectedPayment
+                    //         ? AppleGooglePaymentButton(
+                    //             item: widget.paymentDetails,
+                    //             paymentResult: (final result) {},
+                    //           )
                             : paymentWidgetToShow(status)
                 // GestureDetector(
                 //   onTap: () {
@@ -571,6 +584,24 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 // ),
                 // if (showCardForm)
               ]))
-            : Center(child: CircularProgressIndicator()));
+            : Center(child: CircularProgressIndicator()),
+              bottomNavigationBar: Padding(
+                            padding: EdgeInsets.only(
+                                bottom: 16.0,
+                                top: 16.0,
+                                left: 16.0,
+                                right: 16.0), 
+                            child: Container(
+                              width: double.infinity,
+                              child: BasicElevatedButton(
+                                onPressed: () async {
+                                  createPaymentIntent();                                  
+                                },
+                                backgroundColor: AppColors.tsnGreen,
+                                text: 'Pay',
+                              ),
+                            ),
+                          ),
+            );
   }
 }

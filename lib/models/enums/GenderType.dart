@@ -21,5 +21,6 @@
 
 enum GenderType {
   MALE,
-  FEMALE
+  FEMALE,
+  OTHER
 }

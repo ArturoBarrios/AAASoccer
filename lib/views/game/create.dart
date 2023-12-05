@@ -2,7 +2,9 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:soccermadeeasy/views/game/view.dart';
+import '../../commands/base_command.dart';
 import '../../components/Validator.dart';
+import '../../components/image_selection_widget.dart';
 import '../../components/create_event_payment.dart';
 import '../../components/create_event_request.dart';
 import '../../components/create_team_payment.dart';
@@ -16,6 +18,8 @@ import '../../commands/game_command.dart';
 import '../../commands/event_command.dart';
 import '../../components/models/button_model.dart';
 import '../../components/models/custom_stepper_model.dart';
+import '../../constants.dart';
+import '../../models/enums/AmenityType.dart';
 import '../../models/enums/EventType.dart';
 import '../../strings.dart';
 
@@ -36,6 +40,9 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final imageController = TextEditingController();
+  
+  List<String> selectedHostAmenities = [];
+  List<String> selectedFieldAmenities = [];
 
   final Map<String, dynamic> locationInput = {
     "name": "",
@@ -53,7 +60,7 @@ class _GameCreateState extends State<GameCreate> {
   initState() {
     locationSearchBar = LocationSearchBar(
       onCoordinatesChange: (coordinates, address) {
-        locationInput['name'] = address;
+        locationInput['address'] = address;
         locationInput['latitude'] = coordinates.latitude;
         locationInput['longitude'] = coordinates.longitude;
       },
@@ -84,24 +91,31 @@ class _GameCreateState extends State<GameCreate> {
           1000);
   bool startTimeSet = false;
 
+
+
   Future<void> createPickupGame() async {
     print("createGame");
     try {
+      String parsedSelectedHostAmenities = BaseCommand().formatStringForGraphQL(selectedHostAmenities);
+      String parsedSelectedFieldAmenities = BaseCommand().formatStringForGraphQL(selectedFieldAmenities);
       print("priceee: ${priceController.text}");
+      double priceDouble = double.parse(priceController.text.toString());
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
         "capacity": capacityController.text.toString(),
         'isMainEvent': true,
-        'price': double.parse(priceController.text.toString()),
+        'price': priceDouble,
         'startTime': startTimestamp,
         'endTime': endTimestamp,
-        'withRequest': createEventRequestWidget.withRequest.value,
-        'withPayment': createEventPaymentWidget.withPayment.value,
-        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
-        'withTeamRequest': createTeamRequestWidget.withRequest.value,
+        'withRequest': false,//createEventRequestWidget.withRequest.value,
+        'withPayment': priceDouble==0 ? false : true, //createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': false,
+        'withTeamRequest': false,
         'roles': "{PLAYER, ORGANIZER}",
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
+        'hostAmenities': parsedSelectedHostAmenities.toString(),
+        'fieldAmenities': parsedSelectedFieldAmenities.toString(),
       };
       dynamic pickupData = {
         "pickup": true,
@@ -114,23 +128,23 @@ class _GameCreateState extends State<GameCreate> {
 
       print(createPickupGameResp['data']);
       if (createPickupGameResp['success']) {
-        Map<String, dynamic> createdGame = createPickupGameResp['data'];
+        Map<String, dynamic> createdEvent = createPickupGameResp['data'];
         await EventCommand()
-            .updateViewModelsWithEvent(createdGame['event'], true);
+            .updateViewModelsWithEvent(createdEvent, true);
 
-        if (context.mounted) {
-          Navigator.pop(
-            context,
-          );
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PickupView(
-                game: createdGame['event'],
-              ),
-            ),
-          );
-        }
+        
+          // Navigator.pop(
+          //   context,
+          // );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => PickupView(
+          //       game: createdGame['event'],
+          //     ),
+          //   ),
+          // );
+        
       }
     } on ApiException catch (_) {}
   }
@@ -270,6 +284,38 @@ class _GameCreateState extends State<GameCreate> {
           createTeamPaymentWidget,
         ],
       ),
+      CustomStepperModel(
+        widgets: [
+          ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 300, // You can adjust this height
+      ),
+      child: ImageSelectionWidget(
+        viewMode: false,
+        selectionList: Constants.hostAmenities,
+        onSelectionChanged: (newSelection) {
+          setState(() {
+            selectedHostAmenities = newSelection;
+          });
+        },
+      ),
+    ),
+          ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 300, // You can adjust this height
+      ),
+      child: ImageSelectionWidget(
+        viewMode: false,
+        selectionList: Constants.fieldAmenities,
+        onSelectionChanged: (newSelection) {
+          setState(() {
+            selectedFieldAmenities = newSelection;
+          });
+        },
+      ),
+    ),
+        ],
+      ),      
     ];
 
     Future<void> onCancelTap() async {
@@ -287,8 +333,12 @@ class _GameCreateState extends State<GameCreate> {
     }
 
     return Scaffold(
-      appBar: const Headers()
-          .getBackHeader(context, StringConstants.headingCreateGame),
+      appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {},
+              ),
+            ).getMainHeader(context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: CustomStepper(

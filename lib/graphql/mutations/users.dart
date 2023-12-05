@@ -4,19 +4,59 @@ import '../fragments/user_fragments.dart';
 import '../fragments/event_fragments.dart';
 
 class UserMutations {
-  String partialUserUpdate(Map<String, dynamic> userInput) {
+  String deleteUser(Map<String, dynamic> userInput) {
     String updateUserString = """
-      mutation {
-        partialUpdateUser(
-          id: ${userInput['user']['_id']}, 
-          data: ${userInput['user']['dataToUpdate']}
-        )
-        {
-          ${UserFragments().fullUser()}
-        }  
-      }
+       mutation {
+        deleteUser(
+          userId: "${userInput['_id']}",                             
+          ) {
+             code
+              success
+              message                                       
+          }   
+        }
     """;
+    return updateUserString;
+  }
 
+  String updateUserOnboarding(Map<String, dynamic> userInput) {
+    String updateUserString = """
+       mutation {
+        updateUserOnboarding(
+          _id: "${userInput['_id']}",
+          onboarded: ${userInput['onboarded']}                    
+                   
+          ) {
+             code
+                success
+                message            
+              user{    
+                ${UserFragments().fullUser()}
+              }                 
+          }   
+        }
+    """;
+    return updateUserString;
+  }
+ 
+  String updateUsertermsAndPrivacy(Map<String, dynamic> userInput) {
+    String updateUserString = """
+       mutation {
+        updateUsertermsAndPrivacy(
+          userId: "${userInput['userId']}"
+          hasAcceptedPrivacyPolicy: ${userInput['hasAcceptedPrivacyPolicy']}
+          hasAcceptedTermsAndConditions: ${userInput['hasAcceptedPrivacyPolicy']}                     
+                   
+          ) {
+             code
+                success
+                message            
+              user{    
+                ${UserFragments().fullUser()}
+              }                 
+          }   
+        }
+    """;
     return updateUserString;
   }
 
@@ -24,18 +64,22 @@ class UserMutations {
       Map<String, dynamic> userInput, Map<String, dynamic> customerInput) {
     String updateUserString = """      
       mutation {
-        createStripeCustomer(data: {
+        createStripeCustomer(
           customerId: "${customerInput['customerId']}", 
-          user: {
-            connect: "${userInput['_id']}"            
-          } 
-          }) {
-            _id
-            customerId
-    				user{
+          userId: "${userInput['_id']}"          
+          ) {
+            success 
+            code
+            message
+            stripeCustomer{
               _id
-              name
-              email
+              customerId
+              user{
+                _id
+                name
+                email
+              }
+
             }
             
           }   
@@ -46,45 +90,50 @@ class UserMutations {
   }
 
   String createUserEventPayment(dynamic createUserEventPaymentInput) {
-    String paymentType = createUserEventPaymentInput['paymentType'] == 'player'
-        ? """
-          event: {
-            connect: "${createUserEventPaymentInput['eventId']}"            
-          }
-          isPlayerPayment: true
-          isTeamPayment: false
-        """
-        : """
-          team: {
-            connect: "${createUserEventPaymentInput['teamId']}"            
-          }
-          isPlayerPayment: false
-          isTeamPayment: true
-        """;
+    // String paymentType = createUserEventPaymentInput['paymentType'] == 'player'
+    //     ? """
+    //       event: {
+    //         connect: "${createUserEventPaymentInput['eventId']}"            
+    //       }
+    //       charge: "${createUserEventPaymentInput['charge']}"
+    //       isPlayerPayment: true
+    //       isTeamPayment: false
+    //     """
+    //     : """
+    //       team: {
+    //         connect: "${createUserEventPaymentInput['teamId']}"            
+    //       }
+    //       isPlayerPayment: false
+    //       isTeamPayment: true
+    //     """;
 
     String createUserEventPaymentString = """      
       mutation {
-        createPayment(data: {
-          amount: "${createUserEventPaymentInput['amount']}",
-          user: {
-            connect: "${createUserEventPaymentInput['userId']}"            
-          } 
+        createPayment(input: {
+          eventId: "${createUserEventPaymentInput['eventId']}"
+          userId: "${createUserEventPaymentInput['userId']}" 
+          charge: "${createUserEventPaymentInput['charge']}"
+          amount: "${createUserEventPaymentInput['amount']}"
           paidAt: "${createUserEventPaymentInput['paidAt']}"
-          $paymentType
+          
           }) {
-            _id
-            amount
-            event{
+            code
+            success 
+            message
+            payment{
               _id
-              name
-            }
-            paidAt
-            user{
-              _id
-              name
-              username
-            }
-            
+              amount
+              event{
+                _id
+                name
+              }
+              paidAt
+              user{
+                _id
+                name
+                username
+              }
+            }            
           }   
         }
         """;
@@ -107,6 +156,7 @@ class UserMutations {
 
     return updateUserString;
   }
+
 
   String updateUserProfileImage(Map<String, dynamic> userInput) {
     String updateUserString = """      
@@ -139,6 +189,8 @@ class UserMutations {
 
     return updateUserString;
   }
+
+
 
   String followUser(dynamic followUserInput) {
     String addFriendString = """      

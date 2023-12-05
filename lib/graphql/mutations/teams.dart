@@ -53,14 +53,20 @@ class TeamMutations {
                                        
                   }                                     
               },  
-          location: {
-            create: 
-            {
-              latitude: ${locationInput['latitude']},
-              longitude: ${locationInput['longitude']},
-              name: "${locationInput['name']}",
-            }
-          } 
+          teamLocations: {
+                create: [
+                  {
+                    isMainField: true                    
+                    location: {    
+                      create: {
+                        name: "${locationInput['name']}",
+                        latitude: ${locationInput['latitude']},
+                        longitude: ${locationInput ['longitude']},
+                      }            
+                    }
+                  }
+                ]
+              }   
           }) {
            ${TeamFragments().fullTeam()}
           }   
