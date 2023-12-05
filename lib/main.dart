@@ -96,6 +96,11 @@ class _MyAppState extends State<MyApp> {
     },
     type: MaskAutoCompletionType.lazy,
   );
+
+  DateTime birthdayTime = DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
+  String birthdateTimestamp = DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day).millisecondsSinceEpoch.toString();
+
+
   final genderController = TextEditingController();  
   List<String> get genderOptions => GenderType.values.map((e) => e.name).toList();
   String? selectedGender;
@@ -338,6 +343,13 @@ class _MyAppState extends State<MyApp> {
     final result = await Amplify.Auth.fetchAuthSession();
     print("fetchAuthSession result");
     print(result);
+  }
+
+   void setBirthdayTime(DateTime time) {
+    birthdayTime = time;
+    birthdateTimestamp = time.millisecondsSinceEpoch.toString();
+    birthdateController.text = '${time.day}/${time.month}/${time.year} '
+        ' ${time.hour}:${time.minute}';    
   }
 
   
@@ -717,7 +729,7 @@ class _MyAppState extends State<MyApp> {
                       showTitleActions: true,
                       onChanged: (date) {}, onConfirm: (date) {
                     // setEndTime(date);
-                  }, currentTime: null
+                  }, currentTime: birthdayTime
                   // !startTimeSet ? rightNow : startTime
                   );
                 },
@@ -726,9 +738,8 @@ class _MyAppState extends State<MyApp> {
               DatePicker.showDateTimePicker(context,
                   showTitleActions: true,
                   onChanged: (date) {}, onConfirm: (date) {
-                // setEndTime(date);
-              }, currentTime: null
-              // !startTimeSet ? rightNow : startTime
+                setBirthdayTime(date);
+              }, currentTime: birthdayTime
               );
             },
           ),

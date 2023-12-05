@@ -224,20 +224,7 @@ class _PickupViewState extends State<PickupView> {
                             event.payments,
                         
                       ))),
-    //                   ConstrainedBox(
-    //   constraints: BoxConstraints(
-    //     maxHeight: 300, // You can adjust this height
-    //   ),
-    //   child: AmenitiesSelectionWidget(
-    //     viewMode: true,
-    //     amenities: availableAmenities,
-    //     onSelectionChanged: (newSelection) {
-    //       setState(() {
-    //         selectedAmenities = newSelection;
-    //       });
-    //     },
-    //   ),
-    // ),
+                      
     Padding(
               padding: EdgeInsets.fromLTRB(paddingValue, 0,
                             paddingValue, paddingValue/2),
@@ -259,6 +246,7 @@ class _PickupViewState extends State<PickupView> {
                                     fontSize: FontSizes.xxs(context),
                                   )))))
                                   ])),
+
     
                       Container(
                         margin: const EdgeInsets.all(10.0),
@@ -317,6 +305,34 @@ class _PickupViewState extends State<PickupView> {
                       //     initialValue: mainEvent['location']['data'][0]
                       //         ['name']),
                       //player list
+                      ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 300, // You can adjust this height
+      ),
+      child: ImageSelectionWidget(
+        viewMode: true,
+        selectionList: event.hostAmenities,
+        onSelectionChanged: (newSelection) {
+          setState(() {
+            // selectedAmenities = newSelection;
+          });
+        },
+      ),
+    ),
+                      ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 300, // You can adjust this height
+      ),
+      child: ImageSelectionWidget(
+        viewMode: true,
+        selectionList: event.fieldAmenities,
+        onSelectionChanged: (newSelection) {
+          setState(() {
+            // selectedAmenities = newSelection;
+          });
+        },
+      ),
+    ),
                       PlayerList(
                         event: event.mainEvent,
                         team: null,

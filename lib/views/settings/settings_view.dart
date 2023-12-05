@@ -74,12 +74,40 @@ class SettingsView extends StatelessWidget {
                                 );
                               
                               },
-                            ),
-                            // ButtonModel(
-                            //   text: 'Notifications',
-                            //   prefixIconData: Icons.notifications,
-                            //   onTap: () {},
-                            // ),
+                            ),                            
+                          ],
+                        ),
+                        TileListModel(
+                          title: 'LEGAL',
+                          buttonList: [
+                            ButtonModel(
+                              text: 'Terms of Service',
+                              prefixIconData: Icons.document_scanner,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                         AccountDetailsUpdate(),
+                                  ),
+                                );
+                              
+                              },
+                            ),                            
+                            ButtonModel(
+                              text: 'Privacy Policy',
+                              prefixIconData: Icons.private_connectivity_rounded,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                         AccountDetailsUpdate(),
+                                  ),
+                                );
+                              
+                              },
+                            ),                            
                           ],
                         ),
                         // TileListModel(
