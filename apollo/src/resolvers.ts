@@ -464,6 +464,9 @@ const resolvers = {
         },
     },
     Query: {
+        getFieldLocationsNearby: async (parent, args, context, info) => {
+            
+        },
         allUserEventParticipants: async (parent, args, context, info) => {            
             console.log("allUserEventParticipants");
             console.log("startTime: ", args.startTime);

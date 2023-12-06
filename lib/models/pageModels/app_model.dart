@@ -325,6 +325,13 @@ class AppModel extends ChangeNotifier {
     _locations = locations;
     notifyListeners();
   }
+ 
+  List<Location> _fieldLocations = [];
+  List<Location> get fieldLocations => _fieldLocations;
+  set fieldLocations(List<Location> fieldLocations) {
+    _fieldLocations = fieldLocations;
+    notifyListeners();
+  }
 
   List _myEvents = [];
   List get myEvents => _myEvents;

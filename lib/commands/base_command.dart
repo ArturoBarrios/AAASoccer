@@ -96,6 +96,11 @@ class BaseCommand {
     appModel.onTapBottomNav(context, key, item);
   }    
 
+  getAppModelCurrentPosition(){
+    print("getAppModelCurrentPosition");
+    return appModel.currentPosition;
+  }
+
    Future<void> launchLocationInBrowser(double latitude, double longitude  ) async {
     final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
       print("url: $url");

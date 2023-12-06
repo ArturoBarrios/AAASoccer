@@ -8,6 +8,7 @@ import '../components/Validator.dart';
 import '../components/custom_textfield.dart';
 import '../components/headers.dart';
 import '../components/models/button_model.dart';
+import '../models/enums/GenderType.dart';
 import '../strings.dart';
 import '../styles/colors.dart';
 
@@ -23,12 +24,15 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
   DateTime startTime = DateTime.now();
   String startTimestamp = "";
   bool startTimeSet = false;
+  
+  String? selectedGender;
+  List<String> get genderOptions => GenderType.values.map((e) => e.name).toList();
 
   // Define your controllers here
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController birthdateController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
-  final TextEditingController capacityController = TextEditingController();
+  final TextEditingController genderController = TextEditingController();
 
   void setStartTime(DateTime time) {
     startTime = time;
@@ -108,14 +112,70 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
               }, currentTime: startTime);
             },
           ),
-              CustomTextFormField(
-                label: 'Gender',
-                hintText: 'Enter Age',
-                keyboardType: TextInputType.numberWithOptions(
-                    signed: true, decimal: false),
-                controller: ageController,
-                // Add your validator logic here
+          Expanded(
+  child: Padding(
+    padding: const EdgeInsets.only(right: 8.0),
+    child: DropdownButtonHideUnderline(
+      child: InputDecorator(
+        decoration: InputDecoration(
+          hintText: 'Gender',
+          hintStyle: TextStyle(color: AppColors.tsnGrey),
+          filled: true,
+          fillColor: AppColors.tsnAlmostBlack,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        child: DropdownButtonFormField<String>(
+          value: selectedGender,
+          style: TextStyle(color: AppColors.tsnAlmostBlack),
+          decoration: InputDecoration.collapsed(hintText: ''),
+          items: [
+            DropdownMenuItem(
+              value: null,
+              child: Text(
+                'Gender',
+                style: TextStyle(color: AppColors.tsnGrey),
               ),
+            ),
+            ...genderOptions.map((String gender) {
+              return DropdownMenuItem(
+                value: gender,
+                child: Text(
+                  gender,
+                  style: TextStyle(color: AppColors.tsnWhite),
+                ),
+              );
+            }).toList(),
+          ],
+          onChanged: (String? newValue) {
+            setState(() {
+              selectedGender = newValue;
+            });
+            genderController.text = newValue ?? '';
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "This field is required";
+            }
+            return null;
+          },
+          dropdownColor: AppColors.fieldFillDark,
+        ),
+      ),
+    ),
+  ),
+),
+              // CustomTextFormField(
+              //   label: 'Gender',
+              //   hintText: 'Enter Age',
+              //   keyboardType: TextInputType.numberWithOptions(
+              //       signed: true, decimal: false),
+              //   controller: ageController,
+              //   // Add your validator logic here
+              // ),
               
               
             ],

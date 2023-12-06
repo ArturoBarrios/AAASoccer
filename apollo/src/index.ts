@@ -144,6 +144,7 @@ type Query {
   allEventsInAreaOfType(type: EventType, latitude: Float, longitude: Float, radius: Int, startTime: String): EventsMutationResponse,
   allUserEventParticipants(_id: String, startTime: String): AllUserEventParticipantResponse!
   getArchivedEvents(userId: String, startTime: String) : EventsResponse
+  getFieldLocationsNearby(latitude: Float, longitude: Float, radius: Int): [FieldLocation!]
   }
 
 
