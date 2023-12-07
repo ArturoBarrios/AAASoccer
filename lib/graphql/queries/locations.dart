@@ -20,16 +20,16 @@ class LocationQueries {
   String getFieldLocationsNearby(dynamic input, String fieldLocationFragment) {
       String getFieldLocationsNearbyString = """
           query getFieldLocationsNearby {
-            allFieldLocations(
+            getFieldLocationsNearby(
               latitude: ${input['latitude']}
               longitude: ${input['longitude']}
               radius: ${input['radius']}
             ) {
               message
               success
-              status
+              code
               fieldLocations{
-                ${fieldLocationFragment}                
+                ${fieldLocationFragment}       
 
               }                  
               

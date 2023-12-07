@@ -87,6 +87,7 @@ class _GameCreateState extends State<GameCreate> {
       },
     );
     super.initState();
+    loadInitialData();
   }
 
   final startTimeController = TextEditingController();
@@ -210,6 +211,7 @@ final teamPriceController = TextEditingController();
   }
 
   void loadInitialData() async{
+    print("loadInitialDataaaaa");
     currentPosition = BaseCommand().getAppModelCurrentPosition();
     dynamic getFieldLocationsNearbyInput = {
       "latitude": currentPosition.latitude,
@@ -321,7 +323,13 @@ final teamPriceController = TextEditingController();
       ),
       CustomStepperModel(
         widgets: [
-          locationSearchBar,
+          
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 0,
+                            0, 0),
+              child:
+                       
+//  locationSearchBar,
           Expanded(
   child: Padding(
     padding: const EdgeInsets.only(right: 8.0),
@@ -351,10 +359,12 @@ final teamPriceController = TextEditingController();
               ),
             ),
             ...fieldLocations.map((dynamic fieldLocation) {
+              print("fieldLocationnnnnnn: "+ fieldLocation.toString());
               return DropdownMenuItem(
-                value: fieldLocation['location']['name'].toString(),
+                key: Key(fieldLocation['location']['_id'].toString()),
+                value: fieldLocation['location']['name'].toString()+fieldLocation['location']['_id'].toString(),
                 child: Text(
-                  fieldLocation['location']['name'],
+                  fieldLocation['location']['name'].toString(),
                   style: TextStyle(color: AppColors.tsnWhite),
                 ),
               );
@@ -378,6 +388,8 @@ final teamPriceController = TextEditingController();
     ),
   ),
 ),
+        ),
+         
           createEventRequestWidget,
           createEventPaymentWidget,
           createTeamRequestWidget,

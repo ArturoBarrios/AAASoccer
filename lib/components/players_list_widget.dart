@@ -11,6 +11,7 @@ import '../commands/user_command.dart';
 import '../constants.dart';
 import '../styles/colors.dart';
 import 'Cards/tsn_player_card.dart';
+import 'Cards/tsn_player_lineup_card.dart';
 
 class PlayerList extends StatefulWidget {
   const PlayerList({
@@ -292,11 +293,14 @@ class _PlayerListState extends State<PlayerList> {
         } else {
           // Build the card with player details
           dynamic playerDetails = snapshot.data;
-          return TSNPlayerCard(
-        playerCardDetails: playerDetails,
-        backgroundColor: AppColors.tsnAlmostBlack,
-        
-      );      
+          return TSNPlayerLineupCard(
+            playerCardDetails: playerDetails,
+            backgroundColor: AppColors.tsnAlmostBlack,     
+          );
+      //     TSNPlayerCard(
+        // playerCardDetails: playerDetails,
+        // backgroundColor: AppColors.tsnAlmostBlack,        
+      // );      
         }
       },
     );

@@ -26,6 +26,7 @@ class LocationCommand extends BaseCommand {
     Map<String, dynamic> getFieldLocationsResp = {"success": false, "message": "Default", "data": null};
 
     print("getFieldLocationsNearby()");
+    print("getFieldLocationsNearbyInput: " + getFieldLocationsNearbyInput.toString());
     try{
        http.Response response = await http.post(
         Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
@@ -39,14 +40,12 @@ class LocationCommand extends BaseCommand {
       print("response body: ");
       print(jsonDecode(response.body));
       if(response.statusCode == 200){
-        final result = jsonDecode(response.body)['data']['getFieldLocations'];
-        if(result['success']){
-          Map<String, dynamic> getFieldLocationsNearby =
-              result['fieldLocations'];
-          print("getFieldLocationsNearby: " + getFieldLocationsNearby.toString());
+        final result = jsonDecode(response.body)['data']['getFieldLocationsNearby'];
+        if(result['success']){          
+          
           getFieldLocationsResp["success"] = true;
           getFieldLocationsResp["message"] = "Field Locations Nearby Retrieved";
-          getFieldLocationsResp["data"] = getFieldLocationsNearby;
+          getFieldLocationsResp["data"] = result['fieldLocations'];
 
         }
 

@@ -164,7 +164,7 @@ class _PickupViewState extends State<PickupView> {
                               child: Text(event.formattedEventTime,
                                   style: TextStyle(
                                     color: AppColors.tsnBlack,
-                                    fontSize: FontSizes.xxs(context),
+                                    fontSize: FontSizes.s(context),
                                   )))
                                   
                                   ])),
@@ -185,20 +185,35 @@ class _PickupViewState extends State<PickupView> {
                               alignment: Alignment.centerLeft,
                               child: Text(event.fieldLocations[0]['location']['address'],
                                   style: TextStyle(
-                                    color: AppColors.tsnGreen,
-                                    fontSize: FontSizes.xxs(context),
+                                    color: AppColors.tsnBlack,
+                                    fontSize: FontSizes.s(context),
                                   )))))
                                   ])),
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(paddingValue, 0,
+
+
+
+Padding(
+              padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                            paddingValue, paddingValue/2),
+              child:
+                       Row(
+        children: [
+                                  Icon(Icons.person),
+                                   Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0,
                             paddingValue, paddingValue/2),
                           child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text("Host: " + event.organizers[0]['username'].toString(),
                                   style: TextStyle(
-                                    color: AppColors.tsnGreen,
-                                    fontSize: FontSizes.m(context),
-                                  )))),
+                                    color: AppColors.tsnBlack,
+                                    fontSize: FontSizes.s(context),
+                                  ))))
+                                  ])),
+
+
+
+                     
                       Padding(
                           padding: EdgeInsets.fromLTRB(paddingValue, 0,
                             paddingValue, paddingValue/2),
@@ -206,7 +221,7 @@ class _PickupViewState extends State<PickupView> {
                               alignment: Alignment.centerLeft,
                               child: Text("Game Capacity: " + event.capacity.toString(),
                                   style: TextStyle(
-                                    color: AppColors.tsnGreen,
+                                    color: AppColors.tsnBlack,
                                     fontSize: FontSizes.m(context),
                                   )))),
                     

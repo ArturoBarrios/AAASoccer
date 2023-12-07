@@ -465,6 +465,38 @@ const resolvers = {
     },
     Query: {
         getFieldLocationsNearby: async (parent, args, context, info) => {
+            console.log("getFieldLocationsNearby");
+            console.log("args.latitude: ", args.latitude);
+            console.log("args.longitude: ", args.longitude);
+            console.log("args.radius: ", args.radius);
+
+            const userLatitude = args.latitude;
+            const userLongitude = args.longitude;
+            const radius = args.radius;
+
+            const fieldLocations = await FieldLocation.find().populate('location');
+            // console.log("fieldLocations: ", fieldLocations);
+
+            const resFieldLocations = fieldLocations.filter(fieldLocation => {
+                // fieldLocation.populate('location');
+                console.log("fieldLocation: ", fieldLocation);
+                const locationLatitude = fieldLocation['location']['latitude'];
+                const locationLongitude = fieldLocation['location']['longitude'];
+                console.log("locationLatitude: ", locationLatitude);
+                const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, locationLatitude, locationLongitude);
+                console.log("distance: ", distance);
+                return distance <= radius;
+            });
+
+            console.log("resFieldLocations: ", resFieldLocations);
+
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully updated",
+                fieldLocations: resFieldLocations
+            };
+
             
         },
         allUserEventParticipants: async (parent, args, context, info) => {            
