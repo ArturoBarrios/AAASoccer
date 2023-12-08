@@ -602,21 +602,28 @@ class _MyAppState extends State<MyApp> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: TextField(
-                controller: nameController,
-                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  hintText: 'Name',
-                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
-                  filled: true,
-                  fillColor: AppColors.fieldFillDark,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
+              child: TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: nameController,
+                              keyboardType: TextInputType.name,                              
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }                                
+                                return null;
+                              },
+                              
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'Name',
+                                filled: true,                                
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,                                  
+                                ),
+                              ),
+                            ),
             ),
           ),
           ],
@@ -715,57 +722,57 @@ class _MyAppState extends State<MyApp> {
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child:
-              CustomTextFormField(
-            label: StringConstants.endDateTimeLabel,
-            hintText: StringConstants.endDateTimeHint,
-            controller: birthdateController,
-            keyboardType: TextInputType.datetime,
-            isSuffixIcon: true,
-            validator: (value) => Validators.validateRequired(
-                value!, StringConstants.endDateTimeErrorValue),
-            suffixIcon: IconButton(
-                onPressed: () {
-                  DatePicker.showDateTimePicker(context,
-                      showTitleActions: true,
-                      onChanged: (date) {}, onConfirm: (date) {
-                    // setEndTime(date);
-                  }, currentTime: birthdayTime
-                  // !startTimeSet ? rightNow : startTime
-                  );
-                },
-                icon: const Icon(Icons.calendar_today_outlined)),
-            onPressed: () {
-              DatePicker.showDateTimePicker(context,
-                  showTitleActions: true,
-                  onChanged: (date) {}, onConfirm: (date) {
-                setBirthdayTime(date);
-              }, currentTime: birthdayTime
-              );
-            },
-          ),
-                            // TextFormField(
-                            //   style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                            //   controller: birthdateController,
-                            //   keyboardType: TextInputType.datetime,
-                            //   validator: (value) {
-                            //     if (value == null || value.isEmpty) {
-                            //       return "This field is required";
-                            //     }
-                            //     return null;
-                            //   },
-                            //   inputFormatters: [birthdateFormatter],
-                            //   decoration: InputDecoration(
-                            //     hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
-                            //     hintText: 'Birthdate',
-                            //     // helperText: "mm-dd-yyyy",
-                            //     filled: true,
-                            //     fillColor: AppColors.fieldFillDark,
-                            //     border: OutlineInputBorder(
-                            //       borderRadius: BorderRadius.circular(25),
-                            //       borderSide: BorderSide.none,
-                            //     ),
-                            //   ),
-                            // )
+          //     CustomTextFormField(
+          //   label: StringConstants.endDateTimeLabel,
+          //   hintText: StringConstants.endDateTimeHint,
+          //   controller: birthdateController,
+          //   keyboardType: TextInputType.datetime,
+          //   isSuffixIcon: true,
+          //   validator: (value) => Validators.validateRequired(
+          //       value!, StringConstants.endDateTimeErrorValue),
+          //   suffixIcon: IconButton(
+          //       onPressed: () {
+          //         DatePicker.showDateTimePicker(context,
+          //             showTitleActions: true,
+          //             onChanged: (date) {}, onConfirm: (date) {
+          //           // setEndTime(date);
+          //         }, currentTime: birthdayTime
+          //         // !startTimeSet ? rightNow : startTime
+          //         );
+          //       },
+          //       icon: const Icon(Icons.calendar_today_outlined)),
+          //   onPressed: () {
+          //     DatePicker.showDateTimePicker(context,
+          //         showTitleActions: true,
+          //         onChanged: (date) {}, onConfirm: (date) {
+          //       setBirthdayTime(date);
+          //     }, currentTime: birthdayTime
+          //     );
+          //   },
+          // ),
+                            TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: birthdateController,
+                              keyboardType: TextInputType.datetime,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              inputFormatters: [birthdateFormatter],
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'mm-dd-yyyy',
+                                // helperText: "mm-dd-yyyy",
+                                filled: true,
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            )
                             )),
 
             ]),

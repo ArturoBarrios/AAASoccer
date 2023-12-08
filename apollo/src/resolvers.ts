@@ -120,10 +120,12 @@ const resolvers = {
                    console.log("location: ", location._id);
        
                    const fieldLocations = new FieldLocation({
-                       isMainField: args.input.event.fieldLocations[0].isMainField,
-                       fieldAmenities: args.input.event.fieldLocations[0].fieldAmenities,
-                       location: location._id,
-                       fieldLocationRating: -1,
+                        isMainField: args.input.event.fieldLocations[0].isMainField,
+                        fieldAmenities: args.input.event.fieldLocations[0].fieldAmenities,
+                        location: location._id,
+                        fieldLocationRating: -1,
+                        indoor: args.input.event.fieldLocations[0].indoor,
+                        surface: args.input.event.fieldLocations[0].surface,
                    });
                    await fieldLocations.save();
                    console.log("fieldLocations: ", fieldLocations._id);

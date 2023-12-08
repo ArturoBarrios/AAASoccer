@@ -113,6 +113,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                               children: [
                                 Row(
                                   children: [
+                                    Icon(Icons.av_timer_rounded, color: AppColors.tsnGreyerWhite),
                                     Text(event.formattedEventTime,
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,

@@ -89,7 +89,7 @@ class Constants {
   static const String SCHEDULEPAGE = "SCHEDULEPAGE";
 
   static  List<String> hostAmenities = [AmenityType.PINNIES.toString()];
-  static  List<String> fieldAmenities = [AmenityType.BATHROOMS.toString(), AmenityType.BUS.toString(), AmenityType.TRAIN.toString(), AmenityType.BIKESTATION.toString(), "TURF", "GRASS", "INDOOR", "OUTDOOR", "SMALL", "LARGE", "CLEATS ALLOWED"];
+  static  List<String> fieldAmenities = [AmenityType.BATHROOMS.toString(), AmenityType.BUS.toString(), AmenityType.TRAIN.toString(), AmenityType.BIKESTATION.toString(), "TURF", "GRASS", "HARD SURFACE" ,"INDOOR", "OUTDOOR", "SMALL", "LARGE", "CLEATS ALLOWED"];
 
   
 

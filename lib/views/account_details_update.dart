@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/views/splash_screen.dart';
 
@@ -24,14 +25,22 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
   DateTime startTime = DateTime.now();
   String startTimestamp = "";
   bool startTimeSet = false;
+  final birthdateFormatter = MaskTextInputFormatter(
+    mask: 'mm-dd-yyyy',
+    filter: {
+      "m": RegExp(r'[0-9]'),
+      "d": RegExp(r'[0-9]'),
+      "y": RegExp(r'[0-9]'),
+    },
+    type: MaskAutoCompletionType.lazy,
+  );
   
   String? selectedGender;
   List<String> get genderOptions => GenderType.values.map((e) => e.name).toList();
 
   // Define your controllers here
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController birthdateController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
 
   void setStartTime(DateTime time) {
@@ -45,9 +54,10 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
   void loadInitialData(){
     user = UserCommand().getAppModelUser();
     setState(() {
-      usernameController.text = user['name'];
+      nameController.text = user['name'];
       birthdateController.text = user['birthdate'];
-      ageController.text = user['age'];
+      genderController.text = user['gender'];
+      
 
 
 
@@ -80,38 +90,90 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              CustomTextFormField(
-                label: 'Name',
-                keyboardType: TextInputType.name,
-                hintText: 'Enter your username',
-                // Add your validator logic here
-                controller: usernameController,
-              ),
-              CustomTextFormField(
-            label: "Birthdate",
-            hintText: StringConstants.startDateTimeHint,
-            keyboardType: TextInputType.datetime,
-            controller: birthdateController,
-            isSuffixIcon: true,
-            validator: (value) => Validators.validateRequired(
-                value!, StringConstants.startDateTimeErrorValue),
-            suffixIcon: IconButton(
-                onPressed: () {
-                  DatePicker.showDateTimePicker(context,
-                      showTitleActions: true,
-                      onChanged: (date) {}, onConfirm: (date) {
-                    setStartTime(date);
-                  }, currentTime:  startTime);
-                },
-                icon: const Icon(Icons.calendar_today_outlined)),
-            onPressed: () {
-              DatePicker.showDateTimePicker(context,
-                  showTitleActions: true,
-                  onChanged: (date) {}, onConfirm: (date) {
-                setStartTime(date);
-              }, currentTime: startTime);
-            },
+              Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: nameController,
+                              keyboardType: TextInputType.name,                              
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }                                
+                                return null;
+                              },
+                              
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'Name',
+                                filled: true,                                
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,                                  
+                                ),
+                              ),
+                            ),
+            ),
           ),
+          ],
+      ),
+               Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0, bottom: 8.0, top: 8.0),
+              child:
+               TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: birthdateController,
+                              keyboardType: TextInputType.datetime,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              inputFormatters: [birthdateFormatter],
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'mm-dd-yyyy',
+                                // helperText: "mm-dd-yyyy",
+                                filled: true,
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+            ))),
+
+          //     CustomTextFormField(
+          //   label: "Birthdate",
+          //   hintText: StringConstants.startDateTimeHint,
+          //   keyboardType: TextInputType.datetime,
+          //   controller: birthdateController,
+          //   isSuffixIcon: true,
+          //   validator: (value) => Validators.validateRequired(
+          //       value!, StringConstants.startDateTimeErrorValue),
+          //   suffixIcon: IconButton(
+          //       onPressed: () {
+          //         DatePicker.showDateTimePicker(context,
+          //             showTitleActions: true,
+          //             onChanged: (date) {}, onConfirm: (date) {
+          //           setStartTime(date);
+          //         }, currentTime:  startTime);
+          //       },
+          //       icon: const Icon(Icons.calendar_today_outlined)),
+          //   onPressed: () {
+          //     DatePicker.showDateTimePicker(context,
+          //         showTitleActions: true,
+          //         onChanged: (date) {}, onConfirm: (date) {
+          //       setStartTime(date);
+          //     }, currentTime: startTime);
+          //   },
+          // ),
           Expanded(
   child: Padding(
     padding: const EdgeInsets.only(right: 8.0),

@@ -9,6 +9,7 @@ const fieldLocationSchema = new mongoose.Schema({
     location: { type: Schema.Types.ObjectId, ref: 'Location' },    
     events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
     fieldSize: Object.values(FieldPlayerOccupancySize),  
+    indoor: Boolean,
     surface: { 
         type: String, 
         enum: Object.values(SurfaceType) 
