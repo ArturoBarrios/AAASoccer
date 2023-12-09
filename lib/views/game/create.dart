@@ -334,58 +334,61 @@ final teamPriceController = TextEditingController();
   child: Padding(
     padding: const EdgeInsets.only(right: 8.0),
     child: DropdownButtonHideUnderline(
-      child: InputDecorator(
-        decoration: InputDecoration(
-          hintText: 'Gender',
-          hintStyle: TextStyle(color: AppColors.tsnGrey),
-          filled: true,
-          fillColor: AppColors.tsnAlmostBlack,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        ),
-        child: DropdownButtonFormField<String>(
-          value: selectedFieldLocation,
-          style: TextStyle(color: AppColors.tsnAlmostBlack),
-          decoration: InputDecoration.collapsed(hintText: ''),
-          items: [
-            DropdownMenuItem(
-              value: null,
-              child: Text(
-                'Field Location',
-                style: TextStyle(color: AppColors.tsnGrey),
-              ),
+  child: InputDecorator(
+    decoration: InputDecoration(
+      hintText: 'Gender',
+      hintStyle: TextStyle(color: AppColors.tsnGrey),
+      filled: true,
+      fillColor: AppColors.tsnAlmostBlack,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(25),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    ),
+    child: Container(
+      // Constrain the height of the dropdown menu      
+      child: DropdownButtonFormField<String>(
+        value: selectedFieldLocation,
+        style: TextStyle(color: AppColors.tsnAlmostBlack),
+        decoration: InputDecoration.collapsed(hintText: ''),
+        menuMaxHeight: 200,
+        items: [
+          DropdownMenuItem(
+            value: null,
+            child: Text(
+              'Field Location',
+              style: TextStyle(color: AppColors.tsnGrey),
             ),
-            ...fieldLocations.map((dynamic fieldLocation) {
-              print("fieldLocationnnnnnn: "+ fieldLocation.toString());
-              return DropdownMenuItem(
-                key: Key(fieldLocation['location']['_id'].toString()),
-                value: fieldLocation['location']['name'].toString()+fieldLocation['location']['_id'].toString(),
-                child: Text(
-                  fieldLocation['location']['name'].toString(),
-                  style: TextStyle(color: AppColors.tsnWhite),
-                ),
-              );
-            }).toList(),
-          ],
-          onChanged: (String? newValue) {
-            setState(() {
-              selectedFieldLocation = newValue;
-            });
-            // genderController.text = newValue ?? '';
-          },
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return "This field is required";
-            }
-            return null;
-          },
-          dropdownColor: AppColors.fieldFillDark,
-        ),
+          ),
+          ...fieldLocations.map((dynamic fieldLocation) {
+            return DropdownMenuItem(              
+              key: Key(fieldLocation['location']['_id'].toString()),
+              value: fieldLocation['location']['name'].toString()+fieldLocation['location']['_id'].toString(),
+              child: Text(
+                fieldLocation['location']['name'].toString(),
+                style: TextStyle(color: AppColors.tsnWhite),
+              ),
+            );
+          }).toList(),
+        ],
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedFieldLocation = newValue;
+          });
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "This field is required";
+          }
+          return null;
+        },
+        dropdownColor: AppColors.fieldFillDark,
       ),
     ),
+  ),
+),
+
   ),
 ),
         ),
