@@ -121,7 +121,7 @@ type Mutation {
   createStripeCustomer(customerId: String, userId: String): StripeCustomerMutationResponse
   createPayment(input: PaymentInput): PaymentMutationResponse
   addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
-  updateUserOnboarding(_id: String, onboarded: Boolean): UserResponse
+  updateUserOnboarding(input: UserInput): UserResponse
   updateUsertermsAndPrivacy(userId: String, hasAcceptedTermsAndConditions: Boolean, hasAcceptedPrivacyPolicy: Boolean): UserResponse
   updateUserAccount(input: UserInput): UserResponse
   updatePrice(priceId: String, amount: String): PriceResponse
@@ -177,6 +177,7 @@ input EventRatingInput {
 }
 
 input UserInput {  
+  userId: String
   name: String
   phone: String
   email: String
@@ -186,10 +187,11 @@ input UserInput {
   location: LocationInput  
   preferredFoot: String
   preferredPosition: String
-  competitiveLevel: String
+  skillLevel: String
   interestedIn: String
   hasAcceptedTermsAndConditions: Boolean 
   hasAcceptedPrivacyPolicy: Boolean 
+  onboarded: Boolean
 
 }
 
@@ -472,8 +474,9 @@ type User  {
   #onboarding
   preferredFoot: String
   preferredPosition: String
-  competitiveLevel: String
+  skillLevel: String
   interestedIn: String
+  
   hostRating: Int
 }
 
@@ -509,8 +512,7 @@ type FollowRelation {
 
 type Player   {
   _id: ID
-  wagers: [Wager]
-  competitiveLevel: String
+  wagers: [Wager]  
   hasRating: String
   showRating: String
   user: User

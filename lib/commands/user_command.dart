@@ -380,8 +380,7 @@ class UserCommand extends BaseCommand {
           'query': UserMutations().updateUsertermsAndPrivacy(userInput),
         }),
       );
-
-      print("response from updateUserOnboarding.....: ");
+      
 
       print(jsonDecode(response.body));
       print("response.statusCode: " + response.statusCode.toString());
@@ -411,7 +410,7 @@ class UserCommand extends BaseCommand {
 
   Future<Map<String, dynamic>> updateUserOnboarding(
       dynamic processedUserInput) async {
-    print("partialUpdateUser");
+    print("updateUserOnboarding");
     print("processedUserInput: " + processedUserInput.toString());
 
     Map<String, dynamic> partialUpdateUserResponse = {

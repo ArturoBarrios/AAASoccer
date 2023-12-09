@@ -9,6 +9,8 @@ import '../../components/custom_stepper.dart';
 import '../../components/headers.dart';
 import '../../components/models/button_model.dart';
 import '../../components/models/custom_stepper_model.dart';
+import '../../components/selection_list_widget.dart';
+import '../../constants.dart';
 import '../../strings.dart';
 import '../../styles/colors.dart';
 import 'football_field.dart';
@@ -25,9 +27,13 @@ class OnboardingView extends StatefulWidget {
 class _OnboardingViewState extends State<OnboardingView> {
   int activeStep = 0;
   int stepperListLength = 4;
-  int selectedFieldPosition = 0;
+  String preferredPosition = Constants.playerCoordinates[4]?[2];
+  int preferredPositionIndex = 4;
   int selectedInterestIndex = -1;
   PrefferedFoot? selectedFoot;
+  String preferredFoot = "RIGHT";
+  String skillLevel = "BEGINNER";
+  String interestedIn = "Just for Fun";
   double currentRateValue = 50;
 
   final emojiList = [
@@ -66,14 +72,27 @@ class _OnboardingViewState extends State<OnboardingView> {
       dynamic currentUser = UserCommand().getAppModelUser();
       // dynamic userObjectResp = await UserCommand().findMyUserById();
       dynamic userObject = currentUser;//userObjectResp['data'];
-      print("userObject: $userObject");
+      // print("userObject: $userObject");
       Map<String, dynamic> partialUserInput = {        
         '_id': userObject['_id'],                    
-        'onboarded': true                            
+        'onboarded': true,
+        'preferredFoot': preferredFoot,
+        'preferredPosition': preferredPosition,
+        'skillLevel': skillLevel,
+        'interestedIn': interestedIn,
+
       };
-      BaseCommand().initialUserConditionsMet();
-      await UserCommand().updateUserOnboarding(partialUserInput);
-      BaseCommand().setOnboarded(true);
+      print("partialUserInput: $partialUserInput");
+
+      // Map<String,dynamic> updateUserOnboardingResp = await UserCommand().updateUserOnboarding(partialUserInput);
+      // print("updateUserOnboardingResp: $updateUserOnboardingResp");
+      // if(updateUserOnboardingResp['success'] == true){
+      //   print("updateUserOnboardingResp['data']: ${updateUserOnboardingResp['data']}");        
+      //   UserCommand().setAppModelUser(updateUserOnboardingResp['data']);
+      //   BaseCommand().initialUserConditionsMet();
+      //   BaseCommand().setOnboarded(true);
+      // }
+
       
 
       Navigator.of(context).pushReplacement(
@@ -86,14 +105,17 @@ class _OnboardingViewState extends State<OnboardingView> {
     }
 
   Future<void> onConfirmTap() async {
+    print("onboarding onConfirmTap");
+    print("activeStep: $activeStep");
+    print("stepperListLength: $stepperListLength");
     (activeStep == (stepperListLength - 1))
         ? updateUserOnboarding()
         : changeStepValue(activeStep + 1);
   }
 
-  void changeSelectedPosition(final int value) {
+  void changeSelectedPosition(final String value) {
     setState(() {
-      selectedFieldPosition = value;
+      preferredPosition = value;
     });
   }
 
@@ -135,7 +157,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             child: FootballField(
               onTapPosition: (final selectedPosition) =>
                   changeSelectedPosition(selectedPosition),
-              selectedPosition: selectedFieldPosition,
+              selectedPosition: preferredPositionIndex,
             ),
           ))),
         ],
@@ -162,85 +184,94 @@ class _OnboardingViewState extends State<OnboardingView> {
       ),
       CustomStepperModel(
         widgets: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: RichTextSelectableChipList(
-              richTextList: const [
-                [
-                  TextSpan(
-                    text: 'Just for Fun: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text:
-                        'Players who are mainly interested in casual play and relaxation, without any competitive edge.',
-                  ),
-                ],
-                [
-                  TextSpan(
-                    text: 'Recreational Competitor: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text:
-                        'Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement.',
-                  ),
-                ],
-                [
-                  TextSpan(
-                    text: 'Serious Hobbyist: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text:
-                        'Players who are starting to take the game more seriously, investing time in practice and improvement.',
-                  ),
-                ],
-                [
-                  TextSpan(
-                    text: 'Aspiring Athlete: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text:
-                        'Players who have competitive goals, engaging in regular training, and aiming for higher-level competition.',
-                  ),
-                ],
-                [
-                  TextSpan(
-                    text: 'Semi-Professional: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text:
-                        'Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport.',
-                  ),
-                ],
-                [
-                  TextSpan(
-                    text: 'Professional Hopeful: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text:
-                        'Players on the cusp of professional level, dedicating significant time and effort in pursuit of professional leagues.',
-                  ),
-                ],
-                [
-                  TextSpan(
-                    text: 'Professional: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text:
-                        'Players who play or are aspiring to play at the professional level, making the sport their primary focus.',
-                  ),
-                ]
-              ],
-              onTap: changeSelectedInterest,
+          CustomSelectableChipList(          
+            selections: Constants.interests,
+              onTap: (index) {
+                // Handle tap event
+                changeSelectedInterest(index);
+              },
               selectedIndex: selectedInterestIndex,
             ),
-          ),
+
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 12),
+          //   child: RichTextSelectableChipList(
+          //     richTextList: const [
+          //       [
+          //         TextSpan(
+          //           text: 'Just for Fun: ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //         TextSpan(
+          //           text:
+          //               'Players who are mainly interested in casual play and relaxation, without any competitive edge.',
+          //         ),
+          //       ],
+          //       [
+          //         TextSpan(
+          //           text: 'Recreational Competitor: ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //         TextSpan(
+          //           text:
+          //               'Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement.',
+          //         ),
+          //       ],
+          //       [
+          //         TextSpan(
+          //           text: 'Serious Hobbyist: ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //         TextSpan(
+          //           text:
+          //               'Players who are starting to take the game more seriously, investing time in practice and improvement.',
+          //         ),
+          //       ],
+          //       [
+          //         TextSpan(
+          //           text: 'Aspiring Athlete: ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //         TextSpan(
+          //           text:
+          //               'Players who have competitive goals, engaging in regular training, and aiming for higher-level competition.',
+          //         ),
+          //       ],
+          //       [
+          //         TextSpan(
+          //           text: 'Semi-Professional: ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //         TextSpan(
+          //           text:
+          //               'Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport.',
+          //         ),
+          //       ],
+          //       [
+          //         TextSpan(
+          //           text: 'Professional Hopeful: ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //         TextSpan(
+          //           text:
+          //               'Players on the cusp of professional level, dedicating significant time and effort in pursuit of professional leagues.',
+          //         ),
+          //       ],
+          //       [
+          //         TextSpan(
+          //           text: 'Professional: ',
+          //           style: TextStyle(fontWeight: FontWeight.bold),
+          //         ),
+          //         TextSpan(
+          //           text:
+          //               'Players who play or are aspiring to play at the professional level, making the sport their primary focus.',
+          //         ),
+          //       ]
+          //     ],
+          //     onTap: changeSelectedInterest,
+          //     selectedIndex: selectedInterestIndex,
+          //   ),
+          // ),
           const SizedBox(height: 20)
         ],
       ),

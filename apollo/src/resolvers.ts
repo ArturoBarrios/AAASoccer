@@ -269,8 +269,13 @@ const resolvers = {
             console.log("updateUserOnboarding");
 
             //update
-            const user = await User.findById(args._id);
-            user.onboarded = args.onboarded;
+            const user = await User.findById(args.input.userId);
+            user.onboarded = args.input.onboarded;
+            user.preferredFoot = args.input.preferredFoot;
+            user.preferredPosition = args.input.preferredPosition;
+            user.skillLevel = args.input.skillLevel;
+            user.interestedIn = args.input.interestedIn;
+
             await user.save();
 
             // await user.populate('user');

@@ -2,6 +2,27 @@ import 'models/enums/AmenityType.dart';
 import 'models/enums/EventType.dart';
 
 class Constants {
+ static const List<Map<String, String>> interests = [
+  {"Just for Fun": "Players who are mainly interested in casual play and relaxation, without any competitive edge.",
+    "Recreational Competitor": "Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement.",  
+    "Aspiring Athlete": "Players who have competitive goals, engaging in regular training, and aiming for higher-level competition.",
+    "Semi-Professional": "Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport."
+  }
+ ];
+
+   static const Map<int, List<dynamic>> playerCoordinates = {
+    1: [0.46, 0.02, "GK"], // GK
+    2: [0.1, 0.2, "LB"], // LB
+    3: [0.3, 0.15, "LCB"], // LCB
+    4: [0.6, 0.15, "RCB"], // RCB
+    5: [0.8, 0.2, "RB"], // RB
+    6: [0.1, 0.6, "LW"], // LW
+    7: [0.30, 0.5, "LCM"], // LCM
+    8: [0.6, 0.5, "RCM"], // RCM
+    9: [0.8, 0.6, "RW"], // RW
+    10: [0.3, 0.8, "LS"], // LS
+    11: [0.7, 0.8, "RS"], // RS
+  };
   static const EventType PICKUP = EventType.GAME;
   static const String TEAM = "TEAM";
   static const String GROUP = "GROUP";
