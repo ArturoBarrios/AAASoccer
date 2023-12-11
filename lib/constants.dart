@@ -3,11 +3,22 @@ import 'models/enums/EventType.dart';
 
 class Constants {
  static const List<Map<String, String>> interests = [
-  {"Just for Fun": "Players who are mainly interested in casual play and relaxation, without any competitive edge.",
-    "Recreational Competitor": "Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement.",  
-    "Aspiring Athlete": "Players who have competitive goals, engaging in regular training, and aiming for higher-level competition.",
-    "Semi-Professional": "Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport."
-  }
+  {'title': "Just for Fun", 'description': "Players who are mainly interested in casual play and relaxation, without any competitive edge."},
+   {'title': "Recreational Competitor", 'description': "Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement."},  
+    {'title': "Aspiring Athlete", 'description': "Players who have competitive goals, engaging in regular training, and aiming for higher-level competition."},    
+  
+ ];
+ 
+ static const List<Map<String, String>> skillLevels = [
+  {'title': "Beginner", 'description': "Players who are mainly interested in casual play and relaxation, without any competitive edge."},
+   {'title': "Advanced Beginner", 'description': "Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement."},  
+    {'title': "Intermediatte", 'description': "Players who have competitive goals, engaging in regular training, and aiming for higher-level competition."},
+    {'title': "Amateur", 'description': "Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport."},
+    {'title': "Semi Professional", 'description': "Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport."},
+    {'title': "Professional", 'description': "You've played in a professional league for at least one season."},
+    {'title': "Messi", 'description': "🐐"},
+    {'title': "Ronaldo", 'description': "🐐"},
+  
  ];
 
    static const Map<int, List<dynamic>> playerCoordinates = {

@@ -16,7 +16,7 @@ class CustomSelectableChipList extends StatelessWidget {
   Widget build(BuildContext context) {
     print("CustomSelectableChipList build()");
     print("selections: " + selections.toString());
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ListView.builder(

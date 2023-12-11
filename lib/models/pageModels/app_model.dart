@@ -211,6 +211,13 @@ class AppModel extends ChangeNotifier {
     _userConditionsMet = userConditionsMet;
     notifyListeners();
   }
+
+  bool _loggedIn = false;
+  bool get loggedIn => _loggedIn;
+  set loggedIn(bool loggedIn) {
+    _loggedIn = loggedIn;
+    notifyListeners();
+  }
  
  
 

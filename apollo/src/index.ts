@@ -236,11 +236,14 @@ input EventUserParticipantInput {
 
 input FieldLocationInput {     
   isMainField: Boolean
-  location: LocationInput
   fieldAmenities: String
+  fieldLocationId: String
+  fieldLocationName: String
+  location: LocationInput
 }   
 
 input LocationInput {     
+  locationId: String
   name: String
   address: String
   latitude: Float
@@ -619,6 +622,7 @@ type Event   {
   group: Group
   description: String
   hostAmenities: String
+  eventNotes: String
 
 }
 
@@ -975,6 +979,7 @@ type StoreLocation{
 
 type FieldLocation  {  
   _id: ID
+  fieldLocationName: String
   isMainField: Boolean 
   location: Location
   facility: Facility
@@ -993,6 +998,7 @@ type FieldLocation  {
   fieldAmenities: String
   fieldLocationRating: Int
   indoor: Boolean
+  fieldLocationNotes: String
 
 
 }

@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 
 const fieldLocationSchema = new mongoose.Schema({
     isMainField: Boolean,
+    fieldLocationName: String,
     location: { type: Schema.Types.ObjectId, ref: 'Location' },    
     events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
     fieldSize: Object.values(FieldPlayerOccupancySize),  

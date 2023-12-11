@@ -123,6 +123,7 @@ class _MyAppState extends State<MyApp> {
 
     if (configureAmplifyResp['message'] == "isSignedIn") {
       emailController.text = configureAmplifyResp['email'];
+      BaseCommand().setLoggedIn(true);
       await startLoadToHomeTransition();
     }
   }
@@ -208,6 +209,7 @@ class _MyAppState extends State<MyApp> {
       //assumes you are atm
       UserModel().userEmail = emailController.text.trim();
       await startLoadToHomeTransition();
+      BaseCommand().setLoggedIn(true);
 
       setState(() {});
     } on AuthException catch (e) {
@@ -379,6 +381,8 @@ class _MyAppState extends State<MyApp> {
           Commands.init(context);
           bool userConditionsMet = context
               .select<AppModel, bool>((value) => value.userConditionsMet);
+          bool loggedIn = context
+              .select<AppModel, bool>((value) => value.loggedIn);
           bool onboarded = context
               .select<AppModel, bool>((value) => value.onboarded);
 
@@ -541,11 +545,11 @@ class _MyAppState extends State<MyApp> {
               playerStepperButton: ButtonModel(
                 prefixIconData: Icons.play_circle_fill_rounded,
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute<void>(
-                    builder: (BuildContext context) {
-                      return const OnboardingView();
-                    },
-                  ));
+                  // Navigator.push(context, MaterialPageRoute<void>(
+                  //   builder: (BuildContext context) {
+                  //     return const OnboardingView();
+                  //   },
+                  // ));
                 },
               ),
               filterButton: ButtonModel(
@@ -940,7 +944,7 @@ class _MyAppState extends State<MyApp> {
               builder: Authenticator.builder(),
               home: userConditionsMet && onboarded
                   ? AppScaffold() :
-                     (userConditionsMet && !onboarded) ?        
+                     (userConditionsMet && loggedIn && !onboarded) ?        
                       OnboardingView() : SplashScreen(),
               routes: {
                 // When navigating to the "/" route, build the HomeScreen widget.

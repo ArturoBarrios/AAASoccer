@@ -165,13 +165,16 @@ class _OnboardingViewState extends State<OnboardingView> {
       
       CustomStepperModel(
         widgets: [
-          emojiList[getSkillLevelIndex(currentRateValue)],
-          PlayerRateSlider(
-            currentMaxValue: currentRateValue,
-            rangeCallback: changeRateValue,
-          ),
-          Text(rateTextList[getSkillLevelIndex(currentRateValue)],
-              style: const TextStyle(fontSize: 20)),
+          Container(height:400, child: 
+          CustomSelectableChipList(          
+            selections: Constants.interests,
+              onTap: (index) {
+                // Handle tap event
+                changeSelectedInterest(index);
+              },
+              selectedIndex: selectedInterestIndex,
+            )),
+          
         ],
       ),
       CustomStepperModel(
@@ -184,6 +187,7 @@ class _OnboardingViewState extends State<OnboardingView> {
       ),
       CustomStepperModel(
         widgets: [
+          Container(height:400, child: 
           CustomSelectableChipList(          
             selections: Constants.interests,
               onTap: (index) {
@@ -191,7 +195,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 changeSelectedInterest(index);
               },
               selectedIndex: selectedInterestIndex,
-            ),
+            )),
 
           // Padding(
           //   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -334,14 +338,14 @@ class _OnboardingViewState extends State<OnboardingView> {
                   ? 'Which Best Describes You?'
                   : '';
 
-  int getSkillLevelIndex(double value) {
-    if (value >= 0 && value <= 20) return 0;
-    if (value > 20 && value <= 40) return 1;
-    if (value > 40 && value <= 69) return 2;
-    if (value > 69 && value <= 84) return 3;
-    if (value > 84 && value <= 92) return 4;
-    if (value > 92 && value <= 97) return 5;
-    if (value > 97 && value <= 100) return 6;
-    return 0;
-  }
+  // int getSkillLevelIndex(double value) {
+  //   if (value >= 0 && value <= 20) return 0;
+  //   if (value > 20 && value <= 40) return 1;
+  //   if (value > 40 && value <= 69) return 2;
+  //   if (value > 69 && value <= 84) return 3;
+  //   if (value > 84 && value <= 92) return 4;
+  //   if (value > 92 && value <= 97) return 5;
+  //   if (value > 97 && value <= 100) return 6;
+  //   return 0;
+  // }
 }

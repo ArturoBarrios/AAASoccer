@@ -79,9 +79,15 @@ const resolvers = {
             console.log("createGame: ");
 
             console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
+            console.log("args.input.event.fieldLocations[0].fieldLocationName: "+ args.input.event.fieldLocations[0].fieldLocationName.toString());
             //server validation
-            if(args.input.event.fieldLocations[0].location.latitude != 0  
-               && args.input.event.fieldLocations[0].location.longitude != 0) {
+            //if location is available
+            if((args.input.event.fieldLocations[0].location.latitude != 0  
+               && args.input.event.fieldLocations[0].location.longitude != 0)
+               || (
+                args.input.event.fieldLocations[0].fieldLocationName.toString() != ''
+            )
+               ) {
                    //get user
                    const user = await User.findById(args.input.event.userParticipants[0].userId);
                    console.log("user retrieved from userId: " + user.toString());
@@ -108,27 +114,44 @@ const resolvers = {
        
                    await user.eventUserParticipants.push(eventUserParticipants._id);
                    await user.save();
-       
+                   
+                   var location = null;
+                   console.log("args.input.event.fieldLocations[0].location.locationId: ", args.input.event.fieldLocations[0].location.locationId == null)
+                   if(args.input.event.fieldLocations[0].location.locationId == null){
+                    location = new Location({
+                           name: args.input.event.fieldLocations[0].location.name,
+                           address: args.input.event.fieldLocations[0].location.address,
+                           latitude: args.input.event.fieldLocations[0].location.latitude,
+                           longitude: args.input.event.fieldLocations[0].location.longitude,
+                       });
+                       await location.save();
+                    }
+                    else{
+                        location = await Location.findById(args.input.event.fieldLocations[0].location.locationId);
+                    }
+                    console.log("location: ", location._id);
+                    //create new or get existing fieldLocation
                    console.log("args.input.event.fieldLocations.location: ", args.input.event.fieldLocations[0].location);
-                   const location = new Location({
-                       name: args.input.event.fieldLocations[0].location.name,
-                       address: args.input.event.fieldLocations[0].location.address,
-                       latitude: args.input.event.fieldLocations[0].location.latitude,
-                       longitude: args.input.event.fieldLocations[0].location.longitude,
-                   });
-                   await location.save();
-                   console.log("location: ", location._id);
-       
-                   const fieldLocations = new FieldLocation({
+                   var fieldLocations = null;
+                   if(args.input.event.fieldLocations[0].fieldLocationId == null){
+                    console.log("new field created");
+           
+                    fieldLocations = new FieldLocation({
+                        fieldLocationName: args.input.event.fieldLocations[0].fieldLocationName,
                         isMainField: args.input.event.fieldLocations[0].isMainField,
                         fieldAmenities: args.input.event.fieldLocations[0].fieldAmenities,
                         location: location._id,
                         fieldLocationRating: -1,
                         indoor: args.input.event.fieldLocations[0].indoor,
                         surface: args.input.event.fieldLocations[0].surface,
-                   });
-                   await fieldLocations.save();
-                   console.log("fieldLocations: ", fieldLocations._id);
+                    });
+                       await fieldLocations.save();
+                       console.log("fieldLocations: ", fieldLocations._id);
+                   }
+                   else{
+                    console.log("existing field retrieved");
+                       fieldLocations = await FieldLocation.findById(args.input.event.fieldLocations[0].fieldLocationId);
+                   }
        
                    console.log("hostAmenities: ", args.input.event.hostAmenities);
        

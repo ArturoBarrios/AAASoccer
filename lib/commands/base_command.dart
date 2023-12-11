@@ -396,24 +396,7 @@ List<String> parseAmenities(String amenitiesString) {
   void nukeData() {
     WidgetsFlutterBinding.ensureInitialized();
     //nuke data
-    userModel = _mainContext.read();
-    paymentModel = _mainContext.read();
-    appModel = _mainContext.read();
-    eventsModel = _mainContext.read();
-    homePageModel = _mainContext.read();
-    eventPageModel = _mainContext.read();
-    teamPageModel = _mainContext.read();
-    groupPageModel = _mainContext.read();
-    profilePageModel = _mainContext.read();
-    requestsModel = _mainContext.read();
-    requestsPageModel = _mainContext.read();
-    chatPageModel = _mainContext.read();
-    eventsPageModel = _mainContext.read();
-
-    // homePageModel.nukeData();
-
-    //services
-    geoLocationServices = _mainContext.read();
+    appModel.loggedIn = false;
 
     appModel.initialConditionsMet = false;
   }
@@ -544,6 +527,7 @@ List<String> parseAmenities(String amenitiesString) {
               await AmplifyAuthService.deleteUser();
               BaseCommand().nukeData();
               await AmplifyAuthService().signOut();
+              
 
             }
             },
@@ -777,6 +761,10 @@ List<String> parseAmenities(String amenitiesString) {
 
   void initialUserConditionsMet() {
     appModel.userConditionsMet = true;
+  }
+
+  void setLoggedIn(bool loggedIn){
+    appModel.loggedIn = loggedIn;
   }
 
   void updateIsRatingDialogueShowing(bool newVal) {

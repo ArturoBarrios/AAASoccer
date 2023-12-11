@@ -37,6 +37,7 @@ class GameCreate extends StatefulWidget {
 
 class _GameCreateState extends State<GameCreate> {
   final nameController = TextEditingController();
+  final locationNameController = TextEditingController();
   final hometeamController = TextEditingController();
   final awayteamController = TextEditingController();
   final isPickupController = TextEditingController();
@@ -67,6 +68,7 @@ class _GameCreateState extends State<GameCreate> {
     "name": "",
     "latitude": 0,
     "longitude": 0,
+    "address": "nada"
   };
   CreateEventRequest createEventRequestWidget = CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = CreateEventPayment();
@@ -99,6 +101,7 @@ class _GameCreateState extends State<GameCreate> {
   final knockoutRoundsController = TextEditingController();
 final teamPriceController = TextEditingController();
   final capacityController = TextEditingController();
+  final fieldLocationNameController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime startTime = DateTime.now();
@@ -122,6 +125,7 @@ final teamPriceController = TextEditingController();
       String parsedSelectedFieldAmenities = BaseCommand().formatStringForGraphQL(selectedFieldAmenities);
       print("priceee: ${priceController.text}");
       double priceDouble = double.parse(priceController.text.toString());
+      
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
         "capacity": capacityController.text.toString(),
@@ -137,12 +141,18 @@ final teamPriceController = TextEditingController();
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
         'hostAmenities': parsedSelectedHostAmenities.toString(),
-        'fieldAmenities': parsedSelectedFieldAmenities.toString(),
       };
       dynamic pickupData = {
         "pickup": true,
       };
+
+      locationInput['fieldAmenities'] = parsedSelectedFieldAmenities.toString();
+      locationInput['fieldLocationId'] = selectedFieldLocation;
+      locationInput['fieldLocationName'] = fieldLocationNameController.text.toString();
+      locationInput['name'] = locationNameController.text.toString();
       print("locationInputCheaheck: $locationInput");
+
+      
 
       Map<String, dynamic> createPickupGameResp =
           await GameCommand().createGame(pickupData, eventInput, locationInput);
@@ -323,13 +333,30 @@ final teamPriceController = TextEditingController();
       ),
       CustomStepperModel(
         widgets: [
-          
+        Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: CustomTextFormField(
+            label: "Location Name",
+            hintText: "Location Name",
+            keyboardType: TextInputType.name,
+            controller: locationNameController,            
+          ),
+            ),
+        Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: CustomTextFormField(
+            label: "Field Location Name",
+            hintText: "Fielld Location Name",
+            keyboardType: TextInputType.name,
+            controller: fieldLocationNameController,            
+          ),
+            ),
+        locationSearchBar,
           Padding(
               padding: EdgeInsets.fromLTRB(0, 0,
                             0, 0),
               child:
                        
-//  locationSearchBar,
           Expanded(
   child: Padding(
     padding: const EdgeInsets.only(right: 8.0),
@@ -359,7 +386,7 @@ final teamPriceController = TextEditingController();
             child: Text(
               'Field Location',
               style: TextStyle(color: AppColors.tsnGrey),
-            ),
+            ),  
           ),
           ...fieldLocations.map((dynamic fieldLocation) {
             return DropdownMenuItem(              
@@ -377,12 +404,12 @@ final teamPriceController = TextEditingController();
             selectedFieldLocation = newValue;
           });
         },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "This field is required";
-          }
-          return null;
-        },
+        // validator: (value) {          
+          // if (value == null || value.isEmpty) {
+          //   return "This field is required";
+          // }
+          // return null;
+        // },
         dropdownColor: AppColors.fieldFillDark,
       ),
     ),
