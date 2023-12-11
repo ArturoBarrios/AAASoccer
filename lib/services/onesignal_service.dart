@@ -19,13 +19,25 @@ class OneSignalService {
     // });
   }
 
-  Future<void> login(String externalId) async{
-    OneSignal.login(externalId);
+  Future<void> login(dynamic user) async{
+    print("onesignalservice login()");
+    OneSignal.login(user['_id']);
     if(OneSignal.User != null){
       print("OneSignal.User: "+OneSignal.User.toString());
+      await OneSignal.User.addEmail(user['email']);
+      await OneSignal.User.addSms(user['phone']);
+      OneSignal.User.addTags(
+        {
+          'name': user['name'],
+          'username': user['username'],
+          'age': user['birthdate']
+          
+          }
+      );
+      
     }
     else{
-      BaseCommand().updateUserOSPID();
+      // BaseCommand().updateUserOSPID();
     }
 
   }
@@ -44,7 +56,7 @@ class OneSignalService {
     // if (deviceState == null || deviceState.userId == null) {
     //   print("if (deviceState == null || deviceState.userId == null)");
     //   return;
-    // } else {
+    // } else {    
     //   print("go onnnn!");
     // }
 

@@ -261,6 +261,7 @@ class _ProfileState extends State<Profile> {
                   numDots: 10,
                 )
               :  
+              
                   EventsListWidget(
                     team: null,
                     user: user,
@@ -268,6 +269,8 @@ class _ProfileState extends State<Profile> {
                     eventUserParticipants: eventUserParticipants,
                     eventCards: eventCards,
                   ),
+
+              
                   // ImagesListWidget(
                   //     mainEvent: null, team: null, imageFor: Constants.USER),
 

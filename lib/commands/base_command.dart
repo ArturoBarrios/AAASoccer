@@ -667,6 +667,7 @@ List<String> parseAmenities(String amenitiesString) {
             // await ImagesCommand().setUserProfileImage();
             setupUserResp['success'] = true;
             setupUserResp['data'] = user;
+            await OneSignalService().login(appModel.currentUser);
           } else {
             print("something went wrong in fetching user");
             // signOut(context);
@@ -678,7 +679,7 @@ List<String> parseAmenities(String amenitiesString) {
           print("niceeeeeeeeerrr");
           setupUserResp['success'] = true;
             setupUserResp['data'] = appModel.currentUser;
-          await OneSignalService().login(appModel.currentUser['_id']);
+      await OneSignalService().login(appModel.currentUser);
         }
           appModel.isSuperUser = appModel.currentUser['isSuperUser'];
       } else {

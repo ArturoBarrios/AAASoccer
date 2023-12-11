@@ -21,10 +21,15 @@ class PaymentListWidget extends StatelessWidget {
   final Function(Map<int, String>?)? onTapPaymentOption;
 
   Future<void> refund(dynamic payment) async{
-    print("refund");
+    print("refund for payment: "+ payment.toString());
     if(payment['charge'] != null){
-      print("stripe refund");
-      await PaymentCommand().createRefund(payment['charge']);
+      print("charge found: "+ payment['charge'].toString());
+      Map<String,dynamic> createRefundResp = await PaymentCommand().createRefund(payment['charge']);
+      print("createRefundResp: "+ createRefundResp.toString());
+      if(createRefundResp['success']){
+        
+      }
+
 
     }
   }

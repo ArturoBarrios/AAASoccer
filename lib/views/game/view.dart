@@ -256,8 +256,7 @@ class _PickupViewState extends State<PickupView> {
                                         ],
                                       ))),
 
-                            if (event.isMine &&
-                                dotenv.env["ENVIRONMENT"] == "DEVELOPMENT")
+                            if (event.isMine)
                               Padding(
                                   padding: EdgeInsets.fromLTRB(
                                       paddingValue,

@@ -120,6 +120,7 @@ class EventFragments {
       payments{        
         _id
         amount   
+        charge
         isPlayerPayment
         isTeamPayment       
         user{

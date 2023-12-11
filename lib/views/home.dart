@@ -45,6 +45,7 @@ import '../models/events_model.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import '../components/search_field.dart';
 import '../styles/colors.dart';
+import '../styles/font_sizes.dart';
 import 'location/map.dart';
 import 'onboarding/onboarding_view.dart';
 
@@ -507,7 +508,7 @@ class _Home extends State<Home> {
 
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     print("buildDDDDDD");
 
 
@@ -750,6 +751,24 @@ class _Home extends State<Home> {
 
                       !cardsLoading
                           ?
+
+                          (
+                            Container(
+                              height: screenHeight*.6,
+                              child: 
+                            
+                            Column
+                            
+                            (
+                              children: [
+                                 Padding(
+                                padding: EdgeInsets.fromLTRB(16, 0,
+                                    0,4),
+                                child:
+Align(
+                                    alignment: Alignment.centerLeft,
+                                    child:
+                            Text("Some Header", style: TextStyle(fontSize: FontSizes.lg(context), fontWeight: FontWeight.bold),))),
                           //list view
                           Expanded(
                               child: ListView.builder(
@@ -764,7 +783,9 @@ class _Home extends State<Home> {
                                 ),
                                 child: cards[index],
                               ),
-                            ))
+                            ))]))
+                            )
+                          
                           : const SizedBox(
                               height: 100,
                               width: 100,

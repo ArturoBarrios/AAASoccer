@@ -143,6 +143,22 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                     RatingWidget(rating: event.fieldRating),                                    
                                   ],
                                 ),
+                                Row(
+                                  children: [
+                                    SizedBox(height: 6),
+                                 Row(
+                                  children: [                                    
+                                    //  Icon(Icons.grass,
+                                    //     color: AppColors.tsnGreen),
+                                    // Text("turf",
+                                    //     style: TextStyle(
+                                    //       color: AppColors.tsnGrey,
+                                    //       fontSize: FontSizes.xxs(context),
+                                    //     )),
+                                  ],
+                                ),
+                                  ],
+                                ),
                                
                               ],
                             ),
@@ -225,31 +241,21 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                           Flexible(
                             flex: 15,
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,                              
                               children: [
-                                Row(
-                                  children: [
-                                    Text(event.mainEvent['name'],
+                                Padding(
+                                  padding: EdgeInsets.only(left: 8.0, bottom: 8.0, right: 4.0),
+                                  child: 
+                                    Text(event.mainEvent['name'] + " another thing to make the name that much longer!",
                                         style: TextStyle(
                                           color: AppColors.tsnWhite,
                                           fontSize: FontSizes.m(context),
                                         ))
-                                    // Text("BL 1a"),
-                                    // Text("BL 1b"),
-                                  ],
-                                ),
-                                SizedBox(height: 6),
-                                 Row(
-                                  children: [                                    
-                                     Icon(Icons.grass,
-                                        color: AppColors.tsnGreen),
-                                    Text("turf",
-                                        style: TextStyle(
-                                          color: AppColors.tsnGrey,
-                                          fontSize: FontSizes.xxs(context),
-                                        )),
-                                  ],
-                                ),
+                                )
+                                    
+                                  
+                                
+                               
                                 // Row(
                                 //   children: [
                                 //     Image(
@@ -274,7 +280,8 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                             Flexible(
                               flex: 10,
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start, // Align children to the bottom
+    crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   
                                   Row(
@@ -295,15 +302,16 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                           style: TextStyle(
                                             color: AppColors.tsnGrey,
                                             fontSize: FontSizes.xxs(context),
-                                          ))
+                                          )),                                           
                                       // Text("BR 2a"),
                                       // Text("BR 2b"),
                                     ],
                                   ),
                                   Row(
                                     children: [
-                                      
-                                      RatingWidget(rating: event.hostRating),                                    
+                                  
+                                      RatingWidget(rating: event.hostRating),      
+                                                    
                                       // Text("BR 1a"),
                                       // Text("BR 1b"),
                                     ],

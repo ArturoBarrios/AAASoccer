@@ -5,6 +5,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
 import 'package:soccermadeeasy/commands/paypal_payment/models/response/orders/paypal_create_order_response.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/components/text_icon_selection_widget.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
@@ -48,14 +49,14 @@ class _CardFormScreenState extends State<CardFormScreen> {
   dynamic selectedPaymentMethod;
   late ScrollController _selectPaymentController = ScrollController();
   final FlipCardController flipCardController = FlipCardController();
-
   List waysToPay = [
-    "Pay With New Card",
+    "Credit Card",
     "Pay With Existing Card",
     // "PayPal",
     // "Apple Card",
     // Platform.isAndroid ? "Google Pay" : "Apple Pay",
   ];
+    
   String? _selectedPayment = "Pay With New Card";
 
   Future<void> createPaymentIntent() async {
@@ -180,11 +181,11 @@ class _CardFormScreenState extends State<CardFormScreen> {
                   controller: controller,
                 ),
                 const SizedBox(height: 10),
-                ElevatedButton(
-                    onPressed: () async {
-                      await createPaymentIntent();
-                    },
-                    child: const Text('Pay'))
+                // ElevatedButton(
+                //     onPressed: () async {
+                //       await createPaymentIntent();
+                //     },
+                //     child: const Text('Pay'))
               ]));
     }
     if (status.name == PaymentStatus.success.name) {
@@ -362,33 +363,48 @@ class _CardFormScreenState extends State<CardFormScreen> {
                       right: 16.0), // Define your own padding
                   child: Container(
                     height: 50, // Adjust this to make your cards slim
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: waysToPay.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: EdgeInsets.symmetric(horizontal: 8),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Radio<String>(
-                                value: waysToPay[index],
-                                groupValue: _selectedPayment,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedPayment = value;
-                                  });
-                                },
-                              ),
-                              Text(
-                                waysToPay[index],
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                    child: 
+                    TextIconSelectionWidget(
+  items: waysToPay,
+  onTap: (selectedItem) {
+    setState(() {
+      _selectedPayment = selectedItem;
+    });
+  },
+  selectedItem: _selectedPayment,
+)
+//                     ListView.builder(
+//   scrollDirection: Axis.horizontal,
+//   itemCount: waysToPay.length,
+//   itemBuilder: (context, index) {
+
+//     return GestureDetector(
+//       onTap: () {
+//         setState(() {
+//           _selectedPayment = waysToPay[index];
+//         });
+//       },
+//       child: Container(
+//         margin: EdgeInsets.symmetric(horizontal: 8),
+//         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+//         decoration: BoxDecoration(
+//           color: isSelected ? Colors.green : Colors.white,
+//           borderRadius: BorderRadius.circular(20), // Rounded corners
+//           border: Border.all(
+//             color: isSelected ? Colors.green : Colors.grey, // Border color
+//           ),
+//         ),
+//         child: Text(
+//           waysToPay[index],
+//           style: TextStyle(
+//             fontSize: 16,
+//             color: isSelected ? Colors.white : Colors.black, // Text color
+//           ),
+//         ),
+//       ),
+//     );
+//   },
+// ),
                   ),
                 ),
                 _selectedPayment == waysToPay[1]

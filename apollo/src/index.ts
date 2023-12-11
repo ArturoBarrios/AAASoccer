@@ -997,9 +997,7 @@ type FieldLocation  {
   fieldDetails: String
   fieldAmenities: String
   fieldLocationRating: Int
-  indoor: Boolean
-  fieldLocationNotes: String
-
+  indoor: Boolean 
 
 }
 

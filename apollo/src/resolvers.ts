@@ -60,7 +60,7 @@ const resolvers = {
             console.log("updatePrice");
 
             //update
-            const price = await Price.findById(args.pricesId);
+            const price = await Price.findById(args.priceId);
             price.amount = args.amount;
             await price.save();
 

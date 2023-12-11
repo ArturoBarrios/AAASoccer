@@ -6,10 +6,8 @@ class PriceMutations {
     String updatePrice = """
       mutation {
         updatePrice(
-          pricesId: ${priceInput['_id']},
-  				data: {                       
-            amount: "${priceInput['amount']}",                   
-          }                      
+          priceId: "${priceInput['_id']}",  				                   
+            amount: "${priceInput['amount']}",                             
         ){
           code
           success
