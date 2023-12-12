@@ -50,7 +50,7 @@ class Headers extends StatefulWidget {
   }
   
   AppBar getSettingsHeader(BuildContext context) {
-    AppBar appBar = AppBar(      
+    AppBar appBar = AppBar(            
       elevation: 5,
       // centerTitle: true,
       title: //Text("hiiiiii"),

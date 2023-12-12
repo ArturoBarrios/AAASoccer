@@ -5,6 +5,7 @@ import 'package:soccermadeeasy/views/onboarding/rich_text_selectable_chip_list.d
 
 import '../../commands/base_command.dart';
 import '../../commands/user_command.dart';
+import '../../components/Buttons/basic_elevated_button.dart';
 import '../../components/custom_stepper.dart';
 import '../../components/headers.dart';
 import '../../components/models/button_model.dart';
@@ -68,41 +69,38 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void updateUserOnboarding() async {
-      print("updateUserOnboarding");
-      dynamic currentUser = UserCommand().getAppModelUser();
-      // dynamic userObjectResp = await UserCommand().findMyUserById();
-      dynamic userObject = currentUser;//userObjectResp['data'];
-      // print("userObject: $userObject");
-      Map<String, dynamic> partialUserInput = {        
-        '_id': userObject['_id'],                    
-        'onboarded': true,
-        'preferredFoot': preferredFoot,
-        'preferredPosition': preferredPosition,
-        'skillLevel': skillLevel,
-        'interestedIn': interestedIn,
+    print("updateUserOnboarding");
+    dynamic currentUser = UserCommand().getAppModelUser();
+    // dynamic userObjectResp = await UserCommand().findMyUserById();
+    dynamic userObject = currentUser; //userObjectResp['data'];
+    // print("userObject: $userObject");
+    Map<String, dynamic> partialUserInput = {
+      '_id': userObject['_id'],
+      'onboarded': true,
+      'preferredFoot': preferredFoot,
+      'preferredPosition': preferredPosition,
+      'skillLevel': skillLevel,
+      'interestedIn': interestedIn,
+    };
+    print("partialUserInput: $partialUserInput");
 
-      };
-      print("partialUserInput: $partialUserInput");
+    // Map<String,dynamic> updateUserOnboardingResp = await UserCommand().updateUserOnboarding(partialUserInput);
+    // print("updateUserOnboardingResp: $updateUserOnboardingResp");
+    // if(updateUserOnboardingResp['success'] == true){
+    //   print("updateUserOnboardingResp['data']: ${updateUserOnboardingResp['data']}");
+    //   UserCommand().setAppModelUser(updateUserOnboardingResp['data']);
+    //   BaseCommand().initialUserConditionsMet();
+    //   BaseCommand().setOnboarded(true);
+    // }
 
-      // Map<String,dynamic> updateUserOnboardingResp = await UserCommand().updateUserOnboarding(partialUserInput);
-      // print("updateUserOnboardingResp: $updateUserOnboardingResp");
-      // if(updateUserOnboardingResp['success'] == true){
-      //   print("updateUserOnboardingResp['data']: ${updateUserOnboardingResp['data']}");        
-      //   UserCommand().setAppModelUser(updateUserOnboardingResp['data']);
-      //   BaseCommand().initialUserConditionsMet();
-      //   BaseCommand().setOnboarded(true);
-      // }
-
-      
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return Home();
-          },
-        ),
-      );
-    }
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return Home();
+        },
+      ),
+    );
+  }
 
   Future<void> onConfirmTap() async {
     print("onboarding onConfirmTap");
@@ -140,41 +138,41 @@ class _OnboardingViewState extends State<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     double paddingValue = 0;
+    double screenWidth = MediaQuery.of(context).size.width;
     final stepperList = [
       CustomStepperModel(
         widgets: [
           Padding(
-                        padding: EdgeInsets.fromLTRB(paddingValue, paddingValue,
-                            paddingValue, paddingValue/2),
-                        child:
-                        ClipRRect(
-    borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-    child:
-          SizedBox(
-            width: MediaQuery.of(context).size.width, // full screen width
-            height:
-                MediaQuery.of(context).size.height * 0.4, // half screen height
-            child: FootballField(
-              onTapPosition: (final selectedPosition) =>
-                  changeSelectedPosition(selectedPosition),
-              selectedPosition: preferredPositionIndex,
-            ),
-          ))),
+              padding: EdgeInsets.fromLTRB(
+                  paddingValue, paddingValue, paddingValue, paddingValue / 2),
+              child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(15), // Adjust the radius as needed
+                  child: SizedBox(
+                    width:
+                        MediaQuery.of(context).size.width, // full screen width
+                    height: MediaQuery.of(context).size.height *
+                        0.4, // half screen height
+                    child: FootballField(
+                      onTapPosition: (final selectedPosition) =>
+                          changeSelectedPosition(selectedPosition),
+                      selectedPosition: preferredPositionIndex,
+                    ),
+                  ))),
         ],
       ),
-      
       CustomStepperModel(
         widgets: [
-          Container(height:400, child: 
-          CustomSelectableChipList(          
-            selections: Constants.interests,
-              onTap: (index) {
-                // Handle tap event
-                changeSelectedInterest(index);
-              },
-              selectedIndex: selectedInterestIndex,
-            )),
-          
+          Container(
+              height: 400,
+              child: CustomSelectableChipList(
+                selections: Constants.interests,
+                onTap: (index) {
+                  // Handle tap event
+                  changeSelectedInterest(index);
+                },
+                selectedIndex: selectedInterestIndex,
+              )),
         ],
       ),
       CustomStepperModel(
@@ -187,145 +185,96 @@ class _OnboardingViewState extends State<OnboardingView> {
       ),
       CustomStepperModel(
         widgets: [
-          Container(height:400, child: 
-          CustomSelectableChipList(          
-            selections: Constants.interests,
-              onTap: (index) {
-                // Handle tap event
-                changeSelectedInterest(index);
-              },
-              selectedIndex: selectedInterestIndex,
-            )),
-
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 12),
-          //   child: RichTextSelectableChipList(
-          //     richTextList: const [
-          //       [
-          //         TextSpan(
-          //           text: 'Just for Fun: ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         TextSpan(
-          //           text:
-          //               'Players who are mainly interested in casual play and relaxation, without any competitive edge.',
-          //         ),
-          //       ],
-          //       [
-          //         TextSpan(
-          //           text: 'Recreational Competitor: ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         TextSpan(
-          //           text:
-          //               'Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement.',
-          //         ),
-          //       ],
-          //       [
-          //         TextSpan(
-          //           text: 'Serious Hobbyist: ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         TextSpan(
-          //           text:
-          //               'Players who are starting to take the game more seriously, investing time in practice and improvement.',
-          //         ),
-          //       ],
-          //       [
-          //         TextSpan(
-          //           text: 'Aspiring Athlete: ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         TextSpan(
-          //           text:
-          //               'Players who have competitive goals, engaging in regular training, and aiming for higher-level competition.',
-          //         ),
-          //       ],
-          //       [
-          //         TextSpan(
-          //           text: 'Semi-Professional: ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         TextSpan(
-          //           text:
-          //               'Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport.',
-          //         ),
-          //       ],
-          //       [
-          //         TextSpan(
-          //           text: 'Professional Hopeful: ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         TextSpan(
-          //           text:
-          //               'Players on the cusp of professional level, dedicating significant time and effort in pursuit of professional leagues.',
-          //         ),
-          //       ],
-          //       [
-          //         TextSpan(
-          //           text: 'Professional: ',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         TextSpan(
-          //           text:
-          //               'Players who play or are aspiring to play at the professional level, making the sport their primary focus.',
-          //         ),
-          //       ]
-          //     ],
-          //     onTap: changeSelectedInterest,
-          //     selectedIndex: selectedInterestIndex,
-          //   ),
-          // ),
+          Container(
+              height: 400,
+              child: CustomSelectableChipList(
+                selections: Constants.interests,
+                onTap: (index) {
+                  // Handle tap event
+                  changeSelectedInterest(index);
+                },
+                selectedIndex: selectedInterestIndex,
+              )),
           const SizedBox(height: 20)
         ],
       ),
     ];
 
     return Scaffold(
-  appBar: Headers(
-    playerStepperButton: ButtonModel(
-      prefixIconData: Icons.play_circle_fill_rounded,
-      onTap: () {},
-    ),
-  ).getMainHeader(context),
-  body: Container(
-    color: AppColors.tsnBlack, // Outer Container with black background
-    child: Center( // Center the inner content
-      child: Container(
-        padding: EdgeInsets.all(20), // You can adjust the padding for spacing
-        width: MediaQuery.of(context).size.width * 0.95, // 80% of screen width
-        height: MediaQuery.of(context).size.height * 0.8, // 60% of screen height
-        decoration: BoxDecoration(
-          color: AppColors.tsnDarkGrey, // Inner Container with white background
-          borderRadius: BorderRadius.circular(12), // Optional rounded corners
+      appBar: Headers(
+        playerStepperButton: ButtonModel(
+          prefixIconData: Icons.play_circle_fill_rounded,
+          onTap: () {},
         ),
-        child: CustomStepper(
-          title: getTitle(),
-          titleTextStyle: TextStyle(
-            color: AppColors.tsnWhite,     
-            fontSize: FontSizes.xl(context)       
-          ),
-          stepperModel: stepperList,
-          activeStep: activeStep,
-          cancelButton: ButtonModel(
-            text: (activeStep == (stepperListLength - 1))
-                ? StringConstants.backBtn
-                : StringConstants.cancelBtn,
-            onTap: onCancelTap,
-          ),
-          confirmButton: ButtonModel(
-            backgroundColor:
-                (activeStep == (stepperListLength - 1)) ? Colors.red : null,
-            text: (activeStep == (stepperListLength - 1))
-                ? 'Save'
-                : StringConstants.nextBtn,
-            onTap: onConfirmTap,
-          ),
-        ),
-      ),
-    ),
-  ),
-);
+      ).getMainHeader(context),
+      body: Container(
+          color: AppColors.tsnBlack, // Outer Container with black background
+          child: Column(
+              mainAxisSize:
+                  MainAxisSize.min, // Use the minimum space needed by children
+              children: [
+                Padding(
+                    padding: EdgeInsets.fromLTRB(4, 0, 8, 4),
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                            width: screenWidth / 4,
+                            child: BasicElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                activeStep = stepperListLength - 1;
+                                onConfirmTap();
+                                  
+                                });
+                              },
+                              icon: Icons.close,
+                              backgroundColor: AppColors.tsnDarkGrey,
+                              text: "Skip",
+                              fontSize: FontSizes.xxs(context),
+                            )))),
+                // SizedBox(height: 20),
+                Center(
+                  // Center the inner content
+                  child: Container(
+                    padding: EdgeInsets.all(
+                        20), // You can adjust the padding for spacing
+                    width: MediaQuery.of(context).size.width *
+                        0.95, // 80% of screen width
+                    height: MediaQuery.of(context).size.height *
+                        0.8, // 60% of screen height
+                    decoration: BoxDecoration(
+                      color: AppColors
+                          .tsnDarkGrey, // Inner Container with white background
+                      borderRadius:
+                          BorderRadius.circular(12), // Optional rounded corners
+                    ),
+                    child: CustomStepper(
+                      title: getTitle(),
+                      titleTextStyle: TextStyle(
+                          color: AppColors.tsnWhite,
+                          fontSize: FontSizes.xl(context)),
+                      stepperModel: stepperList,
+                      activeStep: activeStep,
+                      cancelButton: ButtonModel(
+                        text: (activeStep == (stepperListLength - 1))
+                            ? StringConstants.backBtn
+                            : StringConstants.cancelBtn,
+                        onTap: onCancelTap,
+                      ),
+                      confirmButton: ButtonModel(
+                        backgroundColor: (activeStep == (stepperListLength - 1))
+                            ? Colors.red
+                            : null,
+                        text: (activeStep == (stepperListLength - 1))
+                            ? 'Save'
+                            : StringConstants.nextBtn,
+                        onTap: onConfirmTap,
+                      ),
+                    ),
+                  ),
+                )
+              ])),
+    );
   }
 
   String getTitle() => activeStep == 0
