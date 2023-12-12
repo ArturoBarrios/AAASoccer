@@ -344,11 +344,11 @@ class _Home extends State<Home> {
       "eventFragment": EventFragments().userEventParticipants()
     };
     // Map<String, dynamic> getAllUserEventParticipantsResp = await EventCommand()
-    //     .getAllUserEventParticipants(allUserEventParticipantsInput);    
+    //     .getAllUserEventParticipants(allUserEventParticipantsInput);
     // if (getAllUserEventParticipantsResp['success']) {
     //   List<dynamic> allMyEvents = getAllUserEventParticipantsResp['data'];
     //   EventCommand().setMyEvents(allMyEvents);
-      await RatingCommand().showRating(context);
+    await RatingCommand().showRating(context);
     // }
   }
 
@@ -460,18 +460,10 @@ class _Home extends State<Home> {
   @override
   void initState() {
     print("initState() in home");
-    super.initState();    
+    super.initState();
     loadInitialData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      
-      
-        
-          // showAgreementDialogues(context);
-
-        
-
-      
-
+      // showAgreementDialogues(context);
     });
   }
 
@@ -490,31 +482,28 @@ class _Home extends State<Home> {
     }
   }
 
-  showAgreementDialogues(BuildContext context)async{    
+  showAgreementDialogues(BuildContext context) async {
     print("nicerrrrrr");
-    // if(!currentUser['hasAcceptedTermsAndConditions']){      
-        await BaseCommand().showAgreementDialog(context);
-        // if(agreementToShow == "TermsAndConditions"){
+    // if(!currentUser['hasAcceptedTermsAndConditions']){
+    await BaseCommand().showAgreementDialog(context);
+    // if(agreementToShow == "TermsAndConditions"){
 
-        // }
-        // else if(agreementToShow == "PrivacyPolicy"){
+    // }
+    // else if(agreementToShow == "PrivacyPolicy"){
 
-        // }
+    // }
     // }
     // else if(!currentUser['hasAcceptedPrivacyPolicy']){
 
     // }
   }
 
-
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     print("buildDDDDDD");
 
-
-        bool isSuperUser =
-        context.select<AppModel, bool>(
-            (value) => value.isSuperUser);
+    bool isSuperUser =
+        context.select<AppModel, bool>((value) => value.isSuperUser);
 
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
@@ -599,19 +588,15 @@ class _Home extends State<Home> {
             drawer: SizedBox(
               width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
               child: Drawer(
-                  child: const SideNavs().getMainSideNav(context, userObject, isSuperUser )),
+                  child: const SideNavs()
+                      .getMainSideNav(context, userObject, isSuperUser)),
             ),
-            body:
-
-
-                RefreshIndicator(
+            body: RefreshIndicator(
               onRefresh: onReload,
               child: Stack(
                 children: <Widget>[
                   Column(
                     children: [
-                      
-                      
                       Padding(
                           padding: EdgeInsets.all(10.0),
                           child: Row(
@@ -647,8 +632,9 @@ class _Home extends State<Home> {
                                 eventObject: enabledSelections2[key],
                                 svgImage: enabledSelections2[key]['image'],
                                 index: index,
-                                showNew: key == Constants.REQUESTSRECEIVED ? 
-                                  enabledSelections2[key]['new'] : false,
+                                showNew: key == Constants.REQUESTSRECEIVED
+                                    ? enabledSelections2[key]['new']
+                                    : false,
                                 onTapEvent: () => isFilteringEnabled
                                     ? clearFiltering(isPop: false)
                                     : null,
@@ -750,42 +736,41 @@ class _Home extends State<Home> {
                           : Container(),
 
                       !cardsLoading
-                          ?
-
-                          (
+                          ? (
                             Container(
-                              height: screenHeight*.6,
-                              child: 
-                            
-                            Column
-                            
-                            (
-                              children: [
-                                 Padding(
-                                padding: EdgeInsets.fromLTRB(16, 0,
-                                    0,4),
-                                child:
-Align(
-                                    alignment: Alignment.centerLeft,
-                                    child:
-                            Text("Some Header", style: TextStyle(fontSize: FontSizes.lg(context), fontWeight: FontWeight.bold),))),
-                          //list view
-                          Expanded(
-                              child: ListView.builder(
-                              controller: _selectEventController,
-                              itemCount: cards.length,
-                              shrinkWrap: true,
-                              physics: AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (_, index) => Card(
-                                margin: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 10,
-                                ),
-                                child: cards[index],
-                              ),
-                            ))]))
-                            )
-                          
+                              height: screenHeight * .6,
+                              child: Column(children: [
+                                //list view
+                                Expanded(
+                                    child: ListView.builder(
+                                        controller: _selectEventController,
+                                        itemCount: cards.length,
+                                        shrinkWrap: true,
+                                        physics:
+                                            AlwaysScrollableScrollPhysics(),
+                                        itemBuilder: (_, index) => 
+                                       
+                                                Column(children: [
+                                                   Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                12, 0, 0, 12),
+                                            child:
+                                             Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: 
+                                                  Text(
+                                                    "Some Header",
+                                                    style: TextStyle(
+                                                        fontSize: FontSizes.lg(
+                                                            context),
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ))),
+                                                  cards[index],
+                                                ]))
+                                        )
+                              ]))
+                              )
                           : const SizedBox(
                               height: 100,
                               width: 100,
