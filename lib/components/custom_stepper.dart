@@ -31,7 +31,7 @@ class CustomStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stepperLegth = (stepperModel?.length ?? 0);
-
+double screenWidth = MediaQuery.of(context).size.width;
     List<Widget> circularSteps = [];
     if (1 < stepperLegth) {
       for (int i = 0; i < stepperLegth; i++) {
@@ -115,26 +115,34 @@ class CustomStepper extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
+              padding: const EdgeInsets.all(0.0),
+              child:
+              Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (cancelButton != null && confirmButton != null)
-                  if (confirmButton != null)
-                    BasicElevatedButton(
-                      backgroundColor: AppColors.tsnGreen,
-                      text: confirmButton?.text ?? '',
-                      fontSize: FontSizes.m(context),
-                      onPressed: confirmButton?.onTap,
-                    ),
-                    SizedBox(height: 10), // Space between buttons
-                  if (cancelButton != null)
+                  // Text("hiiii")
+                  // if (cancelButton != null && confirmButton != null)
+                  // if (confirmButton != null)
+                  //   SizedBox(height: 10), // Space between buttons
+                  // if (cancelButton != null)
+                  Container(width: screenWidth/3, child: 
+                  cancelButton != null ? 
                     BasicElevatedButton(
                         backgroundColor: AppColors.tsnRed,
                         text: cancelButton?.text ?? '',
                         fontSize: FontSizes.m(context),
                         onPressed: cancelButton?.onTap,
-                    ),
+                    ) : Text("")
+                  ),
+                  Container( width: screenWidth/3,child: 
+                    confirmButton != null ? 
+                    BasicElevatedButton(
+                      backgroundColor: AppColors.tsnGreen,
+                      text: confirmButton?.text ?? '',
+                      fontSize: FontSizes.m(context),
+                      onPressed: confirmButton?.onTap,
+                    ) : Text('')
+                  ),
                   
                 ],
               ),
