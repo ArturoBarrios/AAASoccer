@@ -59,6 +59,10 @@ class HomePageCommand extends BaseCommand {
     homePageModel.updatedCards = value;
   }
 
+  List getHomePageObjectsList(){
+    return homePageModel.objectsList;
+  }
+
   Future<void> setCards() async {
     print("setCards()");
     print("set cards for selectedObject: " +
@@ -74,6 +78,7 @@ class HomePageCommand extends BaseCommand {
       Widget card =
           await BaseCommand().getCard(homePageModel.selectedKey, objectList[i], svgImage);
       homePageModel.cards.add(card);
+      homePageModel.objectsList = objectList;
     }
     homePageModel.cardsLoading = false;
   }

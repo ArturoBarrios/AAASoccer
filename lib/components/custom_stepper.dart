@@ -119,21 +119,6 @@ class CustomStepper extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
-                    // FloatingActionButton.extended(
-                    //   isExtended: true,
-                    //   label: Text(
-                    //     cancelButton?.text ?? '',
-                    //     style: cancelButton?.textStyle ??
-                    //         const TextStyle(
-                    //             color: AppColors.whiteColor,
-                    //             fontSize: 18,
-                    //             fontWeight: FontWeight.w400),
-                    //   ),
-                    //   backgroundColor: cancelButton?.backgroundColor ??
-                    //       AppColors.orangeColorShade500,
-                    //   onPressed: cancelButton?.onTap,
-                    // ),
                   if (cancelButton != null && confirmButton != null)
                   if (confirmButton != null)
                     BasicElevatedButton(
@@ -150,20 +135,7 @@ class CustomStepper extends StatelessWidget {
                         fontSize: FontSizes.m(context),
                         onPressed: cancelButton?.onTap,
                     ),
-                  // FloatingActionButton.extended(
-                  //   isExtended: true,
-                  //   label: Text(
-                  //     confirmButton?.text ?? '',
-                  //     style: confirmButton?.textStyle ??
-                  //         const TextStyle(
-                  //             color: AppColors.whiteColor,
-                  //             fontSize: 18,
-                  //             fontWeight: FontWeight.w400),
-                  //   ),
-                  //   backgroundColor: confirmButton?.backgroundColor ??
-                  //       AppColors.orangeColorShade500,
-                  //   onPressed: confirmButton?.onTap,
-                  // ),
+                  
                 ],
               ),
             ),

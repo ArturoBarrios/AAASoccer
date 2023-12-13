@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 //amplify auth packages
@@ -474,6 +475,61 @@ class _Home extends State<Home> {
     BaseCommand().resetReloadTimer();
   }
 
+ 
+
+
+Container getDayText(int index, dynamic selectedKey) {
+  print("getDayText: " + index.toString());
+  List objectsList = HomePageCommand().getHomePageObjectsList();
+  print("objectsList[index]: " + objectsList[index].toString());
+
+  dynamic eventObject = objectsList[index];
+  dynamic previousObject = index == 0 ? null : objectsList[index - 1];
+  print("Constants.MYEVENTS.toString(): " + Constants.MYEVENTS.toString());
+  print("selectedKey: " + selectedKey.toString());
+  if (selectedKey.toString() == Constants.MYEVENTS.toString()) {
+    eventObject = eventObject['event'];
+    previousObject = previousObject == null ? null : previousObject['event'];
+  }
+  DateTime eventDate = DateTime.fromMillisecondsSinceEpoch(int.parse(eventObject['startTime']));
+  DateTime today = DateTime.now();
+  DateTime tomorrow = DateTime.now().add(Duration(days: 1));
+
+  // Check if the event is today or tomorrow
+  bool isToday = eventDate.year == today.year &&
+                 eventDate.month == today.month &&
+                 eventDate.day == today.day;
+  bool isTomorrow = eventDate.year == tomorrow.year &&
+                    eventDate.month == tomorrow.month &&
+                    eventDate.day == tomorrow.day;
+
+  // For the first index or if the date is different from the previous event
+  if (index == 0 || (index > 0 && (previousObject == null || !isSameDay(eventDate, previousObject['startTime'])))) {
+    String dayText;
+    if (isToday) {
+      dayText = 'Today';
+    } else if (isTomorrow) {
+      dayText = 'Tomorrow';
+    } else {
+      dayText = DateFormat('EEEE, MMMM d').format(eventDate);
+    }
+    return Container(
+      child: Text(dayText),
+    );
+  } else {
+    // Return an empty Container for the same day
+    return Container();
+  }
+}
+
+bool isSameDay(DateTime currentDate, String previousDateMillis) {
+  DateTime previousDate = DateTime.fromMillisecondsSinceEpoch(int.parse(previousDateMillis));
+  return currentDate.year == previousDate.year &&
+         currentDate.month == previousDate.month &&
+         currentDate.day == previousDate.day;
+}
+
+
   bool isLocationPageSelected() {
     if (AppModel().selectedPages[Constants.LOCATIONSPAGE]['enabled']) {
       return true;
@@ -758,14 +814,18 @@ class _Home extends State<Home> {
                                              Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: 
-                                                  Text(
-                                                    "Some Header",
-                                                    style: TextStyle(
-                                                        fontSize: FontSizes.lg(
-                                                            context),
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ))),
+                                                getDayText(index, selectedKey)
+
+                                                
+                                                  // Text(
+                                                  //   "Some Header",
+                                                  //   style: TextStyle(
+                                                  //       fontSize: FontSizes.lg(
+                                                  //           context),
+                                                  //       fontWeight:
+                                                  //           FontWeight.bold),
+                                                  // )
+                                                  )),
                                                   cards[index],
                                                 ]))
                                         )

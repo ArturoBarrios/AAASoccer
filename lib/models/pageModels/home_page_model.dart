@@ -240,6 +240,14 @@ class HomePageModel extends ChangeNotifier {
     _cards = cards;
     notifyListeners();
   }
+ 
+  List _objectsList = [];
+  List get objectsList => _objectsList;
+  set objectsList(List objectsList) {
+    print("set homePageModel objectsList!");
+    _objectsList = objectsList;
+    notifyListeners();
+  }
 
   List _userObjectSelections = [];
   List get userObjectSelections => _userObjectSelections;

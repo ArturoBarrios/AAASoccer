@@ -384,22 +384,14 @@ class UserCommand extends BaseCommand {
 
       print(jsonDecode(response.body));
       print("response.statusCode: " + response.statusCode.toString());
-      if (response.statusCode != 200) {        
-        partialUpdateUserResponse["success"] = false;
-        partialUpdateUserResponse["message"] = "no user found";
-      } else {
-        
+      if (response.statusCode == 200) {                              
         final result = jsonDecode(response.body)['data']['updateUsertermsAndPrivacy'];
         partialUpdateUserResponse["data"] = null;
         if (result['success']) {
           partialUpdateUserResponse["success"] = true;
           partialUpdateUserResponse["message"] = "user found";
           partialUpdateUserResponse["data"] = result['user'];
-        }
-        else{
-          partialUpdateUserResponse["success"] = false;
-          partialUpdateUserResponse["message"] = "no user found";
-        }
+        }       
       }
       return partialUpdateUserResponse;
     } on ApiException catch (e) {
@@ -408,6 +400,50 @@ class UserCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> updateUserAccount(
+      dynamic userInput) async {
+    print("updateUserAccount");
+    print("userInput: " + userInput.toString());
+
+    Map<String, dynamic> updateUserAccountResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().updateUserAccount(userInput),
+        }),
+      );
+
+      print("response from updateUserAccount.....: ");
+
+      print(jsonDecode(response.body));
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode == 200) {        
+       
+        final result = jsonDecode(response.body)['data']['updateUserAccount'];
+        updateUserAccountResponse["data"] = null;
+        if (result['success']) {
+          updateUserAccountResponse["success"] = true;
+          updateUserAccountResponse["message"] = "user found";
+          updateUserAccountResponse["data"] = result['user'];
+        }
+              
+       
+      }
+      return updateUserAccountResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return updateUserAccountResponse;
+    }
+  }
   Future<Map<String, dynamic>> updateUserOnboarding(
       dynamic processedUserInput) async {
     print("updateUserOnboarding");

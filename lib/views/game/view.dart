@@ -139,8 +139,14 @@ class _PickupViewState extends State<PickupView> {
                               color: AppColors.tsnAlmostBlack,
                               child: 
                                 Column(children: [
-                                  
-                                Padding(
+                                
+                                
+
+                                ],),
+                            ),
+
+                            //name
+Padding(
                                   padding: EdgeInsets.fromLTRB(paddingValue,
                                       paddingValue, paddingValue, paddingValue / 2),
                                   child: Align(
@@ -148,9 +154,9 @@ class _PickupViewState extends State<PickupView> {
                                     child: Text(
                                       event.mainEvent['name'],
                                       style: TextStyle(
-                                          fontSize: FontSizes.lg(context),
+                                          fontSize: FontSizes.xl(context),
                                           fontWeight: FontWeight.bold,
-                                          color: AppColors.tsnWhite),
+                                          color: AppColors.tsnBlack),
                                     ),
                                   ),
                                 ),
@@ -158,12 +164,12 @@ class _PickupViewState extends State<PickupView> {
                                     padding: EdgeInsets.fromLTRB(paddingValue, 0,
                                         paddingValue, paddingValue / 2),
                                     child: Row(children: [
-                                      Icon(Icons.av_timer, color: AppColors.tsnWhite),
+                                      Icon(Icons.av_timer, color: AppColors.tsnBlack),
                                       Align(
                                           alignment: Alignment.centerLeft,
                                           child: Text(event.formattedEventTime,
                                               style: TextStyle(
-                                                color: AppColors.tsnWhite,
+                                                color: AppColors.tsnBlack,
                                                 fontSize: FontSizes.s(context),
                                               )))
                                     ])),
@@ -171,7 +177,7 @@ class _PickupViewState extends State<PickupView> {
                                 padding: EdgeInsets.fromLTRB(paddingValue, 0,
                                     paddingValue, paddingValue / 2),
                                 child: Row(children: [
-                                  Icon(Icons.location_on, color: AppColors.tsnWhite),
+                                  Icon(Icons.location_on, color: AppColors.tsnBlack),
                                   Expanded(
                                       child: GestureDetector(
                                           onTap: () => BaseCommand()
@@ -187,7 +193,7 @@ class _PickupViewState extends State<PickupView> {
                                                   event.fieldLocations[0]
                                                       ['location']['address'],
                                                   style: TextStyle(
-                                                    color: AppColors.tsnWhite,
+                                                    color: AppColors.tsnBlack,
                                                     fontSize:
                                                         FontSizes.s(context),
                                                   )))))
@@ -196,7 +202,7 @@ class _PickupViewState extends State<PickupView> {
                                 padding: EdgeInsets.fromLTRB(paddingValue, 0,
                                     paddingValue, paddingValue / 2),
                                 child: Row(children: [
-                                  Icon(Icons.person, color: AppColors.tsnWhite),
+                                  Icon(Icons.person, color: AppColors.tsnBlack),
                                   Padding(
                                       padding: EdgeInsets.fromLTRB(
                                           0, 0, paddingValue, paddingValue / 2),
@@ -208,7 +214,7 @@ class _PickupViewState extends State<PickupView> {
                                                           ['username']
                                                       .toString(),
                                               style: TextStyle(
-                                                color: AppColors.tsnWhite,
+                                                color: AppColors.tsnBlack,
                                                 fontSize: FontSizes.s(context),
                                               )))),
                                 ])),
@@ -221,14 +227,9 @@ class _PickupViewState extends State<PickupView> {
                                         "Game Capacity: " +
                                             event.capacity.toString(),
                                         style: TextStyle(
-                                          color: AppColors.tsnWhite,
+                                          color: AppColors.tsnBlack,
                                           fontSize: FontSizes.m(context),
                                         )))),
-
-                                ],),
-                            ),
-
-                            //name
 
 
                             if (event.isMine)
@@ -256,7 +257,7 @@ class _PickupViewState extends State<PickupView> {
                                         ],
                                       ))),
 
-                            if (event.isMine)
+                            if (event.isMine && event.payments.length>0)
                               Padding(
                                   padding: EdgeInsets.fromLTRB(
                                       paddingValue,
@@ -326,36 +327,37 @@ class _PickupViewState extends State<PickupView> {
                             //     initialValue: mainEvent['location']['data'][0]
                             //         ['name']),
                             //player list
-                            if (event.hostAmenities.length > 0)
-                              ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxHeight: 300, // You can adjust this height
-                                ),
-                                child: ImageSelectionWidget(
-                                  viewMode: true,
-                                  selectionList: event.hostAmenities,
-                                  onSelectionChanged: (newSelection) {
-                                    setState(() {
-                                      // selectedAmenities = newSelection;
-                                    });
-                                  },
-                                ),
-                              ),
-                            if (event.fieldAmenities.length > 0)
-                              ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxHeight: 300, // You can adjust this height
-                                ),
-                                child: ImageSelectionWidget(
-                                  viewMode: true,
-                                  selectionList: event.fieldAmenities,
-                                  onSelectionChanged: (newSelection) {
-                                    setState(() {
-                                      // selectedAmenities = newSelection;
-                                    });
-                                  },
-                                ),
-                              ),
+                            // if (event.hostAmenities.length > 0)
+                            //   ConstrainedBox(
+                            //     constraints: BoxConstraints(
+                            //       maxHeight: 300, // You can adjust this height
+                            //     ),
+                            //     child: 
+                            //     ImageSelectionWidget(
+                            //       viewMode: true,
+                            //       selectionList: event.hostAmenities,
+                            //       onSelectionChanged: (newSelection) {
+                            //         setState(() {
+                            //           // selectedAmenities = newSelection;
+                            //         });
+                            //       },
+                            //     ),
+                            //   ),
+                            // if (event.fieldAmenities.length > 0)
+                              // ConstrainedBox(
+                              //   constraints: BoxConstraints(
+                              //     maxHeight: 300, // You can adjust this height
+                              //   ),
+                              //   child: ImageSelectionWidget(
+                              //     viewMode: true,
+                              //     selectionList: event.fieldAmenities,
+                              //     onSelectionChanged: (newSelection) {
+                              //       setState(() {
+                              //         // selectedAmenities = newSelection;
+                              //       });
+                              //     },
+                              //   ),
+                              // ),
                             PlayerList(
                               event: event.mainEvent,
                               team: null,

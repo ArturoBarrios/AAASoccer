@@ -315,12 +315,15 @@ const resolvers = {
             };
         },
         updateUserAccount: async (parent, args, context, info) => {
-            console.log("updateUser");
+            console.log("updateUserAccount");
 
             //update
-            // const user = await User.findById(args._id);
-            // user.onboarded = args.onboarded;
-            // await user.save();
+            const user = await User.findById(args.input.userId);
+            user.name = args.input.name;
+            user.birthdate = args.input.birthdate;
+            user.gender = args.input.gender;
+            
+            await user.save();
 
             // // await user.populate('user');
             // await user.populate('location');
@@ -332,7 +335,7 @@ const resolvers = {
                 code: "200",
                 success: true,
                 message: "User email was successfully updated",
-                // user: user
+                user: user
             };
         },
         updateUsertermsAndPrivacy: async (parent, args, context, info) => {

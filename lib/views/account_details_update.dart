@@ -51,6 +51,16 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
     startTimeSet = true;    
   }
 
+  Future<void> updateAccount() async{
+    Map<String,dynamic> userInput = {
+      'userId': user['_id'],
+      'name': nameController.text,
+      'birthdate': birthdateController.text,
+      'gender': genderController.text,
+    };
+    await UserCommand().updateUserAccount(userInput);
+  }
+
   void loadInitialData(){
     user = UserCommand().getAppModelUser();
     setState(() {
@@ -251,7 +261,7 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
         
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Handle form submission logic here
+                    updateAccount();
                   }
                 },
                 backgroundColor: AppColors.tsnGreen,

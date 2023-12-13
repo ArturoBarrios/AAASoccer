@@ -128,7 +128,7 @@ class _ProfileState extends State<Profile> {
                 Navigator.push(context, MaterialPageRoute<void>(
                   builder: (BuildContext context) {
                     return const OnboardingView();
-                  },
+                  },  
                 ));
               },
             ),
@@ -144,7 +144,7 @@ class _ProfileState extends State<Profile> {
                   ObjectProfileMainImage(objectImageInput: objectImageInput),                  
                   const SizedBox(height: 10.0),
                   Text(
-                    "@" + user['username'] ?? '',
+                    "@" + user['username'] ?? '', 
                     style: const TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 20.0,

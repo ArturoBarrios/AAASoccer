@@ -254,13 +254,15 @@ class _OnboardingViewState extends State<OnboardingView> {
                           color: AppColors.tsnWhite,
                           fontSize: FontSizes.xl(context)),
                       stepperModel: stepperList,
-                      activeStep: activeStep,
-                      cancelButton: ButtonModel(
+                      activeStep: activeStep,                      
+                      cancelButton: 
+                      activeStep == 0 ? 
+                      ButtonModel(
                         text: (activeStep == (stepperListLength - 1))
                             ? StringConstants.backBtn
                             : StringConstants.cancelBtn,
                         onTap: onCancelTap,
-                      ),
+                      ) : null,
                       confirmButton: ButtonModel(
                         backgroundColor: (activeStep == (stepperListLength - 1))
                             ? Colors.red

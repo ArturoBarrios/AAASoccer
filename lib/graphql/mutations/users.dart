@@ -157,6 +157,30 @@ class UserMutations {
     return updateUserString;
   }
 
+  String updateUserAccount(Map<String, dynamic> userInput) {
+    String updateUserString = """      
+      mutation {
+        updateUserAccount(
+          userId: "${userInput['_id']}"
+          name: "${userInput['name']}"
+          birthdate: "${userInput['birthdate']}"
+          gender: "${userInput['gender']}"
+          
+  				
+        ){
+          code
+          success
+          message
+          user{
+            ${UserFragments().fullUser()}                                  			
+          }
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
 
   String updateUserProfileImage(Map<String, dynamic> userInput) {
     String updateUserString = """      
