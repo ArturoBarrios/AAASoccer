@@ -28,12 +28,12 @@ class OnboardingView extends StatefulWidget {
 class _OnboardingViewState extends State<OnboardingView> {
   int activeStep = 0;
   int stepperListLength = 4;
-  String preferredPosition = Constants.playerCoordinates[4]?[2];
+  String preferredPosition = Constants.playerCoordinates[4]?[2];  
   int preferredPositionIndex = 4;
-  int selectedInterestIndex = -1;
-  PrefferedFoot? selectedFoot;
-  String preferredFoot = "RIGHT";
-  String skillLevel = "BEGINNER";
+  int selectedInterestIndex = 0;
+  PreferredFoot? selectedFoot = PreferredFoot.right;
+  // String preferredFoot = "RIGHT";
+  String? skillLevel = Constants.skillLevels[0]['title'];
   String interestedIn = "Just for Fun";
   double currentRateValue = 50;
 
@@ -64,12 +64,13 @@ class _OnboardingViewState extends State<OnboardingView> {
     }
   }
 
-  Future<void> onCancelTap() async {
+  Future<void> onBackTap() async {
     (activeStep == 0) ? null : changeStepValue(activeStep - 1);
   }
 
   void updateUserOnboarding() async {
     print("updateUserOnboarding");
+    print("selectedFoot: "+ selectedFoot.toString());
     dynamic currentUser = UserCommand().getAppModelUser();
     // dynamic userObjectResp = await UserCommand().findMyUserById();
     dynamic userObject = currentUser; //userObjectResp['data'];
@@ -77,7 +78,7 @@ class _OnboardingViewState extends State<OnboardingView> {
     Map<String, dynamic> partialUserInput = {
       '_id': userObject['_id'],
       'onboarded': true,
-      'preferredFoot': preferredFoot,
+      'preferredFoot': selectedFoot!.index == 1 ? "RIGHT" : "LEFT",
       'preferredPosition': preferredPosition,
       'skillLevel': skillLevel,
       'interestedIn': interestedIn,
@@ -112,18 +113,28 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   void changeSelectedPosition(final String value) {
+    print("changeSelectedPosition");
+    print("value: $value");
     setState(() {
       preferredPosition = value;
+      preferredPositionIndex = Constants.playerCoordinates.entries
+        .firstWhere((entry) => entry.value[2] == value,
+            orElse: () => MapEntry(-1, []))
+        .key;
+  
+     
     });
   }
 
   void changeSelectedInterest(final int value) {
+      print("changeSelectedInterest: "+ value.toString());
     setState(() {
       selectedInterestIndex = value;
     });
   }
 
-  void changeSelectedFoot(PrefferedFoot foot) {
+  void changeSelectedFoot(PreferredFoot foot) {
+    
     setState(() {
       selectedFoot = foot;
     });
@@ -165,8 +176,8 @@ class _OnboardingViewState extends State<OnboardingView> {
         widgets: [
           Container(
               height: 400,
-              child: CustomSelectableChipList(
-                selections: Constants.interests,
+              child: SelectionListWidget(
+                selections: Constants.skillLevels,
                 onTap: (index) {
                   // Handle tap event
                   changeSelectedInterest(index);
@@ -178,7 +189,7 @@ class _OnboardingViewState extends State<OnboardingView> {
       CustomStepperModel(
         widgets: [
           FootSelection(
-            onTapPrefferedFoot: changeSelectedFoot,
+            onTapPreferredFoot: changeSelectedFoot,
             selectedFoot: selectedFoot,
           ),
         ],
@@ -187,7 +198,7 @@ class _OnboardingViewState extends State<OnboardingView> {
         widgets: [
           Container(
               height: 400,
-              child: CustomSelectableChipList(
+              child: SelectionListWidget(
                 selections: Constants.interests,
                 onTap: (index) {
                   // Handle tap event
@@ -236,8 +247,9 @@ class _OnboardingViewState extends State<OnboardingView> {
                 Center(
                   // Center the inner content
                   child: Container(
-                    padding: EdgeInsets.all(
-                        20), // You can adjust the padding for spacing
+                    padding: EdgeInsets.fromLTRB(
+                      0,0,0,8
+                        ), // You can adjust the padding for spacing
                     width: MediaQuery.of(context).size.width *
                         0.95, // 80% of screen width
                     height: MediaQuery.of(context).size.height *
@@ -254,15 +266,13 @@ class _OnboardingViewState extends State<OnboardingView> {
                           color: AppColors.tsnWhite,
                           fontSize: FontSizes.xl(context)),
                       stepperModel: stepperList,
-                      activeStep: activeStep,                      
-                      cancelButton: 
-                      activeStep == 0 ? 
-                      ButtonModel(
-                        text: (activeStep == (stepperListLength - 1))
-                            ? StringConstants.backBtn
-                            : StringConstants.cancelBtn,
-                        onTap: onCancelTap,
-                      ) : null,
+                      activeStep: activeStep,                              
+                      backButtonColor: activeStep == 0 ? AppColors.tsnGrey : AppColors.tsnRed,
+                      backButton: 
+                        ButtonModel(
+                          text: StringConstants.backBtn,                            
+                          onTap: onBackTap,
+                        ),
                       confirmButton: ButtonModel(
                         backgroundColor: (activeStep == (stepperListLength - 1))
                             ? Colors.red

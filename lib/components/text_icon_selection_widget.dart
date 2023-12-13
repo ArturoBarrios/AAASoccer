@@ -16,6 +16,8 @@ class TextIconSelectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("TextIconSelectionWidget build()");
+    print("selectedItem: " + selectedItem.toString());
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: items.length,

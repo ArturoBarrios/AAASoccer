@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CustomSelectableChipList extends StatelessWidget {
+import '../styles/colors.dart';
+
+class SelectionListWidget extends StatelessWidget {
   final List<Map<String, String>> selections;
   final Function(int) onTap;
   final int selectedIndex;
 
-  const CustomSelectableChipList({
+  const SelectionListWidget({
     Key? key,
     required this.selections,
     required this.onTap,
@@ -29,14 +31,14 @@ class CustomSelectableChipList extends StatelessWidget {
               padding: EdgeInsets.all(10),
               margin: EdgeInsets.symmetric(vertical: 5),
               decoration: BoxDecoration(
-                color: selectedIndex == index ? Colors.blue : Colors.grey[200],
+                color: selectedIndex == index ? AppColors.tsnGreen : AppColors.tsnGrey,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: RichText(
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: item['title'] ?? '',
+                      text: item['title']!='' ? item['title']! + ': ' : '',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(

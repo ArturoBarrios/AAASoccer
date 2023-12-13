@@ -15,7 +15,8 @@ class CustomStepper extends StatelessWidget {
   final List<CustomStepperModel>? stepperModel;
   final int? activeStep;
   final ButtonModel? confirmButton;
-  final ButtonModel? cancelButton;
+  final ButtonModel? backButton;
+  final Color? backButtonColor;
 
   const CustomStepper({
     Key? key,
@@ -25,7 +26,8 @@ class CustomStepper extends StatelessWidget {
     this.stepperModel,
     this.activeStep = 0,
     this.confirmButton,
-    this.cancelButton,
+    this.backButton,
+    this.backButtonColor,
   }) : super(key: key);
 
   @override
@@ -113,41 +115,39 @@ double screenWidth = MediaQuery.of(context).size.width;
             ],
           ),
           Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(0.0),
-              child:
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Text("hiiii")
-                  // if (cancelButton != null && confirmButton != null)
-                  // if (confirmButton != null)
-                  //   SizedBox(height: 10), // Space between buttons
-                  // if (cancelButton != null)
-                  Container(width: screenWidth/3, child: 
-                  cancelButton != null ? 
-                    BasicElevatedButton(
-                        backgroundColor: AppColors.tsnRed,
-                        text: cancelButton?.text ?? '',
-                        fontSize: FontSizes.m(context),
-                        onPressed: cancelButton?.onTap,
-                    ) : Text("")
-                  ),
-                  Container( width: screenWidth/3,child: 
-                    confirmButton != null ? 
-                    BasicElevatedButton(
-                      backgroundColor: AppColors.tsnGreen,
-                      text: confirmButton?.text ?? '',
-                      fontSize: FontSizes.m(context),
-                      onPressed: confirmButton?.onTap,
-                    ) : Text('')
-                  ),
-                  
-                ],
-              ),
-            ),
-          ),
+  alignment: Alignment.bottomCenter,
+  child: Padding(
+    padding: const EdgeInsets.all(0.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Aligns children across the main axis with space between them
+      children: [
+        SizedBox(width: screenWidth * 0.1), // Left spacing
+        Container(
+          width: screenWidth / 3,
+          child: backButton != null ? 
+            BasicElevatedButton(
+              backgroundColor: backButtonColor!= null ? backButtonColor :AppColors.tsnRed,
+              text: backButton?.text ?? '',
+              fontSize: FontSizes.m(context),
+              onPressed: backButton?.onTap,
+            ) : Text("")
+        ),
+        Container(
+          width: screenWidth / 3,
+          child: confirmButton != null ? 
+            BasicElevatedButton(
+              backgroundColor: AppColors.tsnGreen,
+              text: confirmButton?.text ?? '',
+              fontSize: FontSizes.m(context),
+              onPressed: confirmButton?.onTap,
+            ) : Text('')
+        ),
+        SizedBox(width: screenWidth * 0.1), // Right spacing
+      ],
+    ),
+  ),
+)
+
         ],
       ),
     );

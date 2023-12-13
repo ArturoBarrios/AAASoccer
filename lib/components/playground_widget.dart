@@ -19,6 +19,7 @@ import 'Buttons/custom_button.dart';
 import 'Cards/tsn_pickup_card.dart';
 import 'Loading/loading_icon.dart';
 import 'agreement_form_widget.dart';
+import 'credit_card_choose_add_widget.dart';
 import 'custom_footer.dart';
 import 'logo_text.dart';
 
@@ -76,6 +77,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
+          CreditCardChooseAddWidget(),
           RatingWidget(rating: 5),
           CustomFooter(),
           ConstrainedBox(

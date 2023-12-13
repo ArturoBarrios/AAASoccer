@@ -24,6 +24,7 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 
 import '../styles/colors.dart';
+import '../styles/font_sizes.dart';
 import 'Buttons/apple_google_pay_button.dart';
 import 'headers.dart';
 import 'models/button_model.dart';
@@ -51,13 +52,13 @@ class _CardFormScreenState extends State<CardFormScreen> {
   final FlipCardController flipCardController = FlipCardController();
   List waysToPay = [
     "Credit Card",
-    "Pay With Existing Card",
+    // "Pay With Existing Card",
     // "PayPal",
     // "Apple Card",
     // Platform.isAndroid ? "Google Pay" : "Apple Pay",
   ];
-    
-  String? _selectedPayment = "Pay With New Card";
+
+  String? _selectedPayment = "Credit Card";
 
   Future<void> createPaymentIntent() async {
     setState(() {});
@@ -102,31 +103,30 @@ class _CardFormScreenState extends State<CardFormScreen> {
     print("createPaymentIntentResp: " + createPaymentIntentResp.toString());
     if (createPaymentIntentResp['success'] ||
         widget.paymentDetails['price']['amount'] == '0') {
-      print("createpaymentrespintentt: "+ createPaymentIntentResp['data']['intent'].toString());
-      paymentInput['charge'] = createPaymentIntentResp['data']['intent']['latest_charge'];
-      
+      print("createpaymentrespintentt: " +
+          createPaymentIntentResp['data']['intent'].toString());
+      paymentInput['charge'] =
+          createPaymentIntentResp['data']['intent']['latest_charge'];
+
       print("now addEvent");
       if (widget.paymentDetails['objectType'] == Constants.EVENT) {
         dynamic addEventResp = await EventCommand().addUserToEvent(
-          //objectToPurchase is mainEvent
+            //objectToPurchase is mainEvent
             widget.paymentDetails['objectToPurchase'],
             currentUser,
             widget.paymentDetails['roles']);
         if (addEventResp['success']) {
           dynamic eventToAdd = addEventResp['data'];
           //add user to event in page models
-          paymentInput['eventId'] =
-              eventToAdd['_id'];
+          paymentInput['eventId'] = eventToAdd['_id'];
           print("paymentInput: " + paymentInput.toString());
-          Map<String, dynamic> createUserObjectPaymentResp = await PaymentCommand().createUserObjectPayment(paymentInput);          
+          Map<String, dynamic> createUserObjectPaymentResp =
+              await PaymentCommand().createUserObjectPayment(paymentInput);
           //payment went through
-          if(createUserObjectPaymentResp['success']){
+          if (createUserObjectPaymentResp['success']) {
             EventCommand().updateViewModelsWithEvent(eventToAdd, true);
             EventCommand().addUserToEventPageModel(eventToAdd, currentUser);
-           
           }
-
-
         }
 
         print("addEventResp: " + addEventResp.toString());
@@ -203,7 +203,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 //   context,
                 //   MaterialPageRoute(builder: (context) => Home()),
                 // );
-                Navigator.pop(context);                
+                Navigator.pop(context);
               },
               child: const Text('Go Home')),
         ],
@@ -231,12 +231,12 @@ class _CardFormScreenState extends State<CardFormScreen> {
         print("currentUserStripeCustomers: " +
             currentUserStripeCustomers.toString());
 
-        
-        print("testingggg: "+ getCustomerPaymentMethodsResp['data'].toString());
-        _selectedPayment = getCustomerPaymentMethodsResp['data'][0]['id'];
-        _selectedPayment = "Pay With Existing Card";
+        print(
+            "testingggg: " + getCustomerPaymentMethodsResp['data'].toString());
+        // _selectedPayment = getCustomerPaymentMethodsResp['data'][0]['id'];
+        // _selectedPayment = "Pay With Existing Card";
       } else {
-        _selectedPayment = "Pay With New Card";
+        // _selectedPayment = "Pay With New Card";
       }
       setState(() {
         var timer =
@@ -248,7 +248,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
         print("paymentMethods: " + paymentMethods.toString());
       });
     } else {
-      _selectedPayment = "Pay With New Card";
+      // _selectedPayment = "Pay With New Card";
       setState(() {
         isLoading = false;
       });
@@ -347,32 +347,36 @@ class _CardFormScreenState extends State<CardFormScreen> {
 
     Widget child;
     return Scaffold(
-        appBar: Headers(
-              playerStepperButton: ButtonModel(
-                prefixIconData: Icons.play_circle_fill_rounded,
-                onTap: () {},
-              ),
-            ).getMainHeader(context),
-        body: !isLoading
-            ? Center(
-                child: Column(children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: 16.0,
-                      left: 16.0,
-                      right: 16.0), // Define your own padding
-                  child: Container(
+      appBar: Headers(
+        playerStepperButton: ButtonModel(
+          prefixIconData: Icons.play_circle_fill_rounded,
+          onTap: () {},
+        ),
+      ).getMainHeader(context),
+      body: !isLoading
+          ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                  child: Text("Select Payment Method",
+                      style: TextStyle(
+                          fontSize: FontSizes.xl(context),
+                          color: AppColors.tsnBlack))),
+              Padding(
+                padding: EdgeInsets.only(
+                    top: 16.0,
+                    left: 16.0,
+                    right: 16.0), // Define your own padding
+                child: Container(
                     height: 50, // Adjust this to make your cards slim
-                    child: 
-                    TextIconSelectionWidget(
-  items: waysToPay,
-  onTap: (selectedItem) {
-    setState(() {
-      _selectedPayment = selectedItem;
-    });
-  },
-  selectedItem: _selectedPayment,
-)
+                    child: TextIconSelectionWidget(
+                      items: waysToPay,
+                      onTap: (selectedItem) {
+                        setState(() {
+                          _selectedPayment = selectedItem;
+                        });
+                      },
+                      selectedItem: _selectedPayment,
+                    )
 //                     ListView.builder(
 //   scrollDirection: Axis.horizontal,
 //   itemCount: waysToPay.length,
@@ -405,219 +409,207 @@ class _CardFormScreenState extends State<CardFormScreen> {
 //     );
 //   },
 // ),
-                  ),
-                ),
-                _selectedPayment == waysToPay[1]
-                    ? Column(
-                        children: [
-                          Container(
-                            height: 200,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: paymentMethods.length,
-                                itemBuilder: (_, index) => Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 16.0,
-                                        left: 16.0,
-                                        right: 16.0), // Define your own padding
-                                    child: FlipCard(
-                                      fill: Fill.fillBack,
-                                      direction: FlipDirection.HORIZONTAL,
-                                      side: CardSide.FRONT,
-                                      front: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.blueGrey[800],
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Icon(
-                                                    Icons.credit_card,
+                    ),
+              ),
+               Column(
+                      children: [
+                        Container(
+                          height: 200,
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: paymentMethods.length,
+                              itemBuilder: (_, index) => Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 16.0,
+                                      left: 16.0,
+                                      right: 16.0), // Define your own padding
+                                  child: FlipCard(
+                                    fill: Fill.fillBack,
+                                    direction: FlipDirection.HORIZONTAL,
+                                    side: CardSide.FRONT,
+                                    front: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.blueGrey[800],
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Icon(
+                                                  Icons.credit_card,
+                                                  color: Colors.white,
+                                                  size: 36,
+                                                ),
+                                                Text(
+                                                  paymentMethods[index]['card']
+                                                      ['brand'],
+                                                  style: TextStyle(
                                                     color: Colors.white,
-                                                    size: 36,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 24,
                                                   ),
-                                                  Text(
-                                                    paymentMethods[index]
-                                                        ['card']['brand'],
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 24,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 16),
-                                              Text(
-                                                '**** **** **** ' +
-                                                    paymentMethods[index]
-                                                        ['card']['last4'],
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 28,
                                                 ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 16),
+                                            Text(
+                                              '**** **** **** ' +
+                                                  paymentMethods[index]['card']
+                                                      ['last4'],
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 28,
                                               ),
-                                              SizedBox(height: 16),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    'CARDHOLDER NAME',
-                                                    style: TextStyle(
-                                                      color: Colors.white54,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'CARDHOLDER NAME',
+                                                  style: TextStyle(
+                                                    color: Colors.white54,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                  Text(
-                                                    'EXPIRES',
-                                                    style: TextStyle(
-                                                      color: Colors.white54,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                ),
+                                                Text(
+                                                  'EXPIRES',
+                                                  style: TextStyle(
+                                                    color: Colors.white54,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 8),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    paymentMethods[index]
-                                                            ['billing_details']
-                                                        ['name'],
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 8),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  paymentMethods[index]
+                                                          ['billing_details']
+                                                      ['name'],
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                  Text(
-                                                    '12/24',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                ),
+                                                Text(
+                                                  '12/24',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      back: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.blueGrey[800],
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              SizedBox(height: 32),
-                                              Text(
-                                                'SECURITY CODE',
-                                                style: TextStyle(
-                                                  color: Colors.white54,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                    ),
+                                    back: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.blueGrey[800],
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(height: 32),
+                                            Text(
+                                              'SECURITY CODE',
+                                              style: TextStyle(
+                                                color: Colors.white54,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              SizedBox(height: 8),
-                                              Text(
-                                                paymentMethods[index]['card']
-                                                    ['last4'],
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 48,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              paymentMethods[index]['card']
+                                                  ['last4'],
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 48,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              SizedBox(height: 16),
-                                              Text(
-                                                'FLIP CARD TO SEE THE FRONT',
-                                                style: TextStyle(
-                                                  color: Colors.white54,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Text(
+                                              'FLIP CARD TO SEE THE FRONT',
+                                              style: TextStyle(
+                                                color: Colors.white54,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ))),
-                          ),
-                          
-                        ],
-                      )
-                    // : waysToPay[2] == _selectedPayment
-                    //     ? ElevatedButton(
-                    //         onPressed: () => createOrderWithPaypal(
-                    //             repository: paypalRepository),
-                    //         child: const Text('Pay with paypal'),
-                    //       )
-                    //     : waysToPay[4] == _selectedPayment
-                    //         ? AppleGooglePaymentButton(
-                    //             item: widget.paymentDetails,
-                    //             paymentResult: (final result) {},
-                    //           )
-                            : paymentWidgetToShow(status)
-                // GestureDetector(
-                //   onTap: () {
-                //     print("Add New Card pressed");
-                //     toggleShowCardForm();
-                //   },
-                //   child: Text("Add New Card"),
-                // ),
-                // if (showCardForm)
-              ]))
-            : Center(child: CircularProgressIndicator()),
-              bottomNavigationBar: Padding(
-                            padding: EdgeInsets.only(
-                                bottom: 16.0,
-                                top: 16.0,
-                                left: 16.0,
-                                right: 16.0), 
-                            child: Container(
-                              width: double.infinity,
-                              child: BasicElevatedButton(
-                                onPressed: () async {
-                                  createPaymentIntent();                                  
-                                },
-                                backgroundColor: AppColors.tsnGreen,
-                                text: 'Pay',
-                              ),
-                            ),
-                          ),
-            );
+                                    ),
+                                  ))),
+                        ),
+                      ],
+                    ),
+                  // : waysToPay[2] == _selectedPayment
+                  //     ? ElevatedButton(
+                  //         onPressed: () => createOrderWithPaypal(
+                  //             repository: paypalRepository),
+                  //         child: const Text('Pay with paypal'),
+                  //       )
+                  //     : waysToPay[4] == _selectedPayment
+                  //         ? AppleGooglePaymentButton(
+                  //             item: widget.paymentDetails,
+                  //             paymentResult: (final result) {},
+                  //           )
+                  paymentWidgetToShow(status)
+              // GestureDetector(
+              //   onTap: () {
+              //     print("Add New Card pressed");
+              //     toggleShowCardForm();
+              //   },
+              //   child: Text("Add New Card"),
+              // ),
+              // if (showCardForm)
+            ])
+          : Center(child: CircularProgressIndicator()),
+      bottomNavigationBar: Padding(
+        padding:
+            EdgeInsets.only(bottom: 16.0, top: 16.0, left: 16.0, right: 16.0),
+        child: Container(
+          width: double.infinity,
+          child: BasicElevatedButton(
+            onPressed: () async {
+              createPaymentIntent();
+            },
+            backgroundColor: AppColors.tsnGreen,
+            text: 'Pay',
+          ),
+        ),
+      ),
+    );
   }
 }
