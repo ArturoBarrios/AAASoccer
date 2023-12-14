@@ -6,8 +6,8 @@ import '../constants.dart';
 import '../models/enums/EventType.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 import '../models/pageModels/app_model.dart';
 import '../commands/event_command.dart';
 import '../commands/game_command.dart';

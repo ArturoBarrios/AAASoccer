@@ -20,6 +20,15 @@ class UserCommand extends BaseCommand {
     //iterate through events and find
   }
 
+  void updateUserAccountDetails(Map<String,dynamic> accountDetailsInput){
+    print("updateUserAccountDetails");
+    print("accountDetailsInput: "+accountDetailsInput.toString());
+    appModel.currentUser['name'] = accountDetailsInput['name'];
+    appModel.currentUser['birthdate'] = accountDetailsInput['birthdate'];
+    appModel.currentUser['gender'] = accountDetailsInput['gender'];
+
+  }
+
   Future<Map<String,dynamic>> getUserDetails(dynamic user, bool addToProfilePageModel) async {
     print("loadInitialData Profile: " + user.toString());
     Map<String,dynamic> getUserDetailsResp = {
@@ -85,10 +94,8 @@ class UserCommand extends BaseCommand {
 
     getUserDetailsResp['eventUserParticipants'] =
       user['eventUserParticipants'];
-    // getUserDetailsResp['teamUserParticipants'] =
-    //     user['teamUserParticipants']['data'];
-    getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
-
+    
+    // getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
     if(addToProfilePageModel){
       
       profilePageModel.isMine = getUserDetailsResp['isMine'];
@@ -96,8 +103,7 @@ class UserCommand extends BaseCommand {
       profilePageModel.objectImageInput = getUserDetailsResp['objectImageInput'];
       profilePageModel.eventUserParticipants = getUserDetailsResp['eventUserParticipants'];
       profilePageModel.teamUserParticipants = getUserDetailsResp['teamUserParticipants'];
-      profilePageModel.isProfilePrivate = getUserDetailsResp['isProfilePrivate'];
-    print("aaaaaa");
+      profilePageModel.isProfilePrivate = getUserDetailsResp['isProfilePrivate'];    
 
     }
       return getUserDetailsResp;
@@ -431,6 +437,8 @@ class UserCommand extends BaseCommand {
         final result = jsonDecode(response.body)['data']['updateUserAccount'];
         updateUserAccountResponse["data"] = null;
         if (result['success']) {
+          dynamic userResp = result['user'];
+          updateUserAccountDetails(userResp);
           updateUserAccountResponse["success"] = true;
           updateUserAccountResponse["message"] = "user found";
           updateUserAccountResponse["data"] = result['user'];

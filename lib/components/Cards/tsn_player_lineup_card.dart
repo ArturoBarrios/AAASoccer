@@ -48,12 +48,13 @@ class TSNPlayerLineupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("build TSNPlayerLineupCard");
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
     //event model data
     dynamic user = playerCardDetails['user'];
-    bool isProfilePrivate = playerCardDetails['isProfilePrivate'];
+    // bool isProfilePrivate = playerCardDetails['isProfilePrivate'];
     dynamic objectImageInput = playerCardDetails['objectImageInput'];
     List followers = playerCardDetails['followers'];
     List following = playerCardDetails['following'];

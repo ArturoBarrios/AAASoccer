@@ -187,6 +187,7 @@ class _PlayerListState extends State<PlayerList> {
 
   @override
   Widget build(BuildContext context) {
+    print("build PlayerList Widget");
     return Container(
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -296,11 +297,7 @@ class _PlayerListState extends State<PlayerList> {
           return TSNPlayerLineupCard(
             playerCardDetails: playerDetails,
             backgroundColor: AppColors.tsnAlmostBlack,     
-          );
-      //     TSNPlayerCard(
-        // playerCardDetails: playerDetails,
-        // backgroundColor: AppColors.tsnAlmostBlack,        
-      // );      
+          );      
         }
       },
     );

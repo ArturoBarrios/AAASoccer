@@ -5,8 +5,8 @@ import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import '../commands/event_command.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 import '../../testing/seeding/location_seeder.dart';
 import '../../testing/seeding/event_seeder.dart';
 import '../../commands/tournament_command.dart';

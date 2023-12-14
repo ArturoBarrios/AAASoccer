@@ -44,10 +44,12 @@ dependencies:
   auto_size_text: ^3.0.0
   vector_math: ^2.1.2
   flutter_dotenv: ^5.0.2
-  faunadb_http: ^0.13.4
   flutter_svg: ^2.0.9
-  flutter_svg_provider: ^1.0.3
-  http: ^0.13.5
+  flutter_svg_provider:
+    git:
+      url: https://github.com/arigilder/flutter_svg_provider
+      ref: patch-1
+  http: ^1.1.0
   flutter_animated_dialog: ^2.0.1
   location: ^5.0.2+1
   onesignal_flutter: ^5.0.0
@@ -58,8 +60,7 @@ dependencies:
   flutter_stripe: ^9.3.0
   flutter_bloc: ^8.1.1
   equatable: ^2.0.5
-  google_maps_flutter: ^2.2.3
-  flutter_google_places: ^0.3.0  
+  google_maps_flutter: ^2.2.3  
   url_launcher: ^6.1.9
   flip_card: ^0.7.0
   patterns_canvas: ^0.4.0
@@ -77,7 +78,7 @@ dependencies:
   get_it: ^7.6.0
 
   # Twilio
-  twilio_flutter: ^0.0.9
+  
 
   # International phone number input field
   intl_phone_number_input: ^0.7.3+1

@@ -330,6 +330,7 @@ const resolvers = {
 
 
             // console.log("updatedUser: ", user);
+            console.log("doneeee");
 
             return {
                 code: "200",
@@ -871,14 +872,14 @@ const resolvers = {
             const user = await User.findById(args._id)
                 .populate([
                     {
+                        path: 'location'
+                    },
+                    {
                         path: 'eventUserParticipants',
                         populate:
                             [
                                 {
-                                    path: 'user',
-                                    populate: {
-                                        path: 'location'
-                                    }  
+                                    path: 'user'                                     
                                 },
                                 
                                 {

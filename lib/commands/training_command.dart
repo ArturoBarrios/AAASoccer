@@ -6,8 +6,8 @@ import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import '../../commands/payment_commands.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 import '../models/pageModels/app_model.dart';
 import '../graphql/mutations/training.dart';
 import 'package:http/http.dart' as http;

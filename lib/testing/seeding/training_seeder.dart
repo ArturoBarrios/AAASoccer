@@ -5,7 +5,7 @@ import '../../commands/team_command.dart';
 import '../../commands/location_command.dart';
 import './location_seeder.dart';
 import 'dart:math';
-import 'package:faunadb_http/faunadb_http.dart';
+
 
 class TrainingSeeder {
   Future <Map<String, dynamic>> createTrainingRelationships(Map<String, dynamic> data, Map<String, dynamic> training) async {

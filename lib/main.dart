@@ -51,8 +51,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
-
-  await diInit();
+  
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
 

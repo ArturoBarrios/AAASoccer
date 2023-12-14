@@ -15,10 +15,10 @@ class NotificationsCommand extends BaseCommand {
       "data": null
     };
     try {
-      await getIt.get<TwilioService>().sendSMS(
-            sendUserParticipantsNotificationsInput['phones'],
-            sendUserParticipantsNotificationsInput['message'],
-          );
+      // await getIt.get<TwilioService>().sendSMS(
+      //       sendUserParticipantsNotificationsInput['phones'],
+      //       sendUserParticipantsNotificationsInput['message'],
+      //     );
       await OneSignalService().sendPN(sendUserParticipantsNotificationsInput);
 
       receiveRequestNotificationResponse["success"] = true;
@@ -40,10 +40,10 @@ class NotificationsCommand extends BaseCommand {
       "data": null
     };
     try {
-      await getIt.get<TwilioService>().sendSMS(
-            sendOrganizerRequestNotificationInput['phones'],
-            sendOrganizerRequestNotificationInput['message'],
-          );
+      // await getIt.get<TwilioService>().sendSMS(
+      //       sendOrganizerRequestNotificationInput['phones'],
+      //       sendOrganizerRequestNotificationInput['message'],
+      //     );
 
       await OneSignalService().sendPN(sendOrganizerRequestNotificationInput);
 
@@ -68,10 +68,10 @@ class NotificationsCommand extends BaseCommand {
     try {
       print(
           "sendAcceptedRequestNotificationInput: $sendOrganizerRequestNotificationInput");
-      await getIt.get<TwilioService>().sendSMS(
-            sendOrganizerRequestNotificationInput['phones'],
-            sendOrganizerRequestNotificationInput['message'],
-          );
+      // await getIt.get<TwilioService>().sendSMS(
+      //       sendOrganizerRequestNotificationInput['phones'],
+      //       sendOrganizerRequestNotificationInput['message'],
+      //     );
       await OneSignalService().sendPN(sendOrganizerRequestNotificationInput);
 
       sendAcceptedRequestNotificationResponse["success"] = true;

@@ -36,6 +36,7 @@ class Headers extends StatefulWidget {
         mainAxisSize: MainAxisSize.min,
         children:[
     LogoTextWidget(
+      textColor: AppColors.tsnWhite,
       width: 200.0,
       height: 30.0,
       backgroundColor: Colors.transparent,              
@@ -46,16 +47,19 @@ class Headers extends StatefulWidget {
   }
   
   AppBar getSettingsHeader(BuildContext context) {
-    AppBar appBar = AppBar(            
-      elevation: 5,
-      // centerTitle: true,
-      title: //Text("hiiiiii"),
+    AppBar appBar = AppBar(  
+      iconTheme: IconThemeData(
+      color: AppColors.tsnWhite, 
+    ),           
+      elevation: 5,      
+      title: 
       Row(
           mainAxisSize: MainAxisSize.min,
           children:[
       LogoTextWidget(
+        textColor: AppColors.tsnWhite,
         width: 200.0,
-        height: 30.0, //Replace with your actual image provider
+        height: 30.0,
         backgroundColor: Colors.transparent,      
         fontSize: FontSizes.xs(context),
           

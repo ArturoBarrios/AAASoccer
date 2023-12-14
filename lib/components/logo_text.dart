@@ -70,7 +70,7 @@ class _LogoTextWidgetState extends State<LogoTextWidget> with SingleTickerProvid
             color: AppColors.tsnLightGreen,
           )),
           SizedBox(width: 16), // Optional: for spacing between image and text
-          Column(
+          Column(            
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

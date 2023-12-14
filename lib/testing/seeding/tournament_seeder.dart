@@ -3,7 +3,7 @@ import '../../commands/team_command.dart';
 import '../../commands/location_command.dart';
 import './location_seeder.dart';
 import 'dart:math';
-import 'package:faunadb_http/faunadb_http.dart';
+
 
 class TournamentSeeder {
   Map<String, dynamic> createTournamentRelationships(){

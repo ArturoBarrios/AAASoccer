@@ -22,10 +22,10 @@ class UserMutations {
   String updateUserOnboarding(Map<String, dynamic> userInput) {
     String updateUserString = """
        mutation {
-        updateUserOnboarding(
+        updateUserOnboarding(input: {
           _id: "${userInput['_id']}",
           onboarded: ${userInput['onboarded']}                    
-                   
+        }                   
           ) {
              code
                 success
@@ -160,19 +160,22 @@ class UserMutations {
   String updateUserAccount(Map<String, dynamic> userInput) {
     String updateUserString = """      
       mutation {
-        updateUserAccount(
-          userId: "${userInput['_id']}"
+        updateUserAccount(input: {
+          userId: "${userInput['userId']}"
           name: "${userInput['name']}"
           birthdate: "${userInput['birthdate']}"
           gender: "${userInput['gender']}"
-          
-  				
+
+        }            				
         ){
           code
           success
           message
           user{
-            ${UserFragments().fullUser()}                                  			
+            _id
+            name
+            birthdate
+            gender                                			
           }
   }
 }
