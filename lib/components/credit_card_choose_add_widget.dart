@@ -22,25 +22,28 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+          InkWell(
+            onTap: () {
+              setState(() {
+                isExpanded = !isExpanded;
+              });
+            },
+            child: Container(
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(Icons.credit_card),
-                  SizedBox(width: 8),
-                  Text('Choose a Card'),
+                  Row(
+                    children: [
+                      Icon(Icons.credit_card),
+                      SizedBox(width: 8),
+                      Text('Choose a Card'),
+                    ],
+                  ),
+                  Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                 ],
               ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isExpanded = !isExpanded;
-                  });
-                },
-                child: Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-              ),
-            ],
+            ),
           ),
           Divider(),
           isExpanded ? Column(
@@ -67,11 +70,22 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
             }).toList(),
           ) : Container(),
           SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              // Add button action here
-            },
-            child: Text('Add New Card'),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).primaryColor, // Button color
+                onPrimary: Colors.white, // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                minimumSize: Size(double.infinity, 50), // Button size
+              ),
+              onPressed: () {
+                // Add button action here
+              },
+              child: Text('Add New Card'),
+            ),
           ),
         ],
       ),

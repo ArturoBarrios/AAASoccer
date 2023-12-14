@@ -175,9 +175,10 @@ class _MyAppState extends State<MyApp> {
         emailController.text.trim(),
         passwordController.text.trim(),
       );
-      print("signInRes: ${signInRes.nextStep!.signInStep}");
+      print("signInRes: ${signInRes.nextStep!.toString()}");
       
-      String signInStep = signInRes.nextStep!.signInStep.name;
+      String signInStep = signInRes.nextStep!.signInStep.toString();
+
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
       //should probably make sure you're actually signed in
       //assumes you are atm
@@ -276,7 +277,7 @@ class _MyAppState extends State<MyApp> {
       print("setupUserResp: "+setupUserResp.toString());
       if(setupUserResp['success']){
         dynamic user = setupUserResp['data'];
-        BaseCommand().setOnboarded(user['onboarded']);
+        BaseCommand().setOnboarded(user['onboarded'] == null ? false : user['onboarded']);
           
         BaseCommand().initialUserConditionsMet();          
       }
@@ -299,7 +300,7 @@ class _MyAppState extends State<MyApp> {
               emailController.text.trim());
 
       print(confirmSignInRes.toString());
-      String signInStep = confirmSignInRes.nextStep.signUpStep.name;
+      String signInStep = confirmSignInRes.nextStep.signUpStep.toString();
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
       print("confirmSignInmain.dart: $signInStep");
       final result = await Amplify.Auth.fetchAuthSession();

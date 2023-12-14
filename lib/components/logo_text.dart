@@ -53,6 +53,7 @@ class _LogoTextWidgetState extends State<LogoTextWidget> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     Svg logo = SVGWidgets().logo();
+    print("logooooo: "+ logo.toString());
     return Container(
       color: widget.backgroundColor,
       child: Row(

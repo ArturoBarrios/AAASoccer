@@ -875,8 +875,12 @@ const resolvers = {
                         populate:
                             [
                                 {
-                                    path: 'user'
+                                    path: 'user',
+                                    populate: {
+                                        path: 'location'
+                                    }  
                                 },
+                                
                                 {
                                     path: 'event',
                                     populate: [
@@ -918,7 +922,7 @@ const resolvers = {
                 ]
                 );
 
-            console.log("user: ", user);
+            console.log("userrr: ", user);
 
             return {
                 code: 200,

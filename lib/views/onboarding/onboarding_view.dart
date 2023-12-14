@@ -32,9 +32,9 @@ class _OnboardingViewState extends State<OnboardingView> {
   int preferredPositionIndex = 4;
   int selectedInterestIndex = 0;
   PreferredFoot? selectedFoot = PreferredFoot.right;
-  // String preferredFoot = "RIGHT";
-  String? skillLevel = Constants.skillLevels[0]['title'];
-  String interestedIn = "Just for Fun";
+  String? selectedSkillLevel = Constants.skillLevels[0]['title'];
+  int selectedSkillLevelIndex = 0;
+  String? selectedInterest = Constants.interests[0]['title'];
   double currentRateValue = 50;
 
   final emojiList = [
@@ -46,15 +46,7 @@ class _OnboardingViewState extends State<OnboardingView> {
     const Text('🎖', style: TextStyle(fontSize: 30.0)),
     const Text('🏆', style: TextStyle(fontSize: 30.0)),
   ];
-  final rateTextList = [
-    'Beginner',
-    'Above Beginner',
-    'Intermediate',
-    'Advanced',
-    'Amateur',
-    'Semi-Pro',
-    'Professional',
-  ];
+
 
   void changeStepValue(final int value) {
     if (!value.isNegative) {
@@ -80,8 +72,8 @@ class _OnboardingViewState extends State<OnboardingView> {
       'onboarded': true,
       'preferredFoot': selectedFoot!.index == 1 ? "RIGHT" : "LEFT",
       'preferredPosition': preferredPosition,
-      'skillLevel': skillLevel,
-      'interestedIn': interestedIn,
+      'skillLevel': selectedSkillLevel,
+      'interestedIn': selectedInterest,
     };
     print("partialUserInput: $partialUserInput");
 
@@ -130,6 +122,15 @@ class _OnboardingViewState extends State<OnboardingView> {
       print("changeSelectedInterest: "+ value.toString());
     setState(() {
       selectedInterestIndex = value;
+      selectedInterest = Constants.interests[selectedInterestIndex]['title'];
+    });
+  }
+  
+  void changeSelectedSkillLevel(final int value) {
+      print("changeSelectedSkillLevel: "+ value.toString());
+    setState(() {
+      selectedSkillLevelIndex = value;
+      selectedSkillLevel = Constants.skillLevels[selectedSkillLevelIndex]['title'];
     });
   }
 
@@ -163,7 +164,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     width:
                         MediaQuery.of(context).size.width, // full screen width
                     height: MediaQuery.of(context).size.height *
-                        0.4, // half screen height
+                        0.5, // half screen height
                     child: FootballField(
                       onTapPosition: (final selectedPosition) =>
                           changeSelectedPosition(selectedPosition),
@@ -180,10 +181,11 @@ class _OnboardingViewState extends State<OnboardingView> {
                 selections: Constants.skillLevels,
                 onTap: (index) {
                   // Handle tap event
-                  changeSelectedInterest(index);
+                  changeSelectedSkillLevel(index);
                 },
-                selectedIndex: selectedInterestIndex,
+                selectedIndex: selectedSkillLevelIndex,
               )),
+              
         ],
       ),
       CustomStepperModel(
@@ -221,8 +223,8 @@ class _OnboardingViewState extends State<OnboardingView> {
       body: Container(
           color: AppColors.tsnBlack, // Outer Container with black background
           child: Column(
-              mainAxisSize:
-                  MainAxisSize.min, // Use the minimum space needed by children
+              // mainAxisSize:
+              //     MainAxisSize.min, // Use the minimum space needed by children
               children: [
                 Padding(
                     padding: EdgeInsets.fromLTRB(4, 0, 8, 4),
