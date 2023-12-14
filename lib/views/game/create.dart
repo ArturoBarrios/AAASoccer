@@ -1,6 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' hide DatePickerTheme;
 import 'package:geolocator/geolocator.dart';
 import 'package:soccermadeeasy/views/game/view.dart';
 import '../../commands/base_command.dart';
@@ -56,6 +56,8 @@ class _GameCreateState extends State<GameCreate> {
     heading: 0,
     speed: 0,
     speedAccuracy: 0,
+    altitudeAccuracy: 0, 
+    headingAccuracy: 0,
   );
 
   List<dynamic> fieldLocations = [];

@@ -375,11 +375,7 @@ List<String> parseAmenities(String amenitiesString) {
 
     return objectsNearMe;
   }
-
-  void setupFaunaClient(dynamic client) {
-    print("setupFaunaClient: " + client);
-    appModel.faunaClient = client;
-  }
+  
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";

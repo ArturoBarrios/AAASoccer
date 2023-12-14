@@ -2,7 +2,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:soccermadeeasy/data/services/twilio/twilio_service.dart';
@@ -45,7 +44,6 @@ import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home.dart';
 import 'commands/base_command.dart' as Commands;
 import 'components/Loading/loading_screen.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
@@ -128,32 +126,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future configureGraphQL() async {
-    print("configureGraphQL");
-    await initHiveForFlutter();
-    final HttpLink httpLink = HttpLink(
-      'https://neat-sunfish-45.hasura.app/v1/graphql',
-    );
-
-    final AuthLink authLink = AuthLink(
-      getToken: () async =>
-          'Bearer xqxOjEQssWDUtt1ULO24E4wSsbuMBWpdVDSPk5R5UCFrJGsdpx3y5H2XV1t5ONdF',
-    );
-
-    final Link link = authLink.concat(httpLink);
-
-    ValueNotifier<GraphQLClient> client = ValueNotifier(
-      GraphQLClient(
-        link: link,
-        // The default store is the InMemoryStore, which does NOT persist to disk
-        cache: GraphQLCache(store: HiveStore()),
-      ),
-    );
-    print("graphQL clientt: ");
-    print(client);
-    BaseCommand().setupFaunaClient(client);
-  }
-
+  
   Future<Map<String, dynamic>> configureAmplify() async {
     Map<String, dynamic> configureAmplify =
         await AmplifyAuth.AmplifyAuthService.configureAmplify();
@@ -203,7 +176,8 @@ class _MyAppState extends State<MyApp> {
         passwordController.text.trim(),
       );
       print("signInRes: ${signInRes.nextStep!.signInStep}");
-      String signInStep = signInRes.nextStep!.signInStep;
+      
+      String signInStep = signInRes.nextStep!.signInStep.name;
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
       //should probably make sure you're actually signed in
       //assumes you are atm
@@ -256,7 +230,7 @@ class _MyAppState extends State<MyApp> {
         print(signUpRes.nextStep.codeDeliveryDetails?.deliveryMedium);
         print(signUpRes.nextStep.codeDeliveryDetails?.destination);
 
-        String signUpStep = signUpRes.nextStep.signUpStep;
+        String signUpStep = signUpRes.nextStep.signUpStep.name;
         AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(
           signUpStep,
           state,
@@ -325,7 +299,7 @@ class _MyAppState extends State<MyApp> {
               emailController.text.trim());
 
       print(confirmSignInRes.toString());
-      String signInStep = confirmSignInRes.nextStep.signUpStep;
+      String signInStep = confirmSignInRes.nextStep.signUpStep.name;
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
       print("confirmSignInmain.dart: $signInStep");
       final result = await Amplify.Auth.fetchAuthSession();

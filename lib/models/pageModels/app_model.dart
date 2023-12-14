@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../commands/home_page_command.dart';
@@ -145,12 +144,6 @@ class AppModel extends ChangeNotifier {
     SVGWidgets().deleteSVGImage(),
   ];
 
-  ValueNotifier<GraphQLClient>? _faunaClient = null;
-  ValueNotifier<GraphQLClient> get faunaClient => _faunaClient!;
-  set faunaClient(ValueNotifier<GraphQLClient> faunaClient) {
-    _faunaClient = faunaClient;
-    notifyListeners();
-  }
 
   String _appColorMode = Constants.DEFAULTMODE;
   String get appColorMode => _appColorMode;
@@ -197,7 +190,9 @@ class AppModel extends ChangeNotifier {
     altitude: 0,
     heading: 0,
     speed: 0,
-    speedAccuracy: 0,
+    speedAccuracy: 0, 
+    altitudeAccuracy: 0, 
+    headingAccuracy: 0,
   );
   Position get currentPosition => _currentPosition;
   set currentPosition(Position currentPosition) {

@@ -1,17 +1,12 @@
 import 'dart:io';
 import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:flutter/material.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:soccermadeeasy/blocs/payment/payment_bloc.dart';
-import 'package:soccermadeeasy/commands/paypal_payment/models/response/orders/paypal_create_order_response.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/components/text_icon_selection_widget.dart';
 import 'package:soccermadeeasy/extensions/snackbar_dialogue.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../commands/event_command.dart';
-import '../commands/paypal_payment/models/request/orders/paypal_create_order_request.dart';
-import '../commands/paypal_payment/paypal_provider.dart';
-import '../commands/paypal_payment/paypal_repository.dart';
 import '../commands/subscriptions_command.dart';
 import '../commands/team_command.dart';
 import '../constants.dart';
@@ -28,7 +23,6 @@ import '../styles/font_sizes.dart';
 import 'Buttons/apple_google_pay_button.dart';
 import 'headers.dart';
 import 'models/button_model.dart';
-import 'paypal_payment_view.dart';
 
 class CardFormScreen extends StatefulWidget {
   const CardFormScreen(
@@ -277,67 +271,10 @@ class _CardFormScreenState extends State<CardFormScreen> {
     });
   }
 
-  Future<void> createOrderWithPaypal(
-      {final PaypalRepository? repository}) async {
-    final result = await repository?.createOrder(
-      order: const PaypalCreateOrderRequest(
-          purchaseUnits: [
-            PurchaseUnitsRequest(
-              items: [
-                Items(
-                    name: '50 kadir item',
-                    unitAmount: UnitAmount(value: '50.00'),
-                    quantity: '1',
-                    description: 'new kadir descr')
-              ],
-              amount: Amount(
-                  value: '50.00',
-                  breakdown: Breakdown(itemTotal: ItemTotal(value: '50.00'))),
-            )
-          ],
-          applicationContext: ApplicationContext(
-              returnUrl: 'https://example.com/return',
-              cancelUrl: 'https://example.com/cancel')),
-    );
-    result?.when(
-      left: (final left) {
-        setState(() {});
-        ScaffoldMessenger.of(context).show(
-          type: SnackBarType.failure,
-          message: left.message,
-        );
-      },
-      right: (right) {
-        setState(() {});
-        ScaffoldMessenger.of(context).show(
-          type: SnackBarType.success,
-          message: 'Order created',
-        );
 
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) => PaypalPaymentView(
-              paymentUrl: findApproveLink(right?.links),
-              returnUrl: 'https://example.com/return',
-              cancelUrl: 'https://example.com/cancel',
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  String? findApproveLink(List<Links>? links) {
-    if (links == null) {
-      return null;
-    }
-
-    return links.firstWhere((link) => link.rel == "approve").href;
-  }
-
+  
   @override
-  Widget build(BuildContext context) {
-    final paypalRepository = ProviderContainer().read(paypalRepositoryProvider);
+  Widget build(BuildContext context) {    
     PaymentStatusType status = context
         .select<PaymentModel, PaymentStatusType>((value) => value.status);
 

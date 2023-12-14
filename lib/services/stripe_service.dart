@@ -7,7 +7,6 @@ import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../commands/user_command.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';
 import 'package:flutter_stripe/flutter_stripe.dart'; 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
