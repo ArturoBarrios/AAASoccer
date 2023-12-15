@@ -120,7 +120,7 @@ class _TournamentCreateState extends State<TournamentCreate> {
         dynamic mainEvent =
             EventCommand().getMainEvent(createdTournament['events']['data']);
         print("mainEventt: $mainEvent");
-        await EventCommand().updateViewModelsWithEvent(mainEvent, true);
+        await EventCommand().updateViewModelsWithEvent(mainEvent, true, true);
 
         if (context.mounted) {
           Navigator.pop(

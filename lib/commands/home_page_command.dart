@@ -68,6 +68,7 @@ class HomePageCommand extends BaseCommand {
   }
 
   Future<void> setCards() async {
+    homePageModel.cardsLoading = true;
     print("setCards()");
     print("set cards for selectedObject: " +
         homePageModel.selectedObjects.toString());

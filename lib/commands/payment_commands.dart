@@ -23,9 +23,6 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import '../blocs/payment/payment_bloc.dart';
 
 class PaymentCommand extends BaseCommand {
-  void createPaymentForEvent() {}
-
-  void createPaymentForTeam() {}
 
   Future<Map<String, dynamic>> getCustomerPaymentMethods() async {
     print("getCustomerPaymentMethods");
@@ -373,15 +370,15 @@ class PaymentCommand extends BaseCommand {
   }
   
   Future<Map<String, dynamic>> _callStripeCreateCustomer(
-      dynamic createCustomerInput) async {
+      String email) async {
     try {
-      print("createCustomerInput: $createCustomerInput");
+      print("createCustomerInput: $email");
 
       final response = await http.post(
           Uri.parse(
               'https://us-central1-soccer-app-a9060.cloudfunctions.net/createCustomer'),
           body: {
-            'email': createCustomerInput['email'],            
+            'email': email,            
           });
 
       print("return value: $response");

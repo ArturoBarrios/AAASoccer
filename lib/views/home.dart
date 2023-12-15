@@ -829,7 +829,8 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
                                                   //       fontWeight:
                                                   //           FontWeight.bold),
                                                   // )
-                                                  )),
+                                                  )
+                                                  ),
                                                   cards[index],
                                                 ]))
                                         )

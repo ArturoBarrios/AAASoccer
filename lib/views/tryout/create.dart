@@ -85,7 +85,7 @@ class _TryoutCreateState extends State<TryoutCreate> {
       if (createTryoutResp['success']) {
         dynamic createdTryout = createTryoutResp['data'];
         await EventCommand()
-            .updateViewModelsWithEvent(createdTryout['event'], true);
+            .updateViewModelsWithEvent(createdTryout['event'], true, true);
         if (context.mounted) {
           Navigator.pop(
             context,

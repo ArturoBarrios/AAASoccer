@@ -109,7 +109,7 @@ class _LeagueCreateState extends State<LeagueCreate> {
             );
           }
         } else {
-          await EventCommand().updateViewModelsWithEvent(mainEvent, true);
+          await EventCommand().updateViewModelsWithEvent(mainEvent, true, true);
           if (context.mounted) {
             Navigator.pop(
               context,
