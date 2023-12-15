@@ -50,6 +50,13 @@ const typeDefs = `#graphql
     message: String!
     archivedEvents: [Event]
   }
+  
+  type FieldLocationResponse implements QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    fieldLocations: [FieldLocation]
+  }
 
   type EventMutationResponse implements QueryResponse {
     code: String!
@@ -114,7 +121,7 @@ type Mutation {
   createStripeCustomer(customerId: String, userId: String): StripeCustomerMutationResponse
   createPayment(input: PaymentInput): PaymentMutationResponse
   addUserToEvent(userId: String, eventId: String, roles: String): EventMutationResponse
-  updateUserOnboarding(_id: String, onboarded: Boolean): UserResponse
+  updateUserOnboarding(input: UserInput): UserResponse
   updateUsertermsAndPrivacy(userId: String, hasAcceptedTermsAndConditions: Boolean, hasAcceptedPrivacyPolicy: Boolean): UserResponse
   updateUserAccount(input: UserInput): UserResponse
   updatePrice(priceId: String, amount: String): PriceResponse
@@ -144,6 +151,7 @@ type Query {
   allEventsInAreaOfType(type: EventType, latitude: Float, longitude: Float, radius: Int, startTime: String): EventsMutationResponse,
   allUserEventParticipants(_id: String, startTime: String): AllUserEventParticipantResponse!
   getArchivedEvents(userId: String, startTime: String) : EventsResponse
+  getFieldLocationsNearby(latitude: Float, longitude: Float, radius: Int): FieldLocationResponse
   }
 
 
@@ -169,6 +177,7 @@ input EventRatingInput {
 }
 
 input UserInput {  
+  userId: String
   name: String
   phone: String
   email: String
@@ -178,10 +187,11 @@ input UserInput {
   location: LocationInput  
   preferredFoot: String
   preferredPosition: String
-  competitiveLevel: String
+  skillLevel: String
   interestedIn: String
   hasAcceptedTermsAndConditions: Boolean 
   hasAcceptedPrivacyPolicy: Boolean 
+  onboarded: Boolean
 
 }
 
@@ -226,11 +236,14 @@ input EventUserParticipantInput {
 
 input FieldLocationInput {     
   isMainField: Boolean
-  location: LocationInput
   fieldAmenities: String
+  fieldLocationId: String
+  fieldLocationName: String
+  location: LocationInput
 }   
 
 input LocationInput {     
+  locationId: String
   name: String
   address: String
   latitude: Float
@@ -464,8 +477,9 @@ type User  {
   #onboarding
   preferredFoot: String
   preferredPosition: String
-  competitiveLevel: String
+  skillLevel: String
   interestedIn: String
+  
   hostRating: Int
 }
 
@@ -501,8 +515,7 @@ type FollowRelation {
 
 type Player   {
   _id: ID
-  wagers: [Wager]
-  competitiveLevel: String
+  wagers: [Wager]  
   hasRating: String
   showRating: String
   user: User
@@ -609,6 +622,7 @@ type Event   {
   group: Group
   description: String
   hostAmenities: String
+  eventNotes: String
 
 }
 
@@ -965,6 +979,7 @@ type StoreLocation{
 
 type FieldLocation  {  
   _id: ID
+  fieldLocationName: String
   isMainField: Boolean 
   location: Location
   facility: Facility
@@ -982,7 +997,7 @@ type FieldLocation  {
   fieldDetails: String
   fieldAmenities: String
   fieldLocationRating: Int
-
+  indoor: Boolean 
 
 }
 

@@ -93,8 +93,14 @@ class BaseCommand {
   void initializeData() {}
 
   onTapBottomNav(context, key, item) {
+    print("onTapBottomNav");
     appModel.onTapBottomNav(context, key, item);
   }    
+
+  getAppModelCurrentPosition(){
+    print("getAppModelCurrentPosition");
+    return appModel.currentPosition;
+  }
 
    Future<void> launchLocationInBrowser(double latitude, double longitude  ) async {
     final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
@@ -370,11 +376,7 @@ List<String> parseAmenities(String amenitiesString) {
 
     return objectsNearMe;
   }
-
-  void setupFaunaClient(dynamic client) {
-    print("setupFaunaClient: " + client);
-    appModel.faunaClient = client;
-  }
+  
 
   void testUpdateText() {
     homePageModel.testText = "testingggggg";
@@ -391,24 +393,7 @@ List<String> parseAmenities(String amenitiesString) {
   void nukeData() {
     WidgetsFlutterBinding.ensureInitialized();
     //nuke data
-    userModel = _mainContext.read();
-    paymentModel = _mainContext.read();
-    appModel = _mainContext.read();
-    eventsModel = _mainContext.read();
-    homePageModel = _mainContext.read();
-    eventPageModel = _mainContext.read();
-    teamPageModel = _mainContext.read();
-    groupPageModel = _mainContext.read();
-    profilePageModel = _mainContext.read();
-    requestsModel = _mainContext.read();
-    requestsPageModel = _mainContext.read();
-    chatPageModel = _mainContext.read();
-    eventsPageModel = _mainContext.read();
-
-    // homePageModel.nukeData();
-
-    //services
-    geoLocationServices = _mainContext.read();
+    appModel.loggedIn = false;
 
     appModel.initialConditionsMet = false;
   }
@@ -539,6 +524,7 @@ List<String> parseAmenities(String amenitiesString) {
               await AmplifyAuthService.deleteUser();
               BaseCommand().nukeData();
               await AmplifyAuthService().signOut();
+              
 
             }
             },
@@ -678,6 +664,7 @@ List<String> parseAmenities(String amenitiesString) {
             // await ImagesCommand().setUserProfileImage();
             setupUserResp['success'] = true;
             setupUserResp['data'] = user;
+            await OneSignalService().login(appModel.currentUser);
           } else {
             print("something went wrong in fetching user");
             // signOut(context);
@@ -689,7 +676,7 @@ List<String> parseAmenities(String amenitiesString) {
           print("niceeeeeeeeerrr");
           setupUserResp['success'] = true;
             setupUserResp['data'] = appModel.currentUser;
-          await OneSignalService().login(appModel.currentUser['_id']);
+      await OneSignalService().login(appModel.currentUser);
         }
           appModel.isSuperUser = appModel.currentUser['isSuperUser'];
       } else {
@@ -772,6 +759,10 @@ List<String> parseAmenities(String amenitiesString) {
 
   void initialUserConditionsMet() {
     appModel.userConditionsMet = true;
+  }
+
+  void setLoggedIn(bool loggedIn){
+    appModel.loggedIn = loggedIn;
   }
 
   void updateIsRatingDialogueShowing(bool newVal) {

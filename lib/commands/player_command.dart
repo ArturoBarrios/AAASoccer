@@ -3,8 +3,8 @@ import 'dart:ffi';
 
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 import '../commands/user_command.dart';
 import '../models/pageModels/app_model.dart';
 import '../graphql/mutations/players.dart';

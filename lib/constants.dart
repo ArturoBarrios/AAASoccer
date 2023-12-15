@@ -2,6 +2,38 @@ import 'models/enums/AmenityType.dart';
 import 'models/enums/EventType.dart';
 
 class Constants {
+ static const List<Map<String, String>> interests = [
+  {'title': "Just for Fun", 'description': "Players who are mainly interested in casual play and relaxation, without any competitive edge."},
+   {'title': "Recreational Competitor", 'description': "Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement."},  
+    {'title': "Aspiring Athlete", 'description': "Players who have competitive goals, engaging in regular training, and aiming for higher-level competition."},    
+  
+ ];
+ 
+ static const List<Map<String, String>> skillLevels = [
+  {'title': "Beginner", 'description': "Players who are mainly interested in casual play and relaxation, without any competitive edge."},
+   {'title': "Advanced Beginner", 'description': "Players who enjoy regular games with friends, maybe in local leagues, but mainly for social engagement."},  
+    {'title': "Intermediatte", 'description': "Players who have competitive goals, engaging in regular training, and aiming for higher-level competition."},
+    {'title': "Amateur", 'description': "Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport."},
+    {'title': "Semi Professional", 'description': "Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport."},
+    {'title': "Professional", 'description': "You've played in a professional league for at least one season."},
+    {'title': "Messi", 'description': "🐐"},
+    {'title': "Ronaldo", 'description': "🐐"},
+  
+ ];
+
+   static const Map<int, List<dynamic>> playerCoordinates = {
+    1: [0.46, 0.02, "GK"], // GK
+    2: [0.1, 0.2, "LB"], // LB
+    3: [0.3, 0.15, "LCB"], // LCB
+    4: [0.6, 0.15, "RCB"], // RCB
+    5: [0.8, 0.2, "RB"], // RB
+    6: [0.1, 0.6, "LW"], // LW
+    7: [0.30, 0.5, "LCM"], // LCM
+    8: [0.6, 0.5, "RCM"], // RCM
+    9: [0.8, 0.6, "RW"], // RW
+    10: [0.3, 0.8, "LS"], // LS
+    11: [0.7, 0.8, "RS"], // RS
+  };
   static const EventType PICKUP = EventType.GAME;
   static const String TEAM = "TEAM";
   static const String GROUP = "GROUP";
@@ -89,7 +121,7 @@ class Constants {
   static const String SCHEDULEPAGE = "SCHEDULEPAGE";
 
   static  List<String> hostAmenities = [AmenityType.PINNIES.toString()];
-  static  List<String> fieldAmenities = [AmenityType.BATHROOMS.toString(), AmenityType.BUS.toString(), AmenityType.TRAIN.toString(), AmenityType.BIKESTATION.toString(), "TURF", "GRASS", "INDOOR", "OUTDOOR", "SMALL", "LARGE", "CLEATS ALLOWED"];
+  static  List<String> fieldAmenities = [AmenityType.BATHROOMS.toString(), AmenityType.BUS.toString(), AmenityType.TRAIN.toString(), AmenityType.BIKESTATION.toString(), "TURF", "GRASS", "HARD SURFACE" ,"INDOOR", "OUTDOOR", "SMALL", "LARGE", "CLEATS ALLOWED"];
 
   
 

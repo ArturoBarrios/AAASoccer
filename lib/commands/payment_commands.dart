@@ -8,8 +8,8 @@ import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import '../commands/event_command.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 import '../models/pageModels/app_model.dart';
 import '../graphql/mutations/training.dart';
 import 'package:http/http.dart' as http;
@@ -321,19 +321,27 @@ class PaymentCommand extends BaseCommand {
   }
 
   Future<Map<String, dynamic>> createRefund(String charge) async {
-    log('create refund kadir');
+    Map<String, dynamic> createRefundResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null      
+    };
     try {
       final response = await http.post(
           Uri.parse(
               'https://us-central1-soccer-app-a9060.cloudfunctions.net/StripeCreateRefund'),
           body: {'charge': charge});
+      print("Response Status Code: ${response}");
+      if(response.statusCode == 200){
+        createRefundResp['success'] = true;
+        
+      }
 
-      print("Response Status Code: ${response.statusCode}");
 
-      log(jsonDecode(response.body));
-      return {};
-    } catch (e) {
-      return {};
+      
+      return createRefundResp;
+    } catch (e) {      
+      return createRefundResp;
     }
   }
 

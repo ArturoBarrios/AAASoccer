@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../constants.dart';
 import '../../styles/colors.dart';
 import 'player_position_circle.dart';
 
@@ -7,26 +8,28 @@ class FootballField extends StatelessWidget {
   const FootballField({Key? key, this.onTapPosition, this.selectedPosition})
       : super(key: key);
 
-  final Function(int)? onTapPosition;
+  final Function(String)? onTapPosition;
   final int? selectedPosition;
 
-  static const Map<int, List<double>> playerCoordinates = {
-    1: [0.46, 0.02], // GK
-    2: [0.1, 0.2], // LB
-    3: [0.3, 0.15], // LCB
-    4: [0.6, 0.15], // RCB
-    5: [0.8, 0.2], // RB
-    6: [0.1, 0.6], // LW
-    7: [0.30, 0.5], // LCM
-    8: [0.6, 0.5], // RCM
-    9: [0.8, 0.6], // RW
-    10: [0.3, 0.8], // LS
-    11: [0.7, 0.8], // RS
-  };
+  static const Map<int, List<dynamic>> playerCoordinates = Constants.playerCoordinates;
+  // static const Map<int, List<dynamic>> playerCoordinates = {
+  //   1: [0.46, 0.02, "GK"], // GK
+  //   2: [0.1, 0.2, "LB"], // LB
+  //   3: [0.3, 0.15, "LCB"], // LCB
+  //   4: [0.6, 0.15, "RCB"], // RCB
+  //   5: [0.8, 0.2, "RB"], // RB
+  //   6: [0.1, 0.6, "LW"], // LW
+  //   7: [0.30, 0.5, "LCM"], // LCM
+  //   8: [0.6, 0.5, "RCM"], // RCM
+  //   9: [0.8, 0.6, "RW"], // RW
+  //   10: [0.3, 0.8, "LS"], // LS
+  //   11: [0.7, 0.8, "RS"], // RS
+  // };
+  
 
   @override
   Widget build(BuildContext context) {
-    List<double>? spotlightPosition;
+    List<dynamic>? spotlightPosition;
 
     // If a position is selected, get its (x, y) position from the map
     if (selectedPosition != null) {
@@ -79,7 +82,7 @@ class FootballField extends StatelessWidget {
       y: y,
       positionName: position,
       isSelected: selectedPosition == index,
-      onTap: () => onTapPosition?.call(index),
+      onTap: () => onTapPosition?.call(position),
     );
   }
 }

@@ -53,7 +53,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> onTapShare(dynamic user) async {
-    await 'Hey theres, my name is ${user['username']}'
+    await 'Hey theres, my name is ${user['name']}'
         .share(imageKey: user['mainImageKey']);
   }
 
@@ -128,7 +128,7 @@ class _ProfileState extends State<Profile> {
                 Navigator.push(context, MaterialPageRoute<void>(
                   builder: (BuildContext context) {
                     return const OnboardingView();
-                  },
+                  },  
                 ));
               },
             ),
@@ -144,7 +144,7 @@ class _ProfileState extends State<Profile> {
                   ObjectProfileMainImage(objectImageInput: objectImageInput),                  
                   const SizedBox(height: 10.0),
                   Text(
-                    "@" + user['username'] ?? '',
+                    user['name'] ?? 'No Name :(', 
                     style: const TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 20.0,
@@ -261,6 +261,7 @@ class _ProfileState extends State<Profile> {
                   numDots: 10,
                 )
               :  
+              
                   EventsListWidget(
                     team: null,
                     user: user,
@@ -268,6 +269,8 @@ class _ProfileState extends State<Profile> {
                     eventUserParticipants: eventUserParticipants,
                     eventCards: eventCards,
                   ),
+
+              
                   // ImagesListWidget(
                   //     mainEvent: null, team: null, imageFor: Constants.USER),
 
@@ -294,9 +297,11 @@ class _ProfileState extends State<Profile> {
     onPressed: () async {
       BaseCommand().signOut(context);
     },
-  ) : 
+  ) 
+  :
+  Container(), 
    
-                FollowContainer(userObject: widget.user),
+  //               FollowContainer(userObject: widget.user),
 
                 ],))
          

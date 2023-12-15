@@ -59,12 +59,20 @@ class HomePageCommand extends BaseCommand {
     homePageModel.updatedCards = value;
   }
 
+  bool cardsLoading() {
+    return homePageModel.cardsLoading;
+  }
+
+  List getHomePageObjectsList(){
+    return homePageModel.objectsList;
+  }
+
   Future<void> setCards() async {
     print("setCards()");
     print("set cards for selectedObject: " +
         homePageModel.selectedObjects.toString());
+    
     homePageModel.cards = [];
-    homePageModel.cardsLoading = true;
     Svg svgImage = SVGWidgets().getSoccerBallSVGImage();
     final objectList = homePageModel.filteredObjects.isEmpty &&
             !homePageModel.isFilteringEnabled
@@ -74,6 +82,7 @@ class HomePageCommand extends BaseCommand {
       Widget card =
           await BaseCommand().getCard(homePageModel.selectedKey, objectList[i], svgImage);
       homePageModel.cards.add(card);
+      homePageModel.objectsList = objectList;
     }
     homePageModel.cardsLoading = false;
   }
@@ -87,6 +96,7 @@ class HomePageCommand extends BaseCommand {
   }
 
   Future<void> eventTypeTapped(dynamic key) async {
+    homePageModel.cardsLoading = true;
     print("eventTypeTapped");
     print(key);
     print(homePageModel.enabledSelections2[key]['enabled']);

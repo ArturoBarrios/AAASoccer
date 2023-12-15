@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/styles/colors.dart';
 
 class AlertDialogueWidget extends StatelessWidget {
   final String title;
@@ -17,18 +18,19 @@ class AlertDialogueWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.tsnWhite,
       title: Text(title),
       content: Text(body),
       actions: <Widget>[
         TextButton(
-          child: Text('Cancel'),
+          child: Text('Cancel', style: TextStyle(color: AppColors.tsnRed)),
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
             onCancelCallback(); // Execute onCancelCallback
           },
         ),
         TextButton(
-          child: Text('Confirm'),
+          child: Text('Confirm', style: TextStyle(color: AppColors.tsnGreen)),
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
             onConfirmCallback(); // Execute onConfirmCallback

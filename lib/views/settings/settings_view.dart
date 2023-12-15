@@ -65,7 +65,7 @@ class SettingsView extends StatelessWidget {
                             ButtonModel(
                               text: 'Update Account Details',
                               prefixIconData: Icons.person,
-                                                            onTap: () {
+                              onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -73,7 +73,7 @@ class SettingsView extends StatelessWidget {
                                          AccountDetailsUpdate(),
                                   ),
                                 );
-                                                            }
+                              }
 
                             ),                            
                           ],

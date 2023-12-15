@@ -1,7 +1,7 @@
 // dart lib/testing/seeding/database_seeder.service.dart
 /// This file is at lib/testing/seeding/seed_services.service.dart
 import 'dart:convert';
-import 'package:faunadb_http/faunadb_http.dart';
+
 
 import 'location_seeder.dart';
 import 'event_seeder.dart';

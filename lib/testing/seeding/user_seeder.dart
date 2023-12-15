@@ -3,7 +3,7 @@ import '../../commands/location_command.dart';
 import '../../commands/player_command.dart';
 import './location_seeder.dart';
 import 'dart:math';
-import 'package:faunadb_http/faunadb_http.dart';
+
 
 class UserSeeder {
   Future<Map<String, dynamic>> createRandomPlayersForTeam(    

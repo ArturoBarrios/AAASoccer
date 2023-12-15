@@ -8,8 +8,8 @@ import '../models/enums/LocationType.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 import '../models/pageModels/app_model.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/locations.dart';
@@ -21,70 +21,35 @@ import 'geolocation_command.dart';
 
 
 class LocationCommand extends BaseCommand {
-  
-  //get locations with conditions: 
-  //2+ events in the last 30 days
-  //2+ teams in the last 30 days
-  //location details filled out(description, url)
-  Future<Map<String,dynamic>> getLocationsNearMe(LocationType locationType) async{
-    Map<String, dynamic> getLocationsNearMeResp = {"success": false, "message": "Default", "data": null};
-    try{
-      int distance = appModel.distanceFilter;
-      Position currentLocation = await LocationCommand().getCurrentPosition();
-      List<Location> locations = [];
-      if(locationType == LocationType.FACILITY){
-        locations = appModel.facilityLocations;
-        if(locations.length == 0){
-          Map<String,dynamic> getFieldLocationsResp = await getFieldLocations();
-          if(getFieldLocationsResp["success"]){
-            locations = getFieldLocationsResp["data"];
-          }
-        }  
-      } 
-      
-      locations.forEach((location) async {
-        double distanceFromUser = await GeoLocationCommand().getDistanceFromPoint(location.latitude!, location.longitude!, currentLocation);
-        if(distanceFromUser <= distance){
-          locations.add(location);
-        }      
-      });
 
-      getLocationsNearMeResp["success"] = true;
-      getLocationsNearMeResp["message"] = "Success";
-      getLocationsNearMeResp["data"] = locations;
-
-    } on ApiException catch(e){
-      print('Query failed: $e');
-      return getLocationsNearMeResp;
-    }
-
-    return getLocationsNearMeResp;
-  }
-
-  Future<Map<String,dynamic>> getFieldLocations() async{
-    List<Location> locations = [];
+  Future<Map<String,dynamic>> getFieldLocationsNearby(dynamic getFieldLocationsNearbyInput) async{    
     Map<String, dynamic> getFieldLocationsResp = {"success": false, "message": "Default", "data": null};
 
-    print("getFieldLocations()");
+    print("getFieldLocationsNearby()");
+    print("getFieldLocationsNearbyInput: " + getFieldLocationsNearbyInput.toString());
     try{
        http.Response response = await http.post(
-        Uri.parse('https://graphql.fauna.com/graphql'),
-        headers: <String, String>{
-          'Authorization': 'Bearer ' + dotenv.env['FAUNADBSECRET'].toString(),
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
           'Content-Type': 'application/json'
         },
         body: jsonEncode(<String, String>{
-          'query': LocationQueries().getFieldLocations(LocationFragments().FieldLocationFull()),
+          'query': LocationQueries().getFieldLocationsNearby(getFieldLocationsNearbyInput, LocationFragments().FieldLocationFull()),
         }),
       );
       print("response body: ");
       print(jsonDecode(response.body));
-      Map<String, dynamic> getFieldLocations =
-          jsonDecode(response.body)['data']['getFieldLocations'];
-      print("createdPayment: " + getFieldLocations.toString());
-      getFieldLocationsResp["success"] = true;
-      getFieldLocationsResp["message"] = "Field Locations Retrieved";
-      getFieldLocationsResp["data"] = getFieldLocations;
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['getFieldLocationsNearby'];
+        if(result['success']){          
+          
+          getFieldLocationsResp["success"] = true;
+          getFieldLocationsResp["message"] = "Field Locations Nearby Retrieved";
+          getFieldLocationsResp["data"] = result['fieldLocations'];
+
+        }
+
+      }
 
       return getFieldLocationsResp;
       

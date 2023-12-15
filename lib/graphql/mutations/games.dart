@@ -113,8 +113,11 @@ class GameMutations {
               },                    
               fieldLocations: {                            
                     isMainField: true,
-                    fieldAmenities: "${eventInput['fieldAmenities']}",
-                    location: {                     
+                    fieldAmenities: "${locationInput['fieldAmenities']}",
+                    fieldLocationId: ${locationInput['fieldLocationId']},
+                    fieldLocationName: "${locationInput['fieldLocationName']}",
+                    location: {           
+                        locationId: ${locationInput['locationId']},
                         name: "${locationInput['name']}",
                         address: "${locationInput['address']}",
                         latitude: ${locationInput['latitude']},

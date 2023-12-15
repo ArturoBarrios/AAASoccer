@@ -1,50 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
-import 'dart:math' as math;
 
-import '../../styles/asset_constants.dart';
-
-enum PrefferedFoot { left, right }
+enum PreferredFoot { left, right }
 
 class FootSelection extends StatelessWidget {
-  const FootSelection({Key? key, this.onTapPrefferedFoot, this.selectedFoot})
+  const FootSelection({Key? key, this.onTapPreferredFoot, this.selectedFoot})
       : super(key: key);
 
-  final Function(PrefferedFoot)? onTapPrefferedFoot;
-  final PrefferedFoot? selectedFoot;
+  final Function(PreferredFoot)? onTapPreferredFoot;
+  final PreferredFoot? selectedFoot;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () => onTapPrefferedFoot?.call(PrefferedFoot.left),
-            child: Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.rotationY(math.pi),
-                child: ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                        selectedFoot == PrefferedFoot.left
-                            ? AppColors.orangeColorShade500
-                            : Colors.transparent,
-                        BlendMode.color),
-                    child: Image.asset(AssetConstants.player))),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () => onTapPreferredFoot?.call(PreferredFoot.left),
+              child: Container(
+                padding: EdgeInsets.all(8),
+                margin: EdgeInsets.only(right: 8), // Right margin for padding
+                decoration: BoxDecoration(
+                  color: selectedFoot == PreferredFoot.left
+                      ? AppColors.tsnGreen
+                      : AppColors.tsnGrey,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.directions_walk, color: Colors.black),
+                    Text(
+                      'Left', 
+                      style: TextStyle(
+                        color: selectedFoot == PreferredFoot.left ? AppColors.tsnWhite : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => onTapPrefferedFoot?.call(PrefferedFoot.right),
-            child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                    selectedFoot == PrefferedFoot.right
-                        ? AppColors.orangeColorShade500
-                        : Colors.transparent,
-                    BlendMode.color),
-                child: Image.asset(AssetConstants.player)),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => onTapPreferredFoot?.call(PreferredFoot.right),
+              child: Container(
+                padding: EdgeInsets.all(8),
+                margin: EdgeInsets.only(left: 8), // Left margin for padding
+                decoration: BoxDecoration(
+                  color: selectedFoot == PreferredFoot.right
+                      ? AppColors.tsnGreen
+                      : AppColors.tsnGrey,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.directions_walk, color: Colors.black),
+                    Text(
+                      'Right', 
+                      style: TextStyle(
+                        color: selectedFoot == PreferredFoot.right ? AppColors.tsnWhite : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -6,8 +6,8 @@ import '../../commands/team_command.dart';
 import '../../commands/location_command.dart';
 import './location_seeder.dart';
 import 'dart:math';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 
 class GameSeeder {
   //assumes that data contains List of games and players of FaunaResponse type

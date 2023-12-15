@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema({
     hasAcceptedTermsAndConditions: Boolean,
     hasAcceptedPrivacyPolicy: Boolean,
     hostRating: Number,
+    preferredFoot: String,
+    preferredPosition: String,
+    skillLevel: String,
+    interestedIn: String,
+
+
 });
 
 const User = mongoose.model('User', userSchema);

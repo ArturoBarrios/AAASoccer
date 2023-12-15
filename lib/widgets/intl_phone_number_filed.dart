@@ -123,12 +123,14 @@ class _IntlPhoneNumberFiledState extends State<IntlPhoneNumberFiled> {
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: InternationalPhoneNumberInput(
+              countries: ['US'],
               initialValue: initPhoneNumber,
               selectorConfig: const SelectorConfig(
                 selectorType: PhoneInputSelectorType.DIALOG,
                 useEmoji: true,
                 leadingPadding: 0,
                 trailingSpace: false,
+                
               ),
               onInputChanged: (value) {
                 _validate(value.parseNumber());

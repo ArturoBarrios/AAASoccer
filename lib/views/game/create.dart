@@ -1,8 +1,11 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' hide DatePickerTheme;
+import 'package:geolocator/geolocator.dart';
 import 'package:soccermadeeasy/views/game/view.dart';
 import '../../commands/base_command.dart';
+import '../../commands/location_command.dart';
+import '../../commands/user_command.dart';
 import '../../components/Validator.dart';
 import '../../components/image_selection_widget.dart';
 import '../../components/create_event_payment.dart';
@@ -22,6 +25,8 @@ import '../../constants.dart';
 import '../../models/enums/AmenityType.dart';
 import '../../models/enums/EventType.dart';
 import '../../strings.dart';
+import '../../styles/colors.dart';
+import '../splash_screen.dart';
 
 class GameCreate extends StatefulWidget {
   const GameCreate({Key? key}) : super(key: key);
@@ -32,6 +37,7 @@ class GameCreate extends StatefulWidget {
 
 class _GameCreateState extends State<GameCreate> {
   final nameController = TextEditingController();
+  final locationNameController = TextEditingController();
   final hometeamController = TextEditingController();
   final awayteamController = TextEditingController();
   final isPickupController = TextEditingController();
@@ -40,6 +46,22 @@ class _GameCreateState extends State<GameCreate> {
   final privateController = TextEditingController();
   final priceController = TextEditingController();
   final imageController = TextEditingController();
+
+  Position currentPosition = Position(
+    longitude: 0,
+    latitude: 0,
+    timestamp: null,
+    accuracy: 0,
+    altitude: 0,
+    heading: 0,
+    speed: 0,
+    speedAccuracy: 0,
+    altitudeAccuracy: 0, 
+    headingAccuracy: 0,
+  );
+
+  List<dynamic> fieldLocations = [];
+  dynamic selectedFieldLocation = null;
   
   List<String> selectedHostAmenities = [];
   List<String> selectedFieldAmenities = [];
@@ -48,6 +70,7 @@ class _GameCreateState extends State<GameCreate> {
     "name": "",
     "latitude": 0,
     "longitude": 0,
+    "address": "nada"
   };
   CreateEventRequest createEventRequestWidget = CreateEventRequest();
   CreateEventPayment createEventPaymentWidget = CreateEventPayment();
@@ -55,6 +78,8 @@ class _GameCreateState extends State<GameCreate> {
   CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
   DateTimePicker dateTimePicker = DateTimePicker();
   late LocationSearchBar locationSearchBar;
+
+  bool isLoading = true;
 
   @override
   initState() {
@@ -66,6 +91,7 @@ class _GameCreateState extends State<GameCreate> {
       },
     );
     super.initState();
+    loadInitialData();
   }
 
   final startTimeController = TextEditingController();
@@ -75,8 +101,9 @@ class _GameCreateState extends State<GameCreate> {
   final numberOfTeamsPerGroupController = TextEditingController();
   final roundOfXController = TextEditingController();
   final knockoutRoundsController = TextEditingController();
-  final teamPriceController = TextEditingController();
+final teamPriceController = TextEditingController();
   final capacityController = TextEditingController();
+  final fieldLocationNameController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime startTime = DateTime.now();
@@ -100,6 +127,7 @@ class _GameCreateState extends State<GameCreate> {
       String parsedSelectedFieldAmenities = BaseCommand().formatStringForGraphQL(selectedFieldAmenities);
       print("priceee: ${priceController.text}");
       double priceDouble = double.parse(priceController.text.toString());
+      
       Map<String, dynamic> eventInput = {
         "name": nameController.text.toString(),
         "capacity": capacityController.text.toString(),
@@ -115,12 +143,18 @@ class _GameCreateState extends State<GameCreate> {
         'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
         'type': EventType.GAME,
         'hostAmenities': parsedSelectedHostAmenities.toString(),
-        'fieldAmenities': parsedSelectedFieldAmenities.toString(),
       };
       dynamic pickupData = {
         "pickup": true,
       };
+
+      locationInput['fieldAmenities'] = parsedSelectedFieldAmenities.toString();
+      locationInput['fieldLocationId'] = selectedFieldLocation;
+      locationInput['fieldLocationName'] = fieldLocationNameController.text.toString();
+      locationInput['name'] = locationNameController.text.toString();
       print("locationInputCheaheck: $locationInput");
+
+      
 
       Map<String, dynamic> createPickupGameResp =
           await GameCommand().createGame(pickupData, eventInput, locationInput);
@@ -188,8 +222,32 @@ class _GameCreateState extends State<GameCreate> {
     goBack();
   }
 
+  void loadInitialData() async{
+    print("loadInitialDataaaaa");
+    currentPosition = BaseCommand().getAppModelCurrentPosition();
+    dynamic getFieldLocationsNearbyInput = {
+      "latitude": currentPosition.latitude,
+      "longitude": currentPosition.longitude,
+      "radius": 1000,
+    };
+    Map<String,dynamic> getFieldLocationsNearbyResp = await LocationCommand().getFieldLocationsNearby(getFieldLocationsNearbyInput);
+    if(getFieldLocationsNearbyResp['success']){
+      fieldLocations = getFieldLocationsNearbyResp['data'];
+      print("fieldLocations: $fieldLocations");
+      setState(() {
+        isLoading = false;
+      });
+
+
+    }
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+    
     final stepperList = [
       CustomStepperModel(
         widgets: [
@@ -277,7 +335,93 @@ class _GameCreateState extends State<GameCreate> {
       ),
       CustomStepperModel(
         widgets: [
-          locationSearchBar,
+        Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: CustomTextFormField(
+            label: "Location Name",
+            hintText: "Location Name",
+            keyboardType: TextInputType.name,
+            controller: locationNameController,            
+          ),
+            ),
+        Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: CustomTextFormField(
+            label: "Field Location Name",
+            hintText: "Fielld Location Name",
+            keyboardType: TextInputType.name,
+            controller: fieldLocationNameController,            
+          ),
+            ),
+        locationSearchBar,
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 0,
+                            0, 0),
+              child:
+                       
+          Expanded(
+  child: Padding(
+    padding: const EdgeInsets.only(right: 8.0),
+    child: DropdownButtonHideUnderline(
+  child: InputDecorator(
+    decoration: InputDecoration(
+      hintText: 'Gender',
+      hintStyle: TextStyle(color: AppColors.tsnGrey),
+      filled: true,
+      fillColor: AppColors.tsnAlmostBlack,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(25),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    ),
+    child: Container(
+      // Constrain the height of the dropdown menu      
+      child: DropdownButtonFormField<String>(
+        value: selectedFieldLocation,
+        style: TextStyle(color: AppColors.tsnAlmostBlack),
+        decoration: InputDecoration.collapsed(hintText: ''),
+        menuMaxHeight: 200,
+        items: [
+          DropdownMenuItem(
+            value: null,
+            child: Text(
+              'Field Location',
+              style: TextStyle(color: AppColors.tsnGrey),
+            ),  
+          ),
+          ...fieldLocations.map((dynamic fieldLocation) {
+            return DropdownMenuItem(              
+              key: Key(fieldLocation['location']['_id'].toString()),
+              value: fieldLocation['location']['name'].toString()+fieldLocation['location']['_id'].toString(),
+              child: Text(
+                fieldLocation['location']['name'].toString(),
+                style: TextStyle(color: AppColors.tsnWhite),
+              ),
+            );
+          }).toList(),
+        ],
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedFieldLocation = newValue;
+          });
+        },
+        // validator: (value) {          
+          // if (value == null || value.isEmpty) {
+          //   return "This field is required";
+          // }
+          // return null;
+        // },
+        dropdownColor: AppColors.fieldFillDark,
+      ),
+    ),
+  ),
+),
+
+  ),
+),
+        ),
+         
           createEventRequestWidget,
           createEventPaymentWidget,
           createTeamRequestWidget,
@@ -339,7 +483,10 @@ class _GameCreateState extends State<GameCreate> {
                 onTap: () {},
               ),
             ).getMainHeader(context),
-      body: Padding(
+      body: 
+      isLoading ? SplashScreen() : 
+      
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: CustomStepper(
           formKey: _formKey,
@@ -348,7 +495,7 @@ class _GameCreateState extends State<GameCreate> {
               : 'Create Game',
           stepperModel: stepperList,
           activeStep: activeStep,
-          cancelButton: ButtonModel(
+          backButton: ButtonModel(
             text: (activeStep == (stepperList.length - 1))
                 ? StringConstants.backBtn
                 : StringConstants.cancelBtn,

@@ -2,7 +2,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:soccermadeeasy/data/services/twilio/twilio_service.dart';
@@ -45,7 +44,6 @@ import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home.dart';
 import 'commands/base_command.dart' as Commands;
 import 'components/Loading/loading_screen.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
@@ -53,8 +51,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
-
-  await diInit();
+  
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
 
@@ -123,36 +120,12 @@ class _MyAppState extends State<MyApp> {
 
     if (configureAmplifyResp['message'] == "isSignedIn") {
       emailController.text = configureAmplifyResp['email'];
+      BaseCommand().setLoggedIn(true);
       await startLoadToHomeTransition();
     }
   }
 
-  Future configureGraphQL() async {
-    print("configureGraphQL");
-    await initHiveForFlutter();
-    final HttpLink httpLink = HttpLink(
-      'https://neat-sunfish-45.hasura.app/v1/graphql',
-    );
-
-    final AuthLink authLink = AuthLink(
-      getToken: () async =>
-          'Bearer xqxOjEQssWDUtt1ULO24E4wSsbuMBWpdVDSPk5R5UCFrJGsdpx3y5H2XV1t5ONdF',
-    );
-
-    final Link link = authLink.concat(httpLink);
-
-    ValueNotifier<GraphQLClient> client = ValueNotifier(
-      GraphQLClient(
-        link: link,
-        // The default store is the InMemoryStore, which does NOT persist to disk
-        cache: GraphQLCache(store: HiveStore()),
-      ),
-    );
-    print("graphQL clientt: ");
-    print(client);
-    BaseCommand().setupFaunaClient(client);
-  }
-
+  
   Future<Map<String, dynamic>> configureAmplify() async {
     Map<String, dynamic> configureAmplify =
         await AmplifyAuth.AmplifyAuthService.configureAmplify();
@@ -201,13 +174,16 @@ class _MyAppState extends State<MyApp> {
         emailController.text.trim(),
         passwordController.text.trim(),
       );
-      print("signInRes: ${signInRes.nextStep!.signInStep}");
-      String signInStep = signInRes.nextStep!.signInStep;
+      print("signInRes: ${signInRes.nextStep!.toString()}");
+      
+      String signInStep = signInRes.nextStep!.signInStep.toString();
+
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
       //should probably make sure you're actually signed in
       //assumes you are atm
       UserModel().userEmail = emailController.text.trim();
       await startLoadToHomeTransition();
+      BaseCommand().setLoggedIn(true);
 
       setState(() {});
     } on AuthException catch (e) {
@@ -254,7 +230,7 @@ class _MyAppState extends State<MyApp> {
         print(signUpRes.nextStep.codeDeliveryDetails?.deliveryMedium);
         print(signUpRes.nextStep.codeDeliveryDetails?.destination);
 
-        String signUpStep = signUpRes.nextStep.signUpStep;
+        String signUpStep = signUpRes.nextStep.signUpStep.name;
         AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(
           signUpStep,
           state,
@@ -300,7 +276,7 @@ class _MyAppState extends State<MyApp> {
       print("setupUserResp: "+setupUserResp.toString());
       if(setupUserResp['success']){
         dynamic user = setupUserResp['data'];
-        BaseCommand().setOnboarded(user['onboarded']);
+        BaseCommand().setOnboarded(user['onboarded'] == null ? false : user['onboarded']);
           
         BaseCommand().initialUserConditionsMet();          
       }
@@ -323,7 +299,7 @@ class _MyAppState extends State<MyApp> {
               emailController.text.trim());
 
       print(confirmSignInRes.toString());
-      String signInStep = confirmSignInRes.nextStep.signUpStep;
+      String signInStep = confirmSignInRes.nextStep.signUpStep.toString();
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
       print("confirmSignInmain.dart: $signInStep");
       final result = await Amplify.Auth.fetchAuthSession();
@@ -379,6 +355,8 @@ class _MyAppState extends State<MyApp> {
           Commands.init(context);
           bool userConditionsMet = context
               .select<AppModel, bool>((value) => value.userConditionsMet);
+          bool loggedIn = context
+              .select<AppModel, bool>((value) => value.loggedIn);
           bool onboarded = context
               .select<AppModel, bool>((value) => value.onboarded);
 
@@ -541,11 +519,11 @@ class _MyAppState extends State<MyApp> {
               playerStepperButton: ButtonModel(
                 prefixIconData: Icons.play_circle_fill_rounded,
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute<void>(
-                    builder: (BuildContext context) {
-                      return const OnboardingView();
-                    },
-                  ));
+                  // Navigator.push(context, MaterialPageRoute<void>(
+                  //   builder: (BuildContext context) {
+                  //     return const OnboardingView();
+                  //   },
+                  // ));
                 },
               ),
               filterButton: ButtonModel(
@@ -602,21 +580,28 @@ class _MyAppState extends State<MyApp> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: TextField(
-                controller: nameController,
-                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  hintText: 'Name',
-                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
-                  filled: true,
-                  fillColor: AppColors.fieldFillDark,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
+              child: TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: nameController,
+                              keyboardType: TextInputType.name,                              
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }                                
+                                return null;
+                              },
+                              
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'Name',
+                                filled: true,                                
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,                                  
+                                ),
+                              ),
+                            ),
             ),
           ),
           ],
@@ -715,57 +700,57 @@ class _MyAppState extends State<MyApp> {
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child:
-              CustomTextFormField(
-            label: StringConstants.endDateTimeLabel,
-            hintText: StringConstants.endDateTimeHint,
-            controller: birthdateController,
-            keyboardType: TextInputType.datetime,
-            isSuffixIcon: true,
-            validator: (value) => Validators.validateRequired(
-                value!, StringConstants.endDateTimeErrorValue),
-            suffixIcon: IconButton(
-                onPressed: () {
-                  DatePicker.showDateTimePicker(context,
-                      showTitleActions: true,
-                      onChanged: (date) {}, onConfirm: (date) {
-                    // setEndTime(date);
-                  }, currentTime: birthdayTime
-                  // !startTimeSet ? rightNow : startTime
-                  );
-                },
-                icon: const Icon(Icons.calendar_today_outlined)),
-            onPressed: () {
-              DatePicker.showDateTimePicker(context,
-                  showTitleActions: true,
-                  onChanged: (date) {}, onConfirm: (date) {
-                setBirthdayTime(date);
-              }, currentTime: birthdayTime
-              );
-            },
-          ),
-                            // TextFormField(
-                            //   style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                            //   controller: birthdateController,
-                            //   keyboardType: TextInputType.datetime,
-                            //   validator: (value) {
-                            //     if (value == null || value.isEmpty) {
-                            //       return "This field is required";
-                            //     }
-                            //     return null;
-                            //   },
-                            //   inputFormatters: [birthdateFormatter],
-                            //   decoration: InputDecoration(
-                            //     hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
-                            //     hintText: 'Birthdate',
-                            //     // helperText: "mm-dd-yyyy",
-                            //     filled: true,
-                            //     fillColor: AppColors.fieldFillDark,
-                            //     border: OutlineInputBorder(
-                            //       borderRadius: BorderRadius.circular(25),
-                            //       borderSide: BorderSide.none,
-                            //     ),
-                            //   ),
-                            // )
+          //     CustomTextFormField(
+          //   label: StringConstants.endDateTimeLabel,
+          //   hintText: StringConstants.endDateTimeHint,
+          //   controller: birthdateController,
+          //   keyboardType: TextInputType.datetime,
+          //   isSuffixIcon: true,
+          //   validator: (value) => Validators.validateRequired(
+          //       value!, StringConstants.endDateTimeErrorValue),
+          //   suffixIcon: IconButton(
+          //       onPressed: () {
+          //         DatePicker.showDateTimePicker(context,
+          //             showTitleActions: true,
+          //             onChanged: (date) {}, onConfirm: (date) {
+          //           // setEndTime(date);
+          //         }, currentTime: birthdayTime
+          //         // !startTimeSet ? rightNow : startTime
+          //         );
+          //       },
+          //       icon: const Icon(Icons.calendar_today_outlined)),
+          //   onPressed: () {
+          //     DatePicker.showDateTimePicker(context,
+          //         showTitleActions: true,
+          //         onChanged: (date) {}, onConfirm: (date) {
+          //       setBirthdayTime(date);
+          //     }, currentTime: birthdayTime
+          //     );
+          //   },
+          // ),
+                            TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: birthdateController,
+                              keyboardType: TextInputType.datetime,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              inputFormatters: [birthdateFormatter],
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'mm-dd-yyyy',
+                                // helperText: "mm-dd-yyyy",
+                                filled: true,
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            )
                             )),
 
             ]),
@@ -933,7 +918,7 @@ class _MyAppState extends State<MyApp> {
               builder: Authenticator.builder(),
               home: userConditionsMet && onboarded
                   ? AppScaffold() :
-                     (userConditionsMet && !onboarded) ?        
+                     (userConditionsMet && loggedIn && !onboarded) ?        
                       OnboardingView() : SplashScreen(),
               routes: {
                 // When navigating to the "/" route, build the HomeScreen widget.

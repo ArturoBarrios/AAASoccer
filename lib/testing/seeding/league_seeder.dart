@@ -6,7 +6,7 @@ import '../../commands/tournament_command.dart';
 import '../../commands/location_command.dart';
 import './location_seeder.dart';
 import 'dart:math';
-import 'package:faunadb_http/faunadb_http.dart';
+
 import '../../testing/seeding/location_seeder.dart';
 import '../../testing/seeding/event_seeder.dart';
 

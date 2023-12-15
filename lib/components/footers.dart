@@ -77,11 +77,11 @@ class Footers extends StatefulWidget {
   alignment: Alignment.topCenter,
   children: [
     Padding(
-      padding: const EdgeInsets.only(top: 20.0), // Add padding for the top part of the FAB
+      padding: const EdgeInsets.only(top: 5.0), // Add padding for the top part of the FAB
       child: Container(
         width: double.infinity, // Taking full width
-        height: 50,
-        margin: const EdgeInsets.all(4.0),
+        height: 60,
+        // margin: const EdgeInsets.all(4.0),
         decoration: BoxDecoration(
           color: AppColors.tsnBlack,
           borderRadius: BorderRadius.circular(32),
@@ -98,7 +98,7 @@ class Footers extends StatefulWidget {
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 2.0),
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.fromLTRB(24,0,24,0),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: item['enabled']
@@ -139,7 +139,7 @@ class Footers extends StatefulWidget {
     ),    
    if (isSuperUser != null && isSuperUser)
   Positioned(
-    bottom: 50 / 2, // Position the FAB so that it is half above the top of the nav bar
+    bottom: 60 / 2, // Position the FAB so that it is half above the top of the nav bar
     child: Align(
       alignment: Alignment.bottomCenter,
       child: Container(

@@ -6,10 +6,15 @@ const Schema = mongoose.Schema;
 
 const fieldLocationSchema = new mongoose.Schema({
     isMainField: Boolean,
+    fieldLocationName: String,
     location: { type: Schema.Types.ObjectId, ref: 'Location' },    
     events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
     fieldSize: Object.values(FieldPlayerOccupancySize),  
-    surface: Object.values(SurfaceType),
+    indoor: Boolean,
+    surface: { 
+        type: String, 
+        enum: Object.values(SurfaceType) 
+    },
     private: Boolean,    
     socialMediaApps: [{ type: Schema.Types.ObjectId, ref: 'SocialMediaApp' }],                    
     eventRatings: [{ type: Schema.Types.ObjectId, ref: 'EventRating' }],

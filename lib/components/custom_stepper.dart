@@ -15,7 +15,8 @@ class CustomStepper extends StatelessWidget {
   final List<CustomStepperModel>? stepperModel;
   final int? activeStep;
   final ButtonModel? confirmButton;
-  final ButtonModel? cancelButton;
+  final ButtonModel? backButton;
+  final Color? backButtonColor;
 
   const CustomStepper({
     Key? key,
@@ -25,13 +26,14 @@ class CustomStepper extends StatelessWidget {
     this.stepperModel,
     this.activeStep = 0,
     this.confirmButton,
-    this.cancelButton,
+    this.backButton,
+    this.backButtonColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final stepperLegth = (stepperModel?.length ?? 0);
-
+double screenWidth = MediaQuery.of(context).size.width;
     List<Widget> circularSteps = [];
     if (1 < stepperLegth) {
       for (int i = 0; i < stepperLegth; i++) {
@@ -113,61 +115,39 @@ class CustomStepper extends StatelessWidget {
             ],
           ),
           Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+  alignment: Alignment.bottomCenter,
+  child: Padding(
+    padding: const EdgeInsets.all(0.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Aligns children across the main axis with space between them
+      children: [
+        SizedBox(width: screenWidth * 0.1), // Left spacing
+        Container(
+          width: screenWidth / 3,
+          child: backButton != null ? 
+            BasicElevatedButton(
+              backgroundColor: backButtonColor!= null ? backButtonColor :AppColors.tsnRed,
+              text: backButton?.text ?? '',
+              fontSize: FontSizes.m(context),
+              onPressed: backButton?.onTap,
+            ) : Text("")
+        ),
+        Container(
+          width: screenWidth / 3,
+          child: confirmButton != null ? 
+            BasicElevatedButton(
+              backgroundColor: AppColors.tsnGreen,
+              text: confirmButton?.text ?? '',
+              fontSize: FontSizes.m(context),
+              onPressed: confirmButton?.onTap,
+            ) : Text('')
+        ),
+        SizedBox(width: screenWidth * 0.1), // Right spacing
+      ],
+    ),
+  ),
+)
 
-                    // FloatingActionButton.extended(
-                    //   isExtended: true,
-                    //   label: Text(
-                    //     cancelButton?.text ?? '',
-                    //     style: cancelButton?.textStyle ??
-                    //         const TextStyle(
-                    //             color: AppColors.whiteColor,
-                    //             fontSize: 18,
-                    //             fontWeight: FontWeight.w400),
-                    //   ),
-                    //   backgroundColor: cancelButton?.backgroundColor ??
-                    //       AppColors.orangeColorShade500,
-                    //   onPressed: cancelButton?.onTap,
-                    // ),
-                  if (cancelButton != null && confirmButton != null)
-                  if (confirmButton != null)
-                    BasicElevatedButton(
-                      backgroundColor: AppColors.tsnGreen,
-                      text: confirmButton?.text ?? '',
-                      fontSize: FontSizes.m(context),
-                      onPressed: confirmButton?.onTap,
-                    ),
-                    SizedBox(height: 10), // Space between buttons
-                  if (cancelButton != null)
-                    BasicElevatedButton(
-                        backgroundColor: AppColors.tsnRed,
-                        text: cancelButton?.text ?? '',
-                        fontSize: FontSizes.m(context),
-                        onPressed: cancelButton?.onTap,
-                    ),
-                  // FloatingActionButton.extended(
-                  //   isExtended: true,
-                  //   label: Text(
-                  //     confirmButton?.text ?? '',
-                  //     style: confirmButton?.textStyle ??
-                  //         const TextStyle(
-                  //             color: AppColors.whiteColor,
-                  //             fontSize: 18,
-                  //             fontWeight: FontWeight.w400),
-                  //   ),
-                  //   backgroundColor: confirmButton?.backgroundColor ??
-                  //       AppColors.orangeColorShade500,
-                  //   onPressed: confirmButton?.onTap,
-                  // ),
-                ],
-              ),
-            ),
-          ),
         ],
       ),
     );

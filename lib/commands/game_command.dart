@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:ffi';
 import '../constants.dart';
 import 'base_command.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 import '../models/pageModels/app_model.dart';
 import '../commands/event_command.dart';
 import '../models/events_model.dart';

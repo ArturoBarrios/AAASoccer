@@ -60,7 +60,7 @@ const resolvers = {
             console.log("updatePrice");
 
             //update
-            const price = await Price.findById(args.pricesId);
+            const price = await Price.findById(args.priceId);
             price.amount = args.amount;
             await price.save();
 
@@ -79,9 +79,15 @@ const resolvers = {
             console.log("createGame: ");
 
             console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
+            console.log("args.input.event.fieldLocations[0].fieldLocationName: "+ args.input.event.fieldLocations[0].fieldLocationName.toString());
             //server validation
-            if(args.input.event.fieldLocations[0].location.latitude != 0  
-               && args.input.event.fieldLocations[0].location.longitude != 0) {
+            //if location is available
+            if((args.input.event.fieldLocations[0].location.latitude != 0  
+               && args.input.event.fieldLocations[0].location.longitude != 0)
+               || (
+                args.input.event.fieldLocations[0].fieldLocationName.toString() != ''
+            )
+               ) {
                    //get user
                    const user = await User.findById(args.input.event.userParticipants[0].userId);
                    console.log("user retrieved from userId: " + user.toString());
@@ -108,25 +114,44 @@ const resolvers = {
        
                    await user.eventUserParticipants.push(eventUserParticipants._id);
                    await user.save();
-       
+                   
+                   var location = null;
+                   console.log("args.input.event.fieldLocations[0].location.locationId: ", args.input.event.fieldLocations[0].location.locationId == null)
+                   if(args.input.event.fieldLocations[0].location.locationId == null){
+                    location = new Location({
+                           name: args.input.event.fieldLocations[0].location.name,
+                           address: args.input.event.fieldLocations[0].location.address,
+                           latitude: args.input.event.fieldLocations[0].location.latitude,
+                           longitude: args.input.event.fieldLocations[0].location.longitude,
+                       });
+                       await location.save();
+                    }
+                    else{
+                        location = await Location.findById(args.input.event.fieldLocations[0].location.locationId);
+                    }
+                    console.log("location: ", location._id);
+                    //create new or get existing fieldLocation
                    console.log("args.input.event.fieldLocations.location: ", args.input.event.fieldLocations[0].location);
-                   const location = new Location({
-                       name: args.input.event.fieldLocations[0].location.name,
-                       address: args.input.event.fieldLocations[0].location.address,
-                       latitude: args.input.event.fieldLocations[0].location.latitude,
-                       longitude: args.input.event.fieldLocations[0].location.longitude,
-                   });
-                   await location.save();
-                   console.log("location: ", location._id);
-       
-                   const fieldLocations = new FieldLocation({
-                       isMainField: args.input.event.fieldLocations[0].isMainField,
-                       fieldAmenities: args.input.event.fieldLocations[0].fieldAmenities,
-                       location: location._id,
-                       fieldLocationRating: -1,
-                   });
-                   await fieldLocations.save();
-                   console.log("fieldLocations: ", fieldLocations._id);
+                   var fieldLocations = null;
+                   if(args.input.event.fieldLocations[0].fieldLocationId == null){
+                    console.log("new field created");
+           
+                    fieldLocations = new FieldLocation({
+                        fieldLocationName: args.input.event.fieldLocations[0].fieldLocationName,
+                        isMainField: args.input.event.fieldLocations[0].isMainField,
+                        fieldAmenities: args.input.event.fieldLocations[0].fieldAmenities,
+                        location: location._id,
+                        fieldLocationRating: -1,
+                        indoor: args.input.event.fieldLocations[0].indoor,
+                        surface: args.input.event.fieldLocations[0].surface,
+                    });
+                       await fieldLocations.save();
+                       console.log("fieldLocations: ", fieldLocations._id);
+                   }
+                   else{
+                    console.log("existing field retrieved");
+                       fieldLocations = await FieldLocation.findById(args.input.event.fieldLocations[0].fieldLocationId);
+                   }
        
                    console.log("hostAmenities: ", args.input.event.hostAmenities);
        
@@ -267,8 +292,13 @@ const resolvers = {
             console.log("updateUserOnboarding");
 
             //update
-            const user = await User.findById(args._id);
-            user.onboarded = args.onboarded;
+            const user = await User.findById(args.input.userId);
+            user.onboarded = args.input.onboarded;
+            user.preferredFoot = args.input.preferredFoot;
+            user.preferredPosition = args.input.preferredPosition;
+            user.skillLevel = args.input.skillLevel;
+            user.interestedIn = args.input.interestedIn;
+
             await user.save();
 
             // await user.populate('user');
@@ -285,24 +315,28 @@ const resolvers = {
             };
         },
         updateUserAccount: async (parent, args, context, info) => {
-            console.log("updateUser");
+            console.log("updateUserAccount");
 
             //update
-            // const user = await User.findById(args._id);
-            // user.onboarded = args.onboarded;
-            // await user.save();
+            const user = await User.findById(args.input.userId);
+            user.name = args.input.name;
+            user.birthdate = args.input.birthdate;
+            user.gender = args.input.gender;
+            
+            await user.save();
 
             // // await user.populate('user');
             // await user.populate('location');
 
 
             // console.log("updatedUser: ", user);
+            console.log("doneeee");
 
             return {
                 code: "200",
                 success: true,
                 message: "User email was successfully updated",
-                // user: user
+                user: user
             };
         },
         updateUsertermsAndPrivacy: async (parent, args, context, info) => {
@@ -464,6 +498,41 @@ const resolvers = {
         },
     },
     Query: {
+        getFieldLocationsNearby: async (parent, args, context, info) => {
+            console.log("getFieldLocationsNearby");
+            console.log("args.latitude: ", args.latitude);
+            console.log("args.longitude: ", args.longitude);
+            console.log("args.radius: ", args.radius);
+
+            const userLatitude = args.latitude;
+            const userLongitude = args.longitude;
+            const radius = args.radius;
+
+            const fieldLocations = await FieldLocation.find().populate('location');
+            // console.log("fieldLocations: ", fieldLocations);
+
+            const resFieldLocations = fieldLocations.filter(fieldLocation => {
+                // fieldLocation.populate('location');
+                console.log("fieldLocation: ", fieldLocation);
+                const locationLatitude = fieldLocation['location']['latitude'];
+                const locationLongitude = fieldLocation['location']['longitude'];
+                console.log("locationLatitude: ", locationLatitude);
+                const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, locationLatitude, locationLongitude);
+                console.log("distance: ", distance);
+                return distance <= radius;
+            });
+
+            console.log("resFieldLocations: ", resFieldLocations);
+
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully updated",
+                fieldLocations: resFieldLocations
+            };
+
+            
+        },
         allUserEventParticipants: async (parent, args, context, info) => {            
             console.log("allUserEventParticipants");
             console.log("startTime: ", args.startTime);
@@ -803,12 +872,16 @@ const resolvers = {
             const user = await User.findById(args._id)
                 .populate([
                     {
+                        path: 'location'
+                    },
+                    {
                         path: 'eventUserParticipants',
                         populate:
                             [
                                 {
-                                    path: 'user'
+                                    path: 'user'                                     
                                 },
+                                
                                 {
                                     path: 'event',
                                     populate: [
@@ -850,7 +923,7 @@ const resolvers = {
                 ]
                 );
 
-            console.log("user: ", user);
+            console.log("userrr: ", user);
 
             return {
                 code: 200,

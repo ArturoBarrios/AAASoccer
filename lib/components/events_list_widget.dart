@@ -82,24 +82,29 @@ class _EventsListWidgetState extends State<EventsListWidget> {
     // List<dynamic> events = widget.objectEventsDetails['team']['events']['data'] ?? [];
     print("EventsListWidget: " + widget.events.toString());
     double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
 
-    return Container(
+    return 
+    Container(
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey,
+          color: Colors.transparent,
         ),
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Column(
         children: <Widget>[
+          Align(
+                                    alignment: Alignment.centerLeft,
+                                    child:
           Text(
             'Event List',
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
             ),
-          ),
+          )),
          SizedBox(height: 10.0),
                    
                         
@@ -117,7 +122,8 @@ class _EventsListWidgetState extends State<EventsListWidget> {
                     itemCount: widget
                         .eventCards!.length, // The number of items in the list
                     itemBuilder: (context, index) {
-                      return IntrinsicWidth(
+                      return Container(
+                        width: screenWidth*.95,
                           // This will size the width based on the child's intrinsic size.
                           child: widget.eventCards![index]);
                     },

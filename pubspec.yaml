@@ -26,8 +26,7 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
-dependencies:
-  ferry: #[latest-version]
+dependencies:  
   gql_http_link: #[latest-version]
   flutter:
     sdk: flutter
@@ -38,51 +37,48 @@ dependencies:
   collection: any
   provider: ^6.0.2
   riverpod: ^2.3.6
-  amplify_flutter: ^0.5.0
-  amplify_datastore: ^0.5.0
-  amplify_auth_cognito: ^0.5.0
-  amplify_authenticator: ^0.1.0
-  amplify_api: ^0.5.0
+  amplify_flutter: ^1.0.0
+  amplify_auth_cognito: ^1.0.0
+  amplify_authenticator: ^1.5.1
+  amplify_api: ^1.0.0
   auto_size_text: ^3.0.0
   vector_math: ^2.1.2
   flutter_dotenv: ^5.0.2
-  faunadb_http: ^0.13.4
-  flutter_svg: ^2.0.5
-  flutter_svg_provider: ^1.0.3
-  http: ^0.13.5
+  flutter_svg: ^2.0.9
+  flutter_svg_provider:
+    git:
+      url: https://github.com/arigilder/flutter_svg_provider
+      ref: patch-1
+  http: ^1.1.0
   flutter_animated_dialog: ^2.0.1
   location: ^5.0.2+1
   onesignal_flutter: ^5.0.0
-
   firebase_core: ^2.4.1
   freezed_annotation: ^2.4.1
-  geolocator: ^9.0.2
+  geolocator: ^10.1.0
   geocoding: ^2.1.0
   flutter_stripe: ^9.3.0
   flutter_bloc: ^8.1.1
   equatable: ^2.0.5
-  google_maps_flutter: ^2.2.3
-  flutter_google_places: ^0.3.0
-  graphql_flutter: ^5.1.2
+  google_maps_flutter: ^2.2.3  
   url_launcher: ^6.1.9
   flip_card: ^0.7.0
   patterns_canvas: ^0.4.0
   image_picker: ^0.8.6+4
-  dots_indicator: ^2.1.0
-  introduction_screen: ^3.1.6
-  flutter_datetime_picker: ^1.5.1
+  dots_indicator: ^3.0.0
+  flutter_datetime_picker:
+    git: 
+      url: https://github.com/HasanAlqaisi/flutter_datetime_picker.git
   table_calendar: ^3.0.8
   firebase_analytics: ^10.4.4
   share_plus: ^7.1.0
-  geocoder: ^0.2.1
   path_provider: ^2.1.0
   pay: ^1.1.2
-  flutter_secure_storage: ^8.0.0
   # DI
   get_it: ^7.6.0
 
   # Twilio
-  twilio_flutter: ^0.0.9
+  
 
   # International phone number input field
   intl_phone_number_input: ^0.7.3+1
@@ -90,15 +86,13 @@ dependencies:
   # Mask input filed formatter
   mask_text_input_formatter: ^2.5.0
 
-  webview_flutter: ^4.2.2  
-  google_sign_in: '^4.5.1'
+  webview_flutter: ^4.2.2    
 
 dependency_overrides:
-  rxdart: ^0.27.1
+  
 
 
 dev_dependencies:
-  ferry_generator: #[latest-version]
   build_runner: #[latest-version]
   freezed: ^2.4.1
   json_serializable: ^6.6.2

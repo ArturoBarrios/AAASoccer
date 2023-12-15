@@ -20,6 +20,15 @@ class UserCommand extends BaseCommand {
     //iterate through events and find
   }
 
+  void updateUserAccountDetails(Map<String,dynamic> accountDetailsInput){
+    print("updateUserAccountDetails");
+    print("accountDetailsInput: "+accountDetailsInput.toString());
+    appModel.currentUser['name'] = accountDetailsInput['name'];
+    appModel.currentUser['birthdate'] = accountDetailsInput['birthdate'];
+    appModel.currentUser['gender'] = accountDetailsInput['gender'];
+
+  }
+
   Future<Map<String,dynamic>> getUserDetails(dynamic user, bool addToProfilePageModel) async {
     print("loadInitialData Profile: " + user.toString());
     Map<String,dynamic> getUserDetailsResp = {
@@ -85,10 +94,8 @@ class UserCommand extends BaseCommand {
 
     getUserDetailsResp['eventUserParticipants'] =
       user['eventUserParticipants'];
-    // getUserDetailsResp['teamUserParticipants'] =
-    //     user['teamUserParticipants']['data'];
-    getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
-
+    
+    // getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
     if(addToProfilePageModel){
       
       profilePageModel.isMine = getUserDetailsResp['isMine'];
@@ -96,8 +103,7 @@ class UserCommand extends BaseCommand {
       profilePageModel.objectImageInput = getUserDetailsResp['objectImageInput'];
       profilePageModel.eventUserParticipants = getUserDetailsResp['eventUserParticipants'];
       profilePageModel.teamUserParticipants = getUserDetailsResp['teamUserParticipants'];
-      profilePageModel.isProfilePrivate = getUserDetailsResp['isProfilePrivate'];
-    print("aaaaaa");
+      profilePageModel.isProfilePrivate = getUserDetailsResp['isProfilePrivate'];    
 
     }
       return getUserDetailsResp;
@@ -380,27 +386,18 @@ class UserCommand extends BaseCommand {
           'query': UserMutations().updateUsertermsAndPrivacy(userInput),
         }),
       );
-
-      print("response from updateUserOnboarding.....: ");
+      
 
       print(jsonDecode(response.body));
       print("response.statusCode: " + response.statusCode.toString());
-      if (response.statusCode != 200) {        
-        partialUpdateUserResponse["success"] = false;
-        partialUpdateUserResponse["message"] = "no user found";
-      } else {
-        
+      if (response.statusCode == 200) {                              
         final result = jsonDecode(response.body)['data']['updateUsertermsAndPrivacy'];
         partialUpdateUserResponse["data"] = null;
         if (result['success']) {
           partialUpdateUserResponse["success"] = true;
           partialUpdateUserResponse["message"] = "user found";
           partialUpdateUserResponse["data"] = result['user'];
-        }
-        else{
-          partialUpdateUserResponse["success"] = false;
-          partialUpdateUserResponse["message"] = "no user found";
-        }
+        }       
       }
       return partialUpdateUserResponse;
     } on ApiException catch (e) {
@@ -409,9 +406,55 @@ class UserCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> updateUserAccount(
+      dynamic userInput) async {
+    print("updateUserAccount");
+    print("userInput: " + userInput.toString());
+
+    Map<String, dynamic> updateUserAccountResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': UserMutations().updateUserAccount(userInput),
+        }),
+      );
+
+      print("response from updateUserAccount.....: ");
+
+      print(jsonDecode(response.body));
+      print("response.statusCode: " + response.statusCode.toString());
+      if (response.statusCode == 200) {        
+       
+        final result = jsonDecode(response.body)['data']['updateUserAccount'];
+        updateUserAccountResponse["data"] = null;
+        if (result['success']) {
+          dynamic userResp = result['user'];
+          updateUserAccountDetails(userResp);
+          updateUserAccountResponse["success"] = true;
+          updateUserAccountResponse["message"] = "user found";
+          updateUserAccountResponse["data"] = result['user'];
+        }
+              
+       
+      }
+      return updateUserAccountResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return updateUserAccountResponse;
+    }
+  }
   Future<Map<String, dynamic>> updateUserOnboarding(
       dynamic processedUserInput) async {
-    print("partialUpdateUser");
+    print("updateUserOnboarding");
     print("processedUserInput: " + processedUserInput.toString());
 
     Map<String, dynamic> partialUpdateUserResponse = {

@@ -13,10 +13,9 @@ class BasicElevatedButton extends StatefulWidget {
   final Color? textColor;
   final Function? onPressed;  
   final double? fontSize;
+  final bool? softWrap;
   
-
-
-  const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.customIcon, this.icon, this.iconColor, this.text, this.onPressed, this.fontSize, this.textColor }) : super(key: key);
+  const BasicElevatedButton({Key? key, this.height, this.width, this.backgroundColor, this.customIcon, this.icon, this.iconColor, this.text, this.onPressed, this.fontSize, this.textColor, this.softWrap }) : super(key: key);
 
   @override
   State<BasicElevatedButton> createState() => _BasicElevatedButton();
@@ -86,10 +85,12 @@ class _BasicElevatedButton extends State<BasicElevatedButton> {
               ),
               child: Text(
                 widget.text!,
+                softWrap: widget.softWrap == null ? true : widget.softWrap,
+                overflow: TextOverflow.visible,
                 textAlign: (widget.icon == null && widget.customIcon == null)
                     ? TextAlign.center
                     : TextAlign.start,  // Changed to start
-                style: TextStyle(fontSize: widget.fontSize, color: widget.textColor==null ? Colors.white : Colors.black),
+                style: TextStyle(fontSize: widget.fontSize, color: widget.textColor==null ? Colors.white : widget.textColor),
               ),
             ),
           ),

@@ -10,8 +10,8 @@ import '../graphql/queries/users.dart';
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 import '../models/pageModels/app_model.dart';
 import 'package:http/http.dart' as http;
 import '../graphql/mutations/locations.dart';

@@ -148,7 +148,7 @@ class _LocationCreateState extends State<LocationCreate> {
               : 'Create Game',
           stepperModel: stepperList,
           activeStep: activeStep,
-          cancelButton: ButtonModel(
+          backButton: ButtonModel(
             text: (activeStep == (stepperList.length - 1))
                 ? StringConstants.backBtn
                 : StringConstants.cancelBtn,

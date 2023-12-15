@@ -7,7 +7,6 @@ import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_api/amplify_api.dart';
 import '../commands/user_command.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
 import '../models/user_model.dart';
 
 class AmplifyAuthService {
