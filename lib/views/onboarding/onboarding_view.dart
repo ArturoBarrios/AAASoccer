@@ -149,7 +149,7 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
-    double paddingValue = 0;
+    double paddingValue = 16;
     double screenWidth = MediaQuery.of(context).size.width;
     final stepperList = [
       CustomStepperModel(
@@ -227,7 +227,7 @@ class _OnboardingViewState extends State<OnboardingView> {
               //     MainAxisSize.min, // Use the minimum space needed by children
               children: [
                 Padding(
-                    padding: EdgeInsets.fromLTRB(4, 0, 8, 4),
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                     child: Align(
                         alignment: Alignment.centerRight,
                         child: Container(

@@ -38,13 +38,13 @@ class CardFormScreen extends StatefulWidget {
 }
 
 class _CardFormScreenState extends State<CardFormScreen> {
-  bool isLoading = true;
+  bool isLoading = true;  
   bool isPaymentProcessing = false;
-  bool showCardForm = true;
+  bool showCardForm = false;
   List paymentMethods = [];  
-  dynamic selectedPaymentMethod;
-  // CardFormEditController cardFormEditController = CardFormEditController(
-  //       initialDetails: PaymentModel().cardFieldInputDetails);
+  dynamic selectedPaymentMethod = null;
+  CardFormEditController cardFormEditController = CardFormEditController(
+        initialDetails: PaymentModel().cardFieldInputDetails);
   late ScrollController _selectPaymentController = ScrollController();
   final FlipCardController flipCardController = FlipCardController();
   List waysToPay = [
@@ -61,11 +61,15 @@ class _CardFormScreenState extends State<CardFormScreen> {
     print("selectPaymentMethod");
     setState(() {
       selectedPaymentMethod = paymentMethod;
+      showCardForm = false;
     });
   }
 
   Future<void> createPaymentIntent() async {
-    setState(() {});
+    setState(() {
+      isPaymentProcessing = true;
+      isLoading = true;
+    });
     DateTime now = DateTime.now();
     String timestamp = now.millisecondsSinceEpoch.toString();
     Map<String, dynamic> currentUser = UserCommand().getAppModelUser();
@@ -98,8 +102,8 @@ class _CardFormScreenState extends State<CardFormScreen> {
             {'id': 1}
           ]),
     };
-    if (_selectedPayment == "Pay With Existing Card") {
-      createPaymentIntentInput['paymentMethodId'] = paymentMethods[0]['id'];
+    if (selectedPaymentMethod != null ) {
+      createPaymentIntentInput['paymentMethodId'] = selectedPaymentMethod['id'];
     }
     Map<String, dynamic> createPaymentIntentResp =
         await PaymentCommand().createPaymentIntent(createPaymentIntentInput);
@@ -128,7 +132,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
               await PaymentCommand().createUserObjectPayment(paymentInput);
           //payment went through
           if (createUserObjectPaymentResp['success']) {
-            EventCommand().updateViewModelsWithEvent(eventToAdd, true);
+            EventCommand().updateViewModelsWithEvent(eventToAdd, true, true);
             EventCommand().addUserToEventPageModel(eventToAdd, currentUser);
           }
         }
@@ -161,10 +165,14 @@ class _CardFormScreenState extends State<CardFormScreen> {
       //move on to next screen
 
       print("move on to next screen");
+      setState(() {
+      isPaymentProcessing = false;
+      isLoading = false;
+    });
 
       //go back
-      // Navigator.pop(context);
-      widget.callbackFunction();
+      Navigator.pop(context);
+      // widget.callbackFunction();
     }
   }
 
@@ -221,6 +229,8 @@ class _CardFormScreenState extends State<CardFormScreen> {
     await PaymentCommand().getCustomerDetails();
   }
 
+
+
   Future<void> getCustomerPaymentMethods() async {
     Map<String, dynamic> getCustomerPaymentMethodsResp =
         await PaymentCommand().getCustomerPaymentMethods();
@@ -248,14 +258,33 @@ class _CardFormScreenState extends State<CardFormScreen> {
 
         timer.cancel();
         isLoading = false;
+
         paymentMethods = getCustomerPaymentMethodsResp['data'];
-        print("paymentMethods: " + paymentMethods.toString());
+        paymentMethods = paymentMethods.map<Map<String, dynamic>>((paymentMethod) {
+          print("paymentMethod: " + paymentMethod.toString());
+
+          var card = paymentMethod['card'];
+          return {
+            'id': paymentMethod['id'],
+            'brand': card['brand'],
+            'last4': card['last4'],
+            'expMonth': card['exp_month'],
+            'expYear': card['exp_year'],
+            'country': card['country']
+          };
+        }).toList();    
+        print("paymentMethodssss: " + paymentMethods.toString());
       });
     } else {
       // _selectedPayment = "Pay With New Card";
-      setState(() {
-        isLoading = false;
-      });
+      dynamic currentUser = UserCommand().getAppModelUser();
+      dynamic createCustomerResp = await PaymentCommand().createCustomer(currentUser['email']);
+      if(createCustomerResp['success']){
+        setState(() {
+          isLoading = false;
+        });
+
+      }
     }
   }
 
@@ -275,11 +304,11 @@ class _CardFormScreenState extends State<CardFormScreen> {
     loadInitialData();
   }
 
-  void toggleShowCardForm() {
-    setState(() {
-      showCardForm = !showCardForm;
-    });
-  }
+  // void toggleShowCardForm() {
+  //   setState(() {
+  //     showCardForm = !showCardForm;
+  //   });
+  // }
 
 
   
@@ -361,7 +390,11 @@ class _CardFormScreenState extends State<CardFormScreen> {
 
 
 
-              CreditCardChooseAddWidget(paymentMethods: paymentMethods, selectCard: selectPaymentMethod),
+              CreditCardChooseAddWidget(paymentMethods: paymentMethods, selectCard: selectPaymentMethod, showCardForm: () {
+                setState(() {
+                  showCardForm = !showCardForm;
+                });
+              },),
               //  Column(
               //         children: [
               //           Container(
@@ -525,7 +558,9 @@ class _CardFormScreenState extends State<CardFormScreen> {
               //           ),
               //         ],
               //       ),                 
-                  // paymentWidgetToShow(status)
+              if(showCardForm)
+                  paymentWidgetToShow(status)
+          //         if(showCardForm)
           //         Padding(
           // padding: const EdgeInsets.all(20),
           // child: Column(
@@ -551,7 +586,8 @@ class _CardFormScreenState extends State<CardFormScreen> {
             onPressed: () async {
               createPaymentIntent();
             },
-            backgroundColor: selectedPaymentMethod != null ? AppColors.tsnGreen : AppColors.tsnGrey,
+            //also make sure field is filled out, but I think package takes care of this for us
+            backgroundColor: !isPaymentProcessing  ? AppColors.tsnGreen : AppColors.tsnGrey,
             text: 'Pay',
           ),
         ),

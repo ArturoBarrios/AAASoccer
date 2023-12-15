@@ -77,7 +77,7 @@ class _PlaygroundWidgetState extends State<PlaygroundWidget> {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
-          CreditCardChooseAddWidget(paymentMethods: [], selectCard: () {print("select card");}),
+          CreditCardChooseAddWidget(paymentMethods: [], selectCard: () {print("select card");}, showCardForm: () {print("show card form");}),
           RatingWidget(rating: 5),
           CustomFooter(),
           ConstrainedBox(

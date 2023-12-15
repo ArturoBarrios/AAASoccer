@@ -84,7 +84,7 @@ class _TrainingCreateState extends State<TrainingCreate> {
       if (createTrainingResp['success']) {
         dynamic createdTraining = createTrainingResp['data'];
         await EventCommand()
-            .updateViewModelsWithEvent(createdTraining['event'], true);
+            .updateViewModelsWithEvent(createdTraining['event'], true, true);
 
         if (context.mounted) {
           Navigator.pop(

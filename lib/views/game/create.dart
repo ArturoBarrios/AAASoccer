@@ -164,7 +164,7 @@ final teamPriceController = TextEditingController();
       if (createPickupGameResp['success']) {
         Map<String, dynamic> createdEvent = createPickupGameResp['data'];
         await EventCommand()
-            .updateViewModelsWithEvent(createdEvent, true);
+            .updateViewModelsWithEvent(createdEvent, true, true);
 
         
           // Navigator.pop(

@@ -296,7 +296,7 @@ class _PlayerListState extends State<PlayerList> {
           dynamic playerDetails = snapshot.data;
           return TSNPlayerLineupCard(
             playerCardDetails: playerDetails,
-            backgroundColor: AppColors.tsnAlmostBlack,     
+            backgroundColor: AppColors.tsnGreyerWhite,     
           );      
         }
       },

@@ -164,7 +164,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
         // dynamic eventToRemove = removeUserFromEventResp['data'];
 
-        EventCommand().updateViewModelsWithEvent(event, false);
+        EventCommand().updateViewModelsWithEvent(event, false, true);
         // setState(() {
           EventCommand().removeUserFromEventPageModel(event, userObject);
         // });
@@ -392,7 +392,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
           return BasicElevatedButton(
             backgroundColor: AppColors.tsnGreen,
             text: "Pay to Join Event",
-            fontSize: FontSizes.xxs(context),
+            // fontSize: FontSizes.xxs(context),
             onPressed: () async {
               // purchaseEvent(context, event);
               purchaseCheck(context, event);
