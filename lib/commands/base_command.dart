@@ -93,6 +93,7 @@ class BaseCommand {
   void initializeData() {}
 
   onTapBottomNav(context, key, item) {
+    print("onTapBottomNav");
     appModel.onTapBottomNav(context, key, item);
   }    
 

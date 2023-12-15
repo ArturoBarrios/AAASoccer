@@ -179,7 +179,9 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                     Expanded(
                                         flex: 9,
                                         child: BasicElevatedButton(
-                                          icon: Icons.person,                                          
+                                          icon: Icons.person,   
+                                          softWrap: false,
+                                          iconColor: AppColors.tsnGrey,                                       
                                           backgroundColor:
                                               AppColors.tsnDarkGrey,
                                           text: event.numberOfParticipants.toString()
@@ -187,7 +189,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                                           
                                           fontSize: FontSizes.xxs(context),
                                         )),
-                                    SizedBox(width: 6),
+                                    SizedBox(width: 4),
                                     //join widget
                                     Expanded(
                                       flex: 11,

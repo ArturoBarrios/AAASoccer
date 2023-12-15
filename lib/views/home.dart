@@ -478,48 +478,52 @@ class _Home extends State<Home> {
  
 
 
-Container getDayText(int index, dynamic selectedKey) {
+Container getDayText(int index, dynamic selectedKey) {  
   print("getDayText: " + index.toString());
-  List objectsList = HomePageCommand().getHomePageObjectsList();
-  print("objectsList[index]: " + objectsList[index].toString());
+    List objectsList = HomePageCommand().getHomePageObjectsList();
+    print("objectsList length: " + objectsList.length.toString());  
+    // print("objectsList[index]: " + objectsList[index].toString());  
 
-  dynamic eventObject = objectsList[index];
-  dynamic previousObject = index == 0 ? null : objectsList[index - 1];
-  print("Constants.MYEVENTS.toString(): " + Constants.MYEVENTS.toString());
-  print("selectedKey: " + selectedKey.toString());
-  if (selectedKey.toString() == Constants.MYEVENTS.toString()) {
-    eventObject = eventObject['event'];
-    previousObject = previousObject == null ? null : previousObject['event'];
-  }
-  DateTime eventDate = DateTime.fromMillisecondsSinceEpoch(int.parse(eventObject['startTime']));
-  DateTime today = DateTime.now();
-  DateTime tomorrow = DateTime.now().add(Duration(days: 1));
-
-  // Check if the event is today or tomorrow
-  bool isToday = eventDate.year == today.year &&
-                 eventDate.month == today.month &&
-                 eventDate.day == today.day;
-  bool isTomorrow = eventDate.year == tomorrow.year &&
-                    eventDate.month == tomorrow.month &&
-                    eventDate.day == tomorrow.day;
-
-  // For the first index or if the date is different from the previous event
-  if (index == 0 || (index > 0 && (previousObject == null || !isSameDay(eventDate, previousObject['startTime'])))) {
-    String dayText;
-    if (isToday) {
-      dayText = 'Today';
-    } else if (isTomorrow) {
-      dayText = 'Tomorrow';
-    } else {
-      dayText = DateFormat('EEEE, MMMM d').format(eventDate);
+    dynamic eventObject = objectsList[index];
+    dynamic previousObject = index == 0 ? null : objectsList[index - 1];
+    print("Constants.MYEVENTS.toString(): " + Constants.MYEVENTS.toString());
+    print("selectedKey: " + selectedKey.toString());
+    if (selectedKey.toString() == Constants.MYEVENTS.toString()) {
+      eventObject = eventObject['event'];
+      previousObject = previousObject == null ? null : previousObject['event'];
     }
-    return Container(
-      child: Text(dayText),
-    );
-  } else {
-    // Return an empty Container for the same day
-    return Container();
-  }
+    DateTime eventDate = DateTime.fromMillisecondsSinceEpoch(int.parse(eventObject['startTime']));
+    DateTime today = DateTime.now();
+    DateTime tomorrow = DateTime.now().add(Duration(days: 1));
+
+    // Check if the event is today or tomorrow
+    bool isToday = eventDate.year == today.year &&
+                  eventDate.month == today.month &&
+                  eventDate.day == today.day;
+    bool isTomorrow = eventDate.year == tomorrow.year &&
+                      eventDate.month == tomorrow.month &&
+                      eventDate.day == tomorrow.day;
+
+    // For the first index or if the date is different from the previous event
+    if (index == 0 || (index > 0 && (previousObject == null || !isSameDay(eventDate, previousObject['startTime'])))) {
+      String dayText;
+      if (isToday) {
+        dayText = 'Today';
+      } else if (isTomorrow) {
+        dayText = 'Tomorrow';
+      } else {
+        dayText = DateFormat('EEEE, MMMM d').format(eventDate);
+      }
+      return Container(
+        child: Text(dayText),
+      );
+    } else {
+      // Return an empty Container for the same day
+      return Container();
+    }
+
+  
+
 }
 
 bool isSameDay(DateTime currentDate, String previousDateMillis) {

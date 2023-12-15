@@ -98,6 +98,7 @@ class AppModel extends ChangeNotifier {
       'icon': Icons.explore,
       'selectAction': (BuildContext context) async {
         print("in selectAction");
+        
         await HomePageCommand().eventTypeTapped(Constants.PICKUP);
         await HomePageCommand().setCards();
       },

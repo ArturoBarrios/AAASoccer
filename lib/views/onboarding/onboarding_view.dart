@@ -241,8 +241,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                                 });
                               },
                               icon: Icons.close,
+                              iconColor: AppColors.tsnRed,
                               backgroundColor: AppColors.tsnDarkGrey,
                               text: "Skip",
+                              textColor: AppColors.tsnRed,
                               fontSize: FontSizes.xxs(context),
                             )))),
                 // SizedBox(height: 20),

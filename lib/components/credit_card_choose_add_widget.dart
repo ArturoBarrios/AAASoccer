@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/models/componentModels/payment_model.dart';
+import 'package:soccermadeeasy/styles/colors.dart';
 
-class CreditCardChooseAddWidget extends StatefulWidget {
+class CreditCardChooseAddWidget extends StatefulWidget {  
+  const CreditCardChooseAddWidget(
+    {Key? key, required this.paymentMethods, required this.selectCard})
+    : super(key: key);
+
+  final List paymentMethods;
+  final Function? selectCard;
+
   @override
-  _CreditCardChooseAddWidgetState createState() => _CreditCardChooseAddWidgetState();
+  State<CreditCardChooseAddWidget> createState() => _CreditCardChooseAddWidgetState();
 }
 
 class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
-  bool isExpanded = false;
+  bool isExpanded = true;
   int? selectedCardIndex;
+  CardFormEditController cardFormEditController = CardFormEditController(
+        initialDetails: PaymentModel().cardFieldInputDetails);
+
 
   final List<Map<String, String>> cards = [
     {'name': 'Visa', 'last4': '1234', 'exp': '08/2024'},
@@ -32,7 +46,8 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
                 isExpanded = !isExpanded;
               });
             },
-            child: Container(
+            child:
+             Container(
               width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,22 +106,50 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
               ],
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).primaryColor,
-                  onPrimary: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  minimumSize: Size(double.infinity, 50),
+  padding: EdgeInsets.symmetric(horizontal: 16.0),
+  child: BasicElevatedButton(
+    backgroundColor: AppColors.tsnGreen,
+    onPressed: () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // Calculate the width and height based on screen size
+          double width = MediaQuery.of(context).size.width * 0.9; // 90% of screen width
+          double height = MediaQuery.of(context).size.height * 0.6; // 60% of screen height
+
+          return Dialog(
+            insetPadding: EdgeInsets.all(10), // Add padding around the dialog if needed
+            child: Container(
+              width: width,
+              height: height,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Allows the column to size itself to its children
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('Add Card', style: Theme.of(context).textTheme.headline5),
+                    const SizedBox(height: 20),
+                    CardFormField(
+                      controller: cardFormEditController,
+                    ),
+                    const SizedBox(height: 10),
+                    // Additional buttons or content here
+                  ],
                 ),
-                onPressed: () {
-                  print("add new card pressed");
-                },
-                child: Text('Add New Card'),
               ),
             ),
+          );
+        },
+      );
+    },
+    textColor: AppColors.tsnWhite,
+    text: 'Add New Card',
+  ),
+),
+
+
           ],
         ],
       ),
