@@ -112,6 +112,44 @@ exports.stripeAttachPaymentMethod = functions.https.onRequest(async (req, res) =
 });
 
 
+exports.createPaymentMethod = functions.https.onRequest(async (req, res) => {
+    try{
+        
+        const paymentMethod = await stripe.paymentMethods.create({
+            type: 'card',
+            card: {
+            number: req.body.card_number,
+            exp_month: req.body.exp_month,
+            exp_year: req.body.exp_year,
+            cvc: req.body.cvc,
+            },
+        });  
+    
+        res.status(200).send({ success: true, customer: paymentMethod });
+        
+
+    } catch (error) {
+        res.status(404).send({ success: false, error: error.message })
+    }
+
+});
+
+exports.createCustomer = functions.https.onRequest(async (req, res) => {
+    try{
+        const customer = await stripe.customers.create({
+            email: req.body.email
+        });    
+    
+        res.status(200).send({ success: true, customer: customer });
+        
+
+    } catch (error) {
+        res.status(404).send({ success: false, error: error.message })
+    }
+
+});
+
+
 exports.stripePaymentIntentRequest = functions.https.onRequest(async (req, res) => {
     try {
         let customerId;

@@ -136,6 +136,11 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
                     ),
                     const SizedBox(height: 10),
                     // Additional buttons or content here
+                    ElevatedButton(
+                    onPressed: () async {
+                      // await createPaymentIntent();
+                    },
+                    child: const Text('Add Card'))
                   ],
                 ),
               ),

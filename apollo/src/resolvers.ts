@@ -651,7 +651,10 @@ const resolvers = {
                 {
                     path: 'userParticipants',
                     populate: {
-                        path: 'user'
+                        path: 'user',
+                        populate: {
+                            path: 'eventUserParticipants',
+                        }
                     }
                 },
                 {

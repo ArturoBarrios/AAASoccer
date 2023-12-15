@@ -29,7 +29,7 @@ class _PaymentScreen extends State<PaymentScreen> {
           TextButton(
             onPressed: () async {
               print("payment button pressed");
-             PaymentCommand().testPayment();
+            //  PaymentCommand().testPayment();
             },
             child: Text('pay button!'),
           )

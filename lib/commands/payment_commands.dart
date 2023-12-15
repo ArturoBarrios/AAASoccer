@@ -104,6 +104,56 @@ class PaymentCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> createPaymentMethod(
+      dynamic createPaymentMethodInput) async {
+    print("createPaymentMethod");
+    print("createPaymentMethodInput: $createPaymentMethodInput");
+    Map<String, dynamic> createPaymentMethodResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+      Map<String, dynamic> createPaymentMethodResult = await _callStripeCreatePaymentMethod(createPaymentMethodInput);
+      print("createPaymentMethodResult: $createPaymentMethodResult");
+      if(createPaymentMethodResult['success']){
+        createPaymentMethodResp['success'] = true;
+        createPaymentMethodResp['message'] = "Customer Created";
+        createPaymentMethodResp['data'] = createPaymentMethodResult['data'];
+      }
+      return createPaymentMethodResp;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return createPaymentMethodResp;
+    }
+  }
+
+  Future<Map<String, dynamic>> createCustomer(
+      dynamic createCustomerInput) async {
+    print("createCustomer");
+    print("createCustomerInput: $createCustomerInput");
+    Map<String, dynamic> createCustomerResp = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+
+    try{
+      Map<String, dynamic> createCustomerResult = await _callStripeCreateCustomer(createCustomerInput);
+      print("createCustomerResult: $createCustomerResult");
+      if(createCustomerResult['success']){
+        createCustomerResp['success'] = true;
+        createCustomerResp['message'] = "Customer Created";
+        createCustomerResp['data'] = createCustomerResult['data'];
+      }
+      return createCustomerResp;
+    } on Exception catch (e) {
+      print('Mutation failed: $e');
+      return createCustomerResp;
+    }
+  }
+
   Future<Map<String, dynamic>> createPaymentIntent(
       dynamic createPaymentIntentInput) async {
     print("createPaymentIntent");
@@ -298,6 +348,51 @@ class PaymentCommand extends BaseCommand {
     return json.decode(response.body);
   }
 
+  Future<Map<String, dynamic>> _callStripeCreatePaymentMethod(
+    dynamic createPaymentInput) async {
+    try {
+      print("createPaymentInput: $createPaymentInput");
+
+      final response = await http.post(
+          Uri.parse(
+              'https://us-central1-soccer-app-a9060.cloudfunctions.net/createPaymentMethod'),
+          body: {
+            'card_number': createPaymentInput['card_number'],
+            'exp_month': createPaymentInput['exp_month'],
+            'exp_year': createPaymentInput['exp_year'],
+            'cvc': createPaymentInput['cvc'],            
+          });
+
+      print("return value: $response");
+      
+      return json.decode(response.body);
+    } on FormatException catch (e) {
+      print("error: $e");
+      return {};
+    }
+  }
+  
+  Future<Map<String, dynamic>> _callStripeCreateCustomer(
+      dynamic createCustomerInput) async {
+    try {
+      print("createCustomerInput: $createCustomerInput");
+
+      final response = await http.post(
+          Uri.parse(
+              'https://us-central1-soccer-app-a9060.cloudfunctions.net/createCustomer'),
+          body: {
+            'email': createCustomerInput['email'],            
+          });
+
+      print("return value: $response");
+
+      return json.decode(response.body);
+    } on FormatException catch (e) {
+      print("error: $e");
+      return {};
+    }
+  }
+
   Future<Map<String, dynamic>> _callStripeAttachPaymentMethod(
       {required String paymentMethodId, required String customerId}) async {
     try {
@@ -402,14 +497,7 @@ class PaymentCommand extends BaseCommand {
     }
   }
 
-  Future<void> testPayment() async {
-    await createPaymentMethod();
-  }
 
-  Future<void> createPaymentMethod() async {
-    // final paymentMethod =
-    //               await Stripe.instance.createPaymentMethod(PaymentMethodParams.card());
-  }
 
   Future<Map<String, dynamic>> updatePrice(dynamic priceObject) async {
     print("updatePrice");

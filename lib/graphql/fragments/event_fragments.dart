@@ -114,7 +114,10 @@ class EventFragments {
           name
           email
           username
-          userType          
+          userType  
+          eventUserParticipants{
+            _id            
+          }        
         }          
       }
       payments{        
