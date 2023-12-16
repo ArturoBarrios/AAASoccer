@@ -22,6 +22,15 @@ class Constants {
  ];
 
   static const List privateBetaProfileImages = [
+    "Profile1.png",
+    "Profile2.png",
+    "Profile3.png",
+    "Profile4.png",
+    "Profile5.png",
+    "Profile6.png",
+    "Profile7.png",
+    "Profile8.png",
+    "Profile9.png"
 
   ];
 

@@ -515,7 +515,8 @@ Container getDayText(int index, dynamic selectedKey) {
         dayText = DateFormat('EEEE, MMMM d').format(eventDate);
       }
       return Container(
-        child: Text(dayText),
+        child: Text(dayText, style: TextStyle(fontSize: FontSizes.lg(context), 
+          fontWeight: FontWeight.bold, color: AppColors.tsnDarkGrey )),
       );
     } else {
       // Return an empty Container for the same day
@@ -809,11 +810,14 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
                                         physics:
                                             AlwaysScrollableScrollPhysics(),
                                         itemBuilder: (_, index) => 
-                                       
+                                       Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 0, 0, 16),
+                                            child:
                                                 Column(children: [
                                                    Padding(
                                             padding: EdgeInsets.fromLTRB(
-                                                12, 0, 0, 12),
+                                                12, 0, 0, 0),
                                             child:
                                              Align(
                                                 alignment: Alignment.centerLeft,
@@ -832,7 +836,7 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
                                                   )
                                                   ),
                                                   cards[index],
-                                                ]))
+                                                ])))
                                         )
                               ]))
                               )

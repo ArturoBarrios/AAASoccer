@@ -467,6 +467,7 @@ const resolvers = {
                 location: location._id,
                 gender: args.input.user.gender,
                 hostRating: -1,
+                profileImageIndex: args.input.user.profileImageIndex
 
             });
             await createdUser.save();

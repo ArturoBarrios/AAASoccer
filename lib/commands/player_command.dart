@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:math';
+import 'package:soccermadeeasy/constants.dart';
 
 import 'base_command.dart';
 import 'package:amplify_api/amplify_api.dart';
@@ -72,6 +74,10 @@ class PlayerCommand extends BaseCommand {
       Map<String, dynamic> locationInput,
       bool withTeam) async {
     print("createPlayer");
+    //assign random profileImageIndex number
+    Random random = Random();
+    userInput['profileImageIndex'] = random.nextInt(Constants.privateBetaProfileImages.length);
+    
     Map<String, dynamic> createPlayerResponse = {
       "success": false,
       "message": "Default Error",

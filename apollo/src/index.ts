@@ -192,6 +192,7 @@ input UserInput {
   hasAcceptedTermsAndConditions: Boolean 
   hasAcceptedPrivacyPolicy: Boolean 
   onboarded: Boolean
+  profileImageIndex: Int
 
 }
 

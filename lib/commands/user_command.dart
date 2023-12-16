@@ -51,11 +51,11 @@ class UserCommand extends BaseCommand {
       print("is mineeeee");
       user = appModel.currentUser;
       getUserDetailsResp['isMine'] = true;
-      imageUrl = UserCommand().getProfileImage();      
-      // profilePageModel.user = UserCommand().getAppModelUser();
+      imageUrl = '';//UserCommand().getProfileImage();            
 
       if (imageUrl == '') {
-        String? key = user['mainImageKey'];
+        String? key = Constants.privateBetaProfileImages[user['profileImageIndex']];//user['mainImageKey'];
+        print("currentUser keyyyyy: $key");
         if (key != null) {
           Map<String, dynamic> getUserProfileImageResp =
               await ImagesCommand().getImage(key);
@@ -73,8 +73,8 @@ class UserCommand extends BaseCommand {
       if (findMyUserByIdResp['success']) {
         profilePageModel.user = findMyUserByIdResp['data'];
         user = findMyUserByIdResp['data'];
-        String? key = user['mainImageKey'];
-        print("key: $key");
+        String? key = Constants.privateBetaProfileImages[user['profileImageIndex']];//user['mainImageKey'];
+        print("keyyyyy: $key");
         if (key != null) {
           Map<String, dynamic> getUserProfileImageResp =
               await ImagesCommand().getImage(key);
