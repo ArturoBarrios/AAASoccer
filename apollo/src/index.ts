@@ -478,9 +478,9 @@ type User  {
   preferredFoot: String
   preferredPosition: String
   skillLevel: String
-  interestedIn: String
-  
+  interestedIn: String  
   hostRating: Int
+  profileImageIndex: Int
 }
 
 type Request {

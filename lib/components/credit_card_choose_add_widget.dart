@@ -64,6 +64,7 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
             onTap: () {
               setState(() {
                 isExpanded = !isExpanded;
+                widget.showCardForm!(false);
               });
             },
             child:
@@ -137,7 +138,7 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
     backgroundColor: AppColors.tsnGreen,
     onPressed: () {
       print("add card pressed");
-      widget.showCardForm!();
+      widget.showCardForm!(true);
       isExpanded = false;
       // showDialog(
       //   context: context,

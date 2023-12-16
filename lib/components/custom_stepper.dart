@@ -117,36 +117,42 @@ double screenWidth = MediaQuery.of(context).size.width;
           Align(
   alignment: Alignment.bottomCenter,
   child: Padding(
-    padding: const EdgeInsets.all(0.0),
+    padding: const EdgeInsets.symmetric(horizontal: 16.0), // Horizontal padding around the edges
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Aligns children across the main axis with space between them
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Evenly space the children across the row
       children: [
-        SizedBox(width: screenWidth * 0.1), // Left spacing
-        Container(
-          width: screenWidth / 3,
-          child: backButton != null ? 
-            BasicElevatedButton(
-              backgroundColor: backButtonColor!= null ? backButtonColor :AppColors.tsnRed,
-              text: backButton?.text ?? '',
-              fontSize: FontSizes.m(context),
-              onPressed: backButton?.onTap,
-            ) : Text("")
-        ),
-        Container(
-          width: screenWidth / 3,
-          child: confirmButton != null ? 
-            BasicElevatedButton(
-              backgroundColor: AppColors.tsnGreen,
-              text: confirmButton?.text ?? '',
-              fontSize: FontSizes.m(context),
-              onPressed: confirmButton?.onTap,
-            ) : Text('')
-        ),
-        SizedBox(width: screenWidth * 0.1), // Right spacing
+        // Use Flexible instead of Container with fixed width
+        if (backButton != null) 
+          Flexible(
+            flex: 1, // Flex factor
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0), // Padding between buttons
+              child: BasicElevatedButton(
+                backgroundColor: backButtonColor != null ? backButtonColor : AppColors.tsnRed,
+                text: backButton?.text ?? '',
+                fontSize: FontSizes.m(context),
+                onPressed: backButton?.onTap,
+              ),
+            ),
+          ),
+        if (confirmButton != null) 
+          Flexible(
+            flex: 1, // Flex factor
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0), // Padding between buttons
+              child: BasicElevatedButton(
+                backgroundColor: AppColors.tsnGreen,
+                text: confirmButton?.text ?? '',
+                fontSize: FontSizes.m(context),
+                onPressed: confirmButton?.onTap,
+              ),
+            ),
+          ),
       ],
     ),
   ),
 )
+
 
         ],
       ),

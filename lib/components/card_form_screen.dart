@@ -178,8 +178,8 @@ class _CardFormScreenState extends State<CardFormScreen> {
 
   Widget paymentWidgetToShow(PaymentStatusType status) {
     print("PaymentType status to show: " + status.name);
-    CardFormEditController controller = CardFormEditController(
-        initialDetails: PaymentModel().cardFieldInputDetails);
+    // CardFormEditController controller = CardFormEditController(
+    //     initialDetails: PaymentModel().cardFieldInputDetails);
     if (status.name == PaymentStatus.initial.name) {
       return Padding(
           padding: const EdgeInsets.all(20),
@@ -190,7 +190,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 Text('Card Form', style: Theme.of(context).textTheme.headline5),
                 const SizedBox(height: 20),
                 CardFormField(
-                  controller: controller,
+                  controller: cardFormEditController,
                 ),
                 const SizedBox(height: 10),
                 // ElevatedButton(
@@ -295,10 +295,20 @@ class _CardFormScreenState extends State<CardFormScreen> {
     await getCustomerPaymentMethods();
   }
 
+  void update() => setState(() {});
+
+  @override
+  void dispose() {
+    cardFormEditController.removeListener(update);
+    cardFormEditController.dispose();
+    super.dispose();
+}
+
   @override
   void initState() {
     super.initState();
     isLoading = true;
+    cardFormEditController.addListener(update);
     print("card form screen initState()");
 
     loadInitialData();
@@ -317,9 +327,9 @@ class _CardFormScreenState extends State<CardFormScreen> {
     PaymentStatusType status = context
         .select<PaymentModel, PaymentStatusType>((value) => value.status);
 
-    CardFieldInputDetails _cardFieldInputDetails =
-        context.select<PaymentModel, CardFieldInputDetails>(
-            (value) => value.cardFieldInputDetails);
+    // CardFieldInputDetails _cardFieldInputDetails =
+    //     context.select<PaymentModel, CardFieldInputDetails>(
+    //         (value) => value.cardFieldInputDetails);
 
     Widget child;
     return Scaffold(
@@ -390,9 +400,9 @@ class _CardFormScreenState extends State<CardFormScreen> {
 
 
 
-              CreditCardChooseAddWidget(paymentMethods: paymentMethods, selectCard: selectPaymentMethod, showCardForm: () {
+              CreditCardChooseAddWidget(paymentMethods: paymentMethods, selectCard: selectPaymentMethod, showCardForm: (bool showCardFormValue) {
                 setState(() {
-                  showCardForm = !showCardForm;
+                  showCardForm = showCardFormValue;
                 });
               },),
               //  Column(
@@ -557,7 +567,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
               //                     ))),
               //           ),
               //         ],
-              //       ),                 
+              //       ),                  
               if(showCardForm)
                   paymentWidgetToShow(status)
           //         if(showCardForm)
@@ -587,7 +597,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
               createPaymentIntent();
             },
             //also make sure field is filled out, but I think package takes care of this for us
-            backgroundColor: !isPaymentProcessing  ? AppColors.tsnGreen : AppColors.tsnGrey,
+            backgroundColor: !isPaymentProcessing && cardFormEditController.details.complete   ? AppColors.tsnGreen : AppColors.tsnGrey,
             text: 'Pay',
           ),
         ),
