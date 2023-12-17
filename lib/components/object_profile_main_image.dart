@@ -66,53 +66,53 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
     return Container(
       child: GestureDetector(
         onTap: () async {
-          List<dynamic> primaryList =
-              widget.imageChoices.map((choice) => choice.values.first).toList();
+          // List<dynamic> primaryList =
+          //     widget.imageChoices.map((choice) => choice.values.first).toList();
 
-          List<dynamic> secondaryList = [];
-          Map<int, dynamic>? result = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AnimatedDialog(
-                  details: const {"title": "Image Options"},
-                  items: primaryList,
-                  singleSelect: true,
-                  secondaryItems: secondaryList,
-                  goToFunctions: const []);
-            },
-          );
-          if (result != null && result.isNotEmpty) {
-            if (result.entries.first.key == 2) {
-              dynamic currentUser = UserCommand().getAppModelUser();
-              Map<String, dynamic> allImagesFromUserResp =
-                  ImagesCommand().allImagesFromUser(currentUser);
-              var imagesData = allImagesFromUserResp['data'] as List;
-              var imagesUrls =
-                  imagesData.map((e) => e['signedUrl'] as String).toList();
-              final result = await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AppImagesGallery(
-                    imagesUrls: imagesUrls,
-                  ),
-                  fullscreenDialog: true,
-                ),
-              );
-              if (result != null) {
-                var selectedIndex = result as int;
-                var imageToadd = imagesData[selectedIndex];
-                addImageToProfile(imageToadd);
-              }
-            } else {
-              widget.chooseImage(
-                null,//null because we already have access to user
-                Constants.USER,
-                result,
-                primaryList,
-                secondaryList,
-                addImageToProfile,
-              );
-            }
-          }
+          // List<dynamic> secondaryList = [];
+          // Map<int, dynamic>? result = await showDialog(
+          //   context: context,
+          //   builder: (BuildContext context) {
+          //     return AnimatedDialog(
+          //         details: const {"title": "Image Options"},
+          //         items: primaryList,
+          //         singleSelect: true,
+          //         secondaryItems: secondaryList,
+          //         goToFunctions: const []);
+          //   },
+          // );
+          // if (result != null && result.isNotEmpty) {
+          //   if (result.entries.first.key == 2) {
+          //     dynamic currentUser = UserCommand().getAppModelUser();
+          //     Map<String, dynamic> allImagesFromUserResp =
+          //         ImagesCommand().allImagesFromUser(currentUser);
+          //     var imagesData = allImagesFromUserResp['data'] as List;
+          //     var imagesUrls =
+          //         imagesData.map((e) => e['signedUrl'] as String).toList();
+          //     final result = await Navigator.of(context).push(
+          //       MaterialPageRoute(
+          //         builder: (_) => AppImagesGallery(
+          //           imagesUrls: imagesUrls,
+          //         ),
+          //         fullscreenDialog: true,
+          //       ),
+          //     );
+          //     if (result != null) {
+          //       var selectedIndex = result as int;
+          //       var imageToadd = imagesData[selectedIndex];
+          //       addImageToProfile(imageToadd);
+          //     }
+          //   } else {
+          //     widget.chooseImage(
+          //       null,//null because we already have access to user
+          //       Constants.USER,
+          //       result,
+          //       primaryList,
+          //       secondaryList,
+          //       addImageToProfile,
+          //     );
+          //   }
+          // }
         },
         child: Hero(
           tag: "profile",
@@ -335,16 +335,16 @@ class _ObjectProfileMainImageState extends State<ObjectProfileMainImage> {
 
   @override
   Widget build(BuildContext context) {
-    String profileImageUrl =
-        context.select<UserModel, String>((value) => value.profileImageUrl);
-
+    // String profileImageUrl =
+    //     context.select<UserModel, String>((value) => value.profileImageUrl);
+    print("build() ObjectProfileMainImage");
     print("widget.objectImageInputttt: "+widget.objectImageInput.toString());
 
     print(
         "widget.objectImageInput['containerType']: ${widget.objectImageInput['containerType']}");
     if (widget.objectImageInput['containerType'] ==
         Constants.PROFILEIMAGECIRCLE.toString()) {
-      return returnProfileImageContainer(profileImageUrl);
+      return returnProfileImageContainer(widget.objectImageInput['imageUrl']);
     } else if (widget.objectImageInput['containerType'] ==
         Constants.CHATIMAGECIRCLE.toString()) {
       return returnChatImageContainer(widget.objectImageInput['imageUrl']);

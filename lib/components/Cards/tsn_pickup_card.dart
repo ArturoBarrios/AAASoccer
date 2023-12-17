@@ -83,253 +83,171 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
           print("Card Clicked");
         },
         child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          color: widget.backgroundColor,
-          child: Container(
-            width: widget.width,
-            height: screenHeight * .2,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Stack(
-              children: [
-                // ... Image part
-
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(12.0),
+  ),
+  color: widget.backgroundColor,
+  child: Container(
+    width: widget.width,
+    height: screenHeight * .2,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12.0),
+    ),
+    child: Column(
+      children: [
+        // Top Section
+        Expanded(
+          child: Row(
+            children: [
+              // Top-left section
+              Expanded(
+                child: 
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              padding: const EdgeInsets.fromLTRB(4,4,4,4),
+              child:
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.av_timer_rounded, color: AppColors.tsnGreyerWhite),
+                        Text(event.formattedEventTime, style: TextStyle(color: AppColors.tsnWhite, fontSize: FontSizes.xxs(context))),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    GestureDetector(
+                      onTap: () => BaseCommand().launchLocationInBrowser(event.fieldLocations[0]['location']['latitude'], event.fieldLocations[0]['location']['longitude']),
+                      child: Row(
                         children: [
-                          Flexible(
-                            flex: 10,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.av_timer_rounded, color: AppColors.tsnGreyerWhite),
-                                    Text(event.formattedEventTime,
-                                        style: TextStyle(
-                                          color: AppColors.tsnWhite,
-                                          fontSize: FontSizes.xxs(context),
-                                        )),
-                                    // Text("TL 1b"),
-                                  ],
-                                ),
-                                SizedBox(height: 6),
-                                GestureDetector(
-                                onTap: () => BaseCommand().launchLocationInBrowser(event.fieldLocations[0]['location']['latitude'], event.fieldLocations[0]['location']['longitude']),
-                                child:
-                                Row(
-                                  children: [
-                                    Icon(Icons.location_on,
-                                        color: AppColors.tsnGreen),
-                                    Text(event.location.toString(),
-                                        style: TextStyle(
-                                          color: AppColors.tsnGreen,
-                                          fontSize: FontSizes.xxs(context),
-                                        )),
-                                    // Text("TL 2b"),
-                                  ],
-                                )),
-                                Row(
-                                  children: [
-                                    RatingWidget(rating: event.fieldRating),                                    
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    SizedBox(height: 6),
-                                 Row(
-                                  children: [                                    
-                                    //  Icon(Icons.grass,
-                                    //     color: AppColors.tsnGreen),
-                                    // Text("turf",
-                                    //     style: TextStyle(
-                                    //       color: AppColors.tsnGrey,
-                                    //       fontSize: FontSizes.xxs(context),
-                                    //     )),
-                                  ],
-                                ),
-                                  ],
-                                ),
-                               
-                              ],
-                            ),
-                          ),
-                          Flexible(
-                            flex: 10,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(
-                                  children: [
-                                    // Text("TR 1a"),
-                                    // Text("TR 1b"),
-                                  ],
-                                ),
-                                Row(
-                                  children: [                                    
-                                    Expanded(
-                                        flex: 9,
-                                        child: BasicElevatedButton(
-                                          icon: Icons.person,   
-                                          softWrap: false,
-                                          iconColor: AppColors.tsnGrey,                                       
-                                          backgroundColor:
-                                              AppColors.tsnDarkGrey,
-                                          text: event.numberOfParticipants.toString()
-                                            +"/"+event.capacity.toString(),
-                                          
-                                          fontSize: FontSizes.xxs(context),
-                                        )),
-                                    SizedBox(width: 4),
-                                    //join widget
-                                    Expanded(
-                                      flex: 11,
-                                      child:
-                                        GetJoinEventWidget(
-                                            mainEvent: event.mainEvent,
-                                            roles: event.roles,
-                                            isMine: event.isMine,
-                                            price: event.price,
-                                            amountRemaining: event.amountRemaining,                                        
-                                            eventRequestJoin: event.eventRequestJoin,
-                                            eventPaymentJoin: event.eventPaymentJoin,
-                                            teamRequestJoin: event.teamRequestJoin,
-                                            teamPaymentJoin: event.teamPaymentJoin,
-                                            capacity: event.capacity,
-                                            numberOfPlayers: event.numberOfParticipants,                                                                               
-                                            fieldRating: event.fieldRating,                                                                               
-                                            hostRating: event.hostRating,                                                                               
-                                        )
-                                    ),
-                                    // Expanded(
-                                    //     flex: 11,
-                                    //     child:
-                                    //         // price['amount'] == 0 ?
-                                    //         BasicElevatedButton(
-                                    //       icon: Icons.add,
-                                    //       // height: screenHeight * 0.05,  // 10% of screen height
-                                    //       // width: screenWidth * 0.35,
-                                    //       backgroundColor: AppColors.tsnGreen,
-                                    //       text: "Join",
-                                    //       fontSize: FontSizes.s(context),
-                                    //       onPressed: () {
-                                    //         print("Join Button Pressed");
-                                    //       },
-                                    //     )),
-
-                                    //  :
-
-                                    // Text("TR 2a"),
-                                    // Text("TR 2b"),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                          Icon(Icons.location_on, color: AppColors.tsnGreen),
+                          Text(event.location.toString(), style: TextStyle(color: AppColors.tsnGreen, fontSize: FontSizes.xxs(context))),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            flex: 15,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,                              
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(left: 8.0, bottom: 8.0, right: 4.0),
-                                  child: 
-                                    Text(event.mainEvent['name'] + " another thing to make the name that much longer!",
-                                        style: TextStyle(
-                                          color: AppColors.tsnWhite,
-                                          fontSize: FontSizes.m(context),
-                                        ))
-                                )
-                                    
-                                  
-                                
-                               
-                                // Row(
-                                //   children: [
-                                //     Image(
-                                //       width: 20,
-                                //       height: 20,
-                                //       image: SVGWidgets().pickup(),
-                                //       color: AppColors.tsnGreen,
-                                //     ),
-                                //     SizedBox(width: 6),
-                                //     Text("Pickup",
-                                //         style: TextStyle(
-                                //           color: AppColors.tsnWhite,
-                                //           fontSize: FontSizes.xxs(context),
-                                //         ))
-                                //     // Text("BL 2a"),
-                                //     // Text("BL 2b"),
-                                //   ],
-                                // ),
-                              ],
-                            ),
+                    ),
+                    Row(
+                      children: [
+                        RatingWidget(rating: event.fieldRating),
+                      ],
+                    ),
+                  ],
+                )),
+              ),
+              // Top-right section
+              Expanded(
+                child: 
+                Padding(
+              padding: const EdgeInsets.fromLTRB(4,8,8,4),
+              child:
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 9,
+                          child: BasicElevatedButton(
+                            icon: Icons.person,
+                            softWrap: false,
+                            iconColor: AppColors.tsnGrey,
+                            backgroundColor: AppColors.tsnDarkGrey,
+                            text: event.numberOfParticipants.toString() + "/" + event.capacity.toString(),
+                            fontSize: FontSizes.xxs(context),
                           ),
-                            Flexible(
-                              flex: 10,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start, // Align children to the bottom
-    crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  
-                                  Row(
-                                    children: [                                   
-                                      SizedBox(width: 2),
-                                      Image(
-                                        width: 20,
-                                        height: 20,
-                                        image: SVGWidgets().host(),
-                                        color: AppColors.tsnLightGreen,
-                                      ),
-                                      SizedBox(width: 6),
-                                      Text(
-                                          "Host: "
-                                          +
-                                              event.organizers[0]['user']['name']
-                                                  .toString(),
-                                          style: TextStyle(
-                                            color: AppColors.tsnGrey,
-                                            fontSize: FontSizes.xxs(context),
-                                          )),                                           
-                                      // Text("BR 2a"),
-                                      // Text("BR 2b"),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                  
-                                      RatingWidget(rating: event.hostRating),      
-                                                    
-                                      // Text("BR 1a"),
-                                      // Text("BR 1b"),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+                        ),
+                        SizedBox(width: 4),
+                        Expanded(
+                          flex: 11,
+                          child: GetJoinEventWidget(
+                            mainEvent: event.mainEvent,
+                            roles: event.roles,
+                            isMine: event.isMine,
+                            price: event.price,
+                            amountRemaining: event.amountRemaining,
+                            eventRequestJoin: event.eventRequestJoin,
+                            eventPaymentJoin: event.eventPaymentJoin,
+                            teamRequestJoin: event.teamRequestJoin,
+                            teamPaymentJoin: event.teamPaymentJoin,
+                            capacity: event.capacity,
+                            numberOfPlayers: event.numberOfParticipants,
+                            fieldRating: event.fieldRating,
+                            hostRating: event.hostRating,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )),
+              ),
+            ],
           ),
-     ),
+        ),
+        // Bottom Section
+        Expanded(
+          child: Row(
+            children: [
+              // Bottom-left section
+              Expanded(
+                child: 
+                Padding(
+              padding: const EdgeInsets.fromLTRB(4,4,4,8),
+              child:
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                        event.mainEvent['name'] + " another thing to make the name that much longer!",
+                        style: TextStyle(color: AppColors.tsnWhite, fontSize: FontSizes.m(context)),
+                      ),
+                   
+                  ],
+                )),
+              ),
+              // Bottom-right section
+              Expanded(
+                child: 
+                Padding(
+              padding: const EdgeInsets.fromLTRB(4,4,8,4),
+              child:
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Image(
+                          width: 20,
+                          height: 20,
+                          image: SVGWidgets().host(),
+                          color: AppColors.tsnLightGreen,
+                        ),
+                        SizedBox(width: 6),
+                        Text(
+                          "Host: " + event.organizers[0]['user']['name'],
+                          style: TextStyle(color: AppColors.tsnGrey, fontSize: FontSizes.xxs(context)),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        RatingWidget(rating: event.hostRating),
+                      ],
+                    ),
+                  ],
+                )),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
     );
           // Your widget that needs to update with changes in EventPage
 

@@ -661,7 +661,7 @@ List<String> parseAmenities(String amenitiesString) {
             print(
                 "get friends and myEvents from currentUser object: ${appModel.currentUser}");
 
-            // await ImagesCommand().setUserProfileImage();
+            await ImagesCommand().setUserProfileImage();
             setupUserResp['success'] = true;
             setupUserResp['data'] = user;
             await OneSignalService().login(appModel.currentUser);

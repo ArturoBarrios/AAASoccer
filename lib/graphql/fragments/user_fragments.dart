@@ -16,6 +16,7 @@ class UserFragments {
       username
       birthdate                    
       OSPID
+      profileImageIndex
       onboarded
       mainImageKey
       gender

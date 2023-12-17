@@ -192,6 +192,7 @@ input UserInput {
   hasAcceptedTermsAndConditions: Boolean 
   hasAcceptedPrivacyPolicy: Boolean 
   onboarded: Boolean
+  profileImageIndex: Int
 
 }
 
@@ -478,9 +479,9 @@ type User  {
   preferredFoot: String
   preferredPosition: String
   skillLevel: String
-  interestedIn: String
-  
+  interestedIn: String  
   hostRating: Int
+  profileImageIndex: Int
 }
 
 type Request {

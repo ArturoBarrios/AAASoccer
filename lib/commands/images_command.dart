@@ -102,8 +102,9 @@ class ImagesCommand extends BaseCommand {
     try {
       String profileImageUrl = "";
 
-      Map<String, dynamic> getImageResp =
-          await getImage(appModel.currentUser['mainImageKey']);
+      Map<String, dynamic> getImageResp = await getImage(Constants.privateBetaProfileImages[appModel.currentUser['profileImageIndex']]); 
+      //uncomment once you actually start using profile image
+          //await getImage(appModel.currentUser['mainImageKey']); 
       print("getImageResp: $getImageResp");
       if (getImageResp['success']) {
         profileImageUrl = getImageResp['data']['signedUrl'];

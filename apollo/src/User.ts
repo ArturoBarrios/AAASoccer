@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema({
     preferredPosition: String,
     skillLevel: String,
     interestedIn: String,
+    profileImageIndex: Number,
 
 
 });
