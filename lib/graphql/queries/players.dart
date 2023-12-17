@@ -1,112 +1,34 @@
-class UserQueries {
-  String getPlayer(String id)
+import '../fragments/user_fragments.dart';
+
+class PlayerQueries {
+  String getUserPlayer(String id)
    {
-      String getPlayer = """
-        query getPlayer {
-          findPlayer(id: $id) {
+      String getUserPlayer = """
+        query getUserPlayer {
+          findUser(id: $id) {
             data {      
-              _id              
-              user{
-                  _id
-                  name        	
-                  phone
-                  email
-                  username
-                  birthdate
-                  gender
-                  location                                    
-              } 
+             ${(UserFragments().fullUser())}
             }
           }
         }
       """;
 
-      return getPlayer;
+      return getUserPlayer;
    }
 
-    String getPlayers()
+    String getUserPlayers()
     {
-        String getPlayers = """
-          query getPlayers {
-            allPlayers {
-              data {      
-                _id              
-                user{
-                    _id      
-              name        	
-              phone
-              email
-              username
-              birthdate
-              gender
-              OSPID
-              events{
-                data{
-                  _id
-                  name
-                  isMainEvent
-                  type
-                }
-              }
-              friends{                                
-                  _id
-                  name
-                  email   
-                  OSPID             
-              }
-              teams{
-                data{
-                  _id
-                  name
-                }
-              }              
-              friendRequests{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                  receiver{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }
-              eventRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  event{
-                    _id
-                    name
-                  }
-                }
-              } 
-              teamRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  team{
-                    _id
-                    name
-                  }
-                }
-              }         
-                   
-                    }
+        String getUserPlayers = """
+          query getUserPlayers {
+            allUsers {
+              data {                               
+                  ${(UserFragments().fullUser())}                                                          
                   }
                 }
               }
           """;
 
-          return getPlayers;
+          return getUserPlayers;
 
     }
 

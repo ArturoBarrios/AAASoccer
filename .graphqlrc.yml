@@ -1,9 +1,9 @@
-schema: ./lib/schema.graphql
+schema: ./lib/graphql/schema.graphql
 documents: ''
 extensions:
   codegen:
     generates:
-      ./lib/graphl/backend:
+      ./lib/graphql/backend:
         plugins: []
       ./lib/graphql/frontend:
         plugins: []

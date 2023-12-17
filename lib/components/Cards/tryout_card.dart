@@ -4,17 +4,21 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/app_model.dart';
-import '../../commands/user_command.dart';
+import '../../models/pageModels/app_model.dart';
+import '../../commands/event_command.dart';
 import '../../views/tryout/view.dart';
+import 'package:soccermadeeasy/constants.dart';
 
-class TryoutCard extends StatefulWidget {
-  const TryoutCard(
-      {Key? key, required this.tryoutObject, required this.svgImage})
+import '../Mixins/event_mixin.dart';
+
+class TryoutCard extends StatefulWidget with EventMixin {
+   TryoutCard(
+      {Key? key, required this.tryoutObject, required this.svgImage, required this.userEventDetails})
       : super(key: key);
   final Map<String, dynamic> tryoutObject;
   final Svg svgImage;
   final double bevel = 10.0;
+  final dynamic userEventDetails;
 
   @override
   State<TryoutCard> createState() => _TryoutCard();
@@ -28,6 +32,24 @@ void tryoutClicked() {
 class _TryoutCard extends State<TryoutCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
+
+
+  Future<Map<String, dynamic>> archiveTryout(dynamic tryoutObject) async {
+  print("archive tryout");
+  
+  Map<String, dynamic> archiveTryoutResponse = await EventCommand().archiveEvent(tryoutObject);
+
+  return archiveTryoutResponse;
+}
+
+
+  requestTypeSelected(List<int>? indexes) {
+      widget.requestTypeSelected(indexes);  
+    }
+
+    Future<void> sendEventRequest() async {
+      widget.sendEventRequest(widget.tryoutObject, {0: {}}, widget.requestUserTypes, []);
+  }
 
   final ButtonStyle style = ElevatedButton.styleFrom(
       primary: Colors.orange.shade500,
@@ -45,7 +67,7 @@ class _TryoutCard extends State<TryoutCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TryoutView();
+            return TryoutView( event: widget.tryoutObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -83,7 +105,7 @@ class _TryoutCard extends State<TryoutCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.tryoutObject['event']['name'],
+                    text: widget.tryoutObject['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.tryoutObject['description'],
@@ -100,7 +122,8 @@ class _TryoutCard extends State<TryoutCard> {
                       titleText: 'Are you sure you want to delete this tryout?',
                       contentText: '',
                       onPositiveClick: () {                        
-                       
+                        Navigator.of(context).pop();
+                        archiveTryout(widget.tryoutObject);
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();
@@ -124,6 +147,45 @@ class _TryoutCard extends State<TryoutCard> {
                 ),
               ),
             ),
+            !widget.userEventDetails['isMine']
+                ? 
+                Container(
+                height: 20,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: GestureDetector(
+                      onTap: () async {
+                        print("onTap: ");
+                        List<int>? requestIndexes =
+                            await showAnimatedDialog<dynamic>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            
+
+                            return ClassicListDialogWidget<dynamic>(
+                                selectedIndexes: widget.selectedRequestTypeIndexes,
+                                titleText: 'Choose User Type',
+                                positiveText: "Send Request",
+                                listType: ListType.multiSelect,
+                                activeColor: Colors.green,
+                                dataList: widget.requestUserTypes);
+                          },
+                          animationType: DialogTransitionType.size,
+                          curve: Curves.linear,
+                        );
+
+                        widget.selectedRequestTypeIndexes =
+                            requestIndexes ?? widget.selectedRequestTypeIndexes;
+                        print(
+                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                        await requestTypeSelected(widget.selectedRequestTypeIndexes);
+                        await sendEventRequest();
+                      },
+                      child: Text("Send Request")),
+                ),
+              )
+                : Text("Join Your Game"),
           ])),
     ));
   }

@@ -1,39 +1,32 @@
+import '../fragments/user_fragments.dart';
+
 class PlayerMutations {
   String createPlayer(Map<String, dynamic> userInput,
       Map<String, dynamic> playerInput, Map<String, dynamic> locationInput) {
     String createPlayer = """
       mutation {
-        createPlayer(data: {                    
-          user: {
-            create: 
-            {
-              name: "${userInput['name']}",
-              phone: "${userInput['phone']}",
-              email: "${userInput['email']}",
-              username: "${userInput['username']}",
-              birthdate: "${userInput['birthdate']}"
-              location: {
-                create: 
-                {
-                  latitude: ${locationInput['latitude']}
-                  longitude: ${locationInput['longitude']}
-                }
-              }
+        createPlayer(input: {                    
+          user: {                        
+            name: "${userInput['name']}"
+            phone: "${userInput['phone']}"
+            email: "${userInput['email']}"
+            username: "${userInput['username']}"
+            birthdate: "${userInput['birthdate']}"
+            gender: "${userInput['gender']}"            
+            location: {              
+              latitude: ${locationInput['latitude']}
+              longitude: ${locationInput['longitude']}              
             }
-          } 
+          }          
           }) {
-            _id
-            user{
-              _id
-              name,
-              email,
-              phone
-              location{
-                _id
-                latitude
-                longitude
-              } 
-            }     
+             code
+                success
+                message
+            player{
+              user{    
+                ${UserFragments().fullUser()}
+              }     
+            }
           }   
         }
         """;

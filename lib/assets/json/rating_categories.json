@@ -1,0 +1,20 @@
+{
+    "ratingCategories": [
+      {
+        "name": "RatedByPlayer",
+        "weight": ".2"
+      },
+      {
+        "name": "RatedBySelf",
+        "weight": ".5"
+      },
+      {
+        "name": "RatedByCoach",
+        "price": ".6"        
+      }, 
+      {
+        "name": "RatedByOnlooker",
+        "price": ".1"        
+      }
+    ]
+  }

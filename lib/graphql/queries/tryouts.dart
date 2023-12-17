@@ -1,3 +1,4 @@
+import '../fragments/event_fragments.dart';
 
 class TryoutQueries {
    String getTryouts()
@@ -8,8 +9,7 @@ class TryoutQueries {
             data {      
               _id              
               event{
-                  name        	
-                  _id                  
+                ${EventFragments().fullEvent()}              
               } 
             }
           }

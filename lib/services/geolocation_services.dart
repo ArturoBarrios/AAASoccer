@@ -1,7 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 
 
-class GeoLocationServices {
+class GeoLocationServices {  
   // Determine the current position of the device.
   //
   // When the location services are not enabled or permissions
@@ -41,8 +41,39 @@ class GeoLocationServices {
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
+  
+  //returns distance in kilometers
+  Future<double> calculateDistanceInKMFromLocation(double alatitude, double alongitude, double blatitude, double blongitude ) async {
+    //assume we have a user location, 
+    //taken care of in GeolocationCommand.dart
+    print("calculateDistanceInKMFromLocation()");   
+    double distanceInMeters = Geolocator.distanceBetween(alatitude, alongitude, blatitude, blongitude);
+    print("distanceInMeters: "+distanceInMeters.toString());
+    double distanceInKilometers = distanceInMeters/1000;
+    print("distanceInKilometers: "+distanceInKilometers.toString());
+
+    return distanceInKilometers;
+  }
+
+  Future<void> findAddressFromCoordinates(String latitude, String longitude) async {
+    print("findAddressFromCoordinates()");
+
+  
+  
+  
+  
+    // // From coordinates
+    // final coordinates = new Coordinates(1.10, 45.50);
+    // addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    // first = addresses.first;
+    // print("${first.featureName} : ${first.addressLine}");
+    
+
+  }
+
+  
 
   
 

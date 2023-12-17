@@ -8,8 +8,7 @@ import '../../commands/game_command.dart';
 import '../../views/game/view.dart';
 
 class Card extends StatefulWidget {
-  const Card(
-      {Key? key, required this.eventObject, required this.svgImage})
+  const Card({Key? key, required this.eventObject, required this.svgImage})
       : super(key: key);
   final Map<String, dynamic> eventObject;
   final Svg svgImage;
@@ -29,12 +28,12 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
     "success": false,
     "message": "Pickup deleted successfully"
   };
-  Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .deleteGame(gameObject["event"]["_id"], gameObject["_id"]);
-  print("deletePickupResponse: $deletePickupResponse");
-  if (deletePickupResponse["success"]) {
-    deletePickupResp["success"] = true;
-  }
+  // Map<String, dynamic> deletePickupResponse = await GameCommand()
+  //     .removeGame(gameObject["event"]["_id"], gameObject["_id"]);
+  // print("deletePickupResponse: $deletePickupResponse");
+  // if (deletePickupResponse["success"]) {
+  //   deletePickupResp["success"] = true;
+  // }
 
   return deletePickupResp;
 }
@@ -55,16 +54,16 @@ class _Card extends State<Card> {
     return Listener(
         child: GestureDetector(
       onTap: () {
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return PickupView(isMyEvent: true);
-          },
-          animationType: DialogTransitionType.slideFromBottom,
-          curve: Curves.fastOutSlowIn,
-          duration: Duration(seconds: 1),
-        );
+        // showAnimatedDialog(
+        //   context: context,
+        //   barrierDismissible: true,
+        //   builder: (BuildContext context) {
+        //     return PickupView(game: widget.eventObject);
+        //   },
+        //   animationType: DialogTransitionType.slideFromBottom,
+        //   curve: Curves.fastOutSlowIn,
+        //   duration: Duration(seconds: 1),
+        // );
       },
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),

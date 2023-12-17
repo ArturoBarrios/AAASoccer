@@ -1,0 +1,5 @@
+enum EventRequestType {
+  EVENTREQUEST,
+  FRIENDREQUEST,
+  TEAMREQUEST,  
+}

@@ -1,252 +1,190 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:soccermadeeasy/components/Dialogues/animated_dialogue.dart';
-import 'package:soccermadeeasy/models/home_page_model.dart';
-
-import 'amplifyconfiguration.dart';
+import 'package:flutter/services.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:soccermadeeasy/data/services/twilio/twilio_service.dart';
+import 'package:soccermadeeasy/di/di_init.dart';
+import 'package:soccermadeeasy/models/pageModels/home_page_model.dart';
+import 'package:soccermadeeasy/services/network_services.dart';
+import 'package:soccermadeeasy/services/onesignal_service.dart';
+import 'package:soccermadeeasy/services/stripe_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:soccermadeeasy/strings.dart';
+import 'package:soccermadeeasy/styles/colors.dart';
+import 'package:soccermadeeasy/views/onboarding/onboarding_view.dart';
+import 'package:soccermadeeasy/views/splash_screen.dart';
 
+import 'package:soccermadeeasy/utils.dart';
+import 'package:soccermadeeasy/widgets/intl_phone_number_filed.dart';
 import 'commands/base_command.dart';
-import 'commands/user_command.dart';
 import 'commands/player_command.dart';
-import 'commands/event_command.dart';
-import 'models/app_model.dart';
+import 'components/Validator.dart';
+import 'components/custom_textfield.dart';
+import 'components/headers.dart';
+import 'components/logo_text.dart';
+import 'components/models/button_model.dart';
+import 'models/enums/GenderType.dart';
+import 'models/pageModels/app_model.dart';
+import 'models/pageModels/chat_page_model.dart';
+import 'models/pageModels/events_page_model.dart';
+import 'models/pageModels/event_page_model.dart';
+import 'models/pageModels/group_page_model.dart';
+import 'models/pageModels/profile_page_model.dart';
+import 'models/pageModels/team_page_model.dart';
 import 'models/user_model.dart';
 import 'models/events_model.dart';
+import 'models/componentModels/payment_model.dart';
 import 'models/requests_model.dart';
-import 'models/requests_page_model.dart';
-import 'models/friends_page_model.dart';
-import 'models/games_model.dart';
-import 'services/user_service.dart';
-import 'services/fauna_db_services.dart';
+import 'models/pageModels/requests_page_model.dart';
 import 'services/geolocation_services.dart';
-import 'services/twilio_services.dart';
 import 'services/amplify_auth_service.dart' as AmplifyAuth;
 import 'views/home.dart';
-
 import 'commands/base_command.dart' as Commands;
 import 'components/Loading/loading_screen.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:gql_http_link/gql_http_link.dart';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:soccermadeeasy/svg_widgets.dart';
-import '../components/bottom_nav.dart';
-import 'package:adapty_flutter/adapty_flutter.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-// import 'package:twilio_flutter/twilio_flutter.dart'; 
-// import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:location/location.dart';
-import 'package:geolocator/geolocator.dart';
-
-
-
 
 void main() async {
+  Locale locale = Locale('en');
+  WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
+  
   print("environment: ");
   print(dotenv.env['ENVIRONMENT']);
 
-    await initHiveForFlutter();
-    final HttpLink httpLink = HttpLink(
-      'https://neat-sunfish-45.hasura.app/v1/graphql',
-    );
-
-    final AuthLink authLink = AuthLink(
-      getToken: () async => 'Bearer fnAEwyiZocACT1B4JJ2YkT2yPqdbIBgQz55x7a-0',
-    );
-
-    final Link link = authLink.concat(httpLink);
-    ValueNotifier<GraphQLClient> client = ValueNotifier(
-      GraphQLClient(
-        link: link,
-        // The default store is the InMemoryStore, which does NOT persist to disk
-        cache: GraphQLCache(store: InMemoryStore()),
-      ),
-    );
-    print("graphQL client: ");
-    print(client);
-
-  Location location = new Location();
-  //this sometimes works and sometimes doesn't. Figure it out!
-  // _locationData = await location.getLocation();
-  // print("locationData: "+_locationData.latitude.toString() + _locationData.longitude.toString());
-
-  bool _serviceEnabled;
-  PermissionStatus _permissionGranted;
-  LocationData _locationData;
-
-  _serviceEnabled = await location.serviceEnabled();
-  print("_serviceEnabled: "+_serviceEnabled.toString());
-  if (!_serviceEnabled) {
-    _serviceEnabled = await location.requestService();
-    if (!_serviceEnabled) {
-      
-    }
-  }
-
-  _permissionGranted = await location.hasPermission();
-  print("permissionGranted: "+_permissionGranted.toString());
-  if (_permissionGranted == PermissionStatus.denied) {
-    _permissionGranted = await location.requestPermission();
-    if (_permissionGranted != PermissionStatus.granted) {
-      
-    }
-  }
-
-    // catch(e){}
-
-
+    
+  await NetworkServices().enableLocationService();
+  await OneSignalService().configureOneSignal();
+  await StripeServices().configureStripeService();
+  print("===============================================");  
   
 
-  //Remove this method to stop OneSignal Debugging 
-  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-
-  OneSignal.shared.setAppId("aeb22176-60a9-4077-b161-69381a79fa94");
-
-  // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      print("Accepted permission: $accepted");
-  });
-   
-   
-    Adapty().activate();
-    Adapty().setLogLevel(AdaptyLogLevel.verbose);
-    print("adapty set!!!!");
-    // try{
-    //   await Adapty().activate();
-    // } on AdaptyError catch (AdaptyError) {}
-  runApp(MyApp(client: client));
-
-
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  final ValueNotifier<GraphQLClient> client;
+class MyApp extends StatefulWidget {  
 
-  const MyApp({Key? key, required this.client }) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   // final amplifyAuthService = AmplifyAuthService();
+  final formKey = GlobalKey<FormState>();
+  final navigatorKey = GlobalKey<NavigatorState>();
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
+  PhoneNumber? phoneNumber;
   final birthdateController = TextEditingController();
-  final genderController = TextEditingController();
+  final birthdateFormatter = MaskTextInputFormatter(
+    mask: 'mm-dd-yyyy',
+    filter: {
+      "m": RegExp(r'[0-9]'),
+      "d": RegExp(r'[0-9]'),
+      "y": RegExp(r'[0-9]'),
+    },
+    type: MaskAutoCompletionType.lazy,
+  );
+
+  DateTime birthdayTime = DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
+  String birthdateTimestamp = DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day).millisecondsSinceEpoch.toString();
+
+
+  final genderController = TextEditingController();  
+  List<String> get genderOptions => GenderType.values.map((e) => e.name).toList();
+  String? selectedGender;
   final addressController = TextEditingController();
   final confirmSignInValueController = TextEditingController();
-
-  late TabController _tabController;
-
-
 
   @override
   void initState() {
     super.initState();
+    print("genderOptions: $genderOptions");
 
     print("initState");
     configureApp();
   }
 
-  void configureApp() async {
-    // await dotenv.load(fileName: ".env");
-    // print("environment: ");
-    // print(dotenv.env['ENVIRONMENT']);
+  Future<void> configureApp() async {
     Map<String, dynamic> configureAmplifyResp = await configureAmplify();
     print("configureAmplifyResp: ");
     print(configureAmplifyResp);
-     //already signed in
-     if (configureAmplifyResp['message'] == "isSignedIn") {
-      emailController.text = configureAmplifyResp['email'];      
-      await startLoadToHomeTransition();   
-    }    
+
+    if (configureAmplifyResp['message'] == "isSignedIn") {
+      emailController.text = configureAmplifyResp['email'];
+      BaseCommand().setLoggedIn(true);
+      await startLoadToHomeTransition();
+    }
   }
 
-  Future configureGraphQL() async{
-    print("configureGraphQL");
-    await initHiveForFlutter();
-    final HttpLink httpLink = HttpLink(
-      'https://neat-sunfish-45.hasura.app/v1/graphql',
-    );
-
-    final AuthLink authLink = AuthLink(
-      getToken: () async => 'Bearer xqxOjEQssWDUtt1ULO24E4wSsbuMBWpdVDSPk5R5UCFrJGsdpx3y5H2XV1t5ONdF',
-    );
-    
-
-    final Link link = authLink.concat(httpLink);
-
-    ValueNotifier<GraphQLClient> client = ValueNotifier(
-      GraphQLClient(
-        link: link,
-        // The default store is the InMemoryStore, which does NOT persist to disk
-        cache: GraphQLCache(store: HiveStore()),
-      ),
-    );
-    print("graphQL clientt: ");
-    print(client);
-    // AppModel().faunaClient = client;
-
-
-  }
-
-  Future <Map<String, dynamic>> configureAmplify() async {    
+  
+  Future<Map<String, dynamic>> configureAmplify() async {
     Map<String, dynamic> configureAmplify =
         await AmplifyAuth.AmplifyAuthService.configureAmplify();
     setState(() {
       if (configureAmplify['success']) {
         print("configured amplify!");
-        print(configureAmplify);       
+        print(configureAmplify);
       }
     });
-      return configureAmplify;
+    return configureAmplify;
   }
 
 //handle location here???
-  Future<Map<String, dynamic>> otherConfigurations() async {      
-
+  Future<Map<String, dynamic>> otherConfigurations() async {
     print("otherConfigurations");
-    Map<String, dynamic> otherConfigurationsResp = {"success": true, "message": "successfully configured other shit"};
+    Map<String, dynamic> otherConfigurationsResp = {
+      "success": true,
+      "message": "successfully configured other shit"
+    };
     AppModel().amplifyConfigured = true;
     Commands.BaseCommand().setIsSigned(true);
-    await Commands.BaseCommand().setupInitialAppConfigs();
 
     return otherConfigurationsResp;
-    
   }
 
-
+  void continueAsGuest(AuthenticatorState state) async {
+    print("continueAsGuest");
+    BaseCommand().setIsGuest(true);
+    AmplifyAuth.AmplifyAuthService.skipVerifyUser(state);
+    await startLoadToHomeTransition();
+  }
 
   void signOut(AuthenticatorState state) async {
     try {
-      await Amplify.Auth.signOut(options: SignOutOptions(globalSignOut: true));
+      await Amplify.Auth.signOut(
+          options: const SignOutOptions(globalSignOut: true));
       //base_command set initial app models to reflect signout
     } on AuthException catch (e) {
       print(e.message);
     }
   }
 
-  void signIn(AuthenticatorState state) async {
+  Future<void> signIn(AuthenticatorState state) async {
     try {
       SignInResult signInRes = await AmplifyAuth.AmplifyAuthService.signIn(
-          emailController, passwordController);
-      print("signInRes: " + signInRes.nextStep!.signInStep);
-      String signInStep = signInRes.nextStep!.signInStep;
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);      
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
+      print("signInRes: ${signInRes.nextStep!.toString()}");
+      
+      String signInStep = signInRes.nextStep!.signInStep.toString();
+
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
       //should probably make sure you're actually signed in
       //assumes you are atm
-
       UserModel().userEmail = emailController.text.trim();
       await startLoadToHomeTransition();
+      BaseCommand().setLoggedIn(true);
+
       setState(() {});
     } on AuthException catch (e) {
       print("SigninException: ");
@@ -255,44 +193,70 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void signUp(AuthenticatorState state) async {
+  Future<void> signUp(AuthenticatorState state) async {
     try {
-      SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
-          emailController,
-          passwordController,
-          usernameController,
-          phoneController,
-          birthdateController,
-          genderController,
-          addressController);
-      print("signedUpRes nextStep: ");
-      print(signUpRes.nextStep);
-      print("signUpRes toString()");
-      print(signUpRes.toString());
-      String signUpStep = signUpRes.nextStep.signUpStep;
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signUpStep, state);
-      
-      // await BaseCommand().setupInitialAppModels(emailController.text.trim());
-      // await UserCommand()
-      //     .updateUserStatus(emailController.text.trim(), "SignedUp");
+      print("signUp");
       Map<String, dynamic> userInput = {
+        "name": nameController.text.trim(),
         "email": emailController.text.trim(),
         "username": usernameController.text.trim(),
-        "phone": phoneController.text.trim(),
+        "phone": phoneNumber!.phoneNumber,
         "birthdate": birthdateController.text.trim(),
         "gender": genderController.text.trim(),
         "address": addressController.text.trim(),
         "status": "SignedUp"
-      };      
-      Map<String, dynamic> locationInput = {"latitude": 0, "longitude": 0};      
-      Map<String, dynamic> createPlayerResp = await PlayerCommand().createPlayer(userInput, {}, locationInput, false);
-      print("createPlayerResp: ");
-      print(createPlayerResp);
-      
-      AppModel().currentUser = createPlayerResp['data'];
+      };
+      //check unique attributes
+      // bool uniquenessUserAttributesCheckResponse =
+      //     await BaseCommand().uniquenessUserAttributesCheck(userInput);
+      // if (uniquenessUserAttributesCheckResponse) {
+        SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
+          emailController,
+          passwordController,
+          usernameController,
+          phoneNumber!.phoneNumber,
+          birthdateController,
+          genderController,
+          addressController,
+        );
 
-        
-      await startLoadToHomeTransition();
+        print("signedUpRes nextStep: ");
+        print(signUpRes.nextStep);
+        print("signUpRes toString()");
+        print(signUpRes.toString());
+        print(signUpRes.nextStep.signUpStep);
+        print(signUpRes.nextStep.additionalInfo);
+        print(signUpRes.nextStep.codeDeliveryDetails?.attributeName);
+        print(signUpRes.nextStep.codeDeliveryDetails?.deliveryMedium);
+        print(signUpRes.nextStep.codeDeliveryDetails?.destination);
+
+        String signUpStep = signUpRes.nextStep.signUpStep.name;
+        AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(
+          signUpStep,
+          state,
+        );
+        Map<String, dynamic> locationInput = {
+          "latitude": 0,
+          "longitude": 0,
+        };
+        Map<String, dynamic> createPlayerResp =
+            await PlayerCommand().createPlayer(
+          userInput,
+          {},
+          locationInput,
+          false,
+        );
+        print("createPlayerResp: ");
+        print(createPlayerResp);
+
+        // appModel.currentUser = createPlayerResp['user'];
+        // print("AppModel().currentUser: ${AppModel().currentUser}");
+
+        await startLoadToHomeTransition();
+      // } 
+      // else {
+      //   print("createUserAttributesCheck failed");
+      // }
     } on AuthException catch (e) {
       print("signUpError");
       print(e);
@@ -300,18 +264,29 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  //assumes email's been set in AppModel
-  //assumes user's been created in FaunaDB
-  //assumes you're signed in/up
   Future<void> startLoadToHomeTransition() async {
     print("startLoadToHomeTransition");
-    await TwilioServices().configureTwilio();    
+    // await TwilioServices().configureTwilio();
     Map<String, dynamic> otherConfigurationResp = await otherConfigurations();
-    if(otherConfigurationResp['success']){
-      await BaseCommand().setupInitialAppModels(emailController.text.trim());      
-      Commands.BaseCommand().initialConditionsMet();
-    }    
-    else{
+    if (otherConfigurationResp['success']) {
+      ///////////////////////// add back in when shortcode is ready
+      // print("resppp: " + resp.toString());
+      // if (resp['success']) {
+      Map<String,dynamic> setupUserResp = await BaseCommand().setupUser(emailController.text.trim());
+      print("setupUserResp: "+setupUserResp.toString());
+      if(setupUserResp['success']){
+        dynamic user = setupUserResp['data'];
+        BaseCommand().setOnboarded(user['onboarded'] == null ? false : user['onboarded']);
+          
+        BaseCommand().initialUserConditionsMet();          
+      }
+
+      print("initialConditionsMett");
+      // } else {
+      //   print("try again....");
+
+      // }
+    } else {
       print("error in startLoadToHomeTransition");
     }
   }
@@ -322,21 +297,17 @@ class _MyAppState extends State<MyApp> {
           await AmplifyAuth.AmplifyAuthService.confirmSignUp(
               confirmSignInValueController.text.trim(),
               emailController.text.trim());
-      // setState(() async {
+
       print(confirmSignInRes.toString());
-      String signInStep = confirmSignInRes.nextStep.signUpStep;
+      String signInStep = confirmSignInRes.nextStep.signUpStep.toString();
       AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
-      print("confirmSignInmain.dart: " + signInStep);
+      print("confirmSignInmain.dart: $signInStep");
       final result = await Amplify.Auth.fetchAuthSession();
       print("fetchAuthSession: ");
       print(result);
       final user = await Amplify.Auth.getCurrentUser();
       print("getCurrentUser: ");
       print(user);
-      await UserCommand()
-          .updateUserStatus(emailController.text.trim(), "confirmed");
-
-      // });
     } on AuthException catch (e) {
       print("confirmSignInError");
       print(e);
@@ -350,284 +321,666 @@ class _MyAppState extends State<MyApp> {
     print(result);
   }
 
+   void setBirthdayTime(DateTime time) {
+    birthdayTime = time;
+    birthdateTimestamp = time.millisecondsSinceEpoch.toString();
+    birthdateController.text = '${time.day}/${time.month}/${time.year} '
+        ' ${time.hour}:${time.minute}';    
+  }
+
+  
+
   @override
   Widget build(BuildContext _) {
-    return 
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (c) => AppModel()),
-          ChangeNotifierProvider(create: (c) => UserModel()),
-          ChangeNotifierProvider(create: (c) => EventsModel()),
-          ChangeNotifierProvider(create: (c) => GamesModel()),
-          ChangeNotifierProvider(create: (c) => RequestsModel()),
-          ChangeNotifierProvider(create: (c) => RequestsPageModel()),
-          ChangeNotifierProvider(create: (c) => FriendsPageModel()),
-          ChangeNotifierProvider(create: (c) => HomePageModel()),
-          Provider(create: (c) => FaunaDBServices()),          
-          Provider(create: (c) => GeoLocationServices()),
-          
-        ],
-        child: Builder(builder: (context) {
+    print("build main.dart");
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (c) => AppModel()),
+        ChangeNotifierProvider(create: (c) => UserModel()),
+        ChangeNotifierProvider(create: (c) => EventsModel()),
+        ChangeNotifierProvider(create: (c) => EventPageModel()),
+        ChangeNotifierProvider(create: (c) => TeamPageModel()),
+        ChangeNotifierProvider(create: (c) => GroupPageModel()),
+        ChangeNotifierProvider(create: (c) => ProfilePageModel()),
+        ChangeNotifierProvider(create: (c) => RequestsModel()),
+        ChangeNotifierProvider(create: (c) => RequestsPageModel()),
+        ChangeNotifierProvider(create: (c) => ChatPageModel()),
+        ChangeNotifierProvider(create: (c) => HomePageModel()),
+        ChangeNotifierProvider(create: (c) => PaymentModel()),
+        ChangeNotifierProvider(create: (c) => EventsPageModel()),        
+        Provider(create: (c) => GeoLocationServices()),
+      ],
+      child: Builder(
+        builder: (context) {
           Commands.init(context);
-          // Save a context our Commands can use to access provided Models and Services
-          // return authenticated user, create or update user in model
+          bool userConditionsMet = context
+              .select<AppModel, bool>((value) => value.userConditionsMet);
+          bool loggedIn = context
+              .select<AppModel, bool>((value) => value.loggedIn);
+          bool onboarded = context
+              .select<AppModel, bool>((value) => value.onboarded);
+
+              print("userConditionsMet: "+userConditionsMet.toString());
+              print("onboarded: "+onboarded.toString());
+          
           return Authenticator(
-              authenticatorBuilder:
-                  (BuildContext context, AuthenticatorState state) {
-                const padding =
-                    EdgeInsets.only(left: 16, right: 16, top: 48, bottom: 16);
-                switch (state.currentStep) {
-                  case AuthenticatorStep.signIn:
-                    return Scaffold(
-                      body: Padding(
-                        padding: padding,
-                        child: SingleChildScrollView(
+            authenticatorBuilder:
+                (BuildContext context, AuthenticatorState state) {
+              const padding =
+                  EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 16);
+              switch (state.currentStep) {
+                case AuthenticatorStep.signIn:
+                  return Scaffold(
+                    backgroundColor: AppColors.tsnWhite,
+                    appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
+                      return const OnboardingView();
+                    },
+                  ));
+                },
+              ),
+              filterButton: ButtonModel(
+                prefixIconData: false
+                    ? Icons.filter_alt_off
+                    : Icons.filter_alt,
+                onTap: () => {}
+              ),
+            ).getMainHeader(context),
+                    body: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: 
+                         SingleChildScrollView(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              //todo
-                              //create switch to switch between login and signup
-                              //onpress function that creates creates/updates cognito user
+                              Row(
+        children: [
+          
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:                             
                               TextField(
                                 controller: emailController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Email'),
-                              ),
-                              TextField(
+                                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  hintText: 'Email',
+                                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
+                                  filled: true,
+                                  fillColor: AppColors.fieldFillDark,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              )))]),
+                              const SizedBox(height: 20),
+                              Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
+                              IntlPhoneNumberFiled(
                                 controller: phoneController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Phone'),
-                              ),
+                                initialValue: phoneNumber?.phoneNumber,
+                                onInputChanged: (ph) {
+                                  phoneNumber = ph;
+                                },
+                                labelText: "Phone",
+                              )))]),
+                              const SizedBox(height: 20),
+                              Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
                               TextField(
                                 controller: passwordController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Password'),
-                              ),
+                                keyboardType: TextInputType.visiblePassword,
+                                obscureText: true,
+                                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                                decoration: InputDecoration(
+                                  hintText: 'Password',
+                                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),
+                                  filled: true,
+                                  fillColor: AppColors.fieldFillDark,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              )))]),
+                              const SizedBox(height: 50),
 
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background
-                                  onPrimary: Colors.white, // foreground
+                                  primary: AppColors.submitFillButton, // background color
+                                  onPrimary: Colors.white, // foreground color
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 40, vertical: 15),
                                 ),
-                                //emailController, passwordController
-                                onPressed: () {
-                                  signIn(state);
+                                onPressed: () async {
+                                  await signIn(state);
                                 },
-                                child: Text('Sign In'),
-                              )
+                                
+                                child: const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                    fontSize: 20, color: AppColors.tsnWhite),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text('Don\'t have an account?'),
+                                  TextButton(
+                                    onPressed: () => state
+                                        .changeStep(AuthenticatorStep.signUp),
+                                    child: const Text(
+                                      'Sign Up',
+                                      style: TextStyle(color: AppColors.linkColor),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   children: [
+                              //     TextButton(
+                              //       onPressed: () => continueAsGuest(state),
+                              //       child: const Text(
+                              //         'Continue as Guest',
+                              //         style: TextStyle(color: AppColors.linkColor),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                             ],
                           ),
                         ),
-                      ),
-                      // custom button to take the user to sign up
-                      persistentFooterButtons: [
-                        Row(
+                      
+                    ),
+                  );
+
+                case AuthenticatorStep.signUp:
+                  return Scaffold(
+                    appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {
+                  // Navigator.push(context, MaterialPageRoute<void>(
+                  //   builder: (BuildContext context) {
+                  //     return const OnboardingView();
+                  //   },
+                  // ));
+                },
+              ),
+              filterButton: ButtonModel(
+                prefixIconData: false
+                    ? Icons.filter_alt_off
+                    : Icons.filter_alt,
+                onTap: () => {}
+              ),
+            ).getMainHeader(context),
+                    backgroundColor: AppColors.tsnWhite,
+                    body: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('Don\'t have an account?'),
-                            TextButton(
-                              onPressed: () => state.changeStep(
-                                AuthenticatorStep.signUp,
-                              ),
-                              child: const Text('Sign Up'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  case AuthenticatorStep.signUp:
-                    return Scaffold(
-                      body: Padding(
-                        padding: padding,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              // app logo
-                              const Center(child: FlutterLogo(size: 100)),
-                              // prebuilt sign up form from amplify_authenticator package
-
-                              TextField(
-                                controller: emailController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Email'),
-                              ),
-
-                              TextField(
-                                controller: usernameController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Username'),
-                              ),
-                              TextField(
-                                controller: phoneController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Phone'),
-                              ),
-                              TextField(
-                                controller: passwordController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Password'),
-                              ),
-                              TextField(
-                                controller: birthdateController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Birthdate'),
-                              ),
-                              TextField(
-                                controller: genderController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Gender'),
-                              ),
-                              TextField(
-                                controller: addressController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Address'),
-                              ),
-
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background
-                                  onPrimary: Colors.white, // foreground
+                            Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
+                            TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,                              
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                if (!value.isValidEmail) {
+                                  return "Please enter a valid Email";
+                                }
+                                return null;
+                              },
+                              
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'Email',
+                                filled: true,                                
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,                                  
                                 ),
-                                //emailController, passwordController, usernameController, phoneController
-                                onPressed: () {
+                              ),
+                            ),
+        ))]),
+                            const SizedBox(height: 20),
+      Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: nameController,
+                              keyboardType: TextInputType.name,                              
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }                                
+                                return null;
+                              },
+                              
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'Name',
+                                filled: true,                                
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,                                  
+                                ),
+                              ),
+                            ),
+            ),
+          ),
+          ],
+      ),
+      const SizedBox(height: 20),
+      Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: TextFormField(
+                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                controller: usernameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "This field is required";
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                  hintText: 'Username',
+                  filled: true,
+                  fillColor: AppColors.fieldFillDark,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+          )]),
+        
+                            const SizedBox(height: 20),
+                            Row(
+        children: [
+          Expanded(
+  child: Padding(
+    padding: const EdgeInsets.only(right: 8.0),
+    child: DropdownButtonHideUnderline(
+      child: InputDecorator(
+        decoration: InputDecoration(
+          hintText: 'Gender',
+          hintStyle: TextStyle(color: AppColors.tsnGrey),
+          filled: true,
+          fillColor: AppColors.tsnAlmostBlack,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        child: DropdownButtonFormField<String>(
+          value: selectedGender,
+          style: TextStyle(color: AppColors.tsnAlmostBlack),
+          decoration: InputDecoration.collapsed(hintText: ''),
+          items: [
+            DropdownMenuItem(
+              value: null,
+              child: Text(
+                'Gender',
+                style: TextStyle(color: AppColors.tsnGrey),
+              ),
+            ),
+            ...genderOptions.map((String gender) {
+              return DropdownMenuItem(
+                value: gender,
+                child: Text(
+                  gender,
+                  style: TextStyle(color: AppColors.tsnWhite),
+                ),
+              );
+            }).toList(),
+          ],
+          onChanged: (String? newValue) {
+            setState(() {
+              selectedGender = newValue;
+            });
+            genderController.text = newValue ?? '';
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "This field is required";
+            }
+            return null;
+          },
+          dropdownColor: AppColors.fieldFillDark,
+        ),
+      ),
+    ),
+  ),
+),
+
+
+            Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
+          //     CustomTextFormField(
+          //   label: StringConstants.endDateTimeLabel,
+          //   hintText: StringConstants.endDateTimeHint,
+          //   controller: birthdateController,
+          //   keyboardType: TextInputType.datetime,
+          //   isSuffixIcon: true,
+          //   validator: (value) => Validators.validateRequired(
+          //       value!, StringConstants.endDateTimeErrorValue),
+          //   suffixIcon: IconButton(
+          //       onPressed: () {
+          //         DatePicker.showDateTimePicker(context,
+          //             showTitleActions: true,
+          //             onChanged: (date) {}, onConfirm: (date) {
+          //           // setEndTime(date);
+          //         }, currentTime: birthdayTime
+          //         // !startTimeSet ? rightNow : startTime
+          //         );
+          //       },
+          //       icon: const Icon(Icons.calendar_today_outlined)),
+          //   onPressed: () {
+          //     DatePicker.showDateTimePicker(context,
+          //         showTitleActions: true,
+          //         onChanged: (date) {}, onConfirm: (date) {
+          //       setBirthdayTime(date);
+          //     }, currentTime: birthdayTime
+          //     );
+          //   },
+          // ),
+                            TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: birthdateController,
+                              keyboardType: TextInputType.datetime,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              inputFormatters: [birthdateFormatter],
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'mm-dd-yyyy',
+                                // helperText: "mm-dd-yyyy",
+                                filled: true,
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            )
+                            )),
+
+            ]),
+                            
+                            const SizedBox(height: 20),
+                            Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
+                            IntlPhoneNumberFiled(
+                              controller: phoneController,
+                              initialValue: phoneNumber?.phoneNumber,
+                              onInputChanged: (ph) {
+                                phoneNumber = ph;
+                              },
+                              labelText: "Phone",
+                              ),
+            ))]),
+                            const SizedBox(height: 20),
+                            Row(
+        children: [
+             Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child:
+                            TextFormField(
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: passwordController,
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                filled: true,
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            )))]),
+                            
+
+                            const SizedBox(height: 50),
+
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: AppColors.submitFillButton, // background color
+                                onPrimary: Colors.white, // foreground color
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 40, vertical: 15),
+                              ),
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
                                   signUp(state);
-                                },
-                                child: Text('Sign Up'),
-                              )
-                              // SignUpForm.custom(
-                              //   fields: [
-                              //     SignUpFormField.username(),
-                              //     SignUpFormField.email(required: true),
-                              //     SignUpFormField.phoneNumber(),
-                              //     SignUpFormField.password(),
-
-                              //   ],
-
-                              // ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // custom button to take the user to sign in
-                      persistentFooterButtons: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Already have an account?'),
-                            TextButton(
-                              onPressed: () => state.changeStep(
-                                AuthenticatorStep.signIn,
+                                }
+                              },
+                              child: const Text(
+                                
+                                'Sign Up',
+                                style: TextStyle(fontSize: 20, 
+                                  color: AppColors.tsnWhite),
                               ),
-                              child: const Text('Sign In'),
                             ),
-                          ],
-                        ),
-                      ],
-                    );
-                  case AuthenticatorStep.confirmSignUp:
-                    return Scaffold(
-                      body: Padding(
-                        padding: padding,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              // app logo
-                              const Center(child: FlutterLogo(size: 100)),
-                              // prebuilt sign up form from amplify_authenticator package
-
-                              TextField(
-                                controller: confirmSignInValueController,
-                                decoration: new InputDecoration.collapsed(
-                                    hintText: 'Confirmation Code'),
-                              ),
-
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background
-                                  onPrimary: Colors.white, // foreground
+                            const SizedBox(height: 30),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('Already have an account?',
+                                  style: TextStyle(color: AppColors.tsnBlack)
+                                  ),
+                                TextButton(
+                                  onPressed: () => state
+                                      .changeStep(AuthenticatorStep.signIn),
+                                  child: const Text(
+                                    'Sign In',
+                                    style: TextStyle(color: AppColors.linkColor),
+                                  ),
                                 ),
-                                //emailController, passwordController, usernameController, phoneController
-                                onPressed: () {
-                                  confirmSignIn(state);
-                                },
-                                child: Text('Confirm'),
-                              )
-                              // SignUpForm.custom(
-                              //   fields: [
-                              //     SignUpFormField.username(),
-                              //     SignUpFormField.email(required: true),
-                              //     SignUpFormField.phoneNumber(),
-                              //     SignUpFormField.password(),
-
-                              //   ],
-
-                              // ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // custom button to take the user to sign in
-                      persistentFooterButtons: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Already have an account?'),
-                            TextButton(
-                              onPressed: () => state.changeStep(
-                                AuthenticatorStep.signIn,
-                              ),
-                              child: const Text('Sign In'),
+                              ],
                             ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     TextButton(
+                            //       onPressed: () => continueAsGuest(state),
+                            //       child: const Text(
+                            //         'Continue as Guest',
+                            //         style: TextStyle(color: AppColors.linkColor),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
                           ],
                         ),
-                      ],
-                    );
-                  default:
-                    // returning null defaults to the prebuilt authenticator for all other steps
-                    return null;
-                }
+                      ),
+                    ),
+                  );
+
+                case AuthenticatorStep.confirmSignUp:
+                  return Scaffold(
+                    body: Padding(
+                      padding: padding,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            // app logo
+                            const Center(child: FlutterLogo(size: 100)),
+                            // prebuilt sign up form from amplify_authenticator package
+
+                            TextField(
+                              controller: confirmSignInValueController,
+                              decoration: const InputDecoration.collapsed(
+                                  hintText: 'Confirmation Code'),
+                            ),
+
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blue, // background
+                                onPrimary: Colors.white, // foreground
+                              ),
+                              onPressed: () {
+                                confirmSignIn(state);
+                              },
+                              child: const Text('Confirm'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    // custom button to take the user to sign in
+                    persistentFooterButtons: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Already have an account?'),
+                          TextButton(
+                            onPressed: () => state.changeStep(
+                              AuthenticatorStep.signIn,
+                            ),
+                            child: const Text('Sign In'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                default:
+                  // returning null defaults to the prebuilt authenticator for all other steps
+                  return null;
+              }
+            },
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              builder: Authenticator.builder(),
+              home: userConditionsMet && onboarded
+                  ? AppScaffold() :
+                     (userConditionsMet && loggedIn && !onboarded) ?        
+                      OnboardingView() : SplashScreen(),
+              routes: {
+                // When navigating to the "/" route, build the HomeScreen widget.
+                '/home': (context) => Home(),
+                // When navigating to the "/details" route, build the DetailsScreen widget.
+                // '/details': (context) => DetailsScreen(),
+                // Add more routes as needed.
               },
-              child: 
-              
-              MaterialApp(
-                  builder: Authenticator.builder(), home: AppScaffold()));
-        }),
-      );
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
-class AppScaffold extends StatelessWidget {
+class AppScaffold extends StatefulWidget {
+  const AppScaffold({Key? key}) : super(key: key);
+
+  
+
+  @override
+  State<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends State<AppScaffold> {
+  @override
+  initState() {
+    print("AppScaffoldState main.dart");
+    super.initState();
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+      //  loadPlayerDetails();
+    // });
+  }
+
+  Future<void> loadPlayerDetails() async {
+    print("loadPlayerDetails");
+    // await TwilioServices().configureTwilio();
+
+    ///////////////////////// add back in when shortcode is ready
+    // print("resppp: " + resp.toString());
+    // if (resp['success']) {
+    await BaseCommand().setupInitialAppModels();
+    BaseCommand().initialConditionsMet();
+
+    print("initialConditionsMett");
+    // } else {
+    //   print("try again....");
+
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Bind to AppModel.currentUser
-    Map<String, dynamic> currentUser =
-        context.select<AppModel, Map<String, dynamic>>((value) => value.currentUser);
-
-    bool isSignedIn =
-        context.select<AppModel, bool>((value) => value.isSignedIn);
-
-    bool initialConditionsMet =
-        context.select<AppModel, bool>((value) => value.initialConditionsMet);
-
-    bool isDialogueViewOpened = context
-        .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
-    print("isSignedINnnnn: ");
-    print(isSignedIn);
+    // bool initialConditionsMet =
+    //     context.select<AppModel, bool>((value) => value.initialConditionsMet);
+// print("initialConditionsMetttttt: "+ initialConditionsMet.toString());
     // Return the current view, based on the currentUser value:
     return Scaffold(
-      //replace first condition with loading screen
-      body: initialConditionsMet == false ? 
-        Container(
-            height: double.infinity,
-            width: double.infinity,
-            child:Align(
-              alignment: Alignment.center,
-              child: 
-              // BottomNav()//for times when user deleted in cognito but still signed into app
-              LoadingScreen(currentDotColor: Colors.white, defaultDotColor: Colors.black, numDots: 10)
-            )
-          ) 
-          : Home(),
-      // body: currentUser != "" ?  Home() : LoginPage(),
-    );
+
+        //replace first condition with loading screen
+        body:  const Home());
   }
 }

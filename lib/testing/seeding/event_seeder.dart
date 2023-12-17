@@ -14,7 +14,7 @@ import '../../testing/seeding/location_seeder.dart';
 import '../../testing/seeding/training_seeder.dart';
 import '../../testing/seeding/tournament_seeder.dart';
 import '../../testing/seeding/league_seeder.dart';
-import 'package:faunadb_http/faunadb_http.dart';
+
 
 class EventSeeder {
   Future<Map<String, dynamic>> createEvents(
@@ -169,14 +169,6 @@ class EventSeeder {
 
 
 
-  Future<Map<String, dynamic>> createRandomLocation() async{
-    Map<String, dynamic> createLocationResp = await LocationSeeder().createRandomLocation();
-      FaunaResponse locationFaunaResponse = createLocationResp["data"];
-      Map<String, dynamic> locationResult = locationFaunaResponse.asMap();
-
-      return locationResult;
-
-  }
 
   Map<String, dynamic> getRandomPickupGameData() {
     Map<String, dynamic> randomPickupGameData = {};

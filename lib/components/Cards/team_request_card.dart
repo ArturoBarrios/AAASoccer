@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../commands/game_command.dart';
 import '../../commands/requests_command.dart';
 import '../../views/team/view.dart';
-import '../../assets/icons/plus.svg';
 
 class TeamRequestCard extends StatefulWidget {
   const TeamRequestCard(
-      {Key? key, required this.teamRequestObject, required this.svgImage})
+      {Key? key,
+      required this.teamRequestObject,
+      required this.didSendRequest,
+      required this.userTeamDetails})
       : super(key: key);
   final Map<String, dynamic> teamRequestObject;
-  final Svg svgImage;
-  final double bevel = 10.0;
+  final bool didSendRequest;
+  final dynamic userTeamDetails;
 
   @override
   State<TeamRequestCard> createState() => _TeamRequestCard();
@@ -30,12 +29,12 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
     "success": false,
     "message": "Pickup deleted successfully"
   };
-  Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .deleteGame(gameObject["team"]["_id"], gameObject["_id"]);
-  print("deletePickupResponse: $deletePickupResponse");
-  if (deletePickupResponse["success"]) {
-    deletePickupResp["success"] = true;
-  }
+  // Map<String, dynamic> deletePickupResponse = await GameCommand()
+  //     .deleteGame(gameObject["team"]["_id"], gameObject["_id"]);
+  // print("deletePickupResponse: $deletePickupResponse");
+  // if (deletePickupResponse["success"]) {
+  //   deletePickupResp["success"] = true;
+  // }
 
   return deletePickupResp;
 }
@@ -49,9 +48,16 @@ class _TeamRequestCard extends State<TeamRequestCard> {
       textStyle: const TextStyle(fontSize: 20));
   final imageUrl =
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
+
+  @override
+  void initState() {
+    super.initState();
+    print("TeamRequestCard initState()");
+  }
+
   @override
   Widget build(BuildContext context) {
-  print("TeamRequestCard Build()");
+    print("TeamRequestCard Build()");
     print("widget name: ");
     print(widget.teamRequestObject.toString());
     return Listener(
@@ -61,7 +67,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TeamView();
+            return TeamView(teamObject: widget.teamRequestObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -99,10 +105,12 @@ class _TeamRequestCard extends State<TeamRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.teamRequestObject['team']['name'],
-                    svgImage: widget.svgImage,
-                    subtitle:
-                        "test subtitle", //widget.teamRequestObject['description'],
+                    text: ("join team(" +
+                        widget.teamRequestObject['team']['name'].toString() +
+                        ")"),
+                    subtitle: "sent by " +
+                        widget.teamRequestObject['sender']['username']
+                            .toString(), //widget.teamRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -149,7 +157,6 @@ class _TeamRequestCard extends State<TeamRequestCard> {
                 print("update team request");
                 print(widget.toString());
                 RequestsCommand().updateTeamRequests(widget.teamRequestObject);
-                
               },
               child: Container(
                 child: ClipRRect(
@@ -170,13 +177,11 @@ class _TeamRequestCard extends State<TeamRequestCard> {
 
 class InnerNeumorphicCardFb1 extends StatelessWidget {
   final String text;
-  final Svg svgImage;
   final String subtitle;
   final Function() onPressed;
 
   const InnerNeumorphicCardFb1(
       {required this.text,
-      required this.svgImage,
       required this.subtitle,
       required this.onPressed,
       Key? key})
@@ -188,16 +193,16 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: 150,
-        height: 150,
+        height: 200,
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            Image(
-              width: MediaQuery.of(context).size.width * .4,
-              height: MediaQuery.of(context).size.height * .1,
-              image: svgImage,
-              color: Colors.white,
-            ),
+            // Image(
+            //   width: MediaQuery.of(context).size.width * .4,
+            //   height: MediaQuery.of(context).size.height * .1,
+            //   image: svgImage,
+            //   color: Colors.white,
+            // ),
             // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
             const Spacer(),
             Text(text,

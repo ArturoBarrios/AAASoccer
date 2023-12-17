@@ -1,54 +1,148 @@
-class GameMutations {
+import '../fragments/event_fragments.dart';
+
+class GameMutations {  
+  String partiallyUpdateGameEvent(Map<String, dynamic> gameEventInput) {
+    String updateGame = """
+      mutation {
+        partialUpdateEvent(id: "${gameEventInput['event']['_id']}" ,
+          data:  {             
+            ${gameEventInput['event']['data']}    
+            }
+          ) {
+             name        	
+                  _id  
+                  type                  
+                  archived
+                  deleted    
+                  price{                    
+                    _id
+                    amount
+                    event{
+                      _id
+                      name                      
+                    }
+                  }
+                  location{
+                    data{
+                    _id
+                    latitude
+                    longitude
+                    }
+                  }
+                  eventUserOrganizers{                    
+                      users{
+                        data{
+                          _id
+                          name
+                        }
+                      }    
+                      event{                        
+                          _id
+                          name  
+                          archived
+                          deleted                      
+                      }                
+                    }
+            
+            
+    				
+                 
+          } 
+      partialUpdateGame(id: "${gameEventInput['game']['_id']}" ,
+          data: {              
+            ${gameEventInput['game']['data']}            
+          }) {
+    					_id
+    					homegoals
+  }
+        }
+        """;
+
+    return updateGame;
+  }
+// chats: {
+//                 create: [
+//                   {
+//                     name: "General",
+//                     isPrivate: false,
+//                     users: {
+//                       connect: [
+//                         "${userInput['_id']}"
+//                       ]
+//                     }
+
+
+//                   }
+//                 ]
+//               }  
   String createGame(Map<String, dynamic> gameInput,
       Map<String, dynamic> eventInput, Map<String, dynamic> locationInput, Map<String, dynamic> userInput) {
+    var teamAmount = eventInput.containsKey('teamPrice') ? eventInput['teamPrice'] : "0.00";
     String createGame = """
       mutation {
-        createGame(data: {
+        createGame(input: {
           pickup: ${gameInput['pickup']}, 
-          event: {
-            create: 
-            {
+          event: {                        
               name: "${eventInput['name']}",
               type: GAME,
+              archived: false,
+              hostAmenities: "${eventInput['hostAmenities']}",
               isMainEvent: ${eventInput['isMainEvent']},
-              eventUserOrganizers: {
-                create:
-                  {
-                    users: {
-                      connect:[                        
-                          "${userInput['_id']}"                       
-                      ]
-                    }                    
-                  }                                     
-              },                    
-              location: {
-                create: 
-                {
-                  latitude: ${locationInput['latitude']},
-                  longitude: ${locationInput['longitude']},
+              startTime: "${eventInput['startTime']}",
+              endTime: "${eventInput['endTime']}",
+              createdAt: "${eventInput['createdAt']}",
+              capacity: ${eventInput['capacity']},
+                           
+              price: {
+                
+                  amount: "${eventInput['price']}",              
                 }
+              
+              joinConditions: 
+                
+                  {
+                    withRequest: ${eventInput['withRequest']},
+                    withPayment: ${eventInput['withPayment']},                    
+                  }   
+                  
+                
+              
+              userParticipants: {                              
+                  userId: "${userInput['_id']}"                                                              
+                  roles: "${eventInput['roles']}"                                                                                              
+              },                    
+              fieldLocations: {                            
+                    isMainField: true,
+                    fieldAmenities: "${locationInput['fieldAmenities']}",
+                    fieldLocationId: ${locationInput['fieldLocationId']},
+                    fieldLocationName: "${locationInput['fieldLocationName']}",
+                    location: {           
+                        locationId: ${locationInput['locationId']},
+                        name: "${locationInput['name']}",
+                        address: "${locationInput['address']}",
+                        latitude: ${locationInput['latitude']},
+                        longitude: ${locationInput['longitude']}                     
+                    }                            
               }
-            }
+            
           } 
           }) {
-            _id
-            pickup            
-            event{
-              _id
-              name
-              type
-              isMainEvent
-              location{
-                data{
-                  _id
-                  latitude
-                  longitude
-                }
-              }     
-            } 
+            code
+            success
+            message
+            game{
+            pickup
+            event {
+              ${EventFragments().fullEvent()}
+            }
+          }
+             
+            
           }   
         }
         """;
+
+        print("createGame --> $createGame");
 
     return createGame;
   }
@@ -91,30 +185,23 @@ class GameMutations {
     return addPlayerToGame;
   }
 
-  String deleteGame(
-      String _id) {
-    String addPlayerToGame = """      
+  String archiveEvent(
+      dynamic game) {
+    String archiveEventString = """      
       mutation {
-        deleteGame(id: ${_id},
-  				                  
+        updateEvent(id: ${game['_id']},
+          data: {
+            archived: true
+               
+          }  				                  
         ){
-            _id
-    				pickup            
-            event{
-              _id
-              location{
-                data{
-                  _id
-                  latitude
-                  longitude
-                }
-              }
-            } 
+          ${EventFragments().fullEvent()}
+
     			  
   }
 }
         """;
 
-    return addPlayerToGame;
+    return archiveEventString;
   }
 }

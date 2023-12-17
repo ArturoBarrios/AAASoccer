@@ -1,166 +1,107 @@
-class UserQueries {
-  String getUserByEmail(Map<String, dynamic> userInput ){
-    String getUser = """
-      query getUser {
-          getUser(email: "${userInput['email']}") {      
-              _id      
-              name        	
-              phone
-              email
-              username
-              birthdate
-              gender
-              OSPID
-              events{
-                data{
-                  _id
-                  name
-                  isMainEvent
-                  type
-                }
-              }
-              friends{                                
-                  _id
-                  name
-                  email   
-                  OSPID             
-              }
-              teams{
-                data{
-                  _id
-                  name
-                }
-              }              
-              friendRequests{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                  receiver{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }
-              eventRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  event{
-                    _id
-                    name
-                  }
-                }
-              } 
-              teamRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  team{
-                    _id
-                    name
-                  }
-                }
-              }           
-                                               
-              
-            
-          }
-        }
-    """;
-  
-    return getUser;
-  }
-  
-  String findUserByID(Map<String, dynamic> userInput ){
-    String getUser = """
-      query getUser {
-            findUserByID(id: "${userInput['user_id']}") {      
-              _id      
-              name        	
-              phone
-              email
-              username
-              birthdate
-              gender
-              OSPID
-              events{
-                data{
-                  _id
-                  name
-                  isMainEvent
-                  type
-                }
-              }
-              friends{                
-                  _id
-                  name
-                  email     
-                  OSPID           
-              }
-              teams{
-                data{
-                  _id
-                  name
-                }
-              }              
-              friendRequests{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                  receiver{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }
-              eventRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  event{
-                    _id
-                    name
-                  }
-                }
-              } 
-              teamRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  team{
-                    _id
-                    name
-                  }
-                }
-              }           
-                                               
-              
-            
-          }
-        }
-    """;
-  
-    return getUser;
-  }
- 
+import '../fragments/user_fragments.dart';
 
-  
+class UserQueries {
+  String checkUserUniqueness(Map<String, dynamic> userInput) {
+    String updateUserString = """
+      query getUser{
+        getUserByEmail(email: "${userInput['email']}") {
+          _id
+        }
+        getUserByUsername(username: "${userInput['username']}") {
+          _id
+        }
+        getUserByPhone(phone: "${userInput['phone']}") {
+          _id
+        }
+      }
+        """;
+
+    return updateUserString;
+  }
+
+  // String getUserByEmail(Map<String, dynamic> userInput) {
+  //   String getUser = """
+  //     query getUser {
+  //         getUserByEmail(email: "${userInput['email']}") {      
+  //             ${UserFragments().fullUser()}           
+                                               
+              
+            
+  //         }
+  //       }
+  //   """;
+
+  //   return getUser;
+  // }
+String getUserByEmail(Map<String, dynamic> userInput) {
+    String getUser = """
+      query FindUserByEmail {
+      findUserByEmail(email: "${userInput['email']}") {
+        user{
+          ${UserFragments().fullUser()}
+        }
+        code
+        message
+        success
+
+      }
+    }
+    """;
+
+  return getUser;
+}
+
+  String findUserByID(Map<String, dynamic> userInput, String userFragment) {
+    String getUser = """
+      query FindUserById {
+      findUserById(_id: "${userInput['_id']}") {
+        user{
+          ${userFragment}
+        }
+        code
+        message
+        success
+
+      }
+    }
+
+
+    """;
+      // query getUser {
+      //       findUserByID(id: "${userInput['_id']}") {      
+      //        ${userFragment}                                                                                    
+      //     }
+      //   }
+
+    return getUser;
+  }
+
+  String findUserPlayerByID(Map<String, dynamic> userInput) {
+    String getUser = """
+      query getUser {
+            findUserByID(id: "${userInput['_id']}") {      
+             ${UserFragments().fullUser()}                                                                                    
+          }
+        }
+    """;
+
+    return getUser;
+  }
+
+  String removeEventFromUser(
+      Map<String, dynamic> eventInput, Map<String, dynamic> userInput) {
+    String addPlayerToEvent = """      
+      mutation {
+        updateUser(id: ${userInput['_id']}, data: {          
+          events: {
+            disconnect: ${eventInput['_id']}
+          }
+        }) {
+          ${UserFragments().fullUser()}        
+        }
+      }
+        """;
+
+    return addPlayerToEvent;
+  }
 }

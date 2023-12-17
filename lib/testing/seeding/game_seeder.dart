@@ -1,13 +1,13 @@
 import 'package:soccermadeeasy/commands/game_command.dart';
 
-import '../../models/app_model.dart';
+import '../../models/pageModels/app_model.dart';
 import '../../commands/user_command.dart';
 import '../../commands/team_command.dart';
 import '../../commands/location_command.dart';
 import './location_seeder.dart';
 import 'dart:math';
-import 'package:faunadb_http/faunadb_http.dart';
-import 'package:faunadb_http/query.dart';
+
+
 
 class GameSeeder {
   //assumes that data contains List of games and players of FaunaResponse type

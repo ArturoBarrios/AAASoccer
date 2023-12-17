@@ -1,49 +1,111 @@
+import '../fragments/team_fragments.dart';
+
 class TeamMutations {
-  String createTeam(Map<String, dynamic> teamInput, Map<String, dynamic> locationInput) {
+  String createTeam(
+      Map<String, dynamic> teamInput, Map<String, dynamic> locationInput) {
+    print("teamInput: $teamInput");
+    print("locationInput: $locationInput");
     String createTeam = """
       mutation {
         createTeam(data: {
           name: "${teamInput['name']}",
-          color: "${teamInput['color']}",
-          teamUserOrganizers: {
-            create:
-              {
-                users: {
-                  connect:[                        
-                      "${teamInput['user_id']}"                       
-                  ]
-                }                    
-              }                                     
-          },
-          location: {
-            create: 
-            {
-              latitude: ${locationInput['latitude']},
-              longitude: ${locationInput ['longitude']},
+          color: "${teamInput['color']}",          
+          status: "ACTIVE",
+          capacity:${teamInput['capacity']},
+          createdAt: "${teamInput['createdAt']}",
+          updatedAt: "${teamInput['updatedAt']}",
+          chats: {
+                create: [
+                  {
+                    name: "General",
+                    isPrivate: false,
+                    users: {
+                      connect: [
+                        "${teamInput['user_id']}"
+                      ]
+                    }
+
+
+                  }
+                ]
+              }    
+          price: {
+                create: {
+                  amount: "${teamInput['price']}",                                
+                }
+              },
+          joinConditions: {
+            create: {
+              withRequest: ${teamInput['withRequest']},
+              withPayment: ${teamInput['withPayment']},
+              forTeam: true
+
             }
-          } 
+          },
+          userParticipants: {
+                create:
+                  {
+                    user: {
+                      connect:                   
+                          "${teamInput['user_id']}"    
+                      }                                         
+                      roles: "${teamInput['roles']}"
+                                       
+                  }                                     
+              },  
+          teamLocations: {
+                create: [
+                  {
+                    isMainField: true                    
+                    location: {    
+                      create: {
+                        name: "${locationInput['name']}",
+                        latitude: ${locationInput['latitude']},
+                        longitude: ${locationInput ['longitude']},
+                      }            
+                    }
+                  }
+                ]
+              }   
           }) {
-            _id
-            name
-            color
-            location{
-              _id
-              latitude
-              longitude
-            }      
+           ${TeamFragments().fullTeam()}
           }   
         }
         """;
 
     return createTeam;
   }
-    
-  
- String updateTeamRequest(
-      Map<String, dynamic> teamRequestInput) {
-      String updateTeamRequest = """
+
+  String createPrice(
+    Map<String, dynamic> paymentInput,
+    Map<String, dynamic> teamInput,
+  ) {
+    String createPrice = """
+     mutation {
+        createPrice(data: {      
+          amount: "${paymentInput['price']}",  
+          team: {
+              connect: "${teamInput['_id']}"
+            },  
+                                    
+          }) {
+            _id    
+            amount
+            team {
+              _id
+              name
+            }                                  
+          }
+        }
+        """;
+
+    return createPrice;
+  }
+
+  String updateTeamRequest(Map<String, dynamic> teamRequestInput) {
+    String updateTeamRequest = """
       mutation {
-        updateTeamRequest(id: ${teamRequestInput['_id']},
+        updateRequest(id: ${teamRequestInput['_id']},
           data: {              
           status: ACCEPTED,
           acceptedBy: {
@@ -88,69 +150,78 @@ class TeamMutations {
         """;
 
     return updateTeamRequest;
-    }  
+  }
 
-
-String sendTeamRequest(
-      Map<String, dynamic> teamRequestInput, String organizersString, String receivers) {
-      String sendTeamRequestString = """
+  String updateUserRolesInTeam(Map<String, dynamic> teamInput,
+      Map<String, dynamic> userInput, String roles, String teamRequestId) {
+    String addPlayerToTeam = """      
       mutation {
-        createTeamRequest(data: {    
-          requestAttempts: 1, 
-          status: PENDING,
-          organizers: {
-            connect: [
-              $organizersString
-            ]
-          },
-          sender: {
-            connect: "${teamRequestInput['sender_id']}"            
-          },  
-          receivers: {
-            connect: [            
-              $receivers
-            ]
-          }  
-          team: {
-            connect: "${teamRequestInput['_id']}"            
-          }                     
-          }) {
+        partialUpdateTeamUserParticipant(
+          id: ${teamRequestId},
+  				data: {                       
+            roles: "$roles"                                                      
+          }                      
+        ){
+          _id,
+          roles,
+          user{
             _id
-            status
-            requestAttempts
-            organizers{
-              data{
-                _id
-                email
-                name
-              }
-            }
-            receivers{
-              data{
-                _id
-                email
-                name
-              }
-            }
-            sender{              
-                _id
-                name
-                email              
-            }   
-            acceptedBy{              
-                _id
-                email
-                name              
-            }            
-            team{              
-                _id
-                name              
-            }            
+            username
+          }
+          team{
+            ${TeamFragments().fullTeam()}
+
+          }
+              
+    				  
+          }
+        }
+        """;
+
+    return addPlayerToTeam;
+  }
+
+  String updateTeamUserParticipant(dynamic updateTeamUserParticipantInput) {
+    String updateTeamUserParticipantString = """
+      mutation {
+        updateTeamUserParticipant(id: ${updateTeamUserParticipantInput['_id']},
+          data: {                      
+          roles: "${updateTeamUserParticipantInput['roles']}",                                             
+          }) {
+              _id
+                user{
+                  _id
+                  name
+                  email
+                  phone
+                }
+                roles
+                
+    				
+                 
           }   
         }
         """;
 
-    return sendTeamRequestString;
-    }
+    return updateTeamUserParticipantString;
+  }
 
+  String deleteTeamUserParticipant(
+    Map<String, dynamic> teamUserParticipant,
+  ) {
+    String deleteTeamUserParticipantString = """      
+      mutation {
+        deleteTeamUserParticipant(
+          id: ${teamUserParticipant['teamUserParticipantId']}
+        )
+        {
+          _id
+              
+    				  
+          }
+        }
+        """;
+
+    return deleteTeamUserParticipantString;
+  }
 }

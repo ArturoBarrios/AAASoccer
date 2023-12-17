@@ -1,3 +1,4 @@
+import '../fragments/event_fragments.dart';
 
 class TrainingQueries {
    String getTrainings()
@@ -8,9 +9,8 @@ class TrainingQueries {
             data {      
               _id              
               event{
-                  name        	
-                  _id                  
-              } 
+                ${EventFragments().fullEvent()}                  
+              }        
             }
           }
         }

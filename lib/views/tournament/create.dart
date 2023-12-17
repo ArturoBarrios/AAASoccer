@@ -1,31 +1,71 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/models/pageModels/app_model.dart';
+import 'package:soccermadeeasy/views/tournament/view.dart';
 import '../../commands/tournament_command.dart';
 import '../../commands/event_command.dart';
-import '../../testing/seeding/location_seeder.dart';
-import '../../components/profile.dart';
-import 'dart:math';
-import 'dart:convert';
+import '../../components/create_event_payment.dart';
+import '../../components/create_team_payment.dart';
+import '../../components/create_team_request.dart';
+import '../../components/create_event_request.dart';
+import '../../components/date_time_picker.dart';
+import '../../components/event_input_widget.dart';
+import '../../components/location_search_bar.dart';
+import '../../models/enums/EventType.dart';
 
 class TournamentCreate extends StatefulWidget {
+  final dynamic league;
+  const TournamentCreate({
+    Key? key,
+    this.league,
+  }) : super(key: key);
+
   @override
-  _TournamentCreateState createState() => _TournamentCreateState();
+  State<TournamentCreate> createState() => _TournamentCreateState();
 }
 
 class _TournamentCreateState extends State<TournamentCreate> {
-  final nameController = TextEditingController();
+  String name = "";
   final groupPlayController = TextEditingController();
   final numberOfTeamsController = TextEditingController();
   final isPickupController = TextEditingController();
   final surfaceController = TextEditingController();
   final fieldSizeController = TextEditingController();
   final privateController = TextEditingController();
-  final priceController = TextEditingController();
+  String price = "0.00";
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
+  final numberOfRoundsPerTeamController = TextEditingController();
+  final numberOfTeamsPerGroupController = TextEditingController();
+  final roundOfXController = TextEditingController();
+  final knockoutRoundsController = TextEditingController();
+  final teamPriceController = TextEditingController();
+  final capacityController = TextEditingController();
 
-  bool _isLoading = false;
+  CreateEventRequest createEventRequestWidget = CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
+  DateTimePicker dateTimePicker = DateTimePicker();
+  String address = '';
+  late LocationSearchBar locationSearchBar;
+
+  @override
+  initState() {
+    locationSearchBar = LocationSearchBar(
+      onCoordinatesChange: (coordinates, address) {
+        this.address = address;
+      },
+    );
+    super.initState();
+  }
+
+  void onUserEventDetailsChange(String newName, String newPrice) {
+    setState(() {
+      name = newName;
+      price = newPrice;
+    });
+  }
 
   Future<Map<String, dynamic>> createTournament() async {
     print("createTournament");
@@ -35,35 +75,70 @@ class _TournamentCreateState extends State<TournamentCreate> {
     };
     try {
       Map<String, dynamic> createEventInput = {
-        "name": nameController.text.trim(),
-        "price": priceController.text.trim(),
-        'isMainEvent': true,   
+        "name": name,
+        'isMainEvent': true,
+        'price': double.parse(price),
+        'teamPrice': double.parse(teamPriceController.text.toString()),
+        'startTime': dateTimePicker.startTimestamp,
+        'endTime': dateTimePicker.endTimestamp,
+        'withRequest': createEventRequestWidget.withRequest.value,
+        'withPayment': createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
+        'withTeamRequest': createTeamRequestWidget.withRequest.value,
+        'roles': "{PLAYER, ORGANIZER}",
+        'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
+        'type': EventType.TOURNAMENT,
+        'capacity': int.parse(capacityController.text.toString()),
       };
 
-      // Map<String, dynamic> createdEvent =
-      //     await EventCommand().createEvent(createEventInput);
-      // print("createdEvent: ");
-      // print(createdEvent['data']);
-      // if (createdEvent['success']) {
-        Map<String, dynamic> generateRandomLocation = await LocationSeeder().generateRandomLocation(LocationSeeder().locations[0]);
-        Map<String, dynamic> locationInput = generateRandomLocation["data"]["randomLocation"];
-        List<dynamic> groupPlayOptions = [true, false];
-        var rng = Random();
-        bool groupPlayOptionsRand = groupPlayOptions[rng.nextInt(groupPlayOptions.length)];
-        print("locationInputCheck: " + locationInput.toString());   
-        Map<String, dynamic> createTournamentInput = {
-          "numberOfTeams": numberOfTeamsController.text.trim(),
-          "groupPlay": groupPlayOptionsRand,
-        };
-        Map<String, dynamic> createdTournament =
-            await TournamentCommand().createTournament(createTournamentInput, createEventInput, locationInput);
+      Map<String, dynamic> locationInput = {
+        "name": address,
+        "latitude": AppModel().currentPosition.latitude,
+        "longitude": AppModel().currentPosition.longitude
+      };
 
-        if (createdTournament['success']) {
-          createEventResponse['success'] = true;
+      print("locationInputCheck: $locationInput");
+      Map<String, dynamic> createTournamentInput = {
+        "numberOfRoundsPerTeam":
+            int.parse(numberOfRoundsPerTeamController.text.toString()),
+        "numberOfTeams": int.parse(numberOfTeamsController.text.toString()),
+        "numberOfGroups": int.parse(numberOfTeamsController.text.toString()) ~/
+            int.parse(numberOfTeamsPerGroupController.text.toString()),
+        "groupPlay": false,
+        "numberOfTeamsPerGroup":
+            int.parse(numberOfTeamsPerGroupController.text.toString()),
+        "roundOfX": int.parse(roundOfXController.text.toString()),
+        "knockoutRounds": int.parse(knockoutRoundsController.text.toString()),
+      };
+      Map<String, dynamic> createdTournamentResp = await TournamentCommand()
+          .createTournament(createTournamentInput, createEventInput,
+              locationInput, widget.league);
+      print("createdTournamentResp: $createdTournamentResp");
+
+      if (createdTournamentResp['success']) {
+        dynamic createdTournament = createdTournamentResp['data'];
+        dynamic mainEvent =
+            EventCommand().getMainEvent(createdTournament['events']['data']);
+        print("mainEventt: $mainEvent");
+        await EventCommand().updateViewModelsWithEvent(mainEvent, true, true);
+
+        if (context.mounted) {
+          Navigator.pop(
+            context,
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TournamentView(tournament: mainEvent)),
+          );
         }
+
+        createEventResponse['success'] = true;
+      }
       // }
       return createEventResponse;
-    } on ApiException catch (e) {
+    } on ApiException catch (_) {
       return createEventResponse;
     }
   }
@@ -73,8 +148,8 @@ class _TournamentCreateState extends State<TournamentCreate> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: new Padding(
-            padding: const EdgeInsets.only(left: 20.0),
+        title: const Padding(
+            padding: EdgeInsets.only(left: 20.0),
             child: Text("Find Soccer Near You")),
         backgroundColor: Colors.orange.shade500,
         actions: <Widget>[
@@ -82,59 +157,68 @@ class _TournamentCreateState extends State<TournamentCreate> {
             icon: const Icon(Icons.account_circle),
             tooltip: 'Go to the next page',
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return Profile();
-                },
-              ));
+              
             },
           ),
         ],
       ),
-      body: Center(
-          child: Column(children: [
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Name'),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 50.0),
+        child:Center(
+        child: Column(
+          children: [
+            EventInputWidget(
+                onUserEventDetailsChange: onUserEventDetailsChange),
+            locationSearchBar,
+            createEventRequestWidget,
+            createEventPaymentWidget,
+            createTeamRequestWidget,
+            createTeamPaymentWidget,
+            dateTimePicker,
+            TextField(
+              controller: teamPriceController,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Team Price'),
+            ),
+            TextField(
+              controller: numberOfTeamsController,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Number of Teams'),
+            ),
+            TextField(
+              controller: numberOfRoundsPerTeamController,
+              decoration: const InputDecoration.collapsed(
+                  hintText: 'Number of Rounds Per Team'),
+            ),
+            TextField(
+              controller: numberOfTeamsPerGroupController,
+              decoration: const InputDecoration.collapsed(
+                  hintText: 'Number of Teams Per Group'),
+            ),
+            TextField(
+              controller: roundOfXController,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Round of X'),
+            ),
+            TextField(
+              controller: knockoutRoundsController,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Knockout Rounds'),
+            ),            
+            TextField(
+              controller: capacityController,
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Capacity'),
+            ),            
+            GestureDetector(
+              onTap: () {
+                createTournament();
+              },
+              child: const Text("tap me"),
+            ),
+          ],
         ),
-        TextField(
-          controller: priceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Price'),
-        ),
-        TextField(
-          controller: numberOfTeamsController,
-          decoration: new InputDecoration.collapsed(hintText: 'Number of Teams'),
-        ),
-        TextField(
-          controller: groupPlayController,
-          decoration: new InputDecoration.collapsed(hintText: 'Group Play?'),
-        ),
-        TextField(
-          controller: surfaceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Surface'),
-        ),
-        TextField(
-          controller: fieldSizeController,
-          decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
-        ),
-        TextField(
-          controller: privateController,
-          decoration: new InputDecoration.collapsed(hintText: 'Private'),
-        ),
-        TextField(
-          controller: locationController,
-          decoration: new InputDecoration.collapsed(hintText: 'Location'),
-        ),
-        TextField(
-          controller: imagesController,
-          decoration: new InputDecoration.collapsed(hintText: 'Images'),
-        ),
-        GestureDetector(
-            onTap: () {
-              createTournament();
-            },
-            child: Text("tap me")),
-      ])),
+      )),
     );
   }
 }

@@ -1,114 +1,155 @@
-class UserMutations {
+import 'package:soccermadeeasy/graphql/fragments/team_fragments.dart';
 
-  String sendFriendRequest(
-      Map<String, dynamic> sendFriendRequestInput) {
-    String sendFriendRequestString = """
+import '../fragments/user_fragments.dart';
+import '../fragments/event_fragments.dart';
+
+class UserMutations {
+  String deleteUser(Map<String, dynamic> userInput) {
+    String updateUserString = """
+       mutation {
+        deleteUser(
+          userId: "${userInput['_id']}",                             
+          ) {
+             code
+              success
+              message                                       
+          }   
+        }
+    """;
+    return updateUserString;
+  }
+
+  String updateUserOnboarding(Map<String, dynamic> userInput) {
+    String updateUserString = """
+       mutation {
+        updateUserOnboarding(input: {
+          _id: "${userInput['_id']}",
+          onboarded: ${userInput['onboarded']}                    
+        }                   
+          ) {
+             code
+                success
+                message            
+              user{    
+                ${UserFragments().fullUser()}
+              }                 
+          }   
+        }
+    """;
+    return updateUserString;
+  }
+ 
+  String updateUsertermsAndPrivacy(Map<String, dynamic> userInput) {
+    String updateUserString = """
+       mutation {
+        updateUsertermsAndPrivacy(
+          userId: "${userInput['userId']}"
+          hasAcceptedPrivacyPolicy: ${userInput['hasAcceptedPrivacyPolicy']}
+          hasAcceptedTermsAndConditions: ${userInput['hasAcceptedPrivacyPolicy']}                     
+                   
+          ) {
+             code
+                success
+                message            
+              user{    
+                ${UserFragments().fullUser()}
+              }                 
+          }   
+        }
+    """;
+    return updateUserString;
+  }
+
+  String createUserStripeCustomer(
+      Map<String, dynamic> userInput, Map<String, dynamic> customerInput) {
+    String updateUserString = """      
       mutation {
-        createFriendRequest(data: {    
-          requestAttempts: 1, 
-          status: PENDING,
-          sender: {
-            connect: "${sendFriendRequestInput['sender_id']}"
-          },  
-          receiver: {
-            connect: "${sendFriendRequestInput['receiver_id']}"
+        createStripeCustomer(
+          customerId: "${customerInput['customerId']}", 
+          userId: "${userInput['_id']}"          
+          ) {
+            success 
+            code
+            message
+            stripeCustomer{
+              _id
+              customerId
+              user{
+                _id
+                name
+                email
+              }
+
+            }
             
-          }                       
+          }   
+        }
+        """;
+
+    return updateUserString;
+  }
+
+  String createUserEventPayment(dynamic createUserEventPaymentInput) {
+    // String paymentType = createUserEventPaymentInput['paymentType'] == 'player'
+    //     ? """
+    //       event: {
+    //         connect: "${createUserEventPaymentInput['eventId']}"            
+    //       }
+    //       charge: "${createUserEventPaymentInput['charge']}"
+    //       isPlayerPayment: true
+    //       isTeamPayment: false
+    //     """
+    //     : """
+    //       team: {
+    //         connect: "${createUserEventPaymentInput['teamId']}"            
+    //       }
+    //       isPlayerPayment: false
+    //       isTeamPayment: true
+    //     """;
+
+    String createUserEventPaymentString = """      
+      mutation {
+        createPayment(input: {
+          eventId: "${createUserEventPaymentInput['eventId']}"
+          userId: "${createUserEventPaymentInput['userId']}" 
+          charge: "${createUserEventPaymentInput['charge']}"
+          amount: "${createUserEventPaymentInput['amount']}"
+          paidAt: "${createUserEventPaymentInput['paidAt']}"
+          
           }) {
-            _id
-            status
-            requestAttempts
-            sender{
+            code
+            success 
+            message
+            payment{
               _id
-              email
-              name              
-            }   
-            receiver{              
-              _id
-              email
-              name              
+              amount
+              event{
+                _id
+                name
+              }
+              paidAt
+              user{
+                _id
+                name
+                username
+              }
             }            
           }   
         }
         """;
 
-    return sendFriendRequestString;
+    return createUserEventPaymentString;
   }
 
   String updateUser(Map<String, dynamic> userInput) {
     String updateUserString = """      
       mutation {
-        updateUser(id: ${userInput['user_id']},
+        updateUser(id: ${userInput['_id']},
   				data: {            
             OSPID: "${userInput['OSPID']}"                                                                                
           }                      
         ){
-          _id      
-              name        	
-              phone
-              email
-              username
-              birthdate
-              gender
-              OSPID
-              events{
-                data{
-                  _id
-                  name
-                  isMainEvent
-                  type
-                }
-              }
-              friends{                
-                  _id
-                  name
-                  email                
-              }
-              teams{
-                data{
-                  _id
-                  name
-                }
-              }              
-              friendRequests{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  sender{
-                    _id
-                    name
-                    email
-                  }
-                  receiver{
-                    _id
-                    name
-                    email
-                  }
-                }
-              }
-              eventRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  event{
-                    _id
-                    name
-                  }
-                }
-              } 
-              teamRequestsToAccept{
-                data{
-                  _id
-                  status
-                  requestAttempts
-                  team{
-                    _id
-                    name
-                  }
-                }
-              }                                          			
+          ${UserFragments().fullUser()}                                  			
   }
 }
         """;
@@ -116,25 +157,92 @@ class UserMutations {
     return updateUserString;
   }
 
-  String addFriend(
-      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
-    String addFriendString = """      
+  String updateUserAccount(Map<String, dynamic> userInput) {
+    String updateUserString = """      
+      mutation {
+        updateUserAccount(input: {
+          userId: "${userInput['userId']}"
+          name: "${userInput['name']}"
+          birthdate: "${userInput['birthdate']}"
+          gender: "${userInput['gender']}"
+
+        }            				
+        ){
+          code
+          success
+          message
+          user{
+            _id
+            name
+            birthdate
+            gender                                			
+          }
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
+
+  String updateUserProfileImage(Map<String, dynamic> userInput) {
+    String updateUserString = """      
       mutation {
         updateUser(id: ${userInput['_id']},
   				data: {            
-            friends:              
-              ${friendInput['_id']}                                                                                 
+            mainImageKey: "${userInput['mainImageKey']}"                                                                                
           }                      
         ){
-        _id
-        name
-        email
-        friends{          
+          ${UserFragments().fullUser()}                                  			
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
+  String updateUserPrivateStatus(Map<String, dynamic> userInput) {
+    String updateUserString = """      
+      mutation {
+        updateUser(id: ${userInput['userId']},
+  				data: {            
+            isProfilePrivate: ${userInput['isProfilePrivate']}                                                                                
+          }                      
+        ){
+          ${UserFragments().fullUser()}                                  			
+  }
+}
+        """;
+
+    return updateUserString;
+  }
+
+
+
+  String followUser(dynamic followUserInput) {
+    String addFriendString = """      
+      mutation {
+        createFollowRelation(data: {
+          follower: {
+            connect: "${followUserInput['followerId']}"            
+          }
+          following: {
+            connect: "${followUserInput['followingId']}"            
+          }          
+          }) {
+           _id
+           follower{
             _id
             name
-            email          
-        }                                        			
-  }
+            email
+           }
+            following{
+              _id
+              name
+              email
+            }            
+          }   
+        
 }
         """;
 
@@ -159,18 +267,7 @@ class UserMutations {
         email
         events{      
           data{    
-            _id
-            name   
-            isMainEvent    
-            eventUserOrganizers{
-              users{
-                data{
-                  _id
-                  name
-                  email
-                }
-              }
-            }             
+           ${EventFragments().fullEvent()}
           }
         }                                        			
   }
@@ -180,37 +277,26 @@ class UserMutations {
     return addEventString;
   }
 
-  String addTeam(
-      Map<String, dynamic> userInput, Map<String, dynamic> teamInput) {
+  String addUserToTeam(
+      Map<String, dynamic> userInput, Map<String, dynamic> teamInput, role) {
     String addTeamString = """      
       mutation {
-        updateUser(id: ${userInput['_id']},
+        updateTeam(
+          id: ${teamInput['_id']},
   				data: {            
-            teams: {
-              connect: [
-                ${teamInput['_id']}                                                                                 
-              ]
-            }             
-          }                      
-        ){
-        _id
-        name
-        email
-        teams{      
-          data{    
-            _id
-            name       
-            teamUserOrganizers{
-              users{
-                data{
-                  _id
-                  name
-                  email
-                }
+             userParticipants:{
+              create:
+              {
+                user: {
+                  connect:
+                  "${userInput['_id']}"
+                }                
+                roles: "$role"
               }
-            }             
-          }
-        }                                        			
+          }   
+          }                   
+        ){
+        ${TeamFragments().fullTeam()}                                     			
   }
 }
         """;
@@ -218,51 +304,19 @@ class UserMutations {
     return addTeamString;
   }
 
-  String createTo(Map<String, dynamic> userInput) {
-    String createTo = """
-        mutation {
-          createTo(data: {                    
-            user: {
-              connect: ${userInput['_id']}                                    
-            }
-            }) {
-              _id
-              user{
-                _id
-                name           
-              }   
-            }
-          }
-        """;
-
-    return createTo;
-  }
-
-  String updateFriendRequest(Map<String, dynamic> friendRequestInput) {
-    String updateFriendRequestString = """      
+  String removeFriend(
+      Map<String, dynamic> userInput, Map<String, dynamic> friendInput) {
+    String addFriendString = """      
       mutation {
-        updateFriendRequest(id: ${friendRequestInput['_id']},
-  				data: {            
-            status: ACCEPTED,                                                
-          }                      
-        ){
-            _id
-            status
-            requestAttempts
-            sender{              
-              _id
-              name              
-            }   
-            receiver{              
-              _id
-              name              
-            }                        
-            
-    			
-  }
-}
+        deleteUserLink(id: "${friendInput['_id']}") {
+          _id
+          
+        }
+      }
         """;
 
-    return updateFriendRequestString;
+    return addFriendString;
   }
+
+  removeTeamFromUser(userInput, team) {}
 }

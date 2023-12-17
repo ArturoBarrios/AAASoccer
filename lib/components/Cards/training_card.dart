@@ -2,19 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import '../Mixins/event_mixin.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../models/app_model.dart';
-import '../../commands/user_command.dart';
+import '../../models/pageModels/app_model.dart';
+import '../../commands/event_command.dart';
 import '../../views/training/view.dart';
+import 'package:soccermadeeasy/constants.dart';
 
-class TrainingCard extends StatefulWidget {
-  const TrainingCard(
-      {Key? key, required this.trainingObject, required this.svgImage})
+class TrainingCard extends StatefulWidget with EventMixin {
+   TrainingCard(
+      {Key? key,
+      required this.trainingObject,
+      required this.svgImage,
+      required this.userEventDetails })
       : super(key: key);
   final Map<String, dynamic> trainingObject;
   final Svg svgImage;
   final double bevel = 10.0;
+  final dynamic userEventDetails;
 
   @override
   State<TrainingCard> createState() => _TrainingCard();
@@ -24,10 +30,30 @@ void trainingClicked() {
   print("Training Clicked");
 }
 
+Future<Map<String, dynamic>> archiveTraining(dynamic trainingObject) async {
+  print("archive training");
+  
+  Map<String, dynamic> archiveTrainingResponse = await EventCommand().archiveEvent(trainingObject);
+
+  return archiveTrainingResponse;
+}
+
+
 
 class _TrainingCard extends State<TrainingCard> {
   final bool _isPressed = false;
   final Color color = Colors.grey.shade200;
+
+
+  
+requestTypeSelected(List<int>? indexes) {
+      widget.requestTypeSelected(indexes);
+   
+
+    }
+  Future<void> sendEventRequest() async {
+    widget.sendEventRequest(widget.trainingObject, {0: {}}, widget.requestUserTypes, []);
+  }
 
   final ButtonStyle style = ElevatedButton.styleFrom(
       primary: Colors.orange.shade500,
@@ -45,7 +71,8 @@ class _TrainingCard extends State<TrainingCard> {
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {
-            return TrainingView();
+            return TrainingView(
+                 event: widget.trainingObject);
           },
           animationType: DialogTransitionType.slideFromBottom,
           curve: Curves.fastOutSlowIn,
@@ -83,7 +110,7 @@ class _TrainingCard extends State<TrainingCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.trainingObject['event']['name'],
+                    text: widget.trainingObject['name'],
                     svgImage: widget.svgImage,
                     subtitle:
                         "test subtitle", //widget.trainingObject['description'],
@@ -97,10 +124,12 @@ class _TrainingCard extends State<TrainingCard> {
                   barrierDismissible: true,
                   builder: (BuildContext context) {
                     return ClassicGeneralDialogWidget(
-                      titleText: 'Are you sure you want to delete this training?',
+                      titleText:
+                          'Are you sure you want to delete this training?',
                       contentText: '',
-                      onPositiveClick: () {                        
-                       
+                      onPositiveClick: () {
+                        Navigator.of(context).pop();
+                        archiveTraining(widget.trainingObject);
                       },
                       onNegativeClick: () {
                         Navigator.of(context).pop();
@@ -124,6 +153,45 @@ class _TrainingCard extends State<TrainingCard> {
                 ),
               ),
             ),
+            !widget.userEventDetails['isMine']
+                ? 
+                Container(
+                height: 20,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: GestureDetector(
+                      onTap: () async {
+                        print("onTap: ");
+                        List<int>? requestIndexes =
+                            await showAnimatedDialog<dynamic>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            
+
+                            return ClassicListDialogWidget<dynamic>(
+                                selectedIndexes: widget.selectedRequestTypeIndexes,
+                                titleText: 'Choose User Type',
+                                positiveText: "Send Request",
+                                listType: ListType.multiSelect,
+                                activeColor: Colors.green,
+                                dataList: widget.requestUserTypes);
+                          },
+                          animationType: DialogTransitionType.size,
+                          curve: Curves.linear,
+                        );
+
+                        widget.selectedRequestTypeIndexes =
+                            requestIndexes ?? widget.selectedRequestTypeIndexes;
+                        print(
+                            'selectedIndex:${widget.selectedRequestTypeIndexes?.toString()}');
+                        await requestTypeSelected(widget.selectedRequestTypeIndexes);
+                        await sendEventRequest();
+                      },
+                      child: Text("Send Request")),
+                ),
+              )
+                : Text("Join Your Game"),
           ])),
     ));
   }

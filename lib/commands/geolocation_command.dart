@@ -6,15 +6,50 @@ import '../services/geolocation_services.dart';
 import 'package:vector_math/vector_math.dart';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
-// import 'package:geocoding/geocoding.dart';
+import 'package:geocoding/geocoding.dart';
 
 class GeoLocationCommand extends BaseCommand {
-  Future <Position> determinePosition() async {
+  Future<Position> determinePosition() async {
     Position position = await GeoLocationServices().determinePosition();
     return position;
   }
 
-  //test functions
+  Future<void> setUserAddress(double latitude, double longitude) async {
+    try {
+      print("setUserAddress");
+      print("latitude: $latitude");
+      print("longitude: $longitude");
+      print("placemarkFromCoordinates");
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      print("placemarks: " + placemarks.toString());
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
+  Future<double> getDistanceFromPoint(double latitude, double longitude, Position fromPoint) async {
+    print("getDistanceFromUser");
+    double distance = 0.0;    
+    print("vars: " +
+        latitude.toString() +
+        " " +
+        longitude.toString() +
+        " " +
+        fromPoint.latitude.toString() +
+        " " +
+        fromPoint.longitude.toString());
+    ////todo: make sure user has a position
+    distance = await GeoLocationServices().calculateDistanceInKMFromLocation(
+        latitude,
+        longitude,
+        fromPoint.latitude,
+        fromPoint.longitude);
+
+    return distance;
+  }
+
+  /////////////////test functions
   Map<String, dynamic> getRandomPosition(double x0, double y0, int radius) {
     Map<String, dynamic> latLon = {"latitude": 0.0, "longitude": 0.0};
     Random random = new Random();

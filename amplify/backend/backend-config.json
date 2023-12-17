@@ -1,38 +1,80 @@
 {
-  "auth": {
-    "AAASoccer": {
-      "service": "Cognito",
+  "api": {
+    "api": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "soccerappcffe289a"
+        }
+      ],
       "providerPlugin": "awscloudformation",
-      "dependsOn": [],
+      "service": "API Gateway"
+    }
+  },
+  "auth": {
+    "SoccerApp": {
       "customAuth": false,
+      "dependsOn": [],
       "frontendAuthConfig": {
-        "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
-        "signupAttributes": [
-          "EMAIL",
-          "PHONE_NUMBER",
-          "NAME",
-          "ADDRESS"
+        "mfaConfiguration": "OPTIONAL",
+        "mfaTypes": [
+          "SMS"
         ],
         "passwordProtectionSettings": {
-          "passwordPolicyMinLength": 8,
           "passwordPolicyCharacters": [
             "REQUIRES_LOWERCASE",
             "REQUIRES_NUMBERS",
             "REQUIRES_SYMBOLS",
             "REQUIRES_UPPERCASE"
-          ]
+          ],
+          "passwordPolicyMinLength": 8
         },
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
+        "signupAttributes": [
+          "NAME",
+          "EMAIL",
+          "BIRTHDATE"
+        ],
+        "socialProviders": [
+          "FACEBOOK"
+        ],
+        "usernameAttributes": [
+          "EMAIL"
         ],
         "verificationMechanisms": [
-          "EMAIL"
+          "PHONE_NUMBER"
         ]
-      }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
+  "function": {
+    "soccerappcffe289a": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_soccerappcffe289a_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "soccerappcffe289a"
+        }
+      ]
+    },
+    "AMPLIFY_function_soccerappcffe289a_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "soccerappcffe289a"
+        }
+      ]
     }
   }
 }

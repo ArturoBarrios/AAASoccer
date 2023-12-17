@@ -1,13 +1,22 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/views/tryout/view.dart';
 import '../../commands/tryout_command.dart';
 import '../../commands/event_command.dart';
-import '../../components/profile.dart';
+import '../../components/create_event_payment.dart';
+import '../../components/create_event_request.dart';
+import '../../components/create_team_payment.dart';
+import '../../components/create_team_request.dart';
+import '../../components/date_time_picker.dart';
+import '../../components/location_search_bar.dart';
+import '../../components/headers.dart';
+import '../../models/enums/EventType.dart';
 
 class TryoutCreate extends StatefulWidget {
+  const TryoutCreate({Key? key}) : super(key: key);
+
   @override
-  _TryoutCreateState createState() => _TryoutCreateState();
+  State<TryoutCreate> createState() => _TryoutCreateState();
 }
 
 class _TryoutCreateState extends State<TryoutCreate> {
@@ -22,7 +31,29 @@ class _TryoutCreateState extends State<TryoutCreate> {
   final locationController = TextEditingController();
   final imagesController = TextEditingController();
 
-  bool _isLoading = false;
+  CreateEventRequest createEventRequestWidget = CreateEventRequest();
+  CreateEventPayment createEventPaymentWidget = CreateEventPayment();
+  CreateTeamPayment createTeamPaymentWidget = CreateTeamPayment();
+  CreateTeamRequest createTeamRequestWidget = CreateTeamRequest();
+  DateTimePicker dateTimePicker = DateTimePicker();
+  final Map<String, dynamic> locationInput = {
+    "name": "",
+    "latitude": 0,
+    "longitude": 0,
+  };
+  late LocationSearchBar locationSearchBar;
+
+  @override
+  initState() {
+    locationSearchBar = LocationSearchBar(
+      onCoordinatesChange: (coordinates, address) {
+        locationInput['name'] = address;
+        locationInput['latitude'] = coordinates.latitude;
+        locationInput['longitude'] = coordinates.longitude;
+      },
+    );
+    super.initState();
+  }
 
   Future<Map<String, dynamic>> createTryout() async {
     print("createGame");
@@ -31,108 +62,93 @@ class _TryoutCreateState extends State<TryoutCreate> {
       "message": "Default Error"
     };
     try {
-      Map<String, dynamic> createEventInput = {
-        "name": nameController.text.trim(),
-        "price": priceController.text.trim(),
-        "location": locationController.text.trim(),
-        "images": imagesController.text.trim(),
-        "type": "EventType.TRYOUT",
+      Map<String, dynamic> eventInput = {
+        "name": nameController.text.toString(),
+        'isMainEvent': true,
+        'price': double.parse(priceController.text.toString()),
+        'startTime': dateTimePicker.startTimestamp,
+        'endTime': dateTimePicker.endTimestamp,
+        'withRequest': createEventRequestWidget.withRequest.value,
+        'withPayment': createEventPaymentWidget.withPayment.value,
+        'withTeamPayment': createTeamPaymentWidget.withPayment.value,
+        'withTeamRequest': createTeamRequestWidget.withRequest.value,
+        'roles': "{PLAYER, ORGANIZER}",
+        'createdAt': dateTimePicker.rightNow.millisecondsSinceEpoch.toString(),
+        'type': EventType.TRYOUT,
       };
 
-      Map<String, dynamic> createdEvent =
-          await EventCommand().createEvent(createEventInput);
-    print("createdEvent: ");
-    print(createdEvent['data']);
-      if (createdEvent['success']) {
-        Map<String, dynamic> createTryoutInput = {
-          
-          
-          "tryoutEventId": createdEvent['data'].id
-        };
-        Map<String, dynamic> createdTryout = {};
-            //await TryoutCommand().createTryout(createTryoutInput);
-
-        if (createdTryout['success']) {
-          createEventResponse['success'] = true;
+      Map<String, dynamic> tryoutData = {};
+      print("locationInputCheck: $locationInput");
+      Map<String, dynamic> createTryoutResp = await TryoutCommand()
+          .createTryout(tryoutData, eventInput, locationInput);
+      print("createTryoutResp: $createTryoutResp");
+      if (createTryoutResp['success']) {
+        dynamic createdTryout = createTryoutResp['data'];
+        await EventCommand()
+            .updateViewModelsWithEvent(createdTryout['event'], true, true);
+        if (context.mounted) {
+          Navigator.pop(
+            context,
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    TryoutView(event: createdTryout['event'])),
+          );
         }
       }
       return createEventResponse;
-    } on ApiException catch (e) {
+    } on ApiException catch (_) {
       return createEventResponse;
     }
+  }
+
+  void goBack() {
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: new Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Text("Find Soccer Near You")),
-        backgroundColor: Colors.orange.shade500,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return Profile();
+      appBar: const Headers().getBackHeader(context, "Create Tryout"),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration.collapsed(hintText: 'Name'),
+              ),
+              locationSearchBar,
+              createEventRequestWidget,
+              createEventPaymentWidget,
+              createTeamRequestWidget,
+              createTeamPaymentWidget,
+              dateTimePicker,
+              TextField(
+                controller: priceController,
+                decoration: const InputDecoration.collapsed(hintText: 'Price'),
+              ),
+              TextField(
+                controller: imagesController,
+                decoration: const InputDecoration.collapsed(hintText: 'Images'),
+              ),
+              GestureDetector(
+                  onTap: () {
+                    createTryout();
+                  },
+                  child: const Text("tap me")),
+              GestureDetector(
+                onTap: () {
+                  goBack();
                 },
-              ));
-            },
+                child: const Text("Back to Home"),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-      body: Center(
-          child: Column(children: [
-        TextField(
-          controller: nameController,
-          decoration: new InputDecoration.collapsed(hintText: 'Name'),
-        ),
-        TextField(
-          controller: hometeamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Home'),
-        ),
-        TextField(
-          controller: awayteamController,
-          decoration: new InputDecoration.collapsed(hintText: 'Away'),
-        ),
-        TextField(
-          controller: isPickupController,
-          decoration: new InputDecoration.collapsed(hintText: 'Pickup'),
-        ),
-        TextField(
-          controller: surfaceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Surface'),
-        ),
-        TextField(
-          controller: fieldSizeController,
-          decoration: new InputDecoration.collapsed(hintText: 'Field Size'),
-        ),
-        TextField(
-          controller: privateController,
-          decoration: new InputDecoration.collapsed(hintText: 'Private'),
-        ),
-        TextField(
-          controller: priceController,
-          decoration: new InputDecoration.collapsed(hintText: 'Price'),
-        ),
-        TextField(
-          controller: locationController,
-          decoration: new InputDecoration.collapsed(hintText: 'Location'),
-        ),
-        TextField(
-          controller: imagesController,
-          decoration: new InputDecoration.collapsed(hintText: 'Images'),
-        ),
-        GestureDetector(
-            onTap: () {
-              createTryout();
-            },
-            child: Text("tap me")),
-      ])),
     );
   }
 }

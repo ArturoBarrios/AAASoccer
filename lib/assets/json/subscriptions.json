@@ -1,0 +1,23 @@
+{
+    "subscriptions": [
+      {
+        "name": "Basic Subscription",
+        "prices": ["19.99", "179.99"],
+        "description": "This is a basic subscription providing limited access to our features.",
+        "lengths": "monthly, yearly",
+        "freeLength": "1 month"
+      },
+      {
+        "name": "Premium Subscription",
+        "prices": "19.99",
+        "description": "This is a premium subscription offering full access to all our features.",
+        "lengths": "monthly, annual"
+      },
+      {
+        "name": "Lifetime Subscription",
+        "price": "199.99",
+        "description": "This is a one-time subscription offering lifetime access to all our features.",
+        "lengths": "lifetime"
+      }
+    ]
+  }

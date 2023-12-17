@@ -10,32 +10,18 @@ class UserModel extends ChangeNotifier {
   List<String> get userPosts => _userPosts;
   String userID = "";
   String userEmail = "";
-  // User user = User();
-  
-  
-  // dynamic _position = null;
-  // Position get position => _position;
+
+  String _profileImageUrl = "";
+  String get profileImageUrl => _profileImageUrl;
+  set profileImageUrl(String profileImageUrl) {
+    _profileImageUrl = profileImageUrl;
+    notifyListeners();
+  }
 
   bool _userSetup = false;
   bool get userSetup => _userSetup;
-
-  // set position(Position position) {
-  //   _position = position;
-  //   notifyListeners();
-  // }
-
   set userSetup(bool userSetup) {
     _userSetup = userSetup;
     notifyListeners();
   }
-
-
-
-
-
-
-  
-
- 
-
 }

@@ -1,0 +1,8 @@
+enum UserType{
+  PLAYER,
+  ORGANIZER,
+  MANAGER,
+  MAINCOACH,
+  ASSISTANTCOACH,
+  REF,
+}

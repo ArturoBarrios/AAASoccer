@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../../svg_widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import '../../commands/game_command.dart';
-import '../../commands/requests_command.dart';
-import '../../views/game/view.dart';
-import '../../assets/icons/plus.svg';
+import '../../commands/user_command.dart';
+import '../../views/home.dart';
+import '../../views/player/view.dart';
 
 class FriendRequestCard extends StatefulWidget {
   const FriendRequestCard(
-      {Key? key, required this.friendRequestObject, required this.svgImage})
+      {Key? key,
+      required this.friendRequestObject,
+      required this.didSendRequest})
       : super(key: key);
   final Map<String, dynamic> friendRequestObject;
-  final Svg svgImage;
-  final double bevel = 10.0;
+  final bool didSendRequest;
 
   @override
   State<FriendRequestCard> createState() => _FriendRequestCard();
@@ -30,14 +28,24 @@ Future<Map<String, dynamic>> deletePickup(dynamic gameObject) async {
     "success": false,
     "message": "Pickup deleted successfully"
   };
-  Map<String, dynamic> deletePickupResponse = await GameCommand()
-      .deleteGame(gameObject["friend"]["_id"], gameObject["_id"]);
-  print("deletePickupResponse: $deletePickupResponse");
-  if (deletePickupResponse["success"]) {
-    deletePickupResp["success"] = true;
-  }
+  // Map<String, dynamic> deletePickupResponse = await GameCommand()
+  //     .deleteGame(gameObject["friend"]["_id"], gameObject["_id"]);
+  // print("deletePickupResponse: $deletePickupResponse");
+  // if (deletePickupResponse["success"]) {
+  //   deletePickupResp["success"] = true;
+  // }
 
   return deletePickupResp;
+}
+
+Future<void> updateFriendRequest(
+    dynamic friendRequestObject, BuildContext context) async {
+  // await RequestsCommand().updateFriendRequest(friendRequestObject);
+  //go back
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Home()),
+  );
 }
 
 class _FriendRequestCard extends State<FriendRequestCard> {
@@ -51,14 +59,12 @@ class _FriendRequestCard extends State<FriendRequestCard> {
       "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/illustrations%2Fundraw_Working_late_re_0c3y%201.png?alt=media&token=7b880917-2390-4043-88e5-5d58a9d70555";
   @override
   Widget build(BuildContext context) {
-  print("FriendRequestCard Build()");
+    print("FriendRequestCard Build()");
     print("widget name: ");
     print(widget.friendRequestObject.toString());
     return Listener(
         child: GestureDetector(
-      onTap: () {
-        
-      },
+      onTap: () {},
       child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           padding: EdgeInsets.all(12.5),
@@ -90,10 +96,11 @@ class _FriendRequestCard extends State<FriendRequestCard> {
           child: Row(children: [
             Container(
                 child: InnerNeumorphicCardFb1(
-                    text: widget.friendRequestObject['sender']['name'],
-                    svgImage: widget.svgImage,
-                    subtitle:
-                        "test subtitle", //widget.friendRequestObject['description'],
+                    text: "Friend Request",
+                    friendRequestObject: widget.friendRequestObject,
+                    subtitle: "sent by " +
+                        widget.friendRequestObject['sender']['email']
+                            .toString(), //widget.friendRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");
                     })),
@@ -134,25 +141,13 @@ class _FriendRequestCard extends State<FriendRequestCard> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                //send friend request
-                print("update friend request");
+            IconButton(
+              icon: const Icon(Icons.notifications_active),
+              tooltip: 'Notifications',
+              onPressed: () {
                 print(widget.toString());
-                RequestsCommand().updateFriendRequest(widget.friendRequestObject);
-                
+                updateFriendRequest(widget.friendRequestObject, context);
               },
-              child: Container(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: Image(
-                    width: 20,
-                    height: 20,
-                    image: SVGWidgets().deleteSVGImage(),
-                    color: Colors.white,
-                  ),
-                ),
-              ),
             ),
           ])),
     ));
@@ -161,34 +156,52 @@ class _FriendRequestCard extends State<FriendRequestCard> {
 
 class InnerNeumorphicCardFb1 extends StatelessWidget {
   final String text;
-  final Svg svgImage;
   final String subtitle;
+  final dynamic friendRequestObject;
   final Function() onPressed;
 
   const InnerNeumorphicCardFb1(
       {required this.text,
-      required this.svgImage,
       required this.subtitle,
       required this.onPressed,
+      required this.friendRequestObject,
       Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Future<void> viewPlayerProfile() async {
+      print("viewPlayerProfile");
+      print(friendRequestObject.toString());
+      Map<String, dynamic> findMyUserByIdResp =
+          await UserCommand().findUserPlayerById(friendRequestObject['sender']);
+      print(findMyUserByIdResp.toString());
+      dynamic playerObject = findMyUserByIdResp['user'];
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PlayerView(
+            userPlayerObject: friendRequestObject['sender'],
+          ),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: onPressed,
       child: Container(
         width: 150,
-        height: 150,
+        height: 200,
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            Image(
-              width: MediaQuery.of(context).size.width * .4,
-              height: MediaQuery.of(context).size.height * .1,
-              image: svgImage,
-              color: Colors.white,
-            ),
+            // Image(
+            //   width: MediaQuery.of(context).size.width * .4,
+            //   height: MediaQuery.of(context).size.height * .1,
+            //   image: svgImage,
+            //   color: Colors.white,
+            // ),
             // Image.network(imageUrl, height: 59, fit: BoxFit.cover),
             const Spacer(),
             Text(text,
@@ -201,14 +214,23 @@ class InnerNeumorphicCardFb1 extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12),
-            ),
+            GestureDetector(
+                onTap: () {
+                  print("view player profile");
+                  viewPlayerProfile();
+                },
+                child: Container(
+                  width: 100,
+                  height: 20,
+                  child: Text(
+                    subtitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12),
+                  ),
+                )),
             const SizedBox(
               height: 10,
             ),

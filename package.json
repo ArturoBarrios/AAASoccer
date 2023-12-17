@@ -13,5 +13,14 @@
     "@graphql-cli/similar": "2.1.0",
     "@graphql-cli/validate": "2.1.0",
     "graphql-cli": "^4.1.1-alpha-c4d6521.0"
+  },
+  "dependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.288.0",
+    "aws-cloudfront-sign": "^2.2.0",
+    "aws-sdk": "^2.1332.0",
+    "dotenv": "^16.0.3",
+    "firebase-functions": "^4.2.1",
+    "fs": "^0.0.1-security",
+    "stripe": "^11.8.0"
   }
 }

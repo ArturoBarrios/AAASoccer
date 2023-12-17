@@ -1,47 +1,39 @@
-class TeamQueries {
-  String getTeam(String id) {
-    String getTeam = """
-        query getTeam {
-          findPlayer(id: $id) {
-            data {      
-              _id              
-              user{
-                  name        	
-                  phone
-                  email
-                  username
-                  birthdate
-                  gender
-                  location                                    
-              }               
-            }
-          }
-        }
-      """;
+import '../fragments/team_fragments.dart';
 
-    return getTeam;
+class TeamQueries {
+
+  String getAllTeams(String from, String teamFragment) {
+    String getAllTeamsString = """
+      query GetEvents {
+        getAllTeams(from: "$from") {                  
+            ${teamFragment}        
+        }
+      }
+    """;
+    return getAllTeamsString;
   }
 
-  String getTeams() {
+  String getAllTeamUserParticipants(String userId, String teamFragment) {
+    String getAllTeamUserParticipantsString = """
+      query GetEvents {
+        getAllTeamUserParticipants(userId:"$userId") {                              
+          _id
+          team{
+              ${teamFragment}            
+          }
+        }
+      }
+    """;
+    return getAllTeamUserParticipantsString;
+  }
+
+  String getTeams(String teamFragment) {
     String getTeams = """
           query getTeams {
             allTeams {
               data {      
-                _id 
-                name    
-                teamUserOrganizers{                                
-                users{
-                  data{
-                    _id
-                    name
-                  }                     
-                }                                
-            }                   
-                users{
-                  data{
-                    _id
-                    }
-                    }
+               ${teamFragment}  
+
                     
                   }
                 }
@@ -49,5 +41,29 @@ class TeamQueries {
           """;
 
     return getTeams;
+  }
+
+  String findTeamByID(Map<String, dynamic> teamInput) {
+    String getTeam = """
+      query getTeam {
+            findTeamByID(id: "${teamInput['_id']}") {      
+             ${TeamFragments().fullTeam()}                                                                                    
+          }
+        }
+    """;
+
+    return getTeam;
+  }
+
+  String allUserTeamParticipants(
+      dynamic user, String startTime, String teamFragment) {
+    String getUserTeams = """
+      query getTeams {
+        allTeamsOfUser(startTime: "$startTime") {                  
+            ${teamFragment}        
+        }
+      }
+    """;
+    return getUserTeams;
   }
 }
