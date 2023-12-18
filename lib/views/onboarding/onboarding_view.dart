@@ -77,14 +77,15 @@ class _OnboardingViewState extends State<OnboardingView> {
     };
     print("partialUserInput: $partialUserInput");
 
-    // Map<String,dynamic> updateUserOnboardingResp = await UserCommand().updateUserOnboarding(partialUserInput);
-    // print("updateUserOnboardingResp: $updateUserOnboardingResp");
-    // if(updateUserOnboardingResp['success'] == true){
-    //   print("updateUserOnboardingResp['data']: ${updateUserOnboardingResp['data']}");
-    //   UserCommand().setAppModelUser(updateUserOnboardingResp['data']);
-    //   BaseCommand().initialUserConditionsMet();
-    //   BaseCommand().setOnboarded(true);
-    // }
+    Map<String,dynamic> updateUserOnboardingResp = await UserCommand().updateUserOnboarding(partialUserInput);
+    print("updateUserOnboardingResp: $updateUserOnboardingResp");
+    if(updateUserOnboardingResp['success'] == true){
+      print("updateUserOnboardingResp['data']: ${updateUserOnboardingResp['data']}");
+      // UserCommand().setAppModelUser(updateUserOnboardingResp['data']);
+      UserCommand().setUserOnboardingProperties(partialUserInput);
+      BaseCommand().initialUserConditionsMet();
+      BaseCommand().setOnboarded(true);
+    }
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(

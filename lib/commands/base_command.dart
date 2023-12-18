@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:soccermadeeasy/commands/geolocation_command.dart';
 import 'package:soccermadeeasy/commands/requests_command.dart';
@@ -91,6 +92,7 @@ class BaseCommand {
   GeoLocationServices geoLocationServices = _mainContext.read();
 
   void initializeData() {}
+    
 
   onTapBottomNav(context, key, item) {
     print("onTapBottomNav");
@@ -136,25 +138,27 @@ List<String> parseAmenities(String amenitiesString) {
   
 }
 
+    
 
   Future<String> showAgreementDialog(BuildContext context) async {
     print("showAgreementDialogggg");
-    String agreementToShow = "";
+    
+    String agreementToShow = await rootBundle.loadString('lib/assets/terms_and_conditions.txt');
     String title = "";
-    if(appModel.currentUser['hasAcceptedPrivacyPolicy'] == null || !appModel.currentUser['hasAcceptedPrivacyPolicy']){
+    if(appModel.currentUser['hasAcceptedTermsAndConditions'] == null){
       title = "Privacy Policy";
       await showDialog(
       context: context,
       builder: (BuildContext context)  {
         return AgreementFormWidget(
           title: title,
-          bodyText: 'Your agreement text goes here...',
+          bodyText: agreementToShow,
           onAccept: () async{
             print("Accepted");
             Map<String,dynamic> userInput = {
               "userId": appModel.currentUser['_id'],
-              "hasAcceptedPrivacyPolicy": true,
-              "hasAcceptedTermsAndConditions": "null"
+              "hasAcceptedPrivacyPolicy": null,
+              "hasAcceptedTermsAndConditions": true
             };
             await UserCommand().updateUsertermsAndPrivacy(userInput);
             Navigator.of(context).pop(); // Close the dialog
@@ -168,38 +172,7 @@ List<String> parseAmenities(String amenitiesString) {
         );
       },
     );
-
     }
-    //  if(appModel.currentUser["hasAcceptedTermsAndConditions"] == null || !appModel.currentUser['hasAcceptedTermsAndConditions']){
-    //   title = "Terms and Conditions";
-    //   await showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AgreementFormWidget(
-    //       title: title,
-    //       bodyText: 'Your agreement text goes here...',
-    //       onAccept: () async {
-    //         print("Accepted");
-    //         Map<String,dynamic> userInput = {
-    //           "userId": appModel.currentUser['_id'],
-    //           "hasAcceptedTermsAndConditions": true,
-    //           "hasAcceptedPrivacyPolicy": "null",
-    //         };
-    //         await UserCommand().updateUsertermsAndPrivacy(userInput);
-    //         Navigator.of(context).pop(); // Close the dialog
-    //       },
-    //       onReject: () {
-    //         print("Rejected");
-    //         Navigator.of(context).pop(); // Close the dialog
-    //       },
-    //     );
-    //   },
-    // );
-
-    // }
-    // else{
-    //   print("Something Went wrong big dog");
-    // }
 
     
 

@@ -25,6 +25,10 @@ class UserFragments {
       updatedAt
       hasAcceptedTermsAndConditions
       hasAcceptedPrivacyPolicy
+      preferredFoot
+      preferredPosition
+      skillLevel
+      interestedIn
       stripeCustomers{        
           _id
           customerId        
@@ -131,6 +135,10 @@ class UserFragments {
                     _id
                   }
                   roles
+                  preferredFoot
+      preferredPosition
+      skillLevel
+      interestedIn
                 }
               }
               

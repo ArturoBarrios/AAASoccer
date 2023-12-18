@@ -391,7 +391,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
 
           return BasicElevatedButton(
             backgroundColor: AppColors.tsnGreen,
-            text: "Pay to Join Event",
+            text: "Join",
             // fontSize: FontSizes.xxs(context),
             onPressed: () async {
               // purchaseEvent(context, event);
