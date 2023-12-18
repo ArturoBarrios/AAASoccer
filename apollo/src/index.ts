@@ -1,9 +1,13 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import mongoose from 'mongoose';
+import express from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const MongoDB = "mongodb+srv://arturobarrios357:Ruforufo357@tsndev.xuzcz.mongodb.net/?retryWrites=true&w=majority"
+const MongoDB = process.env.MONGODB_URI;
 import resolvers from './resolvers.js';
+
 
 
 
@@ -185,14 +189,15 @@ input UserInput {
   gender: String
   birthdate: String
   location: LocationInput  
+  hasAcceptedTermsAndConditions: Boolean 
+  hasAcceptedPrivacyPolicy: Boolean 
+  profileImageIndex: Int
+  # onboarding
+  onboarded: Boolean
   preferredFoot: String
   preferredPosition: String
   skillLevel: String
   interestedIn: String
-  hasAcceptedTermsAndConditions: Boolean 
-  hasAcceptedPrivacyPolicy: Boolean 
-  onboarded: Boolean
-  profileImageIndex: Int
 
 }
 

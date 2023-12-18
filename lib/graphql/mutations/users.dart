@@ -23,15 +23,19 @@ class UserMutations {
     String updateUserString = """
        mutation {
         updateUserOnboarding(input: {
-          _id: "${userInput['_id']}",
+          userId: "${userInput['_id']}"
           onboarded: ${userInput['onboarded']}                    
+          preferredFoot: "${userInput['preferredFoot']}"
+          preferredPosition: "${userInput['preferredPosition']}"
+          skillLevel: "${userInput['skillLevel']}"
+          interestedIn: "${userInput['interestedIn']}"
         }                   
           ) {
              code
                 success
                 message            
               user{    
-                ${UserFragments().fullUser()}
+                _id
               }                 
           }   
         }
@@ -45,14 +49,14 @@ class UserMutations {
         updateUsertermsAndPrivacy(
           userId: "${userInput['userId']}"
           hasAcceptedPrivacyPolicy: ${userInput['hasAcceptedPrivacyPolicy']}
-          hasAcceptedTermsAndConditions: ${userInput['hasAcceptedPrivacyPolicy']}                     
+          hasAcceptedTermsAndConditions: ${userInput['hasAcceptedTermsAndConditions']}                     
                    
           ) {
              code
                 success
                 message            
               user{    
-                ${UserFragments().fullUser()}
+                _id                
               }                 
           }   
         }

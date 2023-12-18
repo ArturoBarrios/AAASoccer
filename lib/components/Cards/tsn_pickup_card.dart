@@ -109,9 +109,11 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    
                     Row(
                       children: [
                         Icon(Icons.av_timer_rounded, color: AppColors.tsnGreyerWhite),
+                        SizedBox(width: 2),
                         Text(event.formattedEventTime, style: TextStyle(color: AppColors.tsnWhite, fontSize: FontSizes.xxs(context))),
                       ],
                     ),
@@ -127,7 +129,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                     ),
                     Row(
                       children: [
-                        RatingWidget(rating: event.fieldRating),
+                        // RatingWidget(rating: event.fieldRating),
                       ],
                     ),
                   ],
@@ -189,28 +191,35 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
           child: Row(
             children: [
               // Bottom-left section
-              Expanded(
+              Flexible(
+                flex: 13,
                 child: 
-                Padding(
-              padding: const EdgeInsets.fromLTRB(4,4,4,8),
-              child:
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                        event.mainEvent['name'] + " another thing to make the name that much longer!",
-                        style: TextStyle(color: AppColors.tsnWhite, fontSize: FontSizes.m(context)),
-                      ),
-                   
-                  ],
-                )),
+                Expanded(
+                  child: 
+                  Padding(
+                padding: const EdgeInsets.fromLTRB(8,4,4,8),
+                child:
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                          event.mainEvent['name'] + " another thing to make the name that much longer!",
+                          style: TextStyle(color: AppColors.tsnWhite, fontSize: FontSizes.m(context)),
+                        ),
+                    
+                    ],
+                  )),
+                ),
               ),
               // Bottom-right section
+              Flexible(
+                flex: 7,
+                child: 
               Expanded(
                 child: 
                 Padding(
-              padding: const EdgeInsets.fromLTRB(4,4,8,4),
+              padding: const EdgeInsets.fromLTRB(8,4,8,4),
               child:
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -234,12 +243,12 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                     ),
                     Row(
                       children: [
-                        RatingWidget(rating: event.hostRating),
+                        // RatingWidget(rating: event.hostRating),
                       ],
                     ),
                   ],
                 )),
-              ),
+              )),
             ],
           ),
         ),

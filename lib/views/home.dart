@@ -464,7 +464,7 @@ class _Home extends State<Home> {
     super.initState();
     loadInitialData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // showAgreementDialogues(context);
+      showAgreementDialogues(context);
     });
   }
 

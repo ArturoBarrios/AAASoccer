@@ -394,6 +394,7 @@ class UserCommand extends BaseCommand {
         final result = jsonDecode(response.body)['data']['updateUsertermsAndPrivacy'];
         partialUpdateUserResponse["data"] = null;
         if (result['success']) {
+          appModel.currentUser['hasAcceptedTermsAndConditions'] = userInput['hasAcceptedTermsAndConditions'];
           partialUpdateUserResponse["success"] = true;
           partialUpdateUserResponse["message"] = "user found";
           partialUpdateUserResponse["data"] = result['user'];
@@ -452,6 +453,15 @@ class UserCommand extends BaseCommand {
       return updateUserAccountResponse;
     }
   }
+
+  void setUserOnboardingProperties(dynamic onboardingProperties){
+    print("setUserOnboardingProperties");
+    appModel.currentUser['preferredFoot'] = onboardingProperties['preferredFoot'];
+    appModel.currentUser['preferredPosition'] = onboardingProperties['preferredPosition'];
+    appModel.currentUser['skillLevel'] = onboardingProperties['skillLevel'];
+    appModel.currentUser['interestedIn'] = onboardingProperties['interestedIn'];
+  }
+
   Future<Map<String, dynamic>> updateUserOnboarding(
       dynamic processedUserInput) async {
     print("updateUserOnboarding");

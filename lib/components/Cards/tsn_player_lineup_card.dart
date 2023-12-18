@@ -132,7 +132,7 @@ class TSNPlayerLineupCard extends StatelessWidget {
                             child: Row(
                               children: [
                                 Text(user['name'],
-                                    style: TextStyle(color: AppColors.tsnBlack))
+                                    style: TextStyle(color: AppColors.tsnBlack, fontSize: FontSizes.m(context), fontWeight: FontWeight.bold ))
                                 // Add more columns here if desired
                               ],
                             ),
@@ -142,7 +142,7 @@ class TSNPlayerLineupCard extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(2,2,2,2),
                             child: Row(
                               children: [
-                                Text("Amateur",
+                                Text(user['skillLevel'],
                                     style: TextStyle(color: AppColors.tsnGrey))
                                 // Add more columns here if desired
                               ],
@@ -177,7 +177,7 @@ class TSNPlayerLineupCard extends StatelessWidget {
                             child:Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text("Forward",
+                          Text(user['preferredPosition'],
                               style: TextStyle(
                                 color: AppColors.tsnGreen,
                                 fontSize: FontSizes.m(context),

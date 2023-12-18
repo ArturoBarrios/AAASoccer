@@ -300,8 +300,7 @@ const resolvers = {
             user.interestedIn = args.input.interestedIn;
 
             await user.save();
-
-            // await user.populate('user');
+            
             await user.populate('location');
 
 
@@ -344,10 +343,10 @@ const resolvers = {
             console.log("args.hasAcceptedTermsAndConditions: ", args.hasAcceptedTermsAndConditions);
             console.log("args.hasAcceptedPrivacyPolicy: ", args.hasAcceptedPrivacyPolicy);
             //update
-            const user = await User.findById(args._id);
-            // if(args.hasAcceptedTermsAndConditions != "null"){
-            //     user.hasAcceptedTermsAndConditions = args.hasAcceptedTermsAndConditions;
-            // }
+            const user = await User.findById(args.userId);
+            if(args.hasAcceptedTermsAndConditions != "null"){
+                user.hasAcceptedTermsAndConditions = args.hasAcceptedTermsAndConditions;
+            }
             // else if(args.hasAcceptedPrivacyPolicy != "null"){
             //     user.hasAcceptedPrivacyPolicy = args.hasAcceptedPrivacyPolicy;
             // }

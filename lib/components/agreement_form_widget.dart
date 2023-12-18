@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/styles/colors.dart';
 
 class AgreementFormWidget extends StatelessWidget {
   final String title;
@@ -43,12 +44,13 @@ class AgreementFormWidget extends StatelessWidget {
               alignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 TextButton(
+                  
                   onPressed: onReject,
-                  child: const Text('Reject'),
+                  child: const Text('Reject', style: TextStyle(color: AppColors.tsnRed)),
                 ),
                 ElevatedButton(
                   onPressed: onAccept,
-                  child: const Text('Accept'),
+                  child: const Text('Accept', style: TextStyle(color: AppColors.tsnGreen)),
                 ),
               ],
             ),

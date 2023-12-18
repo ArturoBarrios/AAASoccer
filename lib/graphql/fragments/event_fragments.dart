@@ -113,10 +113,15 @@ class EventFragments {
           _id
           name
           email
+          preferredFoot
+      preferredPosition
+      skillLevel
+      interestedIn
           username
           userType  
           eventUserParticipants{
-            _id            
+            _id 
+                       
           }        
         }          
       }
