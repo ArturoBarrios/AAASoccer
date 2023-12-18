@@ -225,6 +225,9 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                     Padding(
+                            padding: const EdgeInsets.fromLTRB(0,0,4,4),
+                            child:
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -240,7 +243,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                           style: TextStyle(color: AppColors.tsnGrey, fontSize: FontSizes.xxs(context)),
                         ),
                       ],
-                    ),
+                    )),
                     Row(
                       children: [
                         // RatingWidget(rating: event.hostRating),

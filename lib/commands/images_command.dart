@@ -207,7 +207,7 @@ class ImagesCommand extends BaseCommand {
       return getImageResponse;
     }
     try {
-      final uri = Uri.parse("http://localhost:3000/images?key=$key");
+      final uri = Uri.parse(dotenv.env['SERVER'].toString() + "/images?key=$key");
 
       final getSignedUrlResponse = await http.get(uri);
       print("response: ${json.decode(getSignedUrlResponse.body)}");
@@ -239,7 +239,7 @@ class ImagesCommand extends BaseCommand {
 
     try {
       final uri =
-          Uri.parse("http://localhost:3000/imagesList?keys=${keys.join(',')}");
+          Uri.parse(dotenv.env['SERVER'].toString() + "/imagesList?keys=${keys.join(',')}");
 
       final getSignedUrlResponse = await http.get(uri);
       print("response: ${json.decode(getSignedUrlResponse.body)}");
@@ -507,9 +507,8 @@ class ImagesCommand extends BaseCommand {
   Future<bool> deleteImageFromBucket(String key) async {
     print("deleteImageFromBucket()");
     print("key: $key");
-    http.Response response = await http.delete(
-      // Uri.parse('http://localhost:3000/deleteImage?key=$key'),
-      Uri.parse("http://localhost:3000/deleteImage?key=$key"),
+    http.Response response = await http.delete(      
+      Uri.parse(dotenv.env['SERVER'].toString() + "/deleteImage?key=$key"),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(<String, String>{
         'key': key,
@@ -651,7 +650,7 @@ class ImagesCommand extends BaseCommand {
       print("filename: $filename");
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://localhost:3000/uploadImage'),
+        Uri.parse(dotenv.env['SERVER'].toString()+'/uploadImage'),
       );
       http.MultipartFile file =
           await http.MultipartFile.fromPath('image', filename);
@@ -704,10 +703,10 @@ class ImagesCommand extends BaseCommand {
       final imageTemp = File(imagePath);
       String filename = imageTemp.path;
       var request = http.MultipartRequest(
-          'POST', Uri.parse('http://localhost:3000/uploadImage'));
+        'POST', Uri.parse(dotenv.env['SERVER'].toString() + '/uploadImage'));
 
       http.MultipartFile file =
-          await http.MultipartFile.fromPath('image', filename);
+        await http.MultipartFile.fromPath('image', filename);
       request.files.add(file);
       http.StreamedResponse res = await request.send();
       var response = await http.Response.fromStream(res);
