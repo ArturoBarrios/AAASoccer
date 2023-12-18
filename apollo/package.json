@@ -8,7 +8,8 @@
     "@apollo/server": "^4.9.5",
     "graphql": "^16.8.1",
     "mongoose": "^8.0.1",
-    "undici-types": "^5.26.5"
+    "undici-types": "^5.26.5",
+    "dotenv": "^16.0.3"
   },
   "scripts": {
     "compile": "tsc",
