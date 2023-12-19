@@ -101,6 +101,20 @@ class ProfilePageModel extends ChangeNotifier {
     _eventCardsLoading = eventCardsLoading;
     notifyListeners();
   }
+  
+  int _age = 0;
+  int get age => _age;
+  set age(int age) {
+    _age = age;
+    notifyListeners();
+  }
+  
+  String _formattedLocation = "";
+  String get formattedLocation => _formattedLocation;
+  set formattedLocation(String formattedLocation) {
+    _formattedLocation = formattedLocation;
+    notifyListeners();
+  }
 
 
 }

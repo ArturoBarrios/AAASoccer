@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:soccermadeeasy/components/models/button_model.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
@@ -14,14 +15,27 @@ import '../../styles/font_sizes.dart';
 import '../account_details_update.dart';
 import '../home.dart';
 
-class SettingsView extends StatelessWidget {
-  const SettingsView({Key? key}) : super(key: key);
+class SettingsView extends StatefulWidget {
+  SettingsView({Key? key}) : super(key: key);
+  
+  @override
+  _SettingsViewState createState() => _SettingsViewState();
 
-  void onTapHome(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Home()),
-    );
+  }
+
+  class _SettingsViewState extends State<SettingsView> {
+  String agreementToShow = "";
+
+
+
+    Future<void> loadInitialData() async{
+      agreementToShow = await rootBundle.loadString('lib/assets/terms_and_conditions.txt');
+    }
+
+  @override
+  initState() {
+    super.initState();
+    loadInitialData();
   }
 
   @override
@@ -88,12 +102,13 @@ class SettingsView extends StatelessWidget {
                                   await showDialog(
       context: context,
       builder: (BuildContext context)  {
+        
         return AgreementFormWidget(
-          title: "Terms of Service",
-          bodyText: 'Your agreement text goes here...',
+          title: "Terms and Conditions",
+          bodyText: agreementToShow,
           onAccept: () async{
             print("Accepted");
-            
+           
             Navigator.of(context).pop(); // Close the dialog
 
           },
@@ -109,36 +124,7 @@ class SettingsView extends StatelessWidget {
                                 );
                               
                               },
-                            ),                            
-                            ButtonModel(
-                              text: 'Privacy Policy',
-                              prefixIconData: Icons.private_connectivity_rounded,
-                              onTap: () async {
-                                  await showDialog(
-      context: context,
-      builder: (BuildContext context)  {
-        return AgreementFormWidget(
-          title: "Privacy Policy",
-          bodyText: 'Your agreement text goes here...',
-          onAccept: () async{
-            print("Accepted");
-            
-            Navigator.of(context).pop(); // Close the dialog
-
-          },
-          onReject: () {
-            print("Rejected");
-            Navigator.of(context).pop(); // Close the dialog
-          },
-          viewMode: true,
-        );
-      },
-    
-    
-                                );
-                              
-                              },
-                            ),                            
+                            ),                                                                                 
                           ],
                         ),
                         // TileListModel(
@@ -209,3 +195,4 @@ class SettingsView extends StatelessWidget {
     );
   }
 }
+

@@ -102,7 +102,7 @@ class ImagesCommand extends BaseCommand {
     try {
       String profileImageUrl = "";
 
-      Map<String, dynamic> getImageResp = await getImage(Constants.privateBetaProfileImages[appModel.currentUser['profileImageIndex']]); 
+      Map<String, dynamic> getImageResp = await getImage(Constants.privateBetaProfileImages[appModel.currentUser['profileImageIndex'] != null ? appModel.currentUser['profileImageIndex'] : 0]); 
       //uncomment once you actually start using profile image
           //await getImage(appModel.currentUser['mainImageKey']); 
       print("getImageResp: $getImageResp");
@@ -197,6 +197,7 @@ class ImagesCommand extends BaseCommand {
 
   Future<Map<String, dynamic>> getImage(String? key) async {
     print("getImage()");
+    print("keyyyy: $key");
     Map<String, dynamic> getImageResponse = {
       "success": false,
       "message": "Default Error",
@@ -207,8 +208,8 @@ class ImagesCommand extends BaseCommand {
       return getImageResponse;
     }
     try {
-      final uri = Uri.parse(dotenv.env['SERVER'].toString() + "/images?key=$key");
-
+      final uri = Uri.parse(dotenv.env['SERVER'].toString() + "images?key=$key");
+      print("uriiiiii: $uri");
       final getSignedUrlResponse = await http.get(uri);
       print("response: ${json.decode(getSignedUrlResponse.body)}");
 
@@ -219,7 +220,7 @@ class ImagesCommand extends BaseCommand {
 
       return getImageResponse;
     } catch (e) {
-      print('Mutation failed: $e');
+      print('Mutation faileddddd: $e');
       return getImageResponse;
     }
   }

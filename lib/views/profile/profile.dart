@@ -59,7 +59,7 @@ class _ProfileState extends State<Profile> {
 
   Future<void> onTapSettings() async => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => const SettingsView(),
+          builder: (BuildContext context) =>  SettingsView(),
         ),
       );
 
@@ -105,6 +105,8 @@ class _ProfileState extends State<Profile> {
     List eventCards = context.watch<ProfilePageModel>().eventCards;
     List teams = context.watch<ProfilePageModel>().teams;
     List events = context.watch<ProfilePageModel>().events;
+    int age = context.watch<ProfilePageModel>().age;
+    String formattedLocation = context.watch<ProfilePageModel>().formattedLocation;
     
 
     bool teamCardsLoading = context.watch<ProfilePageModel>().teamCardsLoading;
@@ -156,24 +158,24 @@ class _ProfileState extends State<Profile> {
                     children: [
                       SidewaysPillWidget(
                         color: AppColors.tsnGreen,
-                        text: "Professional",
+                        text: user['skillLevel'] ,
                       ),
                       const SizedBox(width: 6.0),
                       SidewaysPillWidget(
                         color: AppColors.tsnAlmostBlack,
-                        text: "RW",
+                        text: user['preferredPosition'],
                       ),
                       const SizedBox(width: 6.0),
                       SidewaysPillWidget(
                         color: AppColors.tsnAlmostBlack,
-                        text: "26",
+                        text: age.toString(),
                       ),
                       
                     ],
                   ),
                   const SizedBox(height: 8.0),                  
-                  const Text(
-                    'Durham, NH',
+                   Text(
+                    formattedLocation.toString(),
                     style:
                         TextStyle(fontFamily: 'Montserrat', color: Colors.grey),
                   ),

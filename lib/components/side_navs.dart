@@ -174,7 +174,7 @@ class SideNavs extends StatefulWidget {
             Icons.settings,
           ),
           title: const Text('Subscriptions'),
-          onTap: () {
+          onTap: () {            
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {
                 return SubscriptionsList();

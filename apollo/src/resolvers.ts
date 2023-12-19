@@ -18,7 +18,13 @@ import { getDistanceFromLatLonInKm } from './EventFunctions.js';
 const resolvers = {
     Mutation: {
         deleteUser: async (parent, args, context, info) => {
-            var user = await User.findById(args._id);
+            var user = await User.findById(args.userId);
+            await user.deleteOne();
+            return {
+                code: "200",
+                success: true,
+                message: "User was successfully deleted",
+            };
             
 
         },

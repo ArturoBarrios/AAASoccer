@@ -104,6 +104,25 @@ class BaseCommand {
     return appModel.currentPosition;
   }
 
+  int calculateAgeFromBirthdateString(String birthdateString){
+    print("calculateAgeFromBirthdateString: $birthdateString");
+    // Split the string and rearrange to match the 'yyyy-MM-dd' format
+    List<String> parts = birthdateString.split('/');
+    String formattedDateStr = '${parts[2]}-${parts[0]}-${parts[1]}';
+    DateTime birthdate = DateTime.parse(formattedDateStr);    
+    DateTime currentDate = DateTime.now();    
+    print("birthdate: "+ birthdate.toString());
+    int age = currentDate.year - birthdate.year;
+    if (birthdate.month > currentDate.month || 
+        (birthdate.month == currentDate.month && birthdate.day > currentDate.day)) {
+      age--;
+    }
+
+    print("age: $age");
+
+    return age;
+  }
+
    Future<void> launchLocationInBrowser(double latitude, double longitude  ) async {
     final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
       print("url: $url");
@@ -146,7 +165,7 @@ List<String> parseAmenities(String amenitiesString) {
     String agreementToShow = await rootBundle.loadString('lib/assets/terms_and_conditions.txt');
     String title = "";
     if(appModel.currentUser['hasAcceptedTermsAndConditions'] == null){
-      title = "Privacy Policy";
+      title = "terms and Conditions";
       await showDialog(
       context: context,
       builder: (BuildContext context)  {
@@ -492,7 +511,7 @@ List<String> parseAmenities(String amenitiesString) {
                 ,
             onConfirmCallback: () async {
               // Logic for confirmation action
-            Map<String,dynamic> deleteUserResp = await UserCommand().deleteUser(appModel.currentUser['_id']);         
+            Map<String,dynamic> deleteUserResp = await UserCommand().deleteUser(appModel.currentUser);         
             if(deleteUserResp['success']){
               await AmplifyAuthService.deleteUser();
               BaseCommand().nukeData();

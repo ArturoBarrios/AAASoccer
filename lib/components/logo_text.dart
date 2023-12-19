@@ -33,6 +33,11 @@ class _LogoTextWidgetState extends State<LogoTextWidget> with SingleTickerProvid
     late AnimationController _controller;
   late Animation<double> _animation;
   
+   @override
+  void dispose() {
+    _controller.dispose(); // Dispose of the controller
+    super.dispose();
+  }
    
  @override
   void initState() {
