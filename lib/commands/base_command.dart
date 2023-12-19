@@ -511,7 +511,7 @@ List<String> parseAmenities(String amenitiesString) {
                 ,
             onConfirmCallback: () async {
               // Logic for confirmation action
-            Map<String,dynamic> deleteUserResp = await UserCommand().deleteUser(appModel.currentUser['_id']);         
+            Map<String,dynamic> deleteUserResp = await UserCommand().deleteUser(appModel.currentUser);         
             if(deleteUserResp['success']){
               await AmplifyAuthService.deleteUser();
               BaseCommand().nukeData();

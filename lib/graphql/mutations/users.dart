@@ -12,7 +12,8 @@ class UserMutations {
           ) {
              code
               success
-              message                                       
+              message        
+                                             
           }   
         }
     """;
