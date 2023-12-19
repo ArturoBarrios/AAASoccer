@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:amplify_api/amplify_api.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:soccermadeeasy/commands/home_page_command.dart';
 import 'package:soccermadeeasy/graphql/fragments/user_fragments.dart';
@@ -40,6 +41,7 @@ class UserCommand extends BaseCommand {
       "eventUserParticipants": [],
       "teamUserParticipants": [],
       "isMine": false,
+      'age': 0
     };
 
     try{
@@ -47,14 +49,15 @@ class UserCommand extends BaseCommand {
        //get current user
     String imageUrl = "";
 
-    if (appModel.currentUser['_id'] == user['_id']) {
-      print("is mineeeee");
+    if (appModel.currentUser['_id'] == user['_id']) {      
       user = appModel.currentUser;
       getUserDetailsResp['isMine'] = true;
-      imageUrl = '';//UserCommand().getProfileImage();            
+      imageUrl = '';//UserCommand().getProfileImage();     
+    }       
 
+    try{
       if (imageUrl == '') {
-        String? key = Constants.privateBetaProfileImages[user['profileImageIndex']];//user['mainImageKey'];
+        String? key = Constants.privateBetaProfileImages[user['profileImageIndex'] != null ? user['profileImageIndex'] : 0];//user['mainImageKey'];
         print("currentUser keyyyyy: $key");
         if (key != null) {
           Map<String, dynamic> getUserProfileImageResp =
@@ -66,14 +69,15 @@ class UserCommand extends BaseCommand {
           }
         }
       }
-    } else {
+    
+    else {
       Map<String, dynamic> findMyUserByIdResp =
           await UserCommand().findUserById(user);
       print("findMyUserByIdResp: $findMyUserByIdResp");
       if (findMyUserByIdResp['success']) {
         profilePageModel.user = findMyUserByIdResp['data'];
         user = findMyUserByIdResp['data'];
-        String? key = Constants.privateBetaProfileImages[user['profileImageIndex']];//user['mainImageKey'];
+        String? key = Constants.privateBetaProfileImages[user['profileImageIndex'] != null ? user['profileImageIndex'] : 0];//user['mainImageKey'];
         print("keyyyyy: $key");
         if (key != null) {
           Map<String, dynamic> getUserProfileImageResp =
@@ -85,6 +89,28 @@ class UserCommand extends BaseCommand {
         }
       }
     }
+
+    } catch (e) {
+      print('get image failed: $e');
+    }
+      
+    
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+          appModel.currentPosition.latitude,
+          appModel.currentPosition.longitude,
+        );
+        print("placemarkssss: " + placemarks[0].toString());
+        print("placemarkssss: " + placemarks[0].locality.toString());
+        print("placemarkssss: " + placemarks[0].administrativeArea.toString());
+
+        getUserDetailsResp['formattedLocation'] = placemarks[0].locality.toString() +
+            ", " +
+            placemarks[0].administrativeArea.toString();
+
+    print("user[birthdate]: "+user['birthdate'].toString());
+    getUserDetailsResp['age'] = BaseCommand().calculateAgeFromBirthdateString(user['birthdate']);
+    print("getUserDetailsResp['age']: "+ getUserDetailsResp['age'].toString());
+
     print("loadInitialData Profile imageUrl: $imageUrl");
 
     getUserDetailsResp['objectImageInput'] = {
@@ -93,22 +119,20 @@ class UserCommand extends BaseCommand {
     };
 
     getUserDetailsResp['eventUserParticipants'] =
-      user['eventUserParticipants'];
+      user['eventUserParticipants'];    
     
-    // getUserDetailsResp['isProfilePrivate'] = user['isProfilePrivate'];
-    if(addToProfilePageModel){
-      
+    if(addToProfilePageModel){    
       profilePageModel.isMine = getUserDetailsResp['isMine'];
       profilePageModel.user = user;
       profilePageModel.objectImageInput = getUserDetailsResp['objectImageInput'];
-      profilePageModel.eventUserParticipants = getUserDetailsResp['eventUserParticipants'];
-      profilePageModel.teamUserParticipants = getUserDetailsResp['teamUserParticipants'];
-      profilePageModel.isProfilePrivate = getUserDetailsResp['isProfilePrivate'];    
+      profilePageModel.eventUserParticipants = getUserDetailsResp['eventUserParticipants'];    
+      profilePageModel.age = getUserDetailsResp['age'];    
+      profilePageModel.formattedLocation = getUserDetailsResp['formattedLocation'];    
 
     }
       return getUserDetailsResp;
     } catch(e) {
-
+      print("fuckkkkkk");
       return getUserDetailsResp;
     }
    
@@ -747,6 +771,7 @@ class UserCommand extends BaseCommand {
       "data": null
     };
     try {
+      print("getUserByEmail env apolloserver: "+ dotenv.env['APOLLO_SERVER'].toString());
       http.Response response = await http.post(
         Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
         headers: <String, String>{          
