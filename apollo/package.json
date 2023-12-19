@@ -13,7 +13,8 @@
   },
   "scripts": {
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/index.js"
+    "start": "npm run compile && node ./dist/index.js",
+    "prod": "NODE_ENV=production npm run compile && node ./dist/index.js"
   },
   "keywords": [],
   "author": "",
