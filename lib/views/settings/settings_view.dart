@@ -26,12 +26,7 @@ class SettingsView extends StatefulWidget {
   class _SettingsViewState extends State<SettingsView> {
   String agreementToShow = "";
 
-  void onTapHome(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Home()),
-    );
-  }
+
 
     Future<void> loadInitialData() async{
       agreementToShow = await rootBundle.loadString('lib/assets/terms_and_conditions.txt');
