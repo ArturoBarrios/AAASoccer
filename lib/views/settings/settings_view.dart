@@ -109,7 +109,7 @@ class SettingsView extends StatefulWidget {
       builder: (BuildContext context)  {
         
         return AgreementFormWidget(
-          title: "Privacy Policy",
+          title: "Terms and Conditions",
           bodyText: agreementToShow,
           onAccept: () async{
             print("Accepted");
@@ -129,36 +129,7 @@ class SettingsView extends StatefulWidget {
                                 );
                               
                               },
-                            ),                            
-                            ButtonModel(
-                              text: 'Privacy Policy',
-                              prefixIconData: Icons.private_connectivity_rounded,
-                              onTap: () async {
-                                  await showDialog(
-      context: context,
-      builder: (BuildContext context)  {
-        return AgreementFormWidget(
-          title: "Privacy Policy",
-          bodyText: 'Your agreement text goes here...',
-          onAccept: () async{
-            print("Accepted");
-            
-            Navigator.of(context).pop(); // Close the dialog
-
-          },
-          onReject: () {
-            print("Rejected");
-            Navigator.of(context).pop(); // Close the dialog
-          },
-          viewMode: true,
-        );
-      },
-    
-    
-                                );
-                              
-                              },
-                            ),                            
+                            ),                                                                                 
                           ],
                         ),
                         // TileListModel(

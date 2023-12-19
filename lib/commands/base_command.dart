@@ -165,7 +165,7 @@ List<String> parseAmenities(String amenitiesString) {
     String agreementToShow = await rootBundle.loadString('lib/assets/terms_and_conditions.txt');
     String title = "";
     if(appModel.currentUser['hasAcceptedTermsAndConditions'] == null){
-      title = "Privacy Policy";
+      title = "terms and Conditions";
       await showDialog(
       context: context,
       builder: (BuildContext context)  {
