@@ -159,6 +159,13 @@ class AppModel extends ChangeNotifier {
     _onesignalUserDetailsSetup = onesignalUserDetailsSetup;
     notifyListeners();
   }
+  
+  bool _dialogueShowing = false;
+  bool get dialogueShowing => _dialogueShowing;
+  set dialogueShowing(bool dialogueShowing) {
+    _dialogueShowing = dialogueShowing;
+    notifyListeners();
+  }
 
   int _distanceFilter = 200;
   int get distanceFilter => _distanceFilter;

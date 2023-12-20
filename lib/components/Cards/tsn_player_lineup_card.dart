@@ -50,6 +50,7 @@ class TSNPlayerLineupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("build TSNPlayerLineupCard");
+    print("playerCardDetails: "+playerCardDetails.toString());
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 

@@ -1,4 +1,17 @@
 {
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-soccerapp-dev-15218-authRole",
+      "UnauthRoleArn": "arn:aws:iam::704053890558:role/amplify-soccerapp-dev-15218-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::704053890558:role/amplify-soccerapp-dev-15218-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-soccerapp-dev-15218-deployment",
+      "UnauthRoleName": "amplify-soccerapp-dev-15218-unauthRole",
+      "StackName": "amplify-soccerapp-dev-15218",
+      "StackId": "arn:aws:cloudformation:us-east-1:704053890558:stack/amplify-soccerapp-dev-15218/e96b9be0-9c7e-11ee-9c56-0ae8fa4b23ab",
+      "AmplifyAppId": "d3j6ze5fxredf0"
+    }
+  },
   "staging": {
     "awscloudformation": {
       "AuthRoleName": "amplify-soccerapp-staging-04528-authRole",

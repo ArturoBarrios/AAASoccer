@@ -546,17 +546,11 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
   showAgreementDialogues(BuildContext context) async {
     print("nicerrrrrr");
     // if(!currentUser['hasAcceptedTermsAndConditions']){
-    await BaseCommand().showAgreementDialog(context);
-    // if(agreementToShow == "TermsAndConditions"){
+      bool dialogueShowing = BaseCommand().getDialogueShowing();
+    if(!dialogueShowing){
+      await BaseCommand().showAgreementDialog(context);
 
-    // }
-    // else if(agreementToShow == "PrivacyPolicy"){
-
-    // }
-    // }
-    // else if(!currentUser['hasAcceptedPrivacyPolicy']){
-
-    // }
+    }    
   }
 
   @override

@@ -158,9 +158,13 @@ List<String> parseAmenities(String amenitiesString) {
 }
 
     
+  bool getDialogueShowing() {
+    return appModel.dialogueShowing;
+  }
 
   Future<String> showAgreementDialog(BuildContext context) async {
     print("showAgreementDialogggg");
+    appModel.dialogueShowing = true;
     
     String agreementToShow = await rootBundle.loadString('lib/assets/terms_and_conditions.txt');
     String title = "";

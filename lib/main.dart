@@ -190,7 +190,7 @@ class _MyAppState extends State<MyApp> {
     } on AuthException catch (e) {
       print("SigninException: ");
       print(e);
-      // AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(e.message, state);
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStepAfterSignInError(e.message, state);
     }
   }
 
@@ -261,7 +261,7 @@ class _MyAppState extends State<MyApp> {
     } on AuthException catch (e) {
       print("signUpError");
       print(e);
-      // AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(e.message, state);
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStepAfterSignUpError(e.message, state);
     }
   }
 
