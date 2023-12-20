@@ -377,8 +377,45 @@ Padding(
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: ListNotes(
-                                  title: 'Things to Note',
-                                  notes: ['Note 1', 'Note 2', 'Note 3'],
+                                  title: 'Play Steps',
+                                  notes: [
+                                    'Register for the game to secure your participation', 
+                                    'Arrive punctually at the designated venue.', 
+                                    'Upon arrival, the coordinator will welcome you and provide you with a pinnie.',
+                                    'Team compositions may be adjusted for balanced gameplay.',
+                                    'Each player will have a turn as the goalkeeper.'
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(paddingValue,
+                                  paddingValue, paddingValue, paddingValue / 2),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: ListNotes(
+                                  title: 'Important Info',
+                                  notes: [
+                                    'Ensure to withdraw your participation at least 24 hours prior to the game for a full refund.',
+                                    'In the event of game cancellation, all participants will receive a refund.',
+                                    'Games will be called off in case of hazardous weather conditions, such as extreme storms.',
+                                    'Please note that The Soccer Network does not offer player insurance. Participation in events is at your own risk.',
+                                    'We accept only card payments for registrations.'
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(paddingValue,
+                                  paddingValue, paddingValue, paddingValue / 2),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: ListNotes(
+                                  title: 'What is The Soccer Network',
+                                  notes: [
+                                    'The Soccer Network is a platform that connects soccer players and organizers.',
+                                    'We believe soccer is a great way to meet new people and make friends.',                                    
+                                  ],
                                 ),
                               ),
                             ),
