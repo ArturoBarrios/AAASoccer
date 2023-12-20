@@ -24,7 +24,20 @@ class _ListNotesState extends State<ListNotes> {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
-        ...widget.notes.take(isExpanded ? widget.notes.length : 1).map((note) => Text(note)).toList(),
+        ...widget.notes.take(isExpanded ? widget.notes.length : 1).map((note) => 
+          Padding(
+            padding: EdgeInsets.only(bottom: 10), // Spacing between items
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('- ', style: TextStyle(fontSize: 16)),
+                Expanded(
+                  child: Text(note, style: TextStyle(fontSize: 16)),
+                ),
+              ],
+            ),
+          )
+        ).toList(),
         if (widget.notes.length > 1)
           TextButton(
             onPressed: () {

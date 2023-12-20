@@ -211,18 +211,18 @@ class SideNavs extends StatefulWidget {
         ),
     //     !isGuest && isSuperUser
     //         ? 
-    //         Container(
-    //             margin: EdgeInsets.fromLTRB(5,5,5,5),
-    //             child: 
-    //         BasicElevatedButton(
-    // backgroundColor: AppColors.tsnRed,
-    // text: "Sign Out",
-    // fontSize: FontSizes.s(context),
-    // onPressed: () async {
-    //   BaseCommand().signOut(context);
-    // },
-  // )
-  // )
+            Container(
+                margin: EdgeInsets.fromLTRB(5,5,5,5),
+                child: 
+            BasicElevatedButton(
+    backgroundColor: AppColors.tsnRed,
+    text: "Sign Out",
+    fontSize: FontSizes.s(context),
+    onPressed: () async {
+      BaseCommand().signOut(context);
+    },
+  )
+  )
             // Container(
             //     margin: EdgeInsets.all(25),
             //     color: AppColors.tsnRed,

@@ -4,6 +4,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
 import 'package:soccermadeeasy/data/services/twilio/twilio_service.dart';
 import 'package:soccermadeeasy/di/di_init.dart';
 import 'package:soccermadeeasy/models/pageModels/home_page_model.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:soccermadeeasy/strings.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
+import 'package:soccermadeeasy/styles/font_sizes.dart';
 import 'package:soccermadeeasy/views/onboarding/onboarding_view.dart';
 import 'package:soccermadeeasy/views/splash_screen.dart';
 
@@ -175,10 +177,9 @@ class _MyAppState extends State<MyApp> {
         passwordController.text.trim(),
       );
       print("signInRes: ${signInRes.nextStep!.toString()}");
-      
-      String signInStep = signInRes.nextStep!.signInStep.toString();
+            
 
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStepAfterSignIn(signInRes, state);
       //should probably make sure you're actually signed in
       //assumes you are atm
       UserModel().userEmail = emailController.text.trim();
@@ -189,7 +190,7 @@ class _MyAppState extends State<MyApp> {
     } on AuthException catch (e) {
       print("SigninException: ");
       print(e);
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(e.message, state);
+      // AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(e.message, state);
     }
   }
 
@@ -230,8 +231,8 @@ class _MyAppState extends State<MyApp> {
         print(signUpRes.nextStep.codeDeliveryDetails?.deliveryMedium);
         print(signUpRes.nextStep.codeDeliveryDetails?.destination);
 
-        String signUpStep = signUpRes.nextStep.signUpStep.name;
-        AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(
+        SignUpResult signUpStep = signUpRes;
+        AmplifyAuth.AmplifyAuthService.changeAuthenticatorStepAfterSignUp(
           signUpStep,
           state,
         );
@@ -260,7 +261,7 @@ class _MyAppState extends State<MyApp> {
     } on AuthException catch (e) {
       print("signUpError");
       print(e);
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(e.message, state);
+      // AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(e.message, state);
     }
   }
 
@@ -299,9 +300,9 @@ class _MyAppState extends State<MyApp> {
               emailController.text.trim());
 
       print(confirmSignInRes.toString());
-      String signInStep = confirmSignInRes.nextStep.signUpStep.toString();
-      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStep(signInStep, state);
-      print("confirmSignInmain.dart: $signInStep");
+      SignUpResult signUpStep = confirmSignInRes;
+      AmplifyAuth.AmplifyAuthService.changeAuthenticatorStepAfterSignUp(signUpStep, state);
+      print("confirmSignInmain.dart: $signUpStep");
       final result = await Amplify.Auth.fetchAuthSession();
       print("fetchAuthSession: ");
       print(result);
@@ -863,36 +864,60 @@ class _MyAppState extends State<MyApp> {
 
                 case AuthenticatorStep.confirmSignUp:
                   return Scaffold(
-                    body: Padding(
-                      padding: padding,
-                      child: SingleChildScrollView(
+                    appBar: Headers(
+              playerStepperButton: ButtonModel(
+                prefixIconData: Icons.play_circle_fill_rounded,
+                onTap: () {
+                  // Navigator.push(context, MaterialPageRoute<void>(
+                  //   builder: (BuildContext context) {
+                  //     return const OnboardingView();
+                  //   },
+                  // ));
+                },
+              ),
+              filterButton: ButtonModel(
+                prefixIconData: false
+                    ? Icons.filter_alt_off
+                    : Icons.filter_alt,
+                onTap: () => {}
+              ),
+            ).getMainHeader(context),
+                    body: 
+                    Padding(
+                    padding: const EdgeInsets.only(
+                        top: 16.0, bottom: 16.0, left: 16.0, right: 16.0),
+                    child: SingleChildScrollView(
                         child: Column(
-                          children: [
-                            // app logo
-                            const Center(child: FlutterLogo(size: 100)),
-                            // prebuilt sign up form from amplify_authenticator package
-
+                          children: [                                                                                    
                             TextField(
                               controller: confirmSignInValueController,
                               decoration: const InputDecoration.collapsed(
                                   hintText: 'Confirmation Code'),
                             ),
+                            Padding(
+                    padding: const EdgeInsets.only(
+                        top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
+                    child:
+                    BasicElevatedButton(
+                      backgroundColor: AppColors.tsnGreen,
+                      text: "Confirm",
+                      fontSize: FontSizes.m(context),
+                      onPressed: () async {
+                        confirmSignIn(state);
+                      },
+                    ))
 
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blue, // background
-                                onPrimary: Colors.white, // foreground
-                              ),
-                              onPressed: () {
-                                confirmSignIn(state);
-                              },
-                              child: const Text('Confirm'),
-                            )
+                            
                           ],
                         ),
                       ),
                     ),
                     // custom button to take the user to sign in
+                    // bottomNavigationBar: 
+                    
+                     
+                    
+                    
                     persistentFooterButtons: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
