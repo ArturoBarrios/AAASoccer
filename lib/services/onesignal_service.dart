@@ -20,8 +20,8 @@ class OneSignalService {
   }
 
   Future<void> login(dynamic user) async{
-    print("onesignalservice login()");
-    OneSignal.login(user['_id']);
+    print("onesignalservice login() for user: "+ user.toString());
+    await OneSignal.login(user['_id']);
     if(OneSignal.User != null){
       print("OneSignal.User: "+OneSignal.User.toString());
       await OneSignal.User.addEmail(user['email']);

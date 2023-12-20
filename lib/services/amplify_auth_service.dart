@@ -18,7 +18,7 @@ class AmplifyAuthService {
       "data": null      
     };
     try {
-      await Amplify.Auth.deleteUser;            
+      Amplify.Auth.deleteUser;            
       deleteUserResponse["success"] = 1;
       deleteUserResponse["message"] = "Amplify User Deleted";
     } catch (e) {
@@ -52,29 +52,84 @@ class AmplifyAuthService {
     state.skipVerifyUser();
   }
 
-  static void changeAuthenticatorStep(
-      String nextStep, AuthenticatorState state) {
-    print("changeAuthenticatorStep");
-    print(nextStep);
-    if (nextStep.contains("An account with the given email already exists.")) {
-      print("An account with the given email already exists.");
-      state.changeStep(AuthenticatorStep.signIn);
-    } else if (nextStep.contains("User is not confirmed")) {
-      print("User is not confirmed");
-      state.changeStep(AuthenticatorStep.confirmSignUp);
-    } else if (nextStep.contains("User does not exist")) {
-      print("User does not exist");
-      state.changeStep(AuthenticatorStep.signUp);
-    } else if (nextStep.contains("CONFIRM_SIGN_UP_STEP")) {
-      print("CONFIRM_SIGN_UP_STEP");
-      state.changeStep(AuthenticatorStep.confirmSignUp);
-    } else if (nextStep.contains("DONE")) {
-      print("DONE");
+  static void changeAuthenticatorStepAfterSignUp(
+      SignUpResult signUpResult, AuthenticatorState state) {
+
+    print("currentStepppppppp: " + state.currentStep.toString());
+    // print("changeAuthenticatorStep() for step: $nextStep");    
+    //new
+    switch (signUpResult.nextStep.signUpStep) {        
+    case AuthSignUpStep.confirmSignUp:
+      // Handle confirm sign up case
+        state.changeStep(AuthenticatorStep.confirmSignUp);
+      break;    
+    case AuthSignUpStep.done:
+      safePrint('Sign in is complete');
       state.skipVerifyUser();
-    } else {
-      print("else");
-      // state.changeStep(AuthenticatorStep.)
-    }
+      break;
+  }
+
+
+    //before
+    // if (nextStep.contains("An account with the given email already exists.")) {
+    //   print("An account with the given email already exists.");
+    //   state.changeStep(AuthenticatorStep.signIn);
+    // } else if (nextStep.contains("User is not confirmed")) {
+    //   print("User is not confirmed");
+    //   state.changeStep(AuthenticatorStep.confirmSignUp);
+    // } else if (nextStep.contains("User does not exist")) {
+    //   print("User does not exist");
+    //   state.changeStep(AuthenticatorStep.signUp);
+    // } else if (nextStep.contains("confirmSignUp")) {
+    //   print("confirmSignUp");
+    //   state.changeStep(AuthenticatorStep.confirmSignUp);
+    // } else if (nextStep.contains("DONE")) {
+    //   print("DONE");
+    //   state.skipVerifyUser();
+    // } else {
+    //   print("else");
+    //   // state.changeStep(AuthenticatorStep.)
+    // }
+  }
+
+  static void changeAuthenticatorStepAfterSignIn(
+      SignInResult signInResult, AuthenticatorState state) {
+
+    print("currentStepppppppp: " + state.currentStep.toString());
+    // print("changeAuthenticatorStep() for step: $nextStep");    
+    //new
+    switch (signInResult.nextStep.signInStep) {        
+    case AuthSignInStep.confirmSignUp:
+      // Handle confirm sign up case
+        state.changeStep(AuthenticatorStep.confirmSignUp);
+      break;    
+    case AuthSignInStep.done:
+      safePrint('Sign in is complete');
+      state.skipVerifyUser();
+      break;
+  }
+
+
+    //before
+    // if (nextStep.contains("An account with the given email already exists.")) {
+    //   print("An account with the given email already exists.");
+    //   state.changeStep(AuthenticatorStep.signIn);
+    // } else if (nextStep.contains("User is not confirmed")) {
+    //   print("User is not confirmed");
+    //   state.changeStep(AuthenticatorStep.confirmSignUp);
+    // } else if (nextStep.contains("User does not exist")) {
+    //   print("User does not exist");
+    //   state.changeStep(AuthenticatorStep.signUp);
+    // } else if (nextStep.contains("confirmSignUp")) {
+    //   print("confirmSignUp");
+    //   state.changeStep(AuthenticatorStep.confirmSignUp);
+    // } else if (nextStep.contains("DONE")) {
+    //   print("DONE");
+    //   state.skipVerifyUser();
+    // } else {
+    //   print("else");
+    //   // state.changeStep(AuthenticatorStep.)
+    // }
   }
 
   static Future<Map<String, dynamic>> configureAmplify() async {

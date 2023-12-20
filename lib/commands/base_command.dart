@@ -512,8 +512,10 @@ List<String> parseAmenities(String amenitiesString) {
             onConfirmCallback: () async {
               // Logic for confirmation action
             Map<String,dynamic> deleteUserResp = await UserCommand().deleteUser(appModel.currentUser);         
+            print("deletedUserResp: $deleteUserResp");
             if(deleteUserResp['success']){
-              await AmplifyAuthService.deleteUser();
+              dynamic deleteAmplifyUser = await AmplifyAuthService.deleteUser();
+              print("deleteAmplifyUser: "+ deleteAmplifyUser.toString());
               BaseCommand().nukeData();
               await AmplifyAuthService().signOut();
               
@@ -670,7 +672,7 @@ List<String> parseAmenities(String amenitiesString) {
             setupUserResp['data'] = appModel.currentUser;
       await OneSignalService().login(appModel.currentUser);
         }
-          appModel.isSuperUser = appModel.currentUser['isSuperUser'];
+          appModel.isSuperUser = appModel.currentUser['isSuperUser'] == null ? false : appModel.currentUser['isSuperUser'];
       } else {
         print("is guest");
       }
