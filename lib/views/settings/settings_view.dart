@@ -181,17 +181,17 @@ class SettingsView extends StatefulWidget {
           // )
         ],
       ),
-      bottomNavigationBar: Padding(
-              padding: const EdgeInsets.only(
-                  top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
-              child:BasicElevatedButton(
-    backgroundColor: AppColors.tsnRed,
-    text: "Delete Account",
-    fontSize: FontSizes.s(context),
-    onPressed: () async {
-      BaseCommand().delete(context);
-    },
-  ))
+  //     bottomNavigationBar: Padding(
+  //             padding: const EdgeInsets.only(
+  //                 top: 26.0, bottom: 16.0, left: 16.0, right: 16.0),
+  //             child:BasicElevatedButton(
+  //   backgroundColor: AppColors.tsnRed,
+  //   text: "Delete Account",
+  //   fontSize: FontSizes.s(context),
+  //   onPressed: () async {
+  //     BaseCommand().delete(context);
+  //   },
+  // ))
     );
   }
 }

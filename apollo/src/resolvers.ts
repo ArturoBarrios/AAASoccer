@@ -698,9 +698,9 @@ const resolvers = {
                     console.log("eventLongitude: ", eventLongitude);
                     const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, eventLatitude, eventLongitude);
                     console.log("distance: ", distance);
-                    if (distance <= radius) {
+                    // if (distance <= radius) {
                         resEvents.push(event);
-                    }                    
+                    // }                    
                 }
             }
             
