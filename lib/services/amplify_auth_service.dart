@@ -64,7 +64,7 @@ class AmplifyAuthService {
       break;    
     case AuthSignUpStep.done:
       safePrint('Sign in is complete');
-      state.skipVerifyUser();
+      state.changeStep(AuthenticatorStep.signIn);
       break;
   }
 
@@ -106,6 +106,7 @@ class AmplifyAuthService {
     case AuthSignInStep.done:
       safePrint('Sign in is complete');
       state.skipVerifyUser();
+      // state.changeStep(AuthenticatorStep.signIn);
       break;
   }
 

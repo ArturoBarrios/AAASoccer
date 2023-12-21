@@ -230,6 +230,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                             child:
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image(
                           width: 20,

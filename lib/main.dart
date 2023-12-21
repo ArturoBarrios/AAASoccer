@@ -253,7 +253,7 @@ class _MyAppState extends State<MyApp> {
         // appModel.currentUser = createPlayerResp['user'];
         // print("AppModel().currentUser: ${AppModel().currentUser}");
 
-        await startLoadToHomeTransition();
+        // await startLoadToHomeTransition();
       // } 
       // else {
       //   print("createUserAttributesCheck failed");
