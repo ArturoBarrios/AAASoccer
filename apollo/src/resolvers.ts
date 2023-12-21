@@ -453,6 +453,14 @@ const resolvers = {
         },
         createPlayer: async (parent, args, context, info) => {
             console.log("createPlayer args: ", args.input.user);
+            //check for unique constraints(username, email, and phone)
+            if (process.env.ENVIRONMENT == ' PRODUCTION') {
+                // const userWithConstraint = await User.findOne({ username: args.input.user.username });
+                // if(args.input.user.username)
+                // console.log('Environmental variable is set:', process.env.YOUR_ENV_VARIABLE);
+
+            }
+
 
             const location = new Location({
                 name: args.input.user.location.name,

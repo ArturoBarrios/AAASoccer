@@ -88,7 +88,7 @@ type CreatePlayerMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
-  player: Player
+  player: Player  
 }
 
 type StripeCustomerMutationResponse implements MutationResponse {
