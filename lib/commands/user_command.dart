@@ -52,11 +52,11 @@ class UserCommand extends BaseCommand {
     if (appModel.currentUser['_id'] == user['_id']) {      
       user = appModel.currentUser;
       getUserDetailsResp['isMine'] = true;
-      imageUrl = '';//UserCommand().getProfileImage();     
+      // imageUrl = '';//UserCommand().getProfileImage();     
     }       
 
     try{
-      if (imageUrl == '') {
+      if (appModel.currentUser['_id'] == user['_id']) {
         String? key = Constants.privateBetaProfileImages[user['profileImageIndex'] != null ? user['profileImageIndex'] : 0];//user['mainImageKey'];
         print("currentUser keyyyyy: $key");
         if (key != null) {

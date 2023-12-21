@@ -204,7 +204,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                          event.mainEvent['name'] + " another thing to make the name that much longer!",
+                          event.mainEvent['name'],
                           style: TextStyle(color: AppColors.tsnWhite, fontSize: FontSizes.m(context)),
                         ),
                     
@@ -230,6 +230,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
                             child:
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image(
                           width: 20,

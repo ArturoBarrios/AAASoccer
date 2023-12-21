@@ -597,7 +597,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
               createPaymentIntent();
             },
             //also make sure field is filled out, but I think package takes care of this for us
-            backgroundColor: !isPaymentProcessing && cardFormEditController.details.complete   ? AppColors.tsnGreen : AppColors.tsnGrey,
+            backgroundColor: !isPaymentProcessing && (cardFormEditController.details.complete || selectedPaymentMethod !=null   ) ? AppColors.tsnGreen : AppColors.tsnGrey,
             text: 'Pay',
           ),
         ),

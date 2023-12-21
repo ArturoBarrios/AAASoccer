@@ -104,24 +104,28 @@ class BaseCommand {
     return appModel.currentPosition;
   }
 
-  int calculateAgeFromBirthdateString(String birthdateString){
-    print("calculateAgeFromBirthdateString: $birthdateString");
-    // Split the string and rearrange to match the 'yyyy-MM-dd' format
-    List<String> parts = birthdateString.split('/');
-    String formattedDateStr = '${parts[2]}-${parts[0]}-${parts[1]}';
-    DateTime birthdate = DateTime.parse(formattedDateStr);    
-    DateTime currentDate = DateTime.now();    
-    print("birthdate: "+ birthdate.toString());
-    int age = currentDate.year - birthdate.year;
-    if (birthdate.month > currentDate.month || 
-        (birthdate.month == currentDate.month && birthdate.day > currentDate.day)) {
-      age--;
-    }
-
-    print("age: $age");
-
-    return age;
+int calculateAgeFromBirthdateString(String birthdateString){
+  print("calculateAgeFromBirthdateString: $birthdateString");
+  // Split the string and rearrange to match the 'yyyy-MM-dd' format
+  List<String> parts = birthdateString.split('-');
+  print("aaaaa");
+  String formattedDateStr = '${parts[2]}-${parts[0]}-${parts[1]}';
+  print("bbbbbb");
+  DateTime birthdate = DateTime.parse(formattedDateStr);    
+  print("cccccc");
+  DateTime currentDate = DateTime.now();    
+  print("birthdate: "+ birthdate.toString());
+  int age = currentDate.year - birthdate.year;
+  if (birthdate.month > currentDate.month || 
+      (birthdate.month == currentDate.month && birthdate.day > currentDate.day)) {
+    age--;
   }
+
+  print("age: $age");
+
+  return age;
+}
+
 
    Future<void> launchLocationInBrowser(double latitude, double longitude  ) async {
     final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
@@ -158,9 +162,13 @@ List<String> parseAmenities(String amenitiesString) {
 }
 
     
+  bool getDialogueShowing() {
+    return appModel.dialogueShowing;
+  }
 
   Future<String> showAgreementDialog(BuildContext context) async {
     print("showAgreementDialogggg");
+    appModel.dialogueShowing = true;
     
     String agreementToShow = await rootBundle.loadString('lib/assets/terms_and_conditions.txt');
     String title = "";

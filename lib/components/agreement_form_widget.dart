@@ -21,41 +21,53 @@ class AgreementFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       insetPadding: EdgeInsets.all(10), // Padding around the edges
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: double.infinity, // Makes sure the dialog takes up most of the width
-          maxHeight: MediaQuery.of(context).size.height * 0.9, // 90% of screen height
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(title, style: Theme.of(context).textTheme.headline6),
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: double.infinity, // Makes sure the dialog takes up most of the width
+              maxHeight: MediaQuery.of(context).size.height * 0.9, // 90% of screen height
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(16.0),
-                child: Text(bodyText),
-              ),
-            ),
-            if(!viewMode)
-            ButtonBar(
-              alignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                TextButton(
-                  
-                  onPressed: onReject,
-                  child: const Text('Reject', style: TextStyle(color: AppColors.tsnRed)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(title, style: Theme.of(context).textTheme.headline6),
                 ),
-                ElevatedButton(
-                  onPressed: onAccept,
-                  child: const Text('Accept', style: TextStyle(color: AppColors.tsnGreen)),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(bodyText),
+                  ),
+                ),
+                if(!viewMode)
+                ButtonBar(
+                  alignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: onReject,
+                      child: const Text('Reject', style: TextStyle(color: AppColors.tsnRed)),
+                    ),
+                    ElevatedButton(
+                      onPressed: onAccept,
+                      child: const Text('Accept', style: TextStyle(color: AppColors.tsnGreen)),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          // Close button on top right
+          Padding(
+            padding: EdgeInsets.only(top: 8, right: 8),
+            child: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -54,9 +54,8 @@ class AmplifyAuthService {
 
   static void changeAuthenticatorStepAfterSignUp(
       SignUpResult signUpResult, AuthenticatorState state) {
-
-    print("currentStepppppppp: " + state.currentStep.toString());
-    // print("changeAuthenticatorStep() for step: $nextStep");    
+    print("changeAuthenticatorStepAfterSignUp() for step: $signUpResult");
+        
     //new
     switch (signUpResult.nextStep.signUpStep) {        
     case AuthSignUpStep.confirmSignUp:
@@ -65,7 +64,7 @@ class AmplifyAuthService {
       break;    
     case AuthSignUpStep.done:
       safePrint('Sign in is complete');
-      state.skipVerifyUser();
+      state.changeStep(AuthenticatorStep.signIn);
       break;
   }
 
@@ -95,7 +94,8 @@ class AmplifyAuthService {
   static void changeAuthenticatorStepAfterSignIn(
       SignInResult signInResult, AuthenticatorState state) {
 
-    print("currentStepppppppp: " + state.currentStep.toString());
+    print("changeAuthenticatorStepAfterSignIn() for step: $signInResult");
+    
     // print("changeAuthenticatorStep() for step: $nextStep");    
     //new
     switch (signInResult.nextStep.signInStep) {        
@@ -106,6 +106,7 @@ class AmplifyAuthService {
     case AuthSignInStep.done:
       safePrint('Sign in is complete');
       state.skipVerifyUser();
+      // state.changeStep(AuthenticatorStep.signIn);
       break;
   }
 
@@ -130,6 +131,57 @@ class AmplifyAuthService {
     //   print("else");
     //   // state.changeStep(AuthenticatorStep.)
     // }
+  }
+  
+  static void changeAuthenticatorStepAfterSignInError(
+      String nextStep, AuthenticatorState state) {
+
+    print("changeAuthenticatorStepAfterSignInError() for step: $nextStep");
+ 
+    if (nextStep.contains("An account with the given email already exists.")) {
+      print("An account with the given email already exists.");
+      state.changeStep(AuthenticatorStep.signIn);
+    } else if (nextStep.contains("User is not confirmed")) {
+      print("User is not confirmed");
+      state.changeStep(AuthenticatorStep.confirmSignUp);
+    } else if (nextStep.contains("User does not exist")) {
+      print("User does not exist");
+      state.changeStep(AuthenticatorStep.signUp);
+    } else if (nextStep.contains("confirmSignUp")) {
+      print("confirmSignUp");
+      state.changeStep(AuthenticatorStep.confirmSignUp);
+    } else if (nextStep.contains("DONE")) {
+      print("DONE");
+      state.skipVerifyUser();
+    } else {
+      print("else");
+      // state.changeStep(AuthenticatorStep.)
+    }
+  }
+  static void changeAuthenticatorStepAfterSignUpError(
+      String nextStep, AuthenticatorState state) {
+
+    print("changeAuthenticatorStepAfterSignUpError() for step: $nextStep");
+ 
+    if (nextStep.contains("An account with the given email already exists.")) {
+      print("An account with the given email already exists.");
+      state.changeStep(AuthenticatorStep.signIn);
+    } else if (nextStep.contains("User is not confirmed")) {
+      print("User is not confirmed");
+      state.changeStep(AuthenticatorStep.confirmSignUp);
+    } else if (nextStep.contains("User does not exist")) {
+      print("User does not exist");
+      state.changeStep(AuthenticatorStep.signUp);
+    } else if (nextStep.contains("confirmSignUp")) {
+      print("confirmSignUp");
+      state.changeStep(AuthenticatorStep.confirmSignUp);
+    } else if (nextStep.contains("DONE")) {
+      print("DONE");
+      state.skipVerifyUser();
+    } else {
+      print("else");
+      // state.changeStep(AuthenticatorStep.)
+    }
   }
 
   static Future<Map<String, dynamic>> configureAmplify() async {

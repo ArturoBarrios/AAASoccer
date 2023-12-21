@@ -1821,13 +1821,14 @@ class EventCommand extends BaseCommand {
         }
         eventsModel.games.insert(0, event);
       } else {
+        
         int indexToRemove = -1;
-        for (int i = 0; i < eventsModel.games.length; i++) {
-          if (eventsModel.games[i]['_id'] == event['_id']) {
-            indexToRemove = i;
-            break;
-          }
-        }
+        // for (int i = 0; i < eventsModel.games.length; i++) {
+        //   if (eventsModel.games[i]['_id'] == event['_id']) {
+        //     indexToRemove = i;
+        //     break;
+        //   }
+        // }
 
         if (indexToRemove != -1) {
           eventsModel.games.removeAt(indexToRemove);

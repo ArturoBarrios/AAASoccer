@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccermadeeasy/styles/colors.dart';
 
 class ListNotes extends StatefulWidget {
   final String title;
@@ -45,7 +46,8 @@ class _ListNotesState extends State<ListNotes> {
                 isExpanded = !isExpanded;
               });
             },
-            child: Text(isExpanded ? "- Read Less" : "+ Read More"),
+            child: Text(isExpanded ? "- Read Less" : "+ Read More", 
+              style: TextStyle(color: AppColors.tsnGreen)),
           ),
       ],
     );
