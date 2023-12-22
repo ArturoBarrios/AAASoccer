@@ -236,7 +236,7 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
               child: Text(
-                event.mainEvent['name']+'what happens if this is a really long name',
+                event.mainEvent['name'],
                 style: TextStyle(
                   color: AppColors.tsnWhite,
                   fontSize: FontSizes.m(context),

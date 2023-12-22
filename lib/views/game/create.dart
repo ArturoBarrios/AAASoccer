@@ -359,13 +359,12 @@ final teamPriceController = TextEditingController();
                             0, 0),
               child:
                        
-          Expanded(
-  child: Padding(
+         Padding(
     padding: const EdgeInsets.only(right: 8.0),
     child: DropdownButtonHideUnderline(
   child: InputDecorator(
     decoration: InputDecoration(
-      hintText: 'Gender',
+      hintText: 'FieldLocation',
       hintStyle: TextStyle(color: AppColors.tsnGrey),
       filled: true,
       fillColor: AppColors.tsnAlmostBlack,
@@ -406,19 +405,14 @@ final teamPriceController = TextEditingController();
             selectedFieldLocation = newValue;
           });
         },
-        // validator: (value) {          
-          // if (value == null || value.isEmpty) {
-          //   return "This field is required";
-          // }
-          // return null;
-        // },
+        
         dropdownColor: AppColors.fieldFillDark,
       ),
     ),
   ),
 ),
 
-  ),
+  
 ),
         ),
          

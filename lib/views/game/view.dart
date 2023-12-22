@@ -130,8 +130,7 @@ class _PickupViewState extends State<PickupView> {
                     ),
                   ).getMainHeader(context),
                   body: SingleChildScrollView(
-                    child: Center(
-                      child: Expanded(
+                    child: Center(                      
                         child: Column(
 
                           children: [
@@ -472,7 +471,7 @@ Padding(
                             const SizedBox(height: 100),
                           ],
                         ),
-                      ),
+                      
                     ),
                   ),
                   bottomNavigationBar: Padding(

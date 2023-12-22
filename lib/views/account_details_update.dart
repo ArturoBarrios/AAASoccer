@@ -102,8 +102,7 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
             children: <Widget>[
               Row(
         children: [
-          Expanded(
-            child: Padding(
+          Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: TextFormField(
                               style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
@@ -128,11 +127,10 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
                               ),
                             ),
             ),
-          ),
+          
           ],
       ),
-               Expanded(
-            child: Padding(
+                Padding(
               padding: const EdgeInsets.only(right: 8.0, bottom: 8.0, top: 8.0),
               child:
                TextFormField(
@@ -157,7 +155,7 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
                                   borderSide: BorderSide.none,
                                 ),
                               ),
-            ))),
+            )),
 
           //     CustomTextFormField(
           //   label: "Birthdate",
@@ -184,8 +182,7 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
           //     }, currentTime: startTime);
           //   },
           // ),
-          Expanded(
-  child: Padding(
+          Padding(
     padding: const EdgeInsets.only(right: 8.0),
     child: DropdownButtonHideUnderline(
       child: InputDecorator(
@@ -239,7 +236,7 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
       ),
     ),
   ),
-),
+
               // CustomTextFormField(
               //   label: 'Gender',
               //   hintText: 'Enter Age',

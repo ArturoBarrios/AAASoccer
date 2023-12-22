@@ -86,12 +86,18 @@ const resolvers = {
 
             console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
             console.log("args.input.event.fieldLocations[0].fieldLocationName: "+ args.input.event.fieldLocations[0].fieldLocationName.toString());
+            console.log("args.input.event.fieldLocations[0].location.latitude: "+ args.input.event.fieldLocations[0].location.latitude.toString());
+            console.log("args.input.event.fieldLocations[0].location.longitude: "+ args.input.event.fieldLocations[0].location.longitude.toString());
             //server validation
-            //if location is available
-            if((args.input.event.fieldLocations[0].location.latitude != 0  
-               && args.input.event.fieldLocations[0].location.longitude != 0)
-               || (
-                args.input.event.fieldLocations[0].fieldLocationName.toString() != ''
+            //location is available
+            if( (
+                (args.input.event.fieldLocations[0].location.latitude != 0  
+               && args.input.event.fieldLocations[0].location.longitude != 0) || 
+                 args.input.event.fieldLocations[0].location.locationId != null)
+               &&//used to be ||
+                (
+                args.input.event.fieldLocations[0].fieldLocationName.toString() != '' ||
+                args.input.event.fieldLocations[0].fieldLocationId != null
             )
                ) {
                    //get user

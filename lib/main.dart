@@ -396,6 +396,7 @@ class _MyAppState extends State<MyApp> {
                       child: 
                          SingleChildScrollView(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
