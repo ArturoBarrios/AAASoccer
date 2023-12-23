@@ -152,22 +152,26 @@ final teamPriceController = TextEditingController();
       };
 
       locationInput['fieldAmenities'] = parsedSelectedFieldAmenities.toString();
-      locationInput['fieldLocationId'] = selectedFieldLocation['_id'].toString();
+      locationInput['fieldLocationId'] = selectedFieldLocation != null ? selectedFieldLocation['_id'].toString() : null;
       locationInput['fieldLocationName'] = selectedFieldLocation != null ? selectedFieldLocation['fieldLocationName'] : fieldLocationNameController.text.toString();
       locationInput['name'] = locationNameController.text.toString();
+      if(locationInput['latitude'] == 0){
+        locationInput['locationId'] = selectedLocation['_id'].toString();
+        locationInput['name'] = selectedLocation['name'];
+      }
       print("locationInputCheaheck: $locationInput");
 
       
 
-      // Map<String, dynamic> createPickupGameResp =
-      //     await GameCommand().createGame(pickupData, eventInput, locationInput);
-      // print("createPickupGameResp: $createPickupGameResp");
+      Map<String, dynamic> createPickupGameResp =
+          await GameCommand().createGame(pickupData, eventInput, locationInput);
+      print("createPickupGameResp: $createPickupGameResp");
 
-      // print(createPickupGameResp['data']);
-      // if (createPickupGameResp['success']) {
-      //   Map<String, dynamic> createdEvent = createPickupGameResp['data'];
-      //   await EventCommand()
-      //       .updateViewModelsWithEvent(createdEvent, true, true);
+      print(createPickupGameResp['data']);
+      if (createPickupGameResp['success']) {
+        Map<String, dynamic> createdEvent = createPickupGameResp['data'];
+        await EventCommand()
+            .updateViewModelsWithEvent(createdEvent, true, true);
 
         
           // Navigator.pop(
@@ -182,7 +186,7 @@ final teamPriceController = TextEditingController();
           //   ),
           // );
         
-      // }
+      }
     } on ApiException catch (_) {}
   }
 
@@ -225,6 +229,24 @@ final teamPriceController = TextEditingController();
     goBack();
   }
 
+  Future<void> setFieldLocations() async{
+    if(selectedLocation != null){
+      print("selectedLocation: $selectedLocation");
+      dynamic input = {
+        "locationId": selectedLocation['_id'].toString()
+      };
+      dynamic getFieldLocationsFromLocationResp = await LocationCommand().getFieldLocationsFromLocation(input);
+      if(getFieldLocationsFromLocationResp['success']){
+        setState(() {
+          fieldLocations = getFieldLocationsFromLocationResp['data'];
+          
+        });
+        print("fieldLocations: $fieldLocations");
+      }
+    }
+   
+  }
+
   void loadInitialData() async{
     print("loadInitialDataaaaa");
     currentPosition = BaseCommand().getAppModelCurrentPosition();
@@ -233,13 +255,13 @@ final teamPriceController = TextEditingController();
       "longitude": currentPosition.longitude,
       "radius": 1000,
     };
-    Map<String,dynamic> getFieldLocationsNearbyResp = await LocationCommand().getFieldLocationsNearby(getFieldLocationsNearbyInput);
-    if(getFieldLocationsNearbyResp['success']){
-      fieldLocations = getFieldLocationsNearbyResp['data'];
-      print("fieldLocations: $fieldLocations");
+    // Map<String,dynamic> getFieldLocationsNearbyResp = await LocationCommand().getFieldLocationsNearby(getFieldLocationsNearbyInput);
+    // if(getFieldLocationsNearbyResp['success']){
+    //   fieldLocations = getFieldLocationsNearbyResp['data'];
+    //   print("fieldLocations: $fieldLocations");
 
 
-    }
+    // }
     Map<String,dynamic> getLocationsNearbyResp = await LocationCommand().getLocationsNearby(getFieldLocationsNearbyInput);
     if(getLocationsNearbyResp['success']){
       locations = getLocationsNearbyResp['data'];
@@ -364,6 +386,71 @@ final teamPriceController = TextEditingController();
           ),
             ),
         locationSearchBar,
+         Padding(
+              padding: EdgeInsets.fromLTRB(0, 0,
+                            0, 0),
+              child:
+                       
+         Padding(
+    padding: const EdgeInsets.only(right: 8.0),
+    child: DropdownButtonHideUnderline(
+  child: InputDecorator(
+    decoration: InputDecoration(
+      hintText: 'Location',
+      hintStyle: TextStyle(color: AppColors.tsnGrey),
+      filled: true,
+      fillColor: AppColors.tsnAlmostBlack,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(25),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    ),
+    child: 
+    Container(
+  // Constrain the height of the dropdown menu
+  child: DropdownButtonFormField<dynamic>(
+    value: selectedLocation,
+    style: TextStyle(color: AppColors.tsnAlmostBlack),
+    decoration: InputDecoration.collapsed(hintText: ''),
+    menuMaxHeight: 200,
+    items: [
+      DropdownMenuItem(
+        value: null,
+        child: Text(
+          'Location',
+          style: TextStyle(color: AppColors.tsnGrey),
+        ),  
+      ),
+      ...locations.map((dynamic location) {
+        return DropdownMenuItem<dynamic>(
+          key: Key(location['_id'].toString()),
+          value: location, // Here we assign the whole location object as the value
+          child: Text(
+            location['name'].toString(),
+            style: TextStyle(color: AppColors.tsnWhite),
+          ),
+        );
+      }).toList(),
+    ],
+    onChanged: (dynamic newValue) {
+      setState(() {
+        selectedLocation = newValue; // Now selectedLocation will hold the entire object
+        setFieldLocations();
+      });
+    },
+    
+    dropdownColor: AppColors.fieldFillDark,
+  ),
+),
+
+  ),
+),
+
+  
+),
+        ),
+        const SizedBox(height: 50),
           Padding(
               padding: EdgeInsets.fromLTRB(0, 0,
                             0, 0),
@@ -386,108 +473,48 @@ final teamPriceController = TextEditingController();
     ),
     child: 
     Container(
-      // Constrain the height of the dropdown menu      
-      child: DropdownButtonFormField<String>(
-        value: selectedFieldLocation,
-        style: TextStyle(color: AppColors.tsnAlmostBlack),
-        decoration: InputDecoration.collapsed(hintText: ''),
-        menuMaxHeight: 200,
-        items: [
-          DropdownMenuItem(
-            value: null,
-            child: Text(
-              'Field Location',
-              style: TextStyle(color: AppColors.tsnGrey),
-            ),  
-          ),
-          ...fieldLocations.map((dynamic fieldLocation) {
-            return DropdownMenuItem(              
-              key: Key(fieldLocation['_id'].toString()),
-              value: fieldLocation['fieldLocationName'].toString(),
-              child: Text(
-                fieldLocation['fieldLocationName'].toString(),
-                style: TextStyle(color: AppColors.tsnWhite),
-              ),
-            );
-          }).toList(),
-        ],
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedFieldLocation = newValue;
-          });
-        },
-        
-        dropdownColor: AppColors.fieldFillDark,
+  // Constrain the height of the dropdown menu
+  child: DropdownButtonFormField<dynamic>(
+    value: selectedFieldLocation,
+    style: TextStyle(color: AppColors.tsnAlmostBlack),
+    decoration: InputDecoration.collapsed(hintText: ''),
+    menuMaxHeight: 200,
+    items: [
+      DropdownMenuItem(
+        value: null,
+        child: Text(
+          'Field Location',
+          style: TextStyle(color: AppColors.tsnGrey),
+        ),  
       ),
-    ),
+      ...fieldLocations.map((dynamic fieldLocation) {
+        return DropdownMenuItem<dynamic>(
+          key: Key(fieldLocation['_id'].toString()),
+          value: fieldLocation, // Assign the whole fieldLocation object as the value
+          child: Text(
+            fieldLocation['fieldLocationName'].toString(),
+            style: TextStyle(color: AppColors.tsnWhite),
+          ),
+        );
+      }).toList(),
+    ],
+    onChanged: (dynamic newValue) {
+      setState(() {
+        selectedFieldLocation = newValue; // selectedFieldLocation will hold the entire object
+      });
+    },
+    
+    dropdownColor: AppColors.fieldFillDark,
+  ),
+),
+
   ),
 ),
 
   
 ),
         ),
-          Padding(
-              padding: EdgeInsets.fromLTRB(0, 0,
-                            0, 0),
-              child:
-                       
-         Padding(
-    padding: const EdgeInsets.only(right: 8.0),
-    child: DropdownButtonHideUnderline(
-  child: InputDecorator(
-    decoration: InputDecoration(
-      hintText: 'Location',
-      hintStyle: TextStyle(color: AppColors.tsnGrey),
-      filled: true,
-      fillColor: AppColors.tsnAlmostBlack,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(25),
-        borderSide: BorderSide.none,
-      ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    ),
-    child: 
-    Container(
-      // Constrain the height of the dropdown menu      
-      child: DropdownButtonFormField<String>(
-        value: selectedLocation,
-        style: TextStyle(color: AppColors.tsnAlmostBlack),
-        decoration: InputDecoration.collapsed(hintText: ''),
-        menuMaxHeight: 200,
-        items: [
-          DropdownMenuItem(
-            value: null,
-            child: Text(
-              'Location',
-              style: TextStyle(color: AppColors.tsnGrey),
-            ),  
-          ),
-          ...locations.map((dynamic location) {
-            return DropdownMenuItem(              
-              key: Key(location['_id'].toString()),
-              value: location['name'].toString(),
-              child: Text(
-                location['name'].toString(),
-                style: TextStyle(color: AppColors.tsnWhite),
-              ),
-            );
-          }).toList(),
-        ],
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedLocation = newValue;
-          });
-        },
-        
-        dropdownColor: AppColors.fieldFillDark,
-      ),
-    ),
-  ),
-),
-
-  
-),
-        ),
+         
          
           createEventRequestWidget,
           createEventPaymentWidget,

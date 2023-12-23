@@ -22,6 +22,43 @@ import 'geolocation_command.dart';
 
 class LocationCommand extends BaseCommand {
 
+  Future<Map<String,dynamic>> getFieldLocationsFromLocation(dynamic input) async{    
+    Map<String, dynamic> getFieldLocationsResp = {"success": false, "message": "Default", "data": null};
+
+    print("getFieldLocationsFromLocation()");
+    print("input: " + input.toString());
+    try{
+       http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': LocationQueries().getFieldLocationsOfLocation(input, LocationFragments().FieldLocationFull()),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['getFieldLocationsOfLocation'];
+        if(result['success']){                    
+          getFieldLocationsResp["success"] = true;
+          getFieldLocationsResp["message"] = "Field Locations Nearby Retrieved";
+          getFieldLocationsResp["data"] = result['fieldLocations'];
+        }
+
+      }
+
+      return getFieldLocationsResp;
+      
+      
+    } on ApiException catch(e){
+      print('Query failed: $e');
+      return getFieldLocationsResp;
+    }
+  }
+
   Future<Map<String,dynamic>> getFieldLocationsNearby(dynamic getFieldLocationsNearbyInput) async{    
     Map<String, dynamic> getFieldLocationsResp = {"success": false, "message": "Default", "data": null};
 

@@ -163,6 +163,7 @@ type Query {
   allUserEventParticipants(_id: String, startTime: String): AllUserEventParticipantResponse!
   getArchivedEvents(userId: String, startTime: String) : EventsResponse
   getFieldLocationsNearby(latitude: Float, longitude: Float, radius: Int): FieldLocationResponse
+  getFieldLocationsOfLocation(locationId: String): FieldLocationResponse
   getLocationsNearby(latitude: Float, longitude: Float, radius: Int): LocationResponse
   }
 

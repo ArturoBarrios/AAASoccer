@@ -86,7 +86,7 @@ class _LocationSearchBar extends State<LocationSearchBar> {
           enabled: !widget.readonly,
         ),
         SizedBox(
-          height: 200,
+          height: 100,
           child: ListView.builder(
             itemCount: addressPredictions.length,
             itemBuilder: (context, index) {
