@@ -549,10 +549,41 @@ const resolvers = {
                 success: true,
                 message: "User email was successfully updated",
                 fieldLocations: resFieldLocations
-            };
-
-            
+            };            
         },
+
+        getLocationsNearby: async (parent, args, context, info) => {
+            console.log("getLocationsNearby");
+            console.log("args.latitude: ", args.latitude);
+            console.log("args.longitude: ", args.longitude);
+            console.log("args.radius: ", args.radius);
+
+            const userLatitude = args.latitude;
+            const userLongitude = args.longitude;
+            const radius = args.radius;
+
+            const locations = await Location.find().populate('fieldLocations');            
+
+            // const resFieldLocations = locations.filter(location => {               
+            //     console.log("location: ", location);
+            //     const locationLatitude = location['latitude'];
+            //     const locationLongitude = location['longitude'];
+            //     console.log("locationLatitude: ", locationLatitude);
+            //     const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, locationLatitude, locationLongitude);
+            //     console.log("distance: ", distance);
+            //     return distance <= radius;
+            // });
+
+            // console.log("resFieldLocations: ", resFieldLocations);
+
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully updated",
+                locations: locations
+            };            
+        },
+
         allUserEventParticipants: async (parent, args, context, info) => {            
             console.log("allUserEventParticipants");
             console.log("startTime: ", args.startTime);

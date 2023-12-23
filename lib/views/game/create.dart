@@ -63,6 +63,9 @@ class _GameCreateState extends State<GameCreate> {
   List<dynamic> fieldLocations = [];
   dynamic selectedFieldLocation = null;
   
+  List<dynamic> locations = [];
+  dynamic selectedLocation = null;
+  
   List<String> selectedHostAmenities = [];
   List<String> selectedFieldAmenities = [];
 
@@ -149,22 +152,22 @@ final teamPriceController = TextEditingController();
       };
 
       locationInput['fieldAmenities'] = parsedSelectedFieldAmenities.toString();
-      locationInput['fieldLocationId'] = selectedFieldLocation;
-      locationInput['fieldLocationName'] = fieldLocationNameController.text.toString();
+      locationInput['fieldLocationId'] = selectedFieldLocation['_id'].toString();
+      locationInput['fieldLocationName'] = selectedFieldLocation != null ? selectedFieldLocation['fieldLocationName'] : fieldLocationNameController.text.toString();
       locationInput['name'] = locationNameController.text.toString();
       print("locationInputCheaheck: $locationInput");
 
       
 
-      Map<String, dynamic> createPickupGameResp =
-          await GameCommand().createGame(pickupData, eventInput, locationInput);
-      print("createPickupGameResp: $createPickupGameResp");
+      // Map<String, dynamic> createPickupGameResp =
+      //     await GameCommand().createGame(pickupData, eventInput, locationInput);
+      // print("createPickupGameResp: $createPickupGameResp");
 
-      print(createPickupGameResp['data']);
-      if (createPickupGameResp['success']) {
-        Map<String, dynamic> createdEvent = createPickupGameResp['data'];
-        await EventCommand()
-            .updateViewModelsWithEvent(createdEvent, true, true);
+      // print(createPickupGameResp['data']);
+      // if (createPickupGameResp['success']) {
+      //   Map<String, dynamic> createdEvent = createPickupGameResp['data'];
+      //   await EventCommand()
+      //       .updateViewModelsWithEvent(createdEvent, true, true);
 
         
           // Navigator.pop(
@@ -179,7 +182,7 @@ final teamPriceController = TextEditingController();
           //   ),
           // );
         
-      }
+      // }
     } on ApiException catch (_) {}
   }
 
@@ -234,12 +237,19 @@ final teamPriceController = TextEditingController();
     if(getFieldLocationsNearbyResp['success']){
       fieldLocations = getFieldLocationsNearbyResp['data'];
       print("fieldLocations: $fieldLocations");
-      setState(() {
-        isLoading = false;
-      });
 
 
     }
+    Map<String,dynamic> getLocationsNearbyResp = await LocationCommand().getLocationsNearby(getFieldLocationsNearbyInput);
+    if(getLocationsNearbyResp['success']){
+      locations = getLocationsNearbyResp['data'];
+      print("locations: $locations");
+
+
+    }
+      setState(() {
+        isLoading = false;
+      });
 
   }
 
@@ -374,7 +384,8 @@ final teamPriceController = TextEditingController();
       ),
       contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
     ),
-    child: Container(
+    child: 
+    Container(
       // Constrain the height of the dropdown menu      
       child: DropdownButtonFormField<String>(
         value: selectedFieldLocation,
@@ -391,10 +402,10 @@ final teamPriceController = TextEditingController();
           ),
           ...fieldLocations.map((dynamic fieldLocation) {
             return DropdownMenuItem(              
-              key: Key(fieldLocation['location']['_id'].toString()),
-              value: fieldLocation['location']['name'].toString()+fieldLocation['location']['_id'].toString(),
+              key: Key(fieldLocation['_id'].toString()),
+              value: fieldLocation['fieldLocationName'].toString(),
               child: Text(
-                fieldLocation['location']['name'].toString(),
+                fieldLocation['fieldLocationName'].toString(),
                 style: TextStyle(color: AppColors.tsnWhite),
               ),
             );
@@ -403,6 +414,68 @@ final teamPriceController = TextEditingController();
         onChanged: (String? newValue) {
           setState(() {
             selectedFieldLocation = newValue;
+          });
+        },
+        
+        dropdownColor: AppColors.fieldFillDark,
+      ),
+    ),
+  ),
+),
+
+  
+),
+        ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 0,
+                            0, 0),
+              child:
+                       
+         Padding(
+    padding: const EdgeInsets.only(right: 8.0),
+    child: DropdownButtonHideUnderline(
+  child: InputDecorator(
+    decoration: InputDecoration(
+      hintText: 'Location',
+      hintStyle: TextStyle(color: AppColors.tsnGrey),
+      filled: true,
+      fillColor: AppColors.tsnAlmostBlack,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(25),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    ),
+    child: 
+    Container(
+      // Constrain the height of the dropdown menu      
+      child: DropdownButtonFormField<String>(
+        value: selectedLocation,
+        style: TextStyle(color: AppColors.tsnAlmostBlack),
+        decoration: InputDecoration.collapsed(hintText: ''),
+        menuMaxHeight: 200,
+        items: [
+          DropdownMenuItem(
+            value: null,
+            child: Text(
+              'Location',
+              style: TextStyle(color: AppColors.tsnGrey),
+            ),  
+          ),
+          ...locations.map((dynamic location) {
+            return DropdownMenuItem(              
+              key: Key(location['_id'].toString()),
+              value: location['name'].toString(),
+              child: Text(
+                location['name'].toString(),
+                style: TextStyle(color: AppColors.tsnWhite),
+              ),
+            );
+          }).toList(),
+        ],
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedLocation = newValue;
           });
         },
         

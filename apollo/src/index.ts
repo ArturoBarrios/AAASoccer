@@ -61,6 +61,13 @@ const typeDefs = `#graphql
     message: String!
     fieldLocations: [FieldLocation]
   }
+  
+  type LocationResponse implements QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    locations: [Location]
+  }
 
   type EventMutationResponse implements QueryResponse {
     code: String!
@@ -156,6 +163,7 @@ type Query {
   allUserEventParticipants(_id: String, startTime: String): AllUserEventParticipantResponse!
   getArchivedEvents(userId: String, startTime: String) : EventsResponse
   getFieldLocationsNearby(latitude: Float, longitude: Float, radius: Int): FieldLocationResponse
+  getLocationsNearby(latitude: Float, longitude: Float, radius: Int): LocationResponse
   }
 
 
@@ -949,6 +957,7 @@ type Location   {
   latitude: Float!
   longitude: Float!    
   locationType: LocationType
+  fieldLocations: [FieldLocation]
 }
 
 type UserLocation   {

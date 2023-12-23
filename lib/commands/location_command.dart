@@ -59,6 +59,44 @@ class LocationCommand extends BaseCommand {
       return getFieldLocationsResp;
     }
   }
+  
+  Future<Map<String,dynamic>> getLocationsNearby(dynamic getLocationsNearbyInput) async{    
+    Map<String, dynamic> getLocationsResp = {"success": false, "message": "Default", "data": null};
+
+    print("getLocationsNearby()");
+    print("getLocationsNearbyInput: " + getLocationsNearbyInput.toString());
+    try{
+       http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': LocationQueries().getLocationsNearby(getLocationsNearbyInput, LocationFragments().LocationFull()),
+        }),
+      );
+      print("response body: ");
+      print(jsonDecode(response.body));
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['getLocationsNearby'];
+        if(result['success']){          
+          
+          getLocationsResp["success"] = true;
+          getLocationsResp["message"] = "Field Locations Nearby Retrieved";
+          getLocationsResp["data"] = result['locations'];
+
+        }
+
+      }
+
+      return getLocationsResp;
+      
+      
+    } on ApiException catch(e){
+      print('Query failed: $e');
+      return getLocationsResp;
+    }
+  }
 
   
 

@@ -39,6 +39,29 @@ class LocationQueries {
 
       return getFieldLocationsNearbyString;
   }  
+  
+  String getLocationsNearby(dynamic input, String locationFragment) {
+      String getLocationsNearbyString = """
+          query getLocationsNearby {
+            getLocationsNearby(
+              latitude: ${input['latitude']}
+              longitude: ${input['longitude']}
+              radius: ${input['radius']}
+            ) {
+              message
+              success
+              code
+              locations{
+                ${locationFragment}       
+
+              }                  
+              
+            }
+          }
+        """;
+
+      return getLocationsNearbyString;
+  }  
 }
 
 
