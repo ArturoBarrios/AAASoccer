@@ -153,7 +153,13 @@ class AmplifyAuthService {
     } else if (nextStep.contains("DONE")) {
       print("DONE");
       state.skipVerifyUser();
-    } else {
+      
+    } 
+    else if(nextStep.contains('A user is already signed in')){
+      Amplify.Auth.signOut(
+          options: const SignOutOptions(globalSignOut: true));
+    }
+    else {
       print("else");
       // state.changeStep(AuthenticatorStep.)
     }
