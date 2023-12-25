@@ -46,11 +46,13 @@ class _LocationSearchBar extends State<LocationSearchBar> {
   }
 
   void chooseAddress(dynamic location) async {
-    print("chooseAddress");
+    print("chooseAddress: "+ location.toString());
     locationController.text = location['description'];
     address = location['description'];
+    print("about to find outtttt....");
     List<Location> locations =
         await locationFromAddress(location['description']);
+    print("about to find outtttt....");
 
     if (locations.isNotEmpty) {
       Location addressToChoose = locations.first;
@@ -84,9 +86,8 @@ class _LocationSearchBar extends State<LocationSearchBar> {
           enabled: !widget.readonly,
         ),
         SizedBox(
-          height: 200,
-          child: Expanded(
-              child: ListView.builder(
+          height: 100,
+          child: ListView.builder(
             itemCount: addressPredictions.length,
             itemBuilder: (context, index) {
               return Card(
@@ -112,7 +113,7 @@ class _LocationSearchBar extends State<LocationSearchBar> {
                 ),
               );
             },
-          )),
+          ),
         ),
       ],
     );

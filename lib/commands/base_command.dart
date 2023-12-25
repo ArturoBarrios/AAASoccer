@@ -394,6 +394,9 @@ List<String> parseAmenities(String amenitiesString) {
     WidgetsFlutterBinding.ensureInitialized();
     //nuke data
     appModel.loggedIn = false;
+    appModel.currentUser = {};
+    appModel.onboarded = false;
+
 
     appModel.initialConditionsMet = false;
   }

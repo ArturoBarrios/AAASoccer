@@ -130,8 +130,7 @@ class _PickupViewState extends State<PickupView> {
                     ),
                   ).getMainHeader(context),
                   body: SingleChildScrollView(
-                    child: Center(
-                      child: Expanded(
+                    child: Center(                      
                         child: Column(
 
                           children: [
@@ -177,7 +176,7 @@ Padding(
                                 padding: EdgeInsets.fromLTRB(paddingValue, 0,
                                     paddingValue, paddingValue / 2),
                                 child: Row(children: [
-                                  Icon(Icons.location_on, color: AppColors.tsnBlack),
+                                  Icon(Icons.location_on, color: AppColors.tsnGreen),
                                   Expanded(
                                       child: GestureDetector(
                                           onTap: () => BaseCommand()
@@ -193,10 +192,27 @@ Padding(
                                                   event.fieldLocations[0]
                                                       ['location']['address'],
                                                   style: TextStyle(
-                                                    color: AppColors.tsnBlack,
+                                                    color: AppColors.tsnGreen,
                                                     fontSize:
                                                         FontSizes.s(context),
                                                   )))))
+                                ])),
+                            Padding(
+                                padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                                    paddingValue, paddingValue / 2),
+                                child: Row(children: [
+                                  Icon(Icons.grass_rounded, color: AppColors.tsnBlack),
+                                  Expanded(
+                                      child:  Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                  event.fieldLocations[0]
+                                                      ['fieldLocationName'],
+                                                  style: TextStyle(
+                                                    color: AppColors.tsnBlack,
+                                                    fontSize:
+                                                        FontSizes.s(context),
+                                                  ))))
                                 ])),
                             Padding(
                                 padding: EdgeInsets.fromLTRB(paddingValue, 0,
@@ -472,7 +488,7 @@ Padding(
                             const SizedBox(height: 100),
                           ],
                         ),
-                      ),
+                      
                     ),
                   ),
                   bottomNavigationBar: Padding(

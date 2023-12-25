@@ -1514,8 +1514,8 @@ class EventCommand extends BaseCommand {
       eventPageInstance.mainEvent = event;
       eventPageInstance.capacity = isMyEventResp['capacity'];
       eventPageInstance.isMine = isMyEventResp['isMine'];
-      eventPageInstance.objectImageInput =
-          await loadEventMainImage(event, eventPageInstance.isMine);
+      // eventPageInstance.objectImageInput =
+      //     await loadEventMainImage(event, eventPageInstance.isMine);
       eventPageInstance.roles = isMyEventResp['roles'];
       eventPageInstance.isMember = isMyEventResp['isMember'];
       eventPageInstance.amountRemaining = isMyEventResp['amountRemaining'];

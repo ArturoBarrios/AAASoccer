@@ -131,7 +131,10 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
           ),
           ],
       ),
-               Expanded(
+             
+              Row(
+        children: [
+          Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0, bottom: 8.0, top: 8.0),
               child:
@@ -158,32 +161,10 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
                                 ),
                               ),
             ))),
-
-          //     CustomTextFormField(
-          //   label: "Birthdate",
-          //   hintText: StringConstants.startDateTimeHint,
-          //   keyboardType: TextInputType.datetime,
-          //   controller: birthdateController,
-          //   isSuffixIcon: true,
-          //   validator: (value) => Validators.validateRequired(
-          //       value!, StringConstants.startDateTimeErrorValue),
-          //   suffixIcon: IconButton(
-          //       onPressed: () {
-          //         DatePicker.showDateTimePicker(context,
-          //             showTitleActions: true,
-          //             onChanged: (date) {}, onConfirm: (date) {
-          //           setStartTime(date);
-          //         }, currentTime:  startTime);
-          //       },
-          //       icon: const Icon(Icons.calendar_today_outlined)),
-          //   onPressed: () {
-          //     DatePicker.showDateTimePicker(context,
-          //         showTitleActions: true,
-          //         onChanged: (date) {}, onConfirm: (date) {
-          //       setStartTime(date);
-          //     }, currentTime: startTime);
-          //   },
-          // ),
+          ],
+      ),
+       Row(
+        children: [
           Expanded(
   child: Padding(
     padding: const EdgeInsets.only(right: 8.0),
@@ -240,6 +221,36 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
     ),
   ),
 ),
+          ],
+      ),
+               
+
+          //     CustomTextFormField(
+          //   label: "Birthdate",
+          //   hintText: StringConstants.startDateTimeHint,
+          //   keyboardType: TextInputType.datetime,
+          //   controller: birthdateController,
+          //   isSuffixIcon: true,
+          //   validator: (value) => Validators.validateRequired(
+          //       value!, StringConstants.startDateTimeErrorValue),
+          //   suffixIcon: IconButton(
+          //       onPressed: () {
+          //         DatePicker.showDateTimePicker(context,
+          //             showTitleActions: true,
+          //             onChanged: (date) {}, onConfirm: (date) {
+          //           setStartTime(date);
+          //         }, currentTime:  startTime);
+          //       },
+          //       icon: const Icon(Icons.calendar_today_outlined)),
+          //   onPressed: () {
+          //     DatePicker.showDateTimePicker(context,
+          //         showTitleActions: true,
+          //         onChanged: (date) {}, onConfirm: (date) {
+          //       setStartTime(date);
+          //     }, currentTime: startTime);
+          //   },
+          // ),
+          
               // CustomTextFormField(
               //   label: 'Gender',
               //   hintText: 'Enter Age',

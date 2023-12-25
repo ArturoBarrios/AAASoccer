@@ -85,13 +85,21 @@ const resolvers = {
             console.log("createGame: ");
 
             console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
+            console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
+            console.log("args.input.event.userParticipants.userId: ", args.input.event.userParticipants[0].userId);
             console.log("args.input.event.fieldLocations[0].fieldLocationName: "+ args.input.event.fieldLocations[0].fieldLocationName.toString());
+            console.log("args.input.event.fieldLocations[0].location.locationId: "+ args.input.event.fieldLocations[0].location.locationId);
+            console.log("args.input.event.fieldLocations[0].fieldLocationId: "+ args.input.event.fieldLocations[0].fieldLocationId);
             //server validation
-            //if location is available
-            if((args.input.event.fieldLocations[0].location.latitude != 0  
-               && args.input.event.fieldLocations[0].location.longitude != 0)
-               || (
-                args.input.event.fieldLocations[0].fieldLocationName.toString() != ''
+            //location is available
+            if( (
+                (args.input.event.fieldLocations[0].location.latitude != 0  
+               && args.input.event.fieldLocations[0].location.longitude != 0) || 
+                 args.input.event.fieldLocations[0].location.locationId != null)
+               &&//used to be ||
+                (
+                args.input.event.fieldLocations[0].fieldLocationName.toString() != '' ||
+                args.input.event.fieldLocations[0].fieldLocationId != null
             )
                ) {
                    //get user
@@ -101,96 +109,98 @@ const resolvers = {
                    const createdPrice = new Price({
                        amount: args.input.event.price.amount,
                    });
-                   await createdPrice.save();
                    console.log("createdPrice: ", createdPrice._id);
-       
+                   
                    const joinConditions = new JoinConditions({
                        withRequest: args.input.event.joinConditions.withRequest,
                        withPayment: args.input.event.joinConditions.withPayment,
-                   });
-                   await joinConditions.save();
-                   console.log("joinConditions: ", joinConditions._id);
-       
-                   const eventUserParticipants = new EventUserParticipant({
-                       user: user._id,
-                       roles: args.input.event.userParticipants[0].roles,
-                   });
-                   await eventUserParticipants.save();
-                   console.log("eventUserParticipants: ", eventUserParticipants._id);
-       
-                   await user.eventUserParticipants.push(eventUserParticipants._id);
-                   await user.save();
-                   
-                   var location = null;
-                   console.log("args.input.event.fieldLocations[0].location.locationId: ", args.input.event.fieldLocations[0].location.locationId == null)
-                   if(args.input.event.fieldLocations[0].location.locationId == null){
-                    location = new Location({
-                           name: args.input.event.fieldLocations[0].location.name,
-                           address: args.input.event.fieldLocations[0].location.address,
-                           latitude: args.input.event.fieldLocations[0].location.latitude,
-                           longitude: args.input.event.fieldLocations[0].location.longitude,
-                       });
-                       await location.save();
+                    });
+                    console.log("joinConditions: ", joinConditions._id);
+                    
+                    const eventUserParticipants = new EventUserParticipant({
+                        user: user._id,
+                        roles: args.input.event.userParticipants[0].roles,
+                    });
+                    console.log("eventUserParticipants: ", eventUserParticipants._id);
+                    
+                    await user.eventUserParticipants.push(eventUserParticipants._id);
+                    
+                    var location = null;   
+                    console.log("is location locationId null? "+args.input.event.fieldLocations[0].location.locationId == null)                 
+                    if(args.input.event.fieldLocations[0].location.locationId == null){
+                        location = new Location({
+                            name: args.input.event.fieldLocations[0].location.name,
+                            address: args.input.event.fieldLocations[0].location.address,
+                            latitude: args.input.event.fieldLocations[0].location.latitude,
+                            longitude: args.input.event.fieldLocations[0].location.longitude,
+                        });
+                        console.log("location created: ", location.toString());
                     }
-                    else{
+                    else if(args.input.event.fieldLocations[0].fieldLocationId == null){
                         location = await Location.findById(args.input.event.fieldLocations[0].location.locationId);
                     }
-                    console.log("location: ", location._id);
-                    //create new or get existing fieldLocation
-                   console.log("args.input.event.fieldLocations.location: ", args.input.event.fieldLocations[0].location);
-                   var fieldLocations = null;
-                   if(args.input.event.fieldLocations[0].fieldLocationId == null){
-                    console.log("new field created");
-           
-                    fieldLocations = new FieldLocation({
-                        fieldLocationName: args.input.event.fieldLocations[0].fieldLocationName,
-                        isMainField: args.input.event.fieldLocations[0].isMainField,
-                        fieldAmenities: args.input.event.fieldLocations[0].fieldAmenities,
-                        location: location._id,
-                        fieldLocationRating: -1,
-                        indoor: args.input.event.fieldLocations[0].indoor,
-                        surface: args.input.event.fieldLocations[0].surface,
+                    console.log("location: ", location);
+                    //create new or get existing fieldLocation                    
+                    var fieldLocations = null;
+                    if(args.input.event.fieldLocations[0].fieldLocationId == null){
+                        console.log("new field created");
+                        
+                        fieldLocations = new FieldLocation({
+                            fieldLocationName: args.input.event.fieldLocations[0].fieldLocationName,
+                            isMainField: args.input.event.fieldLocations[0].isMainField,
+                            fieldAmenities: args.input.event.fieldLocations[0].fieldAmenities,
+                            location: location._id,
+                            fieldLocationRating: -1,
+                            indoor: args.input.event.fieldLocations[0].indoor,
+                            surface: args.input.event.fieldLocations[0].surface,
+                        });
+                        console.log("fieldLocations: ", fieldLocations._id);
+                    }
+                    else{
+                        console.log("existing field retrieved");
+                        fieldLocations = await FieldLocation.findById(args.input.event.fieldLocations[0].fieldLocationId);
+                    }
+                    
+                    console.log("hostAmenities: ", args.input.event.hostAmenities);
+                    
+                    const createdEvent = new Event({
+                        name: args.input.event.name,
+                        type: args.input.event.type,
+                        archived: args.input.event.archived,
+                        hostAmenities: args.input.event.hostAmenities,
+                        isMainEvent: args.input.event.isMainEvent,
+                        startTime: args.input.event.startTime,
+                        endTime: args.input.event.endTime,
+                        createdAt: args.input.event.createdAt,
+                        capacity: args.input.event.capacity,
+                        price: createdPrice._id,
+                        joinConditions: joinConditions._id,
+                        userParticipants: [eventUserParticipants._id],
+                        fieldLocations: fieldLocations._id,
                     });
-                       await fieldLocations.save();
-                       console.log("fieldLocations: ", fieldLocations._id);
-                   }
-                   else{
-                    console.log("existing field retrieved");
-                       fieldLocations = await FieldLocation.findById(args.input.event.fieldLocations[0].fieldLocationId);
-                   }
-       
-                   console.log("hostAmenities: ", args.input.event.hostAmenities);
-       
-                   const createdEvent = new Event({
-                       name: args.input.event.name,
-                       type: args.input.event.type,
-                       archived: args.input.event.archived,
-                       hostAmenities: args.input.event.hostAmenities,
-                       isMainEvent: args.input.event.isMainEvent,
-                       startTime: args.input.event.startTime,
-                       endTime: args.input.event.endTime,
-                       createdAt: args.input.event.createdAt,
-                       capacity: args.input.event.capacity,
-                       price: createdPrice._id,
-                       joinConditions: joinConditions._id,
-                       userParticipants: [eventUserParticipants._id],
-                       fieldLocations: fieldLocations._id,
-                   });
+                    
+                    
+                    eventUserParticipants.event = createdEvent._id;
+                    
+                    console.log("createdEvent: ", createdEvent._id);
+                    
+                    
+                    const createdGame = new Game({
+                        pickup: args.input.pickup,
+                        event: createdEvent._id,
+                    });
+                    if(location != null)
+                        await location.save();
+                    if(fieldLocations != null)
+                        await fieldLocations.save();
+                    await eventUserParticipants.save();
+                    await createdPrice.save();
+                    await joinConditions.save();
+                   await user.save();
                    await createdEvent.save();
-       
-       
-                   eventUserParticipants.event = createdEvent._id;
                    await eventUserParticipants.save();
-       
-                   console.log("createdEvent: ", createdEvent._id);
-       
-       
-                   const createdGame = new Game({
-                       pickup: args.input.pickup,
-                       event: createdEvent._id,
-                   });
-       
                    const res = await createdGame.save();
+
                    res.populate([
                        {
                            path: 'event',
@@ -512,6 +522,37 @@ const resolvers = {
         },
     },
     Query: {
+        getFieldLocationsOfLocation: async (parent, args, context, info) => {
+            console.log("getFieldLocationsOfLocation");
+            console.log("args.locationId: ", args.locationId);                    
+
+            const fieldLocations = await FieldLocation.find({ location: args.locationId }).populate(
+                {
+                    path: 'location'
+                }            
+            );
+            console.log("fieldLocations: ", fieldLocations);
+
+            // const resFieldLocations = fieldLocations.filter(fieldLocation => {
+            //     // fieldLocation.populate('location');
+            //     console.log("fieldLocation: ", fieldLocation);
+            //     const locationLatitude = fieldLocation['location']['latitude'];
+            //     const locationLongitude = fieldLocation['location']['longitude'];
+            //     console.log("locationLatitude: ", locationLatitude);
+            //     const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, locationLatitude, locationLongitude);
+            //     console.log("distance: ", distance);
+            //     return distance <= radius;
+            // });
+            // console.log("resFieldLocations: ", resFieldLocations);
+
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully updated",
+                fieldLocations: fieldLocations
+            };            
+        },
+
         getFieldLocationsNearby: async (parent, args, context, info) => {
             console.log("getFieldLocationsNearby");
             console.log("args.latitude: ", args.latitude);
@@ -522,31 +563,60 @@ const resolvers = {
             const userLongitude = args.longitude;
             const radius = args.radius;
 
-            const fieldLocations = await FieldLocation.find().populate('location');
-            // console.log("fieldLocations: ", fieldLocations);
+            const fieldLocations = await FieldLocation.find().populate('location');            
 
-            const resFieldLocations = fieldLocations.filter(fieldLocation => {
-                // fieldLocation.populate('location');
-                console.log("fieldLocation: ", fieldLocation);
-                const locationLatitude = fieldLocation['location']['latitude'];
-                const locationLongitude = fieldLocation['location']['longitude'];
-                console.log("locationLatitude: ", locationLatitude);
-                const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, locationLatitude, locationLongitude);
-                console.log("distance: ", distance);
-                return distance <= radius;
-            });
-
-            console.log("resFieldLocations: ", resFieldLocations);
+            // const resFieldLocations = fieldLocations.filter(fieldLocation => {
+            //     // fieldLocation.populate('location');
+            //     console.log("fieldLocation: ", fieldLocation);
+            //     const locationLatitude = fieldLocation['location']['latitude'];
+            //     const locationLongitude = fieldLocation['location']['longitude'];
+            //     console.log("locationLatitude: ", locationLatitude);
+            //     const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, locationLatitude, locationLongitude);
+            //     console.log("distance: ", distance);
+            //     return distance <= radius;
+            // });
+            // console.log("resFieldLocations: ", resFieldLocations);
 
             return {
                 code: 200,
                 success: true,
                 message: "User email was successfully updated",
-                fieldLocations: resFieldLocations
-            };
-
-            
+                fieldLocations: fieldLocations
+            };            
         },
+
+        getLocationsNearby: async (parent, args, context, info) => {
+            console.log("getLocationsNearby");
+            console.log("args.latitude: ", args.latitude);
+            console.log("args.longitude: ", args.longitude);
+            console.log("args.radius: ", args.radius);
+
+            const userLatitude = args.latitude;
+            const userLongitude = args.longitude;
+            const radius = args.radius;
+
+            const locations = await Location.find().populate('fieldLocations');            
+
+            // const resFieldLocations = locations.filter(location => {               
+            //     console.log("location: ", location);
+            //     const locationLatitude = location['latitude'];
+            //     const locationLongitude = location['longitude'];
+            //     console.log("locationLatitude: ", locationLatitude);
+            //     const distance = getDistanceFromLatLonInKm(userLatitude, userLongitude, locationLatitude, locationLongitude);
+            //     console.log("distance: ", distance);
+            //     return distance <= radius;
+            // });
+
+            // console.log("resFieldLocations: ", resFieldLocations);
+
+            return {
+                code: 200,
+                success: true,
+                message: "User email was successfully updated",
+                locations: locations
+            };            
+        },
+
         allUserEventParticipants: async (parent, args, context, info) => {            
             console.log("allUserEventParticipants");
             console.log("startTime: ", args.startTime);

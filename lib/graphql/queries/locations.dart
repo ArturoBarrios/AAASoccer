@@ -39,6 +39,50 @@ class LocationQueries {
 
       return getFieldLocationsNearbyString;
   }  
+
+  String getFieldLocationsOfLocation(dynamic input, String fieldLocationFragment) {
+      String getFieldLocationsOfLocationString = """
+          query getFieldLocationsOfLocation {
+            getFieldLocationsOfLocation(
+              locationId: "${input['locationId']}"              
+            ) {
+              message
+              success
+              code
+              fieldLocations{
+                ${fieldLocationFragment}       
+
+              }                  
+              
+            }
+          }
+        """;
+
+      return getFieldLocationsOfLocationString;
+  }  
+  
+  String getLocationsNearby(dynamic input, String locationFragment) {
+      String getLocationsNearbyString = """
+          query getLocationsNearby {
+            getLocationsNearby(
+              latitude: ${input['latitude']}
+              longitude: ${input['longitude']}
+              radius: ${input['radius']}
+            ) {
+              message
+              success
+              code
+              locations{
+                ${locationFragment}       
+
+              }                  
+              
+            }
+          }
+        """;
+
+      return getLocationsNearbyString;
+  }  
 }
 
 

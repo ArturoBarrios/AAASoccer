@@ -177,7 +177,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
   }
 
   Widget paymentWidgetToShow(PaymentStatusType status) {
-    print("PaymentType status to show: " + status.name);
+    print("PaymentType statusssss to show: " + status.name);
     // CardFormEditController controller = CardFormEditController(
     //     initialDetails: PaymentModel().cardFieldInputDetails);
     if (status.name == PaymentStatus.initial.name) {
@@ -191,6 +191,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 const SizedBox(height: 20),
                 CardFormField(
                   controller: cardFormEditController,
+                  style: CardFormStyle(textColor: AppColors.tsnRed, placeholderColor: AppColors.tsnRed, backgroundColor: Colors.white)
                 ),
                 const SizedBox(height: 10),
                 // ElevatedButton(

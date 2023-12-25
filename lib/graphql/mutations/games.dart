@@ -114,14 +114,14 @@ class GameMutations {
               fieldLocations: {                            
                     isMainField: true,
                     fieldAmenities: "${locationInput['fieldAmenities']}",
-                    fieldLocationId: ${locationInput['fieldLocationId']},
+                    fieldLocationId: ${locationInput['fieldLocationId'] != null ? "\"${locationInput['fieldLocationId']}\"" : 'null'},
                     fieldLocationName: "${locationInput['fieldLocationName']}",
                     location: {           
-                        locationId: ${locationInput['locationId']},
-                        name: "${locationInput['name']}",
-                        address: "${locationInput['address']}",
-                        latitude: ${locationInput['latitude']},
-                        longitude: ${locationInput['longitude']}                     
+                      locationId: ${locationInput['locationId'] != null ? "\"${locationInput['locationId']}\"" : 'null'},                        
+                      name: "${locationInput['name']}",
+                      address: "${locationInput['address']}",
+                      latitude: ${locationInput['latitude']},
+                      longitude: ${locationInput['longitude']}                     
                     }                            
               }
             
