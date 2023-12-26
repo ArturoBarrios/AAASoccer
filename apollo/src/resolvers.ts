@@ -455,7 +455,7 @@ const resolvers = {
             console.log("createdPayment: ", payment);
 
             return {
-                code: "200",
+                code: 200,
                 success: true,
                 message: "User email was successfully updated",
                 payment: payment
@@ -470,55 +470,67 @@ const resolvers = {
                 // console.log('Environmental variable is set:', process.env.YOUR_ENV_VARIABLE);
 
             }
+            var playerCount = await Player.countDocuments();
+            if (playerCount<parseInt(process.env.USERLIMIT)) {
+                const location = new Location({
+                    name: args.input.user.location.name,
+                    address: args.input.user.location.address,
+                    latitude: args.input.user.location.latitude,
+                    longitude: args.input.user.location.longitude,
+                });
+                await location.save();
+                console.log("location: ", location._id);
+    
+                const createdUser = new User({
+                    name: args.input.user.name,
+                    username: args.input.user.username,
+                    phone: args.input.user.phone,
+                    email: args.input.user.email,
+                    birthdate: args.input.user.birthdate,
+                    location: location._id,
+                    gender: args.input.user.gender,
+                    hostRating: -1,
+                    profileImageIndex: args.input.user.profileImageIndex
+    
+                });
+                await createdUser.save();
+                console.log("createdUser: ", createdUser._id);
+    
+    
+                const createdPlayer = new Player({
+                    user: createdUser._id,
+                    location: location._id,
+                });
+                await createdPlayer.save();
+    
+                console.log("createdPlayer: ", createdPlayer._id);
+    
+                const res = await createdPlayer.save();
+    
+                await res.populate('user');
+                await res.populate('user.location');
+    
+    
+                console.log("createdPlayer: ", res);
+    
+                return {
+                    code: 200,
+                    success: true,
+                    message: "User email was successfully updated",
+                    player: res
+                };                
+            }
+            else{
+                return {
+                    code: 500,
+                    success: false,
+                    message: "User limit reached",
+                    player: null
+                
+                };
+            }
 
 
-            const location = new Location({
-                name: args.input.user.location.name,
-                address: args.input.user.location.address,
-                latitude: args.input.user.location.latitude,
-                longitude: args.input.user.location.longitude,
-            });
-            await location.save();
-            console.log("location: ", location._id);
-
-            const createdUser = new User({
-                name: args.input.user.name,
-                username: args.input.user.username,
-                phone: args.input.user.phone,
-                email: args.input.user.email,
-                birthdate: args.input.user.birthdate,
-                location: location._id,
-                gender: args.input.user.gender,
-                hostRating: -1,
-                profileImageIndex: args.input.user.profileImageIndex
-
-            });
-            await createdUser.save();
-            console.log("createdUser: ", createdUser._id);
-
-
-            const createdPlayer = new Player({
-                user: createdUser._id,
-                location: location._id,
-            });
-            await createdPlayer.save();
-
-            console.log("createdPlayer: ", createdPlayer._id);
-
-            const res = await createdPlayer.save();
-
-            await res.populate('user');
-            await res.populate('user.location');
-
-
-            console.log("createdPlayer: ", res);
-
-            return {
-                code: "200",
-                success: true,
-                message: "User email was successfully updated",
-                player: res
-            };
         },
     },
     Query: {

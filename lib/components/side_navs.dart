@@ -31,7 +31,7 @@ class SideNavs extends StatefulWidget {
   }
 
   ListView getMainSideNav(BuildContext context, dynamic userObject, bool isSuperUser) {
-    print("userObject: " + userObject.toString());
+    print("getMainSideNav userObject: " + userObject.toString());
     bool isGuest = BaseCommand().isGuest();
     String profileImageUrl =
         context.select<UserModel, String>((value) => value.profileImageUrl);

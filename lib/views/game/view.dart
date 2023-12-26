@@ -176,6 +176,22 @@ Padding(
                                 padding: EdgeInsets.fromLTRB(paddingValue, 0,
                                     paddingValue, paddingValue / 2),
                                 child: Row(children: [
+                                  Icon(Icons.monetization_on, color: AppColors.tsnGreen),
+                                  Expanded(
+                                      child:  Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                  (double.parse(event.price['amount']) / 100).toStringAsFixed(2),
+                                                  style: TextStyle(
+                                                    color: AppColors.tsnBlack,
+                                                    fontSize:
+                                                        FontSizes.s(context),
+                                                  ))))
+                                ])),
+                            Padding(
+                                padding: EdgeInsets.fromLTRB(paddingValue, 0,
+                                    paddingValue, paddingValue / 2),
+                                child: Row(children: [
                                   Icon(Icons.location_on, color: AppColors.tsnGreen),
                                   Expanded(
                                       child: GestureDetector(

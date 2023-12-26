@@ -616,6 +616,10 @@ List<String> parseAmenities(String amenitiesString) {
     // }
   }
 
+  void setCurrentUser(dynamic user){
+    appModel.currentUser = user;
+  }
+
   Future<Map<String, dynamic>> setupUser(String email) async {
     print("setupUser");
     Map<String, dynamic> setupUserResp = {

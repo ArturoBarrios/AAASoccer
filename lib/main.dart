@@ -249,7 +249,7 @@ class _MyAppState extends State<MyApp> {
         );
         print("createPlayerResp: ");
         print(createPlayerResp);
-
+        
         // appModel.currentUser = createPlayerResp['user'];
         // print("AppModel().currentUser: ${AppModel().currentUser}");
 

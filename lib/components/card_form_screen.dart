@@ -171,8 +171,9 @@ class _CardFormScreenState extends State<CardFormScreen> {
     });
 
       //go back
-      Navigator.pop(context);
-      // widget.callbackFunction();
+      // Navigator.pop(context);
+     Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+
     }
   }
 

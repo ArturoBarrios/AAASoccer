@@ -329,9 +329,10 @@ class _Home extends State<Home> {
 
   Future<void> loadInitialData() async {
     await loadPlayerDetails();
-    print("loadInitialData");
+    print("loadInitialData in home");
     _selectEventController = ScrollController()..addListener(_loadMore);
     userObject = UserCommand().getAppModelUser();
+    print("userObject: " + userObject.toString());
     print("selectedkeyyyy: ${HomePageModel().selectedKey}");
     // await HomePageCommand().eventTypeTapped(HomePageModel().selectedKey);
     await HomePageCommand().setCards();
@@ -555,13 +556,16 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
 
   @override
   Widget build(BuildContext context) {
-    print("buildDDDDDD");
+    print("buildDDDDDD home");
 
     bool isSuperUser =
         context.select<AppModel, bool>((value) => value.isSuperUser);
 
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
+    
+    dynamic currentUser =
+        context.select<AppModel, dynamic>((value) => value.currentUser);
 
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
@@ -644,7 +648,7 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
               width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
               child: Drawer(
                   child: const SideNavs()
-                      .getMainSideNav(context, userObject, isSuperUser)),
+                      .getMainSideNav(context, currentUser, isSuperUser)),
             ),
             body: RefreshIndicator(
               onRefresh: onReload,
