@@ -464,7 +464,7 @@ const resolvers = {
         createPlayer: async (parent, args, context, info) => {
             console.log("createPlayer args: ", args.input.user);
             //check for unique constraints(username, email, and phone)
-            if (process.env.ENVIRONMENT == ' PRODUCTION') {
+            if (process.env.ENVIRONMENT == 'PRODUCTION') {
                 // const userWithConstraint = await User.findOne({ username: args.input.user.username });
                 // if(args.input.user.username)
                 // console.log('Environmental variable is set:', process.env.YOUR_ENV_VARIABLE);
@@ -478,9 +478,8 @@ const resolvers = {
                     latitude: args.input.user.location.latitude,
                     longitude: args.input.user.location.longitude,
                 });
-                await location.save();
                 console.log("location: ", location._id);
-    
+                
                 const createdUser = new User({
                     name: args.input.user.name,
                     username: args.input.user.username,
@@ -491,25 +490,25 @@ const resolvers = {
                     gender: args.input.user.gender,
                     hostRating: -1,
                     profileImageIndex: args.input.user.profileImageIndex
-    
+                    
                 });
-                await createdUser.save();
                 console.log("createdUser: ", createdUser._id);
-    
-    
+                
+                
                 const createdPlayer = new Player({
                     user: createdUser._id,
                     location: location._id,
                 });
-                await createdPlayer.save();
-    
+                
                 console.log("createdPlayer: ", createdPlayer._id);
-    
-                const res = await createdPlayer.save();
-    
+                
+                await location.save();
+                await createdUser.save();
+                await createdPlayer.save();
+                const res = await createdPlayer.save();                
                 await res.populate('user');
                 await res.populate('user.location');
-    
+                
     
                 console.log("createdPlayer: ", res);
     

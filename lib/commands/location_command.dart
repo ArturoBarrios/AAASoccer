@@ -180,8 +180,7 @@ class LocationCommand extends BaseCommand {
     } else {
       throw 'Could not open the map.';
     }
-  }
-  
+  }      
 
  Future<Map<String, dynamic>> createLocation(Map<String, dynamic> locationInput ) async{
      print("createLocation");

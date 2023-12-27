@@ -136,6 +136,7 @@ class Constants {
   static  List<String> hostAmenities = [AmenityType.PINNIES.toString()];
   static  List<String> fieldAmenities = [AmenityType.BATHROOMS.toString(), AmenityType.BUS.toString(), AmenityType.TRAIN.toString(), AmenityType.BIKESTATION.toString(), "TURF", "GRASS", "HARD SURFACE" ,"INDOOR", "OUTDOOR", "SMALL", "LARGE", "CLEATS ALLOWED"];
 
+  static const String PRIVACYPOLICYURL = "https://www.freeprivacypolicy.com/live/daf992d8-a9d9-4d4c-9cfc-84735466e479";
   
 
   

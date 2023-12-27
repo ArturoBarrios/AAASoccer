@@ -163,16 +163,22 @@ class _CardFormScreenState extends State<CardFormScreen> {
         print("addEventResp: " + addEventResp.toString());
       }
       //move on to next screen
-
-      print("move on to next screen");
       setState(() {
       isPaymentProcessing = false;
       isLoading = false;
     });
 
+      print("move on to next screen");
+
       //go back
       // Navigator.pop(context);
      Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+
+    }
+    else{
+      print("payment failedddd fuckkk");
+     
+      
 
     }
   }

@@ -126,6 +126,16 @@ int calculateAgeFromBirthdateString(String birthdateString){
   return age;
 }
 
+Future<void> launchURL(String urlString) async {
+  Uri url = Uri.parse(urlString);
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    // Unable to launch the URL, handle the error
+    print('Could not launch $urlString');
+  }
+}
+
 
    Future<void> launchLocationInBrowser(double latitude, double longitude  ) async {
     final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
