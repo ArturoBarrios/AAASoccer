@@ -266,15 +266,15 @@ const resolvers = {
                 roles: args.roles,
             });
             const event = await Event.findById(args.eventId);
+
             userEventParticipant.event = event._id;
             await userEventParticipant.save();
             await event.userParticipants.push(userEventParticipant._id);
-            await event.save();
-
+            
             await user.eventUserParticipants.push(userEventParticipant._id);
             await user.save();
-
-            event.populate([
+            await event.save();
+            await event.populate([
                 {
                     path: 'fieldLocations',
                     populate: {
@@ -290,11 +290,21 @@ const resolvers = {
                         path: 'user'
                     }
                 },
-
                 {
                     path: 'price'
-                }
+                },
+                {
+                    path: 'payments',
+                    populate: {
+                        path: 'user'
+                    }
+                },
             ]);
+
+            console.log("updatedEventttt: ", event);
+          
+            
+
 
 
             return {
@@ -381,9 +391,21 @@ const resolvers = {
         deleteEventUserParticipant: async (parent, args, context, info) => {
             console.log("deleteEventUserParticipant");
 
+            
+            
+            
             //delete
             const eventUserParticipant = await EventUserParticipant.findById(args._id);
+            
+            var event = await Event.findById(eventUserParticipant.event._id);
+            var indexToDelete = (await event).userParticipants.indexOf(args._id);
+            console.log("indexToDelete: ", indexToDelete);
+            (await event).userParticipants.splice(indexToDelete, 1);
+            await event.save();
+
             await eventUserParticipant.deleteOne();
+
+
 
 
 
@@ -752,7 +774,7 @@ const resolvers = {
                         }
                     }
                 },
-                {
+                { 
                     path: 'price'
                 },
                 {

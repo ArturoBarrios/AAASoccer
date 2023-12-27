@@ -1818,6 +1818,28 @@ class EventCommand extends BaseCommand {
       if (add) {
         if (mine) {
           appModel.myEvents.insert(0, {"event": event});
+          //find the userEventParticipant
+          int indexForEventUserParticipant = -1;
+          for (int i = 0; i < event['userParticipants'].length; i++) {
+            dynamic eventUserParticipant = event['userParticipants'][i];
+            print("eventUserParticipant: " + eventUserParticipant.toString());
+            if (appModel.currentUser['_id'] == eventUserParticipant['user']['_id']) {
+              indexForEventUserParticipant = i;
+              break;
+            }
+          }
+          print("indexForEventUserParticipant: "+ indexForEventUserParticipant.toString());
+          if (indexForEventUserParticipant != -1) {
+            appModel.currentUser['eventUserParticipants'].insert(0, {
+              "_id": appModel.currentUser['eventUserParticipants'][indexForEventUserParticipant]['_id'],
+              "event": event,
+              "user": appModel.currentUser,
+              "roles": "{PLAYER}", 
+              
+              });        
+          }
+          
+          
         }
         eventsModel.games.insert(0, event);
       } else {
@@ -1845,6 +1867,18 @@ class EventCommand extends BaseCommand {
           if (indexToRemove != -1) {
             myEvents.removeAt(indexToRemove);
           }
+          indexToRemove = -1;
+          for (int i = 0; i < appModel.currentUser['eventUserParticipants'].length; i++) {
+            if (appModel.currentUser['eventUserParticipants'][i]['event']['_id'] == event['_id']) {
+              indexToRemove = i;
+              break;
+            }
+          }
+          if (indexToRemove != -1) {
+            appModel.currentUser['eventUserParticipants'].removeAt(indexToRemove);
+          }
+
+
         }
       }
     } else if (event['type'] == "TRAINING") {
