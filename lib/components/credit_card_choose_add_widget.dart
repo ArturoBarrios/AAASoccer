@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:soccermadeeasy/commands/payment_commands.dart';
 import 'package:soccermadeeasy/components/Buttons/basic_elevated_button.dart';
+import 'package:soccermadeeasy/components/Dialogues/alert_dialogue.dart';
 import 'package:soccermadeeasy/models/componentModels/payment_model.dart';
+import 'package:soccermadeeasy/strings.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
 class CreditCardChooseAddWidget extends StatefulWidget {  
@@ -25,14 +27,18 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
         initialDetails: PaymentModel().cardFieldInputDetails);
 
 
-  // final List<Map<String, String>> cards = [
-  //   {'name': 'Visa', 'last4': '1234', 'exp': '08/2024'},
-  //   {'name': 'MasterCard', 'last4': '5678', 'exp': '09/2025'},
-  //   // Add more dummy card data if needed
-  // ];
+  Future<void> detachPaymentMethod(dynamic paymentMethod) async{
+    print("detachPayment");
+    print("paymentMethod: " + paymentMethod.toString());
+    dynamic detachPaymentMethodResp = await PaymentCommand().detachPaymentIntent(
+      {
+        "paymentMethodId": paymentMethod['id']
+      }
+    );
+    if(detachPaymentMethodResp['success']){
+      print("card removed");
+    }
 
-  void _deleteCard(int index) {
-    // Add delete logic here
   }
 
   Future<void> createPayment() async{
@@ -52,6 +58,8 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
     
 
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +130,25 @@ class _CreditCardChooseAddWidgetState extends State<CreditCardChooseAddWidget> {
       bottom: 0,
       right: 0,
       child: IconButton(
-        icon: Icon(Icons.delete),
+        icon: Icon(Icons.delete, color: AppColors.tsnRed),
         onPressed: () => {
-          print("deletePressed")
+          showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return AlertDialogueWidget(
+      title: 'Confirmation',
+      body: StringConstants.DELETECARDWARNING,
+      onConfirmCallback: () async {
+        // Logic for confirmation action
+        detachPaymentMethod(widget.paymentMethods[i]);
+      },
+      onCancelCallback: () {
+        // Logic for cancel action
+
+      },
+    );
+  },
+)
         },
       ),
     ),

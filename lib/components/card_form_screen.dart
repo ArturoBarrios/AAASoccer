@@ -281,7 +281,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
             'country': card['country']
           };
         }).toList();    
-        print("paymentMethodssss: " + paymentMethods.toString());
+        print("paymentMethods: " + paymentMethods.toString());
       });
     } else {
       // _selectedPayment = "Pay With New Card";

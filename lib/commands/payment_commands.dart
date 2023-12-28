@@ -236,7 +236,7 @@ class PaymentCommand extends BaseCommand {
       }
 
       if (paymentIntentResults['error'] != null) {
-        paymentModel.status = PaymentStatusType.failure;
+        paymentModel.status = PaymentStatusType.initial;
       }
       print(
           "paymentIntentResults['requiresAction']: ${paymentIntentResults['requiresAction']}");
@@ -245,7 +245,7 @@ class PaymentCommand extends BaseCommand {
       if (paymentIntentResults['clientSecret'] != null &&
           paymentIntentResults['requiresAction'] == null) {
         print("doesn't requires action!");
-        paymentModel.status = PaymentStatusType.success;
+        paymentModel.status = PaymentStatusType.initial;
       }
 
       if (paymentIntentResults['clientSecret'] != null &&

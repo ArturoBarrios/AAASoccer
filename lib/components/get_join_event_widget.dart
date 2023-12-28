@@ -468,21 +468,21 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                 fontSize: FontSizes.xxs(context),
                 onPressed: () async{
                   showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return AlertDialogueWidget(
-      title: 'Confirmation',
-      body: StringConstants.LEAVEWARNING,
-      onConfirmCallback: () async {
-        // Logic for confirmation action
-        await removeUserFromEvent(event, userObject, ["PLAYER"], existingRoles);
-      },
-      onCancelCallback: () {
-        // Logic for cancel action
-      },
-    );
-  },
-);
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialogueWidget(
+                        title: 'Confirmation',
+                        body: StringConstants.LEAVEWARNING,
+                        onConfirmCallback: () async {
+                          // Logic for confirmation action
+                          await removeUserFromEvent(event, userObject, ["PLAYER"], existingRoles);
+                        },
+                        onCancelCallback: () {
+                          // Logic for cancel action
+                        },
+                      );
+                    },
+                  );
                         
                 },
               );
