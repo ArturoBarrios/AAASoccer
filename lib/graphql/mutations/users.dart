@@ -13,7 +13,7 @@ class UserMutations {
              code
               success
               message        
-                                             
+
           }   
         }
     """;
@@ -28,8 +28,7 @@ class UserMutations {
           onboarded: ${userInput['onboarded']}                    
           preferredFoot: "${userInput['preferredFoot']}"
           preferredPosition: "${userInput['preferredPosition']}"
-          skillLevel: "${userInput['skillLevel']}"
-          interestedIn: "${userInput['interestedIn']}"
+          skillLevel: "${userInput['skillLevel']}"          
         }                   
           ) {
              code

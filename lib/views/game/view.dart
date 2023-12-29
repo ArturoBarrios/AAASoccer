@@ -412,9 +412,8 @@ Padding(
                                   title: 'Play Steps',
                                   notes: [
                                     'Register for the game to secure your participation', 
-                                    'Arrive punctually at the designated venue.', 
                                     'Upon arrival, the coordinator will welcome you and provide you with a pinnie.',
-                                    'Team compositions may be adjusted for balanced gameplay.',
+                                    'Teams may be adjusted for balanced gameplay.',
                                     'Each player will have a turn as the goalkeeper.'
                                   ],
                                 ),
@@ -445,8 +444,9 @@ Padding(
                                 child: ListNotes(
                                   title: 'What is The Soccer Network',
                                   notes: [
-                                    'The Soccer Network is a platform that connects soccer players and organizers.',
-                                    'We believe soccer is a great way to meet new people and make friends.',                                    
+                                    'The Soccer Network is a platform that connects soccer players and organizers.',                                    
+                                    "We're dedicated to making soccer more accessible and enjoyable for everyone."                                                                       
+                                    "Encouraging active participation in soccer, fostering health, and community engagement"
                                   ],
                                 ),
                               ),

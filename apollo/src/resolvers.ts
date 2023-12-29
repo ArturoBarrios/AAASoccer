@@ -323,7 +323,7 @@ const resolvers = {
             user.preferredFoot = args.input.preferredFoot;
             user.preferredPosition = args.input.preferredPosition;
             user.skillLevel = args.input.skillLevel;
-            user.interestedIn = args.input.interestedIn;
+            // user.interestedIn = args.input.interestedIn;
 
             await user.save();
             

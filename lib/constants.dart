@@ -16,8 +16,6 @@ class Constants {
     {'title': "Amateur", 'description': "Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport."},
     {'title': "Semi Professional", 'description': "Players who are engaged in more structured competitions, with a focus on advancement and potential earnings from the sport."},
     {'title': "Professional", 'description': "You've played in a professional league for at least one season."},
-    {'title': "Messi", 'description': "🐐"},
-    {'title': "Ronaldo", 'description': "🐐"},
   
  ];
 
@@ -40,12 +38,17 @@ class Constants {
     3: [0.3, 0.15, "LCB"], // LCB
     4: [0.6, 0.15, "RCB"], // RCB
     5: [0.8, 0.2, "RB"], // RB
-    6: [0.1, 0.6, "LW"], // LW
-    7: [0.30, 0.5, "LCM"], // LCM
-    8: [0.6, 0.5, "RCM"], // RCM
-    9: [0.8, 0.6, "RW"], // RW
-    10: [0.3, 0.8, "LS"], // LS
-    11: [0.7, 0.8, "RS"], // RS
+    6: [0.1, 0.65, "LW"], // LW
+    7: [0.25, 0.45, "LCM"], // LCM
+    8: [0.65, 0.45, "RCM"], // RCM
+    9: [0.8, 0.65, "RW"], // RW
+    10: [0.25, 0.85, "ST"], // LS
+    11: [0.65, 0.85, "CF"], // RS
+    12: [0.45, 0.75, "SS"], // RS
+    13: [.45, 0.45, "CM"], // RCM
+    14: [.45, 0.3, "CDM"], // RCM
+    15: [.45, 0.15, "CB"], // RCM
+    16: [.45, 0.6, "CAM"], // RCM
   };
   static const EventType PICKUP = EventType.GAME;
   static const String TEAM = "TEAM";

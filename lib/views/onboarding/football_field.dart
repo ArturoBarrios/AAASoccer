@@ -44,32 +44,21 @@ class FootballField extends StatelessWidget {
             ? SpotlightPainter(spotlightPosition[0], spotlightPosition[1])
             : null,
         child: LayoutBuilder(
-          builder: (ctx, constraints) {
-            return Stack(
-              children: [
-                playerPosition(constraints, 0.46, 0.02, 'GK', 1), // Goalkeeper
-
-                playerPosition(constraints, 0.1, 0.2, 'LB', 2), // Left Back
-                playerPosition(
-                    constraints, 0.3, 0.15, 'LCB', 3), // Left Center Back
-                playerPosition(
-                    constraints, 0.6, 0.15, 'RCB', 4), // Right Center Back
-                playerPosition(constraints, 0.8, 0.2, 'RB', 5), // Right Back
-
-                playerPosition(constraints, 0.1, 0.6, 'LW', 6), // Left Wing
-                playerPosition(
-                    constraints, 0.30, 0.5, 'LCM', 7), // Left Central Midfield
-                playerPosition(
-                    constraints, 0.6, 0.5, 'RCM', 8), // Right Central Midfield
-                playerPosition(constraints, 0.8, 0.6, 'RW', 9), // Right Wing
-
-                playerPosition(constraints, 0.3, 0.8, 'LS', 10), // Left Striker
-                playerPosition(
-                    constraints, 0.7, 0.8, 'RS', 11), // Right Striker
-              ],
-            );
-          },
-        ),
+  builder: (ctx, constraints) {
+    return Stack(
+      children: playerCoordinates.entries.map((entry) {
+        var playerData = entry.value;
+        return playerPosition(
+          constraints,
+          playerData[0], // x-coordinate
+          playerData[1], // y-coordinate
+          playerData[2], // player role
+          entry.key, // player number
+        );
+      }).toList(),
+    );
+  },
+),
       ),
     );
   }
