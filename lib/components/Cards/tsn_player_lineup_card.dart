@@ -62,6 +62,7 @@ class TSNPlayerLineupCard extends StatelessWidget {
     List following = playerCardDetails['following'];
     List eventUserParticipants = playerCardDetails['eventUserParticipants'];
     List teamUserParticipants = playerCardDetails['teamUserParticipants'];
+    int age = playerCardDetails['age'];
 
     print("userrrrrrrrr: " + user.toString());
 
@@ -129,15 +130,25 @@ class TSNPlayerLineupCard extends StatelessWidget {
                         children: [
                           // First Row in Second Column
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(2,2,2,2),
-                            child: Row(
-                              children: [
-                                Text(user['name'],
-                                    style: TextStyle(color: AppColors.tsnBlack, fontSize: FontSizes.m(context), fontWeight: FontWeight.bold ))
-                                // Add more columns here if desired
-                              ],
-                            ),
-                          ),
+  padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
+  child: Row(
+    children: [
+      Flexible(  // Wrap Text widget with Flexible or Expanded
+        child: Text(
+          "("+age.toString() + ") " +
+          user['name'],
+          style: TextStyle(
+            color: AppColors.tsnBlack, 
+            fontSize: FontSizes.s(context), 
+            fontWeight: FontWeight.bold
+          ),
+          overflow: TextOverflow.ellipsis,  // Ellipsis for text overflow
+        ),
+      ),
+      // Add more widgets here if desired
+    ],
+  ),
+),
                           // Second Row in Second Column
                           Padding(
                             padding: const EdgeInsets.fromLTRB(2,2,2,2),

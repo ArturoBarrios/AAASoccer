@@ -10,7 +10,6 @@ class PlayerMutations {
             name: "${userInput['name']}"
             phone: "${userInput['phone']}"
             email: "${userInput['email']}"
-            username: "${userInput['username']}"
             birthdate: "${userInput['birthdate']}"
             gender: "${userInput['gender']}"            
             location: {              
@@ -27,6 +26,9 @@ class PlayerMutations {
                 ${UserFragments().fullUser()}
               }     
             }
+            uniqueEmail
+            uniqueUsername
+            uniquePhone
           }   
         }
         """;
@@ -89,7 +91,6 @@ class PlayerMutations {
               name: "Arturo Barrios",
               phone:"a phone number",
               email:"test@gmail.com",
-              username:"ArturoBarrios357",
               birthdate:"some day"
             }              
 		    }

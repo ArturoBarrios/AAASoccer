@@ -135,7 +135,6 @@ class UserMutations {
               user{
                 _id
                 name
-                username
               }
             }            
           }   

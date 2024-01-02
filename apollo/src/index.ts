@@ -34,6 +34,13 @@ const typeDefs = `#graphql
     user: User
   }
   
+  type DeleteEventResponse implements QueryResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    
+  }
+  
   type PriceResponse implements QueryResponse {
     code: String!
     success: Boolean!
@@ -96,6 +103,9 @@ type CreatePlayerMutationResponse implements MutationResponse {
   success: Boolean!
   message: String!
   player: Player  
+  uniqueEmail: Boolean
+  uniqueUsername: Boolean
+  uniquePhone: Boolean
 }
 
 type StripeCustomerMutationResponse implements MutationResponse {
@@ -138,6 +148,8 @@ type Mutation {
   updatePrice(priceId: String, amount: String): PriceResponse
   deleteEventUserParticipant(_id: String): EventUserParticipantMutationResponse
   deleteUser(userId: String): UserResponse
+  deleteEvent(eventId: String): DeleteEventResponse
+  joinEventWaitlist(eventId: String, userId: String): EventMutationResponse
 }
 
 type Query {    
@@ -156,8 +168,7 @@ type Query {
   allGroups: [Group!]
   findUserByEmail(email: String): UserResponse
   findUserById(_id: String): UserResponse
-  getUserByPhone(phone: String): User
-  getUserByUsername(username: String): User    
+  getUserByPhone(phone: String): User   
   allSubscriptionTypes: [SubscriptionType!]
   allEventsInAreaOfType(type: EventType, latitude: Float, longitude: Float, radius: Int, startTime: String): EventsMutationResponse,
   allUserEventParticipants(_id: String, startTime: String): AllUserEventParticipantResponse!
@@ -193,8 +204,7 @@ input UserInput {
   userId: String
   name: String
   phone: String
-  email: String
-  username: String
+  email: String  
   gender: String
   birthdate: String
   location: LocationInput  
@@ -449,8 +459,7 @@ type User  {
   name: String
   phone: String
   email: String
-  bio: String
-  username: String
+  bio: String  
   birthdate: String
   age: Int
   teams: [Team] 
@@ -638,6 +647,7 @@ type Event   {
   description: String
   hostAmenities: String
   eventNotes: String
+  waitListedUsers: [User]
 
 }
 

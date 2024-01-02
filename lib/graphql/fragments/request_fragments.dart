@@ -9,12 +9,12 @@ class RequestFragments {
             receivers{              
               _id
               email
-              username              
+              name        
             }
             sender{                            
               _id
               email
-              username    
+              name    
               phone          
             }   
             acceptedBy{              

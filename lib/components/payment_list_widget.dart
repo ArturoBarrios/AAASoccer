@@ -62,7 +62,7 @@ class PaymentListWidget extends StatelessWidget {
                             ?.mapIndexed((final index, final user) => ListTile(
                                   contentPadding: EdgeInsets.zero,
                                   minLeadingWidth: 0,
-                                  title: Text(user['user']['username']),
+                                  title: Text(user['user']['name']),
                                   leading: const Icon(Icons.credit_card),
                                   trailing: PopMenuButton(
                                     optionList: const [
@@ -90,7 +90,7 @@ class PaymentListWidget extends StatelessWidget {
                     ?.mapIndexed((final index, final payment) => ListTile(
                           contentPadding: EdgeInsets.zero,
                           minLeadingWidth: 0,
-                          title: Text(payment['user']['username']),
+                          title: Text(payment['user']['name']),
                           leading: const Icon(Icons.credit_card),
                           trailing: PopMenuButton(
                             optionList: const [

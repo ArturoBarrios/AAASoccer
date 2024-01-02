@@ -12,7 +12,7 @@ import Payment from "./Payment.js";
 import { print } from "graphql";
 import EventRating from "./EventRating.js";
 import { getDistanceFromLatLonInKm } from './EventFunctions.js';
-
+import { sendMassPN } from '../onesignal/functions.js';
 
 
 const resolvers = {
@@ -198,10 +198,9 @@ const resolvers = {
                     await joinConditions.save();
                    await user.save();
                    await createdEvent.save();
-                   await eventUserParticipants.save();
                    const res = await createdGame.save();
 
-                   res.populate([
+                   await res.populate([
                        {
                            path: 'event',
                            populate: [
@@ -233,7 +232,9 @@ const resolvers = {
                        }
                    ]);
                    
-                   await res.populate('event');
+                //    await res.populate('event');
+
+                   
        
        
                    console.log("createdGame res: ", res);
@@ -350,11 +351,6 @@ const resolvers = {
             
             await user.save();
 
-            // // await user.populate('user');
-            // await user.populate('location');
-
-
-            // console.log("updatedUser: ", user);
             console.log("doneeee");
 
             return {
@@ -388,12 +384,55 @@ const resolvers = {
                 user: user
             };
         },
+        deleteEvent: async (parent, args, context, info) => {
+            console.log("deleteEvent");
+            var eventToDelete = await Event.findById(args.eventId);
+            //get all eventUserParticipants
+            var eventUserParticipants = await EventUserParticipant.find({ event: args.eventId });
+            //delete all eventUserParticipants
+            for (var eventUserParticipant of eventUserParticipants) {
+                await eventUserParticipant.deleteOne();
+            }
+
+            await eventToDelete.deleteOne();        
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+            };
+        },
+
+        joinEventWaitlist: async (parent, args, context, info) => {
+            console.log("joinWaitlist");
+            console.log("args.eventId: ", args.eventId);
+            console.log("args.userId: ", args.userId);
+            var event = await Event.findById(args.eventId);
+            //check if user is already in waitlist
+            var isUserInWaitlist = false;
+            for (var waitListedUser of event.waitListedUsers) {
+                if (waitListedUser._id == args.userId) {
+                    isUserInWaitlist = true;
+                }
+            }
+            if(!isUserInWaitlist){
+                event.waitListedUsers.push(args.userId);
+                await event.save();
+            }
+
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                event: event
+            };
+
+        },
+
         deleteEventUserParticipant: async (parent, args, context, info) => {
             console.log("deleteEventUserParticipant");
 
-            
-            
-            
             //delete
             const eventUserParticipant = await EventUserParticipant.findById(args._id);
             
@@ -405,12 +444,14 @@ const resolvers = {
 
             await eventUserParticipant.deleteOne();
 
+            //check if event has room for more players, 
+            //if so, notify players that they can join
+            //get count of eventUserParticipants
+            if(event.userParticipants.length<event.capacity){
+                //notify players that they can join
+                console.log("notify players that they can join");
 
-
-
-
-
-
+            }
 
             return {
                 code: "200",
@@ -418,6 +459,7 @@ const resolvers = {
                 message: "User email was successfully updated",
             };
         },
+
         createStripeCustomer: async (parent, args, context, info) => {
             console.log("createStripeCustomer");
 
@@ -485,13 +527,35 @@ const resolvers = {
         },
         createPlayer: async (parent, args, context, info) => {
             console.log("createPlayer args: ", args.input.user);
-            //check for unique constraints(username, email, and phone)
-            if (process.env.ENVIRONMENT == 'PRODUCTION') {
-                // const userWithConstraint = await User.findOne({ username: args.input.user.username });
-                // if(args.input.user.username)
-                // console.log('Environmental variable is set:', process.env.YOUR_ENV_VARIABLE);
 
-            }
+            var uniqueEmail = true;            
+            var uniquePhone = true; 
+
+            //check for unique constraints(email, and phone)
+            // if (process.env.ENVIRONMENT == 'STAGING'|| process.env.ENVIRONMENT == 'PRODUCTION') {                
+            //     const phoneConstraint = await User.findOne({ phone: args.input.user.phone });
+            //     const emailConstraint = await User.findOne({ email: args.input.user.email });                
+            //     if (phoneConstraint) {
+            //         uniquePhone = false;
+            //     }   
+            //     if (emailConstraint) {
+            //         uniqueEmail = false;
+            //     }
+                
+            //     if(!uniqueEmail || !uniquePhone){
+            //         return {
+            //             code: 500,
+            //             success: false,
+            //             message: "User limit reached",
+            //             player: null, 
+            //             uniqueEmail: uniqueEmail,                        
+            //             uniquePhone: uniquePhone
+                    
+            //         };
+            //     }
+
+            // }
+
             var playerCount = await Player.countDocuments();
             if (playerCount<parseInt(process.env.USERLIMIT)) {
                 const location = new Location({
@@ -503,8 +567,7 @@ const resolvers = {
                 console.log("location: ", location._id);
                 
                 const createdUser = new User({
-                    name: args.input.user.name,
-                    username: args.input.user.username,
+                    name: args.input.user.name,                    
                     phone: args.input.user.phone,
                     email: args.input.user.email,
                     birthdate: args.input.user.birthdate,
@@ -546,7 +609,7 @@ const resolvers = {
                     code: 500,
                     success: false,
                     message: "User limit reached",
-                    player: null
+                    player: null, 
                 
                 };
             }

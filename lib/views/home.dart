@@ -650,9 +650,11 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
                   child: const SideNavs()
                       .getMainSideNav(context, currentUser, isSuperUser)),
             ),
-            body: RefreshIndicator(
-              onRefresh: onReload,
-              child: Stack(
+            body: 
+            // RefreshIndicator(
+            //   onRefresh: onReload,
+              // child: 
+              Stack(
                 children: <Widget>[
                   Column(
                     children: [
@@ -837,7 +839,7 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
                   ),
                 ],
               ),
-            ),
+            // ),
             // :  LocationsMap(),
 
             bottomNavigationBar: Padding(

@@ -117,7 +117,6 @@ class EventFragments {
       preferredPosition
       skillLevel
       interestedIn
-          username
           userType  
           eventUserParticipants{
             _id 
@@ -134,7 +133,6 @@ class EventFragments {
         user{
           _id
           name
-          username
         }
         event{
           _id
@@ -182,7 +180,6 @@ class EventFragments {
             _id
             name
             email
-            username
             userType
             teams{
               data{

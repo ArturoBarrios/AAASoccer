@@ -297,7 +297,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   String getTitle() => activeStep == 0
-      ? 'Select the position'
+      ? 'Select Your Position'
       : activeStep == 1
           ? 'Preferred foot'
           : activeStep == 2

@@ -579,7 +579,7 @@ class UserCommand extends BaseCommand {
       //send friend request notifications
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['username'] +
+        "message": appModel.currentUser['name'] +
             " has sent you a friend request!",
         "OSPIDs": OSPIDs
       };

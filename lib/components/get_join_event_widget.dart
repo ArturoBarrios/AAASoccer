@@ -95,33 +95,34 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     print("purchaseCheck");
     print("widget.fieldRating: " + widget.fieldRating.toString());
     print("widget.hostRating: " + widget.hostRating.toString());
-    if (widget.fieldRating == -1||widget.hostRating == -1) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialogueWidget(
-            title: 'Confirmation',
-            body: (widget.fieldRating == -1
-                    ? StringConstants.NOFIELDRATINGWARNING + "\n\n"
-                    : "") +
-                (widget.hostRating == -1
-                    ? StringConstants.NOHOSTRATINGWARNING + "\n\n"
-                    : ""),
-            onConfirmCallback: () async {
-              // Logic for confirmation action
-             purchaseEvent(context, event);
-            },
-            onCancelCallback: () {
-              // Logic for cancel action
-            },
-          );
-        },
-      );
-    }
-    else{
+    //unecesssary for now
+    // if (widget.fieldRating == -1||widget.hostRating == -1) {
+    //   showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       return AlertDialogueWidget(
+    //         title: 'Confirmation',
+    //         body: (widget.fieldRating == -1
+    //                 ? StringConstants.NOFIELDRATINGWARNING + "\n\n"
+    //                 : "") +
+    //             (widget.hostRating == -1
+    //                 ? StringConstants.NOHOSTRATINGWARNING + "\n\n"
+    //                 : ""),
+    //         onConfirmCallback: () async {
+    //           // Logic for confirmation action
+    //          purchaseEvent(context, event);
+    //         },
+    //         onCancelCallback: () {
+    //           // Logic for cancel action
+    //         },
+    //       );
+    //     },
+    //   );
+    // }
+    // else{
       purchaseEvent(context, event);
 
-    }
+    // }
 
   }
 
@@ -172,6 +173,22 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
       }
     } else {
 
+    }
+  }
+
+  Future<void> joinEventWaitlist() async {
+    print("joinWaitlist");
+    dynamic joinWaitlistEventInput = {
+      "eventId": widget.mainEvent['_id'],
+      "userId": userObject['_id'],
+    };
+    dynamic joinEventWaitlistResp = await EventCommand().joinEventWaitlist(joinWaitlistEventInput);
+    if (joinWaitlistEventInput['success']) {
+      print("joinWaitlistEventInputResp: " + joinWaitlistEventInput.toString());
+      //joined waitlist, now switch the UI to show this
+
+      
+      
     }
   }
 
@@ -257,6 +274,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     print("getJoinEventWidget()");
     print("mainEventttttt: " + widget.mainEvent.toString());
     print("testtttttt: "+ widget.eventPaymentJoin!.toString());
+    print("price in getjoineventwidget: "+ widget.price.toString());
     // dynamic eventJoinCondition =
     //     getEventJoinConditions(event['joinConditions']['data']);
     // print("eventJoinCondition: " + eventJoinCondition.toString());
@@ -286,7 +304,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         text: "Join Waitlist",
         fontSize: FontSizes.xxs(context),
         onPressed: () async {
-          // purchaseEvent(context, event);
+          joinEventWaitlist();
         },
       );
     }
@@ -309,76 +327,28 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
           },
           child: Text("Join my Event"),
         ));
-      } else {
+      } 
+      //conditions for joining event
+      else {
         //!withPayment&&!withRequest
         // if (!eventJoinCondition['withPayment'] &&
         //     !eventJoinCondition['withRequest']) {
-        if (!widget.eventPaymentJoin!.required.value &&
-            !widget.eventRequestJoin!.required.value) {
+        
           //price exists(join with paying or not paying)
-          if (widget.price != null) {
-            return Container(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  GestureDetector(
-                    onTap: () async {
-                      print("!withPayment&&!withRequest");
-                      dynamic chooseRoleDialog =
-                          await widget.chooseRolesDialogue(context);
-                      if (chooseRoleDialog != null) {
-                        print(
-                            "chooseRoleDialog: " + chooseRoleDialog.toString());
-                        List<dynamic> roles = chooseRoleDialog['rolesArray'];
-                        print("roles: " + roles.toString());
-                        // purchaseEvent(context, event);
-                        purchaseCheck(context, event);
-                      }
-                    },
-                    child: Text("Join, Pay Now"),
-                  ),
-                  Container(
-                      child: GestureDetector(
-                    onTap: () async {
-                      print("!withPayment&&!withRequest");
-                      dynamic chooseRoleDialog =
-                          await widget.chooseRolesDialogue(context);
-                      if (chooseRoleDialog != null) {
-                        print(
-                            "chooseRoleDialog: " + chooseRoleDialog.toString());
-                        List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
-                        String roles = BaseCommand()
-                            .addRolesToExistingRoles(existingRoles, newRoles);
-                        print("roles: " + roles.toString());
-                        // purchaseEvent(context, event, roles, widget.userObjectDetails);
-                        EventCommand().addUserToEvent(event, userObject, roles);
-                      }
-                    },
-                    child: Text("Join, Pay Later"),
-                  ))
-                ]));
-          }
-          //price does not exist
-          else {
-            return Container(
-                child: GestureDetector(
-              onTap: () async {
-                print("!withPayment&&!withRequest");
-                dynamic chooseRoleDialog =
-                    await widget.chooseRolesDialogue(context);
-                if (chooseRoleDialog != null) {
-                  print("chooseRoleDialog: " + chooseRoleDialog.toString());
-                  List<dynamic> newRoles = chooseRoleDialog['rolesArray'];
-                  String roles = BaseCommand()
-                      .addRolesToExistingRoles(existingRoles, newRoles);
-                  print("roles: " + roles.toString());
-                  EventCommand().addUserToEvent(event, userObject, roles);
-                }
-              },
-              child: Text("Join, Pay Later"),
-            ));
-          }
-        }
+          if ((double.parse(widget.price['amount']) / 100)
+                      .toStringAsFixed(2) ==
+                  "0.00") {
+           return BasicElevatedButton(
+        backgroundColor: AppColors.tsnGreen,
+        text: "Join For Free",
+        fontSize: FontSizes.xxs(context),
+        onPressed: () async {
+          // purchaseEvent(context, event);
+        },
+      );
+                  }
+          
+        
         //!withPayment&&withRequestt
         else if (!widget.eventPaymentJoin!.required.value &&
             widget.eventRequestJoin!.required.value) {
@@ -467,6 +437,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                 text: "Leave",
                 fontSize: FontSizes.xxs(context),
                 onPressed: () async{
+                  !widget.roles.contains("ORGANIZER") ? 
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -482,7 +453,26 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
                         },
                       );
                     },
+                  ) 
+                  :
+
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialogueWidget(
+                        title: 'Confirmation',
+                        body: "ORGANIZER CAN'T LEAVE EVENT!",
+                        onConfirmCallback: () async {
+                          // Logic for confirmation action
+                         
+                        },
+                        onCancelCallback: () {
+                          // Logic for cancel action
+                        },
+                      );
+                    },
                   );
+
                         
                 },
               );

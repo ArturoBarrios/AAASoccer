@@ -57,7 +57,6 @@ class GroupFragments {
                 user{
                   _id
                   name
-                  username
                   email
                   phone
                 }

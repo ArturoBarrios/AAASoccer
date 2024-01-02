@@ -38,13 +38,13 @@ class CardFormScreen extends StatefulWidget {
 }
 
 class _CardFormScreenState extends State<CardFormScreen> {
-  bool isLoading = true;  
+  bool isLoading = true;
   bool isPaymentProcessing = false;
   bool showCardForm = false;
-  List paymentMethods = [];  
+  List paymentMethods = [];
   dynamic selectedPaymentMethod = null;
   CardFormEditController cardFormEditController = CardFormEditController(
-        initialDetails: PaymentModel().cardFieldInputDetails);
+      initialDetails: PaymentModel().cardFieldInputDetails);
   late ScrollController _selectPaymentController = ScrollController();
   final FlipCardController flipCardController = FlipCardController();
   List waysToPay = [
@@ -57,7 +57,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
 
   String? _selectedPayment = "Credit Card";
 
-  void selectPaymentMethod(dynamic paymentMethod){
+  void selectPaymentMethod(dynamic paymentMethod) {
     print("selectPaymentMethod");
     setState(() {
       selectedPaymentMethod = paymentMethod;
@@ -94,7 +94,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
       'paymentCreateIntent': PaymentCreateIntent(
           billingDetails: BillingDetails(
             email: currentUser['email'],
-            name: currentUser['username'],
+            name: currentUser['name'],
             phone: currentUser['phone'],
           ),
           items: [
@@ -102,7 +102,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
             {'id': 1}
           ]),
     };
-    if (selectedPaymentMethod != null ) {
+    if (selectedPaymentMethod != null) {
       createPaymentIntentInput['paymentMethodId'] = selectedPaymentMethod['id'];
     }
     Map<String, dynamic> createPaymentIntentResp =
@@ -164,22 +164,17 @@ class _CardFormScreenState extends State<CardFormScreen> {
       }
       //move on to next screen
       setState(() {
-      isPaymentProcessing = false;
-      isLoading = false;
-    });
+        isPaymentProcessing = false;
+        isLoading = false;
+      });
 
       print("move on to next screen");
 
       //go back
       // Navigator.pop(context);
-     Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
-
-    }
-    else{
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+    } else {
       print("payment failedddd fuckkk");
-     
-      
-
     }
   }
 
@@ -197,9 +192,11 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 Text('Card Form', style: Theme.of(context).textTheme.headline5),
                 const SizedBox(height: 20),
                 CardFormField(
-                  controller: cardFormEditController,
-                  style: CardFormStyle(textColor: AppColors.tsnRed, placeholderColor: AppColors.tsnRed, backgroundColor: Colors.white)
-                ),
+                    controller: cardFormEditController,
+                    style: CardFormStyle(
+                        textColor: AppColors.tsnRed,
+                        placeholderColor: AppColors.tsnRed,
+                        backgroundColor: Colors.white)),
                 const SizedBox(height: 10),
                 // ElevatedButton(
                 //     onPressed: () async {
@@ -237,8 +234,6 @@ class _CardFormScreenState extends State<CardFormScreen> {
     await PaymentCommand().getCustomerDetails();
   }
 
-
-
   Future<void> getCustomerPaymentMethods() async {
     Map<String, dynamic> getCustomerPaymentMethodsResp =
         await PaymentCommand().getCustomerPaymentMethods();
@@ -268,7 +263,8 @@ class _CardFormScreenState extends State<CardFormScreen> {
         isLoading = false;
 
         paymentMethods = getCustomerPaymentMethodsResp['data'];
-        paymentMethods = paymentMethods.map<Map<String, dynamic>>((paymentMethod) {
+        paymentMethods =
+            paymentMethods.map<Map<String, dynamic>>((paymentMethod) {
           print("paymentMethod: " + paymentMethod.toString());
 
           var card = paymentMethod['card'];
@@ -280,18 +276,18 @@ class _CardFormScreenState extends State<CardFormScreen> {
             'expYear': card['exp_year'],
             'country': card['country']
           };
-        }).toList();    
+        }).toList();
         print("paymentMethods: " + paymentMethods.toString());
       });
     } else {
       // _selectedPayment = "Pay With New Card";
       dynamic currentUser = UserCommand().getAppModelUser();
-      dynamic createCustomerResp = await PaymentCommand().createCustomer(currentUser['email']);
-      if(createCustomerResp['success']){
+      dynamic createCustomerResp =
+          await PaymentCommand().createCustomer(currentUser['email']);
+      if (createCustomerResp['success']) {
         setState(() {
           isLoading = false;
         });
-
       }
     }
   }
@@ -310,7 +306,7 @@ class _CardFormScreenState extends State<CardFormScreen> {
     cardFormEditController.removeListener(update);
     cardFormEditController.dispose();
     super.dispose();
-}
+  }
 
   @override
   void initState() {
@@ -322,294 +318,97 @@ class _CardFormScreenState extends State<CardFormScreen> {
     loadInitialData();
   }
 
-  // void toggleShowCardForm() {
-  //   setState(() {
-  //     showCardForm = !showCardForm;
-  //   });
-  // }
-
-
-  
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     PaymentStatusType status = context
         .select<PaymentModel, PaymentStatusType>((value) => value.status);
-
-    // CardFieldInputDetails _cardFieldInputDetails =
-    //     context.select<PaymentModel, CardFieldInputDetails>(
-    //         (value) => value.cardFieldInputDetails);
-
     Widget child;
     return Scaffold(
-      appBar: Headers(
-        playerStepperButton: ButtonModel(
-          prefixIconData: Icons.play_circle_fill_rounded,
-          onTap: () {},
-        ),
-      ).getMainHeader(context),
-      body: !isLoading
-          ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                  child: Text("Select Payment Method",
-                      style: TextStyle(
-                          fontSize: FontSizes.xl(context),
-                          color: AppColors.tsnBlack))),
-              // Padding(
-              //   padding: EdgeInsets.only(
-              //       top: 16.0,
-              //       left: 16.0,
-              //       right: 16.0), // Define your own padding
-              //   child: Container(
-              //       height: 50, // Adjust this to make your cards slim
-              //       child: TextIconSelectionWidget(
-              //         items: waysToPay,
-              //         onTap: (selectedItem) {
-              //           setState(() {
-              //             _selectedPayment = selectedItem;
-              //           });
-              //         },
-              //         selectedItem: _selectedPayment,
-              //       )
-//                     ListView.builder(
-//   scrollDirection: Axis.horizontal,
-//   itemCount: waysToPay.length,
-//   itemBuilder: (context, index) {
-
-//     return GestureDetector(
-//       onTap: () {
-//         setState(() {
-//           _selectedPayment = waysToPay[index];
-//         });
-//       },
-//       child: Container(
-//         margin: EdgeInsets.symmetric(horizontal: 8),
-//         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//         decoration: BoxDecoration(
-//           color: isSelected ? Colors.green : Colors.white,
-//           borderRadius: BorderRadius.circular(20), // Rounded corners
-//           border: Border.all(
-//             color: isSelected ? Colors.green : Colors.grey, // Border color
-//           ),
-//         ),
-//         child: Text(
-//           waysToPay[index],
-//           style: TextStyle(
-//             fontSize: 16,
-//             color: isSelected ? Colors.white : Colors.black, // Text color
-//           ),
-//         ),
-//       ),
-//     );
-//   },
-// ),
-              //       ),
-              // ),
-
-
-
-              CreditCardChooseAddWidget(paymentMethods: paymentMethods, selectCard: selectPaymentMethod, showCardForm: (bool showCardFormValue) {
+  appBar: Headers(
+    playerStepperButton: ButtonModel(
+      prefixIconData: Icons.play_circle_fill_rounded,
+      onTap: () {},
+    ),
+  ).getMainHeader(context),
+  body: !isLoading
+      ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              child: Text("Select Payment Method",
+                  style: TextStyle(
+                      fontSize: FontSizes.xl(context),
+                      color: AppColors.tsnBlack)),
+            ),
+            CreditCardChooseAddWidget(
+              paymentMethods: paymentMethods,
+              selectCard: selectPaymentMethod,
+              showCardForm: (bool showCardFormValue) {
                 setState(() {
                   showCardForm = showCardFormValue;
                 });
-              },),
-              //  Column(
-              //         children: [
-              //           Container(
-              //             height: 200,
-              //             child: ListView.builder(
-              //                 scrollDirection: Axis.horizontal,
-              //                 itemCount: paymentMethods.length,
-              //                 itemBuilder: (_, index) => Padding(
-              //                     padding: EdgeInsets.only(
-              //                         top: 16.0,
-              //                         left: 16.0,
-              //                         right: 16.0), // Define your own padding
-              //                     child: FlipCard(
-              //                       fill: Fill.fillBack,
-              //                       direction: FlipDirection.HORIZONTAL,
-              //                       side: CardSide.FRONT,
-              //                       front: Container(
-              //                         decoration: BoxDecoration(
-              //                           color: Colors.blueGrey[800],
-              //                           borderRadius: BorderRadius.circular(16),
-              //                         ),
-              //                         child: Padding(
-              //                           padding: const EdgeInsets.all(16),
-              //                           child: Column(
-              //                             crossAxisAlignment:
-              //                                 CrossAxisAlignment.start,
-              //                             mainAxisAlignment:
-              //                                 MainAxisAlignment.spaceBetween,
-              //                             children: [
-              //                               Row(
-              //                                 mainAxisAlignment:
-              //                                     MainAxisAlignment
-              //                                         .spaceBetween,
-              //                                 children: [
-              //                                   Icon(
-              //                                     Icons.credit_card,
-              //                                     color: Colors.white,
-              //                                     size: 36,
-              //                                   ),
-              //                                   Text(
-              //                                     paymentMethods[index]['card']
-              //                                         ['brand'],
-              //                                     style: TextStyle(
-              //                                       color: Colors.white,
-              //                                       fontWeight: FontWeight.bold,
-              //                                       fontSize: 24,
-              //                                     ),
-              //                                   ),
-              //                                 ],
-              //                               ),
-              //                               SizedBox(height: 16),
-              //                               Text(
-              //                                 '**** **** **** ' +
-              //                                     paymentMethods[index]['card']
-              //                                         ['last4'],
-              //                                 style: TextStyle(
-              //                                   color: Colors.white,
-              //                                   fontSize: 28,
-              //                                 ),
-              //                               ),
-              //                               SizedBox(height: 16),
-              //                               Row(
-              //                                 mainAxisAlignment:
-              //                                     MainAxisAlignment
-              //                                         .spaceBetween,
-              //                                 children: [
-              //                                   Text(
-              //                                     'CARDHOLDER NAME',
-              //                                     style: TextStyle(
-              //                                       color: Colors.white54,
-              //                                       fontSize: 12,
-              //                                       fontWeight: FontWeight.bold,
-              //                                     ),
-              //                                   ),
-              //                                   Text(
-              //                                     'EXPIRES',
-              //                                     style: TextStyle(
-              //                                       color: Colors.white54,
-              //                                       fontSize: 12,
-              //                                       fontWeight: FontWeight.bold,
-              //                                     ),
-              //                                   ),
-              //                                 ],
-              //                               ),
-              //                               SizedBox(height: 8),
-              //                               Row(
-              //                                 mainAxisAlignment:
-              //                                     MainAxisAlignment
-              //                                         .spaceBetween,
-              //                                 children: [
-              //                                   Text(
-              //                                     paymentMethods[index]
-              //                                             ['billing_details']
-              //                                         ['name'],
-              //                                     style: TextStyle(
-              //                                       color: Colors.white,
-              //                                       fontSize: 18,
-              //                                       fontWeight: FontWeight.bold,
-              //                                     ),
-              //                                   ),
-              //                                   Text(
-              //                                     '12/24',
-              //                                     style: TextStyle(
-              //                                       color: Colors.white,
-              //                                       fontSize: 18,
-              //                                       fontWeight: FontWeight.bold,
-              //                                     ),
-              //                                   ),
-              //                                 ],
-              //                               ),
-              //                             ],
-              //                           ),
-              //                         ),
-              //                       ),
-              //                       back: Container(
-              //                         decoration: BoxDecoration(
-              //                           color: Colors.blueGrey[800],
-              //                           borderRadius: BorderRadius.circular(16),
-              //                         ),
-              //                         child: Padding(
-              //                           padding: const EdgeInsets.all(16),
-              //                           child: Column(
-              //                             crossAxisAlignment:
-              //                                 CrossAxisAlignment.start,
-              //                             mainAxisAlignment:
-              //                                 MainAxisAlignment.spaceBetween,
-              //                             children: [
-              //                               SizedBox(height: 32),
-              //                               Text(
-              //                                 'SECURITY CODE',
-              //                                 style: TextStyle(
-              //                                   color: Colors.white54,
-              //                                   fontSize: 12,
-              //                                   fontWeight: FontWeight.bold,
-              //                                 ),
-              //                               ),
-              //                               SizedBox(height: 8),
-              //                               Text(
-              //                                 paymentMethods[index]['card']
-              //                                     ['last4'],
-              //                                 style: TextStyle(
-              //                                   color: Colors.white,
-              //                                   fontSize: 48,
-              //                                   fontWeight: FontWeight.bold,
-              //                                 ),
-              //                               ),
-              //                               SizedBox(height: 16),
-              //                               Text(
-              //                                 'FLIP CARD TO SEE THE FRONT',
-              //                                 style: TextStyle(
-              //                                   color: Colors.white54,
-              //                                   fontSize: 12,
-              //                                   fontWeight: FontWeight.bold,
-              //                                 ),
-              //                               ),
-              //                             ],
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ))),
-              //           ),
-              //         ],
-              //       ),                  
-              if(showCardForm)
-                  paymentWidgetToShow(status)
-          //         if(showCardForm)
-          //         Padding(
-          // padding: const EdgeInsets.all(20),
-          // child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.start,
-          //     crossAxisAlignment: CrossAxisAlignment.stretch,
-          //     children: [
-          //       Text('Card Form', style: Theme.of(context).textTheme.headline5),
-          //       const SizedBox(height: 20),
-          //       CardFormField(
-          //         controller: cardFormEditController,
-          //       ),
-          //       const SizedBox(height: 10),
-          //     ]))
-
-            ])
-          : Center(child: CircularProgressIndicator()),
-      bottomNavigationBar: Padding(
-        padding:
-            EdgeInsets.only(bottom: 16.0, top: 16.0, left: 16.0, right: 16.0),
-        child: Container(
-          width: double.infinity,
-          child: BasicElevatedButton(
-            onPressed: () async {
-              createPaymentIntent();
-            },
-            //also make sure field is filled out, but I think package takes care of this for us
-            backgroundColor: !isPaymentProcessing && (cardFormEditController.details.complete || selectedPaymentMethod !=null   ) ? AppColors.tsnGreen : AppColors.tsnGrey,
-            text: 'Pay',
-          ),
-        ),
+              },
+            ),
+            if (showCardForm) paymentWidgetToShow(status),
+            Spacer(), // This will push the following widgets to the bottom
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.grey, width: 2.0),
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Dummy Text 1",
+                      style: TextStyle(
+                        fontSize: FontSizes.m(context),
+                        color: AppColors.tsnBlack,
+                      ),
+                    ),
+                    Text(
+                      "Dummy Text 2",
+                      style: TextStyle(
+                        fontSize: FontSizes.m(context),
+                        color: AppColors.tsnBlack,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        )
+      : Center(child: CircularProgressIndicator()),
+  bottomNavigationBar: Padding(
+    padding:
+        EdgeInsets.only(bottom: 26.0, top: 16.0, left: 16.0, right: 16.0),
+    child: Container(
+      width: double.infinity,
+      child: BasicElevatedButton(
+        onPressed: () async {
+          createPaymentIntent();
+        },
+        backgroundColor: !isPaymentProcessing &&
+                (cardFormEditController.details.complete ||
+                    selectedPaymentMethod != null)
+            ? AppColors.tsnGreen
+            : AppColors.tsnGrey,
+        text: 'Pay',
       ),
-    );
+    ),
+  ),
+);
+
   }
 }

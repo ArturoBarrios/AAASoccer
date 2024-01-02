@@ -70,9 +70,9 @@ class SideNavs extends StatefulWidget {
                   maxRadius: 50,
                 ),
                 SizedBox(height: 10),
-                userObject != null && userObject['username'] != null
+                userObject != null && userObject['name'] != null
                     ? Text(
-                        userObject['username'],
+                        userObject['name'],
                         style: TextStyle(
                           color: AppColors.tsnWhite, // Replace with your desired color
                         ),

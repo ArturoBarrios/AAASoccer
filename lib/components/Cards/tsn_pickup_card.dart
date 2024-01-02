@@ -43,6 +43,8 @@ class _TSNPickupCardState extends State<TSNPickupCard> {
   EventPage? eventPageInstance;
 
   loadInitialData() {
+    print("loadInitialData in TSNPickupCard");
+    print("widget.pickupCardDetails: " + widget.pickupCardDetails.toString());
     eventPageInstance = widget.pickupCardDetails['eventPageInstance'];
 
     setState(() {

@@ -109,7 +109,7 @@ class _TeamRequestCard extends State<TeamRequestCard> {
                         widget.teamRequestObject['team']['name'].toString() +
                         ")"),
                     subtitle: "sent by " +
-                        widget.teamRequestObject['sender']['username']
+                        widget.teamRequestObject['sender']['name']
                             .toString(), //widget.teamRequestObject['description'],
                     onPressed: () {
                       print("inside container onPressed");

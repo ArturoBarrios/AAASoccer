@@ -629,7 +629,7 @@ class EventCommand extends BaseCommand {
       //send notification to organizer(s)
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['username'] +
+        "message": appModel.currentUser['name'] +
             " has sent you a request to join event",
         "OSPIDs": OSPIDs
       };
@@ -698,7 +698,7 @@ class EventCommand extends BaseCommand {
 
           Map<String, dynamic> sendPlayerRequestNotificationInput = {
             "phones": phones,
-            "message": appModel.currentUser['username'] +
+            "message": appModel.currentUser['name'] +
                 " has sent you a request to join their event",
             "OSPIDs": OSPIDs
           };
@@ -797,7 +797,7 @@ class EventCommand extends BaseCommand {
       //send notification to organizer(s)
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['username'] +
+        "message": appModel.currentUser['name'] +
             " has sent you a request to join event",
         "OSPIDs": OSPIDs
       };
@@ -1431,7 +1431,7 @@ class EventCommand extends BaseCommand {
           isMyEventResp['players'].add(participant);
         }
       }
-
+  print("players: " + isMyEventResp['players'].toString());
       isMyEventResp['hostRating'] =
           isMyEventResp['organizers'][0]['hostRating'] != null
               ? isMyEventResp['organizers'][0]['hostRating']
@@ -1817,8 +1817,8 @@ class EventCommand extends BaseCommand {
     if (event['type'] == "GAME") {
       if (add) {
         if (mine) {
-          appModel.myEvents.insert(0, {"event": event});
-          //find the userEventParticipant
+          appModel.myEvents.add( event);
+          // find the userEventParticipant
           int indexForEventUserParticipant = -1;
           for (int i = 0; i < event['userParticipants'].length; i++) {
             dynamic eventUserParticipant = event['userParticipants'][i];
@@ -1830,8 +1830,8 @@ class EventCommand extends BaseCommand {
           }
           print("indexForEventUserParticipant: "+ indexForEventUserParticipant.toString());
           if (indexForEventUserParticipant != -1) {
-            appModel.currentUser['eventUserParticipants'].insert(0, {
-              "_id": appModel.currentUser['eventUserParticipants'][indexForEventUserParticipant]['_id'],
+            appModel.currentUser['eventUserParticipants'].add({
+              "_id": event['userParticipants'][indexForEventUserParticipant]['_id'],
               "event": event,
               "user": appModel.currentUser,
               "roles": "{PLAYER}", 
@@ -1841,7 +1841,7 @@ class EventCommand extends BaseCommand {
           
           
         }
-        eventsModel.games.insert(0, event);
+        eventsModel.games.add(event);
       } else {
         
         int indexToRemove = -1;
@@ -2391,4 +2391,95 @@ class EventCommand extends BaseCommand {
 
     return updateEventUserParticipantResponse;
   }
+
+  Future<Map<String, dynamic>> deleteEvent(
+      Map<String, dynamic> eventInput) async {
+    print("deleteEvent");
+    print("eventInput: " + eventInput.toString());
+    Map<String, dynamic> deleteEventResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try {
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations()
+              .deleteEvent(eventInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['deleteEvent'];
+        if(result['success']){          
+          deleteEventResponse["success"] = true;
+          deleteEventResponse["message"] = "Successfully Deleted Event";          
+
+        }
+        else{
+          deleteEventResponse["success"] = false;
+          deleteEventResponse["message"] = "Something Went Wrong";
+          deleteEventResponse["data"] = null;
+        }
+      }    
+
+
+      return deleteEventResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return deleteEventResponse;
+    }
+  }
+
+  Future<Map<String,dynamic>> joinEventWaitlist(dynamic joinEventWaitlistInput) async{
+    print("joinEventWaitlist");
+    print("joinEventWaitlistInput: " + joinEventWaitlistInput.toString());
+    Map<String, dynamic> joinWaitlistResponse = {
+      "success": false,
+      "message": "Default Error",
+      "data": null
+    };
+    try{
+      http.Response response = await http.post(
+        Uri.parse(dotenv.env['APOLLO_SERVER'].toString()),
+        headers: <String, String>{          
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(<String, String>{
+          'query': EventMutations()
+              .joinEventWaitlist(joinEventWaitlistInput),
+        }),
+      );
+
+      print("response body: ");
+      print(jsonDecode(response.body));
+
+      if(response.statusCode == 200){
+        final result = jsonDecode(response.body)['data']['joinEventWaitlist'];
+        if(result['success']){          
+          joinWaitlistResponse["success"] = true;
+          joinWaitlistResponse["message"] = "Successfully Joined Waitlist";          
+
+        }
+        else{
+          joinWaitlistResponse["success"] = false;
+          joinWaitlistResponse["message"] = "Something Went Wrong";
+          joinWaitlistResponse["data"] = null;
+        }
+      }
+
+      return joinWaitlistResponse;
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+      return joinWaitlistResponse;
+    }
+  }
+
 }
