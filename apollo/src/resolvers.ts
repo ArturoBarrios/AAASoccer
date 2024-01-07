@@ -12,7 +12,9 @@ import Payment from "./Payment.js";
 import { print } from "graphql";
 import EventRating from "./EventRating.js";
 import { getDistanceFromLatLonInKm } from './EventFunctions.js';
-import { sendMassPN } from '../onesignal/functions.js';
+import { sendPNToPlayers } from '../onesignal/functions.mjs';
+
+
 
 
 const resolvers = {
@@ -450,6 +452,9 @@ const resolvers = {
             if(event.userParticipants.length<event.capacity){
                 //notify players that they can join
                 console.log("notify players that they can join");
+                const waitlistedUsers = await event.populate('waitListedUsers');
+                console.log("waitlistedUsers to send notificaiton to: ", event.waitListedUsers);
+                await sendPNToPlayers(event.waitListedUsers);
 
             }
 

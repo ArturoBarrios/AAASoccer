@@ -183,7 +183,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
       "userId": userObject['_id'],
     };
     dynamic joinEventWaitlistResp = await EventCommand().joinEventWaitlist(joinWaitlistEventInput);
-    if (joinWaitlistEventInput['success']) {
+    if (joinEventWaitlistResp['success']) {
       print("joinWaitlistEventInputResp: " + joinWaitlistEventInput.toString());
       //joined waitlist, now switch the UI to show this
 
@@ -298,7 +298,7 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     }
 
     //capacity(Join waitlist feature)
-    else if (widget.numberOfPlayers >= widget.capacity) {
+    else if (!widget.roles.contains("PLAYER") && widget.numberOfPlayers >= widget.capacity) {
       return BasicElevatedButton(
         backgroundColor: AppColors.tsnGreen,
         text: "Join Waitlist",
@@ -344,6 +344,8 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         fontSize: FontSizes.xxs(context),
         onPressed: () async {
           // purchaseEvent(context, event);
+          String roles = "{PLAYER}";
+          EventCommand().addUserToEvent(event, userObject, roles);
         },
       );
                   }

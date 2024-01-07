@@ -504,7 +504,7 @@ type User  {
   skillLevel: String
   interestedIn: String  
   hostRating: Int
-  profileImageIndex: Int
+  profileImageIndex: Int  
 }
 
 type Request {

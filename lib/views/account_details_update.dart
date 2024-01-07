@@ -40,6 +40,7 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
 
   // Define your controllers here
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController birthdateController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
 
@@ -65,8 +66,9 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
     user = UserCommand().getAppModelUser();
     setState(() {
       nameController.text = user['name'];
+      emailController.text = user['email'];
       birthdateController.text = user['birthdate'];
-      genderController.text = user['gender'];
+      genderController.text = user['gender'];      
       
 
 
@@ -105,7 +107,7 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: TextFormField(
+              child: TextFormField(                              
                               style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
                               controller: nameController,
                               keyboardType: TextInputType.name,                              
@@ -119,6 +121,38 @@ class _AccountDetailsUpdateState extends State<AccountDetailsUpdate> {
                               decoration: InputDecoration(
                                 hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
                                 hintText: 'Name',
+                                filled: true,                                
+                                fillColor: AppColors.fieldFillDark,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: BorderSide.none,                                  
+                                ),
+                              ),
+                            ),
+            ),
+          ),
+          ],
+      ),
+              Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0,8.0,8.0,0),
+              child: TextFormField(
+                              readOnly: true,
+                              style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
+                              controller: emailController,
+                              keyboardType: TextInputType.name,                              
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field is required";
+                                }                                
+                                return null;
+                              },
+                              
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
+                                hintText: 'Email',
                                 filled: true,                                
                                 fillColor: AppColors.fieldFillDark,
                                 border: OutlineInputBorder(
