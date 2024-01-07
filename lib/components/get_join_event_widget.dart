@@ -161,8 +161,8 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
     if (updatedRoles.isEmpty) {
       dynamic removeUserFromEventResp =
           await EventCommand().removeUserFromEvent(event, userObject);
+      print("removeUserFromEventRespppp: " + removeUserFromEventResp.toString());
       if (removeUserFromEventResp['success']) {
-        print("removeUserFromEventResp: " + removeUserFromEventResp.toString());
         // dynamic eventToRemove = removeUserFromEventResp['data'];
 
         EventCommand().updateViewModelsWithEvent(event, false, true);
@@ -193,8 +193,12 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
   }
 
   Future<void> addUserToEvent(dynamic event, userObject,
-      List<dynamic> rolesToAdd, List<dynamic> existingRoles) async {
-    List<dynamic> updatedRoles = [];
+      String rolesToAddc) async {
+    
+    await EventCommand().addUserToEvent(event, userObject, rolesToAddc);
+    EventCommand().updateViewModelsWithEvent(event, true, true);
+    EventCommand().addUserToEventPageModel(event, userObject);
+
   }
 
   String getRequestType(eventObject) {
@@ -345,7 +349,8 @@ class _GetJoinEventWidgetState extends State<GetJoinEventWidget> {
         onPressed: () async {
           // purchaseEvent(context, event);
           String roles = "{PLAYER}";
-          EventCommand().addUserToEvent(event, userObject, roles);
+          addUserToEvent(event, userObject, roles);
+          // EventCommand().addUserToEvent(event, userObject, roles);
         },
       );
                   }

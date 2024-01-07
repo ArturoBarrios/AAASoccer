@@ -1805,8 +1805,9 @@ class EventCommand extends BaseCommand {
 
   Future<Map<String, dynamic>> updateViewModelsWithEvent(
       Map<String, dynamic> event, bool add, bool mine) async {
-    print("updateViewModelsWithEvent()");
+    print("updateViewModelsWithEventssssss()");
     print("event: " + event.toString());
+    print("myEvents: " + appModel.myEvents.toString());
 
     Map<String, dynamic> updateViewModelsWithGameResp = {
       "success": false,
@@ -1817,7 +1818,7 @@ class EventCommand extends BaseCommand {
     if (event['type'] == "GAME") {
       if (add) {
         if (mine) {
-          appModel.myEvents.add( event);
+          // appModel.myEvents.add( );
           // find the userEventParticipant
           int indexForEventUserParticipant = -1;
           for (int i = 0; i < event['userParticipants'].length; i++) {
