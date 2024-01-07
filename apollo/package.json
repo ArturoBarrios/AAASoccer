@@ -6,10 +6,11 @@
   "dependencies": {
     "@apollo/datasource-rest": "^6.2.2",
     "@apollo/server": "^4.9.5",
+    "@onesignal/node-onesignal": "^2.0.1-beta2",
+    "dotenv": "^16.0.3",
     "graphql": "^16.8.1",
     "mongoose": "^8.0.1",
-    "undici-types": "^5.26.5",
-    "dotenv": "^16.0.3"
+    "undici-types": "^5.26.5"
   },
   "scripts": {
     "compile": "tsc",
@@ -25,4 +26,5 @@
     "@types/node": "^20.10.4",
     "typescript": "^5.3.3"
   }
+  
 }

@@ -12,6 +12,8 @@ import Payment from "./Payment.js";
 import { print } from "graphql";
 import EventRating from "./EventRating.js";
 import { getDistanceFromLatLonInKm } from './EventFunctions.js';
+import { sendPNToPlayers } from '../onesignal/functions.mjs';
+
 
 
 
@@ -198,10 +200,9 @@ const resolvers = {
                     await joinConditions.save();
                    await user.save();
                    await createdEvent.save();
-                   await eventUserParticipants.save();
                    const res = await createdGame.save();
 
-                   res.populate([
+                   await res.populate([
                        {
                            path: 'event',
                            populate: [
@@ -233,7 +234,9 @@ const resolvers = {
                        }
                    ]);
                    
-                   await res.populate('event');
+                //    await res.populate('event');
+
+                   
        
        
                    console.log("createdGame res: ", res);
@@ -266,15 +269,15 @@ const resolvers = {
                 roles: args.roles,
             });
             const event = await Event.findById(args.eventId);
+
             userEventParticipant.event = event._id;
             await userEventParticipant.save();
             await event.userParticipants.push(userEventParticipant._id);
-            await event.save();
-
+            
             await user.eventUserParticipants.push(userEventParticipant._id);
             await user.save();
-
-            event.populate([
+            await event.save();
+            await event.populate([
                 {
                     path: 'fieldLocations',
                     populate: {
@@ -290,11 +293,21 @@ const resolvers = {
                         path: 'user'
                     }
                 },
-
                 {
                     path: 'price'
-                }
+                },
+                {
+                    path: 'payments',
+                    populate: {
+                        path: 'user'
+                    }
+                },
             ]);
+
+            console.log("updatedEventttt: ", event);
+          
+            
+
 
 
             return {
@@ -313,7 +326,7 @@ const resolvers = {
             user.preferredFoot = args.input.preferredFoot;
             user.preferredPosition = args.input.preferredPosition;
             user.skillLevel = args.input.skillLevel;
-            user.interestedIn = args.input.interestedIn;
+            // user.interestedIn = args.input.interestedIn;
 
             await user.save();
             
@@ -340,11 +353,6 @@ const resolvers = {
             
             await user.save();
 
-            // // await user.populate('user');
-            // await user.populate('location');
-
-
-            // console.log("updatedUser: ", user);
             console.log("doneeee");
 
             return {
@@ -378,17 +386,17 @@ const resolvers = {
                 user: user
             };
         },
-        deleteEventUserParticipant: async (parent, args, context, info) => {
-            console.log("deleteEventUserParticipant");
+        deleteEvent: async (parent, args, context, info) => {
+            console.log("deleteEvent");
+            var eventToDelete = await Event.findById(args.eventId);
+            //get all eventUserParticipants
+            var eventUserParticipants = await EventUserParticipant.find({ event: args.eventId });
+            //delete all eventUserParticipants
+            for (var eventUserParticipant of eventUserParticipants) {
+                await eventUserParticipant.deleteOne();
+            }
 
-            //delete
-            const eventUserParticipant = await EventUserParticipant.findById(args._id);
-            await eventUserParticipant.deleteOne();
-
-
-
-
-
+            await eventToDelete.deleteOne();        
 
             return {
                 code: "200",
@@ -396,6 +404,67 @@ const resolvers = {
                 message: "User email was successfully updated",
             };
         },
+
+        joinEventWaitlist: async (parent, args, context, info) => {
+            console.log("joinWaitlist");
+            console.log("args.eventId: ", args.eventId);
+            console.log("args.userId: ", args.userId);
+            var event = await Event.findById(args.eventId);
+            //check if user is already in waitlist
+            var isUserInWaitlist = false;
+            for (var waitListedUser of event.waitListedUsers) {
+                if (waitListedUser._id == args.userId) {
+                    isUserInWaitlist = true;
+                }
+            }
+            if(!isUserInWaitlist){
+                event.waitListedUsers.push(args.userId);
+                await event.save();
+            }
+
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+                event: event
+            };
+
+        },
+
+        deleteEventUserParticipant: async (parent, args, context, info) => {
+            console.log("deleteEventUserParticipant");
+
+            //delete
+            const eventUserParticipant = await EventUserParticipant.findById(args._id);
+            
+            var event = await Event.findById(eventUserParticipant.event._id);
+            var indexToDelete = (await event).userParticipants.indexOf(args._id);
+            console.log("indexToDelete: ", indexToDelete);
+            (await event).userParticipants.splice(indexToDelete, 1);
+            await event.save();
+
+            await eventUserParticipant.deleteOne();
+
+            //check if event has room for more players, 
+            //if so, notify players that they can join
+            //get count of eventUserParticipants
+            if(event.userParticipants.length<event.capacity){
+                //notify players that they can join
+                console.log("notify players that they can join");
+                const waitlistedUsers = await event.populate('waitListedUsers');
+                console.log("waitlistedUsers to send notificaiton to: ", event.waitListedUsers);
+                await sendPNToPlayers(event.waitListedUsers);
+
+            }
+
+            return {
+                code: "200",
+                success: true,
+                message: "User email was successfully updated",
+            };
+        },
+
         createStripeCustomer: async (parent, args, context, info) => {
             console.log("createStripeCustomer");
 
@@ -455,7 +524,7 @@ const resolvers = {
             console.log("createdPayment: ", payment);
 
             return {
-                code: "200",
+                code: 200,
                 success: true,
                 message: "User email was successfully updated",
                 payment: payment
@@ -463,62 +532,94 @@ const resolvers = {
         },
         createPlayer: async (parent, args, context, info) => {
             console.log("createPlayer args: ", args.input.user);
-            //check for unique constraints(username, email, and phone)
-            if (process.env.ENVIRONMENT == ' PRODUCTION') {
-                // const userWithConstraint = await User.findOne({ username: args.input.user.username });
-                // if(args.input.user.username)
-                // console.log('Environmental variable is set:', process.env.YOUR_ENV_VARIABLE);
 
+            var uniqueEmail = true;            
+            var uniquePhone = true; 
+
+            //check for unique constraints(email, and phone)
+            // if (process.env.ENVIRONMENT == 'STAGING'|| process.env.ENVIRONMENT == 'PRODUCTION') {                
+            //     const phoneConstraint = await User.findOne({ phone: args.input.user.phone });
+            //     const emailConstraint = await User.findOne({ email: args.input.user.email });                
+            //     if (phoneConstraint) {
+            //         uniquePhone = false;
+            //     }   
+            //     if (emailConstraint) {
+            //         uniqueEmail = false;
+            //     }
+                
+            //     if(!uniqueEmail || !uniquePhone){
+            //         return {
+            //             code: 500,
+            //             success: false,
+            //             message: "User limit reached",
+            //             player: null, 
+            //             uniqueEmail: uniqueEmail,                        
+            //             uniquePhone: uniquePhone
+                    
+            //         };
+            //     }
+
+            // }
+
+            var playerCount = await Player.countDocuments();
+            if (playerCount<parseInt(process.env.USERLIMIT)) {
+                const location = new Location({
+                    name: args.input.user.location.name,
+                    address: args.input.user.location.address,
+                    latitude: args.input.user.location.latitude,
+                    longitude: args.input.user.location.longitude,
+                });
+                console.log("location: ", location._id);
+                
+                const createdUser = new User({
+                    name: args.input.user.name,                    
+                    phone: args.input.user.phone,
+                    email: args.input.user.email,
+                    birthdate: args.input.user.birthdate,
+                    location: location._id,
+                    gender: args.input.user.gender,
+                    hostRating: -1,
+                    profileImageIndex: args.input.user.profileImageIndex
+                    
+                });
+                console.log("createdUser: ", createdUser._id);
+                
+                
+                const createdPlayer = new Player({
+                    user: createdUser._id,
+                    location: location._id,
+                });
+                
+                console.log("createdPlayer: ", createdPlayer._id);
+                
+                await location.save();
+                await createdUser.save();
+                await createdPlayer.save();
+                const res = await createdPlayer.save();                
+                await res.populate('user');
+                await res.populate('user.location');
+                
+    
+                console.log("createdPlayer: ", res);
+    
+                return {
+                    code: 200,
+                    success: true,
+                    message: "User email was successfully updated",
+                    player: res
+                };                
+            }
+            else{
+                return {
+                    code: 500,
+                    success: false,
+                    message: "User limit reached",
+                    player: null, 
+                
+                };
             }
 
 
-            const location = new Location({
-                name: args.input.user.location.name,
-                address: args.input.user.location.address,
-                latitude: args.input.user.location.latitude,
-                longitude: args.input.user.location.longitude,
-            });
-            await location.save();
-            console.log("location: ", location._id);
-
-            const createdUser = new User({
-                name: args.input.user.name,
-                username: args.input.user.username,
-                phone: args.input.user.phone,
-                email: args.input.user.email,
-                birthdate: args.input.user.birthdate,
-                location: location._id,
-                gender: args.input.user.gender,
-                hostRating: -1,
-                profileImageIndex: args.input.user.profileImageIndex
-
-            });
-            await createdUser.save();
-            console.log("createdUser: ", createdUser._id);
-
-
-            const createdPlayer = new Player({
-                user: createdUser._id,
-                location: location._id,
-            });
-            await createdPlayer.save();
-
-            console.log("createdPlayer: ", createdPlayer._id);
-
-            const res = await createdPlayer.save();
-
-            await res.populate('user');
-            await res.populate('user.location');
-
-
-            console.log("createdPlayer: ", res);
-
-            return {
-                code: "200",
-                success: true,
-                message: "User email was successfully updated",
-                player: res
-            };
         },
     },
     Query: {
@@ -741,7 +842,7 @@ const resolvers = {
                         }
                     }
                 },
-                {
+                { 
                     path: 'price'
                 },
                 {

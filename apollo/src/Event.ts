@@ -33,7 +33,8 @@ const eventSchema = new mongoose.Schema({
     mainImageKey: String,
     coupons: [{ type: Schema.Types.ObjectId, ref: 'Coupon' }],
     eventRatings: [{ type: Schema.Types.ObjectId, ref: 'EventRating' }],    
-    hostAmenities: String
+    hostAmenities: String,
+    waitListedUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
 const Event = mongoose.model('Event', eventSchema);

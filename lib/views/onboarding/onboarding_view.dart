@@ -27,7 +27,8 @@ class OnboardingView extends StatefulWidget {
 
 class _OnboardingViewState extends State<OnboardingView> {
   int activeStep = 0;
-  int stepperListLength = 4;
+  // int stepperListLength = 3;
+  List<CustomStepperModel> stepperList = [];
   String preferredPosition = Constants.playerCoordinates[4]?[2];  
   int preferredPositionIndex = 4;
   int selectedInterestIndex = 0;
@@ -73,7 +74,7 @@ class _OnboardingViewState extends State<OnboardingView> {
       'preferredFoot': selectedFoot!.index == 1 ? "RIGHT" : "LEFT",
       'preferredPosition': preferredPosition,
       'skillLevel': selectedSkillLevel,
-      'interestedIn': selectedInterest,
+      // 'interestedIn': selectedInterest,
     };
     print("partialUserInput: $partialUserInput");
 
@@ -99,8 +100,8 @@ class _OnboardingViewState extends State<OnboardingView> {
   Future<void> onConfirmTap() async {
     print("onboarding onConfirmTap");
     print("activeStep: $activeStep");
-    print("stepperListLength: $stepperListLength");
-    (activeStep == (stepperListLength - 1))
+    print("stepperList.length: " + stepperList.length.toString());
+    (activeStep == (stepperList.length - 1))
         ? updateUserOnboarding()
         : changeStepValue(activeStep + 1);
   }
@@ -152,7 +153,8 @@ class _OnboardingViewState extends State<OnboardingView> {
   Widget build(BuildContext context) {
     double paddingValue = 16;
     double screenWidth = MediaQuery.of(context).size.width;
-    final stepperList = [
+    double screenHeight = MediaQuery.of(context).size.height;
+    stepperList = [
       CustomStepperModel(
         widgets: [
           Padding(
@@ -176,8 +178,16 @@ class _OnboardingViewState extends State<OnboardingView> {
       ),
       CustomStepperModel(
         widgets: [
+          FootSelection(
+            onTapPreferredFoot: changeSelectedFoot,
+            selectedFoot: selectedFoot,
+          ),
+        ],
+      ),
+      CustomStepperModel(
+        widgets: [
           Container(
-              height: 400,
+              height: screenHeight*.6,
               child: SelectionListWidget(
                 selections: Constants.skillLevels,
                 onTap: (index) {
@@ -188,30 +198,22 @@ class _OnboardingViewState extends State<OnboardingView> {
               )),
               
         ],
-      ),
-      CustomStepperModel(
-        widgets: [
-          FootSelection(
-            onTapPreferredFoot: changeSelectedFoot,
-            selectedFoot: selectedFoot,
-          ),
-        ],
-      ),
-      CustomStepperModel(
-        widgets: [
-          Container(
-              height: 400,
-              child: SelectionListWidget(
-                selections: Constants.interests,
-                onTap: (index) {
-                  // Handle tap event
-                  changeSelectedInterest(index);
-                },
-                selectedIndex: selectedInterestIndex,
-              )),
-          const SizedBox(height: 20)
-        ],
-      ),
+      ),      
+      // CustomStepperModel(
+      //   widgets: [
+      //     Container(
+      //         height: 400,
+      //         child: SelectionListWidget(
+      //           selections: Constants.interests,
+      //           onTap: (index) {
+      //             // Handle tap event
+      //             changeSelectedInterest(index);
+      //           },
+      //           selectedIndex: selectedInterestIndex,
+      //         )),
+      //     const SizedBox(height: 20)
+      //   ],
+      // ),
     ];
 
     return Scaffold(
@@ -236,7 +238,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                             child: BasicElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                activeStep = stepperListLength - 1;
+                                activeStep = stepperList.length - 1;
                                 onConfirmTap();
                                   
                                 });
@@ -279,10 +281,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                           onTap: onBackTap,
                         ),
                       confirmButton: ButtonModel(
-                        backgroundColor: (activeStep == (stepperListLength - 1))
+                        backgroundColor: (activeStep == (stepperList.length - 1))
                             ? Colors.red
                             : null,
-                        text: (activeStep == (stepperListLength - 1))
+                        text: (activeStep == (stepperList.length - 1))
                             ? 'Save'
                             : StringConstants.nextBtn,
                         onTap: onConfirmTap,
@@ -295,13 +297,11 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 
   String getTitle() => activeStep == 0
-      ? 'Select the position'
+      ? 'Select Your Position'
       : activeStep == 1
-          ? 'Rate yourself'
+          ? 'Preferred foot'
           : activeStep == 2
-              ? 'Preffered foot'
-              : activeStep == 3
-                  ? 'Which Best Describes You?'
+              ? 'Rate yourself'              
                   : '';
 
   // int getSkillLevelIndex(double value) {

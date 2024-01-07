@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soccermadeeasy/components/models/button_model.dart';
+import 'package:soccermadeeasy/constants.dart';
 import 'package:soccermadeeasy/styles/colors.dart';
 
 import '../../commands/base_command.dart';
@@ -122,6 +123,14 @@ class SettingsView extends StatefulWidget {
     
     
                                 );
+                              
+                              },
+                            ),                                                                                 
+                            ButtonModel(
+                              text: 'Privacy Policy',
+                              prefixIconData: Icons.lock,
+                              onTap: () async {
+                                 await BaseCommand().launchURL(Constants.PRIVACYPOLICYURL);
                               
                               },
                             ),                                                                                 

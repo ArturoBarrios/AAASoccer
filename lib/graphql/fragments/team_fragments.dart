@@ -41,7 +41,6 @@ class TeamFragments {
                 user{
                   _id
                   name
-                  username
                   email
                   phone
                 }
@@ -116,7 +115,6 @@ class TeamFragments {
                 user{
                   _id
                   name
-                  username
                   email
                   phone
                 }

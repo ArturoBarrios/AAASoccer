@@ -100,23 +100,29 @@ class PlayerCommand extends BaseCommand {
       print(jsonDecode(response.body));
 
       if(response.statusCode == 200){
+        print("player created statusCode 200!");
 
         Map<String, dynamic> resp =
             jsonDecode(response.body)['data']['createPlayer'];
-        Map<String, dynamic> player = resp['player'];
-        Map<String, dynamic> user = player['user'];
-        appModel.currentUser = user;
+        if(resp['success']){
+          Map<String, dynamic> player = resp['player'];
+          Map<String, dynamic> user = player['user'];
+          appModel.currentUser = user;
+          print("user set after player created");
 
-        createPlayerResponse["success"] = true;
-        createPlayerResponse["message"] = "Player for Team Created";
-        createPlayerResponse["data"] = player;
+          createPlayerResponse["success"] = true;
+          createPlayerResponse["message"] = "Player for Team Created";
+          createPlayerResponse["data"] = player;
+
+        }
+        else{
+          createPlayerResponse["success"] = false;
+          createPlayerResponse["message"] = "Player for Team not Created";
+          createPlayerResponse["data"] = {"uniqueEmail": resp['uniqueEmail'], "uniqueUsername": resp['uniqueUsername'], "uniquePhone": resp['uniquePhone']};
+        }
 
       }
-      else{
-        createPlayerResponse["success"] = false;
-        createPlayerResponse["message"] = "Player for Team Created";
-        createPlayerResponse["data"] = null;
-      }
+      
 
     } on ApiException catch (e) {
       print('Mutation failed: $e');

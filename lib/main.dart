@@ -80,8 +80,7 @@ class _MyAppState extends State<MyApp> {
   final formKey = GlobalKey<FormState>();
   final navigatorKey = GlobalKey<NavigatorState>();
   final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();  
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
   PhoneNumber? phoneNumber;
@@ -199,8 +198,7 @@ class _MyAppState extends State<MyApp> {
       print("signUp");
       Map<String, dynamic> userInput = {
         "name": nameController.text.trim(),
-        "email": emailController.text.trim(),
-        "username": usernameController.text.trim(),
+        "email": emailController.text.trim(),        
         "phone": phoneNumber!.phoneNumber,
         "birthdate": birthdateController.text.trim(),
         "gender": genderController.text.trim(),
@@ -212,13 +210,13 @@ class _MyAppState extends State<MyApp> {
       //     await BaseCommand().uniquenessUserAttributesCheck(userInput);
       // if (uniquenessUserAttributesCheckResponse) {
         SignUpResult signUpRes = await AmplifyAuth.AmplifyAuthService.signUp(
+          nameController,
           emailController,
-          passwordController,
-          usernameController,
+          passwordController,          
           phoneNumber!.phoneNumber,
           birthdateController,
           genderController,
-          addressController,
+          addressController
         );
 
         print("signedUpRes nextStep: ");
@@ -608,34 +606,6 @@ class _MyAppState extends State<MyApp> {
           ),
           ],
       ),
-      const SizedBox(height: 20),
-      Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: TextFormField(
-                style: TextStyle(color: AppColors.fieldTextInsideDarkFill,),
-                controller: usernameController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "This field is required";
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintStyle: TextStyle(color: AppColors.fieldLabelTextInsideDarkFill,),                                                                                                
-                  hintText: 'Username',
-                  filled: true,
-                  fillColor: AppColors.fieldFillDark,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
-          )]),
         
                             const SizedBox(height: 20),
                             Row(

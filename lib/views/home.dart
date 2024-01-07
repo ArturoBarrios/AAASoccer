@@ -329,9 +329,10 @@ class _Home extends State<Home> {
 
   Future<void> loadInitialData() async {
     await loadPlayerDetails();
-    print("loadInitialData");
+    print("loadInitialData in home");
     _selectEventController = ScrollController()..addListener(_loadMore);
     userObject = UserCommand().getAppModelUser();
+    print("userObject: " + userObject.toString());
     print("selectedkeyyyy: ${HomePageModel().selectedKey}");
     // await HomePageCommand().eventTypeTapped(HomePageModel().selectedKey);
     await HomePageCommand().setCards();
@@ -555,13 +556,16 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
 
   @override
   Widget build(BuildContext context) {
-    print("buildDDDDDD");
+    print("buildDDDDDD home");
 
     bool isSuperUser =
         context.select<AppModel, bool>((value) => value.isSuperUser);
 
     bool initialConditionsMet =
         context.select<AppModel, bool>((value) => value.initialConditionsMet);
+    
+    dynamic currentUser =
+        context.select<AppModel, dynamic>((value) => value.currentUser);
 
     bool isDialogueViewOpened = context
         .select<HomePageModel, bool>((value) => value.isDialogueViewOpened);
@@ -644,11 +648,13 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
               width: MediaQuery.of(context).size.width * 0.5, //<-- SEE HERE
               child: Drawer(
                   child: const SideNavs()
-                      .getMainSideNav(context, userObject, isSuperUser)),
+                      .getMainSideNav(context, currentUser, isSuperUser)),
             ),
-            body: RefreshIndicator(
-              onRefresh: onReload,
-              child: Stack(
+            body: 
+            // RefreshIndicator(
+            //   onRefresh: onReload,
+              // child: 
+              Stack(
                 children: <Widget>[
                   Column(
                     children: [
@@ -792,48 +798,31 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
 
                       !cardsLoading
                           ? (
-                            Container(
-                              height: screenHeight * .6,
-                              child: Column(children: [
-                                //list view
                                 Expanded(
-                                    child: ListView.builder(
-                                        controller: _selectEventController,
-                                        itemCount: cards.length,
-                                        shrinkWrap: true,
-                                        physics:
-                                            AlwaysScrollableScrollPhysics(),
-                                        itemBuilder: (_, index) => 
-                                       Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                0, 0, 0, 16),
-                                            child:
-                                                Column(children: [
-                                                   Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                12, 0, 0, 0),
-                                            child:
-                                             Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: 
-                                                getDayText(index, selectedKey)
+  child: ListView.builder(
+    controller: _selectEventController,
+    itemCount: cards.length,
+    physics: AlwaysScrollableScrollPhysics(),
+    itemBuilder: (_, index) => Padding(
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 16),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: getDayText(index, selectedKey),
+            ),
+          ),
+          cards[index],
+        ],
+      ),
+    ),
+  ),
+)
 
-                                                
-                                                  // Text(
-                                                  //   "Some Header",
-                                                  //   style: TextStyle(
-                                                  //       fontSize: FontSizes.lg(
-                                                  //           context),
-                                                  //       fontWeight:
-                                                  //           FontWeight.bold),
-                                                  // )
-                                                  )
-                                                  ),
-                                                  cards[index],
-                                                ])))
-                                        )
-                              ]))
                               )
+                              
                           : const SizedBox(
                               height: 100,
                               width: 100,
@@ -850,7 +839,7 @@ bool isSameDay(DateTime currentDate, String previousDateMillis) {
                   ),
                 ],
               ),
-            ),
+            // ),
             // :  LocationsMap(),
 
             bottomNavigationBar: Padding(

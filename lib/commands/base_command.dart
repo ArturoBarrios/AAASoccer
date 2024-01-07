@@ -126,6 +126,16 @@ int calculateAgeFromBirthdateString(String birthdateString){
   return age;
 }
 
+Future<void> launchURL(String urlString) async {
+  Uri url = Uri.parse(urlString);
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    // Unable to launch the URL, handle the error
+    print('Could not launch $urlString');
+  }
+}
+
 
    Future<void> launchLocationInBrowser(double latitude, double longitude  ) async {
     final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
@@ -401,63 +411,6 @@ List<String> parseAmenities(String amenitiesString) {
     appModel.initialConditionsMet = false;
   }
 
-  // Future<bool> uniquenessUserAttributesCheck(
-  //     Map<String, dynamic> userAttributes) async {
-  //   print("createUserAttributesCheck()");
-  //   print("userAttributes: $userAttributes");
-  //   bool createUserAttributesCheckResponse = true;
-  //   try {
-  //     String email = userAttributes['email'];
-  //     String username = userAttributes['username'];
-  //     String phone = userAttributes['phone'];
-  //     dynamic userInput = {
-  //       "email": email,
-  //       "username": username,
-  //       "phone": phone
-  //     };
-  //     print("userInput: $userInput");
-  //     http.Response response = await http.post(
-  //       Uri.parse('https://graphql.fauna.com/graphql'),
-  //       headers: <String, String>{
-  //         'Authorization': 'Bearer ${dotenv.env['FAUNADBSECRET']}',
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: jsonEncode(<String, String>{
-  //         'query': UserQueries().checkUserUniqueness(userInput),
-  //       }),
-  //     );
-
-  //     print("response body: ");
-  //     print(jsonDecode(response.body));
-  //     dynamic data = jsonDecode(response.body)['data'];
-  //     dynamic getUserByEmailResponse = data['getUserByEmail'];
-  //     dynamic getUserByUsernameResponse = data['getUserByUsername'];
-  //     dynamic getUserByPhoneResponse = data['getUserByPhone'];
-
-  //     if (getUserByEmailResponse != null) {
-  //       print("email already exists");
-  //       createUserAttributesCheckResponse = false;
-  //     }
-  //     if (getUserByUsernameResponse != null) {
-  //       print("username already exists");
-  //       createUserAttributesCheckResponse = false;
-  //     }
-  //     if (getUserByPhoneResponse != null) {
-  //       print("phone already exists");
-  //       if (dotenv.env['ENVIRONMENT'] == "PRODUCTION") {
-  //         //if in production, don't allow user to create account with phone number that already exists
-  //         createUserAttributesCheckResponse = false;
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print("createUserAttributesCheck error: ");
-  //     print(e);
-  //     createUserAttributesCheckResponse = false;
-  //   }
-
-  //   return createUserAttributesCheckResponse;
-  // }
-
   void updateChatViewModels(dynamic chat, eventOrTeamObject) {
     print("updateChatViewModels()");
     print("chat: $chat");
@@ -616,6 +569,10 @@ List<String> parseAmenities(String amenitiesString) {
     // }
   }
 
+  void setCurrentUser(dynamic user){
+    appModel.currentUser = user;
+  }
+
   Future<Map<String, dynamic>> setupUser(String email) async {
     print("setupUser");
     Map<String, dynamic> setupUserResp = {
@@ -637,8 +594,7 @@ List<String> parseAmenities(String amenitiesString) {
             if (user == null) {
               Map<String, dynamic> userInput = {
                 "name": "no name",
-                "email": email,
-                "username": "username",
+                "email": email,                
                 "phone": "2672136006",
                 "birthdate": "07/26/1997",
                 "gender": "male",

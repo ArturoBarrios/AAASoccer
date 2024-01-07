@@ -271,7 +271,7 @@ class RequestsCommand extends BaseCommand {
       List<String> OSPIDs = [sender['OSPID']];
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['username'] +
+        "message": appModel.currentUser['name'] +
             " has accepted your request "+ 
             (eventRequestInput['team']==null ? "" : "for team"+eventRequestInput['team']['name']) +" to join event",
         "OSPIDs": OSPIDs
@@ -346,7 +346,7 @@ class RequestsCommand extends BaseCommand {
       List<String> OSPIDs = [sender['OSPID']];
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['username'] +
+        "message": appModel.currentUser['name'] +
             " has accepted your request to join " +
             teamRequestInput['team']['name'],
         "OSPIDs": OSPIDs

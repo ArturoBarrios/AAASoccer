@@ -2,6 +2,41 @@ import '../../commands/network_models/add_social_media_apps_request.dart';
 import '../fragments/event_fragments.dart';
 
 class EventMutations {
+
+  String joinEventWaitlist(dynamic joinEventWaitlistInput) {
+    String joinEventWaitlistString = """
+      mutation {
+        joinEventWaitlist(
+          eventId: "${joinEventWaitlistInput['eventId']}",                             
+          userId: "${joinEventWaitlistInput['userId']}",                             
+          ) {
+            code
+            success
+            message        
+            event{
+              _id
+            }
+          }   
+        }
+    """;
+    return joinEventWaitlistString;
+  }
+
+  String deleteEvent(Map<String, dynamic> eventInput) {
+    String updateEventString = """
+      mutation {
+        deleteEvent(
+          eventId: "${eventInput['eventId']}",                             
+          ) {
+            code
+            success
+            message        
+          }   
+        }
+    """;
+    return updateEventString;
+  }
+
   String getEvent(Map<String, dynamic> eventInput) {
     String getEvent = """      
       query {
@@ -169,7 +204,6 @@ class EventMutations {
             _id
             name
             email
-            username
             userType
             teams{
               data{
@@ -206,7 +240,7 @@ class EventMutations {
           roles,
           user{
             _id
-            username
+            name
           }
           event{
             ${EventFragments().fullEvent()}

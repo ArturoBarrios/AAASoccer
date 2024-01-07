@@ -166,7 +166,7 @@ class TeamMutations {
           roles,
           user{
             _id
-            username
+            name
           }
           team{
             ${TeamFragments().fullTeam()}

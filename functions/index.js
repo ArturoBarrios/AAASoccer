@@ -55,39 +55,12 @@ exports.listPaymentMethods = functions.https.onRequest(async (req, res) => {
     }
 });
 
-exports.detachPaymentMethod = functions.https.onRequest(async (req, res) => {
-    try{
-        const paymentMethod = await stripe.paymentMethods.detach(
-            req.body.customerId
-          );        
-
-        res.status(200).send({ success: true, detachedPaymentMethod: paymentMethod });
-
-    } catch (error) {
-        res.status(404).send({ success: false, error: error.message })
-    }
-});
-
 exports.updatePaymentMethod = functions.https.onRequest(async (req, res) => {
     try{
         const paymentMethod = await stripe.paymentMethods.update(
             req.body.paymentMethod,
             {card: {exp_month: req.body.exp_month, expYear: req.body.expYear}}
           );          
-
-        res.status(200).send({ success: true, paymentMethods: paymentMethods });
-
-    } catch (error) {
-        res.status(404).send({ success: false, error: error.message })
-    }
-});
-
-exports.detachPaymentMethod = functions.https.onRequest(async (req, res) => {
-    try{
-        const paymentMethods = await stripe.paymentMethods.list({
-            customer: req.body.customerId,
-            type: 'card',
-          });
 
         res.status(200).send({ success: true, paymentMethods: paymentMethods });
 
@@ -111,6 +84,19 @@ exports.stripeAttachPaymentMethod = functions.https.onRequest(async (req, res) =
     }
 });
 
+
+exports.detachPaymentMethod = functions.https.onRequest(async (req, res) => {
+    try{            
+        const paymentMethodResp = await stripe.paymentMethods.detach(
+            req.body.paymentMethodId
+          );    
+        res.status(200).send({ success: true, res: paymentMethodResp });
+        
+    } catch (error) {
+        res.status(404).send({ success: false, error: error.message })
+    }
+
+});
 
 exports.createPaymentMethod = functions.https.onRequest(async (req, res) => {
     try{

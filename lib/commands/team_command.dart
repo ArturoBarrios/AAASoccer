@@ -406,7 +406,7 @@ class TeamCommand extends BaseCommand {
 
           Map<String, dynamic> sendPlayerRequestNotificationInput = {
             "phones": phones,
-            "message": appModel.currentUser['username'] +
+            "message": appModel.currentUser['name'] +
                 " has sent you a request to join team",
             "OSPIDs": OSPIDs
           };
@@ -496,7 +496,7 @@ class TeamCommand extends BaseCommand {
 
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['username'] +
+        "message": appModel.currentUser['name'] +
             " has sent your team a request to join tournament called" +
             event['name'],
         "OSPIDs": OSPIDs
@@ -587,7 +587,7 @@ class TeamCommand extends BaseCommand {
 
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['username'] +
+        "message": appModel.currentUser['name'] +
             " from " +
             teamInput['name'] +
             " has sent you a request to join your tournament " +
@@ -691,7 +691,7 @@ class TeamCommand extends BaseCommand {
 
       Map<String, dynamic> sendOrganizerRequestNotificationInput = {
         "phones": phones,
-        "message": appModel.currentUser['username'] +
+        "message": appModel.currentUser['name'] +
             " has sent you a request to join team",
         "OSPIDs": OSPIDs
       };

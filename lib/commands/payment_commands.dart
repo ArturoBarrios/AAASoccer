@@ -151,6 +151,32 @@ class PaymentCommand extends BaseCommand {
     }
   }
 
+  Future<Map<String, dynamic>> detachPaymentIntent(
+      dynamic detachPaymentIntentInput) async {
+      
+      print("detachPaymentIntent");
+      print("detachPaymentIntentInput: $detachPaymentIntentInput");
+      Map<String, dynamic> detachPaymentIntentResp = {
+        "success": false,
+        "message": "Default Error",
+        "data": null
+      };
+
+      try{
+        Map<String, dynamic> detachPaymentIntentResult = await _callStripeDetachPaymentMethod(detachPaymentIntentInput);
+        print("detachPaymentIntentResult: $detachPaymentIntentResult");
+        if(detachPaymentIntentResult['success']){
+          detachPaymentIntentResp['success'] = true;
+          detachPaymentIntentResp['message'] = "Payment Intent Detached";
+          detachPaymentIntentResp['data'] = detachPaymentIntentResult['data'];
+        }
+        return detachPaymentIntentResp;
+     
+      } on Exception catch (e) {
+        print('Mutation failed: $e');
+        return detachPaymentIntentResp;
+      }
+  }
   Future<Map<String, dynamic>> createPaymentIntent(
       dynamic createPaymentIntentInput) async {
     print("createPaymentIntent");
@@ -210,7 +236,7 @@ class PaymentCommand extends BaseCommand {
       }
 
       if (paymentIntentResults['error'] != null) {
-        paymentModel.status = PaymentStatusType.failure;
+        paymentModel.status = PaymentStatusType.initial;
       }
       print(
           "paymentIntentResults['requiresAction']: ${paymentIntentResults['requiresAction']}");
@@ -219,7 +245,7 @@ class PaymentCommand extends BaseCommand {
       if (paymentIntentResults['clientSecret'] != null &&
           paymentIntentResults['requiresAction'] == null) {
         print("doesn't requires action!");
-        paymentModel.status = PaymentStatusType.success;
+        paymentModel.status = PaymentStatusType.initial;
       }
 
       if (paymentIntentResults['clientSecret'] != null &&
@@ -343,6 +369,27 @@ class PaymentCommand extends BaseCommand {
           'paymentIntentId': paymentIntentId,
         }));
     return json.decode(response.body);
+  }
+
+  Future<Map<String, dynamic>> _callStripeDetachPaymentMethod(
+    dynamic detachPaymentInput) async {
+    try {
+      print("callStripeDetachPaymentMethod: $detachPaymentInput");
+
+      final response = await http.post(
+          Uri.parse(
+              'https://us-central1-soccer-app-a9060.cloudfunctions.net/detachPaymentMethod'),
+          body: {
+            'paymentMethodId': detachPaymentInput['paymentMethodId'],      
+          });
+
+      print("return value: $response");
+      
+      return json.decode(response.body);
+    } on FormatException catch (e) {
+      print("error: $e");
+      return {};
+    }
   }
 
   Future<Map<String, dynamic>> _callStripeCreatePaymentMethod(

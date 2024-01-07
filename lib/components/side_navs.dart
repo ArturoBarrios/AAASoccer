@@ -31,7 +31,7 @@ class SideNavs extends StatefulWidget {
   }
 
   ListView getMainSideNav(BuildContext context, dynamic userObject, bool isSuperUser) {
-    print("userObject: " + userObject.toString());
+    print("getMainSideNav userObject: " + userObject.toString());
     bool isGuest = BaseCommand().isGuest();
     String profileImageUrl =
         context.select<UserModel, String>((value) => value.profileImageUrl);
@@ -70,9 +70,9 @@ class SideNavs extends StatefulWidget {
                   maxRadius: 50,
                 ),
                 SizedBox(height: 10),
-                userObject != null && userObject['username'] != null
+                userObject != null && userObject['name'] != null
                     ? Text(
-                        userObject['username'],
+                        userObject['name'],
                         style: TextStyle(
                           color: AppColors.tsnWhite, // Replace with your desired color
                         ),

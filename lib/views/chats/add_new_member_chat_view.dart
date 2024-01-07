@@ -84,7 +84,7 @@ class _AddNewMemberChatViewState extends State<AddNewMemberChatView> {
           groupedUsers[roles] = [];
         }
         groupedUsers[roles]?.add(RoleModelWithImage(
-          name: userMap['user']['username'],
+          name: userMap['user']['name'],
           chatId: currentChat['_id'],
           userId: userMap['user']['_id'],
         ));

@@ -13,7 +13,6 @@ class UserFragments {
       name        	
       phone
       email              
-      username
       birthdate                    
       OSPID
       profileImageIndex

@@ -29,9 +29,7 @@ class OneSignalService {
       OneSignal.User.addTags(
         {
           'name': user['name'],
-          'username': user['username'],
-          'age': user['birthdate']
-          
+          'age': user['birthdate']          
           }
       );
       
